@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.117 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.118 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -416,8 +416,6 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo $tools->textarea("sig_content", $sig_code, 12, 85, "tabindex=\"7\"", "edit_signature_content");
-echo $tools->js();
-
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -433,7 +431,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "      <td align=\"left\">", $tools->js(), "&nbsp;</td>\n";
 echo "    </tr>\n";
 
 if ($admin_edit === true) {
@@ -473,8 +471,6 @@ if ((!$tools->getTinyMCE())) {
     echo "                        <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], $sig_html), "</td>\n";
     echo "                      </tr>\n";
 
-    echo $tools->assign_checkbox("sig_html");
-
     if ($show_set_all && $admin_edit === false) {
 
         echo "                      <tr>\n";
@@ -484,7 +480,7 @@ if ((!$tools->getTinyMCE())) {
     }else {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), $tools->assign_checkbox("sig_html"), "</td>\n";
         echo "                      </tr>\n";
     }
 

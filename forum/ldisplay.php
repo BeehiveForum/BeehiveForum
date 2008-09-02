@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.40 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.41 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -145,32 +145,32 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else {
 
     light_html_draw_top("robots=noindex,nofollow");
-    light_html_display_error_msg($lang['nomessages']);
+    light_html_display_error_msg($lang['invalidmsgidornomessageidspecified']);
     light_html_draw_bottom();
     exit;
 }
 
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
-    html_error_msg($lang['threadcouldnotbefound']);
-    html_draw_bottom();
+    light_html_draw_top();
+    light_html_error_msg($lang['threadcouldnotbefound']);
+    light_html_draw_bottom();
     exit;
 }
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    html_draw_top();
-    html_error_msg($lang['foldercouldnotbefound']);
-    html_draw_bottom();
+    light_html_draw_top();
+    light_html_error_msg($lang['foldercouldnotbefound']);
+    light_html_draw_bottom();
     exit;
 }
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    html_draw_top();
-    html_error_msg($lang['postdoesnotexist']);
-    html_draw_bottom();
+    light_html_draw_top();
+    light_html_error_msg($lang['postdoesnotexist']);
+    light_html_draw_bottom();
     exit;
 }
 

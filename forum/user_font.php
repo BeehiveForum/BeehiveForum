@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.69 2008-08-28 21:28:32 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.70 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -149,7 +149,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else {
 
     html_draw_top();
-    html_error_msg($lang['invalidmsgid']);
+    html_error_msg($lang['invalidmsgidornomessageidspecified']);
     html_draw_bottom();
 }
 

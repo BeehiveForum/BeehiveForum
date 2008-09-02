@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.283 2008-08-28 21:28:32 decoyduck Exp $ */
+/* $Id: messages.php,v 1.284 2008-09-02 20:11:52 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -139,7 +139,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else {
 
     html_draw_top();
-    html_error_msg($lang['nomessages']);
+    html_error_msg($lang['invalidmsgidornomessageidspecified']);
     html_draw_bottom();
     exit;
 }

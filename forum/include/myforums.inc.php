@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.88 2008-08-31 20:41:11 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.89 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,7 +123,7 @@ function get_forum_list($offset)
                  'forums_count' => $forums_count);
 }
 
-function get_my_forums($view_type, $offset, $sort_by, $sort_dir)
+function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir = 'DESC')
 {
     if (!$db_get_my_forums = db_connect()) return false;
 

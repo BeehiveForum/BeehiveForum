@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.105 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: display.php,v 1.106 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -131,7 +131,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else {
 
     html_draw_top("robots=noindex,nofollow");
-    html_display_error_msg($lang['nomessages']);
+    html_error_msg($lang['invalidmsgidornomessageidspecified']);
     html_draw_bottom();
     exit;
 }

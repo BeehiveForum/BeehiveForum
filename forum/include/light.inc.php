@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.201 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.202 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -612,9 +612,9 @@ function light_draw_my_forums()
                 }else {
                     echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
                 }
-
-                echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
             }
+
+            echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
 
         }else {
 

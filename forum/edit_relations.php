@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.89 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.90 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -283,6 +283,8 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
             echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
         }
+
+        echo "                </tr>\n";
     }
 }
 

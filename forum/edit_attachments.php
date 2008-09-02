@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.135 2008-08-25 19:20:25 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.136 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -685,13 +685,13 @@ if ($uid == bh_session_get_value('UID')) {
     if ($popup == 1) {
 
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+        echo "      <td align=\"center\">", form_button("upload_attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
         echo "    </tr>\n";
 
     }else {
 
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "</td>\n";
+        echo "      <td align=\"center\">", form_button("upload_attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "</td>\n";
         echo "    </tr>\n";
     }
 

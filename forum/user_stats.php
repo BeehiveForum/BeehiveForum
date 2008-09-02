@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.64 2008-08-28 21:28:32 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.65 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -156,7 +156,7 @@ if (isset($_GET['get_stats'])) {
     }else {
 
         html_draw_top();
-        html_error_msg($lang['invalidmsgid']);
+        html_error_msg($lang['invalidmsgidornomessageidspecified']);
         html_draw_bottom();
     }
 }

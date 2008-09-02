@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.327 2008-09-01 18:03:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.328 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1690,9 +1690,8 @@ function thread_list_draw_top($mode)
     echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("mode", $available_views, _htmlentities($mode), "onchange=\"submit()\""), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
     echo "</form>\n";
 }
 

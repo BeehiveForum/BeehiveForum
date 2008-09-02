@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.579 2008-08-28 21:28:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.580 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // British English language file
 
@@ -1358,7 +1358,7 @@ $lang['messagedeletedbyuser'] = "Message %s.%s deleted %s by %s";
 $lang['messagedeleted'] = "Message %s.%s was deleted";
 $lang['viewinframeset'] = "View in Frameset";
 $lang['pressctrlentertoquicklysubmityourpost'] = "Press Ctrl+Enter to quickly submit your post";
-$lang['invalidmsgid'] = "Invalid Message ID";
+$lang['invalidmsgidornomessageidspecified'] = "Invalid Message ID or no Message ID specified.";
 
 // Moderators list (mods_list.php) -------------------------------------
 

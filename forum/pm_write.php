@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.214 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.215 2008-09-02 20:11:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1051,7 +1051,7 @@ if ($allow_html == true) {
 
 echo "              <br />\n";
 
-echo "&nbsp;", form_submit('send', $lang['send'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo "&nbsp;", form_submit('send', $lang['send'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;", form_submit('save', $lang['save'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;", form_submit('preview', $lang['preview'], 'tabindex="4" onclick="clearFocus()"');
 echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="closeAttachWin(); clearFocus()"');

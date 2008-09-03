@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.117 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.118 2008-09-03 22:31:46 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -190,6 +190,16 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     html_draw_top();
     html_error_msg($lang['nouserspecified']);
+    html_draw_bottom();
+    exit;
+}
+
+// Cannot modify relationship settings for the current account
+
+if ($peer_uid == bh_session_get_value('UID')) {
+
+    html_draw_top();
+    html_error_msg($lang['youcannotchangeuserrelationshipforownaccount']);
     html_draw_bottom();
     exit;
 }

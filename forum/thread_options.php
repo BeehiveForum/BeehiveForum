@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.119 2008-08-23 10:54:34 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.120 2008-09-03 22:31:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -578,6 +578,10 @@ if ($thread_data['DELETED'] == 'N') {
     }else if (isset($_GET['updated'])) {
 
         html_display_success_msg($lang['updatessavedsuccessfully'], '500', 'center');
+
+    }else if (thread_is_poll($tid)) {
+
+        html_display_warning_msg($lang['torenamethisthreadyoumusteditthepoll'], '500', 'center');
     }
 
     echo "<br />\n";
@@ -681,31 +685,6 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['movethread']}:</td>\n";
             echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown"), "</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "        <br />\n";
-            echo "        <table class=\"box\" width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"left\" class=\"posthead\">\n";
-            echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['rename']}</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td colspan=\"2\">", html_display_warning_msg($lang['torenamethisthreadyoumusteditthepoll'], '95%', 'center'), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -1030,11 +1009,10 @@ if ($thread_data['DELETED'] == 'N') {
             echo "          </tr>\n";
             echo "        </table>\n";
         }
-
-        echo "      </td>\n";
-        echo "    </tr>\n";
     }
 
+    echo "      </td>\n";
+    echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";

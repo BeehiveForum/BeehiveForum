@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.55 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.56 2008-09-03 22:31:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -287,15 +287,6 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", form_submit('back', sprintf($lang['gobacktopmfolder'], $pm_header_array[$current_folder])), "</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_folder.php,v 1.57 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: user_folder.php,v 1.58 2008-09-03 22:31:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -104,11 +104,7 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') > 0) {
-    if (isset($_GET['fid']) && is_numeric($_GET['fid']) && isset($_GET['interest']) && is_numeric($_GET['interest'])) {
-        user_set_folder_interest($_GET['fid'], $_GET['interest']);
-    }
-}
+// This file is no longer used by Beehive.
 
 header_redirect("thread_list.php?webtag=$webtag");
 

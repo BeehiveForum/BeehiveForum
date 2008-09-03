@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.580 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.581 2008-09-03 22:31:46 decoyduck Exp $ */
 
 // British English language file
 
@@ -1750,6 +1750,7 @@ $lang['ignore_completely_exp'] = "Threads and posts to or from user will appear 
 $lang['display'] = "Display";
 $lang['displaysig_exp'] = "User's signature is displayed on their posts.";
 $lang['hidesig_exp'] = "User's signature is hidden on their posts.";
+$lang['youcannotchangeuserrelationshipforownaccount'] = "You cannot change user relationship for your own user account";
 $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator.";
 $lang['previewsignature'] = "Preview Signature";
 

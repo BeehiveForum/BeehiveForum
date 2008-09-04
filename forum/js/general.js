@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.42 2008-07-28 21:05:58 decoyduck Exp $ */
+/* $Id: general.js,v 1.43 2008-09-04 20:33:47 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -227,16 +227,19 @@ function redoOverFlow()
 
         if (td_tags[i].className == 'postbody') {
             
-            td_tags[i].style.width = (maxWidth * 0.94) + 'px';
+            if (td_tags[i].clientWidth >= maxWidth) {
             
-            var div_tags = td_tags[i].getElementsByTagName('div');
-            var div_count = div_tags.length;
+                td_tags[i].style.width = (maxWidth * 0.94) + 'px';
+            
+                var div_tags = td_tags[i].getElementsByTagName('div');
+                var div_count = div_tags.length;
 
-            for (var j = 0; j < div_count; j++)  {
+                for (var j = 0; j < div_count; j++)  {
 
-                if (div_tags[j].className == 'bhoverflowfix') {
+                    if (div_tags[j].className == 'bhoverflowfix') {
 
-                    div_tags[j].style.width = (maxWidth * 0.94) + 'px';
+                        div_tags[j].style.width = (maxWidth * 0.94) + 'px';
+		    }
                 }
             }
         }

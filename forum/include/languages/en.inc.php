@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.581 2008-09-03 22:31:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.582 2008-09-04 20:33:47 decoyduck Exp $ */
 
 // British English language file
 
@@ -135,6 +135,7 @@ $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delete";
 $lang['deleted'] = "Deleted";
 $lang['edit'] = "Edit";
+$lang['export'] = "Export";
 $lang['privileges'] = "Privileges";
 $lang['ignore'] = "Ignore";
 $lang['normal'] = "Normal";
@@ -1392,7 +1393,9 @@ $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
-$lang['savemessages'] = "Save Messages";
+$lang['saveselectedmessages'] = "Save Selected Messages";
+$lang['deleteselectedmessages'] = "Delete Selected Messages";
+$lang['exportselectedmessages'] = "Export Selected Messages";
 $lang['nosubject'] = "No Subject";
 $lang['norecipients'] = "No Recipients";
 $lang['timesent'] = "Time Sent";

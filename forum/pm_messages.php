@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.56 2008-09-03 22:31:46 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.57 2008-09-04 20:33:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -264,40 +264,11 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
         html_draw_bottom();
         exit;
     }
-
-    $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-    pm_user_prune_folders();
-
-    html_draw_top("basetarget=_blank", "openprofile.js", "search.js", "pm.js", 'pm_popup_disabled');
-
-    echo "<h1>{$pm_header_array[$current_folder]} &raquo; ", word_filter_add_ob_tags(_htmlentities($pm_message_array['SUBJECT'])), "</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
-    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\">", pm_display($pm_message_array, $message_folder), "</td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
-    exit;
 }
 
 // Delete Messages
 
-if (isset($_POST['pm_option_submit'])) {
+if (isset($_POST['pm_delete_messages'])) {
 
     $valid = true;
 
@@ -307,64 +278,86 @@ if (isset($_POST['pm_option_submit'])) {
         $process_messages = array();
     }
 
-    if (isset($_POST['pm_option']) && is_numeric($_POST['pm_option'])) {
+    if (sizeof($process_messages) > 0) {
 
-        if (sizeof($process_messages) > 0) {
+        if (isset($_POST['pm_delete_confirm']) && $_POST['pm_delete_confirm'] == 'Y') {
 
-            $pm_option = $_POST['pm_option'];
+            if (pm_delete_messages($process_messages)) {
 
-            if ($pm_option == PM_OPTION_DELETE) {
+                header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&deleted=true");
+                exit;
 
-                if (isset($_POST['pm_delete_confirm']) && $_POST['pm_delete_confirm'] == 'Y') {
+            }else {
 
-                    if (!pm_delete_messages($process_messages)) {
-
-                        $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
-                        $valid = false;
-                    }
-
-                    if ($valid) {
-
-                        header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&deleted=true");
-                        exit;
-                    }
-
-                }else {
-
-                    html_draw_top();
-                    html_display_msg($lang['approvepost'], $lang['deletemessagesconfirmation'], "pm_messages.php", 'post', array('pm_option_submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_option' => $pm_option, 'pm_delete_confirm' => 'Y'), '_self', 'center');
-                    html_draw_bottom();
-                    exit;
-                }
-
-            }else if ($pm_option == PM_OPTION_EXPORT) {
-
-                if (!pm_export_messages($process_messages)) {
-
-                    $error_msg_array[] = $lang['failedtoexportfolder'];
-                    $valid = false;
-                }
-
-            }else if ($pm_option == PM_OPTION_ARCHIVE) {
-
-                if (!pm_archive_messages($process_messages)) {
-
-                    $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
-                    $valid = false;
-                }
+                $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
+                $valid = false;
             }
 
         }else {
 
-            $error_msg_array[] = $lang['youmustselectsomemessages'];
+            html_draw_top();
+            html_display_msg($lang['delete'], $lang['deletemessagesconfirmation'], "pm_messages.php", 'post', array('pm_option_submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_delete_messages' => $lang['delete'], 'pm_delete_confirm' => 'Y'), '_self', 'center');
+            html_draw_bottom();
+            exit;
+        }
+
+    }else {
+
+        $error_msg_array[] = $lang['youmustselectsomemessages'];
+        $valid = false;
+    }
+
+}else if (isset($_POST['pm_export_messages'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_messages = preg_grep("/[0-9]+/u", $_POST['process']);
+    }else {
+        $process_messages = array();
+    }
+
+    if (sizeof($process_messages) > 0) {
+
+        if (!pm_export_messages($process_messages)) {
+
+            $error_msg_array[] = $lang['failedtoexportfolder'];
             $valid = false;
         }
 
-        if ($valid) {
+    }else {
 
-            header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&archived=true");
+        $error_msg_array[] = $lang['youmustselectsomemessages'];
+        $valid = false;
+    }
+
+}else if (isset($_POST['pm_save_messages'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_messages = preg_grep("/[0-9]+/u", $_POST['process']);
+    }else {
+        $process_messages = array();
+    }
+
+    if (sizeof($process_messages) > 0) {
+
+        if (pm_archive_messages($process_messages)) {
+
+            header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&archived=true");
             exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
+            $valid = false;
         }
+
+    }else {
+
+        $error_msg_array[] = $lang['youmustselectsomemessages'];
+        $valid = false;
     }
 }
 
@@ -484,17 +477,14 @@ echo "    }\n\n";
 echo "}\n\n";
 echo "function confirmDeleteSelected()\n";
 echo "{\n";
-echo "    var pm_option = getObjsByName('pm_option')[0];\n";
 echo "    var pm_delete_confirm = getObjsByName('pm_delete_confirm')[0];\n\n";
-echo "    if ((typeof pm_option == 'object') && (typeof pm_delete_confirm == 'object')) {\n\n";
-echo "        if (pm_option.selectedIndex == ", PM_OPTION_EXPORT, ") {\n\n";
-echo "            if (window.confirm('", html_js_safe_str($lang['deletemessagesconfirmation']), "')) {\n\n";
-echo "                pm_delete_confirm.value = 'Y';\n";
-echo "                return true;\n";
-echo "            }\n\n";
-echo "            return false;\n";
-echo "        }\n";
-echo "    }\n\n";
+echo "    if ((typeof pm_delete_confirm == 'object')) {\n\n";
+echo "        if (window.confirm('", html_js_safe_str($lang['deletemessagesconfirmation']), "')) {\n\n";
+echo "            pm_delete_confirm.value = 'Y';\n";
+echo "            return true;\n";
+echo "        }\n\n";
+echo "        return false;\n";
+echo "    }\n";
 echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
@@ -534,12 +524,13 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('mid', _htmlentities($mid)), "\n";
 echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('pm_delete_confirm', 'N'), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
+echo "      <td align=\"left\" colspan=\"3\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -553,13 +544,13 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 }
 
 if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_by == 'PM.SUBJECT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }
 
 if ($current_folder == PM_SEARCH_RESULTS) {
@@ -622,24 +613,25 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     foreach ($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"postbody\" align=\"center\" width=\"1%\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
-        echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\">";
+        echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
 
         if ($mid == $message['MID']) {
 
-            echo "            <img src=\"".style_image('current_thread.png')."\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\" />";
+            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"".style_image('current_thread.png')."\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\" /></td>";
 
         }else {
 
             if (($message['TYPE'] == PM_UNREAD)) {
 
-                echo "            <img src=\"".style_image('pmunread.png')."\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" />";
+                echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"".style_image('pmunread.png')."\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" /></td>";
 
             }else {
 
-                echo "            <img src=\"".style_image('pmread.png')."\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" />";
+                echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"".style_image('pmread.png')."\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" /></td>";
             }
         }
+
+        echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\">";
 
         if (strlen(trim($message['SUBJECT'])) > 0) {
 
@@ -658,7 +650,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX) {
 
-            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
             echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK']))), "</a>";
             echo "            </td>\n";
@@ -667,16 +659,16 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         }elseif ($current_folder == PM_FOLDER_SAVED) {
 
-            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
             echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</a>";
             echo "            </td>\n";
 
-            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
             echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK']))), "</a>";
             echo "            </td>\n";
-            echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($message['CREATED']), "</td>\n";
             echo "                </tr>\n";
 
         }elseif ($current_folder == PM_FOLDER_DRAFTS) {
@@ -695,24 +687,24 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
             }else if (isset($message['TO_UID']) && $message['TO_UID'] > 0) {
 
-                echo "                  <td align=\"left\" class=\"postbody\">";
+                echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
                 echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
                 echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK']))), "</a>";
                 echo "            </td>\n";
 
             }else {
 
-                echo "                  <td align=\"left\" class=\"postbody\"><i>{$lang['norecipients']}</i></td>\n";
+                echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><i>{$lang['norecipients']}</i></td>\n";
             }
 
-            echo "                  <td align=\"left\" class=\"postbody\"><i>{$lang['notsent']}</i></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><i>{$lang['notsent']}</i></td>\n";
             echo "                </tr>\n";
 
         }elseif ($current_folder == PM_SEARCH_RESULTS) {
 
-            echo "                  <td align=\"left\" class=\"postbody\">{$pm_folder_name_array[$message['TYPE']]}</td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">{$pm_folder_name_array[$message['TYPE']]}</td>\n";
 
-            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
             echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</a>";
             echo "            </td>\n";
@@ -729,39 +721,39 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
                     $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
-                    echo "                  <td align=\"left\" class=\"postbody\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</td>\n";
-                    echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
+                    echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</td>\n";
+                    echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($message['CREATED']), "</td>\n";
                     echo "                </tr>\n";
 
                 }else if (isset($message['TO_UID']) && $message['TO_UID'] > 0) {
 
-                    echo "                  <td align=\"left\" class=\"postbody\">";
+                    echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
                     echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
                     echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK']))), "</a>";
                     echo "            </td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"left\" class=\"postbody\"><i>{$lang['norecipients']}</i></td>\n";
-                    echo "                  <td align=\"left\" class=\"postbody\"><i>{$lang['notsent']}</i></td>\n";
+                    echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><i>{$lang['norecipients']}</i></td>\n";
+                    echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><i>{$lang['notsent']}</i></td>\n";
                     echo "                </tr>\n";
                 }
 
             }else {
 
-                echo "                  <td align=\"left\" class=\"postbody\">\n";
+                echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">\n";
                 echo "                    <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK']))), "</a>\n";
                 echo "                  </td>\n";
-                echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
+                echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($message['CREATED']), "</td>\n";
                 echo "                </tr>\n";
             }
 
         }else {
 
-            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">";
             echo "                    <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</a>\n";
             echo "                  </td>\n";
-            echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($message['CREATED']), "</td>\n";
             echo "                </tr>\n";
         }
     }
@@ -780,58 +772,54 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+
+if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
+
+    echo "      <td align=\"right\" width=\"33%\" valign=\"top\" nowrap=\"nowrap\">";
+
+    if (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) {
+        echo form_submit('pm_save_messages', $lang['save'], "title=\"{$lang['saveselectedmessages']}\""), "&nbsp;";
+    }
+
+    echo form_submit('pm_delete_messages', $lang['delete'], "onclick=\"return confirmDeleteSelected();\" title=\"{$lang['deleteselectedmessages']}\""), "&nbsp;";
+
+    if ($current_folder != PM_SEARCH_RESULTS) {
+        echo form_submit('pm_export_messages', $lang['export'], "title=\"{$lang['exportselectedmessages']}\""), "&nbsp;";
+    }
+
+    echo "</span></td>\n";
+
+}else {
+
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+}
+
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
+// View a message
 
-    $pm_messages_options_array = array(PM_OPTION_NONE => '&nbsp;');
+if (isset($pm_message_array) && is_array($pm_message_array)) {
 
-    if (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) {
-        $pm_messages_options_array[PM_OPTION_ARCHIVE] = $lang['savemessages'];
-    }
+    $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-    $pm_messages_options_array[PM_OPTION_DELETE] = $lang['deletemessages'];
-
-    if ($current_folder != PM_SEARCH_RESULTS) {
-        $pm_messages_options_array[PM_OPTION_EXPORT] = $lang['exportmessages'];
-    }
-
+    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "      <td>\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
-    echo "                        <td align=\"left\" width=\"100%\">", form_dropdown_array('pm_option', $pm_messages_options_array), "&nbsp;", form_submit("pm_option_submit", $lang['go'], "onclick=\"return confirmDeleteSelected()\""), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
+    echo "            <td align=\"left\">", pm_display($pm_message_array, $message_folder), "</td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
 }
 
 echo "</form>\n";

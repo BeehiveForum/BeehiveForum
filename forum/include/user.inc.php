@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.361 2008-08-17 17:29:34 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.362 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -268,37 +268,21 @@ function user_change_password($user_uid, $password, $old_passhash = false)
     return false;
 }
 
-function user_update_forums($uid, $forums_array)
+function user_update_forums($uid, $forum_fid, $allowed)
 {
     if (!$db_user_update_forums = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
-    if (!is_array($forums_array)) return false;
+    if (!is_numeric($forum_fid)) return false;
+    if (!is_numeric($allowed)) return false;
 
-    foreach ($forums_array as $forum_fid => $allowed) {
+    if (is_numeric($forum_fid) && is_numeric($allowed)) {
 
-        if (is_numeric($forum_fid) && is_numeric($allowed)) {
+        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+        $sql.= "VALUES ('$uid', '$forum_fid', '$allowed') ";
+        $sql.= "ON DUPLICATE KEY UPDATE ALLOWED = VALUES(ALLOWED)";
 
-            $sql = "SELECT UID FROM USER_FORUM ";
-            $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
-
-            if (!$result = db_query($sql, $db_user_update_forums)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE LOW_PRIORITY USER_FORUM SET ALLOWED = '$allowed' ";
-                $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
-
-                if (!$result = db_query($sql, $db_user_update_forums)) return false;
-
-            }else {
-
-                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-                $sql.= "VALUES ('$uid', '$forum_fid', '$allowed')";
-
-                if (!$result = db_query($sql, $db_user_update_forums)) return false;
-            }
-        }
+        if (!$result = db_query($sql, $db_user_update_forums)) return false;
     }
 
     return true;
@@ -867,6 +851,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
     if (!is_numeric($uid)) return false;
 
     $content = db_escape_string($content);
+
     $html = db_escape_string($html);
 
     if ($global_update === true) {
@@ -875,21 +860,9 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         foreach ($forum_prefix_array as $forum_prefix) {
 
-            $sql = "SELECT UID FROM {$forum_prefix}USER_SIG ";
-            $sql.= "WHERE UID = '$uid'";
-
-            if (!$result = db_query($sql, $db_user_update_sig)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE LOW_PRIORITY {$forum_prefix}USER_SIG SET CONTENT = '$content', ";
-                $sql.= "HTML = '$html' WHERE UID = '$uid'";
-
-            }else {
-
-                $sql = "INSERT INTO {$forum_prefix}USER_SIG (UID, CONTENT, HTML) ";
-                $sql.= "VALUES ('$uid', '$content', '$html')";
-            }
+            $sql = "INSERT INTO {$forum_prefix}USER_SIG (UID, CONTENT, HTML) ";
+            $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY ";
+            $sql.= "UPDATE CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 
             if (!$result = db_query($sql, $db_user_update_sig)) return false;
         }
@@ -898,21 +871,9 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         if (!$table_data = get_table_prefix()) return false;
 
-        $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_SIG ";
-        $sql.= "WHERE UID = '$uid'";
-
-        if (!$result = db_query($sql, $db_user_update_sig)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
-            $sql.= "HTML = '$html' WHERE UID = '$uid'";
-
-        }else {
-
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
-            $sql.= "VALUES ('$uid', '$content', '$html')";
-        }
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
+        $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY UPDATE ";
+        $sql.= "CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 
         if (!$result = db_query($sql, $db_user_update_sig)) return false;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.118 2008-09-03 22:31:46 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.119 2008-09-05 22:32:03 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -231,6 +231,10 @@ if (isset($_POST['save'])) {
         if (!$peer_nickname = user_get_nickname($peer_uid)) $peer_nickname = "";
     }
 
+    if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(bh_session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
+        $peer_relationship = ($peer_relationship & USER_IGNORED) ? USER_NORMAL : $peer_relationship;
+    }
+
     if (user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname)) {
 
         header_redirect("$ret&relupdated=true");
@@ -259,10 +263,13 @@ $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']))), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '600', 'left');
-}
 
-echo "<br />\n";
+    html_display_error_array($error_msg_array, '600', 'left');
+
+}else if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(bh_session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
+
+    html_display_warning_msg($lang['cannotignoremod'], '600', 'left');
+}
 
 if (isset($_POST['preview_signature'])) {
 
@@ -290,6 +297,7 @@ if (isset($_POST['preview_signature'])) {
 
         $preview_message['CREATED'] = mktime();
 
+        echo "  <br />\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -328,14 +336,12 @@ if (isset($_POST['preview_signature'])) {
         echo "        </table>\n";
         echo "      </td>\n";
         echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
     }
 }
 
+echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("uid", _htmlentities($peer_uid)), "\n";
@@ -402,15 +408,6 @@ if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (bh_session_check_perm(USER_PE
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED_COMPLETELY, $lang['ignoredcompletely'], $peer_relationship & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
     echo "                        <td align=\"left\" width=\"400\">: {$lang['ignore_completely_exp']}</td>\n";
-    echo "                      </tr>\n";
-
-}else {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\" colspan=\"2\"><b>{$lang['cannotignoremod']}</b></td>\n";
     echo "                      </tr>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.151 2008-08-12 17:09:18 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.152 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -240,25 +240,11 @@ function folder_update($fid, $folder_data)
 
     if (!$result = db_query($sql, $db_folder_update)) return false;
 
-    $sql = "SELECT FID FROM GROUP_PERMS WHERE FID = '$fid' ";
-    $sql.= "AND FORUM = '$forum_fid' AND GID = '0'";
+    $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}') ";
+    $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
 
     if (!$result = db_query($sql, $db_folder_update)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '{$folder_data['PERM']}' ";
-        $sql.= "WHERE FID = '$fid' AND FORUM = '$forum_fid' AND GID = '0'";
-
-        if (!$result = db_query($sql, $db_folder_update)) return false;
-
-    }else {
-
-        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-        $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
-
-        if (!$result = db_query($sql, $db_folder_update)) return false;
-    }
 
     return true;
 }
@@ -457,7 +443,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
     while (($folder_data = db_fetch_array($result))) {
         $folder_array[$folder_data['FID']]['THREAD_COUNT'] = $folder_data['THREAD_COUNT'];
     }
-    
+
     return true;
 }
 
@@ -548,21 +534,9 @@ function user_set_folder_interest($fid, $interest)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_FOLDER ";
-    $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
-
-    if (!$result = db_query($sql, $db_user_set_folder_interest)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_FOLDER SET INTEREST = '$interest' ";
-        $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
-
-    }else {
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, INTEREST) ";
-        $sql.= "VALUES ('$uid', '$fid', '$interest')";
-    }
+    $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, INTEREST) ";
+    $sql.= "VALUES ('$uid', '$fid', '$interest') ON DUPLICATE KEY UPDATE ";
+    $sql.= "INTEREST = VALUES(INTEREST)";
 
     if (!$result = db_query($sql, $db_user_set_folder_interest)) return false;
 
@@ -753,7 +727,7 @@ function folder_positions_update()
             if (!db_query($sql, $db_folder_positions_update)) return false;
         }
     }
-    
+
     return true;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.78 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.79 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -485,31 +485,20 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
     return false;
 }
 
-function install_remove_table_keys($table_name)
+function install_remove_indexes($table_name)
 {
-    if (!$db_install_remove_table_keys = db_connect()) return false;
+    if (!$db_install_remove_indexes = db_connect()) return false;
 
     if ($table_name !== db_escape_string($table_name)) return false;
 
-    $table_index = array();
+    $sql = "SHOW INDEX FROM $table_name WHERE Key_name <> 'PRIMARY'";
 
-    $sql = "SHOW INDEX FROM $table_name";
+    if (!$result = @db_query($sql, $db_install_remove_indexes)) return false;
 
-    if (!$result = @db_query($sql, $db_install_remove_table_keys)) return false;
+    while (list(,,$key_name) = db_fetch_array($result)) {
 
-    while (($table_index_data = db_fetch_array($result))) {
-
-        if (preg_match("/^PRIMARY$/u", strtoupper($table_index_data['Key_name'])) < 1) {
-
-            $table_index[] = $table_index_data['Key_name'];
-        }
-    }
-
-    foreach ($table_index as $key_name) {
-
-        $sql = "ALTER TABLE $table_name DROP INDEX $key_name";
-
-        if (!@db_query($sql, $db_install_remove_table_keys)) return false;
+        $sql = "ALTER IGNORE TABLE $table_name DROP INDEX $key_name";
+        $result_drop = @db_query($sql, $db_install_remove_indexes);
     }
 
     return true;

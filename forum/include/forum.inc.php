@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.339 2008-08-31 20:40:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.340 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -573,32 +573,18 @@ function forum_save_settings($forum_settings_array)
 
     $forum_fid = $table_data['FID'];
 
-    foreach ($forum_settings_array as $sname => $svalue) {
+    foreach ($forum_settings_array as $setting_name => $setting_value) {
 
-        if (forum_check_setting_name($sname)) {
+        if (forum_check_setting_name($setting_name)) {
 
-            $sname  = db_escape_string($sname);
-            $svalue = db_escape_string($svalue);
+            $setting_name  = db_escape_string($setting_name);
+            $setting_value = db_escape_string($setting_value);
 
-            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
-            $sql.= "AND SNAME = '$sname'";
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
+            $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!$result = db_query($sql, $db_forum_save_settings)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
-                $sql.= "AND SNAME = '$sname'";
-
-                if (!$result = db_query($sql, $db_forum_save_settings)) return false;
-
-            }else {
-
-                $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-                $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
-
-                if (!$result = db_query($sql, $db_forum_save_settings)) return false;
-            }
         }
     }
 
@@ -611,32 +597,18 @@ function forum_save_default_settings($forum_settings_array)
 
     if (!$db_forum_save_default_settings = db_connect()) return false;
 
-    foreach ($forum_settings_array as $sname => $svalue) {
+    foreach ($forum_settings_array as $setting_name => $setting_value) {
 
-        if (forum_check_global_setting_name($sname)) {
+        if (forum_check_global_setting_name($setting_name)) {
 
-            $sname = db_escape_string($sname);
-            $svalue = db_escape_string($svalue);
+            $setting_name = db_escape_string($setting_name);
+            $setting_value = db_escape_string($setting_value);
 
-            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '0' ";
-            $sql.= "AND SNAME = '$sname'";
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ('0', '$setting_name', '$setting_value') ";
+            $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '0' ";
-                $sql.= "AND SNAME = '$sname'";
-
-                if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
-
-            }else {
-
-                $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-                $sql.= "VALUES ('0', '$sname', '$svalue')";
-
-                if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
-            }
         }
     }
 
@@ -1910,13 +1882,13 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                                 'guest_account_enabled'   => 'Y',
                                 'forum_links_top_link'    => 'Forum Links:');
 
-        foreach ($forum_settings as $sname => $svalue) {
+        foreach ($forum_settings as $setting_name => $setting_value) {
 
-            $sname = db_escape_string($sname);
-            $svalue = db_escape_string($svalue);
+            $setting_name = db_escape_string($setting_name);
+            $setting_value = db_escape_string($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+            $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
 
             if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -2138,24 +2110,11 @@ function forum_update_access($fid, $access)
 
         if (!$result = db_query($sql, $db_forum_update_access)) return false;
 
-        $sql = "SELECT UID FROM USER_FORUM WHERE FID = '$fid' ";
-        $sql.= "AND UID = '$uid' LIMIT 0, 1";
+        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+        $sql.= "VALUES ('$uid', '$fid', 1) ON DUPLICATE KEY ";
+        $sql.= "UPDATE ALLOWED = VALUES(ALLOWED)";
 
         if (!$result = db_query($sql, $db_forum_update_access)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
-
-            if (!$result = db_query($sql, $db_forum_update_access)) return false;
-
-        }else {
-
-            $sql = "INSERT IGNORE INTO USER_FORUM (UID, FID, ALLOWED) ";
-            $sql.= "VALUES ('$uid', '$fid', '1')";
-
-            if (!$result = db_query($sql, $db_forum_update_access)) return false;
-        }
 
         return true;
     }
@@ -2559,23 +2518,11 @@ function forum_update_last_visit($uid)
 
     $forum_fid = $table_data['FID'];
 
-    if ($uid > 0) {
+    if (!user_is_guest()) {
 
-        $sql = "SELECT LAST_VISIT FROM USER_FORUM WHERE UID = '$uid'";
-        $sql.= "AND FID = '$forum_fid'";
-
-        if (!$result = db_query($sql, $db_forum_update_last_visit)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY USER_FORUM SET LAST_VISIT = NOW() ";
-            $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
-
-        }else {
-
-            $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
-            $sql.= "VALUES ('$uid', '$forum_fid', NOW())";
-        }
+        $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
+        $sql.= "VALUES ('$uid', '$forum_fid', NOW()) ON DUPLICAT KEY ";
+        $sql.= "UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
 
         if (!$result = db_query($sql, $db_forum_update_last_visit)) return false;
     }

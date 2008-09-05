@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.93 2008-07-30 16:04:36 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.94 2008-09-05 22:32:03 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -62,26 +62,11 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     $entry = db_escape_string($entry);
 
-    $sql = "SELECT PIID FROM {$table_data['PREFIX']}USER_PROFILE ";
-    $sql.= "WHERE PIID = '$piid' AND UID = '$uid'";
+    $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY, PRIVACY) ";
+    $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
+    $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
 
     if (!$result = db_query($sql, $db_user_profile_update)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_PROFILE ";
-        $sql.= "SET ENTRY = '$entry', PRIVACY = '$privacy' ";
-        $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
-
-        if (!$result = db_query($sql, $db_user_profile_update)) return false;
-
-    }else {
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY, PRIVACY) ";
-        $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy')";
-
-        if (!$result = db_query($sql, $db_user_profile_update)) return false;
-    }
 
     return true;
 }
@@ -395,46 +380,23 @@ function user_get_post_count($uid)
     if (!$db_user_get_post_count = db_connect()) return false;
 
     $sql = "SELECT POST_COUNT FROM {$table_data['PREFIX']}USER_TRACK ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql.= "WHERE UID = '$uid' AND POST_COUNT IS NOT NULL";
 
     if (!$result = db_query($sql, $db_user_get_post_count)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        $post_count = db_fetch_array($result);
-
-        if (isset($post_count['POST_COUNT']) && !is_null($post_count['POST_COUNT'])) {
-            return $post_count['POST_COUNT'];
-        }
-
-        $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
-        $sql.= "WHERE FROM_UID = '$uid'";
-
-        if (!$result = db_query($sql, $db_user_get_post_count)) return false;
-
         list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
-        $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
-
-        if (!$result = db_query($sql, $db_user_get_post_count)) return false;
-
         return $post_count;
     }
 
-    $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = '$uid'";
+    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK (UID, POST_COUNT) ";
+    $sql.= "SELECT '$uid', COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE POST_COUNT = VALUES(POST_COUNT)";
 
     if (!$result = db_query($sql, $db_user_get_post_count)) return false;
 
-    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
-    $sql.= "(UID, POST_COUNT) VALUES ($uid, $post_count)";
-
-    if (!$result = db_query($sql, $db_user_get_post_count)) return false;
-
-    return $post_count;
+    return user_get_post_count($uid);
 }
 
 function user_profile_popup_callback($logon)

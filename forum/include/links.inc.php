@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.87 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.88 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -322,13 +322,13 @@ function links_click($lid)
     $sql = "SELECT URI FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_click)) return false;
-    
+
     if (db_num_rows($result) > 0) {
-    	
-    	list($link_uri) = db_fetch_array($result, DB_RESULT_NUM);
-    	header_redirect($link_uri);
+
+        list($link_uri) = db_fetch_array($result, DB_RESULT_NUM);
+        header_redirect($link_uri);
     }
-    
+
     return false;
 }
 
@@ -522,21 +522,9 @@ function links_vote($lid, $vote, $uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS_VOTE ";
-    $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
-
-    if (!$result = db_query($sql, $db_links_vote)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}LINKS_VOTE SET RATING = '$vote', TSTAMP = NOW() ";
-        $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
-
-    }else {
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_VOTE (LID, UID, RATING, TSTAMP) ";
-        $sql.= "VALUES ($lid, $uid, $vote, NOW())";
-    }
+    $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_VOTE (LID, UID, RATING, TSTAMP) ";
+    $sql.= "VALUES ($lid, $uid, $vote, NOW()) ON DUPLICATE KEY UPDATE RATING = VALUES(RATING), ";
+    $sql.= "TSTAMP = NOW()";
 
     if (!$result = db_query($sql, $db_links_vote)) return false;
 
@@ -665,7 +653,7 @@ function links_delete($lid)
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = '$lid'";
 
     if (!db_query($sql, $db_links_delete)) return false;
-    
+
     return true;
 }
 

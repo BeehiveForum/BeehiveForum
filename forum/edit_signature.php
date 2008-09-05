@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.118 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.119 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -227,7 +227,7 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                if ($t_sig_global == 'Y') {
+                if ($t_sig_global == 'Y' && forums_get_available_count() > 1) {
 
                     $redirect_uri = "edit_signature.php?webtag=$webtag&updated_global=true";
                     header_redirect($redirect_uri, $lang['signatureupdatedforallforums']);

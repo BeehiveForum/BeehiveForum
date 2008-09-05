@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.9 2008-08-16 19:58:44 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.10 2008-09-05 22:32:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -277,6 +277,29 @@ if (install_index_exists('FORUM_SETTINGS', 'SVALUE')) {
 // to hold things like the forum rules message.
 
 $sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+if (install_index_exists('VISITOR_LOG', 'SID')) {
+
+    // Remove the index on SID before we add the UNIQUE index
+
+    $sql = "ALTER TABLE VISITOR_LOG DROP INDEX SID";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+// Add the UNIQUE index to SID.
+
+$sql = "ALTER IGNORE TABLE VISITOR_LOG ADD UNIQUE (SID)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

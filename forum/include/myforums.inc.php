@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.89 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.90 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -304,22 +304,11 @@ function user_set_forum_interest($fid, $interest)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
 
-    if ($uid > 0) {
+    if (!user_is_guest()) {
 
-        $sql = "SELECT UID FROM USER_FORUM WHERE UID = '$uid' AND FID = '$fid'";
-
-        if (!$result = db_query($sql, $db_user_set_forum_interest)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY USER_FORUM SET INTEREST = '$interest' ";
-            $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
-
-        }else {
-
-            $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
-            $sql.= "VALUES ('$uid', '$fid', 1)";
-        }
+        $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
+        $sql.= "VALUES ('$uid', '$fid', '$interest') ";
+        $sql.= "ON DUPLICATE KEY UPDATE INTEREST = VALUES(INTEREST)";
 
         if (!$result = db_query($sql, $db_user_set_forum_interest)) return false;
     }

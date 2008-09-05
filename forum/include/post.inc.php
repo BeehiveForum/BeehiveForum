@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.194 2008-09-04 20:33:47 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.195 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -153,21 +153,9 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT TID FROM POST_ATTACHMENT_IDS WHERE ";
-    $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
-
-    if (!$result = db_query($sql, $db_post_save_attachment_id)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_IDS SET AID = '$aid' ";
-        $sql.= "WHERE FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
-
-    }else {
-
-        $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-        $sql.= "VALUES ($forum_fid, $tid, $pid, '$aid')";
-    }
+    $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+    $sql.= "VALUES ($forum_fid, $tid, $pid, '$aid') ON DUPLICATE KEY ";
+    $sql.= "UPDATE AID = VALUES(AID)";
 
     if (!$result = db_query($sql, $db_post_save_attachment_id)) return false;
 

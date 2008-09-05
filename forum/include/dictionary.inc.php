@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.56 2008-08-20 19:02:59 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.57 2008-09-05 22:32:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -172,21 +172,10 @@ class dictionary {
 
         if (($uid = bh_session_get_value('UID')) === false) return false;
 
-        // Check to see if the word does actually exist
-
-        $sql = "SELECT WORD FROM DICTIONARY WHERE WORD = '$word' ";
-        $sql.= "AND (UID = 0 OR UID = '$uid') ";
-        $sql.= "LIMIT 0, 1";
+        $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
+        $sql.= "VALUES ('$word', '$metaphone', '$uid')";
 
         if (!$result = db_query($sql, $db_dictionary_add_custom_word)) return false;
-
-        if (db_num_rows($result) < 1) {
-
-            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-            $sql.= "VALUES ('$word', '$metaphone', '$uid')";
-
-            if (!$result = db_query($sql, $db_dictionary_add_custom_word)) return false;
-        }
 
         return true;
     }

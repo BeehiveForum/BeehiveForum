@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.43 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.44 2008-09-05 22:32:03 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -53,7 +53,9 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($relationship == USER_NORMAL && ($nickname == "" || $nickname == user_get_nickname($peer_uid))) {
+    $previous_nickname = user_get_nickname($peer_uid);
+
+    if ($relationship == USER_NORMAL && ($nickname == "" || $nickname == $previous_nickname)) {
 
         $sql = "DELETE FROM {$table_data['PREFIX']}USER_PEER ";
         $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
@@ -64,27 +66,13 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 
         $nickname = db_escape_string($nickname);
 
-        $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PEER ";
-        $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER ";
+        $sql.= "(UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
+        $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', '$nickname') ";
+        $sql.= "ON DUPLICATE KEY UPDATE RELATIONSHIP = VALUES(RELATIONSHIP), ";
+        $sql.= "PEER_NICKNAME = VALUES(PEER_NICKNAME)";
 
         if (!$result = db_query($sql, $db_user_rel_update)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_PEER ";
-            $sql.= "SET RELATIONSHIP = '$relationship', PEER_NICKNAME = '$nickname' ";
-            $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
-
-            if (!$result = db_query($sql, $db_user_rel_update)) return false;
-
-        }else {
-
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER ";
-            $sql.= "(UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
-            $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', '$nickname')";
-
-            if (!$result = db_query($sql, $db_user_rel_update)) return false;
-        }
     }
 
     return true;

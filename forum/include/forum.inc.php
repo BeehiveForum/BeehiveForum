@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.340 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.341 2008-09-06 16:05:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -234,38 +234,54 @@ function forum_restricted_message()
 
     $lang = load_language_file();
 
-    html_draw_top();
+    $final_uri = basename(get_request_uri());
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    echo "<h1>{$lang['restricted']}</h1>\n";
+    $forum_owner_link = "<a href=\"index.php?webtag=$webtag&amp;final_uri=%s\" target=\"%s\">%s</a>";
+
+    $popup_files_preg = get_available_js_popup_files_preg();
+
+    if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
+        $forum_owner_link_target = "_blank";
+    }else {
+        $forum_owner_link_target = html_get_top_frame_name();
+    }
 
     if (($restricted_message = forum_get_setting('restricted_message', false))) {
 
+        html_draw_top();
         html_display_error_msg(fix_html($restricted_message), '600', 'center');
+        html_draw_bottom();
 
     }else {
 
         if (($forum_owner_uid = forum_get_setting('owner_uid'))) {
 
-            $forum_owner_link = sprintf("<a href=\"pm.php?webtag=$webtag&uid=$forum_owner_uid\">%s</a>", $lang['forumowner']);
+            $pm_write_link = "pm_write.php?webtag=$webtag&amp;uid=$forum_owner_uid";
 
-            html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name)), '600', 'center');
+            $forum_owner_pm_link = sprintf($forum_owner_link, rawurlencode($pm_write_link), $forum_owner_link_target, $lang['forumowner']);
 
-            html_display_warning_msg(sprintf($lang['toapplyforaccessplease'], $forum_owner_link), '600', 'center');
+            $apply_for_access_text = sprintf($lang['toapplyforaccessplease'], $forum_owner_pm_link);
+
+            html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name), $apply_for_access_text));
+
+            if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+                html_display_warning_msg($lang['adminforumclosedtip'], '600', 'left');
+            }
+
+            html_draw_bottom();
+            exit;
 
         }else {
 
-            html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name)), '600', 'center');
+            html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name), ''));
+            html_draw_bottom();
         }
     }
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-        html_display_warning_msg($lang['adminforumclosedtip'], '600', 'center');
-    }
-
-    html_draw_bottom();
     exit;
 }
 

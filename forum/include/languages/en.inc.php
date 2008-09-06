@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.582 2008-09-04 20:33:47 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.583 2008-09-06 16:05:56 decoyduck Exp $ */
 
 // British English language file
 
@@ -243,7 +243,7 @@ $lang['open'] = "Open";
 $lang['restricted'] = "Restricted";
 $lang['hidden'] = "Hidden";
 $lang['forumiscurrentlyclosed'] = "%s is currently closed";
-$lang['youdonothaveaccesstoforum'] = "You do not have access to %s";
+$lang['youdonothaveaccesstoforum'] = "You do not have access to %s. %s";
 $lang['toapplyforaccessplease'] = "To apply for access please contact the %s.";
 $lang['forumowner'] = "forum owner";
 $lang['adminforumclosedtip'] = "If you want to change some settings on your forum click the Admin link in the navigation bar above.";
@@ -1807,6 +1807,9 @@ $lang['clickheretoviewresults'] = "Click here to view results.";
 // Search Popup (search_popup.php) -------------------------------------
 
 $lang['select'] = "Select";
+$lang['currentselection'] = "Current Selection";
+$lang['addtoselection'] = "Add to Selection";
+$lang['youcanonlyselectmaximumoftenusers'] = "You can only select maximum 10 users";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";

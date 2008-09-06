@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.145 2008-08-12 17:09:18 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.146 2008-09-06 16:05:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -428,7 +428,7 @@ function email_send_pw_reminder($logon)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get_uid($logon))) {
+    if (($to_user = user_get_by_logon($logon))) {
 
         // Validate the email address before we continue.
 

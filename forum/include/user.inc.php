@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.362 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.363 2008-09-06 16:05:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -483,9 +483,9 @@ function user_get_passwd($uid)
     return false;
 }
 
-function user_get_uid($logon)
+function user_get_by_logon($logon)
 {
-    if (!$db_user_get_uid = db_connect()) return false;
+    if (!$db_user_get_by_logon = db_connect()) return false;
 
     $logon = db_escape_string($logon);
 
@@ -493,7 +493,7 @@ function user_get_uid($logon)
     $sql.= "REGISTERED, IPADDRESS, REFERER, APPROVED ";
     $sql.= "FROM USER WHERE LOGON LIKE '$logon'";
 
-    if (!$result = db_query($sql, $db_user_get_uid)) return false;
+    if (!$result = db_query($sql, $db_user_get_by_logon)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -974,13 +974,11 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
-
     $user_array = array();
 
     $uid = bh_session_get_value('UID');
 
-    $user_search_array = preg_split("/[;|,]/u", $user_search);
+    $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
 
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
@@ -1010,7 +1008,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while (($user_data = db_fetch_array($result))) {
+        while ($user_data = db_fetch_array($result)) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {

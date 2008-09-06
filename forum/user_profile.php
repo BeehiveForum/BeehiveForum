@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.148 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.149 2008-09-06 16:05:56 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -146,7 +146,7 @@ if (isset($_GET['close_window'])) {
 
     $logon = trim(_stripslashes($_GET['logon']));
 
-    if (($user_array = user_get_uid($logon))) {
+    if (($user_array = user_get_by_logon($logon))) {
         $uid = $user_array['UID'];
     }
 }

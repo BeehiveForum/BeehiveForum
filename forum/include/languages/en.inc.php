@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.583 2008-09-06 16:05:56 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.584 2008-09-06 18:38:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -142,6 +142,7 @@ $lang['normal'] = "Normal";
 $lang['interested'] = "Interested";
 $lang['subscribe'] = "Subscribe";
 $lang['apply'] = "Apply";
+$lang['enable'] = "Enable";
 $lang['download'] = "Download";
 $lang['save'] = "Save";
 $lang['update'] = "Update";
@@ -444,7 +445,7 @@ $lang['clickablehyperlink'] = "Clickable Hyperlink";
 $lang['threadcount'] = "Thread Count";
 $lang['clicktoeditfolder'] = "Click To Edit Folder";
 $lang['fieldtypeexample1'] = "To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field.";
-$lang['fieldtypeexample2'] = "To create clickable links enter the URL in the Options field and use <i>%1\$s</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/%1\$s</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/%1\$s</i>";
+$lang['fieldtypeexample2'] = "To create clickable links enter the URL in the Options field and use <i>%1\$s</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/%1\$s</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/%1\$s</i></p>";
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['successfullyendedusersessionsforselectedusers'] = "Successfully ended sessions for selected users";
@@ -477,7 +478,8 @@ $lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
-$lang['forumisnotrestricted'] = "Forum is not restricted";
+$lang['forumisnotsettorestrictedmode'] = "Forum is not set to Resricted Mode. Do you want to enable it now?";
+$lang['forumisnotsettopasswordprotectedmode'] = "Forum is not set to Password Protected Mode. Do you want to enable it now?";
 $lang['groups'] = "Groups";
 $lang['nousergroups'] = "No User Groups have been set up. To add a group click the 'Add New' button below.";
 $lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";

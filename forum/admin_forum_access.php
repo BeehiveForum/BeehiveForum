@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.72 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.73 2008-09-06 18:38:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -98,7 +98,15 @@ if (!forum_check_webtag_available($webtag)) {
 
 $lang = load_language_file();
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
+    html_draw_bottom();
+    exit;
+}
+
+if (!$forum_fid = forum_get_setting('fid')) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
@@ -130,18 +138,19 @@ if (isset($_POST['back'])) {
     header_redirect($ret);
 }
 
+if (isset($_POST['enable'])) {
+
+    if (forum_update_access($forum_fid, FORUM_RESTRICTED)) {
+
+        header_redirect("admin_forum_access.php?webtag=$webtag");
+        exit;
+    }
+}
+
 if (!forum_get_setting('access_level', 1, false)) {
 
     html_draw_top();
-    html_error_msg($lang['forumisnotrestricted'], 'admin_forum_access.php', 'post', array('back' => $lang['back']), array('ret' => $ret));
-    html_draw_bottom();
-    exit;
-}
-
-if (!$fid = forum_get_setting('fid')) {
-
-    html_draw_top();
-    html_error_msg($lang['accessdeniedexp']);
+    html_error_msg($lang['forumisnotsettorestrictedmode'], 'admin_forum_access.php', 'post', array('enable' => $lang['enable'], 'back' => $lang['back']), array('ret' => $ret), false, 'center');
     html_draw_bottom();
     exit;
 }
@@ -190,11 +199,9 @@ if (isset($_POST['add'])) {
 
             if (($user_logon = user_get_logon($add_user_uid))) {
 
-                $user_update_array = array($fid => 1);
+                if (user_update_forums($add_user_uid, $forum_fid, FORUM_USER_ALLOWED)) {
 
-                if (user_update_forums($add_user_uid, $fid, 1)) {
-
-                    $forum_name = forum_get_name($fid);
+                    $forum_name = forum_get_name($forum_fid);
                     admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
 
                 }else {
@@ -225,11 +232,9 @@ if (isset($_POST['add'])) {
 
             if (($user_logon = user_get_logon($remove_user_uid))) {
 
-                $user_update_array = array($fid => 0);
+                if (user_update_forums($remove_user_uid, $forum_fid, FORUM_USER_DISALLOWED)) {
 
-                if (user_update_forums($remove_user_uid, $fid, 0)) {
-
-                    $forum_name = forum_get_name($fid);
+                    $forum_name = forum_get_name($forum_fid);
                     admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
 
                 }else {
@@ -253,7 +258,7 @@ if (isset($_POST['add'])) {
 
 html_draw_top();
 
-$user_permissions_array = forum_get_permissions($fid, $start_main);
+$user_permissions_array = forum_get_permissions($forum_fid, $start_main);
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageforumpermissions']}</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.123 2008-09-06 16:05:56 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.124 2008-09-06 18:38:18 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -442,7 +442,7 @@ $lang['clickablehyperlink'] = "Hyperlien cliquable";
 $lang['threadcount'] = "Dénombrement des fils de discussion";
 $lang['clicktoeditfolder'] = "Cliquez pour modifier le fichier";
 $lang['fieldtypeexample1'] = "Pour créer des boutons radio ou une liste déroulante verticalement vous devez entrer chaque valeur individuelle sur une ligne séparée dans le champ pour Options.";
-$lang['fieldtypeexample2'] = "Pour créer des liens cliquables, ajoutez le hyperlien dans le champ pour Options et utilisez <i>[DonnéeProfile] où les données du profile de l'utilisateur devraient paraître. Exemples: <p>MySpace: <i>http://www.myspace.com/[DonnéeProfile]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[DonnéeProfile]</i>";
+$lang['fieldtypeexample2'] = "Pour créer des liens cliquables, ajoutez le hyperlien dans le champ pour Options et utilisez <i>%1\$s</i> où les données du profile de l'utilisateur devraient paraître. Exemples: <p>MySpace: <i>http://www.myspace.com/%1\$s</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/%1\$s</i></p>";
 $lang['editedwordfilter'] = "Filtre de mots modifié";
 $lang['editedforumsettings'] = "Options de forum modifiés";
 $lang['successfullyendedusersessionsforselectedusers'] = "Terminaison de session réussie pour l'utilisateur";

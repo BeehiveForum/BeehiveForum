@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.80 2008-08-22 19:07:19 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.81 2008-09-06 18:38:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -603,7 +603,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     }else {
 
-        html_display_warning_msg($lang['youcanusethepercentwildcard'], '420px', 'center');
+        html_display_warning_msg($lang['youcanusethepercentwildcard'], '420', 'center');
     }
 
     echo "<br />\n";

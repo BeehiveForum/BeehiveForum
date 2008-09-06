@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.146 2008-08-25 10:09:10 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.147 2008-09-06 18:38:18 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -512,7 +512,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] > -2) {
+if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] > FORUM_DISABLED) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -795,9 +795,11 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleanalyticsaccountid']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("forum_google_analytics_code", (isset($forum_settings['forum_google_analytics_code']) ? _htmlentities($forum_settings['forum_google_analytics_code']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_61']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"center\" colspan=\"2\">\n";
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.364 2008-09-01 21:08:07 decoyduck Exp $ */
+/* $Id: post.php,v 1.365 2008-09-06 16:05:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -626,7 +626,7 @@ if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_u
 
 if ($to_radio == 'others') {
 
-    if (($to_user = user_get_uid($t_to_uid_others))) {
+    if (($to_user = user_get_by_logon($t_to_uid_others))) {
 
         $t_to_uid = $to_user['UID'];
 

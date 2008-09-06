@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.61 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.62 2008-09-06 16:05:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -221,7 +221,7 @@ if (isset($_POST['delete'])) {
 
         $t_user_new = trim(_stripslashes($_POST['t_user_new']));
 
-        if (($t_user_array = user_get_uid($t_user_new))) {
+        if (($t_user_array = user_get_by_logon($t_user_new))) {
 
             $t_user_uid = $t_user_array['UID'];
 
@@ -406,7 +406,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency))) {
 
-            if (($t_user_array = user_get_uid($t_new_user))) {
+            if (($t_user_array = user_get_by_logon($t_new_user))) {
 
                 $t_new_uid = $t_user_array['UID'];
 

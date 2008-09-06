@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.227 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: search.php,v 1.228 2008-09-06 16:05:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -582,7 +582,7 @@ echo "<h1>{$lang['searchmessages']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '500', 'center');
 
 }elseif (isset($_GET['search_success'])) {
 
@@ -590,7 +590,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0\" target=\"$frame_target\">%s</a>", $lang['clickheretoviewresults']);
 
     echo "<div id=\"search_success\">\n";
-    html_display_success_msg(sprintf($lang['searchsuccessfullycompleted'], $results_link), '600', 'center');
+    html_display_success_msg(sprintf($lang['searchsuccessfullycompleted'], $results_link), '500', 'center');
     echo "</div>\n";
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
@@ -602,7 +602,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "}\n\n";
     echo "var search_success_container = getObjById('search_success');\n\n";
     echo "if (typeof search_success_container == 'object') {\n";
-    echo "    search_success_container.innerHTML = '", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "';\n";
+    echo "    search_success_container.innerHTML = '", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '500', 'center'), "';\n";
     echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";
@@ -615,12 +615,12 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         case SEARCH_NO_MATCHES:
 
-            html_display_warning_msg($lang['searchreturnednoresults'], '600', 'center');
+            html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
             break;
 
         case SEARCH_USER_NOT_FOUND:
 
-            html_display_error_msg($lang['usernamenotfound'], '600', 'center');
+            html_display_error_msg($lang['usernamenotfound'], '500', 'center');
             break;
 
         case SEARCH_NO_KEYWORDS:
@@ -638,14 +638,14 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (isset($search_no_matches) && $search_no_matches == true) {
 
-    html_display_warning_msg($lang['searchreturnednoresults'], '600', 'center');
+    html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
 }
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" id=\"search_form\" method=\"post\" action=\"search.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -680,7 +680,7 @@ echo "      <td align=\"center\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -723,7 +723,7 @@ echo "      <td align=\"center\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

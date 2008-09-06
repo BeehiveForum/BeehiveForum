@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.343 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.344 2008-09-06 21:20:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -342,31 +342,23 @@ function forum_check_password($forum_fid)
             html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');
         }
 
+        if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
+
+            echo fix_html($password_protected_message);
+
+        }else {
+
+            html_display_warning_msg($lang['passwdprotectedwarning'], '400', 'center');
+        }
+
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
         echo "    ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "    ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
-        echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-
-        if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
-
-            echo "      <tr>\n";
-            echo "        <td align=\"left\">", fix_html($password_protected_message), "</td>\n";
-            echo "      </tr>\n";
-
-        }else {
-
-            echo "      <tr>\n";
-            echo "        <td align=\"center\">{$lang['passwdprotectedwarning']}</td>\n";
-            echo "      </tr>\n";
-        }
-
+        echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
         echo "      <tr>\n";
-        echo "        <td align=\"left\">&nbsp;</td>\n";
-        echo "      </tr>\n";
-        echo "      <tr>\n";
-        echo "        <td align=\"center\">\n";
+        echo "        <td align=\"left\">\n";
         echo "          <table class=\"box\" width=\"400\">\n";
         echo "            <tr>\n";
         echo "              <td class=\"posthead\" align=\"center\">\n";
@@ -399,18 +391,12 @@ function forum_check_password($forum_fid)
         echo "      <tr>\n";
         echo "        <td align=\"center\">", form_submit("logon", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "      </tr>\n";
+        echo "    </table>\n";
 
         if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-            echo "      <tr>\n";
-            echo "        <td align=\"left\">&nbsp;</td>\n";
-            echo "      </tr>\n";
-            echo "      <tr>\n";
-            echo "        <td align=\"center\">{$lang['adminforumclosedtip']}</td>\n";
-            echo "      </tr>\n";
+            html_display_warning_msg($lang['adminforumclosedtip'], '400', 'center');
         }
 
-        echo "    </table>\n";
         echo "  </form>\n";
         echo "</div>\n";
 

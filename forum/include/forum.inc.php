@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.341 2008-09-06 16:05:56 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.342 2008-09-06 18:38:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -148,7 +148,7 @@ function forum_check_webtag_available(&$webtag = false)
             $webtag = ($forum_data['DEFAULT_FORUM'] == FORUM_DEFAULT) ? $forum_data['WEBTAG'] : $webtag;
         }
 
-        return ($forum_data['ACCESS_LEVEL'] < FORUM_HIDDEN);
+        return ($forum_data['ACCESS_LEVEL'] != FORUM_DISABLED);
     }
 
     return false;

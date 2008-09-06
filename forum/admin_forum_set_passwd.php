@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.35 2008-08-22 19:07:19 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.36 2008-09-06 18:38:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -96,7 +96,15 @@ if (!forum_check_webtag_available($webtag)) {
 
 $lang = load_language_file();
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
+    html_draw_bottom();
+    exit;
+}
+
+if (!$forum_fid = forum_get_setting('fid')) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
@@ -132,18 +140,19 @@ if (isset($_POST['back'])) {
     header_redirect($ret);
 }
 
+if (isset($_POST['enable'])) {
+
+    if (forum_update_access($forum_fid, FORUM_PASSWD_PROTECTED)) {
+
+        header_redirect("admin_forum_set_passwd.php?webtag=$webtag");
+        exit;
+    }
+}
+
 if (!forum_get_setting('access_level', 2, false)) {
 
     html_draw_top();
-    html_error_msg($lang['forumisnotrestricted'], 'admin_forum_set_passwd.php', 'post', array('back' => $lang['back']), array('ret' => $ret));
-    html_draw_bottom();
-    exit;
-}
-
-if (!$fid = forum_get_setting('fid')) {
-
-    html_draw_top();
-    html_error_msg($lang['accessdeniedexp']);
+    html_error_msg($lang['forumisnotsettopasswordprotectedmode'], 'admin_forum_set_passwd.php', 'post', array('enable' => $lang['enable'], 'back' => $lang['back']), array('ret' => $ret), false, 'center');
     html_draw_bottom();
     exit;
 }
@@ -193,7 +202,7 @@ if (isset($_POST['save'])) {
 
         if ($valid) {
 
-            if (forum_update_password($fid, $t_password)) {
+            if (forum_update_password($forum_fid, $t_password)) {
 
                 header_redirect("admin_forum_set_passwd.php?webtag=$webtag&ret=$ret&updated=true");
                 exit;
@@ -233,6 +242,9 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
+
+if (forum_get_password($forum_settings['fid'])) {
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_password("pw", "", 37, 0), "&nbsp;</td>\n";

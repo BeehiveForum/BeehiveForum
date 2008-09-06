@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.152 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.153 2008-09-06 18:38:18 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -232,11 +232,11 @@ define('FORUM_RATING_RESTRICTED', 3);
 
 // Forum Access Level Constants
 
+define('FORUM_DISABLED', -2);
 define('FORUM_CLOSED', -1);
 define('FORUM_UNRESTRICTED', 0);
 define('FORUM_RESTRICTED', 1);
 define('FORUM_PASSWD_PROTECTED', 2);
-define('FORUM_HIDDEN', 3);
 
 // Forum Default Constants
 
@@ -244,6 +244,7 @@ define('FORUM_DEFAULT', 1);
 
 // Forum User access constants
 
+define('FORUM_USER_DISALLOWED', 0);
 define('FORUM_USER_ALLOWED', 1);
 
 // Poll closting constants

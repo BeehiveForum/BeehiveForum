@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.88 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.89 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -526,7 +526,7 @@ function links_vote($lid, $vote, $uid)
     $sql.= "VALUES ($lid, $uid, $vote, NOW()) ON DUPLICATE KEY UPDATE RATING = VALUES(RATING), ";
     $sql.= "TSTAMP = NOW()";
 
-    if (!$result = db_query($sql, $db_links_vote)) return false;
+    if (!db_query($sql, $db_links_vote)) return false;
 
     return true;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.132 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.133 2008-09-06 20:13:57 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -436,13 +436,13 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
         $sql = "UPDATE LOW_PRIORITY GROUPS SET GROUP_NAME = '$group_name', ";
         $sql.= "GROUP_DESC = '$group_desc' WHERE GID = '$gid'";
 
-        if (!$result = db_query($sql, $db_perm_update_group)) return false;
+        if (!db_query($sql, $db_perm_update_group)) return false;
 
         $sql = "INSERT INTO GROUP_PERMS (FORUM, FID, PERM, GID) ";
         $sql.= "VALUES ($forum_fid, 0, $perm, $gid) ON DUPLICATE KEY ";
         $sql.= "UPDATE PERM = VALUES(PERM)";
 
-        if (!$result = db_query($sql, $db_perm_update_group)) return false;
+        if (!db_query($sql, $db_perm_update_group)) return false;
     }
 
     return true;
@@ -653,13 +653,13 @@ function perm_update_global_perms($uid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = 0 AND FID = 0 LIMIT 0, 1";
 
-        if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
+        if (!db_query($sql, $db_perm_add_global_perms)) return false;
 
         $sql = "INSERT INTO GROUP_PERMS (FID, PERM, GID, FORUM) ";
         $sql.= "VALUES ('0', '$perm', '$gid', '0') ON DUPLICATE KEY ";
         $sql.= "UPDATE PERM = VALUES(PERM)";
 
-        if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
+        if (!db_query($sql, $db_perm_add_global_perms)) return false;
 
         return true;
 
@@ -667,19 +667,19 @@ function perm_update_global_perms($uid, $perm)
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
 
-        if (($result = db_query($sql, $db_perm_add_global_perms))) {
+        if (db_query($sql, $db_perm_add_global_perms)) {
 
             $new_gid = db_insert_id($db_perm_add_global_perms);
 
             $sql = "INSERT INTO GROUP_PERMS (FID, PERM, GID, FORUM) ";
             $sql.= "VALUES ('0', '$perm', '$new_gid', '0')";
 
-            if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
+            if (!db_query($sql, $db_perm_add_global_perms)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
+            if (!db_query($sql, $db_perm_add_global_perms)) return false;
 
             return $new_gid;
         }
@@ -1006,25 +1006,25 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
         $sql.= "VALUES ('$perm', '$gid', '$forum_fid', '$fid') ";
         $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM) ";
 
-        if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
+        if (!db_query($sql, $db_perm_update_user_folder_perms)) return false;
 
     }else {
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES ($forum_fid, 1)";
 
-        if (($result = db_query($sql, $db_perm_update_user_folder_perms))) {
+        if (db_query($sql, $db_perm_update_user_folder_perms)) {
 
             $new_gid = db_insert_id($db_perm_update_user_folder_perms);
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$new_gid', '$forum_fid', '$perm', '$fid')";
 
-            if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
+            if (!db_query($sql, $db_perm_update_user_folder_perms)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
+            if (!db_query($sql, $db_perm_update_user_folder_perms)) return false;
 
             return $new_gid;
         }
@@ -1050,13 +1050,13 @@ function perm_update_group_folder_perms($gid, $fid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
 
-        if (!$result = db_query($sql, $db_perm_update_group_folder_perms)) return false;
+        if (!db_query($sql, $db_perm_update_group_folder_perms)) return false;
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FID, FORUM, PERM) ";
         $sql.= "VALUES ('$gid', '$fid', '$forum_fid', '$perm') ";
         $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
 
-        if (!$result = db_query($sql, $db_perm_update_group_folder_perms)) return false;
+        if (!db_query($sql, $db_perm_update_group_folder_perms)) return false;
     }
 
     return true;
@@ -1078,13 +1078,13 @@ function perm_update_user_permissions($uid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = 0 LIMIT 0, 1";
 
-        if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
+        if (!db_query($sql, $db_perm_update_user_permissions)) return false;
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
         $sql.= "VALUES ('$gid', '$forum_fid', '$perm', '0') ";
         $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
 
-        if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
+        if (!db_query($sql, $db_perm_update_user_permissions)) return false;
 
         return $gid;
 
@@ -1092,19 +1092,19 @@ function perm_update_user_permissions($uid, $perm)
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES ($forum_fid, 1)";
 
-        if (($result = db_query($sql, $db_perm_update_user_permissions))) {
+        if (db_query($sql, $db_perm_update_user_permissions)) {
 
             $new_gid = db_insert_id($db_perm_update_user_permissions);
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$new_gid', '$forum_fid', '$perm', '0')";
 
-            if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
+            if (!db_query($sql, $db_perm_update_user_permissions)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
+            if (!db_query($sql, $db_perm_update_user_permissions)) return false;
 
             return $new_gid;
         }

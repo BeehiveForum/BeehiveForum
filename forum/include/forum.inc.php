@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.342 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.343 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,7 +70,7 @@ function get_forum_data()
 
         if (isset($webtag) && is_string($webtag)) {
 
-            if (preg_match("/^[A-Z0-9_]+$/u", $webtag) > 0) {
+            if (preg_match("/^[A-Z0-9_]+$/Du", $webtag) > 0) {
 
                 // Check #1: See if the webtag specified in GET/POST
                 // actually exists.
@@ -600,7 +600,7 @@ function forum_save_settings($forum_settings_array)
             $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
-            if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+            if (!db_query($sql, $db_forum_save_settings)) return false;
         }
     }
 
@@ -624,7 +624,7 @@ function forum_save_default_settings($forum_settings_array)
             $sql.= "VALUES ('0', '$setting_name', '$setting_value') ";
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
-            if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
+            if (!db_query($sql, $db_forum_save_default_settings)) return false;
         }
     }
 
@@ -921,8 +921,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     // Ensure the variables we've been given are valid
 
-    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/u", $webtag)) return false;
-    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/iu", $database_name)) return false;
+    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Du", $webtag)) return false;
+    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Diu", $database_name)) return false;
 
     if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
     if (!is_numeric($access)) $access = 0;
@@ -2076,8 +2076,8 @@ function forum_delete_tables($webtag, $database_name)
 {
     // Ensure the variables we've been given are valid
 
-    if (!preg_match("/^[A-Z0-9_]+$/u", $webtag)) return false;
-    if (!preg_match("/^[A-Z0-9_]+$/iu", $database_name)) return false;
+    if (!preg_match("/^[A-Z0-9_]+$/Du", $webtag)) return false;
+    if (!preg_match("/^[A-Z0-9_]+$/Diu", $database_name)) return false;
 
     // Only users with acces to the forum tools can create / delete forums.
 
@@ -2124,13 +2124,13 @@ function forum_update_access($fid, $access)
         $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access' ";
         $sql.= "WHERE FID = '$fid'";
 
-        if (!$result = db_query($sql, $db_forum_update_access)) return false;
+        if (!db_query($sql, $db_forum_update_access)) return false;
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
         $sql.= "VALUES ('$uid', '$fid', 1) ON DUPLICATE KEY ";
         $sql.= "UPDATE ALLOWED = VALUES(ALLOWED)";
 
-        if (!$result = db_query($sql, $db_forum_update_access)) return false;
+        if (!db_query($sql, $db_forum_update_access)) return false;
 
         return true;
     }
@@ -2281,7 +2281,7 @@ function forum_get_post_count($webtag)
 {
     if (!$db_forum_get_post_count = db_connect()) return false;
 
-    if (preg_match("/^[a-z0-9_]+$/iu", $webtag) < 1) return 0;
+    if (preg_match("/^[a-z0-9_]+$/Diu", $webtag) < 1) return 0;
 
     $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$webtag}_POST POST ";
 
@@ -2540,7 +2540,7 @@ function forum_update_last_visit($uid)
         $sql.= "VALUES ('$uid', '$forum_fid', NOW()) ON DUPLICAT KEY ";
         $sql.= "UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
 
-        if (!$result = db_query($sql, $db_forum_update_last_visit)) return false;
+        if (!db_query($sql, $db_forum_update_last_visit)) return false;
     }
 
     return true;
@@ -2601,7 +2601,7 @@ function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute
 
     $matches_array = array();
 
-    if (preg_match('/^([0-9]{2}):([0-9]{2})$/u', $forum_maintenance_schedule, $matches_array) > 0) {
+    if (preg_match('/^([0-9]{2}):([0-9]{2})$/Du', $forum_maintenance_schedule, $matches_array) > 0) {
 
         list(,$maintenance_hour, $maintenance_minute) = $matches_array;
 

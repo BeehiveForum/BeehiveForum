@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.118 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.119 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -220,8 +220,8 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match('/e[^\/]*$/iu', $add_new_match_text)) {
-            $add_new_match_text = preg_replace_callback('/\/[^\/]*$/iu', 'word_filter_apply_limit_preg', $add_new_match_text);
+        if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match('/e[^\/]*$/Diu', $add_new_match_text)) {
+            $add_new_match_text = preg_replace_callback('/\/[^\/]*$/Diu', 'word_filter_apply_limit_preg', $add_new_match_text);
         }
 
         if (admin_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
@@ -279,8 +279,8 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($filter_option == WORD_FILTER_TYPE_PREG && preg_match('/e[^\/]*$/iu', $match_text)) {
-            $match_text = preg_replace_callback('/\/[^\/]*$/iu', 'word_filter_apply_limit_preg', $match_text);
+        if ($filter_option == WORD_FILTER_TYPE_PREG && preg_match('/e[^\/]*$/Diu', $match_text)) {
+            $match_text = preg_replace_callback('/\/[^\/]*$/Diu', 'word_filter_apply_limit_preg', $match_text);
         }
 
         if (admin_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)) {

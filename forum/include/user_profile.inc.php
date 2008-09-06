@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.94 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.95 2008-09-06 20:13:57 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -66,7 +66,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
     $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
     $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
 
-    if (!$result = db_query($sql, $db_user_profile_update)) return false;
+    if (!db_query($sql, $db_user_profile_update)) return false;
 
     return true;
 }

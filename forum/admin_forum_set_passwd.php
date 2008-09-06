@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.36 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.37 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -161,48 +161,68 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
-        $t_password = trim(_stripslashes($_POST['pw']));
-    }else {
-        $error_msg_array[] = $lang['passwdrequired'];
-        $valid = false;
-    }
+    if (($forum_passhash = forum_get_password($forum_settings['fid']))) {
 
-    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
-        $t_check_password = trim(_stripslashes($_POST['cpw']));
-    }else {
-        $valid = false;
-    }
-
-    if ($valid) {
-
-        if ($t_password != $t_check_password) {
-
-            $error_msg_array[] = $lang['passwdsdonotmatch'];
-            $valid = false;
-        }
-
-        if (_htmlentities($t_password) != $t_password) {
-
-            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
-            $valid = false;
-        }
-
-        if (!preg_match("/^[a-z0-9_-]+$/iu", $t_password)) {
-
-            $error_msg_array[] = $lang['passwordinvalidchars'];
-            $valid = false;
-        }
-
-        if (strlen($t_password) < 6) {
-
-            $error_msg_array[] = $lang['passwdtooshort'];
+        if (isset($_POST['current_passwd']) && strlen(trim(_stripslashes($_POST['current_passwd']))) > 0) {
+            $t_current_passhash = md5(trim(_stripslashes($_POST['current_passwd'])));
+        }else {
+            $error_msg_array[] = $lang['currentpasswdrequired'];
             $valid = false;
         }
 
         if ($valid) {
 
-            if (forum_update_password($forum_fid, $t_password)) {
+            if (strcmp($t_current_passhash, $forum_passhash) <> 0) {
+
+                $error_msg_array[] = $lang['currentpasswddoesnotmatch'];
+                $valid = false;
+            }
+        }
+    }
+
+    if (isset($_POST['new_passwd']) && strlen(trim(_stripslashes($_POST['new_passwd']))) > 0) {
+        $t_new_passwd = trim(_stripslashes($_POST['new_passwd']));
+    }else {
+        $error_msg_array[] = $lang['newpasswdrequired'];
+        $valid = false;
+    }
+
+    if (isset($_POST['confirm_passwd']) && strlen(trim(_stripslashes($_POST['confirm_passwd']))) > 0) {
+        $t_confirm_passwd = trim(_stripslashes($_POST['confirm_passwd']));
+    }else {
+        $error_msg_array[] = $lang['confirmpasswordrequired'];
+        $valid = false;
+    }
+
+    if ($valid) {
+
+        if (strcmp($t_new_passwd, $t_confirm_passwd) <> 0) {
+
+            $error_msg_array[] = $lang['passwdsdonotmatch'];
+            $valid = false;
+        }
+
+        if (!preg_match("/^[a-z0-9_-]+$/Diu", $t_new_passwd)) {
+
+            $error_msg_array[] = $lang['passwordinvalidchars'];
+            $valid = false;
+        }
+
+        if (strlen($t_new_passwd) < 6) {
+
+            $error_msg_array[] = $lang['passwdtooshort'];
+            $valid = false;
+        }
+
+        if (_htmlentities($t_new_passwd) != $t_new_passwd) {
+
+            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
+            $valid = false;
+        }
+
+        if ($valid) {
+
+            if (forum_update_password($forum_fid, $t_new_passwd)) {
 
                 header_redirect("admin_forum_set_passwd.php?webtag=$webtag&ret=$ret&updated=true");
                 exit;
@@ -245,13 +265,26 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 if (forum_get_password($forum_settings['fid'])) {
 
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("pw", "", 37, 0), "&nbsp;</td>\n";
-echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['currentpasswd']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("current_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['passwd']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['confirmpasswd']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("cpw", "", 37, 0), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("confirm_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

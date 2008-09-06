@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.104 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.105 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -212,7 +212,7 @@ if (isset($_POST['save'])) {
 
             $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
 
-            if (!preg_match("/^[a-z0-9_-]+$/iu", $user_info_new['LOGON'])) {
+            if (!preg_match("/^[a-z0-9_-]+$/Diu", $user_info_new['LOGON'])) {
 
                 $error_msg_array[] = $lang['usernameinvalidchars'];
                 $valid = false;

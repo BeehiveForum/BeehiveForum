@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.181 2008-08-16 20:01:07 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.182 2008-09-06 20:13:58 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -1383,7 +1383,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
                     $dictionary_word_array = array();
 
-                    if (preg_match('/^([^\s]+)[^\S]+([^$]+)$/iu', trim($dictionary_line), $dictionary_word_array) > 0) {
+                    if (preg_match('/^([^\s]+)[^\S]+([^$]+)$/Diu', trim($dictionary_line), $dictionary_word_array) > 0) {
 
                         array_shift($dictionary_word_array);
 

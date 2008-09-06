@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.359 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.360 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -210,7 +210,7 @@ if (user_is_guest()) {
 
                     $mark_read_threads = trim(_stripslashes($_POST['mark_read_threads']));
 
-                    $mark_read_threads_array = preg_grep("/^[0-9]+$/u", explode(',', $mark_read_threads));
+                    $mark_read_threads_array = preg_grep("/^[0-9]+$/Du", explode(',', $mark_read_threads));
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 
@@ -913,7 +913,7 @@ if (!user_is_guest()) {
         $labels[] = $lang['visiblediscussions'];
         $selected_option = THREAD_MARK_READ_VISIBLE;
 
-        $visible_threads = implode(',', preg_grep("/^[0-9]+$/u", $visible_threads_array));
+        $visible_threads = implode(',', preg_grep("/^[0-9]+$/Du", $visible_threads_array));
         echo "        ", form_input_hidden("mark_read_threads", _htmlentities($visible_threads)), "\n";
     }
 

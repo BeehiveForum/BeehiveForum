@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.157 2008-08-21 20:46:17 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.158 2008-09-06 20:13:56 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -136,7 +136,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/u", $hash_array);
+    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/Du", $hash_array);
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
@@ -284,7 +284,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/u", $hash_array);
+    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/Du", $hash_array);
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
@@ -512,7 +512,6 @@ function delete_attachment_thumbnail($hash)
     if (!$db_delete_attachment_thumbnail = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
-    if (!$table_data = get_table_prefix()) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.38 2008-09-06 16:05:55 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.39 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -388,7 +388,7 @@ if ($allow_multi === true) {
 
         foreach ($selection_array as $user_logon) {
 
-            if ($user_array = user_get_by_logon($user_logon)) {
+            if (($user_array = user_get_by_logon($user_logon))) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">", form_checkbox("selection[]", _htmlentities($user_array['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_array['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";

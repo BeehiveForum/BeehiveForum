@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.68 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.69 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,7 +116,7 @@ if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
 
     if (preg_match("/(([0-9]+),)+,?/u", $fid)) {
 
-        $folder_list_array = preg_grep("/^[0-9]+$/u", explode(",", $fid));
+        $folder_list_array = preg_grep("/^[0-9]+$/Du", explode(",", $fid));
 
     }elseif (is_numeric($_GET['fid'])) {
 

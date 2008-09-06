@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.128 2008-08-22 19:07:19 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.129 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,7 +116,7 @@ if (isset($_POST['save'])) {
 
         $stylename = trim(_stripslashes($_POST['stylename']));
 
-        if (preg_match("/^[a-z0-9_]+$/u", $stylename) < 1) {
+        if (preg_match("/^[a-z0-9_]+$/Du", $stylename) < 1) {
 
             $error_msg_array[] = $lang['stylefilenamemayonlycontain'];
             $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.304 2008-09-06 16:05:56 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.305 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -646,48 +646,48 @@ function html_draw_top()
 
     foreach ($arg_array as $key => $func_args) {
 
-        if (preg_match('/^title=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^title=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             if (strlen(trim($title)) < 1) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^class=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^class=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             if (strlen(trim($body_class)) < 1) $body_class = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^basetarget=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^basetarget=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             if (strlen(trim($base_target)) < 1) $base_target = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onload=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^onload=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             $onload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onunload=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^onunload=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^tinymce_auto_focus=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^tinymce_auto_focus=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             if (strlen(trim($tinymce_auto_focus)) < 1) $tinymce_auto_focus = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^stylesheet=([^:]+):([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^stylesheet=([^:]+):([^$]+)$/Diu', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => $func_matches[2]);
             unset($arg_array[$key]);
 
-        }elseif (preg_match('/^stylesheet=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        }elseif (preg_match('/^stylesheet=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => 'screen');
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^refresh=([^:]+):([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^refresh=([^:]+):([^$]+)$/Diu', $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
 
@@ -701,22 +701,22 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^robots=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^robots=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             $robots = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^frame_set_html$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^frame_set_html$/Diu', $func_args, $func_matches) > 0) {
             $frame_set_html = true;
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^resize_width=([^$]+)$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^resize_width=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             $resize_width = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^pm_popup_disabled$/iu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^pm_popup_disabled$/Diu', $func_args, $func_matches) > 0) {
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
@@ -1109,7 +1109,7 @@ function html_draw_bottom($frame_set_html = false)
 
     if ($frame_set_html === false) {
 
-        if ($google_analytics_code = html_get_google_analytics_code()) {
+        if (($google_analytics_code = html_get_google_analytics_code())) {
 
             echo "<script type=\"text/javascript\">\n";
             echo "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
@@ -1133,7 +1133,7 @@ function html_get_google_analytics_code()
 {
     if (forum_get_setting('enable_google_analytics', 'Y')) {
 
-        if ($google_analytics_code = forum_get_setting('forum_google_analytics_code')) {
+        if (($google_analytics_code = forum_get_setting('forum_google_analytics_code'))) {
             return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
         }
     }

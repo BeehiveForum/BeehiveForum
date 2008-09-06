@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.195 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.196 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -157,7 +157,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     $sql.= "VALUES ($forum_fid, $tid, $pid, '$aid') ON DUPLICATE KEY ";
     $sql.= "UPDATE AID = VALUES(AID)";
 
-    if (!$result = db_query($sql, $db_post_save_attachment_id)) return false;
+    if (!db_query($sql, $db_post_save_attachment_id)) return false;
 
     return true;
 }
@@ -655,7 +655,7 @@ class MessageText {
                     $this->diff = true;
                 }
 
-                $text = preg_replace("/(\s)?<br( [^>]*)?>(\s)?(\n)?/i", "<br />\n", $text);
+                $text = preg_replace('/(\s)?<br( [^>]*)?>(\s)?(\n)?/i', "<br />\n", $text);
 
             }else {
 
@@ -726,7 +726,7 @@ class MessageTextParse {
             }
         }
 
-        $signature = preg_replace('/^<div class="sig">(.*)<\/div>$/su', '$1', implode('', $signature_parts));
+        $signature = preg_replace('/^<div class="sig">(.*)<\/div>$/Dsu', '$1', implode('', $signature_parts));
 
         $message = implode('', $message_parts);
 
@@ -734,7 +734,7 @@ class MessageTextParse {
 
         $emoticons = $emots_default;
 
-        if (preg_match('/^<noemots>.*<\/noemots>$/su', $message) > 0) {
+        if (preg_match('/^<noemots>.*<\/noemots>$/Dsu', $message) > 0) {
             $emoticons = false;
         }
 

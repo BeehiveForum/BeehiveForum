@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.130 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.131 2008-09-06 19:23:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -565,12 +565,12 @@ if ($allow_html == true) {
 echo "              <br />\n";
 
 echo form_submit('apply', $lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "              &nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
-echo "              &nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;", form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
+echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "              &nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$uid', '$aid', '$webtag');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$uid', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', _htmlentities($aid));
 }
 

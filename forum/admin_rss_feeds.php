@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.62 2008-09-06 16:05:55 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.63 2008-09-06 19:23:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -534,7 +534,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("addfeedsubmit", $lang['add']), " &nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("addfeedsubmit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -664,7 +664,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("updatefeedsubmit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), " &nbsp;",form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("updatefeedsubmit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;",form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.120 2008-09-03 22:31:46 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.121 2008-09-06 19:23:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1017,7 +1017,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), " &nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";

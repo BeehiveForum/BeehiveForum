@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.170 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.171 2008-09-06 19:23:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1102,7 +1102,7 @@ echo form_submit("apply", $lang['apply']), "&nbsp;", form_submit("preview_poll",
 
 if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-    echo "            &nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('{$poll_data['FROM_UID']}', '$aid', '$webtag');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('{$poll_data['FROM_UID']}', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', _htmlentities($aid));
 }
 

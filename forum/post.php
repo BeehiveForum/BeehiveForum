@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.365 2008-09-06 16:05:55 decoyduck Exp $ */
+/* $Id: post.php,v 1.366 2008-09-06 19:23:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1134,12 +1134,12 @@ if (($tools->getTinyMCE())) {
 }
 
 echo form_submit("post", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "  &nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
-echo "  &nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
+echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
+echo "&nbsp;", form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
 if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
-    echo "  &nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", _htmlentities($aid));
 }
 

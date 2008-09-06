@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.252 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.253 2008-09-06 18:55:11 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -113,7 +113,7 @@ $lang = load_language_file();
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
-    html_error_msg($lang['accessdeniedexp'], 'admin_users.php', 'get', array('back' => $lang['back']));
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }

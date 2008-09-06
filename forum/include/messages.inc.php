@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.554 2008-09-01 18:03:09 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.555 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -640,7 +640,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
         $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
-        $cut_msg = preg_replace("/(<[^>]+)?$/u", "", $cut_msg);
+        $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
@@ -1857,7 +1857,7 @@ function messages_fontsize_form($tid, $pid)
 
 function validate_msg($msg)
 {
-    return preg_match('/^\d{1,}\.\d{1,}$/u', rawurldecode($msg));
+    return preg_match('/^\d{1,}\.\d{1,}$/Du', rawurldecode($msg));
 }
 
 function messages_forum_stats($tid, $pid)

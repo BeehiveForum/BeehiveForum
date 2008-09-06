@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.38 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.39 2008-09-06 20:13:57 decoyduck Exp $ */
 
 /**
 * ip.inc.php - IP Address related functions
@@ -58,8 +58,8 @@ function get_ip_address()
     // address may be reversed by the proxy server
     // (identifiable by -R in the proxy server's version
     // string.)
-    
-	$matches = array();
+
+    $matches = array();
 
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         if (ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
@@ -126,7 +126,7 @@ function check_ip_address($ip)
     $ip_check_preg = '/^([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.';
     $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.';
     $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.';
-    $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])$/u';
+    $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])$/Du';
 
     return (preg_match($ip_check_preg, $ip) > 0);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.359 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.360 2008-09-06 20:13:57 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -571,7 +571,7 @@ function bh_update_visitor_log($uid, $forum_fid)
         if (($search_id = bh_session_is_search_engine()) !== false) {
 
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$ipaddress', '$http_referer', '$search_sid') ";
+            $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$ipaddress', '$http_referer', '$search_id') ";
             $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = NOW(), ";
             $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 
@@ -1197,7 +1197,7 @@ function parse_array($array, $sep, &$result_var)
         }
     }
 
-    $result_var = preg_replace("/$preg_sep$/u", "", $result_var);
+    $result_var = preg_replace("/$preg_sep$/Du", "", $result_var);
 
     return true;
 }

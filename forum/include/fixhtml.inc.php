@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.139 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.140 2008-09-06 20:13:56 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -109,7 +109,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 // remove trailing / in single tags: <  />
 
-                $html_parts[$i] = preg_replace('/\s*\/?$/u', '', $html_parts[$i]);
+                $html_parts[$i] = preg_replace('/\s*\/?$/Du', '', $html_parts[$i]);
 
                 // BH tag <code> replace
                 // <code><b>Text</b></code>
@@ -427,9 +427,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             $white_space_matches_array = array();
 
-                            if (preg_match('/( )?\s+$/u', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                            if (preg_match('/( )?\s+$/Du', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
-                                $html_parts[$i-1] = preg_replace('/( )?\s+$/u', '$1', $html_parts[$i-1]);
+                                $html_parts[$i-1] = preg_replace('/( )?\s+$/Du', '$1', $html_parts[$i-1]);
                                 $ta[1] = $white_space_matches_array[0];
                             }
 
@@ -578,9 +578,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $white_space_matches_array = array();
 
-                                        if (preg_match('/( )?\s+$/u', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                                        if (preg_match('/( )?\s+$/Du', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
-                                            $html_parts[$i-1] = preg_replace('/( )?\s+$/u', '$1', $html_parts[$i-1]);
+                                            $html_parts[$i-1] = preg_replace('/( )?\s+$/Du', '$1', $html_parts[$i-1]);
                                             $html_parts[$i+1] = $white_space_matches_array[0]. $html_parts[$i+1];
                                         }
 
@@ -594,9 +594,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                 $white_space_matches_array = array();
 
-                                if (preg_match('/( )?\s+$/u', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                                if (preg_match('/( )?\s+$/Du', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
-                                    $html_parts[$i-1] = preg_replace('/( )?\s+$/u', '$1', $html_parts[$i-1]);
+                                    $html_parts[$i-1] = preg_replace('/( )?\s+$/Du', '$1', $html_parts[$i-1]);
                                     $html_parts[$i+1] = $white_space_matches_array[0]. $html_parts[$i+1];
                                 }
 
@@ -1183,7 +1183,7 @@ function clean_styles_restrict($value)
 {
     $matches = array();
 
-    if (preg_match("/^([0-9]+)(.+)$/u", trim($value), $matches) > 0) {
+    if (preg_match("/^([0-9]+)(.+)$/Du", trim($value), $matches) > 0) {
 
         if (isset($matches[2])) {
 
@@ -1455,13 +1455,13 @@ function add_paragraphs($html, $br_only = true)
 
             for ($j = 0; $j < count($tmp) - 1; $j++) {
 
-                if (preg_match('/<\/p>$/iu', $tmp[$j]) > 0) {
+                if (preg_match('/<\/p>$/Diu', $tmp[$j]) > 0) {
 
                     $p_open = false;
 
                     $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<\/p>$/Diu', '', $tmp[$j+1]);
 
                     if (!isset($tmp[$j+2])) break;
 
@@ -1474,13 +1474,13 @@ function add_paragraphs($html, $br_only = true)
 
                     $j++;
 
-                }else if (!preg_match('/<br( [^>]*)?>$/i', $tmp[$j])) {
+                }else if (!preg_match('/<br( [^>]*)?>$/Di', $tmp[$j])) {
 
                     $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<\/p>$/Diu', '', $tmp[$j+1]);
 
-                    if (preg_match('/^\s*$/u', $tmp[$j+1]) > 0 && $p_open == true) {
+                    if (preg_match('/^\s*$/Du', $tmp[$j+1]) > 0 && $p_open == true) {
 
                         $p_open = false;
 
@@ -1504,12 +1504,12 @@ function add_paragraphs($html, $br_only = true)
                 } else {
 
                     $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<\/p>$/Diu', '', $tmp[$j+1]);
                 }
             }
 
-            if ($p_open == true && !preg_match('/<\/p>$/iu', $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
+            if ($p_open == true && !preg_match('/<\/p>$/Diu', $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
 
                 $tmp[$j].= "</p>";
             }

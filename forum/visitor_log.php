@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.132 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.133 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -137,7 +137,7 @@ if (isset($_POST['profile_selection'])) {
         $profile_selection = explode(",", $_POST['profile_selection']);
 
         if (user_is_guest()) {
-            $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/u', $profile_selection);
+            $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/Du', $profile_selection);
         }
 
         foreach ($profile_selection as $profile_item_key) {
@@ -156,7 +156,7 @@ if (isset($_POST['profile_selection'])) {
         $profile_selection = explode(",", $_GET['profile_selection']);
 
         if (user_is_guest()) {
-            $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/u', $profile_selection);
+            $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/Du', $profile_selection);
         }
 
         foreach ($profile_selection as $profile_item_key) {

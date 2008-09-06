@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.79 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.80 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -453,7 +453,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
                                'USER_TRACK',   'VISITOR_LOG');
     }
 
-    if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/u", $webtag) > 0) {
+    if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/Du", $webtag) > 0) {
 
         if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
 
@@ -498,7 +498,7 @@ function install_remove_indexes($table_name)
     while (list(,,$key_name) = db_fetch_array($result)) {
 
         $sql = "ALTER IGNORE TABLE $table_name DROP INDEX $key_name";
-        $result_drop = @db_query($sql, $db_install_remove_indexes);
+        @db_query($sql, $db_install_remove_indexes);
     }
 
     return true;

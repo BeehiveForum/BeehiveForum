@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.188 2008-08-24 11:06:19 decoyduck Exp $ */
+/* $Id: register.php,v 1.189 2008-09-06 20:13:56 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -210,7 +210,7 @@ if (isset($_POST['register'])) {
 
         $logon = strtoupper(trim(_stripslashes($_POST['logon'])));
 
-        if (!preg_match("/^[a-z0-9_-]+$/iu", $logon)) {
+        if (!preg_match("/^[a-z0-9_-]+$/Diu", $logon)) {
 
             $error_msg_array[] = $lang['usernameinvalidchars'];
             $valid = false;
@@ -244,7 +244,7 @@ if (isset($_POST['register'])) {
 
         $password = trim(_stripslashes($_POST['pw']));
 
-        if (!preg_match("/^[a-z0-9_-]+$/iu", $password)) {
+        if (!preg_match("/^[a-z0-9_-]+$/Diu", $password)) {
 
             $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;

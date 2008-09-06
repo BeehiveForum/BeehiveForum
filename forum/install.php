@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.101 2008-08-20 19:02:58 decoyduck Exp $ */
+/* $Id: install.php,v 1.102 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,7 +71,7 @@ if (isset($_POST['install_method'])) {
 
         $forum_webtag = strtoupper(trim(_stripslashes($_POST['forum_webtag'])));
 
-        if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/u", $forum_webtag)) {
+        if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Du", $forum_webtag)) {
 
             $error_array[] = "The forum webtag can only conatin uppercase A-Z, 0-9 and underscore.\n";
             $valid = false;
@@ -97,7 +97,7 @@ if (isset($_POST['install_method'])) {
 
         $db_database = trim(_stripslashes($_POST['db_database']));
 
-        if (!preg_match("/^[A-Z0-9_]+$/iu", $db_database)) {
+        if (!preg_match("/^[A-Z0-9_]+$/Diu", $db_database)) {
 
             $error_array[] = "The database name can only conatin a-z, A-Z, 0-9 and underscore.\n";
             $valid = false;

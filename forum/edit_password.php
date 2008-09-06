@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.74 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.75 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -174,7 +174,7 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (preg_match("/^[a-z0-9_-]+$/iu", $t_new_pass) < 1) {
+        if (preg_match("/^[a-z0-9_-]+$/Diu", $t_new_pass) < 1) {
 
             $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.81 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.82 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -305,7 +305,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
         $new_ban_data = trim(_stripslashes($_POST['newbandata']));
 
-        if (preg_match("/^%+$/u", $new_ban_data) > 0) {
+        if (preg_match("/^%+$/Du", $new_ban_data) > 0) {
 
             $error_msg_array[] = $lang['cannotusewildcardonown'];
             $valid = false;
@@ -374,7 +374,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             $ban_data = trim(_stripslashes($_POST['bandata']));
 
-            if (preg_match("/^%+$/u", $ban_data) > 0) {
+            if (preg_match("/^%+$/Du", $ban_data) > 0) {
 
                 $error_msg_array[] = $lang['cannotusewildcardonown'];
                 $valid = false;

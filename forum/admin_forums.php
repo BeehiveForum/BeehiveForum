@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.93 2008-09-06 19:23:30 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.94 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -246,7 +246,7 @@ if (isset($_POST['delete'])) {
 
         $t_webtag = strtoupper(trim(_stripslashes($_POST['t_webtag'])));
 
-        if (!preg_match("/^[A-Z0-9_]+$/u", $t_webtag)) {
+        if (!preg_match("/^[A-Z0-9_]+$/Du", $t_webtag)) {
 
             $error_msg_array[] = $lang['webtaginvalidchars'];
             $valid = false;
@@ -289,7 +289,7 @@ if (isset($_POST['delete'])) {
 
         $t_database = $_POST['t_database'];
 
-        if (!preg_match("/^[A-Z0-9_]+$/iu", $t_database)) {
+        if (!preg_match("/^[A-Z0-9_]+$/Diu", $t_database)) {
 
             $error_msg_array[] = $lang['databasenameinvalidchars'];
             $valid = false;

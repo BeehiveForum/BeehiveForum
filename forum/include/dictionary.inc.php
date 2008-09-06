@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.57 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.58 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -175,7 +175,7 @@ class dictionary {
         $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
         $sql.= "VALUES ('$word', '$metaphone', '$uid')";
 
-        if (!$result = db_query($sql, $db_dictionary_add_custom_word)) return false;
+        if (!db_query($sql, $db_dictionary_add_custom_word)) return false;
 
         return true;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.257 2008-08-21 20:46:17 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.258 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1880,7 +1880,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
         // Convert the array keys into a comma separated list.
 
-        $mid_list = implode(',', preg_grep('/^[0-9]+$/u', array_keys($pm_messages_array)));
+        $mid_list = implode(',', preg_grep('/^[0-9]+$/Du', array_keys($pm_messages_array)));
 
         // Mark the selected messages as unread / received and make the
         // sent items visible to the sender.
@@ -2142,7 +2142,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
     if (!is_array($mid_array)) return false;
     if (sizeof($mid_array) < 1) return false;
 
-    $mid_list = implode(",", preg_grep("/^[0-9]+$/u", $mid_array));
+    $mid_list = implode(",", preg_grep("/^[0-9]+$/Du", $mid_array));
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 

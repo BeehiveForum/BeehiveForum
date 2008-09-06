@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.90 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.91 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -310,7 +310,7 @@ function user_set_forum_interest($fid, $interest)
         $sql.= "VALUES ('$uid', '$fid', '$interest') ";
         $sql.= "ON DUPLICATE KEY UPDATE INTEREST = VALUES(INTEREST)";
 
-        if (!$result = db_query($sql, $db_user_set_forum_interest)) return false;
+        if (!db_query($sql, $db_user_set_forum_interest)) return false;
     }
 
     return true;

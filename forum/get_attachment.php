@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.39 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.40 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -155,7 +155,7 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
         $attachment_data = array();
 
-        if (preg_match('/\/get_attachment\.php\/([A-Fa-f0-9]{32})\/(.*)$/u', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+        if (preg_match('/\/get_attachment\.php\/([A-Fa-f0-9]{32})\/(.*)$/Du', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
 
             if (isset($attachment_data[1]) && is_md5($attachment_data[1])) {
 
@@ -168,7 +168,7 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
         $attachment_data = array();
 
-        if (preg_match('/\/([A-Fa-f0-9]{32})\/(.*)$/u', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+        if (preg_match('/\/([A-Fa-f0-9]{32})\/(.*)$/Du', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
 
             if (isset($attachment_data[1]) && is_md5($attachment_data[1])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.363 2008-09-06 16:05:56 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.364 2008-09-06 20:13:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -282,7 +282,7 @@ function user_update_forums($uid, $forum_fid, $allowed)
         $sql.= "VALUES ('$uid', '$forum_fid', '$allowed') ";
         $sql.= "ON DUPLICATE KEY UPDATE ALLOWED = VALUES(ALLOWED)";
 
-        if (!$result = db_query($sql, $db_user_update_forums)) return false;
+        if (!db_query($sql, $db_user_update_forums)) return false;
     }
 
     return true;
@@ -826,11 +826,11 @@ function user_check_pref($name, $value)
     if (strlen(trim($value)) == 0) return true;
 
     if ($name == "FIRSTNAME" || $name == "LASTNAME") {
-        return preg_match("/^[a-z0-9 ]*$/iu", $value);
+        return preg_match("/^[a-z0-9 ]*$/Diu", $value);
     } elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
-        return preg_match("/^[a-z0-9_-]*$/iu", $value);
+        return preg_match("/^[a-z0-9_-]*$/Diu", $value);
     } elseif ($name ==  "DOB") {
-        return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/u", $value);
+        return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/Du", $value);
     } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
         return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/iu', $value) || $value == "");
     } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK" || $name == "THREADS_BY_FOLDER") {
@@ -864,7 +864,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
             $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY ";
             $sql.= "UPDATE CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 
-            if (!$result = db_query($sql, $db_user_update_sig)) return false;
+            if (!db_query($sql, $db_user_update_sig)) return false;
         }
 
     }else {
@@ -875,7 +875,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
         $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY UPDATE ";
         $sql.= "CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 
-        if (!$result = db_query($sql, $db_user_update_sig)) return false;
+        if (!db_query($sql, $db_user_update_sig)) return false;
     }
 
     return true;
@@ -973,6 +973,8 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     if (!is_numeric($exclude_uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $lang = load_language_file();
 
     $user_array = array();
 
@@ -1008,7 +1010,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {

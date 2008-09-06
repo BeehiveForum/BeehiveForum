@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.152 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.153 2008-09-06 20:13:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -238,13 +238,13 @@ function folder_update($fid, $folder_data)
     $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
     $sql.= "POSITION = '{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}' WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_folder_update)) return false;
+    if (!db_query($sql, $db_folder_update)) return false;
 
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
     $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}') ";
     $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
 
-    if (!$result = db_query($sql, $db_folder_update)) return false;
+    if (!db_query($sql, $db_folder_update)) return false;
 
     return true;
 }
@@ -431,7 +431,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $fid_list = implode(",", preg_grep("/^[0-9]+$/u", $fid_array));
+    $fid_list = implode(",", preg_grep("/^[0-9]+$/Du", $fid_array));
 
     if (!$db_folder_get_thread_count = db_connect()) return false;
 
@@ -538,7 +538,7 @@ function user_set_folder_interest($fid, $interest)
     $sql.= "VALUES ('$uid', '$fid', '$interest') ON DUPLICATE KEY UPDATE ";
     $sql.= "INTEREST = VALUES(INTEREST)";
 
-    if (!$result = db_query($sql, $db_user_set_folder_interest)) return false;
+    if (!db_query($sql, $db_user_set_folder_interest)) return false;
 
     return true;
 }

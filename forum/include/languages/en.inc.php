@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.585 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.586 2008-09-07 14:58:25 decoyduck Exp $ */
 
 // British English language file
 
@@ -1819,6 +1819,7 @@ $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";
 $lang['mustentersomethingtosearchfor'] = "You must enter something to search for";
+$lang['maximumselectionoftenlimitreached'] = "Maximum selection limit of 10 has been reached";
 
 // Start page (start_left.php) -----------------------------------------
 

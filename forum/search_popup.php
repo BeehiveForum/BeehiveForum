@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.39 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.40 2008-09-07 14:58:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -215,6 +215,7 @@ if (isset($_POST['selection']) && is_array($_POST['selection'])) {
 
     $selection_array = preg_split("/[;|,]/u", trim(_stripslashes($_GET['selection'])));
 
+
     if ($allow_multi === false) {
         $search_query = trim(_stripslashes($_GET['selection']));
     }
@@ -223,6 +224,10 @@ if (isset($_POST['selection']) && is_array($_POST['selection'])) {
 
     $selection_array = array();
 }
+
+// Limit the selection to maximum of 10
+
+$selection_array = array_splice(array_unique($selection_array), 0, 10);
 
 // Add any search results to selection
 
@@ -365,10 +370,8 @@ if ($allow_multi === true) {
 
     if (isset($selection_array) && is_array($selection_array) && sizeof($selection_array) > 0) {
 
-        $selection_array = array_splice(array_unique($selection_array), 0, 10);
-
         if (sizeof($selection_array) > 9) {
-            html_display_warning_msg($lang['youcanonlyselectmaximumof10users'], '450', 'center');
+            html_display_warning_msg($lang['maximumselectionoftenlimitreached'], '450', 'center');
         }
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
@@ -444,26 +447,26 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
             if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_radio("selection", _htmlentities($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array)), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_radio("selection", _htmlentities($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
 
             }elseif ($allow_multi === false) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selection", _htmlentities($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array)), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_checkbox("selection", _htmlentities($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
 
             }else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selection_add[]", _htmlentities($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array)), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_checkbox("selection_add[]", _htmlentities($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
             }
 
         }else {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("selection", $search_result['TID'], '', in_array($search_result['TID'], $selection_array)), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("selection", $search_result['TID'], '', in_array($search_result['TID'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }
@@ -490,7 +493,7 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if ($allow_multi === true) {
+    if (($allow_multi === true) && sizeof($selection_array) < 10) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
         echo "    <tr>\n";

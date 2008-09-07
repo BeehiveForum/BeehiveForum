@@ -1,3 +1,8 @@
+html {
+    height: 100%;
+    background-color: #FFFFC1;
+}
+
 body {
     background-color: #FFFFC1;
     margin-top: 10px;

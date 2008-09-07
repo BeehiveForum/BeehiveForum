@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.57 2008-09-04 20:33:47 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.58 2008-09-07 14:58:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -321,7 +321,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
         if (!pm_export_messages($process_messages)) {
 
-            $error_msg_array[] = $lang['failedtoexportfolder'];
+            $error_msg_array[] = $lang['failedtoexportmessages'];
             $valid = false;
         }
 

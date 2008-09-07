@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.306 2008-09-07 13:41:05 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.307 2008-09-07 16:11:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -408,17 +408,17 @@ function html_get_style_sheet()
             }
         }
 
-        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/$script_filename.css")) {
+        if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/$script_filename.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/$script_filename.css"))) {
-                return sprintf("$forum_path/forums/$webtag/$script_filename.css?%s", date('YmdHis', $modified_time));
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$script_filename.css"))) {
+                return sprintf("$forum_path/forums/$webtag/styles/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
-        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/style.css")) {
+        if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/style.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/style.css"))) {
-                return sprintf("$forum_path/forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/style.css"))) {
+                return sprintf("$forum_path/forums/$webtag/styles/style.css?%s", date('YmdHis', $modified_time));
             }
         }
     }

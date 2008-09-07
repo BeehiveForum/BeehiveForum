@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.305 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.306 2008-09-07 13:41:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1127,6 +1127,115 @@ function html_draw_bottom($frame_set_html = false)
     }
 
     echo "</html>\n";
+}
+
+class html_frameset
+{
+    private $frames_array = array();
+
+    public function html_frame($src, $name, $frameborder = 0)
+    {
+        array_push($this->frames_array, new html_frame($src, $name, $frameborder));
+    }
+
+    public function get_frames()
+    {
+        return $this->frames_array;
+    }
+}
+
+class html_frameset_rows extends html_frameset
+{
+    private $rows = '';
+
+    private $framespacing = 0;
+    private $frameborder = 0;
+
+    public function html_frameset_rows($rows, $framespacing = 0, $frameborder = 0)
+    {
+        if (preg_match('/^[0-9,\*%]+$/D', $rows)) {
+            $this->rows = $rows;
+        }
+
+        if (is_numeric($framespacing)) $this->framespacing = $framespacing;
+        if (is_numeric($frameborder)) $this->frameborder = $frameborder;
+    }
+
+    public function output_html($close_frameset = true)
+    {
+        echo sprintf("<frameset rows=\"%s\" framespacing=\"%s\" border=\"%s\">\n", $this->rows, $this->framespacing, $this->frameborder);
+
+        $frames_array = parent::get_frames();
+
+        foreach($frames_array as $frame) {
+            $frame->output_html();
+        }
+
+        if ($close_frameset) echo "</frameset>\n";
+    }
+}
+
+class html_frameset_cols extends html_frameset
+{
+    private $cols = '';
+
+    private $framespacing = 0;
+    private $frameborder = 0;
+
+    public function html_frameset_cols($cols, $framespacing = 4, $frameborder = 4)
+    {
+        if (preg_match('/^[0-9,\*%]+$/D', $cols)) {
+            $this->cols = $cols;
+        }
+
+        if (is_numeric($framespacing)) $this->framespacing = $framespacing;
+        if (is_numeric($frameborder)) $this->frameborder = $frameborder;
+    }
+
+    public function output_html($close_frameset = true)
+    {
+        echo sprintf("<frameset cols=\"%s\" framespacing=\"%s\" border=\"%s\">\n", $this->cols, $this->framespacing, $this->frameborder);
+
+        $frames_array = parent::get_frames();
+
+        foreach($frames_array as $frame) {
+            $frame->output_html();
+        }
+
+        if ($close_frameset) echo "</frameset>\n";
+    }
+}
+
+class html_frame
+{
+    private $src;
+    private $name;
+    private $frameborder;
+    private $scrolling;
+    private $noresize;
+
+    function html_frame($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
+    {
+        $this->src = $src;
+        $this->name = $name;
+
+        if (in_array($scrolling, array('yes', 'no', ''))) $this->scrolling = $scrolling;
+        if (in_array($noresize, array('noresize', ''))) $this->noresize = $noresize;
+
+        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/webkit/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+            $this->frameborder = 1;
+        }else {
+            $this->frameborder = (is_numeric($frameborder)) ? $frameborder : 0;
+        }
+    }
+
+    function output_html()
+    {
+        echo "<frame src=\"{$this->src}\" name=\"{$this->name}\" frameborder=\"{$this->frameborder}\" ";
+        echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\"" : "";
+        echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
+        echo "/>\n";
+    }
 }
 
 function html_get_google_analytics_code()

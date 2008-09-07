@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.141 2008-08-25 11:54:13 decoyduck Exp $ */
+/* $Id: pm.php,v 1.142 2008-09-07 13:41:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -125,51 +125,34 @@ $error_msg_array = array();
 $available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
                            PM_FOLDER_SAVED, PM_FOLDER_DRAFTS, PM_SEARCH_RESULTS);
 
+// Output starts here
+
+html_draw_top('frame_set_html', 'pm_popup_disabled');
+
+$frameset = new html_frameset_cols('280,*');
+
 // If we're viewing a message we need to know the folder it is in.
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
 
-    if (!$folder = pm_message_get_folder($mid)) {
-        $folder = PM_FOLDER_INBOX;
-    }
+    if (!$folder = pm_message_get_folder($mid)) $folder = PM_FOLDER_INBOX;
 
     if (isset($_GET['message_sent'])) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_sent=true\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-
-        html_draw_bottom(true);
-        exit;
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_sent=true", html_get_frame_name('pm_messages'), 0);
 
     }elseif (isset($_GET['message_saved'])) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_saved=true\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-
-        html_draw_bottom(true);
-        exit;
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_saved=true", html_get_frame_name('pm_messages'), 0);
 
     }else {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-
-        html_draw_bottom(true);
-        exit;
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_messages'), 0);
     }
 
 }elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -178,51 +161,30 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     if (isset($_GET['message_sent'])) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"pm_folders.php?webtag=$webtag&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"pm_messages.php?webtag=$webtag&amp;folder=$folder&message_sent=true\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-
-        html_draw_bottom(true);
-        exit;
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$folder&message_sent=true", html_get_frame_name('pm_messages'), 0);
 
     }else {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"pm_folders.php?webtag=$webtag&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"pm_messages.php?webtag=$webtag&amp;folder=$folder\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-
-        html_draw_bottom(true);
-        exit;
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_messages'), 0);
     }
 }
 
 if (isset($_GET['message_sent'])) {
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-    echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-    echo "  <frame src=\"pm_folders.php?webtag=$webtag\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-    echo "  <frame src=\"pm_messages.php?webtag=$webtag&message_sent=true\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-    echo "</frameset>\n";
-
-    html_draw_bottom(true);
+    $frameset->html_frame("pm_folders.php?webtag=$webtag", html_get_frame_name('pm_folders'), 0);
+    $frameset->html_frame("pm_messages.php?webtag=$webtag&message_sent=true", html_get_frame_name('pm_messages'), 0);
 
 }else {
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
-
-    echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-    echo "  <frame src=\"pm_folders.php?webtag=$webtag\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
-    echo "  <frame src=\"pm_messages.php?webtag=$webtag\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
-    echo "</frameset>\n";
-
-    html_draw_bottom(true);
+    $frameset->html_frame("pm_folders.php?webtag=$webtag", html_get_frame_name('pm_folders'), 0);
+    $frameset->html_frame("pm_messages.php?webtag=$webtag", html_get_frame_name('pm_messages'), 0);
 }
+
+$frameset->output_html();
+
+html_draw_bottom(true);
+exit;
 
 ?>

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.99 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: forums.php,v 1.100 2008-09-07 13:41:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -792,11 +792,12 @@ if (!user_is_guest()) {
 
     $forums_array = get_forum_list($start);
 
+    echo "<h1>{$lang['myforums']}</h1>\n";
+
     if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) < 1) {
         html_display_warning_msg($lang['noforumsofselectedtype'], '70%', 'center');
     }
 
-    echo "<h1>{$lang['myforums']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";

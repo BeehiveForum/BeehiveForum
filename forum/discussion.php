@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.121 2008-08-28 21:28:32 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.122 2008-09-07 13:41:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -130,10 +130,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$msg", html_get_frame_name('right'));
+
+        $frameset->output_html();
 
         html_draw_bottom(true);
 
@@ -151,27 +153,43 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}&amp;edit_success={$_GET['edit_success']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
+
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg={$_GET['msg']}&amp;edit_success={$_GET['edit_success']}", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
 
     }else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}&amp;delete_success={$_GET['delete_success']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
+
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg={$_GET['msg']}&amp;delete_success={$_GET['delete_success']}", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
 
     }else {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-    }
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-    html_draw_bottom(true);
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg={$_GET['msg']}", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
+    }
 
 }else if (isset($_GET['right']) && $_GET['right'] == 'search') {
 
@@ -183,24 +201,32 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         exit;
     }
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
-
     if (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"search.php?webtag=$webtag&amp;search_error={$_GET['search_error']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
+
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
+        $frameset->html_frame("search.php?webtag=$webtag&amp;search_error={$_GET['search_error']}", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
 
     }else {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"search.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-    }
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-    html_draw_bottom(true);
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
+        $frameset->html_frame("search.php?webtag=$webtag", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
+    }
 
 }else if (isset($_GET['left']) && $_GET['left'] == 'search_results') {
 
@@ -212,24 +238,32 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         exit;
     }
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
-
     if (($search_msg = search_get_first_result_msg())) {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"search.php?webtag=$webtag&amp;offset=0\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$search_msg&amp;highlight=yes\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
+
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("search.php?webtag=$webtag&amp;offset=0", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$search_msg&amp;highlight=yes", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
 
     }else {
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"search.php?webtag=$webtag&amp;offset=0\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"search.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-    }
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-    html_draw_bottom(true);
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("search.php?webtag=$webtag&amp;offset=0", html_get_frame_name('left'));
+        $frameset->html_frame("search.php?webtag=$webtag", html_get_frame_name('right'));
+
+        $frameset->output_html();
+
+        html_draw_bottom(true);
+    }
 
 }else {
 
@@ -237,10 +271,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
+        $frameset = new html_frameset_cols("280,*");
+
+        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg=$msg", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$msg", html_get_frame_name('right'));
+
+        $frameset->output_html();
 
         html_draw_bottom(true);
 

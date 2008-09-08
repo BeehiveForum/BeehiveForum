@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: spoiler.js,v 1.8 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: spoiler.js,v 1.9 2008-09-08 21:59:59 decoyduck Exp $ */
 
 function containsDOM(container, containee)
 {
@@ -81,7 +81,7 @@ function spoilerAttachEvent(element)
 {
     if (typeof(element.tagName) != 'undefined') {
                
-        if (IE) {
+        if (element.attachEvent) {
 
             element.attachEvent("onmouseover", spoilerReveal);
             element.attachEvent("onmouseout", spoilerHide);

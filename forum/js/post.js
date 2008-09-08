@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.51 2008-09-06 16:05:58 decoyduck Exp $ */
+/* $Id: post.js,v 1.52 2008-09-08 20:38:01 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -215,7 +215,7 @@ function showQuickReply(tid, message_id)
 
         if (typeof(quick_reply_content) == 'object' && typeof(quick_reply_post_button) == 'object') {
             
-            if (typeof(quick_reply_header) == 'object') {
+            if (typeof(quick_reply_header) == 'object' || typeof(quick_reply_header) == 'function') {
             
                 if (parseInt(message_id) > 0 && parseInt(tid) > 0) {
 
@@ -244,7 +244,7 @@ function hideQuickReply()
 {
     var quick_reply_container = getObjById('quick_reply_container');
 
-    if (typeof(quick_reply_container) == 'object') {
+    if (typeof(quick_reply_container) == 'object' || typeof(quick_reply_container) == 'function') {
 
 	if (quick_reply_container.className == 'quick_reply_container_opened') {
 
@@ -261,7 +261,7 @@ function checkKeyPress(evt)
 
         var quick_reply_post_button = getObjsByName('post')[0];
 
-        if (typeof(quick_reply_post_button) == 'object') {
+        if (typeof(quick_reply_post_button) == 'object' || typeof(quick_reply_post_button) == 'function') {
 
 	    if (validateQuickReply()) {
 	    
@@ -275,7 +275,7 @@ function validateQuickReply()
 {
     var quick_reply_content = getObjsByName('t_content')[0];
 
-    if (typeof(quick_reply_content) == 'object') {
+    if (typeof(quick_reply_content) == 'object' || typeof(quick_reply_content) == 'function') {
         return quick_reply_content.value.trim().length > 0;
     }
 

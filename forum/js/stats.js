@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.js,v 1.5 2008-06-13 19:53:31 decoyduck Exp $ */
+/* $Id: stats.js,v 1.6 2008-09-08 20:38:01 decoyduck Exp $ */
 
 var stats_timeout;
 
@@ -29,7 +29,7 @@ function stats_display_initialise()
 {
     var forum_stats_obj = getObjById('forum_stats');
 
-    if (typeof(forum_stats_obj) == 'object') {
+    if (typeof(forum_stats_obj) == 'object' || typeof(forum_stats_obj) == 'function') {
 
         stats_timeout = setTimeout('stats_display_get_data()', 2000);
         return true;
@@ -55,7 +55,7 @@ function stats_display_handler()
 {
     var response_xml = stats_data.get_response_xml();
 
-    if (typeof(response_xml) == 'object') {
+    if (typeof(response_xml) == 'object' || typeof(response_xml) == 'function') {
 
         var user_stats_xml = response_xml.getElementsByTagName('users')[0];
 
@@ -65,9 +65,9 @@ function stats_display_handler()
 
         active_user_counts_obj = document.getElementById('active_user_counts');
 
-        if (typeof(active_user_counts_obj) == 'object') {
+        if (typeof(active_user_counts_obj) == 'object' || typeof(active_user_counts_obj) == 'function') {
 
-            if (typeof(user_stats_xml) == 'object') {
+            if (typeof(user_stats_xml) == 'object' || typeof(user_stats_xml) == 'function') {
 
                 var active_users_xml = user_stats_xml.getElementsByTagName('active')[0];
 
@@ -92,24 +92,24 @@ function stats_display_handler()
 
         active_user_list_obj = document.getElementById('active_user_list');
 
-        if (typeof(active_user_list_obj) == 'object') {
+        if (typeof(active_user_list_obj) == 'object' || typeof(active_user_list_obj) == 'function') {
 
-            if (typeof(user_stats_xml) == 'object') {
+            if (typeof(user_stats_xml) == 'object' || typeof(user_stats_xml) == 'function') {
 
                 active_users_xml = user_stats_xml.getElementsByTagName('active')[0];
 
                 active_user_list_xml = active_users_xml.getElementsByTagName('list')[0];
 
-                if (typeof(active_user_list_xml) == 'object') {
+                if (typeof(active_user_list_xml) == 'object' || typeof(active_user_list_xml) == 'function') {
 
                     var active_user_list_array = new Array(); var count = 0;
 
                     active_user_array_xml = active_user_list_xml.getElementsByTagName('user');
 
-                    if (typeof(active_user_array_xml) == 'object') {
+                    if (typeof(active_user_array_xml) == 'object' || typeof(active_user_array_xml) == 'function') {
 
                         for (var i = 0; i < active_user_array_xml.length; i++) {
-
+                            
                             active_user_uid  = active_user_array_xml[i].getElementsByTagName('uid')[0].childNodes[0].nodeValue;
                             active_user_display = active_user_array_xml[i].getElementsByTagName('display')[0].childNodes[0].nodeValue;
                             active_user_relationship = active_user_array_xml[i].getElementsByTagName('relationship')[0].childNodes[0].nodeValue;
@@ -146,9 +146,9 @@ function stats_display_handler()
 
         thread_stats_obj = document.getElementById('thread_stats');
 
-        if (typeof(thread_stats_obj) == 'object') {
+        if (typeof(thread_stats_obj) == 'object' || typeof(thread_stats_obj) == 'function') {
 
-            if (typeof(thread_stats_xml) == 'object') {
+            if (typeof(thread_stats_xml) == 'object' || typeof(thread_stats_xml) == 'function') {
 
                 num_threads = thread_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;
                 num_posts = post_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;
@@ -177,23 +177,23 @@ function stats_display_handler()
 
         post_stats_obj = document.getElementById('post_stats');
 
-        if (typeof(post_stats_obj) == 'object') {
+        if (typeof(post_stats_obj) == 'object' || typeof(post_stats_obj) == 'function') {
 
-            if (typeof(post_stats_xml) == 'object') {
+            if (typeof(post_stats_xml) == 'object' || typeof(post_stats_xml) == 'function') {
 
                 num_posts = post_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;
 
                 post_stats_recent = post_stats_xml.getElementsByTagName('recent')[0];
                 post_stats_record = post_stats_recent.getElementsByTagName('record')[0];
 
-                if (typeof(post_stats_recent) == 'object') {
+                if (typeof(post_stats_recent) == 'object' || typeof(post_stats_recent) == 'function') {
 
                     post_stats_recent_count = post_stats_recent.getElementsByTagName('count')[0].childNodes[0].nodeValue;
                     post_stats_recent_text = (post_stats_recent_count != 1) ? sprintf(lang['therehavebeenxpostsmadeinthelastsixtyminutes'] + '<br />', post_stats_recent_count) : lang['therehasbeenonepostmadeinthelastsxityminutes'] + '<br />';
 
                     post_stats_obj.innerHTML = post_stats_recent_text;
 
-                    if (typeof(post_stats_record) == 'object') {
+                    if (typeof(post_stats_record) == 'object' || typeof(post_stats_record) == 'function') {
 
                         post_stats_record_count = post_stats_record.getElementsByTagName('count')[0].childNodes[0].nodeValue;
                         post_stats_record_date = post_stats_record.getElementsByTagName('date')[0].childNodes[0].nodeValue;
@@ -209,9 +209,9 @@ function stats_display_handler()
 
         user_stats_obj = document.getElementById('user_stats');
 
-        if (typeof(user_stats_obj) == 'object') {
+        if (typeof(user_stats_obj) == 'object' || typeof(user_stats_obj) == 'function') {
 
-            if (typeof(user_stats_xml) == 'object') {
+            if (typeof(user_stats_xml) == 'object' || typeof(user_stats_xml) == 'function') {
 
                 user_count = user_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;
 
@@ -219,7 +219,7 @@ function stats_display_handler()
 
                     user_newest_xml = user_stats_xml.getElementsByTagName('newest')[0];
 
-                    if (typeof(user_newest_xml) == 'object') {
+                    if (typeof(user_newest_xml) == 'object' || typeof(user_newest_xml) == 'function') {
 
                         user_newest_uid = user_newest_xml.getElementsByTagName('uid')[0].childNodes[0].nodeValue;
                         user_newest_display = user_newest_xml.getElementsByTagName('display')[0].childNodes[0].nodeValue;

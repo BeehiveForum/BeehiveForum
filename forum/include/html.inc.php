@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.308 2008-09-08 20:38:01 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.309 2008-09-08 20:53:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1133,9 +1133,9 @@ class html_frameset
 {
     private $frames_array = array();
 
-    public function html_frame($src, $name, $frameborder = 0)
+    public function html_frame($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
     {
-        array_push($this->frames_array, new html_frame($src, $name, $frameborder));
+        array_push($this->frames_array, new html_frame($src, $name, $frameborder, $scrolling, $noresize));
     }
 
     public function get_frames()
@@ -1232,7 +1232,7 @@ class html_frame
     function output_html()
     {
         echo "<frame src=\"{$this->src}\" name=\"{$this->name}\" frameborder=\"{$this->frameborder}\" ";
-        echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\"" : "";
+        echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
         echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
         echo "/>\n";
     }

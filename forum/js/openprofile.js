@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.21 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.22 2008-09-08 21:59:59 decoyduck Exp $ */
 
 var edit_attachments = false;
 var email_window = false;
@@ -87,7 +87,7 @@ function attachProfileMenuClickHandler()
 {
     clearTimeout(menu_timeout);
     
-    if (document.all) {
+    if (document.attachEvent) {
         document.attachEvent('onclick', closeProfileOptions);
     }else {
         document.addEventListener('click', closeProfileOptions, true);
@@ -96,7 +96,7 @@ function attachProfileMenuClickHandler()
 
 function cancelProfileMenuClickHandler()
 {
-    if (document.all) {    
+    if (document.detachEvent) {    
         document.detachEvent('onclick', closeProfileOptions);
     }else {
         document.removeEventListener('click', closeProfileOptions, false);

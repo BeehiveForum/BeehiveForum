@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.43 2008-09-04 20:33:47 decoyduck Exp $ */
+/* $Id: general.js,v 1.44 2008-09-08 21:59:59 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -201,12 +201,9 @@ function addOverflow()
         }
     }
 
-    if (IE) {
-    
+    if (window.attachEvent) {
         window.attachEvent("onresize", redoOverFlow);
-
     }else {
-    
         window.addEventListener("resize", redoOverFlow, true);
     }
 }
@@ -248,7 +245,7 @@ function redoOverFlow()
 
 function attachListener(obj, event, func)
 {
-    if (document.all) {
+    if (obj.attachEvent) {
         obj.attachEvent('on' + event, function() { return eval(func) } );
     }else {
         obj.addEventListener(event, function() { return eval(func) }, true);

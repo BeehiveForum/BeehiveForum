@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.307 2008-09-07 16:11:22 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.308 2008-09-08 20:38:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1085,7 +1085,7 @@ function html_draw_top()
         echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
         echo "</script>\n";
         echo "<script type=\"text/javascript\">\n";
-        echo "if (typeof(_gat) == 'object') {\n";
+        echo "if (typeof(_gat) == 'object' || typeof(_gat) == 'function') {\n";
         echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
         echo "pageTracker._trackPageview();\n";
         echo "}\n";
@@ -1116,7 +1116,7 @@ function html_draw_bottom($frame_set_html = false)
             echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
             echo "</script>\n";
             echo "<script type=\"text/javascript\">\n";
-            echo "if (typeof(_gat) == 'object') {\n";
+            echo "if (typeof(_gat) == 'object' || typeof(_gat) == 'function') {\n";
             echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
             echo "pageTracker._trackPageview();\n";
             echo "}\n";

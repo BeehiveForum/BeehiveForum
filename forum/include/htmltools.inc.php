@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.83 2008-08-21 17:47:31 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.84 2008-09-08 20:38:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,12 +70,7 @@ function TinyMCE($tinymce_auto_focus)
         $str.= "        invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\",\n";
         $str.= "        theme_advanced_toolbar_location : \"top\",\n";
         $str.= "        theme_advanced_toolbar_align : \"left\",\n";
-        $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\",\n";
-        $str.= "        // Drop lists for link/image/media/template dialogs\n";
-        $str.= "        template_external_list_url : \"lists/template_list.js\",\n";
-        $str.= "        external_link_list_url : \"lists/link_list.js\",\n";
-        $str.= "        external_image_list_url : \"lists/image_list.js\",\n";
-        $str.= "        media_external_list_url : \"lists/media_list.js\",\n\n";
+        $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\"\n";
         $str.= "    });\n";
         $str.= "    var webtag = \"$webtag\";\n";
         $str.= "    var auto_check_spell_started = false;\n\n";
@@ -390,13 +385,14 @@ class TextAreaHTML {
             }
 
             $str.= "    }\n";
-            $str.= "    function activate_tools() {\n";
-            $str.= "      for (var i=1; i<={$this->tbs}; i++) {\n";
-            $str.= "          show_hide('bh_tb' + i, 'block');\n";
-            $str.= "      }\n";
+            $str.= "    function activate_tools()\n";
+            $str.= "    {\n";
+            $str.= "        for (var i=1; i<={$this->tbs}; i++) {\n";
+            $str.= "            show_hide('bh_tb' + i, 'block');\n";
+            $str.= "        }\n\n";
 
             if ($focus !== false) {
-                $str.= "      document.{$this->form}.". ($focus === true ? $this->tas[0] : $focus). ".focus();\n";
+                $str.= "        document.{$this->form}.". ($focus === true ? $this->tas[0] : $focus). ".focus();\n";
             }
 
             $str.= "        active_text(document.{$this->form}.{$this->tas[0]});\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.86 2008-09-07 13:41:05 decoyduck Exp $ */
+/* $Id: start.php,v 1.87 2008-09-10 18:46:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -122,11 +122,11 @@ if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 
 if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 
-    $frameset->html_frame("visitor_log.php?webtag=$webtag", html_get_frame_name('left'));
+    $frameset->html_frame("visitor_log.php?webtag=$webtag", html_get_frame_name('right'));
 
 }else {
 
-    $frameset->html_frame("start_main.php?webtag=$webtag", html_get_frame_name('left'));
+    $frameset->html_frame("start_main.php?webtag=$webtag", html_get_frame_name('right'));
 }
 
 $frameset->output_html();

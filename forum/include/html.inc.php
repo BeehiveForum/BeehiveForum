@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.309 2008-09-08 20:53:20 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.310 2008-09-10 19:46:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -981,54 +981,6 @@ function html_draw_top()
                     if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
                     if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
                 }
-            }
-        }
-
-        $captcha_reload_pages = array('register.php');
-
-        if (in_array(basename($_SERVER['PHP_SELF']), $captcha_reload_pages)) {
-
-            if (forum_get_setting('text_captcha_enabled', 'Y')) {
-
-                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                echo "<!--\n\n";
-                echo "var captcha_data = new xml_http_request();\n\n";
-                echo "function captcha_reload()\n";
-                echo "{\n";
-                echo "    captcha_data.set_handler(captcha_reload_handler);\n";
-                echo "    captcha_data.get_url('register.php?webtag=$webtag&reload_captcha=true');\n";
-                echo "}\n\n";
-                echo "function captcha_reload_abort()\n";
-                echo "{\n";
-                echo "    captcha_data.abort();\n";
-                echo "    captcha_data.close();\n";
-                echo "    delete captcha_data;\n";
-                echo "}\n\n";
-                echo "function captcha_reload_handler()\n";
-                echo "{\n";
-                echo "    var response_xml = captcha_data.get_response_xml();\n\n";
-                echo "    var captcha_img_obj = getObjById('captcha_img');\n";
-                echo "    var private_key_obj = getObjsByName('private_key')[0];\n";
-                echo "    var public_key_obj  = getObjsByName('public_key')[0];\n\n";
-                echo "    if (typeof(captcha_img_obj) == 'object' && captcha_img_obj.getElementsByTagName) {\n\n";
-                echo "        if (typeof(private_key_obj) == 'object' && private_key_obj.getElementsByTagName) {\n\n";
-                echo "            if (typeof(public_key_obj) == 'object' && public_key_obj.getElementsByTagName) {\n\n";
-                echo "                var new_captcha_img = response_xml.getElementsByTagName('image')[0];\n";
-                echo "                var new_key_length  = response_xml.getElementsByTagName('chars')[0];\n";
-                echo "                var new_public_key  = response_xml.getElementsByTagName('key')[0];\n\n";
-                echo "                if (typeof(new_captcha_img) == 'object' && typeof(new_key_length) == 'object' && typeof(new_public_key) == 'object') {\n\n";
-                echo "                    private_key_obj.value = '';\n";
-                echo "                    private_key_obj.maxLength = new_key_length.childNodes[0].nodeValue;\n";
-                echo "                    public_key_obj.value = new_public_key.childNodes[0].nodeValue;\n\n";
-                echo "                    captcha_img_obj.src = new_captcha_img.childNodes[0].nodeValue;\n";
-                echo "                }\n";
-                echo "            }\n";
-                echo "        }\n";
-                echo "    }\n\n";
-                echo "    return true;\n";
-                echo "}\n\n";
-                echo "//-->\n";
-                echo "</script>\n";
             }
         }
     }

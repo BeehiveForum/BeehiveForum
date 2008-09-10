@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.190 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: register.php,v 1.191 2008-09-10 19:46:33 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -562,7 +562,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top('emoticons.js');
+html_draw_top('emoticons.js', 'register.js');
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 

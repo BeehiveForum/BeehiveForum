@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.586 2008-09-07 14:58:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.587 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // British English language file
 
@@ -629,6 +629,9 @@ $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 $lang['moreadminoptions'] = "More Admin Options";
+$lang['sendregistrationlink'] = "Send Registration Link";
+$lang['emailregistrationlinkfailedtosend'] = "Registration email failed to send. Please check your server's <a href=\"http://uk2.php.net/manual/en/mail.configuration.php\">PHP mail configuration</a>.";
+$lang['failedtogenerateuniqueregistrationlink'] = "Failed to generate unique registration link";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -989,6 +992,7 @@ $lang['forum_settings_help_60'] = "Depending on server performance and the numbe
 $lang['forum_settings_help_61'] = "<b>Send email notification to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 $lang['forum_settings_help_61'] = "Enter your <b>Google Analytics Account ID</b> here to enable Google Analytic tracking of your forum. Google Analytics will track visitors to your site and record how long they stay and which pages they visit. By visiting the Google Analytics site your can see an overview of how your forum is used.";
 $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account you will need to sign up for one by clicking <a href=\"https://www.google.com/analytics/\" target=\"_blank\">here</a>.";
+$lang['forum_settings_help_63'] = "Use this page to send a registration invitation to an email address to help a user register when they cannot otherwise use the normal registration page, for example the visually impaired when you have the text-captcha enabled, or when normal registrations are disabled.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1146,6 +1150,7 @@ $lang['toplevel'] = "Top Level";
 $lang['maynotaccessthissection'] = "You may not access this section.";
 $lang['toplevel'] = "Top Level";
 $lang['links'] = "Links";
+$lang['linkURL'] = "Link URL";
 $lang['externallink'] = "External Link";
 $lang['viewmode'] = "View Mode";
 $lang['hierarchical'] = "Hierarchical";
@@ -1709,7 +1714,8 @@ $lang['useraccountcreatedconfirmfailed'] = "Your user account has been created b
 $lang['useraccountcreatedconfirmsuccess'] = "Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address.";
 $lang['useraccountcreated'] = "Your user account has been created successfully! Click the continue button below to login";
 $lang['errorcreatinguserrecord'] = "Error creating user record";
-$lang['userregistration'] = "User Registration";
+$lang['userregistrationlink'] = "User Registration Link";
+$lang['registrationinformation'] = "Registration Information";
 $lang['registrationinformationrequired'] = "Registration Information (Required)";
 $lang['profileinformationoptional'] = "Profile Information (Optional)";
 $lang['preferencesoptional'] = "Preferences (Optional)";
@@ -1724,7 +1730,7 @@ $lang['confirmpassword'] = "Confirm Password";
 $lang['invalidemailaddressformat'] = "Invalid email address format";
 $lang['moreoptionsavailable'] = "More Profile and Preference options are available once you register";
 $lang['textcaptchaconfirmation'] = "Confirmation";
-$lang['textcaptchaexplain'] = "To the right is a text-captcha image. Please type the code you can see in the image into the input field below it.";
+$lang['textcaptchaexplain'] = "To prevent automated registrations this forum requires you enter a confirmation code. The code is displayed in the image you to the right. If you are visually impaired or cannot otherwise read the code please contact the %s.";
 $lang['textcaptchaimgtip'] = "This is a captcha-picture. It is used to prevent automatic registration";
 $lang['textcaptchamissingkey'] = "A confirmation code is required.";
 $lang['textcaptchaverificationfailed'] = "Text-captcha verification code was incorrect. Please re-enter it.";
@@ -1732,6 +1738,7 @@ $lang['forumrules'] = "Forum Rules";
 $lang['forumrulesnotification'] = "In order to proceed, you must agree with the following rules";
 $lang['forumrulescheckbox'] = "I have read, and agree to abide by the forum rules.";
 $lang['youmustagreetotheforumrules'] = "You must agree to the forum rules before you can continue.";
+$lang['registrationlink'] = "Registration Link";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

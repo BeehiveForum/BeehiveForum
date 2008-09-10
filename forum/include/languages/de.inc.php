@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.95 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.96 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // German language file
 
@@ -1702,7 +1702,6 @@ $lang['confirmpassword'] = "Passwort bestaetigen";
 $lang['invalidemailaddressformat'] = "Falsches eMail-Adressformat";
 $lang['moreoptionsavailable'] = "Mehr Profil- und Praeferenzoptionen gibt es nach deiner Registrierung";
 $lang['textcaptchaconfirmation'] = "Bestaetigung";
-$lang['textcaptchaexplain'] = "Rechts ist ein textbeinhaltendes Bild. Bitte tippe die Zeichen die Du in dem Bild sehen kannst in das Eingabefeld darunter.";
 $lang['textcaptchaimgtip'] = "Dies ist ein captcha-Bild. Es ist notwendig um eine automatische Registrierung zu ueberpruefen";
 $lang['textcaptchamissingkey'] = "Der Bestaetigungscode ist notwendig.";
 $lang['textcaptchaverificationfailed'] = "Text-Vergleich fehlgeschlagen. Bitte nochmals eingeben.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.127 2008-08-21 20:46:17 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.128 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,22 +72,27 @@ function bh_error_handler_process_args($func_args_array)
 
         if (is_array($func_arg)) {
 
-            if (sizeof($func_arg) > 0) {
-
-                $arguments_array[] = sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
-
-            }else {
-
-                $arguments_array[] = is_array($func_arg) ? 'Array(void)' : "'$func_arg'";
-            }
+            $arguments_array[] = sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
 
         }else if (is_object($func_arg)) {
 
-            $arguments_array[] = sprintf("class: %s", get_class($func_arg));
+            $arguments_array[] = sprintf("Class: %s", get_class($func_arg));
+
+        }else if (is_resource($func_arg)) {
+
+            $arguments_array[] = sprintf("Resource id #%s", get_class($func_arg));
+
+        }else if (is_bool($func_arg)) {
+
+            $arguments_array[] = ($func_arg === true) ? 'true' : 'false';
+
+        }else if (is_string($func_arg)) {
+
+            $arguments_array[] = "'$func_arg'";
 
         }else {
 
-            $arguments_array[] = "'$func_arg'";
+            $arguments_array[] = $func_arg;
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.189 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: register.php,v 1.190 2008-09-10 18:38:37 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -161,6 +161,12 @@ if (isset($_GET['reload_captcha'])) {
         echo "</captcha>\n";
         exit;
     }
+}
+
+if (isset($_GET['private_key']) && strlen(trim(_stripslashes($_GET['private_key']))) > 0) {
+    $text_captcha_private_key = trim(_stripslashes($_GET['private_key']));
+}else {
+    $text_captcha_private_key = "";
 }
 
 if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
@@ -802,9 +808,17 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    if (forum_get_setting('text_captcha_enabled', 'Y')) {
+    if (forum_get_setting('text_captcha_enabled', 'Y') && ($text_captcha->generate_keys())) {
 
-        if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
+        if (strlen(trim($text_captcha_private_key)) > 0) {
+
+            echo form_input_hidden("private_key", _htmlentities($text_captcha_private_key));
+            echo form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key()));
+
+        }else if ($text_captcha->make_image()) {
+
+            $forum_owner_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            $forum_owner_link  = sprintf("<a href=\"mailto:%s\">{$lang['forumowner']}</a>", $forum_owner_email);
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -823,14 +837,13 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf($lang['textcaptchaexplain'], $forum_owner_link), "</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><a href=\"Javascript:void(0)\" onclick=\"return captcha_reload()\"><img src=\"", style_image('reload.png'), "\" border=\"0\" alt=\"\" /></a></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("private_key", "", _htmlentities($text_captcha->get_num_chars()), _htmlentities($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", "", 20, _htmlentities($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -854,6 +867,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "      <td align=\"center\">", form_submit('register', $lang['register']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
+    echo "  <br />\n";
     echo "</form>\n";
     echo "</div>\n";
 

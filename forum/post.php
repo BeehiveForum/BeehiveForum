@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.366 2008-09-06 19:23:30 decoyduck Exp $ */
+/* $Id: post.php,v 1.367 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -294,9 +294,23 @@ if (isset($_POST['t_post_html'])) {
         $post_html = POST_HTML_DISABLED;
     }
 
-    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
-    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
+    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
+        $emots_enabled = false;
+    }else {
+        $emots_enabled = true;
+    }
+
+    if (($page_prefs & POST_AUTO_LINKS) > 0) {
+        $links_enabled = true;
+    }else {
+        $links_enabled = false;
+    }
+
+    if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+        $spelling_enabled = true;
+    }else {
+        $spelling_enabled = false;
+    }
 
     if (($high_interest = bh_session_get_value('MARK_AS_OF_INT')) === false) {
         $high_interest = "N";

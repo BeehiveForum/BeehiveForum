@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.103 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.104 2008-09-10 18:38:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -163,7 +163,6 @@ if (forum_check_webtag_available($webtag)) {
         echo "  </tr>\n";
         echo "</table>\n";
 
-
     }elseif (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
         echo "<table border=\"0\" width=\"100%\">\n";
@@ -178,9 +177,26 @@ if (forum_check_webtag_available($webtag)) {
         echo "  </tr>\n";
         echo "</table>\n";
     }
-}
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+
+        echo "<table border=\"0\" width=\"100%\">\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"subhead\">{$lang['forummanagement']}</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_user_register.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['sendregistrationlink']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['manageforums']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['globalforumsettings']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+    }
+
+}else if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
     echo "<table border=\"0\" width=\"100%\">\n";
     echo "  <tr>\n";
@@ -188,6 +204,9 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['users']}</a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_user_register.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['sendregistrationlink']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['manageforums']}</a></td>\n";

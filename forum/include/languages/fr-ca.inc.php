@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.124 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.125 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1701,7 +1701,6 @@ $lang['confirmpassword'] = "Confirmer mot de passe";
 $lang['invalidemailaddressformat'] = "Format d'adresse courriel invalide";
 $lang['moreoptionsavailable'] = "D'autres options de Profile et de Préférences sont disponibles une fois que vous vous êtes enregistré";
 $lang['textcaptchaconfirmation'] = "Confirmation";
-$lang['textcaptchaexplain'] = "À la droite est une image de text-captcha. SVP taper dans la zone d'entrée ci-dessous le code que vous voyer dans l'image.";
 $lang['textcaptchaimgtip'] = "Ceci est une image-captcha. Elle est utilisée pour prévenir l'enregistrement automatique.";
 $lang['textcaptchamissingkey'] = "Un code de confimation est requis.";
 $lang['textcaptchaverificationfailed'] = "Le code de vérification du text captcha est erroné. SVP le réintroduire.";

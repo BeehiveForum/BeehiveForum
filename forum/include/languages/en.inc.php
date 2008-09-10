@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.587 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.588 2008-09-10 18:59:29 decoyduck Exp $ */
 
 // British English language file
 
@@ -242,7 +242,6 @@ $lang['move'] = "Move";
 $lang['closed'] = "Closed";
 $lang['open'] = "Open";
 $lang['restricted'] = "Restricted";
-$lang['hidden'] = "Hidden";
 $lang['forumiscurrentlyclosed'] = "%s is currently closed";
 $lang['youdonothaveaccesstoforum'] = "You do not have access to %s. %s";
 $lang['toapplyforaccessplease'] = "To apply for access please contact the %s.";
@@ -274,7 +273,6 @@ $lang['newstylesuccessfullycreated'] = "New style successfully created.";
 $lang['stylealreadyexists'] = "A style with that filename already exists.";
 $lang['stylenofilename'] = "You did not enter a filename to save the style with.";
 $lang['stylenodatasubmitted'] = "Could not read forum style data.";
-$lang['styleexp'] = "Use this page to help create a randomly generated style for your forum.";
 $lang['stylecontrols'] = "Controls";
 $lang['stylecolourexp'] = "Click on a colour to make a new style sheet based on that colour. Current base colour is first in list.";
 $lang['standardstyle'] = "Standard Style";
@@ -615,7 +613,6 @@ $lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
 $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
-$lang['approveselected'] = "Approve selected";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['endsession'] = "End Session (Kick)";
 $lang['visitorlog'] = "Visitor Log";
@@ -624,14 +621,10 @@ $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
 $lang['addnew'] = "Add New";
 $lang['deleteselected'] = "Delete Selected";
-$lang['deletemessages'] = "Delete Messages";
 $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 $lang['moreadminoptions'] = "More Admin Options";
-$lang['sendregistrationlink'] = "Send Registration Link";
-$lang['emailregistrationlinkfailedtosend'] = "Registration email failed to send. Please check your server's <a href=\"http://uk2.php.net/manual/en/mail.configuration.php\">PHP mail configuration</a>.";
-$lang['failedtogenerateuniqueregistrationlink'] = "Failed to generate unique registration link";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -992,7 +985,6 @@ $lang['forum_settings_help_60'] = "Depending on server performance and the numbe
 $lang['forum_settings_help_61'] = "<b>Send email notification to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 $lang['forum_settings_help_61'] = "Enter your <b>Google Analytics Account ID</b> here to enable Google Analytic tracking of your forum. Google Analytics will track visitors to your site and record how long they stay and which pages they visit. By visiting the Google Analytics site your can see an overview of how your forum is used.";
 $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account you will need to sign up for one by clicking <a href=\"https://www.google.com/analytics/\" target=\"_blank\">here</a>.";
-$lang['forum_settings_help_63'] = "Use this page to send a registration invitation to an email address to help a user register when they cannot otherwise use the normal registration page, for example the visually impaired when you have the text-captcha enabled, or when normal registrations are disabled.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1150,7 +1142,6 @@ $lang['toplevel'] = "Top Level";
 $lang['maynotaccessthissection'] = "You may not access this section.";
 $lang['toplevel'] = "Top Level";
 $lang['links'] = "Links";
-$lang['linkURL'] = "Link URL";
 $lang['externallink'] = "External Link";
 $lang['viewmode'] = "View Mode";
 $lang['hierarchical'] = "Hierarchical";
@@ -1446,7 +1437,6 @@ $lang['successfullydeletedselectedmessages'] = "Successfully deleted selected me
 $lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
 $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
 $lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
-$lang['gobacktopmfolder'] = "Go Back to %s";
 $lang['deletemessagesconfirmation'] = "Are you sure you want to delete all of the selected messages?";
 $lang['youmustselectsomemessages'] = "You must select some messages to process";
 
@@ -1714,7 +1704,7 @@ $lang['useraccountcreatedconfirmfailed'] = "Your user account has been created b
 $lang['useraccountcreatedconfirmsuccess'] = "Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address.";
 $lang['useraccountcreated'] = "Your user account has been created successfully! Click the continue button below to login";
 $lang['errorcreatinguserrecord'] = "Error creating user record";
-$lang['userregistrationlink'] = "User Registration Link";
+$lang['userregistration'] = "User Registration";
 $lang['registrationinformation'] = "Registration Information";
 $lang['registrationinformationrequired'] = "Registration Information (Required)";
 $lang['profileinformationoptional'] = "Profile Information (Optional)";
@@ -1738,7 +1728,6 @@ $lang['forumrules'] = "Forum Rules";
 $lang['forumrulesnotification'] = "In order to proceed, you must agree with the following rules";
 $lang['forumrulescheckbox'] = "I have read, and agree to abide by the forum rules.";
 $lang['youmustagreetotheforumrules'] = "You must agree to the forum rules before you can continue.";
-$lang['registrationlink'] = "Registration Link";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 
@@ -1821,11 +1810,9 @@ $lang['clickheretoviewresults'] = "Click here to view results.";
 $lang['select'] = "Select";
 $lang['currentselection'] = "Current Selection";
 $lang['addtoselection'] = "Add to Selection";
-$lang['youcanonlyselectmaximumoftenusers'] = "You can only select maximum 10 users";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";
-$lang['mustentersomethingtosearchfor'] = "You must enter something to search for";
 $lang['maximumselectionoftenlimitreached'] = "Maximum selection limit of 10 has been reached";
 
 // Start page (start_left.php) -----------------------------------------
@@ -2167,7 +2154,6 @@ $lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 
-$lang['exportmessages'] = "Export Messages";
 $lang['pmexportastype'] = "Export as type";
 $lang['pmexporthtml'] = "HTML";
 $lang['pmexportxml'] = "XML";

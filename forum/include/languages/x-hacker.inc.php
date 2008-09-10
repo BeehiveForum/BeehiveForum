@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.296 2008-09-06 16:05:56 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.297 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // British English language file
 
@@ -1701,7 +1701,6 @@ $lang['confirmpassword'] = "conF1RM P4SSW0Rd";
 $lang['invalidemailaddressformat'] = "inv4L1D EmaIl AdDRess F0Rm4+";
 $lang['moreoptionsavailable'] = "moR3 PrOF1L3 4Nd PrEPH3r3NcE oP+10N\$ Ar3 @v4IL4ble 0NcE J00 R3G1\$+er";
 $lang['textcaptchaconfirmation'] = "c0NPhIrm4+1ON";
-$lang['textcaptchaexplain'] = "tO +hE rIgh+ I\$ 4 +3Xt-C4PtCh4 IM4gE. PlE4\$3 +YP3 +H3 C0De j00 CAn S33 1N +He iM49E 1nTO +3h InpUt PHiELd B3LOw I+.";
 $lang['textcaptchaimgtip'] = "thIs 1s @ C4p+ch4-PiCTURE. 1+ i\$ US3d +0 PreVEN+ 4U+0MA+1c REgi\$+R4T10N";
 $lang['textcaptchamissingkey'] = "a coNphiRM@tIOn C0dE is ReQU1r3D.";
 $lang['textcaptchaverificationfailed'] = "t3Xt-C4P+cHa Verific@TIOn Cod3 wA\$ 1NcORr3ct. Ple@S3 R3-ENT3r 1T.";

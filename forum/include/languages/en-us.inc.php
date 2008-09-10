@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.78 2008-09-06 18:38:18 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.79 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // American English language file
 
@@ -1702,7 +1702,7 @@ $lang['confirmpassword'] = "Confirm Password";
 $lang['invalidemailaddressformat'] = "Invalid email address format";
 $lang['moreoptionsavailable'] = "More Profile and Preference options are available once you register";
 $lang['textcaptchaconfirmation'] = "Confirmation";
-$lang['textcaptchaexplain'] = "To the right is a text-captcha image. Please type the code you can see in the image into the input field below it.";
+$lang['textcaptchaexplain'] = "To prevent automated registrations this forum requires you enter a confirmation code. The code is displayed in the image you to the right. If you are visually impaired or cannot otherwise read the code please contact the %s.";
 $lang['textcaptchaimgtip'] = "This is a captcha-picture. It is used to prevent automatic registration";
 $lang['textcaptchamissingkey'] = "A confirmation code is required.";
 $lang['textcaptchaverificationfailed'] = "Text-captcha verification code was incorrect. Please re-enter it.";

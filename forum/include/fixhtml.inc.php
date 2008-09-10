@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.140 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.141 2008-09-10 18:38:37 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1519,13 +1519,14 @@ function add_paragraphs($html, $br_only = true)
 
             $tag = array();
 
-            if (isset($html_a[$i+1])) {
+            if (isset($html_a[$i]) && isset($html_a[$i + 1])) {
 
-                preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i+1], $tag);
+                if (preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i + 1], $tag) > 0) {
 
-                if ($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
+                    if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
-                    $html_a[$i].= "\n\n";
+                        $html_a[$i].= "\n\n";
+                    }
                 }
             }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.216 2008-09-06 16:05:55 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.217 2008-09-10 18:38:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -348,8 +348,17 @@ if (isset($_POST['t_post_html'])) {
         $post_html = POST_HTML_DISABLED;
     }
 
-    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
+        $emots_enabled = false;
+    }else {
+        $emots_enabled = true;
+    }
+
+    if (($page_prefs & POST_AUTO_LINKS) > 0) {
+        $links_enabled = true;
+    }else {
+        $links_enabled = false;
+    }
 }
 
 if (!isset($t_content)) $t_content = "";

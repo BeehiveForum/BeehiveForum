@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.360 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.361 2008-09-11 22:52:25 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -938,7 +938,8 @@ function bh_session_get_perm_array($uid)
 
     $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
-    $sql.= "FROM GROUP_USERS LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) WHERE GROUP_USERS.UID = '$uid' ";
     $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 

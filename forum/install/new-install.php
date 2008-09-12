@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.182 2008-09-06 20:13:58 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.183 2008-09-12 20:53:30 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -64,13 +64,14 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                           'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
                           'USER_TRACK',    'WORD_FILTER');
 
-    $global_tables = array('DICTIONARY',          'FORUM_SETTINGS',        'FORUMS',
-                           'GROUP_PERMS',         'GROUP_USERS',           'GROUPS',
-                           'PM',                  'PM_ATTACHMENT_IDS',     'PM_CONTENT',
-                           'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
-                           'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',        'SESSIONS',
-                           'TIMEZONES',           'USER',                  'USER_FORUM',
-                           'USER_HISTORY',        'USER_PREFS',            'VISITOR_LOG');
+    $global_tables = array('DICTIONARY',          'FORUM_SETTINGS',      'FORUMS',
+                           'GROUP_PERMS',         'GROUP_USERS',         'GROUPS',
+                           'PM',                  'PM_ATTACHMENT_IDS',   'PM_CONTENT',
+                           'PM_FOLDERS',          'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES',
+                           'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
+                           'SESSIONS',            'TIMEZONES',           'USER',
+                           'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
+                           'VISITOR_LOG');
 
     foreach ($forum_tables as $forum_table) {
 
@@ -746,6 +747,19 @@ $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  CONTENT TEXT, ";
 $sql.= "  PRIMARY KEY (MID), ";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE PM_FOLDERS (";
+$sql.= "  UID MEDIUMINT(8) NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) NOT NULL,";
+$sql.= "  TITLE VARCHAR(32) NOT NULL,";
+$sql.= "  PRIMARY KEY (UID, FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {

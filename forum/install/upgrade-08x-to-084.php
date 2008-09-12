@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.10 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.11 2008-09-12 20:53:30 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -300,6 +300,21 @@ if (install_index_exists('VISITOR_LOG', 'SID')) {
 // Add the UNIQUE index to SID.
 
 $sql = "ALTER IGNORE TABLE VISITOR_LOG ADD UNIQUE (SID)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New table to store PM Folder names
+
+$sql = "CREATE TABLE PM_FOLDERS (";
+$sql.= "  UID MEDIUMINT(8) NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) NOT NULL,";
+$sql.= "  TITLE VARCHAR(32) NOT NULL,";
+$sql.= "  PRIMARY KEY (UID, FID)";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 

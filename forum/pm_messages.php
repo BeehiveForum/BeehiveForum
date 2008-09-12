@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.58 2008-09-07 14:58:25 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.59 2008-09-12 20:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -133,22 +133,25 @@ $pm_unread_count = 0;
 
 pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
-// Various Headers for the PM folders
+// Get custom folder names array.
 
-$pm_header_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
-                         PM_FOLDER_SENT    => $lang['pmsentitems'],
-                         PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
-                         PM_FOLDER_SAVED   => $lang['pmsaveditems'],
-                         PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
-                         PM_SEARCH_RESULTS => $lang['searchresults']);
+if (!$pm_folder_names_array = pm_get_folder_names()) {
 
-$pm_folder_name_array = array(PM_OUTBOX      => $lang['pmoutbox'],
-                              PM_UNREAD      => $lang['pminbox'],
-                              PM_READ        => $lang['pminbox'],
-                              PM_SENT        => $lang['pmsentitems'],
-                              PM_SAVED_IN    => $lang['pmsaveditems'],
-                              PM_SAVED_OUT   => $lang['pmsaveditems'],
-                              PM_SAVED_DRAFT => $lang['pmdrafts']);
+    $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                                   PM_FOLDER_SENT    => $lang['pmsentitems'],
+                                   PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                                   PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                                   PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
+                                   PM_SEARCH_RESULTS => $lang['searchresults']);
+}
+
+$pm_folder_name_array = array(PM_OUTBOX      => $pm_folder_names_array[PM_FOLDER_OUTBOX],
+                              PM_UNREAD      => $pm_folder_names_array[PM_FOLDER_INBOX],
+                              PM_READ        => $pm_folder_names_array[PM_FOLDER_INBOX],
+                              PM_SENT        => $pm_folder_names_array[PM_FOLDER_SENT],
+                              PM_SAVED_IN    => $pm_folder_names_array[PM_FOLDER_SAVED],
+                              PM_SAVED_OUT   => $pm_folder_names_array[PM_FOLDER_SAVED],
+                              PM_SAVED_DRAFT => $pm_folder_names_array[PM_FOLDER_DRAFTS]);
 
 // Column sorting stuff
 
@@ -463,7 +466,7 @@ if ($current_folder == PM_FOLDER_INBOX) {
     $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start);
 }
 
-echo "<h1>{$pm_header_array[$current_folder]}</h1>\n";
+echo "<h1>{$lang['privatemessages']} &raquo; {$pm_folder_names_array[$current_folder]}</h1>\n";
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -517,7 +520,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) < 1) {
 
-    html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], _htmlentities($pm_header_array[$current_folder])), '96%', 'center');
+    html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], _htmlentities($pm_folder_names_array[$current_folder])), '96%', 'center');
 }
 
 echo "<br />\n";
@@ -543,14 +546,16 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
 }
 
+$col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '40%' : '60%';
+
 if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_by == 'PM.SUBJECT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" nowrap=\"nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }
 
 if ($current_folder == PM_SEARCH_RESULTS) {

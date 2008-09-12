@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.588 2008-09-10 18:59:29 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.589 2008-09-12 20:53:30 decoyduck Exp $ */
 
 // British English language file
 
@@ -234,6 +234,7 @@ $lang['thefollowingerrorswereencountered'] = "The following errors were encounte
 $lang['admintools'] = "Admin Tools";
 $lang['forummanagement'] = "Forum Management";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
+$lang['managefolder'] = "Manage Folder";
 $lang['managefolders'] = "Manage Folders";
 $lang['manageforums'] = "Manage Forums";
 $lang['manageforumpermissions'] = "Manage Forum Permissions";
@@ -1439,6 +1440,7 @@ $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
 $lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
 $lang['deletemessagesconfirmation'] = "Are you sure you want to delete all of the selected messages?";
 $lang['youmustselectsomemessages'] = "You must select some messages to process";
+$lang['successfullyrenamedfolder'] = "Successfully Renamed Folder";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -2154,6 +2156,7 @@ $lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 
+$lang['exportfolder'] = "Export Folder";
 $lang['pmexportastype'] = "Export as type";
 $lang['pmexporthtml'] = "HTML";
 $lang['pmexportxml'] = "XML";

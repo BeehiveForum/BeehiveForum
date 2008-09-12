@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.258 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.259 2008-09-12 20:53:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2666,6 +2666,72 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
     }
 
     return true;
+}
+
+function pm_get_folder_names()
+{
+    if (!$db_pm_get_folder_names = db_connect()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $lang = load_language_file();
+
+    $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                                   PM_FOLDER_SENT    => $lang['pmsentitems'],
+                                   PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                                   PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                                   PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
+                                   PM_SEARCH_RESULTS => $lang['searchresults']);
+
+    $sql = "SELECT FID, TITLE FROM PM_FOLDERS WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_pm_get_folder_names)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while (($folder_name_data = db_fetch_array($result))) {
+
+            if (strlen(trim($folder_name_data['TITLE'])) > 0) {
+
+                $pm_folder_names_array[$folder_name_data['FID']] = $folder_name_data['TITLE'];
+            }
+        }
+    }
+
+    return $pm_folder_names_array;
+}
+
+function pm_update_folder_name($folder, $folder_name)
+{
+    if (!$db_pm_update_folder_name = db_connect()) return false;
+
+    if (!is_numeric($folder)) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $folder_name = db_escape_string($folder_name);
+
+    $sql = "INSERT INTO PM_FOLDERS (UID, FID, TITLE) VALUES('$uid', '$folder', '$folder_name') ";
+    $sql.= "ON DUPLICATE KEY UPDATE TITLE = VALUES(TITLE)";
+
+    if (!$result = db_query($sql, $db_pm_update_folder_name)) return false;
+
+    return true;
+}
+
+function pm_reset_folder_name($folder)
+{
+    if (!$db_pm_reset_folder_name = db_connect()) return false;
+
+    if (!is_numeric($folder)) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "DELETE FROM PM_FOLDERS WHERE UID = '$uid' AND FID = '$folder'";
+
+    if (!$result = db_query($sql, $db_pm_reset_folder_name)) return false;
+
+    return db_affected_rows($db_pm_reset_folder_name) > 0;
 }
 
 ?>

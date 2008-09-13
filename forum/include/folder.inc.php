@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.153 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.154 2008-09-13 20:32:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -285,20 +285,30 @@ function folder_get_available()
 
 function folder_get_available_by_forum($forum_fid)
 {
-    if (user_is_guest()) {
+    if (!$db_folder_get_available_by_forum = db_connect()) return 0;
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
-            return implode(',', preg_grep('/[0-9]+/u', $folder_list));
-        }
+    if (!is_numeric($forum_fid)) return 0;
 
-    }else {
+    $access_allowed = user_is_guest() ? USER_PERM_GUEST_ACCESS : USER_PERM_POST_READ;
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
-            return implode(',', preg_grep('/[0-9]+/u', $folder_list));
+    $sql = "SELECT GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_PERMS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM = 1 AND GROUP_PERMS.FID > 0 ";
+    $sql.= "HAVING PERM & $access_allowed > 0";
+
+    $result = db_query($sql, $db_folder_get_available_by_forum);
+
+    if (db_num_rows($result) > 0) {
+
+        $folder_list_array = array();
+
+        while ($folder_data = db_fetch_array($result)) {
+
+            $folder_list_array[] = $folder_data['FID'];
         }
     }
 
-    return '0';
+    return (sizeof($folder_list_array) > 0) ? implode(',', $folder_list_array) : 0;
 }
 
 function folder_get_available_array()

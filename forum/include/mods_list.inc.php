@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.inc.php,v 1.14 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: mods_list.inc.php,v 1.15 2008-09-13 17:45:58 decoyduck Exp $ */
 
 /**
 * Fucntions related to generating the folder moderators lists
@@ -69,11 +69,9 @@ function mods_list_get_mods($fid)
     }else {
 
         $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
-        $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
         $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
 
         $sql.= "AND ((GROUP_PERMS.PERM & $user_perm_admin_tools) > 0 ";
-        $sql.= "OR (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
         $sql.= "OR (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0) ";
     }
 

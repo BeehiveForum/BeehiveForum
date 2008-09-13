@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.119 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.120 2008-09-13 17:45:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -121,7 +121,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     if (isset($_GET['siguid'])) {
 
@@ -169,7 +169,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     $uid = bh_session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);

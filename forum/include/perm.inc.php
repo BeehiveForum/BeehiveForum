@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.134 2008-09-11 22:52:25 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.135 2008-09-13 17:45:58 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -539,40 +539,10 @@ function perm_get_global_user_permissions($uid)
 }
 
 /**
-* Counts the number of users with global access to admin and forum management tools
-*
-* @return integer
-* @see perm_get_admin_tools_perm_count()
-* @see perm_get_forum_tools_perm_count()
-*/
-function perm_get_global_permissions_count()
-{
-    if (!$db_perm_get_global_permissions = db_connect()) return false;
-
-    $upft = USER_PERM_FORUM_TOOLS;
-    $upat = USER_PERM_ADMIN_TOOLS;
-
-    $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
-    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
-    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0 ";
-    $sql.= "OR GROUP_PERMS.PERM & $upat > 0) AND USER.UID IS NOT NULL ";
-
-    if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
-
-    list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    return $global_perm_count;
-}
-
-/**
 * Counts the number of users with global access to admin tools
 *
+* @param void
 * @return integer
-* @see perm_get_global_permissions_count()
-* @see perm_get_forum_tools_perm_count()
 */
 function perm_get_admin_tools_perm_count()
 {
@@ -598,9 +568,8 @@ function perm_get_admin_tools_perm_count()
 /**
 * Counts the number of users with global access to forum management tools
 *
+* @param void
 * @return integer
-* @see perm_get_global_permissions_count()
-* @see perm_get_admin_tools_perm_count()
 */
 function perm_get_forum_tools_perm_count()
 {
@@ -1090,9 +1059,8 @@ function perm_folder_reset_user_permissions($fid)
 
     $remove_perms = (double) USER_PERM_BANNED | USER_PERM_WORMED;
     $remove_perms = (double) $remove_perms | USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
-    $remove_perms = (double) $remove_perms | USER_PERM_GUEST_ACCESS | USER_PERM_LINKS_MODERATE;
-    $remove_perms = (double) $remove_perms | USER_PERM_EMAIL_CONFIRM | USER_PERM_CAN_IGNORE_ADMIN;
-    $remove_perms = (double) $remove_perms | USER_PERM_PILLORIED;
+    $remove_perms = (double) $remove_perms | USER_PERM_LINKS_MODERATE | USER_PERM_EMAIL_CONFIRM;
+    $remove_perms = (double) $remove_perms | USER_PERM_CAN_IGNORE_ADMIN | USER_PERM_PILLORIED;
 
     $folder_perms = $folder_perms ^ $remove_perms;
 
@@ -1233,17 +1201,12 @@ function perm_display_list($perms)
 
     $lang = load_language_file();
 
-    if ($perms & USER_PERM_BANNED)           $perms_array[] = "B";
-    if ($perms & USER_PERM_WORMED)           $perms_array[] = "W";
     if ($perms & USER_PERM_POST_READ)        $perms_array[] = "R";
     if ($perms & USER_PERM_POST_CREATE)      $perms_array[] = "W";
     if ($perms & USER_PERM_THREAD_CREATE)    $perms_array[] = "T";
     if ($perms & USER_PERM_POST_EDIT)        $perms_array[] = "E";
     if ($perms & USER_PERM_POST_DELETE)      $perms_array[] = "D";
     if ($perms & USER_PERM_POST_ATTACHMENTS) $perms_array[] = "A";
-    if ($perms & USER_PERM_FOLDER_MODERATE)  $perms_array[] = "M";
-    if ($perms & USER_PERM_ADMIN_TOOLS)      $perms_array[] = "A";
-    if ($perms & USER_PERM_FORUM_TOOLS)      $perms_array[] = "F";
     if ($perms & USER_PERM_HTML_POSTING)     $perms_array[] = "H";
     if ($perms & USER_PERM_SIGNATURE)        $perms_array[] = "S";
     if ($perms & USER_PERM_GUEST_ACCESS)     $perms_array[] = "G";

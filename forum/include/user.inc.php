@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.364 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.365 2008-09-13 17:45:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -244,7 +244,7 @@ function user_change_password($user_uid, $password, $old_passhash = false)
 
     $passhash = db_escape_string(md5($password));
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
         $sql.= "WHERE UID = '$user_uid'";
@@ -973,7 +973,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     if (!is_numeric($exclude_uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $lang = load_language_file();
 
     $user_array = array();

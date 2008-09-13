@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.37 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.38 2008-09-13 14:10:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -112,10 +112,10 @@ if (!$forum_fid = forum_get_setting('fid')) {
     exit;
 }
 
-if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
     $ret = trim(_stripslashes($_POST['ret']));
-}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = trim(_stripslashes($_GET['ret']));
 }else {
     $ret = "admin_forums.php?webtag=$webtag";
 }

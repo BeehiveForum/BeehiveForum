@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.119 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.120 2008-09-13 14:10:32 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -134,10 +134,10 @@ if (user_is_guest()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
 }elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
 }else {
     $ret = "edit_relations.php?webtag=$webtag";
 }

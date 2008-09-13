@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.361 2008-09-11 22:52:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.362 2008-09-13 17:45:58 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -987,17 +987,20 @@ function bh_session_get_perm_array($uid)
 * @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
 */
 
-function bh_session_check_perm($perm, $folder_fid)
+function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
 {
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     if (!is_array($user_sess)) return false;
     if (!is_numeric($folder_fid)) return false;
 
-    if (!$table_data = get_table_prefix()) {
-        $forum_fid = 0;
-    }else {
-        $forum_fid = $table_data['FID'];
+    if (!is_numeric($forum_fid)) {
+
+        if (!$table_data = get_table_prefix()) {
+            $forum_fid = 0;
+        }else {
+            $forum_fid = $table_data['FID'];
+        }
     }
 
     $user_perm_test = 0;

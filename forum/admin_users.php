@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.182 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.183 2008-09-13 17:45:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -210,7 +210,7 @@ if (($table_data = get_table_prefix())) {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
 }
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     if (isset($_POST['select_action'])) {
 
@@ -432,7 +432,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
 
-if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
+if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
 
     echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
 
@@ -446,24 +446,25 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) && sizeof($admin_user_array['user_array']) > 0) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array['user_array']) > 0) {
 
-    if (forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+
+    if (forum_get_setting('require_user_approval', 'Y')) {
 
         echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
         echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession'], ADMIN_USER_OPTION_APPROVE => $lang['approve']), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
@@ -473,24 +474,25 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) && sizeof($admin_user_array[
         echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
         echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession']), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
     }
+
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "</form>\n";
 }
 
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "</form>\n";
 echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"get\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";

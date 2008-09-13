@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.70 2008-09-13 14:10:30 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.71 2008-09-13 17:45:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -203,17 +203,6 @@ if (isset($_POST['save'])) {
 
     $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-        $new_group_perms = (double) $new_group_perms | $t_admintools;
-        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_FORUM_TOOLS);
-
-    }else {
-
-        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_ADMIN_TOOLS);
-        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_FORUM_TOOLS);
-    }
-
     if ($valid) {
 
         if (perm_update_group($gid, $t_name, $t_description, $new_group_perms)) {
@@ -330,14 +319,6 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
-
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['groupcanaccessadmintools'], $group_permissions & USER_PERM_ADMIN_TOOLS), "</td>\n";
-    echo "                      </tr>\n";
-}
-
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['groupcanmoderateallfolders'], $group_permissions & USER_PERM_FOLDER_MODERATE), "</td>\n";
 echo "                      </tr>\n";

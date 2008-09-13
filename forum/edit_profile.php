@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.101 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.102 2008-09-13 17:45:58 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -127,7 +127,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     if (isset($_GET['profileuid'])) {
 
@@ -175,7 +175,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     $uid = bh_session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.167 2008-09-10 18:59:29 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.168 2008-09-13 17:45:58 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1768,14 +1768,14 @@ function admin_send_user_approval_notification()
 {
     if (!$db_admin_send_new_user_notification = db_connect()) return false;
 
-    $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
+    $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
 
     $notification_success = true;
 
     $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
     $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_admin_tools) > 0 ";
 
     if (!$result = db_query($sql, $db_admin_send_new_user_notification)) return false;
 
@@ -1796,12 +1796,12 @@ function admin_send_new_user_notification($new_user_uid)
 
     if (!is_numeric($new_user_uid)) return false;
 
-    $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
+    $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
 
     $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
     $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_admin_tools) > 0 ";
 
     if (!$result = db_query($sql, $db_admin_send_new_user_notification)) return false;
 

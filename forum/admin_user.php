@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.254 2008-09-13 14:10:30 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.255 2008-09-13 17:45:58 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -137,7 +137,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
+    $ret = trim(_stripslashes($_POST['ret']));
 }else {
     $ret = "admin_users.php?webtag=$webtag";
 }
@@ -267,6 +267,14 @@ if (isset($_POST['action_submit'])) {
 
 }else if (isset($_POST['user_history_submit'])) {
 
+    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+
+        html_draw_top();
+        html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
+        html_draw_bottom();
+        exit;
+    }
+
     if (isset($_POST['clear_user_history']) && $_POST['clear_user_history'] == "Y") {
 
         if (admin_clear_user_history($uid)) {
@@ -287,7 +295,7 @@ if (isset($_POST['action_submit'])) {
 
 }elseif (isset($_POST['reset_passwd_submit'])) {
 
-    if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         html_draw_top();
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
@@ -320,7 +328,7 @@ if (isset($_POST['action_submit'])) {
 
 }elseif (isset($_POST['delete_user_confirm'])) {
 
-    if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         html_draw_top();
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
@@ -440,7 +448,7 @@ if (isset($_POST['action_submit'])) {
 
     // Global user permissions
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         $new_global_user_perms = (double) 0;
 
@@ -566,7 +574,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     if ($action == 'reset_passwd') {
 
-        if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+        if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
             html_draw_top();
             html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
@@ -581,6 +589,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
+
+        html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
 
         echo "<br />\n";
         echo "<div align=\"center\">\n";
@@ -599,16 +609,6 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['resetpassword']}</td>\n";
         echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table width=\"95%\" class=\"posthead\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$lang['forgottenpassworddesc']}</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
@@ -716,7 +716,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             echo "                  </td>\n";
             echo "                </tr>\n";
 
-            if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+            if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -1013,7 +1013,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'delete_user') {
 
-        if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+        if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
             html_draw_top();
             html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
@@ -1035,7 +1035,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
         echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_users.php?webtag=$webtag")), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -1071,7 +1071,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("delete_user_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel_delete_user", $lang['cancel']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("delete_user_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -1176,7 +1176,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
 echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1338,23 +1338,32 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (forum_check_webtag_available($webtag)) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-        $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
-                                        'edit_signature' => $lang['editsignature'],
-                                        'edit_profile'   => $lang['editprofile'],
-                                        'reset_passwd'   => $lang['resetpassword'],
-                                        'view_history'   => $lang['viewuserhistory'],
-                                        'user_aliases'   => $lang['viewuseraliases'],
-                                        'delete_user'    => $lang['deleteuser'],
-                                        'delete_posts'   => $lang['deleteposts']);
+        if (forum_check_webtag_available($webtag)) {
+
+            $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
+                                            'edit_signature' => $lang['editsignature'],
+                                            'edit_profile'   => $lang['editprofile'],
+                                            'reset_passwd'   => $lang['resetpassword'],
+                                            'view_history'   => $lang['viewuserhistory'],
+                                            'user_aliases'   => $lang['viewuseraliases'],
+                                            'delete_user'    => $lang['deleteuser'],
+                                            'delete_posts'   => $lang['deleteposts']);
+
+        }else {
+
+            $admin_options_dropdown = array('reset_passwd'   => $lang['resetpassword'],
+                                            'view_history'   => $lang['viewuserhistory'],
+                                            'user_aliases'   => $lang['viewuseraliases'],
+                                            'delete_user'    => $lang['deleteuser']);
+        }
 
     }else {
 
-        $admin_options_dropdown = array('reset_passwd'   => $lang['resetpassword'],
-                                        'view_history'   => $lang['viewuserhistory'],
+        $admin_options_dropdown = array('view_history'   => $lang['viewuserhistory'],
                                         'user_aliases'   => $lang['viewuseraliases'],
-                                        'delete_user'    => $lang['deleteuser']);
+                                        'delete_posts'   => $lang['deleteposts']);
     }
 
     if (forum_get_setting('require_user_approval', 'Y') && !admin_user_approved($uid)) {
@@ -1485,7 +1494,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "  <br />\n";
 }
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     $global_user_perm = perm_get_global_user_permissions($uid);
 

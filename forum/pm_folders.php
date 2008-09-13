@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.27 2008-09-12 20:53:30 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.28 2008-09-13 13:44:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -224,14 +224,6 @@ if (isset($_POST['save'])) {
         $error_msg_array[] = $lang['failedtoupdatefolder'];
         $valid = false;
     }
-
-}elseif (isset($_POST['export'])) {
-
-    if (!pm_export_folder($manage_folder)) {
-
-        $error_msg_array[] = $lang['failedtoexportmessages'];
-        $valid = false;
-    }
 }
 
 // Prune old messages for the current user
@@ -308,7 +300,7 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("reset", $lang['reset']), "&nbsp;", form_submit("export", $lang['exportfolder']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("reset", $lang['reset']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -328,17 +320,20 @@ $pm_message_count_array = pm_get_folder_message_counts();
 
 foreach ($pm_folder_names_array as $folder_type => $folder_name) {
 
-    echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['managefolder']}\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf($lang['pmtooltipxmessages'], $pm_message_count_array[$folder_type]) : $lang['pmtooltip1message'], "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+    if (isset($pm_message_count_array[$folder_type]) && is_numeric($pm_message_count_array[$folder_type])) {
+
+        echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['managefolder']}\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf($lang['pmtooltipxmessages'], $pm_message_count_array[$folder_type]) : $lang['pmtooltip1message'], "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+    }
 }
 
 echo "  <br />\n";

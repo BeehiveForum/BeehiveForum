@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.69 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.70 2008-09-13 14:10:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -103,8 +103,34 @@ if (!forum_check_webtag_available($webtag)) {
 
 $lang = load_language_file();
 
+// Are we returning somewhere?
+
+if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
+}else {
+    $ret = "admin_user_groups.php?webtag=$webtag";
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_pages = array('admin_user_groups.php', 'admin_user.php');
+    $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
+
+    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
+        $ret = "admin_user_groups.php?webtag=$webtag";
+    }
+}
+
+// Cancel button has been pressed.
+
 if (isset($_POST['cancel'])) {
-    header_redirect("admin_user_groups.php?webtag=$webtag");
+
+    header_redirect($ret);
+    exit;
 }
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
@@ -234,6 +260,7 @@ if (isset($_POST['save'])) {
 
     $redirect_uri = "admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid";
     $redirect_uri.= "&ret=admin_user_groups_edit.php%3Fwebtag%3D$webtag%26gid%3D$gid";
+    $redirect_uri.= "%26ret%3D". rawurlencode(rawurlencode(rawurlencode($ret)));
 
     header_redirect($redirect_uri);
     exit;
@@ -259,6 +286,7 @@ echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user_groups_edit.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("gid", _htmlentities($gid)), "\n";
+echo "  ", form_input_hidden('ret', _htmlentities($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

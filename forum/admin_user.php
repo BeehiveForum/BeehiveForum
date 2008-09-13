@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.253 2008-09-06 18:55:11 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.254 2008-09-13 14:10:30 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1701,7 +1701,7 @@ if (forum_check_webtag_available($webtag)) {
 
             echo "                                <table class=\"posthead\" width=\"100%\">\n";
             echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\" valign=\"top\" width=\"200\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                                    <td align=\"left\" valign=\"top\" width=\"200\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}&ret=admin_user.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
             echo "                                    <td valign=\"top\" align=\"center\" width=\"50\">{$user_group['USER_COUNT']}</td>\n";
             echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
             echo "                                  </tr>\n";

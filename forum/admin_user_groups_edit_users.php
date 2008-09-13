@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.67 2008-09-11 22:52:25 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.68 2008-09-13 14:10:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -115,10 +115,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 // Are we returning somewhere?
 
-if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
-}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
 }else {
     $ret = "admin_user_groups.php?webtag=$webtag";
 }

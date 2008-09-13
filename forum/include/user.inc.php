@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.365 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.366 2008-09-13 20:32:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -202,6 +202,22 @@ function user_change_logon($uid, $logon)
     return true;
 }
 
+function user_increment_post_count($uid)
+{
+    if (!$db_user_increment_post_count = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "SET POST_COUNT = POST_COUNT + 1 WHERE UID = '$uid'";
+
+    if (!db_query($sql, $db_user_increment_post_count)) return false;
+
+    return true;
+}
+
 function user_update_post_count($uid, $post_count)
 {
     if (!$db_user_update_post_count = db_connect()) return false;
@@ -212,8 +228,7 @@ function user_update_post_count($uid, $post_count)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
-    $sql.= "SET POST_COUNT = '$post_count' ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_update_post_count)) return false;
 

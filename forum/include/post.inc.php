@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.196 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.197 2008-09-13 20:32:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -97,22 +97,18 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
         if (db_query($sql, $db_post_create)) {
 
-            // Update the thread length so it matches the number of posts
+            // Update the thread length and unread pid
 
             post_update_thread_length($tid, $new_pid);
+
+            // Update user's post count.
+
+            user_increment_post_count($fuid);
 
             // If post approval is required send the notification to admins.
 
             if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
                 admin_send_post_approval_notification($fid);
-            }
-
-            // Update the user's post count.
-
-            if (($post_count = user_get_post_count($fuid))) {
-
-                $post_count++;
-                user_update_post_count($fuid, $post_count);
             }
 
             return $new_pid;

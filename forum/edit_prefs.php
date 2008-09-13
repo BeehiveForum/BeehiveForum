@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.106 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.107 2008-09-13 23:41:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -122,7 +122,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['profileuid'])) {
 
@@ -170,7 +170,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
     $uid = bh_session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
@@ -206,131 +206,134 @@ if (isset($_POST['save'])) {
 
     // Required Fields
 
-    if (forum_get_setting('allow_username_changes', 'Y') || $admin_edit) {
+    if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
 
-        if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
+        if (forum_get_setting('allow_username_changes', 'Y')) {
 
-            $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
+            if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
-            if (!preg_match("/^[a-z0-9_-]+$/Diu", $user_info_new['LOGON'])) {
+                $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
 
-                $error_msg_array[] = $lang['usernameinvalidchars'];
+                if (!preg_match("/^[a-z0-9_-]+$/Diu", $user_info_new['LOGON'])) {
+
+                    $error_msg_array[] = $lang['usernameinvalidchars'];
+                    $valid = false;
+                }
+
+                if (strlen($user_info_new['LOGON']) < 2) {
+
+                    $error_msg_array[] = $lang['usernametooshort'];
+                    $valid = false;
+                }
+
+                if (strlen($user_info_new['LOGON']) > 15) {
+
+                    $error_msg_array[] = $lang['usernametoolong'];
+                    $valid = false;
+                }
+
+                if (logon_is_banned($user_info_new['LOGON'])) {
+
+
+                    $error_msg_array[] = $lang['logonnotpermitted'];
+                    $valid = false;
+                }
+
+                if (user_exists($user_info_new['LOGON'], $uid)) {
+
+                    $error_msg_array[] = $lang['usernameexists'];
+                    $valid = false;
+                }
+
+            }else {
+
+                $error_msg_array[] = $lang['usernamerequired'];
                 $valid = false;
             }
+        }
 
-            if (strlen($user_info_new['LOGON']) < 2) {
+        if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
-                $error_msg_array[] = $lang['usernametooshort'];
-                $valid = false;
-            }
+            $user_info_new['NICKNAME'] = strip_tags(trim(_stripslashes($_POST['nickname'])));
 
-            if (strlen($user_info_new['LOGON']) > 15) {
+            if (nickname_is_banned($user_info_new['NICKNAME'])) {
 
-                $error_msg_array[] = $lang['usernametoolong'];
-                $valid = false;
-            }
-
-            if (logon_is_banned($user_info_new['LOGON'])) {
-
-
-                $error_msg_array[] = $lang['logonnotpermitted'];
-                $valid = false;
-            }
-
-            if (user_exists($user_info_new['LOGON'], $uid)) {
-
-                $error_msg_array[] = $lang['usernameexists'];
+                $error_msg_array[] = $lang['nicknamenotpermitted'];
                 $valid = false;
             }
 
         }else {
 
-            $error_msg_array[] = $lang['usernamerequired'];
-            $valid = false;
-        }
-    }
-
-    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
-
-        $user_info_new['NICKNAME'] = strip_tags(trim(_stripslashes($_POST['nickname'])));
-
-        if (nickname_is_banned($user_info_new['NICKNAME'])) {
-
-            $error_msg_array[] = $lang['nicknamenotpermitted'];
+            $error_msg_array[] = $lang['nicknamerequired'];
             $valid = false;
         }
 
-    }else {
+        if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
 
-        $error_msg_array[] = $lang['nicknamerequired'];
-        $valid = false;
-    }
+            $user_info_new['EMAIL'] = trim(_stripslashes($_POST['email']));
 
-    if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
+            if (!email_address_valid($user_info_new['EMAIL'])) {
 
-        $user_info_new['EMAIL'] = trim(_stripslashes($_POST['email']));
+                $error_msg_array[] = $lang['invalidemailaddressformat'];
+                $valid = false;
 
-        if (!email_address_valid($user_info_new['EMAIL'])) {
+            }else {
 
-            $error_msg_array[] = $lang['invalidemailaddressformat'];
-            $valid = false;
+                if (email_is_banned($user_info_new['EMAIL'])) {
+
+                    $error_msg_array[] = $lang['emailaddressnotpermitted'];
+                    $valid = false;
+                }
+
+                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'], $uid)) {
+
+                    $error_msg_array[] = $lang['emailaddressalreadyinuse'];
+                    $valid = false;
+                }
+            }
 
         }else {
 
-            if (email_is_banned($user_info_new['EMAIL'])) {
+            $error_msg_array[] = $lang['emailaddressrequired'];
+            $valid = false;
+        }
 
-                $error_msg_array[] = $lang['emailaddressnotpermitted'];
-                $valid = false;
-            }
+        if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'], $uid)) {
+            $dob['DAY']   = trim(_stripslashes($_POST['dob_day']));
+            $dob['MONTH'] = trim(_stripslashes($_POST['dob_month']));
+            $dob['YEAR']  = trim(_stripslashes($_POST['dob_year']));
 
-                $error_msg_array[] = $lang['emailaddressalreadyinuse'];
+            $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
+
+        }else {
+
+            $error_msg_array[] = $lang['birthdayrequired'];
+            $valid = false;
+        }
+
+        // Optional fields
+
+        if (isset($_POST['firstname'])) {
+
+            $user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
+
+            if (!user_check_pref('FIRSTNAME', $user_prefs['FIRSTNAME'])) {
+
+                $error_msg_array[] = sprintf($lang['containsinvalidchars'], $lang['firstname']);
                 $valid = false;
             }
         }
 
-    }else {
+        if (isset($_POST['lastname'])) {
 
-        $error_msg_array[] = $lang['emailaddressrequired'];
-        $valid = false;
-    }
+            $user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
 
-    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
+            if (!user_check_pref('LASTNAME', $user_prefs['LASTNAME'])) {
 
-        $dob['DAY']   = trim(_stripslashes($_POST['dob_day']));
-        $dob['MONTH'] = trim(_stripslashes($_POST['dob_month']));
-        $dob['YEAR']  = trim(_stripslashes($_POST['dob_year']));
-
-        $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
-
-    }else {
-
-        $error_msg_array[] = $lang['birthdayrequired'];
-        $valid = false;
-    }
-
-    // Optional fields
-
-    if (isset($_POST['firstname'])) {
-
-        $user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
-
-        if (!user_check_pref('FIRSTNAME', $user_prefs['FIRSTNAME'])) {
-
-            $error_msg_array[] = sprintf($lang['containsinvalidchars'], $lang['firstname']);
-            $valid = false;
-        }
-    }
-
-    if (isset($_POST['lastname'])) {
-
-        $user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
-
-        if (!user_check_pref('LASTNAME', $user_prefs['LASTNAME'])) {
-
-            $error_msg_array[] = sprintf($lang['containsinvalidchars'], $lang['lastname']);
-            $valid = false;
+                $error_msg_array[] = sprintf($lang['containsinvalidchars'], $lang['lastname']);
+                $valid = false;
+            }
         }
     }
 
@@ -526,7 +529,7 @@ if (isset($_POST['save'])) {
                 // their email address we need to get them to confirm the
                 // change by sending them another email.
 
-                if ($admin_edit === false) {
+                if (($uid == bh_session_get_value('UID')) && $admin_edit === false) {
 
                     if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
 
@@ -547,19 +550,19 @@ if (isset($_POST['save'])) {
                             exit;
                         }
                     }
-                }
 
-                // If Forum permits username changes we need to change the user's cookie.
+                    // If Forum permits username changes we need to change the user's cookie.
 
-                if (forum_get_setting('allow_username_changes', 'Y')) {
+                    if (forum_get_setting('allow_username_changes', 'Y')) {
 
-                    // Fetch current logon.
+                        // Fetch current logon.
 
-                    $logon = bh_session_get_value('LOGON');
+                        $logon = bh_session_get_value('LOGON');
 
-                    // Update the logon that matches the current logged on user
+                        // Update the logon that matches the current logged on user
 
-                    logon_update_logon_cookie($logon, $user_info['LOGON']);
+                        logon_update_logon_cookie($logon, $user_info['LOGON']);
+                    }
                 }
 
                 // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
@@ -616,7 +619,11 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 // Check to see if we should show the set for all forums checkboxes
 
-$show_set_all = (forums_get_available_count() > 1) ? true : false;
+if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+    $show_set_all = (forums_get_available_count() > 1);
+}else {
+    $show_set_all = false;
+}
 
 // Arrays to hold our attachments
 
@@ -693,11 +700,48 @@ echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['memberno']}
 echo "                  <td align=\"left\">#{$user_info['UID']}&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (forum_get_setting('allow_username_changes', 'Y') || $admin_edit) {
+if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+
+    if (forum_get_setting('allow_username_changes', 'Y')) {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", form_input_text("logon", (isset($user_info['LOGON']) ? _htmlentities($user_info['LOGON']) : ""), 45, 15, "", "user_pref_field"), "</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", _htmlentities($user_info['LOGON']), "&nbsp;</td>\n";
+        echo "                </tr>\n";
+    }
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("logon", (isset($user_info['LOGON']) ? _htmlentities($user_info['LOGON']) : ""), 45, 15, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("nickname", (isset($user_info['NICKNAME']) ? _htmlentities($user_info['NICKNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['emailaddress']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("email", (isset($user_info['EMAIL']) ? _htmlentities($user_info['EMAIL']) : ""), 45, 80, "", "user_pref_field"), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['firstname']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("firstname", (isset($user_prefs['FIRSTNAME']) ? _htmlentities($user_prefs['FIRSTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['lastname']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("lastname", (isset($user_prefs['LASTNAME']) ? _htmlentities($user_prefs['LASTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['dateofbirth']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -708,32 +752,6 @@ if (forum_get_setting('allow_username_changes', 'Y') || $admin_edit) {
     echo "                </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\">", form_input_text("nickname", (isset($user_info['NICKNAME']) ? _htmlentities($user_info['NICKNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['emailaddress']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\">", form_input_text("email", (isset($user_info['EMAIL']) ? _htmlentities($user_info['EMAIL']) : ""), 45, 80, "", "user_pref_field"), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['firstname']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\">", form_input_text("firstname", (isset($user_prefs['FIRSTNAME']) ? _htmlentities($user_prefs['FIRSTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['lastname']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\">", form_input_text("lastname", (isset($user_prefs['LASTNAME']) ? _htmlentities($user_prefs['LASTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['dateofbirth']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
-echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['homepageURL']}:&nbsp;</td>\n";
 echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? _htmlentities($user_prefs['HOMEPAGE_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";

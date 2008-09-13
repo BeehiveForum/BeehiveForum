@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.256 2008-09-13 19:21:03 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.257 2008-09-13 23:41:31 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1429,10 +1429,22 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     }else {
 
-        $admin_options_dropdown = array('post_count'     => $lang['changepostcount'],
-                                        'view_history'   => $lang['viewuserhistory'],
-                                        'user_aliases'   => $lang['viewuseraliases'],
-                                        'delete_posts'   => $lang['deleteposts']);
+        if (forum_check_webtag_available($webtag)) {
+
+            $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
+                                            'edit_signature' => $lang['editsignature'],
+                                            'edit_profile'   => $lang['editprofile'],
+                                            'post_count'     => $lang['changepostcount'],
+                                            'view_history'   => $lang['viewuserhistory'],
+                                            'user_aliases'   => $lang['viewuseraliases'],
+                                            'delete_posts'   => $lang['deleteposts']);
+
+        }else {
+
+            $admin_options_dropdown = array('view_history'   => $lang['viewuserhistory'],
+                                            'user_aliases'   => $lang['viewuseraliases'],
+                                            'delete_posts'   => $lang['deleteposts']);
+        }
     }
 
     if (forum_get_setting('require_user_approval', 'Y') && !admin_user_approved($uid)) {

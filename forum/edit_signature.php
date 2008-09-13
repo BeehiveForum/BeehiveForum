@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.120 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.121 2008-09-13 23:41:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -121,7 +121,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['siguid'])) {
 
@@ -169,7 +169,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
     $uid = bh_session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
@@ -203,7 +203,7 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if ($t_sig_html == "Y") $t_sig_content = fix_html($t_sig_content);
 
-    if ($admin_edit === true) $t_sig_global = 'N';
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
 
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
 
@@ -318,7 +318,13 @@ echo "<br />\n";
 
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
-$show_set_all = (forums_get_available_count() > 1) ? true : false;
+// Check to see if we should show the set for all forums checkboxes
+
+if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+    $show_set_all = (forums_get_available_count() > 1);
+}else {
+    $show_set_all = false;
+}
 
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -448,60 +454,63 @@ if ($admin_edit === true) {
 }
 
 echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
 
 if ((!$tools->getTinyMCE())) {
 
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], $sig_html), "</td>\n";
     echo "                      </tr>\n";
 
-    if ($show_set_all && $admin_edit === false) {
+}else {
 
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
-        echo "                      </tr>\n";
+    echo "                    ", form_input_hidden("sig_html", "Y");
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+}
 
-    }else {
-
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), $tools->assign_checkbox("sig_html"), "</td>\n";
-        echo "                      </tr>\n";
-    }
+if ($show_set_all) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
     echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
 
 }else {
 
-    echo form_input_hidden("sig_html", "Y");
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), $tools->assign_checkbox("sig_html"), "</td>\n";
+    echo "                      </tr>\n";
 }
+
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+
+
 
 echo "</form>\n";
 

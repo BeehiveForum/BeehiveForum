@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.102 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.103 2008-09-13 23:41:32 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -127,7 +127,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['profileuid'])) {
 
@@ -175,13 +175,17 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
     $uid = bh_session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
+
+// Fetch array of profile items.
+
+$profile_items_array = profile_get_user_values($uid);
 
 // Array to hold error messages
 
@@ -211,9 +215,16 @@ if (isset($_POST['save'])) {
 
                 $profile_entry = trim(_stripslashes($profile_entry));
 
-                if (isset($_POST['t_entry_private'][$piid]) && $_POST['t_entry_private'][$piid] == 'Y') {
+                if ($admin_edit) {
+
+                    $privacy = (isset($profile_items_array[$piid]['PRIVACY']) ? $profile_items_array[$piid]['PRIVACY'] : 0);
+
+                }elseif (isset($_POST['t_entry_private'][$piid]) && $_POST['t_entry_private'][$piid] == 'Y') {
+
                     $privacy = PROFILE_ITEM_PRIVATE;
+
                 }else {
+
                     $privacy = PROFILE_ITEM_PUBLIC;
                 }
 
@@ -241,7 +252,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if (($profile_items_array = profile_get_user_values($uid))) {
+if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     html_draw_top();
 

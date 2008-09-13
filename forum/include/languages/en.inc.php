@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.589 2008-09-12 20:53:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.590 2008-09-13 19:21:03 decoyduck Exp $ */
 
 // British English language file
 
@@ -609,7 +609,10 @@ $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on its o
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count";
+$lang['changepostcount'] = "Change Post Count";
 $lang['resetpostcount'] = "Reset Post Count";
+$lang['successfullyresetpostcount'] = "Successfully Reset Post Count";
+$lang['successfullyupdatedpostcount'] = "Successfully Updated Post Count";
 $lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
 $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";

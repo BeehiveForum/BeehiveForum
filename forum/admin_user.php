@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.255 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.256 2008-09-13 19:21:03 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -239,6 +239,11 @@ if (isset($_POST['action_submit'])) {
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=delete_posts");
             exit;
 
+        }elseif ($post_action == 'post_count') {
+
+            header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=post_count");
+            exit;
+
         }elseif ($post_action == 'approve_user') {
 
             if (forum_get_setting('require_user_approval', 'Y')) {
@@ -264,6 +269,44 @@ if (isset($_POST['action_submit'])) {
 
     header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
     exit;
+
+}else if (isset($_POST['post_count_submit'])) {
+
+    if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
+
+        if (user_reset_post_count($uid)) {
+
+            html_draw_top();
+            html_display_msg($lang['postcount'], $lang['successfullyresetpostcount'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
+            html_draw_bottom();
+            exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoresetuserpostcount'];
+            $valid = false;
+        }
+
+    }else {
+
+        if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
+
+            $user_post_count = $_POST['t_post_count'];
+
+            if (user_update_post_count($uid, $user_post_count)) {
+
+                html_draw_top();
+                html_display_msg($lang['postcount'], $lang['successfullyupdatedpostcount'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
+                html_draw_bottom();
+                exit;
+
+            }else {
+
+                $error_msg_array[] = $lang['failedtochangeuserpostcount'];
+                $valid = false;
+            }
+        }
+    }
 
 }else if (isset($_POST['user_history_submit'])) {
 
@@ -380,41 +423,6 @@ if (isset($_POST['action_submit'])) {
     $valid = true;
 
     if (forum_check_webtag_available($webtag)) {
-
-        // Check post count is being changed or reset.
-
-        if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
-
-            if (user_reset_post_count($uid)) {
-
-                $user['POST_COUNT'] = user_get_post_count($uid);
-
-            }else {
-
-                $error_msg_array[] = $lang['failedtoresetuserpostcount'];
-                $valid = false;
-            }
-
-        }else {
-
-            if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
-
-                $user_post_count = $_POST['t_post_count'];
-
-                if ($user_post_count <> $user['POST_COUNT']) {
-
-                    if (user_update_post_count($uid, $user_post_count)) {
-
-                        $user['POST_COUNT'] = $user_post_count;
-
-                    }else {
-
-                        $error_msg_array[] = $lang['failedtochangeuserpostcount'];
-                        $valid = false;
-                    }
-                }
-            }
-        }
 
         // Local user permissions
 
@@ -1137,6 +1145,65 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_bottom();
         exit;
+
+    }else if ($action == 'post_count') {
+
+        html_draw_top('admin.js');
+
+        if (forum_check_webtag_available($webtag)) {
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        }else {
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        }
+
+        echo "<br />\n";
+        echo "<div align=\"center\">\n";
+        echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
+        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['postcount']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table width=\"90%\" class=\"posthead\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? _htmlentities($_POST['t_post_count']) : _htmlentities($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("post_count_submit", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+        echo "</div>\n";
+
+        html_draw_bottom();
+        exit;
     }
 }
 
@@ -1348,6 +1415,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                                             'reset_passwd'   => $lang['resetpassword'],
                                             'view_history'   => $lang['viewuserhistory'],
                                             'user_aliases'   => $lang['viewuseraliases'],
+                                            'post_count'     => $lang['changepostcount'],
                                             'delete_user'    => $lang['deleteuser'],
                                             'delete_posts'   => $lang['deleteposts']);
 
@@ -1361,7 +1429,8 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     }else {
 
-        $admin_options_dropdown = array('view_history'   => $lang['viewuserhistory'],
+        $admin_options_dropdown = array('post_count'     => $lang['changepostcount'],
+                                        'view_history'   => $lang['viewuserhistory'],
                                         'user_aliases'   => $lang['viewuseraliases'],
                                         'delete_posts'   => $lang['deleteposts']);
     }
@@ -1404,37 +1473,6 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (forum_check_webtag_available($webtag)) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['postcount']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table width=\"90%\" class=\"posthead\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? _htmlentities($_POST['t_post_count']) : _htmlentities($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

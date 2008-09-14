@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.81 2008-09-14 15:48:13 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.82 2008-09-14 16:30:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -463,7 +463,7 @@ function install_check_table_conflicts($webtag = false, $forum_tables = false, $
 
                 if (install_table_exists("{$webtag}_{$forum_table}")) {
 
-                    if ($remove_conflicts === true && !install_remove_table("{$webtag}_{$forum_table}")) {
+                    if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table("{$webtag}_{$forum_table}"))) {
 
                         $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";
                     }
@@ -478,7 +478,7 @@ function install_check_table_conflicts($webtag = false, $forum_tables = false, $
 
             if (install_table_exists($global_table)) {
 
-                if ($remove_conflicts === true && !install_remove_table("{$webtag}_{$forum_table}")) {
+                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($global_table))) {
 
                     $conflicting_tables_array[] = "'{$global_table}'";
                 }

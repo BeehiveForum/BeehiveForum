@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.345 2008-09-07 16:35:07 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.346 2008-09-14 15:48:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -933,7 +933,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Check for any conflicting tables.
 
-        if (($conflicting_tables_array = install_get_table_conflicts($webtag, true, false))) {
+        if (($conflicting_tables_array = install_check_table_conflicts($webtag, true, false))) {
 
             $error_str = $lang['selecteddatabasecontainsconflictingtables'];
             $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));

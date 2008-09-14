@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.80 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.81 2008-09-14 15:48:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -422,7 +422,7 @@ function install_index_exists($table_name, $index_name)
     return (db_num_rows($result) > 0);
 }
 
-function install_get_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false)
+function install_check_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false, $remove_conflicts = false)
 {
     $conflicting_tables_array = array();
 
@@ -437,7 +437,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
                               'POLL_VOTES',    'POST',            'POST_CONTENT',
                               'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
                               'RSS_HISTORY',   'STATS',           'THREAD',
-                              'THREAD_TRACK',  'THREAD_STATS',    'USER_FOLDER',
+                              'THREAD_STATS',  'THREAD_TRACK',    'USER_FOLDER',
                               'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
                               'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
                               'USER_TRACK',    'WORD_FILTER');
@@ -445,12 +445,14 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
     if ($global_tables === true) {
 
-        $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
-                               'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
-                               'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
-                               'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SESSIONS',
-                               'USER',         'USER_FORUM',          'USER_PREFS',
-                               'USER_TRACK',   'VISITOR_LOG');
+        $global_tables = array('DICTIONARY',          'FORUMS',              'FORUM_SETTINGS',
+                               'GROUPS',              'GROUP_PERMS',         'GROUP_USERS',
+                               'PM',                  'PM_ATTACHMENT_IDS',   'PM_CONTENT',
+                               'PM_FOLDERS',          'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES',
+                               'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
+                               'SESSIONS',            'TIMEZONES',           'USER',
+                               'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
+                               'VISITOR_LOG');
     }
 
     if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/Du", $webtag) > 0) {
@@ -461,7 +463,10 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
                 if (install_table_exists("{$webtag}_{$forum_table}")) {
 
-                    $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";
+                    if ($remove_conflicts === true && !install_remove_table("{$webtag}_{$forum_table}")) {
+
+                        $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";
+                    }
                 }
             }
         }
@@ -473,7 +478,10 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
             if (install_table_exists($global_table)) {
 
-                $conflicting_tables_array[] = "'{$global_table}'";
+                if ($remove_conflicts === true && !install_remove_table("{$webtag}_{$forum_table}")) {
+
+                    $conflicting_tables_array[] = "'{$global_table}'";
+                }
             }
         }
     }
@@ -483,6 +491,19 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
     }
 
     return false;
+}
+
+function install_remove_table($table_name)
+{
+    if (!$db_install_remove_table = db_connect()) return false;
+
+    if ($table_name !== db_escape_string($table_name)) return false;
+
+    $sql = "DROP TABLE IF EXISTS $table_name";
+
+    if (!$result = @db_query($sql, $install_remove_table)) return false;
+
+    return true;
 }
 
 function install_remove_indexes($table_name)

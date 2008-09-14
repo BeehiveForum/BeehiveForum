@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.11 2008-09-12 20:53:30 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.12 2008-09-14 15:48:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -307,19 +307,22 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// New table to store PM Folder names
+if (!install_table_exists('PM_FOLDERS')) {
 
-$sql = "CREATE TABLE PM_FOLDERS (";
-$sql.= "  UID MEDIUMINT(8) NOT NULL,";
-$sql.= "  FID MEDIUMINT(8) NOT NULL,";
-$sql.= "  TITLE VARCHAR(32) NOT NULL,";
-$sql.= "  PRIMARY KEY (UID, FID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+    // New table to store PM Folder names
 
-if (!$result = @db_query($sql, $db_install)) {
+    $sql = "CREATE TABLE PM_FOLDERS (";
+    $sql.= "  UID MEDIUMINT(8) NOT NULL,";
+    $sql.= "  FID MEDIUMINT(8) NOT NULL,";
+    $sql.= "  TITLE VARCHAR(32) NOT NULL,";
+    $sql.= "  PRIMARY KEY (UID, FID)";
+    $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-    $valid = false;
-    return;
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 ?>

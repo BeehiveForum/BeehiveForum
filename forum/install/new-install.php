@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.183 2008-09-12 20:53:30 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.184 2008-09-14 15:48:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -30,13 +30,6 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-instal
     header("Location: ../install.php");
     exit;
 }
-
-if (!isset($_SERVER['SCRIPT_FILENAME'])) {
-    $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
-}
-
-$dictionary_file = preg_replace('/\\\/u', '/', dirname($_SERVER['SCRIPT_FILENAME']));
-$dictionary_file.= "/install/english.dic";
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -51,51 +44,9 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
     return;
 }
 
-if (isset($remove_conflicts) && $remove_conflicts === true) {
+$remove_conflicts = (isset($remove_conflicts) && $remove_conflicts === true);
 
-    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FOLDER',
-                          'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
-                          'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',
-                          'POLL_VOTES',    'POST',            'POST_CONTENT',
-                          'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
-                          'RSS_HISTORY',   'STATS',           'THREAD',
-                          'THREAD_TRACK',  'THREAD_STATS',    'USER_FOLDER',
-                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
-                          'USER_TRACK',    'WORD_FILTER');
-
-    $global_tables = array('DICTIONARY',          'FORUM_SETTINGS',      'FORUMS',
-                           'GROUP_PERMS',         'GROUP_USERS',         'GROUPS',
-                           'PM',                  'PM_ATTACHMENT_IDS',   'PM_CONTENT',
-                           'PM_FOLDERS',          'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES',
-                           'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
-                           'SESSIONS',            'TIMEZONES',           'USER',
-                           'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
-                           'VISITOR_LOG');
-
-    foreach ($forum_tables as $forum_table) {
-
-        $sql = "DROP TABLE IF EXISTS {$forum_webtag}_{$forum_table}";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    foreach ($global_tables as $global_table) {
-
-        $sql = "DROP TABLE IF EXISTS $global_table";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-}elseif (($conflicting_tables = install_get_table_conflicts($forum_webtag, true, true))) {
+if (($conflicting_tables = install_check_table_conflicts($forum_webtag, true, true, $remove_conflicts))) {
 
     $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
     $error_str.= "If this database contains an existing Beehive Forum installation please ";
@@ -1376,16 +1327,17 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
     if (@file_exists($dictionary_file)) {
 
+        $dictionary_path = rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR);
+        $dictionary_file = $dictionary_path. DIRECTORY_SEPARATOR. 'english.dic';
+
         $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
         $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
         $sql.= "(WORD, SOUND)";
 
         if (!$result = @db_query($sql, $db_install)) {
 
-            // We're running in CGI mode or we failed to perform LOAD DATA
-            // INFILE. Possible reasons including MySQL not being able to
-            // find the file or permission denied. To continue we now
-            // process the dictionary script using PHP.
+            // SQL import method failed, now we need to resort to
+            // loading the file in PHP and running queries to MySQL.
 
             if (($fp = @fopen($dictionary_file, 'r'))) {
 

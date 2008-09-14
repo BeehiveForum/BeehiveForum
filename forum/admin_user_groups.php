@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.57 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.58 2008-09-14 11:45:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -123,6 +123,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "GROUPS.GROUP_DESC";
     } elseif ($_GET['sort_by'] == "USER_COUNT") {
         $sort_by = "USER_COUNT";
+    } elseif ($_GET['sort_by'] == "GROUP_PERMS") {
+        $sort_by = "GROUP_PERMS";
     } else {
         $sort_by = "GROUPS.GROUP_NAME";
     }
@@ -206,7 +208,7 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_user_groups.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -236,6 +238,16 @@ if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">{$lang['description']}</a></td>\n";
 }
 
+if ($sort_by == 'GROUP_PERMS' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"center\" class=\"header_sort_asc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=DESC&amp;page=$page\">{$lang['groupstatus']}</a></td>\n";
+}elseif ($sort_by == 'GROUP_PERMS' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=ASC&amp;page=$page\">{$lang['groupstatus']}</a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=ASC&amp;page=$page\">{$lang['groupstatus']}</a></td>\n";
+}else {
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=DESC&amp;page=$page\">{$lang['groupstatus']}</a></td>\n";
+}
+
 if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"center\" class=\"header_sort_asc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }elseif ($sort_by == 'USER_COUNT' && $sort_dir == 'DESC') {
@@ -253,10 +265,17 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
     foreach ($user_groups_array['user_groups_array'] as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "</td>\n";
-        echo "                  <td align=\"left\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\">{$user_group['GROUP_DESC']}</td>\n";
-        echo "                  <td align=\"center\" width=\"100\"><a href=\"admin_user_groups_edit_users.php?webtag=$webtag&amp;gid={$user_group['GID']}\">{$user_group['USER_COUNT']}</a></td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "</td>\n";
+        echo "                  <td align=\"left\" valign=\"top\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$user_group['GROUP_DESC']}</td>\n";
+
+        if (isset($user_group['GROUP_PERMS']) && $user_group['GROUP_PERMS'] > 0) {
+            echo "                  <td align=\"center\" valign=\"top\" width=\"120\">", perm_display_list($user_group['GROUP_PERMS']), "</td>\n";
+        }else {
+            echo "                  <td align=\"center\" valign=\"top\" width=\"120\">{$lang['none']}</td>\n";
+        }
+
+        echo "                  <td align=\"center\" width=\"75\" valign=\"top\"><a href=\"admin_user_groups_edit_users.php?webtag=$webtag&amp;gid={$user_group['GID']}\">{$user_group['USER_COUNT']}</a></td>\n";
         echo "                </tr>\n";
     }
 }
@@ -284,6 +303,63 @@ echo "      <td align=\"center\">", form_submit("addnew", $lang['addnew']), "&nb
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
+echo "<br />\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">\n";
+echo "      <table class=\"box\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td align=\"left\" class=\"posthead\">\n";
+echo "            <table class=\"posthead\" width=\"100%\">\n";
+echo "              <tr>\n";
+echo "                <td colspan=\"4\" class=\"subhead\" align=\"left\" nowrap=\"nowrap\">Permissions Key</td>\n";
+echo "              </tr>\n";
+echo "              <tr>\n";
+echo "                <td align=\"center\">\n";
+echo "                  <table width=\"95%\">\n";
+echo "                    <tr>\n";
+echo "                      <td align=\"left\" valign=\"top\" width=\"50%\">\n";
+echo "                        <table width=\"100%\">\n";
+echo "                          <tr>\n";
+echo "                            <td align=\"left\" class=\"postbody\"><b>AT</b></td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">{$lang['groupcanaccessadmintools']}</td>\n";
+echo "                          </tr>\n";
+echo "                          <tr>\n";
+echo "                            <td align=\"left\" class=\"postbody\"><b>LM</b></td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">{$lang['groupcanmoderatelinkssection']}</td>\n";
+echo "                          </tr>\n";
+echo "                          <tr>\n";
+echo "                            <td align=\"left\" class=\"postbody\"><b>UW</b></td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">{$lang['groupiswormed']}</td>\n";
+echo "                          </tr>\n";
+echo "                        </table>\n";
+echo "                      </td>\n";
+echo "                      <td align=\"left\" valign=\"top\" width=\"50%\">\n";
+echo "                        <table width=\"100%\">\n";
+echo "                          <tr>\n";
+echo "                            <td align=\"left\" class=\"postbody\"><b>FM</b></td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">{$lang['groupcanmoderateallfolders']}</td>\n";
+echo "                          </tr>\n";
+echo "                          <tr>\n";
+echo "                            <td align=\"left\" class=\"postbody\"><b>UB</b></td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">{$lang['groupisbanned']}</td>\n";
+echo "                          </tr>\n";
+echo "                        </table>\n";
+echo "                      </td>\n";
+echo "                    </tr>\n";
+echo "                  </table>\n";
+echo "                </td>\n";
+echo "              </tr>\n";
+echo "              <tr>\n";
+echo "                <td align=\"left\" colspan=\"8\">&nbsp;</td>\n";
+echo "              </tr>\n";
+echo "            </table>\n";
+echo "          </td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 echo "</div>\n";
 
 html_draw_bottom();

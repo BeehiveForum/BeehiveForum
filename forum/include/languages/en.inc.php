@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.590 2008-09-13 19:21:03 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.591 2008-09-14 11:45:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -2104,16 +2104,16 @@ $lang['dictionarynotinstalled'] = "No dictionary has been installed. Please cont
 
 // Permissions keys ----------------------------------------------------
 
-$lang['postreadingallowed'] = "Post reading allowed";
-$lang['postcreationallowed'] = "Post creation allowed";
-$lang['threadcreationallowed'] = "Thread creation allowed";
-$lang['posteditingallowed'] = "Post editing allowed";
-$lang['postdeletionallowed'] = "Post deletion allowed";
-$lang['attachmentsallowed'] = "Attachments allowed";
-$lang['htmlpostingallowed'] = "HTML posting allowed";
-$lang['signatureallowed'] = "Signature allowed";
-$lang['guestaccessallowed'] = "Guest access allowed";
-$lang['postapprovalrequired'] = "Post approval required";
+$lang['postreadingallowed'] = "Post Reading allowed";
+$lang['postcreationallowed'] = "Post Creation allowed";
+$lang['threadcreationallowed'] = "Thread Creation allowed";
+$lang['posteditingallowed'] = "Post Editing allowed";
+$lang['postdeletionallowed'] = "Post Deletion allowed";
+$lang['attachmentsallowed'] = "Uploading Attachments allowed";
+$lang['htmlpostingallowed'] = "HTML Posting allowed";
+$lang['usersignatureallowed'] = "User Signature allowed";
+$lang['guestaccessallowed'] = "Guest Access allowed";
+$lang['postapprovalrequired'] = "Post Approval required";
 
 // RSS feeds gubbins
 

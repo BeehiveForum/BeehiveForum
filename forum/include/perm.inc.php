@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.135 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.136 2008-09-14 11:45:16 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -242,7 +242,7 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
 {
     if (!$db_perm_get_user_groups = db_connect()) return false;
 
-    $sort_by_array  = array('GROUPS.GROUP_NAME', 'GROUPS.GROUP_DESC', 'USER_COUNT');
+    $sort_by_array  = array('GROUPS.GROUP_NAME', 'GROUPS.GROUP_DESC', 'GROUP_PERMS', 'USER_COUNT');
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) return false;
@@ -256,10 +256,12 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
 
     $user_groups_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS GROUPS.GID, GROUPS.FORUM, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
-    $sql.= "GROUPS.AUTO_GROUP, COUNT(GROUP_USERS.UID) AS USER_COUNT ";
-    $sql.= "FROM GROUPS GROUPS LEFT JOIN GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS GROUPS.GID, GROUPS.FORUM, GROUPS.GROUP_NAME, ";
+    $sql.= "GROUPS.GROUP_DESC, GROUPS.AUTO_GROUP, COUNT(GROUP_USERS.UID) AS USER_COUNT, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS FROM GROUPS GROUPS ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID AND GROUP_PERMS.FID = 0 ";
+    $sql.= "AND GROUP_PERMS.FORUM IN ($forum_fid)) ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 0 AND GROUPS.FORUM = '$forum_fid' ";
     $sql.= "GROUP BY GROUPS.GID ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
@@ -1039,6 +1041,30 @@ function perm_update_user_permissions($uid, $perm)
     return false;
 }
 
+function perm_folder_get_permissions($fid)
+{
+    if (!$db_perm_folder_get_permissions = db_connect()) return false;
+
+    if (!is_numeric($fid)) return 0;
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    $forum_fid = $table_data['FID'];
+
+    $sql = "SELECT PERM AS STATUS FROM GROUP_PERMS ";
+    $sql.= "WHERE FID = '$fid' AND GID = 0 AND FORUM = '$forum_fid'";
+
+    if (!$result = db_query($sql, $db_perm_folder_get_permissions)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        $permissions_data = db_fetch_array($result);
+        if (!is_null($permissions_data['STATUS'])) return $permissions_data['STATUS'];
+    }
+
+    return false;
+}
+
 function perm_folder_reset_user_permissions($fid)
 {
     if (!$db_perm_folder_reset_user_permissions = db_connect()) return false;
@@ -1201,25 +1227,38 @@ function perm_display_list($perms)
 
     $lang = load_language_file();
 
-    if ($perms & USER_PERM_POST_READ)        $perms_array[] = "R";
-    if ($perms & USER_PERM_POST_CREATE)      $perms_array[] = "W";
-    if ($perms & USER_PERM_THREAD_CREATE)    $perms_array[] = "T";
-    if ($perms & USER_PERM_POST_EDIT)        $perms_array[] = "E";
-    if ($perms & USER_PERM_POST_DELETE)      $perms_array[] = "D";
-    if ($perms & USER_PERM_POST_ATTACHMENTS) $perms_array[] = "A";
-    if ($perms & USER_PERM_HTML_POSTING)     $perms_array[] = "H";
-    if ($perms & USER_PERM_SIGNATURE)        $perms_array[] = "S";
-    if ($perms & USER_PERM_GUEST_ACCESS)     $perms_array[] = "G";
-    if ($perms & USER_PERM_POST_APPROVAL)    $perms_array[] = "V";
+    if ($perms & USER_PERM_BANNED)           $perms_array[] = 'UB';
+    if ($perms & USER_PERM_WORMED)           $perms_array[] = 'UW';
+    if ($perms & USER_PERM_POST_READ)        $perms_array[] = 'PR';
+    if ($perms & USER_PERM_POST_CREATE)      $perms_array[] = 'PC';
+    if ($perms & USER_PERM_THREAD_CREATE)    $perms_array[] = 'TC';
+    if ($perms & USER_PERM_POST_EDIT)        $perms_array[] = 'PE';
+    if ($perms & USER_PERM_POST_DELETE)      $perms_array[] = 'PD';
+    if ($perms & USER_PERM_POST_ATTACHMENTS) $perms_array[] = 'UA';
+    if ($perms & USER_PERM_FOLDER_MODERATE)  $perms_array[] = 'FM';
+    if ($perms & USER_PERM_ADMIN_TOOLS)      $perms_array[] = 'AT';
+    if ($perms & USER_PERM_HTML_POSTING)     $perms_array[] = 'HP';
+    if ($perms & USER_PERM_SIGNATURE)        $perms_array[] = 'US';
+    if ($perms & USER_PERM_GUEST_ACCESS)     $perms_array[] = 'GA';
+    if ($perms & USER_PERM_POST_APPROVAL)    $perms_array[] = 'PA';
+    if ($perms & USER_PERM_LINKS_MODERATE)   $perms_array[] = 'LM';
+    if ($perms & USER_PERM_EMAIL_CONFIRM)    $perms_array[] = 'EC';
+    if ($perms & USER_PERM_CAN_IGNORE_ADMIN) $perms_array[] = 'IA';
+    if ($perms & USER_PERM_PILLORIED)        $perms_array[] = 'UP';
 
     if (sizeof($perms_array) > 0) {
 
-        echo implode("", $perms_array);
+        echo implode(",", $perms_array);
 
     }else {
 
         echo $lang['none'];
     }
 }
+
+define('USER_PERM_LINKS_MODERATE', 32768);
+define('USER_PERM_EMAIL_CONFIRM', 65536);
+define('USER_PERM_CAN_IGNORE_ADMIN', 131072);
+define('USER_PERM_PILLORIED', 262144);
 
 ?>

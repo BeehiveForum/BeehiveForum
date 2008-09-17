@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.94 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.95 2008-09-17 18:37:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,6 +120,10 @@ $forum_access_level_array = array(FORUM_DISABLED => $lang['disabled'],
                                   FORUM_UNRESTRICTED => $lang['open'],
                                   FORUM_RESTRICTED => $lang['restricted'],
                                   FORUM_PASSWD_PROTECTED => $lang['passwordprotected']);
+
+// Array of available databases
+
+$available_databases = forums_get_available_dbs();
 
 // Array to hold error messages
 
@@ -285,13 +289,13 @@ if (isset($_POST['delete'])) {
         $t_owner_uid = 0;
     }
 
-    if (isset($_POST['t_database']) && strlen(trim(_stripslashes($_POST['t_database']))) > 0) {
+    if (isset($_POST['t_database'])) {
 
         $t_database = $_POST['t_database'];
 
-        if (!preg_match("/^[A-Z0-9_]+$/Diu", $t_database)) {
+        if (!in_array($t_database, $available_databases)) {
 
-            $error_msg_array[] = $lang['databasenameinvalidchars'];
+            $error_msg_array[] = $lang['mustsupplyforumdatabasename'];
             $valid = false;
         }
 
@@ -491,7 +495,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('' => '&nbsp;', FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
     echo "                      </tr>\n";
 
-    if (($available_databases = forums_get_available_dbs())) {
+    if (is_array($available_databases)) {
 
         $available_databases = array_merge(array('&nbsp;'), $available_databases);
 

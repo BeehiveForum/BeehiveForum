@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.102 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: install.php,v 1.103 2008-09-17 18:37:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,9 +71,15 @@ if (isset($_POST['install_method'])) {
 
         $forum_webtag = strtoupper(trim(_stripslashes($_POST['forum_webtag'])));
 
-        if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Du", $forum_webtag)) {
+        if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", $forum_webtag)) {
 
-            $error_array[] = "The forum webtag can only conatin uppercase A-Z, 0-9 and underscore.\n";
+            $error_array[] = "Forum webtag must start with at least one uppercase letter (A-Z) and only contain the characters A-Z, 0-9 and underscore.\n";
+            $valid = false;
+        }
+
+        if (strlen(trim($forum_webtag)) > 32) {
+
+            $error_array[] = "Forum webtag must between 1 and 32 characters in length.\n";
             $valid = false;
         }
 
@@ -81,7 +87,7 @@ if (isset($_POST['install_method'])) {
 
         if (isset($install_method) && $install_method < 2) {
 
-            $error_array[] = "You must specify a forum webtag for this type of installation.\n";
+            $error_array[] = "Forum webtag must between 1 and 32 characters in length.\n";
             $valid = false;
         }
     }
@@ -89,38 +95,35 @@ if (isset($_POST['install_method'])) {
     if (isset($_POST['db_server']) && strlen(trim(_stripslashes($_POST['db_server']))) > 0) {
         $db_server = trim(_stripslashes($_POST['db_server']));
     }else {
-        $error_array[] = "You must supply the hostname of your MySQL database.\n";
-        $valid = false;
+        $db_server = '';
     }
 
     if (isset($_POST['db_database']) && strlen(trim(_stripslashes($_POST['db_database']))) > 0) {
 
         $db_database = trim(_stripslashes($_POST['db_database']));
 
-        if (!preg_match("/^[A-Z0-9_]+$/Diu", $db_database)) {
+        if (strlen(trim($db_database)) > 64) {
 
-            $error_array[] = "The database name can only conatin a-z, A-Z, 0-9 and underscore.\n";
+            $error_array[] = "Database name must be between 1 and 64 characters in length.\n";
             $valid = false;
         }
 
     }else {
 
-        $error_array[] = "You must supply the name of your MySQL database.\n";
+        $error_array[] = "Database name must be between 1 and 64 characters in length.\n";
         $valid = false;
     }
 
     if (isset($_POST['db_username']) && strlen(trim(_stripslashes($_POST['db_username']))) > 0) {
         $db_username = trim(_stripslashes($_POST['db_username']));
     }else {
-        $error_array[] = "You must enter your username for your MySQL database.\n";
-        $valid = false;
+        $db_username = '';
     }
 
     if (isset($_POST['db_password']) && strlen(trim(_stripslashes($_POST['db_password']))) > 0) {
         $db_password = trim(_stripslashes($_POST['db_password']));
     }else {
-        $error_array[] = "You must enter your password for your MySQL database.\n";
-        $valid = false;
+        $db_password = '';
     }
 
     if (isset($_POST['db_cpassword']) && strlen(trim(_stripslashes($_POST['db_cpassword']))) > 0) {
@@ -671,11 +674,11 @@ echo "                        <td align=\"left\" class=\"postbody\"><input type=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"", (isset($db_password) ? $db_password : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"", (isset($db_cpassword) ? $db_cpassword : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -715,11 +718,11 @@ echo "                        <td align=\"left\" class=\"postbody\"><input type=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"", (isset($admin_password) ? $admin_password : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"", (isset($admin_cpassword) ? $admin_cpassword : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";

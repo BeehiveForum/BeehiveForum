@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.128 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.129 2008-09-17 18:40:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -80,7 +80,7 @@ function bh_error_handler_process_args($func_args_array)
 
         }else if (is_resource($func_arg)) {
 
-            $arguments_array[] = sprintf("Resource id #%s", get_class($func_arg));
+            $arguments_array[] = $func_arg;
 
         }else if (is_bool($func_arg)) {
 

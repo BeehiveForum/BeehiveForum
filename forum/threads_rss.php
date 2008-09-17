@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.69 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.70 2008-09-17 19:23:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -82,7 +82,7 @@ $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 // Current date
 
-$build_date = gmdate("D, d M Y H:i:s");
+$build_date = gmdate("D, d M Y H:i:s O");
 
 // Check to see if the user wants a custom number of threads.
 // Maximum to display is 20. Minimum is 1. Default is 20.
@@ -211,7 +211,7 @@ echo "<channel>\n";
 echo "<title>{$forum_name}</title>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
-echo "<lastBuildDate>{$build_date} UT</lastBuildDate>\n";
+echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";
 echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.310 2008-09-10 19:46:33 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.311 2008-09-21 18:20:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1102,6 +1102,7 @@ class html_frameset_rows extends html_frameset
 
     private $framespacing = 0;
     private $frameborder = 0;
+    private $allowtransparency = '';
 
     public function html_frameset_rows($rows, $framespacing = 0, $frameborder = 0)
     {
@@ -1111,11 +1112,15 @@ class html_frameset_rows extends html_frameset
 
         if (is_numeric($framespacing)) $this->framespacing = $framespacing;
         if (is_numeric($frameborder)) $this->frameborder = $frameborder;
+
+        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+            $this->allowtransparency = " allowtransparency=\"true\"";
+        }
     }
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset rows=\"%s\" framespacing=\"%s\" border=\"%s\">\n", $this->rows, $this->framespacing, $this->frameborder);
+        echo sprintf("<frameset rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
         $frames_array = parent::get_frames();
 
@@ -1133,6 +1138,7 @@ class html_frameset_cols extends html_frameset
 
     private $framespacing = 0;
     private $frameborder = 0;
+    private $allowtransparency = '';
 
     public function html_frameset_cols($cols, $framespacing = 4, $frameborder = 4)
     {
@@ -1142,11 +1148,15 @@ class html_frameset_cols extends html_frameset
 
         if (is_numeric($framespacing)) $this->framespacing = $framespacing;
         if (is_numeric($frameborder)) $this->frameborder = $frameborder;
+
+        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+            $this->allowtransparency = " allowtransparency=\"true\"";
+        }
     }
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset cols=\"%s\" framespacing=\"%s\" border=\"%s\">\n", $this->cols, $this->framespacing, $this->frameborder);
+        echo sprintf("<frameset cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
         $frames_array = parent::get_frames();
 
@@ -1165,6 +1175,7 @@ class html_frame
     private $frameborder;
     private $scrolling;
     private $noresize;
+    private $allowtransparency = '';
 
     function html_frame($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
     {
@@ -1179,14 +1190,18 @@ class html_frame
         }else {
             $this->frameborder = (is_numeric($frameborder)) ? $frameborder : 0;
         }
+
+        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+            $this->allowtransparency = "allowtransparency=\"true\" ";
+        }
     }
 
     function output_html()
     {
-        echo "<frame src=\"{$this->src}\" name=\"{$this->name}\" frameborder=\"{$this->frameborder}\" ";
+        echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", $this->src, $this->name, $this->frameborder);
         echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
         echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
-        echo "/>\n";
+        echo sprintf("%s/>\n", $this->allowtransparency);
     }
 }
 

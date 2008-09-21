@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.58 2008-09-14 11:45:16 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.59 2008-09-21 14:06:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -189,19 +189,19 @@ echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A 
 
 if (isset($_GET['added'])) {
 
-    html_display_success_msg($lang['successfullyaddedgroup'], '86%', 'center');
+    html_display_success_msg($lang['successfullyaddedgroup'], '600', 'center');
 
 }else if (isset($_GET['edited'])) {
 
-    html_display_success_msg($lang['successfullyeditedgroup'], '86%', 'center');
+    html_display_success_msg($lang['successfullyeditedgroup'], '600', 'center');
 
 }else if (isset($_GET['deleted'])) {
 
-    html_display_success_msg($lang['successfullydeletedselectedgroups'], '86%', 'center');
+    html_display_success_msg($lang['successfullydeletedselectedgroups'], '600', 'center');
 
 }else if (sizeof($user_groups_array['user_groups_array']) < 1) {
 
-    html_display_warning_msg($lang['nousergroups'], '86%', 'center');
+    html_display_warning_msg($lang['nousergroups'], '600', 'center');
 }
 
 echo "<br />\n";

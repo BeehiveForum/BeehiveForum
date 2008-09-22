@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.106 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: display.php,v 1.107 2008-09-22 17:22:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -182,7 +182,7 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $folder_title, $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_title, $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 

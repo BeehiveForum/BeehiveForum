@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.311 2008-09-21 18:20:30 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.312 2008-09-23 16:25:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -335,12 +335,21 @@ function html_get_top_page()
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = forum_get_setting('default_style');
+        $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
     }
 
     if (forum_check_webtag_available($webtag)) {
 
         if ($user_style !== false) {
+
+            if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.php")) {
+                return "$forum_path/styles/$user_style/top.php";
+            }
+
+            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.php")) {
+                return "$forum_path/forums/$webtag/styles/$user_style/top.php";
+            }
+
 
             if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.html")) {
                 return "$forum_path/styles/$user_style/top.html";
@@ -352,6 +361,10 @@ function html_get_top_page()
         }
 
     }else {
+
+        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
+            return "$forum_path/forums/$webtag/top.php";
+        }
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
             return "$forum_path/forums/$webtag/top.html";
@@ -1233,7 +1246,7 @@ function style_image($img)
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = forum_get_setting('default_style');
+        $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
     }
 
     if (@is_dir("$forum_path/styles/$user_style/images") && @file_exists("$forum_path/styles/$user_style/images/$img")) {

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.140 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.141 2008-09-23 23:54:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -90,8 +90,6 @@ if (!$user_sess = bh_session_check()) {
 // Light mode check to see if we should bounce to the logon screen.
 
 if (!bh_session_active()) {
-
-    $webtag = get_webtag();
     header_redirect("llogon.php?webtag=$webtag");
 }
 

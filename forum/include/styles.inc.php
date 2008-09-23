@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.25 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.26 2008-09-23 23:54:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,34 +43,36 @@ function styles_get_available()
     $lang = load_language_file();
 
     $available_global_styles = array();
-
     $available_forum_styles  = array();
 
-    if ((@$dir = opendir("forums/$webtag/styles"))) {
+    if (forum_check_webtag_available($webtag)) {
 
-        while (($file = readdir($dir)) !== false) {
+        if ((@$dir = opendir("forums/$webtag/styles"))) {
 
-            if (!in_array($file, array_keys($available_forum_styles))) {
+            while (($file = readdir($dir)) !== false) {
 
-                if (@is_dir("forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
+                if (!in_array($file, array_keys($available_forum_styles))) {
 
-                    if (@file_exists("forums/$webtag/styles/$file/style.css")) {
+                    if (@is_dir("forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
 
-                        if (@file_exists("forums/$webtag/styles/$file/desc.txt")) {
+                        if (@file_exists("forums/$webtag/styles/$file/style.css")) {
 
-                            $local_style_name = implode("", file("forums/$webtag/styles/$file/desc.txt"));
-                            $available_forum_styles[$file] = _htmlentities(trim($local_style_name));
+                            if (@file_exists("forums/$webtag/styles/$file/desc.txt")) {
 
-                        }else {
+                                $local_style_name = implode("", file("forums/$webtag/styles/$file/desc.txt"));
+                                $available_forum_styles[$file] = _htmlentities(trim($local_style_name));
 
-                            $available_forum_styles[$file] = _htmlentities(trim($file));
+                            }else {
+
+                                $available_forum_styles[$file] = _htmlentities(trim($file));
+                            }
                         }
                     }
                 }
             }
-        }
 
-        closedir($dir);
+            closedir($dir);
+        }
     }
 
     if ((@$dir = opendir("styles"))) {
@@ -131,11 +133,14 @@ function style_exists($style_path)
 
     $style_path = basename($style_path);
 
-    if (@file_exists("styles/$style_path/style.css")) {
-        return true;
+    if (forum_check_webtag_available($webtag)) {
+
+        if (@file_exists("forums/$webtag/styles/$style_path/style.css")) {
+            return true;
+        }
     }
 
-    if (@file_exists("forums/$webtag/styles/$style_path/style.css")) {
+    if (@file_exists("styles/$style_path/style.css")) {
         return true;
     }
 

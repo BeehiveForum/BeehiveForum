@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.261 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: edit.php,v 1.262 2008-09-23 23:54:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -81,9 +81,7 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 

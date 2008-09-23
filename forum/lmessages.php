@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.109 2008-08-28 21:28:32 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.110 2008-09-23 23:54:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -79,15 +79,12 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $webtag = get_webtag();
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Light mode check to see if we should bounce to the logon screen.
 
 if (!bh_session_active()) {
-
-    $webtag = get_webtag();
     header_redirect("llogon.php?webtag=$webtag");
 }
 

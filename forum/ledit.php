@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.43 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.44 2008-09-23 23:54:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -83,7 +83,6 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $webtag = get_webtag();
     header_redirect("llogon.php?webtag=$webtag");
 }
 

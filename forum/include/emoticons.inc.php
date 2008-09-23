@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.82 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.83 2008-09-23 23:54:07 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -100,15 +100,18 @@ function emoticons_initialise()
                 }
             }
 
-            if (($dir = @opendir("forums/$webtag/emoticons"))) {
+            if (forum_check_webtag_available($webtag)) {
 
-                while (($file = @readdir($dir)) !== false) {
+                if (($dir = @opendir("forums/$webtag/emoticons"))) {
 
-                    if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
+                    while (($file = @readdir($dir)) !== false) {
 
-                        if (@file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
+                        if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
-                            include("forums/$webtag/emoticons/$file/definitions.php");
+                            if (@file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
+
+                                include("forums/$webtag/emoticons/$file/definitions.php");
+                            }
                         }
                     }
                 }
@@ -120,8 +123,11 @@ function emoticons_initialise()
                 include ("emoticons/$user_emots/definitions.php");
             }
 
-            if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
-                include ("forums/$webtag/emoticons/$user_emots/definitions.php");
+            if (forum_check_webtag_available($webtag)) {
+
+                if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
+                    include ("forums/$webtag/emoticons/$user_emots/definitions.php");
+                }
             }
         }
 
@@ -394,8 +400,17 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
         $emoticon = array();
         $emoticon_text = array();
 
-        if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
-            include("emoticons/$emoticon_set/definitions.php");
+        if (forum_check_webtag_available($webtag)) {
+
+            if (@file_exists("forums/$webtag/emoticons/$emoticon_set/definitions.php")) {
+                include ("forums/$webtag/emoticons/$emoticon_set/definitions.php");
+            }
+
+        }else {
+
+            if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+                include("emoticons/$emoticon_set/definitions.php");
+            }
         }
 
         if (count($emoticon) > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.257 2008-09-13 23:41:31 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.258 2008-09-23 23:54:06 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -101,10 +101,6 @@ if (bh_session_user_banned()) {
     html_user_banned();
     exit;
 }
-
-// Check we have a webtag
-
-$webtag = get_webtag();
 
 // Load language file
 

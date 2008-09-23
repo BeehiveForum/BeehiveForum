@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.89 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.90 2008-09-23 23:54:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -221,8 +221,12 @@ function logon_perform()
 
         if (user_guest_enabled()) {
 
-            bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            if (forum_check_webtag_available($webtag)) {
+
+                bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            }
+
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
             bh_session_init(0);
             return true;
@@ -267,8 +271,12 @@ function logon_perform()
 
             // Remove any previously set cookies
 
-            bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            if (forum_check_webtag_available($webtag)) {
+
+                bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            }
+
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.

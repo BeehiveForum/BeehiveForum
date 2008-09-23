@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.347 2008-09-17 18:37:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.348 2008-09-23 23:54:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -308,6 +308,8 @@ function forum_get_saved_password(&$password, &$passhash, &$sesshash)
 {
     $webtag = get_webtag();
 
+    if (!forum_check_webtag_available($webtag)) return false;
+
     $password = bh_getcookie("bh_{$webtag}_password", 'strlen', '');
     $passhash = bh_getcookie("bh_{$webtag}_passhash", 'strlen', '');
     $sesshash = bh_getcookie("bh_{$webtag}_sesshash", 'strlen', '');
@@ -318,6 +320,8 @@ function forum_get_saved_password(&$password, &$passhash, &$sesshash)
 function forum_check_password($forum_fid)
 {
     $webtag = get_webtag();
+
+    if (!forum_check_webtag_available($webtag)) return false;
 
     if (!is_numeric($forum_fid)) return false;
 
@@ -875,6 +879,8 @@ function forum_load_start_page()
 {
     $webtag = get_webtag();
 
+    if (!forum_check_webtag_available($webtag)) return false;
+
     if (@file_exists("forums/$webtag/start_main.php")) {
 
         if (($content = @file_get_contents("forums/$webtag/start_main.php"))) {
@@ -889,6 +895,8 @@ function forum_load_start_page()
 function forum_save_start_page($content)
 {
     $webtag = get_webtag();
+
+    if (!forum_check_webtag_available($webtag)) return false;
 
     mkdir_recursive("forums/$webtag", 0755);
 

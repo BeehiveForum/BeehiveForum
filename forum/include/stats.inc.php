@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.111 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.112 2008-09-23 23:54:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -282,7 +282,7 @@ function stats_get_active_guest_count()
 function stats_get_active_user_list()
 {
     if (!$db_stats_get_active_user_list = db_connect()) return false;
-    
+
     $lang = load_language_file();
 
     $stats = array('GUESTS' => 0, 'NUSERS' => 0,
@@ -534,7 +534,7 @@ function stats_get_newest_user()
     if (!$db_stats_get_newest_user = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
@@ -919,6 +919,11 @@ function stats_get_most_popular_forum_style()
     if (db_num_rows($result) > 0) {
 
         $style_data = db_fetch_array($result);
+
+        if (strlen(trim($style_data['STYLE'])) < 1) {
+            $style_data['STYLE'] = forum_get_setting('default_style', false, 'default');
+        }
+
         return $style_data;
     }
 
@@ -940,6 +945,11 @@ function stats_get_most_popular_emoticon_pack()
     if (db_num_rows($result) > 0) {
 
         $emoticon_data = db_fetch_array($result);
+
+        if (strlen(trim($emoticon_data['EMOTICONS'])) < 1) {
+            $emoticon_data['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+        }
+
         return $emoticon_data;
     }
 
@@ -961,6 +971,11 @@ function stats_get_most_popular_language()
     if (db_num_rows($result) > 0) {
 
         $language_data = db_fetch_array($result);
+
+        if (strlen(trim($language_data['LANGUAGE'])) < 1) {
+            $language_data['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
+        }
+
         return $language_data;
     }
 

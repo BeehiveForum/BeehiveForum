@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.348 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.349 2008-09-24 12:14:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,7 +77,7 @@ function get_forum_data()
 
                 $webtag = db_escape_string($webtag);
 
-                $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, ";
+                $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
                 $sql.= "CONCAT('`', DATABASE_NAME, '`.', WEBTAG, '_') AS PREFIX ";
                 $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
@@ -97,7 +97,7 @@ function get_forum_data()
             // Check #2: Try and select a default webtag from
             // the databse
 
-            $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, ";
+            $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
             $sql.= "CONCAT('`', DATABASE_NAME, '`.', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
@@ -111,6 +111,10 @@ function get_forum_data()
                 }
             }
         }
+    }
+
+    if (!forums_check_available_dbs($forum_data['DATABASE_NAME'])) {
+        trigger_error('Invalid database name for selected forum webtag. Please check FORUMS table for errors.', E_USER_ERROR);
     }
 
     return $forum_data;
@@ -2563,6 +2567,19 @@ function forums_get_available_dbs()
     }
 
     return false;
+}
+
+function forums_check_available_dbs($database_name)
+{
+    if (!$db_forums_check_available_dbs = db_connect()) return false;
+
+    if ($database_name !== db_escape_string($database_name)) return false;
+
+    $sql = "SHOW DATABASES LIKE '$database_name'";
+
+    if (!$result = db_query($sql, $db_forums_check_available_dbs)) return false;
+
+    return (db_num_rows($result) > 0);
 }
 
 function forums_get_available_count()

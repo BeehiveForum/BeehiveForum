@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.126 2008-09-23 23:54:05 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.127 2008-09-24 15:00:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -240,6 +240,24 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_rules_message'] = trim(_stripslashes($_POST['forum_rules_message']));
     }else {
         $new_forum_settings['forum_rules_message'] = "";
+    }
+
+    if (isset($_POST['enable_google_analytics']) && $_POST['enable_google_analytics'] == "Y") {
+        $new_forum_settings['enable_google_analytics'] = "Y";
+    }else {
+        $new_forum_settings['enable_google_analytics'] = "N";
+    }
+
+    if (isset($_POST['allow_forum_google_analytics']) && $_POST['allow_forum_google_analytics'] == "Y") {
+        $new_forum_settings['allow_forum_google_analytics'] = "Y";
+    }else {
+        $new_forum_settings['allow_forum_google_analytics'] = "N";
+    }
+
+    if (isset($_POST['google_analytics_code']) && strlen(trim(_stripslashes($_POST['google_analytics_code']))) > 0) {
+        $new_forum_settings['google_analytics_code'] = trim(_stripslashes($_POST['google_analytics_code']));
+    }else {
+        $new_forum_settings['google_analytics_code'] = "";
     }
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
@@ -756,6 +774,56 @@ echo "                          <p class=\"smalltext\">{$lang['forum_settings_he
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_61']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['googleanalytics']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['enablegoogleanalytics']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("enable_google_analytics", "Y", $lang['yes'], (isset($forum_global_settings['enable_google_analytics']) && $forum_global_settings['enable_google_analytics'] == "Y")), "&nbsp;", form_radio("enable_google_analytics", "N", $lang['no'], (isset($forum_global_settings['enable_google_analytics']) && $forum_global_settings['enable_google_analytics'] == "N") || !isset($forum_global_settings['enable_google_analytics'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['allowforumgoogleanalytics']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("allow_forum_google_analytics", "Y", $lang['yes'], (isset($forum_global_settings['allow_forum_google_analytics']) && $forum_global_settings['allow_forum_google_analytics'] == "Y")), "&nbsp;", form_radio("allow_forum_google_analytics", "N", $lang['no'], (isset($forum_global_settings['allow_forum_google_analytics']) && $forum_global_settings['allow_forum_google_analytics'] == "N") || !isset($forum_global_settings['allow_forum_google_analytics'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleanalyticsaccountid']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_analytics_code", (isset($forum_global_settings['google_analytics_code']) ? _htmlentities($forum_global_settings['google_analytics_code']) : ''), 31, 20), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_61']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"center\" colspan=\"2\">\n";
+
+html_display_warning_msg($lang['forum_settings_help_62'], '95%', 'center');
+
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

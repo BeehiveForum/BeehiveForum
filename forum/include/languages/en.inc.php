@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.592 2008-09-23 23:54:08 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.593 2008-09-24 15:00:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -934,6 +934,7 @@ $lang['forumrestrictedmessage'] = "Forum Restricted Message";
 $lang['forumpasswordprotectedmessage'] = "Forum Password Protected Message";
 $lang['googleanalytics'] = "Google Analytics";
 $lang['enablegoogleanalytics'] = "Enable Google Analytics";
+$lang['allowforumgoogleanalytics'] = "Allow Google Analytics on each forum";
 $lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------

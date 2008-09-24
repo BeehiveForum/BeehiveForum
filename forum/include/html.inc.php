@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.314 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.315 2008-09-24 15:00:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1167,6 +1167,10 @@ function html_draw_bottom($frame_set_html = false)
 
     if ($frame_set_html === false) {
 
+        if (($page_footer = html_get_page_footer())) {
+            echo fix_html($page_footer);
+        }
+
         if (($google_analytics_code = html_get_google_analytics_code())) {
 
             echo "<script type=\"text/javascript\">\n";
@@ -1311,12 +1315,33 @@ class html_frame
     }
 }
 
+function html_get_page_footer()
+{
+    if (($page_footer = forum_get_setting('forum_page_footer'))) {
+        return (strlen(trim($page_footer)) > 0) ? $page_footer : false;
+    }
+
+    return false;
+}
+
 function html_get_google_analytics_code()
 {
-    if (forum_get_setting('enable_google_analytics', 'Y')) {
+    if (forum_get_global_setting('allow_forum_google_analytics', 'Y')) {
 
-        if (($google_analytics_code = forum_get_setting('forum_google_analytics_code'))) {
-            return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
+        if (forum_get_setting('enable_google_analytics', 'Y')) {
+
+            if (($google_analytics_code = forum_get_setting('google_analytics_code'))) {
+                return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
+            }
+        }
+
+    }else {
+
+        if (forum_get_global_setting('enable_google_analytics', 'Y')) {
+
+            if (($google_analytics_code = forum_get_global_setting('google_analytics_code'))) {
+                return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
+            }
         }
     }
 

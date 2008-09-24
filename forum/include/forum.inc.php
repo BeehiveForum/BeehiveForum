@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.349 2008-09-24 12:14:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.350 2008-09-24 15:00:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -632,7 +632,7 @@ function forum_check_setting_name($setting_name)
                                   'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links',
                                   'enable_google_analytics', 'force_word_filter', 'forum_desc',
                                   'forum_content_rating', 'forum_dl_saving', 'forum_email', 'forum_keywords',
-                                  'forum_google_analytics_code', 'forum_name', 'forum_timezone',
+                                  'google_analytics_code', 'forum_name', 'forum_timezone',
                                   'forum_links_top_link', 'guest_account_enabled', 'guest_show_recent',
                                   'maximum_post_length', 'minimum_post_frequency', 'password_protected_message',
                                   'poll_allow_guests', 'post_edit_grace_period', 'post_edit_time',
@@ -651,7 +651,8 @@ function forum_check_global_setting_name($setting_name)
                                          'forum_name', 'forum_noreply_email', 'forum_rules_enabled', 'forum_rules_message',
                                          'forum_maintenance_function', 'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
                                          'bh_remove_stale_sessions_last_run', 'thread_auto_prune_unread_data_last_run',
-                                         'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'guest_account_enabled',
+                                         'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'enable_google_analytics',
+                                         'allow_forum_google_analytics', 'google_analytics_code', 'guest_account_enabled',
                                          'guest_show_recent', 'message_cache_enabled', 'messages_unread_cutoff',
                                          'messages_unread_cutoff_custom', 'new_user_email_notify', 'new_user_mark_as_of_int',
                                          'new_user_pm_notify_email', 'new_user_pm_notify', 'pm_allow_attachments',

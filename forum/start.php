@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.87 2008-09-10 18:46:44 decoyduck Exp $ */
+/* $Id: start.php,v 1.88 2008-09-25 21:48:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -109,7 +109,7 @@ if (!forum_check_access_level()) {
 
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('250,*');
+$frameset = new html_frameset_cols('280,*');
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 

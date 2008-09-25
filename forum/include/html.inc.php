@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.315 2008-09-24 15:00:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.316 2008-09-25 21:48:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1158,6 +1158,14 @@ function html_draw_top()
         echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
         echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
         echo ">\n";
+
+        if (forum_get_global_setting('google_adsense_enabled', 'Y') && html_output_google_adsense_settings()) {
+
+            echo "<div align=\"center\">\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
+            echo "</div>\n";
+            echo "<br />\n";
+        }
     }
 }
 
@@ -1346,6 +1354,116 @@ function html_get_google_analytics_code()
     }
 
     return false;
+}
+
+function html_output_google_adsense_settings()
+{
+    // Check the required settings!
+
+    if (!$google_adsense_adtype = forum_get_global_setting('google_adsense_adtype')) return false;
+    if (!$google_adsense_adchannel = forum_get_global_setting('google_adsense_adchannel')) return false;
+    if (!$google_adsense_clientid = forum_get_global_setting('google_adsense_clientid')) return false;
+
+    // Check we're not on nav.php
+
+    if (preg_match('/^nav\.php/i', basename($_SERVER['PHP_SELF'])) > 0) return false;
+
+    // Array of ad type settings
+
+    $google_adsense_adtype_array = array(GOOGLE_ADSENSE_ACCOUNT_DEFAULT => '',
+                                         GOOGLE_ADSENSE_TEXT_ONLY       => 'text',
+                                         GOOGLE_ADSENSE_TEXT_AND_IMAGES => 'text_image');
+
+    // Check the adtype is valid
+
+    if (!in_array($google_adsense_adtype, array_keys($google_adsense_adtype_array))) {
+        $google_adsense_adtype = GOOGLE_ADSENSE_ACCOUNT_DEFAULT;
+    }
+
+    // Check the user account type - If not a guest and only showing ads to guests
+    // then we have nothing to do.
+
+    if (!user_is_guest() && forum_get_global_setting('google_adsense_display_users', GOOGLE_ADSENSE_GUESTS_ONLY)) return false;
+
+    // Check the page we're on to see if we should display the Ads or not.
+    // If set to display on messages.php only and we're not on messages.php bail out.
+
+    if (preg_match('/^messages\.php/i', basename($_SERVER['PHP_SELF'])) < 1) {
+        if (forum_get_global_setting('google_adsense_display_pages', GOOGLE_ADSENSE_MESSAGES_ONLY)) return false;
+    }
+
+    // No idea what format the client ID should be in
+    // So we'll just assume it's right if it's a non-empty string.
+
+    if (strlen(trim($google_adsense_clientid)) > 0) {
+
+        // Get the Ad colours.
+
+        $google_adsense_background_colour = forum_get_global_setting('google_adsense_background_colour', false, '#EEEEEE');
+        $google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour', false, '#999999');
+        $google_adsense_border_colour = forum_get_global_setting('google_adsense_border_colour', false, '#EEEEEE');
+        $google_adsense_url_colour = forum_get_global_setting('google_adsense_url_colour', false, '#009900');
+        $google_adsense_link_colour = forum_get_global_setting('google_adsense_border_colour', false, '#4490B4');
+
+        // Output the settings for the Ads.
+
+        echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+        echo "<!--\n\n";
+        echo "google_ad_client = \"$google_adsense_clientid\";\n";
+        echo "google_ad_channel = \"$google_adsense_adchannel\";\n";
+        echo "google_ad_type = \"{$google_adsense_adtype_array[$google_adsense_adtype]}\";\n";
+        echo "google_color_border = \"#$google_adsense_border_colour\";\n";
+        echo "google_color_bg = \"#$google_adsense_background_colour\";\n";
+        echo "google_color_link = \"#$google_adsense_link_colour\";\n";
+        echo "google_color_url = \"#$google_adsense_url_colour\";\n";
+        echo "google_color_text = \"#$google_adsense_text_colour\";\n";
+
+        $page_adsense_widths_preg_array = array('admin_menu\.php' => array('234x60_as', 234, 60),
+                                                'display_emoticons\.php' => array('468x60_as', 468, 60),
+                                                'attachments\.php' => array('468x60_as', 468, 60),
+                                                'edit_attachments\.php' => array('468x60_as', 468, 60),
+                                                'email\.php' => array('468x60_as', 468, 60),
+                                                'folder_options\.php' => array('468x60_as', 468, 60),
+                                                'mods_list\.php' => array('468x60_as', 468, 60),
+                                                'pm_folders\.php' => array('234x60_as', 234, 60),
+                                                'poll_results\.php' => array('468x60_as', 468, 60),
+                                                'search_popup\.php' => array('468x60_as', 468, 60),
+                                                'search\.php.+show_stop_words=true' => array('468x60_as', 468, 60),
+                                                'start_left\.php' => array('234x60_as', 234, 60),
+                                                'thread_list\.php' => array('234x60_as', 234, 60),
+                                                'user_profile\.php' => array('468x60_as', 468, 60));
+
+        $page_adsense_widths_preg = implode(")|^(", array_keys($page_adsense_widths_preg_array));
+
+        if (preg_match("/^($page_adsense_widths_preg)/u", basename($_SERVER['PHP_SELF']), $adsense_width_match) > 0) {
+
+            $adsense_width_match = (isset($adsense_width_match[0])) ? preg_quote($adsense_width_match[0], '/') : '';
+
+            if (isset($page_adsense_widths_preg_array[$adsense_width_match])) {
+
+                echo "google_ad_format = \"{$page_adsense_widths_preg_array[$adsense_width_match][0]}\";\n";
+                echo "google_ad_width = {$page_adsense_widths_preg_array[$adsense_width_match][1]};\n";
+                echo "google_ad_height = {$page_adsense_widths_preg_array[$adsense_width_match][2]};\n\n";
+
+            }else {
+
+                echo "google_ad_format = \"468x60_as\";\n";
+                echo "google_ad_width = 468;\n";
+                echo "google_ad_height = 60;\n\n";
+            }
+
+        }else {
+
+            echo "google_ad_format = \"468x60_as\";\n";
+            echo "google_ad_width = 468;\n";
+            echo "google_ad_height = 60;\n\n";
+        }
+
+        echo "//-->\n";
+        echo "</script>\n";
+    }
+
+    return true;
 }
 
 function html_js_safe_str($str)

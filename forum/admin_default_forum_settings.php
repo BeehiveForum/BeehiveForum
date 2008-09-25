@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.128 2008-09-24 15:07:58 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.129 2008-09-25 21:48:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -137,6 +137,22 @@ $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableu
 
 $sitemap_freq_periods = array(DAY_IN_SECONDS  => $lang['onceaday'],
                               WEEK_IN_SECONDS => $lang['onceaweek']);
+
+// Array of valid Google Adsense ad user account types
+
+$google_adsense_user_type_array = array(GOOGLE_ADSENSE_ALL_USERS   => $lang['allusers'],
+                                        GOOGLE_ADSENSE_GUESTS_ONLY => $lang['guestsonly']);
+
+// Array of valid Google Adsense ad page types
+
+$google_adsense_page_type_array = array(GOOGLE_ADSENSE_ALL_PAGES => $lang['allpages'],
+                                        GOOGLE_ADSENSE_MESSAGES_ONLY => $lang['messagesonly']);
+
+// Array of valid Google Adsense ad types.
+
+$google_adsense_ad_type_array = array(GOOGLE_ADSENSE_ACCOUNT_DEFAULT => $lang['usemydefaultaccountsetting'],
+                                      GOOGLE_ADSENSE_TEXT_ONLY       => $lang['textonlyads'],
+                                      GOOGLE_ADSENSE_TEXT_AND_IMAGES => $lang['textandimageads']);
 
 // Submit code.
 
@@ -258,6 +274,72 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['google_analytics_code'] = trim(_stripslashes($_POST['google_analytics_code']));
     }else {
         $new_forum_settings['google_analytics_code'] = "";
+    }
+
+    if (isset($_POST['google_adsense_enabled']) && $_POST['google_adsense_enabled'] == "Y") {
+        $new_forum_settings['google_adsense_enabled'] = "Y";
+    }else {
+        $new_forum_settings['google_adsense_enabled'] = "N";
+    }
+
+    if (isset($_POST['google_adsense_display_users']) && in_array($_POST['google_adsense_display_users'], array_keys($google_adsense_user_type_array))) {
+        $new_forum_settings['google_adsense_display_users'] = $_POST['google_adsense_display_users'];
+    }else {
+        $new_forum_settings['google_adsense_display_users'] = GOOGLE_ADSENSE_GUESTS_ONLY;
+    }
+
+    if (isset($_POST['google_adsense_display_pages']) && in_array($_POST['google_adsense_display_pages'], array_keys($google_adsense_page_type_array))) {
+        $new_forum_settings['google_adsense_display_pages'] = $_POST['google_adsense_display_pages'];
+    }else {
+        $new_forum_settings['google_adsense_display_pages'] = GOOGLE_ADSENSE_MESSAGES_ONLY;
+    }
+
+    if (isset($_POST['google_adsense_clientid']) && strlen(trim(_stripslashes($_POST['google_adsense_clientid']))) > 0) {
+        $new_forum_settings['google_adsense_clientid'] = trim(_stripslashes($_POST['google_adsense_clientid']));
+    }else {
+        $new_forum_settings['google_adsense_clientid'] = "";
+    }
+
+    if (isset($_POST['google_adsense_adchannel']) && strlen(trim(_stripslashes($_POST['google_adsense_adchannel']))) > 0) {
+        $new_forum_settings['google_adsense_adchannel'] = trim(_stripslashes($_POST['google_adsense_adchannel']));
+    }else {
+        $new_forum_settings['google_adsense_adchannel'] = "";
+    }
+
+    if (isset($_POST['google_adsense_adtype']) && in_array($_POST['google_adsense_adtype'], array_keys($google_adsense_ad_type_array))) {
+        $new_forum_settings['google_adsense_adtype'] = $_POST['google_adsense_adtype'];
+    }else {
+        $new_forum_settings['google_adsense_adtype'] = GOOGLE_ADSENSE_MESSAGES_ONLY;
+    }
+
+    if (isset($_POST['google_adsense_border_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_border_colour'])) > 0) {
+        $new_forum_settings['google_adsense_border_colour'] = ltrim(_stripslashes($_POST['google_adsense_border_colour']), '#');
+    }else {
+        $new_forum_settings['google_adsense_border_colour'] = "";
+    }
+
+    if (isset($_POST['google_adsense_background_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_background_colour'])) > 0) {
+        $new_forum_settings['google_adsense_background_colour'] = ltrim(_stripslashes($_POST['google_adsense_background_colour']), '#');
+    }else {
+        $new_forum_settings['google_adsense_background_colour'] = "";
+    }
+
+    if (isset($_POST['google_adsense_link_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_link_colour'])) > 0) {
+        $new_forum_settings['google_adsense_link_colour'] = ltrim(_stripslashes($_POST['google_adsense_link_colour']), '#');
+    }else {
+        $new_forum_settings['google_adsense_link_colour'] = "";
+    }
+
+    if (isset($_POST['google_adsense_url_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_url_colour'])) > 0) {
+        $new_forum_settings['google_adsense_url_colour'] = ltrim(_stripslashes($_POST['google_adsense_url_colour']), '#');
+    }else {
+        $new_forum_settings['google_adsense_url_colour'] = "";
+    }
+
+    if (isset($_POST['google_adsense_text_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_text_colour'])) > 0) {
+        $new_forum_settings['google_adsense_text_colour'] = ltrim(_stripslashes($_POST['google_adsense_text_colour']), '#');
+    }else {
+        $new_forum_settings['google_adsense_text_colour'] = "";
     }
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
@@ -517,7 +599,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
 // Start Output Here
 
-html_draw_top("onunload=clearFocus()", "emoticons.js", "htmltools.js");
+html_draw_top("onunload=clearFocus()", "admin.js", "emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
 
@@ -572,10 +654,16 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeyw
 echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_global_settings['forum_keywords']) ? _htmlentities($forum_global_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_56']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_57']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -606,10 +694,16 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['unreadmes
 echo "                        <td align=\"left\">", form_dropdown_array("messages_unread_cutoff", $unread_cutoff_periods, (isset($forum_global_settings['messages_unread_cutoff']) && in_array($forum_global_settings['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) ? $forum_global_settings['messages_unread_cutoff'] : YEAR_IN_SECONDS), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_48']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_49']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -640,9 +734,15 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['searchfre
 echo "                        <td align=\"left\">", form_input_text("search_min_frequency", (isset($forum_global_settings['search_min_frequency'])) ? _htmlentities($forum_global_settings['search_min_frequency']) : "30", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_39']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -677,10 +777,16 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['activeses
 echo "                        <td align=\"left\">", form_input_text("active_sess_cutoff", (isset($forum_global_settings['active_sess_cutoff'])) ? _htmlentities($forum_global_settings['active_sess_cutoff']) : "900", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_15']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_16']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -767,6 +873,9 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
@@ -774,6 +883,9 @@ echo "                          <p class=\"smalltext\">{$lang['forum_settings_he
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -814,6 +926,9 @@ echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googl
 echo "                        <td align=\"left\">", form_input_text("google_analytics_code", (isset($forum_global_settings['google_analytics_code']) ? _htmlentities($forum_global_settings['google_analytics_code']) : ''), 31, 20), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_61']}</p>\n";
 echo "                        </td>\n";
@@ -822,6 +937,97 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\" colspan=\"2\">\n";
 
 html_display_warning_msg($lang['forum_settings_help_62'], '95%', 'center');
+
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['googleadsense']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['enablegoogleadsenseadverts']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("google_adsense_enabled", "Y", $lang['yes'], (isset($forum_global_settings['google_adsense_enabled']) && $forum_global_settings['google_adsense_enabled'] == "Y")), "&nbsp;", form_radio("google_adsense_enabled", "N", $lang['no'], (isset($forum_global_settings['google_adsense_enabled']) && $forum_global_settings['google_adsense_enabled'] == "N") || !isset($forum_global_settings['google_adsense_enabled'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['displaygoogleadsenseadstousers']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("google_adsense_display_users", GOOGLE_ADSENSE_ALL_USERS, $lang['allusers'], (isset($forum_global_settings['google_adsense_display_users']) && $forum_global_settings['google_adsense_display_users'] == GOOGLE_ADSENSE_ALL_USERS)), "&nbsp;", form_radio("google_adsense_display_users", GOOGLE_ADSENSE_GUESTS_ONLY, $lang['guestsonly'], (isset($forum_global_settings['google_adsense_display_users']) && $forum_global_settings['google_adsense_display_users'] == GOOGLE_ADSENSE_GUESTS_ONLY) || !isset($forum_global_settings['google_adsense_display_users'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['displaygoogleadsenseadsonpages']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("google_adsense_display_pages", GOOGLE_ADSENSE_ALL_PAGES, $lang['allpages'], (isset($forum_global_settings['google_adsense_display_pages']) && $forum_global_settings['google_adsense_display_pages'] == GOOGLE_ADSENSE_ALL_PAGES)), "&nbsp;", form_radio("google_adsense_display_pages", GOOGLE_ADSENSE_MESSAGES_ONLY, $lang['messagesonly'], (isset($forum_global_settings['google_adsense_display_pages']) && $forum_global_settings['google_adsense_display_pages'] == GOOGLE_ADSENSE_MESSAGES_ONLY) || !isset($forum_global_settings['google_adsense_display_pages'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"230\" nowrap=\"nowrap\">{$lang['googleadsenseclientid']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_clientid", (isset($forum_global_settings['google_adsense_clientid']) ? _htmlentities($forum_global_settings['google_adsense_clientid']) : ''), 21, 40), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadchannel']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_adchannel", (isset($forum_global_settings['google_adsense_adchannel']) ? _htmlentities($forum_global_settings['google_adsense_adchannel']) : ''), 27, 40), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadtype']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('google_adsense_adtype', $google_adsense_ad_type_array, (isset($forum_global_settings['google_adsense_adtype']) ? $forum_global_settings['google_adsense_adtype'] : GOOGLE_ADSENSE_ACCOUNT_DEFAULT)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadbordercolour']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_border_colour", (isset($forum_global_settings['google_adsense_border_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_border_colour'])) : ''), 15, 7), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsensebackgroundcolour']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_background_colour", (isset($forum_global_settings['google_adsense_background_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_background_colour'])) : ''), 15, 7), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenselinkcolour']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_link_colour", (isset($forum_global_settings['google_adsense_link_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_link_colour'])) : ''), 15, 7), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseurlcolour']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_url_colour", (isset($forum_global_settings['google_adsense_url_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_url_colour'])) : ''), 15, 7), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsensetextcolour']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_text_colour", (isset($forum_global_settings['google_adsense_text_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_text_colour'])) : ''), 15, 7), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"center\" colspan=\"2\">\n";
+
+html_display_warning_msg($lang['forum_settings_help_63'], '95%', 'center');
+html_display_warning_msg($lang['forum_settings_help_64'], '95%', 'center');
 
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -866,9 +1072,15 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['setautoma
 echo "                        <td align=\"left\">", form_radio("new_user_mark_as_of_int", "Y", $lang['yes'], (isset($forum_global_settings['new_user_mark_as_of_int']) && $forum_global_settings['new_user_mark_as_of_int'] == 'Y') || !isset($forum_global_settings['new_user_mark_as_of_int'])), "&nbsp;", form_radio("new_user_mark_as_of_int", "N", $lang['no'], (isset($forum_global_settings['new_user_mark_as_of_int']) && $forum_global_settings['new_user_mark_as_of_int'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_41']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -933,10 +1145,16 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->js(false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_54']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_55']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -979,11 +1197,17 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['pmusermes
 echo "                        <td align=\"left\">", form_input_text("pm_max_user_messages", (isset($forum_global_settings['pm_max_user_messages'])) ? _htmlentities($forum_global_settings['pm_max_user_messages']) : "100", 10, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_18']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_19']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_20']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -1022,6 +1246,9 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['sitemapup
 echo "                        <td align=\"left\">", form_dropdown_array("sitemap_freq", $sitemap_freq_periods, (isset($forum_global_settings['sitemap_freq']) && in_array($forum_global_settings['sitemap_freq'], array_keys($sitemap_freq_periods))) ? $forum_global_settings['sitemap_freq'] : DAY_IN_SECONDS), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_58']}</p>\n";
@@ -1038,6 +1265,9 @@ if (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_59']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_60']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -1076,11 +1306,17 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['listguest
 echo "                        <td align=\"left\">", form_radio("guest_show_recent", "Y", $lang['yes'], (isset($forum_global_settings['guest_show_recent']) && $forum_global_settings['guest_show_recent'] == 'Y') || !isset($forum_global_settings['guest_show_recent'])), "&nbsp;", form_radio("guest_show_recent", "N", $lang['no'], (isset($forum_global_settings['guest_show_recent']) && $forum_global_settings['guest_show_recent'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_53']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -1149,6 +1385,9 @@ if (isset($forum_global_settings['attachments_enabled']) && $forum_global_settin
 }
 
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_23']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_24']}</p>\n";
@@ -1156,6 +1395,9 @@ echo "                          <p class=\"smalltext\">{$lang['forum_settings_he
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_26']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
 echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

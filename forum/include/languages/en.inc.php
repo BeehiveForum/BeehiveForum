@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.593 2008-09-24 15:00:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.594 2008-09-25 21:48:45 decoyduck Exp $ */
 
 // British English language file
 
@@ -936,6 +936,28 @@ $lang['googleanalytics'] = "Google Analytics";
 $lang['enablegoogleanalytics'] = "Enable Google Analytics";
 $lang['allowforumgoogleanalytics'] = "Allow Google Analytics on each forum";
 $lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
+$lang['googleadsense'] = "Google AdSense";
+$lang['enablegoogleadsenseadverts'] = "Show Google AdSense Ads";
+$lang['displaygoogleadsenseadstousers'] = "Display AdSense Ads for";
+$lang['displaygoogleadsenseadsonpages'] = "Display AdSense Ads on";
+$lang['googleadsenseclientid'] = "AdSense Client ID";
+$lang['googleadsenseadformat'] = "AdSense Ad Format";
+$lang['googleadsenseadchannel'] = "AdSense Ad Channel";
+$lang['googleadsenseadtype'] = "AdSense Ad Type";
+$lang['googleadsenseadbordercolour'] = "Border Colour";
+$lang['googleadsensebackgroundcolour'] = "Background Colour";
+$lang['googleadsenselinkcolour'] = "Link Colour";
+$lang['googleadsenseurlcolour'] = "URL Colour";
+$lang['googleadsensetextcolour'] = "Text Colour";
+$lang['allusers'] = "All Users";
+$lang['guestsonly'] = "Guests Only";
+$lang['allpages'] = "All pages";
+$lang['messagesonly'] = "Messages only";
+$lang['usemydefaultaccountsetting'] = "Use my default account setting";
+$lang['textonlyads'] = "Text only Ads";
+$lang['textandimageads'] = "Text and Image Ads";
+$lang['registertoremovetheseadverts'] = "Register to remove these adverts.";
+$lang['selectcolour'] = "Select Colour";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -990,6 +1012,8 @@ $lang['forum_settings_help_60'] = "Depending on server performance and the numbe
 $lang['forum_settings_help_61'] = "<b>Send email notification to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 $lang['forum_settings_help_61'] = "Enter your <b>Google Analytics Account ID</b> here to enable Google Analytic tracking of your forum. Google Analytics will track visitors to your site and record how long they stay and which pages they visit. By visiting the Google Analytics site your can see an overview of how your forum is used.";
 $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account you will need to sign up for one by clicking <a href=\"https://www.google.com/analytics/\" target=\"_blank\">here</a>.";
+$lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>.";
+$lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

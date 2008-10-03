@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.121 2008-09-06 19:23:30 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.122 2008-10-03 18:35:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -887,7 +887,7 @@ if ($thread_data['DELETED'] == 'N') {
                 $sticky_day   = 0;
             }
 
-            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_"), "&nbsp;&nbsp;</td>\n";
+            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_", 2002), "&nbsp;&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";

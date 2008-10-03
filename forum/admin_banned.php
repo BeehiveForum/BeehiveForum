@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.83 2008-09-13 14:10:30 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.84 2008-10-03 18:35:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -119,11 +119,13 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "BANTYPE";
     } elseif ($_GET['sort_by'] == "BANDATA") {
         $sort_by = "BANDATA";
+    } elseif ($_GET['sort_by'] == "EXPIRES") {
+        $sort_by = "EXPIRES";
     } else {
-        $sort_by = "BANDATA";
+        $sort_by = "ID";
     }
 } else {
-    $sort_by = "BANDATA";
+    $sort_by = "ID";
 }
 
 if (isset($_GET['sort_dir'])) {
@@ -133,7 +135,7 @@ if (isset($_GET['sort_dir'])) {
         $sort_dir = "ASC";
     }
 } else {
-    $sort_dir = "DESC";
+    $sort_dir = "ASC";
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -169,11 +171,18 @@ $admin_log_rem_types = array(BAN_TYPE_IP    => REMOVE_BANNED_IP,
                              BAN_TYPE_EMAIL => REMOVE_BANNED_EMAIL,
                              BAN_TYPE_REF   => REMOVE_BANNED_REFERER);
 
-$ban_types_array = array(BAN_TYPE_IP    => $lang['ipban'],
-                         BAN_TYPE_LOGON => $lang['logonban'],
-                         BAN_TYPE_NICK  => $lang['nicknameban'],
-                         BAN_TYPE_EMAIL => $lang['emailban'],
-                         BAN_TYPE_REF   => $lang['refererban']);
+$ban_types_dropdown_array = array(BAN_TYPE_NONE  => '&nbsp;',
+                                  BAN_TYPE_IP    => $lang['ipban'],
+                                  BAN_TYPE_LOGON => $lang['logonban'],
+                                  BAN_TYPE_NICK  => $lang['nicknameban'],
+                                  BAN_TYPE_EMAIL => $lang['emailban'],
+                                  BAN_TYPE_REF   => $lang['refererban']);
+
+$ban_types_list_array = array(BAN_TYPE_IP    => $lang['ipban'],
+                              BAN_TYPE_LOGON => $lang['logonban'],
+                              BAN_TYPE_NICK  => $lang['nicknameban'],
+                              BAN_TYPE_EMAIL => $lang['emailban'],
+                              BAN_TYPE_REF   => $lang['refererban']);
 
 // Are we returning somewhere?
 
@@ -323,15 +332,43 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         $new_ban_comment = "";
     }
 
+    if (isset($_POST['newbanexpiresyear']) && isset($_POST['newbanexpiresmonth']) && isset($_POST['newbanexpiresday'])) {
+
+        $newbanexpiresday   = trim(_stripslashes($_POST['newbanexpiresday']));
+        $newbanexpiresmonth = trim(_stripslashes($_POST['newbanexpiresmonth']));
+        $newbanexpiresyear  = trim(_stripslashes($_POST['newbanexpiresyear']));
+
+        if ((is_numeric($newbanexpiresmonth) && $newbanexpiresmonth > 0) || (is_numeric($newbanexpiresday) && $newbanexpiresday > 0) || (is_numeric($newbanexpiresyear) && $newbanexpiresyear > 0)) {
+
+            if (@checkdate($newbanexpiresmonth, $newbanexpiresday, $newbanexpiresyear)) {
+
+                $new_ban_expires = mktime(0, 0, 0, $newbanexpiresmonth, $newbanexpiresday, $newbanexpiresyear);
+
+            }else {
+
+                $error_msg_array[] = $lang['expirydateisinvalid'];
+                $valid = false;
+            }
+
+        }else {
+
+            $new_ban_expires = 0;
+        }
+
+    }else {
+
+        $new_ban_expires = 0;
+    }
+
     if ($valid) {
 
-        if (!check_ban_data($new_ban_type, $new_ban_data)) {
+        if (!check_ban_data($new_ban_type, $new_ban_data, $new_ban_expires)) {
 
             if (isset($_POST['add'])) {
 
-                if (add_ban_data($new_ban_type, $new_ban_data, $new_ban_comment)) {
+                if (add_ban_data($new_ban_type, $new_ban_data, $new_ban_comment, $new_ban_expires)) {
 
-                    admin_add_log_entry($admin_log_add_types[$new_ban_type], array($new_ban_data, $new_ban_comment));
+                    admin_add_log_entry($admin_log_add_types[$new_ban_type], array($new_ban_data, $new_ban_comment, $new_ban_expires));
                     header_redirect("admin_banned.php?webtag=$webtag&added=true");
                     exit;
 
@@ -386,6 +423,34 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $valid = false;
         }
 
+        if (isset($_POST['banexpiresyear']) && isset($_POST['banexpiresmonth']) && isset($_POST['banexpiresday'])) {
+
+            $banexpiresday   = trim(_stripslashes($_POST['banexpiresday']));
+            $banexpiresmonth = trim(_stripslashes($_POST['banexpiresmonth']));
+            $banexpiresyear  = trim(_stripslashes($_POST['banexpiresyear']));
+
+            if ((is_numeric($banexpiresmonth) && $banexpiresmonth > 0) || (is_numeric($banexpiresday) && $banexpiresday > 0) || (is_numeric($banexpiresyear) && $banexpiresyear > 0)) {
+
+                if (@checkdate($banexpiresmonth, $banexpiresday, $banexpiresyear)) {
+
+                    $ban_expires = mktime(0, 0, 0, $banexpiresmonth, $banexpiresday, $banexpiresyear);
+
+                }else {
+
+                    $error_msg_array[] = $lang['expirydateisinvalid'];
+                    $valid = false;
+                }
+
+            }else {
+
+                $ban_expires = 0;
+            }
+
+        }else {
+
+            $ban_expires = 0;
+        }
+
         if (isset($_POST['bancomment']) && strlen(trim(_stripslashes($_POST['bancomment']))) > 0) {
             $ban_comment = trim(_stripslashes($_POST['bancomment']));
         }else {
@@ -404,10 +469,10 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $old_ban_data = "";
         }
 
-        if (isset($_POST['old_bancomment']) && strlen(trim(_stripslashes($_POST['old_bancomment']))) > 0) {
-            $old_comment = trim(_stripslashes($_POST['old_bancomment']));
+        if (isset($_POST['old_banexpires']) && strlen(trim(_stripslashes($_POST['old_banexpires']))) > 0) {
+            $old_ban_expires = trim(_stripslashes($_POST['old_banexpires']));
         }else {
-            $old_comment = "";
+            $old_ban_expires = 0;
         }
 
         if ($valid) {
@@ -416,11 +481,11 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             if ((!$dup_ban_id) || ($dup_ban_id == $ban_id)) {
 
-                if (update_ban_data($ban_id, $ban_type, $ban_data, $ban_comment)) {
+                if (update_ban_data($ban_id, $ban_type, $ban_data, $ban_comment, $ban_expires)) {
 
-                    if (($ban_type != $old_ban_type) || ($ban_data != $old_ban_data)) {
+                    if (($ban_type != $old_ban_type) || ($ban_data != $old_ban_data) || ($ban_expires != $old_ban_expires)) {
 
-                        $log_data = array($ban_id, $ban_type, $ban_data, $old_ban_type, $old_ban_data);
+                        $log_data = array($ban_id, $ban_type, $ban_data, $old_ban_type, $old_ban_data, $old_ban_expires);
                         admin_add_log_entry(UPDATED_BAN, $log_data);
                     }
 
@@ -445,6 +510,8 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
 if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_data))) {
 
+    $valid = true;
+
     html_draw_top('openprofile.js');
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
@@ -457,18 +524,63 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         $add_new_ban_data = $_POST['newbandata'];
     }
 
-    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
+    if (isset($_POST['newbancomment']) && strlen(trim(_stripslashes($_POST['newbancomment']))) > 0) {
+        $add_new_ban_comment = trim(_stripslashes($_POST['newbancomment']));
+    }
 
-        if (($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data))) {
+    if (isset($_POST['newbanexpiresyear']) && isset($_POST['newbanexpiresmonth']) && isset($_POST['newbanexpiresday'])) {
 
-            $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
-            $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
+        $add_new_ban_expires_year  = trim(_stripslashes($_POST['newbanexpiresyear']));
+        $add_new_ban_expires_month = trim(_stripslashes($_POST['newbanexpiresmonth']));
+        $add_new_ban_expires_day   = trim(_stripslashes($_POST['newbanexpiresday']));
 
-            html_display_warning_msg($affected_sessions_text, '420', 'center');
+        if ((is_numeric($add_new_ban_expires_month) && $add_new_ban_expires_month > 0) || (is_numeric($add_new_ban_expires_day) && $add_new_ban_expires_day > 0) || (is_numeric($add_new_ban_expires_year) && $add_new_ban_expires_year > 0)) {
+
+            if (@checkdate($add_new_ban_expires_month, $add_new_ban_expires_day, $add_new_ban_expires_year)) {
+
+                $add_new_ban_expires = mktime(0, 0, 0, $add_new_ban_expires_month, $add_new_ban_expires_day, $add_new_ban_expires_year);
+
+            }else {
+
+                html_display_error_msg($lang['expirydateisinvalid'], '420', 'center');
+                $valid = false;
+            }
 
         }else {
 
-            html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
+            $add_new_ban_expires = 0;
+        }
+
+    }else {
+
+        $add_new_ban_expires_year  = 0;
+        $add_new_ban_expires_month = 0;
+        $add_new_ban_expires_day   = 0;
+        $add_new_ban_expires       = 0;
+    }
+
+    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
+
+        if ($valid) {
+
+            if (($add_new_ban_expires > 0) && ($add_new_ban_expires < mktime())) {
+
+                html_display_warning_msg($lang['selecteddateisinthepast'], '420', 'center');
+
+            }else {
+
+                if (($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data, $add_new_ban_expires))) {
+
+                    $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
+                    $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
+
+                    html_display_warning_msg($affected_sessions_text, '420', 'center');
+
+                }else {
+
+                    html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
+                }
+            }
         }
 
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -502,15 +614,19 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bantype']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array('newbantype', array('&nbsp;', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('newbantype', $ban_types_dropdown_array, (isset($add_new_ban_type) && in_array($add_new_ban_type, array_keys($ban_types_dropdown_array)) ? _htmlentities(_stripslashes($add_new_ban_type)) : BAN_TYPE_NONE)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : (isset($add_new_ban_data) ? _htmlentities($add_new_ban_data) : '')), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($add_new_ban_data) ? _htmlentities(_stripslashes($add_new_ban_data)) : ''), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
-    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['newbancomment'])) : ''), 5, 37), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($add_new_ban_comment) ? _htmlentities(_stripslashes($add_new_ban_comment)) : ''), 5, 37), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['banexpires']}:</td>\n";
+    echo "                        <td align=\"left\">", form_date_dropdowns($add_new_ban_expires_year, $add_new_ban_expires_month, $add_new_ban_expires_day, "newbanexpires"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -538,6 +654,8 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     html_draw_bottom();
 
 }elseif (isset($_POST['ban_id']) || isset($_GET['ban_id']) || isset($remove_ban_id)) {
+
+    $valid = true;
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
 
@@ -585,21 +703,62 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             $ban_data_array['COMMENT'] = trim(_stripslashes($_POST['bancomment']));
         }
 
-        if (($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA']))) {
+        if (isset($_POST['banexpiresyear']) && isset($_POST['banexpiresmonth']) && isset($_POST['banexpiresday'])) {
 
-            $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
-            $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
+            $ban_data_array['EXPIRESYEAR']  = trim(_stripslashes($_POST['banexpiresyear']));
+            $ban_data_array['EXPIRESMONTH'] = trim(_stripslashes($_POST['banexpiresmonth']));
+            $ban_data_array['EXPIRESDAY']   = trim(_stripslashes($_POST['banexpiresday']));
 
-            html_display_warning_msg($affected_sessions_text, '420', 'center');
+            if ((is_numeric($ban_data_array['EXPIRESMONTH']) && $ban_data_array['EXPIRESMONTH'] > 0) || (is_numeric($ban_data_array['EXPIRESDAY']) && $ban_data_array['EXPIRESDAY'] > 0) | (is_numeric($ban_data_array['EXPIRESYEAR']) && $ban_data_array['EXPIRESYEAR'] > 0)) {
+
+                if (@checkdate($ban_data_array['EXPIRESMONTH'], $ban_data_array['EXPIRESDAY'], $ban_data_array['EXPIRESYEAR'])) {
+
+                    $ban_data_array['EXPIRES'] = mktime(0, 0, 0, $ban_data_array['EXPIRESMONTH'], $ban_data_array['EXPIRESDAY'], $ban_data_array['EXPIRESYEAR']);
+
+                }else {
+
+                    html_display_error_msg($lang['expirydateisinvalid'], '420', 'center');
+                    $valid = false;
+                }
+
+            }else {
+
+                $ban_data_array['EXPIRES'] = 0;
+            }
 
         }else {
 
-            html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
+            $ban_data_array['EXPIRESYEAR']  = 0;
+            $ban_data_array['EXPIRESMONTH'] = 0;
+            $ban_data_array['EXPIRESDAY']   = 0;
+            $ban_data_array['EXPIRES']      = 0;
+        }
+
+        if ($valid) {
+
+            if (($ban_data_array['EXPIRES'] > 0) && ($ban_data_array['EXPIRES'] < mktime())) {
+
+                html_display_warning_msg($lang['selecteddateisinthepast'], '420', 'center');
+
+            }else {
+
+                if (($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'], $ban_data_array['EXPIRES']))) {
+
+                    $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
+                    $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
+
+                    html_display_warning_msg($affected_sessions_text, '420', 'center');
+
+                }else {
+
+                    html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
+                }
+            }
         }
 
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '420', 'center');
 
     }else {
 
@@ -629,7 +788,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bantype']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array('bantype', array(1 => 'IP Address', 2 => 'Logon', 3 => 'Nickname', 4 => 'Email', 5 => 'HTTP Referer'), $ban_data_array['BANTYPE']), form_input_hidden('old_bantype', _htmlentities($ban_data_array['BANTYPE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('bantype', $ban_types_list_array, $ban_data_array['BANTYPE']), form_input_hidden('old_bantype', _htmlentities($ban_data_array['BANTYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
@@ -638,6 +797,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
     echo "                        <td align=\"left\">", form_textarea('bancomment', _htmlentities($ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', _htmlentities($ban_data_array['COMMENT'])), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['banexpires']}:</td>\n";
+    echo "                        <td align=\"left\">", form_date_dropdowns($ban_data_array['EXPIRESYEAR'], $ban_data_array['EXPIRESMONTH'], $ban_data_array['EXPIRESDAY'], "banexpires", 2002), form_input_hidden('old_banexpires', _htmlentities($ban_data_array['EXPIRES'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -710,23 +873,33 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
 
     if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">{$lang['bandata']}</a></td>\n";
     }elseif ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">{$lang['bandata']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">{$lang['bandata']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">{$lang['bandata']}</a></td>\n";
     }
 
     if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">{$lang['bantype']}</a></td>\n";
     }elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">{$lang['bantype']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">{$lang['bantype']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">{$lang['bantype']}</a></td>\n";
+    }
+
+    if ($sort_by == 'EXPIRES' && $sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=DESC&amp;page=$page\">{$lang['banexpires']}</a></td>\n";
+    }elseif ($sort_by == 'EXPIRES' && $sort_dir == 'DESC') {
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=ASC&amp;page=$page\">{$lang['banexpires']}</a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=ASC&amp;page=$page\">{$lang['banexpires']}</a></td>\n";
+    }else {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=DESC&amp;page=$page\">{$lang['banexpires']}</a></td>\n";
     }
 
     echo "                 </tr>\n";
@@ -738,7 +911,8 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             echo "                 <tr>\n";
             echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">{$ban_list_entry['BANDATA']}</a></td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_list_array)) ? $ban_types_list_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (($ban_list_entry['EXPIRES'] > 0 && $ban_list_entry['EXPIRES'] > mktime()) ? format_date($ban_list_entry['EXPIRES']) : $lang['never']), "</a></td>\n";
             echo "                 </tr>\n";
         }
     }

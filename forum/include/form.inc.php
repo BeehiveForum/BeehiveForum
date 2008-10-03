@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.129 2008-08-20 19:02:59 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.130 2008-10-03 18:35:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -492,7 +492,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
 
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
-        $years = array('&nbsp;') + range_keys($start_year, date('Y', mktime()));
+        $years = array('&nbsp;') + range_keys($start_year, 2037);
 
     }else {
 

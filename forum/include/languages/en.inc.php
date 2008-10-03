@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.594 2008-09-25 21:48:45 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.595 2008-10-03 18:35:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -586,6 +586,7 @@ $lang['checkban'] = "Check Ban";
 $lang['editban'] = "Edit Ban";
 $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
+$lang['banexpires'] = "Ban Expires";
 $lang['bancomment'] = "Comment";
 $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
@@ -597,6 +598,7 @@ $lang['affectsessionwarnadd'] = "This ban may affect the following active user s
 $lang['noaffectsessionwarn'] = "This ban affects no active sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
+$lang['expirydateisinvalid'] = "Expiry date is invalid";
 $lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
 $lang['failedtoaddnewban'] = "Failed to add new ban";
 $lang['failedtoremovebans'] = "Failed to remove some or all of the selected bans";
@@ -605,6 +607,7 @@ $lang['successfullyaddedban'] = "Successfully added ban";
 $lang['successfullyupdatedban'] = "Successfully updated ban";
 $lang['noexistingbandata'] = "There is no existing ban data. To add a ban click the 'Add New' button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254";
+$lang['selecteddateisinthepast'] = "Selected date is in the past";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on its own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";

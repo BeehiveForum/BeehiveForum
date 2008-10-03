@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.12 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.13 2008-10-03 18:35:18 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -173,7 +173,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
             break;
 
         case 18:    /*    Santiago, Chile */
-            if (afterSecondDayInMonth($cur_year, 10, "Sat", $gmt_offset) &&
+            if (afterSecondDayInMonth($cur_year, $cur_year, 10, "Sat", $gmt_offset) &&
             beforeSecondDayInMonth($cur_year + 1, $cur_year, 3, "Sat", $gmt_offset))
                 return true;
 

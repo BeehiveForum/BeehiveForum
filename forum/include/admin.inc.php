@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.168 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.169 2008-10-03 18:35:18 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -865,7 +865,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 {
     if (!$db_admin_get_bandata = db_connect()) return false;
 
-    $sort_by_array = array('ID', 'BANTYPE', 'BANDATA', 'COMMENT');
+    $sort_by_array = array('ID', 'BANTYPE', 'BANDATA', 'COMMENT', 'EXPIRES');
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'ID';
@@ -877,8 +877,8 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     $ban_data_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS ID, BANTYPE, BANDATA, COMMENT ";
-    $sql.= "FROM {$table_data['PREFIX']}BANNED ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS ID, BANTYPE, BANDATA, COMMENT, ";
+    $sql.= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM {$table_data['PREFIX']}BANNED ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
@@ -926,8 +926,10 @@ function admin_get_ban($ban_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM ";
-    $sql.= "{$table_data['PREFIX']}BANNED WHERE ID = '$ban_id'";
+    $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT, UNIX_TIMESTAMP(EXPIRES) AS EXPIRES, ";
+    $sql.= "DAY(EXPIRES) AS EXPIRESDAY, MONTH(EXPIRES) AS EXPIRESMONTH, ";
+    $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE ID = '$ban_id'";
 
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 

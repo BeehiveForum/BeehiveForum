@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.595 2008-10-03 18:35:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.596 2008-10-05 19:11:19 decoyduck Exp $ */
 
 // British English language file
 
@@ -959,8 +959,7 @@ $lang['messagesonly'] = "Messages only";
 $lang['usemydefaultaccountsetting'] = "Use my default account setting";
 $lang['textonlyads'] = "Text only Ads";
 $lang['textandimageads'] = "Text and Image Ads";
-$lang['registertoremovetheseadverts'] = "Register to remove these adverts.";
-$lang['selectcolour'] = "Select Colour";
+$lang['registertoremoveadverts'] = "Register to remove these adverts.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -1017,6 +1016,7 @@ $lang['forum_settings_help_61'] = "Enter your <b>Google Analytics Account ID</b>
 $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account you will need to sign up for one by clicking <a href=\"https://www.google.com/analytics/\" target=\"_blank\">here</a>.";
 $lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>.";
 $lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
+$lang['forum_settings_help_65'] = "To change Google AdSense account details and other settings please see Global Forum Settings";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

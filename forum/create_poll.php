@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.238 2008-09-10 18:38:36 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.239 2008-10-05 19:11:19 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -946,13 +946,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\">", form_input_text("t_threadtitle", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 0, 0, false, "thread_title"), "</td>\n";
+echo "            <td align=\"left\">", form_input_text("t_threadtitle", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 30, 64, false, "thread_title"), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\"><h2>{$lang['pollquestion']}</h2></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\">", form_input_text("t_question", isset($t_question) ? _htmlentities($t_question) : '', 0, 0, false, "thread_title"), "</td>\n";
+echo "            <td align=\"left\">", form_input_text("t_question", isset($t_question) ? _htmlentities($t_question) : '', 30, 64, false, "thread_title"), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";

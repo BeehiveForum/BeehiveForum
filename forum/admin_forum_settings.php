@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.149 2008-09-25 21:48:45 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.150 2008-10-05 19:11:19 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -244,6 +244,19 @@ if (isset($_POST['changepermissions'])) {
         }else {
             $new_forum_settings['google_analytics_code'] = "";
         }
+    }
+
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+        if (isset($_POST['google_adsense_enabled']) && $_POST['google_adsense_enabled'] == "Y") {
+            $new_forum_settings['google_adsense_enabled'] = "Y";
+        }else {
+            $new_forum_settings['google_adsense_enabled'] = "N";
+        }
+
+    }else {
+
+        $new_forum_settings['google_adsense_enabled'] = forum_get_global_setting('google_adsense_enabled', false, 'N');
     }
 
     if (isset($_POST['forum_timezone']) && is_numeric($_POST['forum_timezone'])) {
@@ -834,6 +847,50 @@ if (forum_get_global_setting('allow_forum_google_analytics', 'Y')) {
     echo "                        <td align=\"center\" colspan=\"2\">\n";
 
     html_display_warning_msg($lang['forum_settings_help_62'], '95%', 'center');
+
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+}
+
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['googleadsense']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"220\">{$lang['enablegoogleadsenseadverts']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("google_adsense_enabled", "Y", $lang['yes'], forum_get_setting('google_adsense_enabled', 'Y')), "&nbsp;", form_radio("google_adsense_enabled", "N", $lang['no'], forum_get_setting('google_adsense_enabled', 'N')), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"center\" colspan=\"2\">\n";
+
+    html_display_warning_msg($lang['forum_settings_help_65'], '95%', 'center');
 
     echo "                        </td>\n";
     echo "                      </tr>\n";

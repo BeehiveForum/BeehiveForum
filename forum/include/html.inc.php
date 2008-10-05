@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.316 2008-09-25 21:48:45 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.317 2008-10-05 19:11:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1159,10 +1159,28 @@ function html_draw_top()
         echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
         echo ">\n";
 
-        if (forum_get_global_setting('google_adsense_enabled', 'Y') && html_output_google_adsense_settings()) {
+        // Default height and width are overridden by
+        // the call to html_output_google_adsense_settings()
+        // which takes by-ref vars to change.
 
-            echo "<div align=\"center\">\n";
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
+        $banner_width = 468;
+        $banner_height = 60;
+
+        // Check Adsense support is actually enabled and the settings
+        // are valid before we try and output the banner Javascript.
+
+        if (forum_get_global_setting('google_adsense_enabled', 'Y') && html_output_google_adsense_settings($banner_width, $banner_height)) {
+
+            echo "<div style=\"width: {$banner_width}px; margin: auto\">\n";
+            echo "  <script language=\"Javascript\" type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
+
+            // If only available for Guests and user is a guest add a note to the bottom
+            // to tell them they can register to remove the adverts.
+
+            if (user_is_guest() && forum_get_global_setting('google_adsense_display_users', GOOGLE_ADSENSE_GUESTS_ONLY)) {
+                echo "  <div class=\"google_adsense_register_note\"><a href=\"register.php?webtag=$webtag\">{$lang['registertoremoveadverts']}</a></div>\n";
+            }
+
             echo "</div>\n";
             echo "<br />\n";
         }
@@ -1356,7 +1374,7 @@ function html_get_google_analytics_code()
     return false;
 }
 
-function html_output_google_adsense_settings()
+function html_output_google_adsense_settings(&$banner_width, &$banner_height)
 {
     // Check the required settings!
 
@@ -1412,11 +1430,11 @@ function html_output_google_adsense_settings()
         echo "google_ad_client = \"$google_adsense_clientid\";\n";
         echo "google_ad_channel = \"$google_adsense_adchannel\";\n";
         echo "google_ad_type = \"{$google_adsense_adtype_array[$google_adsense_adtype]}\";\n";
-        echo "google_color_border = \"#$google_adsense_border_colour\";\n";
-        echo "google_color_bg = \"#$google_adsense_background_colour\";\n";
-        echo "google_color_link = \"#$google_adsense_link_colour\";\n";
-        echo "google_color_url = \"#$google_adsense_url_colour\";\n";
-        echo "google_color_text = \"#$google_adsense_text_colour\";\n";
+        echo "google_color_border = \"$google_adsense_border_colour\";\n";
+        echo "google_color_bg = \"$google_adsense_background_colour\";\n";
+        echo "google_color_link = \"$google_adsense_link_colour\";\n";
+        echo "google_color_url = \"$google_adsense_url_colour\";\n";
+        echo "google_color_text = \"$google_adsense_text_colour\";\n";
 
         $page_adsense_widths_preg_array = array('admin_menu\.php' => array('234x60_as', 234, 60),
                                                 'display_emoticons\.php' => array('468x60_as', 468, 60),
@@ -1440,6 +1458,9 @@ function html_output_google_adsense_settings()
             $adsense_width_match = (isset($adsense_width_match[0])) ? preg_quote($adsense_width_match[0], '/') : '';
 
             if (isset($page_adsense_widths_preg_array[$adsense_width_match])) {
+
+                $banner_width  = $page_adsense_widths_preg_array[$adsense_width_match][1];
+                $banner_height = $page_adsense_widths_preg_array[$adsense_width_match][2];
 
                 echo "google_ad_format = \"{$page_adsense_widths_preg_array[$adsense_width_match][0]}\";\n";
                 echo "google_ad_width = {$page_adsense_widths_preg_array[$adsense_width_match][1]};\n";

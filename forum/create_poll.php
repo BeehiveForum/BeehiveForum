@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.239 2008-10-05 19:11:19 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.240 2008-10-11 17:40:03 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -162,8 +162,6 @@ $page_prefs = bh_session_get_post_page_prefs();
 $uid = bh_session_get_value('UID');
 
 $valid = true;
-
-$fix_html = true;
 
 if (isset($_POST['t_post_emots'])) {
     if ($_POST['t_post_emots'] == "disabled") {
@@ -1232,7 +1230,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['polladditionalmessageexp']}</td>\n";
 echo "                      </tr>\n";
 
-$t_message_text = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+$t_message_text = $post->getTidyContent();
 
 $tool_type = POST_TOOLBAR_DISABLED;
 
@@ -1254,12 +1252,12 @@ if ($allow_html == true && $tool_type != 0) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea('t_message_text', _htmlentities($t_message_text), 20, 75, "tabindex=\"1\"", "post_content"), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea('t_message_text', $t_message_text, 20, 75, "tabindex=\"1\"", "post_content"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
-if ($post->isDiff() && $fix_html) {
+if ($post->isDiff()) {
     echo $tools->compare_original("t_message_text", $post->getOriginalContent());
 }
 
@@ -1295,16 +1293,16 @@ if ($allow_sig == true) {
         echo "              <tr>\n";
         echo "                <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
-        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+        $t_sig = $sig->getTidyContent();
 
         if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 
             echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
             echo "              </tr>\n";
             echo "              <tr>\n";
-            echo "                <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", _htmlentities($t_sig), 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
+            echo "                <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
 
-            if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+            if ($sig->isDiff() && !$fetched_sig) {
 
                 echo $tools->compare_original("t_sig", $sig->getOriginalContent());
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.129 2008-09-25 21:48:45 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.130 2008-10-11 17:40:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1095,6 +1095,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 $forum_rules = new TextAreaHTML("prefsform");
+
 echo $forum_rules->preload();
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
@@ -1112,6 +1113,10 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = POST_TOOLBAR_TINYMCE;
 }
+
+if (!isset($forum_global_settings['forum_rules_message'])) $forum_global_settings['forum_rules_message'] = $default_forum_rules;
+
+$forum_global_settings_rules_message = new MessageText(POST_HTML_AUTO, $forum_global_settings['forum_rules_message'], true, true);
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -1139,7 +1144,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_global_settings['forum_rules_message']) && strlen(trim($forum_global_settings['forum_rules_message'])) > 0) ? _htmlentities($forum_global_settings['forum_rules_message']) : _htmlentities($default_forum_rules), 10, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_global_settings_rules_message->getTidyContent(), 10, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->js(false), "</td>\n";

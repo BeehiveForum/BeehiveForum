@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.367 2008-09-10 18:38:37 decoyduck Exp $ */
+/* $Id: post.php,v 1.368 2008-10-11 17:40:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -163,8 +163,6 @@ $uid = bh_session_get_value('UID');
 $valid = true;
 
 $new_thread = false;
-
-$fix_html = true;
 
 $t_to_uid = 0;
 
@@ -1083,7 +1081,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['message']}</h2>\n";
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+$t_content = $post->getTidyContent();
 
 $tool_type = POST_TOOLBAR_DISABLED;
 
@@ -1099,9 +1097,9 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     $tools->setTinyMCE(false);
 }
 
-echo $tools->textarea("t_content", _htmlentities($t_content), 20, 75, "tabindex=\"1\"", "post_content"), "\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "tabindex=\"1\"", "post_content"), "\n";
 
-if ($post->isDiff() && $fix_html) {
+if ($post->isDiff()) {
 
     echo $tools->compare_original("t_content", $post->getOriginalContent());
 
@@ -1164,16 +1162,16 @@ if ($allow_sig == true) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
-    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+    $t_sig = $sig->getTidyContent();
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", _htmlentities($t_sig), 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()) ? "Y" : "N"), "</td>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
 
-        if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+        if ($sig->isDiff() && !$fetched_sig) {
             echo $tools->compare_original("t_sig", $sig->getOriginalContent());
         }
 

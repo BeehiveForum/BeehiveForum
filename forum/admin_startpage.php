@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.110 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.111 2008-10-11 17:40:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -244,7 +244,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $tools->toolbar(true, form_submit('save', $lang['save'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea("t_content", _htmlentities($t_content), 20, 85, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea("t_content", $t_content, 20, 85, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

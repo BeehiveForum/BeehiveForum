@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.150 2008-10-05 19:11:19 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.151 2008-10-11 17:40:02 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -108,6 +108,10 @@ if (!forum_check_webtag_available($webtag)) {
 // Load language file
 
 $lang = load_language_file();
+
+// Get the user's post page preferences.
+
+$page_prefs = bh_session_get_post_page_prefs();
 
 // Check to see if the user can access this page.
 
@@ -638,6 +642,22 @@ echo $restricted_message->preload();
 $password_protected_message = new TextAreaHTML("prefsform");
 echo $password_protected_message->preload();
 
+$tool_type = POST_TOOLBAR_DISABLED;
+
+if ($page_prefs & POST_TOOLBAR_DISPLAY) {
+    $tool_type = POST_TOOLBAR_SIMPLE;
+}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+    $tool_type = POST_TOOLBAR_TINYMCE;
+}
+
+if (!isset($forum_settings['closed_message'])) $forum_settings['closed_message'] = '';
+if (!isset($forum_settings['restricted_message'])) $forum_settings['restricted_message'] = '';
+if (!isset($forum_settings['password_protected_message'])) $forum_settings['password_protected_message'] = '';
+
+$forum_settings_closed_message = new MessageText(POST_HTML_AUTO, $forum_settings['closed_message'], true, true);
+$forum_settings_restricted_message = new MessageText(POST_HTML_AUTO, $forum_settings['restricted_message'], true, true);
+$forum_settings_password_protected_message = new MessageText(POST_HTML_AUTO, $forum_settings['password_protected_message'], true, true);
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -654,23 +674,32 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['forumclosedmessage']}:</td>\n";
 echo "                      </tr>\n";
+
+if ($tool_type <> POST_TOOLBAR_DISABLED) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", $closed_message->toolbar(true), "</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    $forum_rules->setTinyMCE(false);
+}
+
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $closed_message->toolbar(true), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", (isset($forum_settings['closed_message']) ? _htmlentities($forum_settings['closed_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", $forum_settings_closed_message->getTidyContent(), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumrestrictedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", (isset($forum_settings['restricted_message']) ? _htmlentities($forum_settings['restricted_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", $forum_settings_restricted_message->getTidyContent(), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumpasswordprotectedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? _htmlentities($forum_settings['password_protected_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", $forum_settings_password_protected_message->getTidyContent(), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $closed_message->js(false), "</td>\n";

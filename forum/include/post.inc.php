@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.198 2008-10-11 17:40:03 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.199 2008-10-11 19:11:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -746,7 +746,7 @@ class MessageTextParse {
 
         $message_check_html = strip_tags($message, '<p><br>');
 
-        if (strcmp($message_check_html, $message_check_links) <> 0) {
+        if (strcmp($message_check_html, $message) <> 0) {
 
             $html = POST_HTML_ENABLED;
 
@@ -756,7 +756,7 @@ class MessageTextParse {
 
         }else {
 
-            $message = _htmlentities_decode(strip_tags($message));
+            $message = tidy_html($message_check_html);
         }
 
         $this->message = $message;

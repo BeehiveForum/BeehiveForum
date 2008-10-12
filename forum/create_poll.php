@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.240 2008-10-11 17:40:03 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.241 2008-10-12 10:37:01 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -986,10 +986,11 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
 echo "        </table>\n";
 
-$emot_user = bh_session_get_value('EMOTICONS');
-$emot_prev = emoticons_preview($emot_user);
+if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+}
 
-if (strlen($emot_prev) > 0) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
     echo "        <br />\n";
     echo "        <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
@@ -1001,7 +1002,7 @@ if (strlen($emot_prev) > 0) {
         echo "            <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
         echo "          </tr>\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
+        echo "            <td align=\"left\" colspan=\"2\">{$emoticon_preview_html}</td>\n";
 
     }else {
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.368 2008-10-11 17:40:03 decoyduck Exp $ */
+/* $Id: post.php,v 1.369 2008-10-12 10:37:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1041,10 +1041,11 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     echo "                      </tr>\n";
 }
 
-$emot_user = bh_session_get_value('EMOTICONS');
-$emot_prev = emoticons_preview($emot_user);
+if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+}
 
-if (strlen($emot_prev) > 0) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -1060,7 +1061,7 @@ if (strlen($emot_prev) > 0) {
         echo "                              <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">{$emoticon_preview_html}</td>\n";
 
     }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.83 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.84 2008-10-12 10:37:01 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -376,16 +376,14 @@ function emoticons_set_exists($emoticon_set)
 * @param string $emoticon_set - Emoticon set to preview
 * @param string $width - Width in pixels of preview box
 * @param string $height - Height in pixels of the preview box
-* @param string $num - Number of emoticons to show in preview.
+* @param string $display_limit - Number of emoticons to show in preview.
 */
 
-function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35)
+function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_limit = 35)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag();
-
-    $html = '';
 
     $emoticons_array = array();
 
@@ -413,7 +411,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
             }
         }
 
-        if (count($emoticon) > 0) {
+        if (sizeof($emoticon) > 0) {
 
             krsort($emoticon);
             reset($emoticon);
@@ -432,13 +430,13 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
             preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/iu', $style_contents, $style_matches);
 
-            for ($i = 0; $i < count($style_matches[1]); $i++) {
+            for ($i = 0; $i < sizeof($style_matches[1]); $i++) {
 
                 if (isset($emoticon_text[$style_matches[1][$i]])) {
 
                     $string_matches = array();
 
-                    for ($j = 0; $j < count($emoticon_text[$style_matches[1][$i]]); $j++) {
+                    for ($j = 0; $j < sizeof($emoticon_text[$style_matches[1][$i]]); $j++) {
                         $string_matches[] = $emoticon_text[$style_matches[1][$i]][$j];
                     }
 
@@ -449,32 +447,37 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
             }
         }
 
-        array_multisort($emoticons_array, SORT_DESC);
+        if (sizeof($emoticons_array) > 0) {
 
-        $html.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
+            array_multisort($emoticons_array, SORT_DESC);
 
-        for ($i = 0; $i < min(count($emoticons_array), $num); $i++) {
+            $html = "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
 
-            $emot_tooltip_matches = array();
+            for ($i = 0; $i < min(sizeof($emoticons_array), $display_limit); $i++) {
 
-            foreach ($emoticons_array[$i]['matches'] as $emot_match) {
-                $emot_tooltip_matches[] = _htmlentities($emot_match);
+                $emot_tooltip_matches = array();
+
+                foreach ($emoticons_array[$i]['matches'] as $emot_match) {
+                    $emot_tooltip_matches[] = _htmlentities($emot_match);
+                }
+
+                $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
+
+                $html.= "<img src=\"emoticons/$emoticon_set/{$emoticons_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emoticons_array[$i]['matches'][0]) ." ');\" /> ";
             }
 
-            $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
+            if ($num < sizeof($emoticons_array)) {
 
-            $html.= "<img src=\"emoticons/$emoticon_set/{$emoticons_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emoticons_array[$i]['matches'][0]) ." ');\" /> ";
+                $html.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" onclick=\"return openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
+            }
+
+            $html.= "</div>";
+
+            return $html;
         }
-
-        if ($num < count($emoticons_array)) {
-
-            $html.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" onclick=\"return openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
-        }
-
-        $html.= "</div>";
     }
 
-    return $html;
+    return false;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.317 2008-10-05 19:11:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.318 2008-10-14 20:12:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1171,14 +1171,18 @@ function html_draw_top()
 
         if (forum_get_global_setting('google_adsense_enabled', 'Y') && html_output_google_adsense_settings($banner_width, $banner_height)) {
 
-            echo "<div style=\"width: {$banner_width}px; margin: auto\">\n";
+            $google_adsense_background_colour = forum_get_global_setting('google_adsense_background_colour', false, 'EEEEEE');
+            $google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour', false, '999999');
+            $google_adsense_border_colour = forum_get_global_setting('google_adsense_border_colour', false, 'EEEEEE');
+
+            echo "<div style=\"width: {$banner_width}px; margin: auto; color: #$google_adsense_text_colour; background-color: #$google_adsense_background_colour; border: 1px solid #$google_adsense_border_colour\">\n";
             echo "  <script language=\"Javascript\" type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 
             // If only available for Guests and user is a guest add a note to the bottom
             // to tell them they can register to remove the adverts.
 
             if (user_is_guest() && forum_get_global_setting('google_adsense_display_users', GOOGLE_ADSENSE_GUESTS_ONLY)) {
-                echo "  <div class=\"google_adsense_register_note\"><a href=\"register.php?webtag=$webtag\">{$lang['registertoremoveadverts']}</a></div>\n";
+                echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
             }
 
             echo "</div>\n";
@@ -1417,11 +1421,10 @@ function html_output_google_adsense_settings(&$banner_width, &$banner_height)
 
         // Get the Ad colours.
 
-        $google_adsense_background_colour = forum_get_global_setting('google_adsense_background_colour', false, '#EEEEEE');
-        $google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour', false, '#999999');
-        $google_adsense_border_colour = forum_get_global_setting('google_adsense_border_colour', false, '#EEEEEE');
-        $google_adsense_url_colour = forum_get_global_setting('google_adsense_url_colour', false, '#009900');
-        $google_adsense_link_colour = forum_get_global_setting('google_adsense_border_colour', false, '#4490B4');
+        $google_adsense_background_colour = forum_get_global_setting('google_adsense_background_colour', false, 'EEEEEE');
+        $google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour', false, '999999');
+        $google_adsense_url_colour = forum_get_global_setting('google_adsense_url_colour', false, '009900');
+        $google_adsense_link_colour = forum_get_global_setting('google_adsense_border_colour', false, '4490B4');
 
         // Output the settings for the Ads.
 
@@ -1430,7 +1433,7 @@ function html_output_google_adsense_settings(&$banner_width, &$banner_height)
         echo "google_ad_client = \"$google_adsense_clientid\";\n";
         echo "google_ad_channel = \"$google_adsense_adchannel\";\n";
         echo "google_ad_type = \"{$google_adsense_adtype_array[$google_adsense_adtype]}\";\n";
-        echo "google_color_border = \"$google_adsense_border_colour\";\n";
+        echo "google_color_border = \"$google_adsense_background_colour\";\n";
         echo "google_color_bg = \"$google_adsense_background_colour\";\n";
         echo "google_color_link = \"$google_adsense_link_colour\";\n";
         echo "google_color_url = \"$google_adsense_url_colour\";\n";

@@ -1358,3 +1358,22 @@ a {
 .warning_msg_text {
     padding-left: 0px;
 }
+
+.google_adsense_register_note {
+    background-color: inherit;
+    color: inherit;
+    font-size: 7pt;
+    text-align: center;
+    padding-left: 5px;
+    height: 15px;
+}
+
+.google_adsense_register_note a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.google_adsense_register_note a:hover {
+    text-decoration: none;
+    color: inherit;
+}

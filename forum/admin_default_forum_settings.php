@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.130 2008-10-11 17:40:02 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.131 2008-10-14 20:12:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -312,31 +312,31 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['google_adsense_adtype'] = GOOGLE_ADSENSE_MESSAGES_ONLY;
     }
 
-    if (isset($_POST['google_adsense_border_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_border_colour'])) > 0) {
+    if (isset($_POST['google_adsense_border_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', _stripslashes($_POST['google_adsense_border_colour'])) > 0) {
         $new_forum_settings['google_adsense_border_colour'] = ltrim(_stripslashes($_POST['google_adsense_border_colour']), '#');
     }else {
         $new_forum_settings['google_adsense_border_colour'] = "";
     }
 
-    if (isset($_POST['google_adsense_background_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_background_colour'])) > 0) {
+    if (isset($_POST['google_adsense_background_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', _stripslashes($_POST['google_adsense_background_colour'])) > 0) {
         $new_forum_settings['google_adsense_background_colour'] = ltrim(_stripslashes($_POST['google_adsense_background_colour']), '#');
     }else {
         $new_forum_settings['google_adsense_background_colour'] = "";
     }
 
-    if (isset($_POST['google_adsense_link_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_link_colour'])) > 0) {
+    if (isset($_POST['google_adsense_link_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', _stripslashes($_POST['google_adsense_link_colour'])) > 0) {
         $new_forum_settings['google_adsense_link_colour'] = ltrim(_stripslashes($_POST['google_adsense_link_colour']), '#');
     }else {
         $new_forum_settings['google_adsense_link_colour'] = "";
     }
 
-    if (isset($_POST['google_adsense_url_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_url_colour'])) > 0) {
+    if (isset($_POST['google_adsense_url_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', _stripslashes($_POST['google_adsense_url_colour'])) > 0) {
         $new_forum_settings['google_adsense_url_colour'] = ltrim(_stripslashes($_POST['google_adsense_url_colour']), '#');
     }else {
         $new_forum_settings['google_adsense_url_colour'] = "";
     }
 
-    if (isset($_POST['google_adsense_text_colour']) && preg_match('/#?[0-9]{3,6}/', _stripslashes($_POST['google_adsense_text_colour'])) > 0) {
+    if (isset($_POST['google_adsense_text_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', _stripslashes($_POST['google_adsense_text_colour'])) > 0) {
         $new_forum_settings['google_adsense_text_colour'] = ltrim(_stripslashes($_POST['google_adsense_text_colour']), '#');
     }else {
         $new_forum_settings['google_adsense_text_colour'] = "";
@@ -1002,23 +1002,23 @@ echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadbordercolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_border_colour", (isset($forum_global_settings['google_adsense_border_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_border_colour'])) : ''), 15, 7), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_border_colour", (isset($forum_global_settings['google_adsense_border_colour']) ? sprintf('#%s', _htmlentities($forum_global_settings['google_adsense_border_colour'])) : ''), 15, 7), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsensebackgroundcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_background_colour", (isset($forum_global_settings['google_adsense_background_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_background_colour'])) : ''), 15, 7), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_background_colour", (isset($forum_global_settings['google_adsense_background_colour']) ? sprintf('#%s', _htmlentities($forum_global_settings['google_adsense_background_colour'])) : ''), 15, 7), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenselinkcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_link_colour", (isset($forum_global_settings['google_adsense_link_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_link_colour'])) : ''), 15, 7), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_link_colour", (isset($forum_global_settings['google_adsense_link_colour']) ? sprintf('#%s', _htmlentities($forum_global_settings['google_adsense_link_colour'])) : ''), 15, 7), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseurlcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_url_colour", (isset($forum_global_settings['google_adsense_url_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_url_colour'])) : ''), 15, 7), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_url_colour", (isset($forum_global_settings['google_adsense_url_colour']) ? sprintf('#%s', _htmlentities($forum_global_settings['google_adsense_url_colour'])) : ''), 15, 7), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsensetextcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_text_colour", (isset($forum_global_settings['google_adsense_text_colour']) ? sprintf('#%d', _htmlentities($forum_global_settings['google_adsense_text_colour'])) : ''), 15, 7), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("google_adsense_text_colour", (isset($forum_global_settings['google_adsense_text_colour']) ? sprintf('#%s', _htmlentities($forum_global_settings['google_adsense_text_colour'])) : ''), 15, 7), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

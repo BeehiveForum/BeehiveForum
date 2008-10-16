@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.13 2008-10-03 18:35:18 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.14 2008-10-16 20:04:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -277,13 +277,8 @@ if (install_index_exists('FORUM_SETTINGS', 'SVALUE')) {
 
     // Remove the index on SVALUE before we convert it to TEXT
 
-    $sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
+    $sql = "ALTER IGNORE TABLE FORUM_SETTINGS DROP INDEX SVALUE";
+    $result = @db_query($sql, $db_install);
 }
 
 // Convert the SVALUE column to TEXT. This allows it to become big enough
@@ -301,13 +296,8 @@ if (install_index_exists('VISITOR_LOG', 'SID')) {
 
     // Remove the index on SID before we add the UNIQUE index
 
-    $sql = "ALTER TABLE VISITOR_LOG DROP INDEX SID";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
+    $sql = "ALTER IGNORE TABLE VISITOR_LOG DROP INDEX SID";
+    $result = @db_query($sql, $db_install);
 }
 
 // Add the UNIQUE index to SID.

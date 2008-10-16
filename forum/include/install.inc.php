@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.82 2008-09-14 16:30:16 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.83 2008-10-16 20:04:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -363,7 +363,7 @@ function install_get_webtags()
 {
     if (!$db_install_get_webtags = db_connect()) return false;
 
-    $sql = "SELECT FID, WEBTAG FROM FORUMS ";
+    $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
     if (!$result = db_query($sql, $db_install_get_webtags)) return false;
 
@@ -387,7 +387,7 @@ function install_table_exists($table_name)
 
     $table_name = db_escape_string($table_name);
 
-    $sql = "SHOW TABLES LIKE '$table_name' ";
+    $sql = "SHOW TABLES LIKE '$table_name'";
 
     if (!$result = db_query($sql, $db_install_table_exists)) return false;
 
@@ -401,7 +401,7 @@ function install_column_exists($table_name, $column_name)
     $table_name = db_escape_string($table_name);
     $column_name = db_escape_string($column_name);
 
-    $sql = "SHOW COLUMNS FROM $table_name LIKE '$column_name' ";
+    $sql = "SHOW COLUMNS FROM $table_name LIKE '$column_name'";
 
     if (!$result = db_query($sql, $db_install_column_exists)) return false;
 
@@ -413,13 +413,16 @@ function install_index_exists($table_name, $index_name)
     if (!$db_install_index_exists = db_connect()) return false;
 
     $table_name = db_escape_string($table_name);
-    $index_name = db_escape_string($index_name);
 
-    $sql = "SHOW INDEXES FROM $table_name WHERE Column_Name LIKE '$index_name'";
+    $sql = "SHOW INDEXES FROM $table_name";
 
     if (!$result = db_query($sql, $db_install_index_exists)) return false;
 
-    return (db_num_rows($result) > 0);
+    while (($table_data = db_fetch_array($result))) {
+        if (strstr($table_data['Column_name'], $index_name) == 0) return true;
+    }
+
+    return false;
 }
 
 function install_check_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false, $remove_conflicts = false)
@@ -497,7 +500,7 @@ function install_remove_table($table_name)
 {
     if (!$db_install_remove_table = db_connect()) return false;
 
-    if ($table_name !== db_escape_string($table_name)) return false;
+    $table_name = db_escape_string($table_name);
 
     $sql = "DROP TABLE IF EXISTS $table_name";
 
@@ -510,16 +513,19 @@ function install_remove_indexes($table_name)
 {
     if (!$db_install_remove_indexes = db_connect()) return false;
 
-    if ($table_name !== db_escape_string($table_name)) return false;
+    $table_name = db_escape_string($table_name);
 
-    $sql = "SHOW INDEX FROM $table_name WHERE Key_name <> 'PRIMARY'";
+    $sql = "SHOW INDEX FROM $table_name";
 
     if (!$result = @db_query($sql, $db_install_remove_indexes)) return false;
 
-    while (list(,,$key_name) = db_fetch_array($result)) {
+    while (($table_data = db_fetch_array($result))) {
 
-        $sql = "ALTER IGNORE TABLE $table_name DROP INDEX $key_name";
-        @db_query($sql, $db_install_remove_indexes);
+        if (preg_match("/^PRIMARY$/", strtoupper($row['Key_name'])) < 1) {
+
+            $sql = "ALTER IGNORE TABLE $table_name DROP INDEX $key_name";
+            @db_query($sql, $db_install_remove_indexes);
+        }
     }
 
     return true;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.352 2008-10-05 19:11:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.353 2008-10-16 20:04:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2580,7 +2580,7 @@ function forums_check_available_dbs($database_name)
 {
     if (!$db_forums_check_available_dbs = db_connect()) return false;
 
-    if ($database_name !== db_escape_string($database_name)) return false;
+    $database_name = db_escape_string($database_name);
 
     $sql = "SHOW DATABASES LIKE '$database_name'";
 

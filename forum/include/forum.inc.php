@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.353 2008-10-16 20:04:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.354 2008-10-18 22:17:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2389,13 +2389,12 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
                 if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
 
-                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(GREATEST(COALESCE(USER_THREAD.LAST_READ, 0), ";
-                    $sql.= "COALESCE(THREAD.UNREAD_PID, 0), THREAD.LENGTH)) AS UNREAD_MESSAGES ";
+                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
                     $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
                     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
                     $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
 
-                    if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
+                    if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
 
                     list($unread_messages) = db_fetch_array($result_unread_count, DB_RESULT_NUM);
 

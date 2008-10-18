@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.369 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: post.php,v 1.370 2008-10-18 09:47:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1001,7 +1001,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_radio("to_radio", "recent", $lang['recentvisitors'], $new_thread ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", post_draw_to_dropdown_recent($new_thread ? $t_to_uid : 0), "</td>\n";
+echo "                        <td align=\"left\">", post_draw_to_dropdown_recent($t_to_uid, $new_thread), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";

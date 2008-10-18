@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.200 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.201 2008-10-18 09:47:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -291,11 +291,11 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     return $html;
 }
 
-function post_draw_to_dropdown_recent($default_uid, $show_all = true)
+function post_draw_to_dropdown_recent($default_uid, $new_thread)
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">";
+    $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($new_thread ? 0 : 1).")\">";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -330,9 +330,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
         }
     }
 
-    if ($show_all) {
-        $html .= "<option value=\"0\">{$lang['allcaps']}</option>";
-    }
+    $html .= "<option value=\"0\">{$lang['allcaps']}</option>";
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";

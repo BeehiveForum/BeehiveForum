@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.169 2008-10-03 18:35:18 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.170 2008-10-18 19:19:50 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1605,24 +1605,35 @@ function admin_delete_user($uid, $delete_content = false)
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
+                    // Delete Polls created by user
+
+                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}THREAD ";
+                    $sql.= "SET POLL_FLAG = 'N' WHERE BY_UID = '$uid'";
+
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete threads started by the user where
+                    // the thread only contains a single post.
+
+                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}THREAD SET DELETED = 'Y' ";
+                    $sql.= "WHERE BY_UID = '$uid' AND LENGTH = 1";
+
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
+
                     // Delete content of posts made by this user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}POST_CONTENT USING {$forum_prefix}POST_CONTENT ";
-                    $sql.= "LEFT JOIN {$forum_prefix}POST ON ({$forum_prefix}POST.TID = {$forum_prefix}POST_CONTENT.TID ";
-                    $sql.= "AND {$forum_prefix}POST.PID = {$forum_prefix}POST_CONTENT.PID) ";
-                    $sql.= "WHERE {$forum_prefix}POST.FROM_UID = '$uid'";
+                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}POST_CONTENT POST_CONTENT ";
+                    $sql.= "LEFT JOIN {$forum_prefix}POST POST ON (POST.TID = POST_CONTENT.TID ";
+                    $sql.= "AND POST.PID = POST_CONTENT.PID) SET POST_CONTENT.CONTENT = NULL ";
+                    $sql.= "WHERE POST.FROM_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
-                    // Delete the posts made by this user.
+                    // Mark posts made by this user as approved so they don't appear in the
+                    // approval queue.
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}POST WHERE FROM_UID = '$uid'";
-
-                    if (!db_query($sql, $db_admin_delete_user)) return false;
-
-                    // Delete Threads started by this user.
-
-                    $sql = "DELETE QUICK FROM {$forum_prefix}THREAD WHERE BY_UID = '$uid'";
+                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}POST SET APPROVED = NOW(), ";
+                    $sql.= "APPROVED_BY = '$approve_uid' WHERE FROM_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
                 }

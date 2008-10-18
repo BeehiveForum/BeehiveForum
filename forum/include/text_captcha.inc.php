@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.35 2008-10-18 19:19:50 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.36 2008-10-18 20:30:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,7 +35,6 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "gd_lib.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 class captcha {

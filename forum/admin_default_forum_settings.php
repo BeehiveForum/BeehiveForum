@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.131 2008-10-14 20:12:38 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.132 2008-10-18 20:30:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1116,7 +1116,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 
 if (!isset($forum_global_settings['forum_rules_message'])) $forum_global_settings['forum_rules_message'] = $default_forum_rules;
 
-$forum_global_settings_rules_message = new MessageText(POST_HTML_AUTO, $forum_global_settings['forum_rules_message'], true, true);
+$forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_global_settings['forum_rules_message'], true, true);
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -1144,7 +1144,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_global_settings_rules_message->getTidyContent(), 10, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_rules_message->getTidyContent(), 10, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->js(false), "</td>\n";

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.142 2008-10-11 17:40:03 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.143 2008-10-18 20:30:22 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1276,7 +1276,7 @@ function add_paragraphs($html, $br_only = true)
     $html_a = array($html);
     $html_p = 0;
 
-    while (strlen(trim($html_a[count($html_a)-1])) > 0) {
+    while (strlen(trim($html_a[count($html_a) - 1])) > 0) {
 
         $cur_pos = strlen($html_a[$html_p]);
 
@@ -1501,7 +1501,7 @@ function add_paragraphs($html, $br_only = true)
                         $tmp[$j].= "<br />";
                     }
 
-                } else {
+                }else {
 
                     $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
                     $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
@@ -1532,14 +1532,14 @@ function add_paragraphs($html, $br_only = true)
 
             $return.= $html_a[$i];
 
-        } else {
+        }else {
 
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([^\n\r])/iu', "$1\n$3", $html_a[$i]);
-            $html_a[$i] = preg_replace('/([^\n\r])(<p( [^>]*)?>)/iu', "$1\n\n$2", $html_a[$i]);
-            $html_a[$i] = preg_replace('/(<\/p( [^>]*)?>)([^\n\r])/iu', "</p>\n\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([\r\n]*)?/iu', "\n", $html_a[$i]);
+            $html_a[$i] = preg_replace('/([\r\n]*)?(<p( [^>]*)?>)([\r\n]*)?/iu', "", $html_a[$i]);
+            $html_a[$i] = preg_replace('/([\r\n]*)?(<\/p( [^>]*)?>)([\r\n]*)?/iu', "\n\n", $html_a[$i]);
             $html_a[$i] = preg_replace('/(<br( [^>]*)?>)|(<p( [^>]*)?>)|(<\/p( [^>]*)?>)/iu', '', $html_a[$i]);
 
-            $html_a[$i] = nl2br($html_a[$i]);
+            $html_a[$i] = nl2br(trim($html_a[$i]));
 
             $return.= $html_a[$i];
         }

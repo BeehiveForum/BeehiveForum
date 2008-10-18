@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.100 2008-09-07 13:41:05 decoyduck Exp $ */
+/* $Id: forums.php,v 1.101 2008-10-18 20:30:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -96,9 +96,13 @@ $lang = load_language_file();
 
 $error_msg_array = array();
 
+// Top Frame name
+
+$frame_top_target = html_get_top_frame_name();
+
 // Top of the page.
 
-html_draw_top("basetarget=_top");
+html_draw_top("basetarget=$frame_top_target");
 
 // Types of available forums.
 

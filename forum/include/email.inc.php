@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.149 2008-09-10 18:59:29 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.150 2008-10-18 19:19:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -99,11 +99,11 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
                 // Generate link to the forum itself
 
-                $forum_link = html_get_forum_uri();
+                $forum_link = html_get_forum_uri('', false);
 
                 // Generate the message link.
 
-                $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+                $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
                 // Generate the message body.
 
@@ -202,11 +202,11 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
             // Generate link to the forum itself
 
-            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
             // Generate the message link.
 
-            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
             // Generate the message body.
 
@@ -301,11 +301,11 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
             // Generate link to the forum itself
 
-            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid");
+            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid", false);
 
             // Generate the message link.
 
-            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
             // Generate the message body.
 
@@ -387,11 +387,11 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
                 // Generate link to the forum itself
 
-                $forum_link = html_get_forum_uri();
+                $forum_link = html_get_forum_uri('', false);
 
                 // Generate the message link.
 
-                $message_link = html_get_forum_uri("/index.php?webtag=$webtag&pmid=$mid");
+                $message_link = html_get_forum_uri("/index.php?webtag=$webtag&pmid=$mid", false);
 
                 // Generate the message body.
 
@@ -454,7 +454,7 @@ function email_send_pw_reminder($logon)
             // Generate the change password link.
 
             $change_pw_link = rawurlencode("/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
-            $change_pw_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$change_pw_link");
+            $change_pw_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$change_pw_link", false);
 
             // Generate the message body.
 
@@ -569,7 +569,7 @@ function email_send_user_confirmation($tuid)
         // Generate the confirmation link.
 
         $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
-        $confirm_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$confirm_link");
+        $confirm_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$confirm_link", false);
 
         // Generate the message body.
 
@@ -629,7 +629,7 @@ function email_send_changed_email_confirmation($tuid)
         // Generate the confirmation link.
 
         $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
-        $confirm_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$confirm_link");
+        $confirm_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$confirm_link", false);
 
         // Generate the message body.
 
@@ -687,7 +687,7 @@ function email_send_user_approval_notification($tuid)
         // Generate the confirmation link.
 
         $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
-        $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_users_link");
+        $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_users_link", false);
 
         // Generate the message body.
 
@@ -746,7 +746,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
         // Generate the confirmation link.
 
         $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
-        $admin_user_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_user_link");
+        $admin_user_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_user_link", false);
 
         // Generate the message body.
 
@@ -804,7 +804,7 @@ function email_send_user_approved_notification($tuid)
 
         // Generate the confirmation link.
 
-        $forum_link = html_get_forum_uri("/index.php?webtag=$webtag");
+        $forum_link = html_get_forum_uri("/index.php?webtag=$webtag", false);
 
         // Generate the message body.
 
@@ -862,7 +862,7 @@ function email_send_post_approval_notification($tuid)
         // Generate the confirmation link.
 
         $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
-        $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_post_approval_link");
+        $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_post_approval_link", false);
 
         // Generate the message body.
 

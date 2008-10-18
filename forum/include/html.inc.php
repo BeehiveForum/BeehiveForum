@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.318 2008-10-14 20:12:38 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.319 2008-10-18 19:19:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1546,6 +1546,7 @@ function style_image($img)
 function bh_setcookie($name, $value, $expires = 0)
 {
     $cookie_domain = (isset($GLOBALS['cookie_domain'])) ? $GLOBALS['cookie_domain'] : "";
+    $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
 
     if (!defined('BEEHIVEMODE_LIGHT')) {
 
@@ -1560,7 +1561,7 @@ function bh_setcookie($name, $value, $expires = 0)
 
                 if (strstr($_SERVER['HTTP_HOST'], $cookie_domain)) {
 
-                    return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, 0);
+                    return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $cookie_secure);
                 }
             }
         }
@@ -1791,7 +1792,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_forum_uri($append_path = "")
+function html_get_forum_uri($append_path = "", $allow_https = true)
 {
     $uri_array = array();
 
@@ -1807,7 +1808,7 @@ function html_get_forum_uri($append_path = "")
 
         }elseif (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
 
-            $uri_array['scheme'] = (strtolower($_SERVER['HTTPS']) != 'off') ? 'https' : 'http';
+            $uri_array['scheme'] = (strtolower($_SERVER['HTTPS']) != 'off' && $allow_https === true) ? 'https' : 'http';
 
         }else {
 

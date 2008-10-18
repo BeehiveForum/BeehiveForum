@@ -1280,6 +1280,10 @@ a {
     max-width: 100%;
 }
 
+.small_optional_text {
+    font-size: 7pt;
+}
+
 .error_handler_details {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;

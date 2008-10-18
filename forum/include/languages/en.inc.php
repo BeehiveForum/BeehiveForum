@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.596 2008-10-05 19:11:19 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.597 2008-10-18 19:19:51 decoyduck Exp $ */
 
 // British English language file
 
@@ -588,6 +588,7 @@ $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
 $lang['banexpires'] = "Ban Expires";
 $lang['bancomment'] = "Comment";
+$lang['optionalbrackets'] = "(Optional)";
 $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
 $lang['nicknameban'] = "Nickname ban";

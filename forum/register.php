@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.191 2008-09-10 19:46:33 decoyduck Exp $ */
+/* $Id: register.php,v 1.192 2008-10-18 20:30:22 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -140,6 +140,10 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 // Array to hold error messages
 
 $error_msg_array = array();
+
+// Top frame target
+
+$frame_top_target = html_get_top_frame_name();
 
 // Check to see if Forum Rules are enabled.
 
@@ -562,7 +566,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top('emoticons.js', 'register.js');
+html_draw_top('emoticons.js', 'register.js', "basetarget=$frame_top_target");
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 
@@ -575,7 +579,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     html_display_warning_msg($lang['moreoptionsavailable'], '600', 'center');
 
     echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', _htmlentities($user_agree_rules)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -875,17 +879,17 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $frame_top_target = html_get_top_frame_name();
-
     if (!$forum_rules = forum_get_setting('forum_rules_message')) {
 
-        $cancel_link = "<a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['cancellinktext']}</a>";
+        $cancel_link = "<a href=\"index.php?webtag=$webtag\">{$lang['cancellinktext']}</a>";
         $forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
     }
 
+    $forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_rules, true, true);
+
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -905,7 +909,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>\n";
-    echo "                          <div class=\"forum_rules_box\">", fix_html($forum_rules), "</div>\n";
+    echo "                          <div class=\"forum_rules_box\"><p>", $forum_rules_message->getContent(), "</p></div>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";

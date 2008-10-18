@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.159 2008-10-18 19:19:50 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.160 2008-10-18 20:30:22 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -47,7 +47,6 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "gd_lib.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");

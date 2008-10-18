@@ -19,9 +19,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.js,v 1.16 2008-07-28 21:05:57 decoyduck Exp $ */
+/* $Id: edit.js,v 1.17 2008-10-18 09:47:34 decoyduck Exp $ */
 
 function checkToRadio(num)
 {
-    document.f_edit.to_radio[num].checked=true;
+    var to_radio_obj = getObjsByName('to_radio');
+   
+    if (typeof to_radio_obj[num] == 'object') {
+        to_radio_obj[num].checked = true;
+    }
 }

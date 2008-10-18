@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.354 2008-10-18 22:17:13 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.355 2008-10-18 22:24:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2430,12 +2430,12 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
                 if (!$result_unread_to_me = db_query($sql, $db_forum_search)) return false;
 
-                $post_count_data = db_fetch_array($result_unread_to_me);
+                $forum_unread_post_data = db_fetch_array($result_unread_to_me);
 
-                if (!isset($post_count_data['UNREAD_TO_ME']) || is_null($post_count_data['UNREAD_TO_ME'])) {
+                if (!isset($forum_unread_post_data['UNREAD_TO_ME']) || is_null($forum_unread_post_data['UNREAD_TO_ME'])) {
                     $forum_data['UNREAD_TO_ME'] = 0;
                 }else {
-                    $forum_data['UNREAD_TO_ME'] = $post_count_data['UNREAD_TO_ME'];
+                    $forum_data['UNREAD_TO_ME'] = $forum_unread_post_data['UNREAD_TO_ME'];
                 }
 
                 // Sometimes the USER_THREAD table might have a higher count that the thread

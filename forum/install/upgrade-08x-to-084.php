@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.15 2008-10-18 22:17:13 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.16 2008-10-19 17:07:13 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -123,16 +123,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
     $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
     $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH), ";
     $sql.= "UNREAD_PID = VALUES(UNREAD_PID)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Reset the auto increment. This should be
-
-    $sql = "ALTER TABLE {$table_prefix}_POST AUTO_INCREMENT = 1";
 
     if (!$result = @db_query($sql, $db_install)) {
 

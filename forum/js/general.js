@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.44 2008-09-08 21:59:59 decoyduck Exp $ */
+/* $Id: general.js,v 1.45 2008-10-20 17:28:11 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -236,7 +236,7 @@ function redoOverFlow()
                     if (div_tags[j].className == 'bhoverflowfix') {
 
                         div_tags[j].style.width = (maxWidth * 0.94) + 'px';
-		    }
+            }
                 }
             }
         }
@@ -246,9 +246,9 @@ function redoOverFlow()
 function attachListener(obj, event, func)
 {
     if (obj.attachEvent) {
-        obj.attachEvent('on' + event, function() { return eval(func) } );
+        obj.attachEvent('on' + event, func);
     }else {
-        obj.addEventListener(event, function() { return eval(func) }, true);
+        obj.addEventListener(event, func, true);
     }
 }
 
@@ -316,7 +316,7 @@ function resizeImage(img, index)
    
             // Set up an onclick handler for the info bar
         
-            attachListener(img_resize_info_bar, 'click', 'popupImage(img.id)');
+            attachListener(img_resize_info_bar, 'click', function () { popupImage(img.id) });
         
             // Stick the original dimensions of the image in the text and
             // create the link to the full-sized image.
@@ -437,15 +437,15 @@ Array.prototype.unique = function(b)
 }
 
 String.prototype.trim = function() {
-	return this.replace(/^\s+|\s+$/g,"");
+    return this.replace(/^\s+|\s+$/g,"");
 }
 
 String.prototype.ltrim = function() {
-	return this.replace(/^\s+/,"");
+    return this.replace(/^\s+/,"");
 }
 
 String.prototype.rtrim = function() {
-	return this.replace(/\s+$/,"");
+    return this.replace(/\s+$/,"");
 }
 
 function sprintf()

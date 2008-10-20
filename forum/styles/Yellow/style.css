@@ -547,7 +547,7 @@ a {
 .post_content, .signature_content, .edit_signature_content, 
 .to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown, 
 .admin_options_dropdown, .user_in_thread_dropdown, 
-.user_pref_field, .bhinputprofileitem,
+.user_pref_field, .bhinputprofileitem, .text_captcha_input,
 .user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
@@ -1273,6 +1273,10 @@ a {
     max-width: 100%;
 }
 
+.small_optional_text {
+    font-size: 7pt;
+}
+
 .error_handler_details {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
@@ -1350,4 +1354,23 @@ a {
 
 .warning_msg_text {
     padding-left: 0px;
+}
+
+.google_adsense_register_note {
+    background-color: inherit;
+    color: inherit;
+    font-size: 7pt;
+    text-align: center;
+    padding-left: 5px;
+    height: 15px;
+}
+
+.google_adsense_register_note a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.google_adsense_register_note a:hover {
+    text-decoration: none;
+    color: inherit;
 }

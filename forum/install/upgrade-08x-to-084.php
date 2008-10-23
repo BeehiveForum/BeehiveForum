@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.16 2008-10-19 17:07:13 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.17 2008-10-23 19:20:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -114,22 +114,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
         }
     }
 
-    // Moved the UNREAD_PID column into the THREAD table.
-    // Make sure the data is up to date.
-
-    $sql = "INSERT INTO {$table_prefix}_THREAD (TID, LENGTH, UNREAD_PID) ";
-    $sql.= "SELECT THREAD.TID, MAX(POST.PID), MAX(POST.PID) FROM {$table_prefix}_THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-    $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH), ";
-    $sql.= "UNREAD_PID = VALUES(UNREAD_PID)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     // Update existing deleted threads
 
     $sql = "UPDATE {$table_prefix}_THREAD SET DELETED = 'Y' WHERE LENGTH = 0";
@@ -140,13 +124,45 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
         return;
     }
 
-    // Reset the lengths on the deleted threads.
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
-    $sql = "INSERT INTO {$table_prefix}_THREAD (TID, LENGTH) ";
-    $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$table_prefix}_THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "WHERE THREAD.LENGTH = 0 GROUP BY THREAD.TID ";
-    $sql.= "ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH)";
+        // Moved the UNREAD_PID column into the THREAD table.
+        // Make sure the data is up to date - Also fixes the threads that are
+        // inaccessible to due to bug in user delete code.
+
+        $sql = "INSERT INTO {$table_prefix}_THREAD (TID, UNREAD_PID) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$table_prefix}_THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) ";
+        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+        $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+    }else {
+
+        // Fix the threads which are inaccessible due to a bug in the delete user code.
+
+        $sql = "INSERT INTO {$table_prefix}_THREAD (TID, LENGTH) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$table_prefix}_THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) ";
+        $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH)";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    // Reset the unread data so that none of the data has LAST_READ > LENGTH
+
+    $sql = "UPDATE {$table_prefix}_USER_THREAD USER_THREAD ";
+    $sql.= "LEFT JOIN {$table_prefix}_THREAD THREAD ON (THREAD.TID = USER_THREAD.TID) ";
+    $sql.= "SET USER_THREAD.LAST_READ = THREAD.LENGTH WHERE USER_THREAD.LAST_READ > THREAD.LENGTH";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.202 2008-10-18 22:17:13 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.203 2008-10-25 18:22:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -202,14 +202,17 @@ function post_update_thread_length($tid, $length)
 
     if (!db_query($sql, $db_post_update_thread_length)) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}THREAD (TID, UNREAD_PID) ";
-    $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-    $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
-    $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
-    if (!db_query($sql, $db_post_update_thread_length)) return false;
+        $sql = "INSERT INTO {$table_data['PREFIX']}THREAD (TID, UNREAD_PID) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
+        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+        $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
+        $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
+
+        if (!db_query($sql, $db_post_update_thread_length)) return false;
+    }
 
     return true;
 }
@@ -751,7 +754,7 @@ class MessageTextParse {
 
         }else {
 
-            $message = tidy_html($message_check_htmlF);
+            $message = tidy_html($message_check_html);
         }
 
         $this->message = $message;

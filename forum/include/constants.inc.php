@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.155 2008-10-03 18:35:18 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.156 2008-10-25 18:22:07 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -326,13 +326,6 @@ define('PM_OUTBOX_ITEMS', PM_OUTBOX); // Outbox
 define('PM_SAVED_ITEMS',  PM_SAVED_IN | PM_SAVED_OUT); // Saved Items
 define('PM_DRAFT_ITEMS',  PM_SAVED_DRAFT); // Drafts.
 
-// PM Options drop down
-
-define('PM_OPTION_NONE', 0);
-define('PM_OPTION_DELETE', 1);
-define('PM_OPTION_EXPORT', 2);
-define('PM_OPTION_ARCHIVE', 3);
-
 // Allowed thread types in folders
 
 define('FOLDER_ALLOW_NORMAL_THREAD', 1);
@@ -494,15 +487,6 @@ define('BAN_TYPE_LOGON', 2);
 define('BAN_TYPE_NICK', 3);
 define('BAN_TYPE_EMAIL', 4);
 define('BAN_TYPE_REF', 5);
-
-// Ban Expires constants
-
-define('BAN_EXPIRES_NONE', -1);
-define('BAN_EXPIRES_NEVER', 0);
-define('BAN_EXPIRES_ONE_DAY', 1);
-define('BAN_EXPIRES_THREE_DAYS', 3);
-define('BAN_EXPIRES_SEVEN_DAYS', 7);
-define('BAN_EXPIRES_THIRTY_DAYS', 30);
 
 // Search Popup types
 

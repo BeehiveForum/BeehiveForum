@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.597 2008-10-18 19:19:51 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.598 2008-10-25 18:22:07 decoyduck Exp $ */
 
 // British English language file
 
@@ -822,7 +822,6 @@ $lang['prunelog'] = "Prune Log";
 
 $lang['noexistingforums'] = "No existing forums found. To create a new forum click the 'Add New' button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
-$lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID or forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
@@ -945,7 +944,6 @@ $lang['enablegoogleadsenseadverts'] = "Show Google AdSense Ads";
 $lang['displaygoogleadsenseadstousers'] = "Display AdSense Ads for";
 $lang['displaygoogleadsenseadsonpages'] = "Display AdSense Ads on";
 $lang['googleadsenseclientid'] = "AdSense Client ID";
-$lang['googleadsenseadformat'] = "AdSense Ad Format";
 $lang['googleadsenseadchannel'] = "AdSense Ad Channel";
 $lang['googleadsenseadtype'] = "AdSense Ad Type";
 $lang['googleadsenseadbordercolour'] = "Border Colour";
@@ -1739,7 +1737,6 @@ $lang['useraccountcreatedconfirmsuccess'] = "Your user account has been created 
 $lang['useraccountcreated'] = "Your user account has been created successfully! Click the continue button below to login";
 $lang['errorcreatinguserrecord'] = "Error creating user record";
 $lang['userregistration'] = "User Registration";
-$lang['registrationinformation'] = "Registration Information";
 $lang['registrationinformationrequired'] = "Registration Information (Required)";
 $lang['profileinformationoptional'] = "Profile Information (Optional)";
 $lang['preferencesoptional'] = "Preferences (Optional)";
@@ -2188,7 +2185,6 @@ $lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 
-$lang['exportfolder'] = "Export Folder";
 $lang['pmexportastype'] = "Export as type";
 $lang['pmexporthtml'] = "HTML";
 $lang['pmexportxml'] = "XML";

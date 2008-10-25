@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.80 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.81 2008-10-25 18:22:07 decoyduck Exp $ */
 
 // American English language file
 
@@ -271,7 +271,6 @@ $lang['newstylesuccessfullycreated'] = "New style successfully created.";
 $lang['stylealreadyexists'] = "A style with that filename already exists.";
 $lang['stylenofilename'] = "You did not enter a filename to save the style with.";
 $lang['stylenodatasubmitted'] = "Could not read forum style data.";
-$lang['styleexp'] = "Use this page to help create a randomly generated style for your forum.";
 $lang['stylecontrols'] = "Controls";
 $lang['stylecolourexp'] = "Click on a color to make a new style sheet based on that color. Current base color is first in list.";
 $lang['standardstyle'] = "Standard Style";
@@ -475,7 +474,6 @@ $lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
-$lang['forumisnotrestricted'] = "Forum is not restricted";
 $lang['groups'] = "Groups";
 $lang['nousergroups'] = "No User Groups have been set up. To add a group click the 'Add New' button below.";
 $lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";
@@ -611,7 +609,6 @@ $lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
 $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
-$lang['approveselected'] = "Approve selected";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['endsession'] = "End Session (Kick)";
 $lang['visitorlog'] = "Visitor Log";
@@ -813,7 +810,6 @@ $lang['prunelog'] = "Prune Log";
 
 $lang['noexistingforums'] = "No existing forums found. To create a new forum click the 'Add New' button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
-$lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID or forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
@@ -1381,7 +1377,6 @@ $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
-$lang['savemessage'] = "Save Message";
 $lang['nosubject'] = "No Subject";
 $lang['norecipients'] = "No Recipients";
 $lang['timesent'] = "Time Sent";
@@ -1792,7 +1787,6 @@ $lang['select'] = "Select";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";
-$lang['mustentersomethingtosearchfor'] = "You must enter something to search for";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -2083,7 +2077,6 @@ $lang['posteditingallowed'] = "Post editing allowed";
 $lang['postdeletionallowed'] = "Post deletion allowed";
 $lang['attachmentsallowed'] = "Attachments allowed";
 $lang['htmlpostingallowed'] = "HTML posting allowed";
-$lang['signatureallowed'] = "Signature allowed";
 $lang['guestaccessallowed'] = "Guest access allowed";
 $lang['postapprovalrequired'] = "Post approval required";
 

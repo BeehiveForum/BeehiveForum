@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.126 2008-09-23 23:54:08 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.127 2008-10-25 18:22:07 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -271,7 +271,6 @@ $lang['newstylesuccessfullycreated'] = "Nouveau style créé avec succès.";
 $lang['stylealreadyexists'] = "Un style avec ce nom de fichier existe déjà.";
 $lang['stylenofilename'] = "Vous n'avez pas entrer un nom de fichier pour enregistrer ce style.";
 $lang['stylenodatasubmitted'] = "Impossible de lire les données du style de forum.";
-$lang['styleexp'] = "Utiliser cette page pour vous aider à créer un style généré aléatoirement pour votre forum.";
 $lang['stylecontrols'] = "Contrôles";
 $lang['stylecolourexp'] = "Cliquer sur une couleur pour créer un nouveau stylesheet basé sur cette couleur. La couleur de base courrante est en tête de liste.";
 $lang['standardstyle'] = "Style Standard";
@@ -475,7 +474,6 @@ $lang['failedtocreatenewfolder'] = "La création d'un nouveau fichier a échoué
 $lang['failedtodeletefolder'] = "La suppression du dossier a échoué.";
 $lang['failedtoupdatefolder'] = "La mise à jour du fichier a échoué";
 $lang['cannotdeletefolderwiththreads'] = "Impossible de supprimer les dossiers contenant toujours des fils de discussion.";
-$lang['forumisnotrestricted'] = "Forum n'est pas limité";
 $lang['groups'] = "Groupes";
 $lang['nousergroups'] = "Aucun groupe d'utilisateurs n'a été créé. Pour ajouter un groupe cliquez le bouton 'Ajoutez nouveau' ci-dessous.";
 $lang['suppliedgidisnotausergroup'] = "L'identification de group fournie n'est pas un groupe d'utilisateur";
@@ -611,7 +609,6 @@ $lang['failedtoresetuserpostcount'] = "La réinitialisation du compte de publica
 $lang['failedtochangeuserpostcount'] = "Le changement du compte de publication de l'utilisateur a échoué";
 $lang['postapprovalqueue'] = "File d'attente d'approbation de messages";
 $lang['nopostsawaitingapproval'] = "Aucun message en attente d'approbation";
-$lang['approveselected'] = "Approuver sélectionné(s)";
 $lang['failedtoapproveuser'] = "L'approbation de l'utilisateur %s a échoué";
 $lang['visitorlog'] = "Feuille de contrôle des visiteurs";
 $lang['novisitorslogged'] = "Aucun visiteur journalisé";
@@ -812,7 +809,6 @@ $lang['prunelog'] = "Élaguez le journal";
 
 $lang['noexistingforums'] = "Aucun forum existent retrouvé. Pour créer un nouveau forum, cliquez le bouton ci-dessous.";
 $lang['webtaginvalidchars'] = "Balise d'adresse web peut contenir des caractères capitales A-Z, 0-9, _ - uniquement";
-$lang['databasenameinvalidchars'] = "Le nom de la base de données ne peut inclure les caractères a-z, A-Z, 0-9 et le soulignement";
 $lang['invalidforumidorforumnotfound'] = "Identification du forum (FID) invalide ou non trouvée";
 $lang['successfullyupdatedforum'] = "Mise à jour du forum réussie";
 $lang['failedtoupdateforum'] = " Mise à jour du forum échouée";
@@ -1380,7 +1376,6 @@ $lang['maximumtenrecipientspermessage'] = "Il y a une limite de 10 destinataires
 $lang['mustspecifyrecipient'] = "Vous devez spécifier aumoins un destinataire.";
 $lang['usernotfound'] = "Utilisateur %s non retrouvé";
 $lang['sendnewpm'] = "Envoyer nouveau MP";
-$lang['savemessage'] = "Enregistrer message";
 $lang['nosubject'] = "Aucun sujet";
 $lang['norecipients'] = "Aucun destinataire";
 $lang['timesent'] = "Heure d'envoi";
@@ -1790,7 +1785,6 @@ $lang['select'] = "Choisir";
 $lang['searchforthread'] = "Chercher pour fils de discussion";
 $lang['mustspecifytypeofsearch'] = "Vous devez spécifier le type de recherche à entreprendre";
 $lang['unkownsearchtypespecified'] = "Type de recherche spécifié inconnu";
-$lang['mustentersomethingtosearchfor'] = "Vous devez indiquer quelque chose à rechercher";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -2081,7 +2075,6 @@ $lang['posteditingallowed'] = "Révision de message permis";
 $lang['postdeletionallowed'] = "Suppression de message permis";
 $lang['attachmentsallowed'] = "Fichiers joints permis";
 $lang['htmlpostingallowed'] = "Postage avec HTML permis";
-$lang['signatureallowed'] = "Signature permis";
 $lang['guestaccessallowed'] = "Accès aux visiteurs permis";
 $lang['postapprovalrequired'] = "Approbation de message requise";
 

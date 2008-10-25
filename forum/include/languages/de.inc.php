@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.97 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.98 2008-10-25 18:22:07 decoyduck Exp $ */
 
 // German language file
 
@@ -271,7 +271,6 @@ $lang['newstylesuccessfullycreated'] = "Neuer Stil erfolgreich erstellt.";
 $lang['stylealreadyexists'] = "Ein Stil mit diesem Dateinamen existiert bereits.";
 $lang['stylenofilename'] = "Sie haben keinen Dateinamen eingeben fÃ¼r diesen Stil.";
 $lang['stylenodatasubmitted'] = "Kann Forenstil-Daten nicht lesen.";
-$lang['styleexp'] = "Diese Seite hilft Ihnen einen zufaellig generierten Stil fuer Ihr Forum zu erstellen.";
 $lang['stylecontrols'] = "Steuerung";
 $lang['stylecolourexp'] = "Farbauswahl fuer den neuen Stil. Aktuelle Farbe ist die erste der Liste.";
 $lang['standardstyle'] = "Standard Stil";
@@ -475,7 +474,6 @@ $lang['failedtocreatenewfolder'] = "Fehler beim Ordnererstellen";
 $lang['failedtodeletefolder'] = "Ordner konnte nicht geloescht werden.";
 $lang['failedtoupdatefolder'] = "Fehler beim Ordneraendern";
 $lang['cannotdeletefolderwiththreads'] = "Kann Ordner die noch Eintraege enthalten nicht loeschen.";
-$lang['forumisnotrestricted'] = "kein eingeschraenktes Forum";
 $lang['groups'] = "Gruppen";
 $lang['nousergroups'] = "Keine Benutzergruppen definiert. Um eine Gruppe hinzuzufuegen 'Neu Hinzufuegen' klicken.";
 $lang['suppliedgidisnotausergroup'] = "angegebene GID ist keine Benutzergruppe";
@@ -611,9 +609,7 @@ $lang['failedtoresetuserpostcount'] = "Fehler beim Zuruecksetzen des Eintragszae
 $lang['failedtochangeuserpostcount'] = "Fehler beim Aendern des Eintragszaehlers des Benutzers";
 $lang['postapprovalqueue'] = "Post Zustimmungswarteschlange";
 $lang['nopostsawaitingapproval'] = "Keine Posts warten auf Zustimmung";
-$lang['approveselected'] = "Zustimmung ausgewaehlt";
 $lang['failedtoapproveuser'] = "Fehler beim Zulassen des Benutzers %s";
-$lang['kickselected'] = "Kick (kurzfristiger Rauswurf) ausgewaehlt";
 $lang['visitorlog'] = "Benutzer Log";
 $lang['novisitorslogged'] = "Kein Besucher protokolliert";
 $lang['addselectedusers'] = "Ausgewaehlte Benutzer hinzufuegen";
@@ -813,7 +809,6 @@ $lang['prunelog'] = "Log-Bereinigung";
 
 $lang['noexistingforums'] = "Keine existierenden Foren gefunden. Um eine neues Forum zu erstellen folgende Schaltflaeche klicken.";
 $lang['webtaginvalidchars'] = "Webtag akzeptiert nur grossgeschriebene A-Z und 0-9, _ - Zeichen";
-$lang['databasenameinvalidchars'] = "Datenbankname darf nur a-z, A-Z, 0-9 und Unterstrich-Zeichen beinhalten";
 $lang['invalidforumidorforumnotfound'] = "Falsche Forum-FID oder Forum nicht gefunden";
 $lang['successfullyupdatedforum'] = "Forum erfolgreich aktualisiert: '%s'";
 $lang['failedtoupdateforum'] = "Forum konnte nicht aktualisiert werden: '%s'";
@@ -1381,7 +1376,6 @@ $lang['maximumtenrecipientspermessage'] = "Max. 10 Empfaenger je Nachricht. Bitt
 $lang['mustspecifyrecipient'] = "Mindestens ein Empfaenger muss eingetragen sein.";
 $lang['usernotfound'] = "Benutzer %s nicht gefunden.";
 $lang['sendnewpm'] = "Neue Nachricht senden";
-$lang['savemessage'] = "Nachricht speichern";
 $lang['nosubject'] = "Keine Auswahl";
 $lang['norecipients'] = "Keine Empfaenger";
 $lang['timesent'] = "Uhrzeit gesendet";
@@ -1791,7 +1785,6 @@ $lang['select'] = "Auswaehlen";
 $lang['searchforthread'] = "Suche nach Eintrag";
 $lang['mustspecifytypeofsearch'] = "Typ definieren um Suche zu starten";
 $lang['unkownsearchtypespecified'] = "Unbekannter Suchtyp definiert";
-$lang['mustentersomethingtosearchfor'] = "Es muss etwas zum Suchen eingegeben sein";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -2082,7 +2075,6 @@ $lang['posteditingallowed'] = "Postsaenderung erlaubt";
 $lang['postdeletionallowed'] = "Postsloeschung erlaubt";
 $lang['attachmentsallowed'] = "Anhaenge erlaubt";
 $lang['htmlpostingallowed'] = "HTML posten erlaubt";
-$lang['signatureallowed'] = "Signatur erlaubt";
 $lang['guestaccessallowed'] = "Gastzugang erlaubt";
 $lang['postapprovalrequired'] = "Post benoetigt Zustimmung eines Moderators";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.299 2008-10-23 19:20:49 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.300 2008-10-25 18:22:08 decoyduck Exp $ */
 
 // British English language file
 
@@ -822,7 +822,6 @@ $lang['prunelog'] = "pRUn3 L09";
 
 $lang['noexistingforums'] = "n0 EX1S+iNG F0RUM\$ PhoUNd. TO cRE@Te A NEw ForUm CL1CK +he '4dD nEW' 8UT+oN beL0W.";
 $lang['webtaginvalidchars'] = "wEb+@9 C4n ONLY cONTain UPp3Rc4\$3 4-Z, 0-9 4nd unDersc0rE cH@R4CT3r5";
-$lang['databasenameinvalidchars'] = "d4T4b4s3 N4ME c4N 0nly coN+AIn @-Z, 4-z, 0-9 @nD Und3r5C0rE chAR@C+3r\$";
 $lang['invalidforumidorforumnotfound'] = "iNv4l1D PH0RUM f1d 0R PHORum not phOunD";
 $lang['successfullyupdatedforum'] = "succES\$phulLY UpD4+Ed F0rum";
 $lang['failedtoupdateforum'] = "f@Il3D +0 UPd@Te PHOrum: '%s'";
@@ -945,7 +944,6 @@ $lang['enablegoogleadsenseadverts'] = "sH0w 90O9L3 4D\$3nSE @DS";
 $lang['displaygoogleadsenseadstousers'] = "d1\$Pl4Y 4d53nsE @DS fOr";
 $lang['displaygoogleadsenseadsonpages'] = "dI5PL4y 4DS3n53 4d5 on";
 $lang['googleadsenseclientid'] = "aDS3NS3 CLi3NT iD";
-$lang['googleadsenseadformat'] = "aDs3NsE @D PHorm@+";
 $lang['googleadsenseadchannel'] = "aD\$3NS3 4D cH4nnEL";
 $lang['googleadsenseadtype'] = "aDsEN\$3 4D +YP3";
 $lang['googleadsenseadbordercolour'] = "b0rDEr c0louR";
@@ -1739,7 +1737,6 @@ $lang['useraccountcreatedconfirmsuccess'] = "yoUr uS3R @CCOuN+ H45 B33n Cr34TEd 
 $lang['useraccountcreated'] = "yoUr U\$3r 4CCOun+ H4s BeEn cr34+3d sUCceSSFulLY! Cl1CK +h3 C0nTINue bUT+On BeLOW +O l09IN";
 $lang['errorcreatinguserrecord'] = "erRor crE4+In9 U53r ReC0rd";
 $lang['userregistration'] = "u\$ER rEgI\$+r4+ION";
-$lang['registrationinformation'] = "rE915+R4TiON INpH0rM4+10n";
 $lang['registrationinformationrequired'] = "r3g1sTR@+10n inPHORm@T10N (REquIR3D)";
 $lang['profileinformationoptional'] = "pROfil3 INphorM@T10n (0Pt10N4L)";
 $lang['preferencesoptional'] = "pr3F3rENc35 (0pT1oN4L)";
@@ -2188,7 +2185,6 @@ $lang['invalidfeedidorfeednotfound'] = "iNVaLId pHEed ID 0R PH3Ed n0+ phOUnD";
 
 // PM Export Options
 
-$lang['exportfolder'] = "exp0R+ PH0ldER";
 $lang['pmexportastype'] = "exPorT @\$ TYP3";
 $lang['pmexporthtml'] = "h+Ml";
 $lang['pmexportxml'] = "xML";

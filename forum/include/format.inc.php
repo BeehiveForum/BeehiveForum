@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.172 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.173 2008-10-26 16:56:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -609,17 +609,10 @@ function in_range($var, $low, $high)
 * @param mixed  $var - Variable to convert (array or string)
 */
 
-function array_search_ci($needle, $haystack)
+function array_isearch($needle, $haystack)
 {
-    foreach ($haystack as $key => $value) {
-
-        if (!is_array($value)) {
-
-            if (strtolower($needle) == strtolower($value)) {
-
-                return $key;
-            }
-        }
+    foreach($haystack as $key => $value) {
+        if(strcasecmp($needle, $value) == 0) return $key;
     }
 
     return false;

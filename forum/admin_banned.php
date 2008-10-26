@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.86 2008-10-26 16:46:23 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.87 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -191,9 +191,9 @@ $ban_types_list_array = array(BAN_TYPE_IP    => $lang['ipban'],
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+}elseif (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_banned.php?webtag=$webtag";
@@ -201,7 +201,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 // validate the return to page
 
-if (isset($ret) && strlen(trim($ret)) > 0) {
+if (isset($ret) && mb_strlen(trim($ret)) > 0) {
 
     $available_pages = array('admin_user.php', 'admin_users.php', 'admin_visitor_log.php', 'messages.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
@@ -253,12 +253,12 @@ if (isset($_POST['delete'])) {
 
 // Is there an URL query to process?
 
-if (isset($_GET['ban_ipaddress']) && strlen(trim(stripslashes_array($_GET['ban_ipaddress'])))) {
+if (isset($_GET['ban_ipaddress']) && mb_strlen(trim(stripslashes_array($_GET['ban_ipaddress'])))) {
 
     $add_new_ban_type = BAN_TYPE_IP;
     $add_new_ban_data = trim(stripslashes_array($_GET['ban_ipaddress']));
 
-}elseif (isset($_GET['unban_ipaddress']) && strlen(trim(stripslashes_array($_GET['unban_ipaddress'])))) {
+}elseif (isset($_GET['unban_ipaddress']) && mb_strlen(trim(stripslashes_array($_GET['unban_ipaddress'])))) {
 
     $unban_ipaddress = trim(stripslashes_array($_GET['unban_ipaddress']));
 
@@ -267,12 +267,12 @@ if (isset($_GET['ban_ipaddress']) && strlen(trim(stripslashes_array($_GET['ban_i
     }
 }
 
-if (isset($_GET['ban_email']) && strlen(trim(stripslashes_array($_GET['ban_email'])))) {
+if (isset($_GET['ban_email']) && mb_strlen(trim(stripslashes_array($_GET['ban_email'])))) {
 
     $add_new_ban_type = BAN_TYPE_EMAIL;
     $add_new_ban_data = trim(stripslashes_array($_GET['ban_email']));
 
-}elseif (isset($_GET['unban_email']) && strlen(trim(stripslashes_array($_GET['unban_email'])))) {
+}elseif (isset($_GET['unban_email']) && mb_strlen(trim(stripslashes_array($_GET['unban_email'])))) {
 
     $unban_email = trim(stripslashes_array($_GET['unban_email']));
 
@@ -281,12 +281,12 @@ if (isset($_GET['ban_email']) && strlen(trim(stripslashes_array($_GET['ban_email
     }
 }
 
-if (isset($_GET['ban_referer']) && strlen(trim(stripslashes_array($_GET['ban_referer'])))) {
+if (isset($_GET['ban_referer']) && mb_strlen(trim(stripslashes_array($_GET['ban_referer'])))) {
 
     $add_new_ban_type = BAN_TYPE_REF;
     $add_new_ban_data = trim(stripslashes_array($_GET['ban_referer']));
 
-}elseif (isset($_GET['unban_referer']) && strlen(trim(stripslashes_array($_GET['unban_referer'])))) {
+}elseif (isset($_GET['unban_referer']) && mb_strlen(trim(stripslashes_array($_GET['unban_referer'])))) {
 
     $unban_referer = trim(stripslashes_array($_GET['unban_referer']));
 
@@ -313,7 +313,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         $valid = false;
     }
 
-    if (isset($_POST['newbandata']) && strlen(trim(stripslashes_array($_POST['newbandata']))) > 0) {
+    if (isset($_POST['newbandata']) && mb_strlen(trim(stripslashes_array($_POST['newbandata']))) > 0) {
 
         $new_ban_data = trim(stripslashes_array($_POST['newbandata']));
 
@@ -329,7 +329,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         $valid = false;
     }
 
-    if (isset($_POST['newbancomment']) && strlen(trim(stripslashes_array($_POST['newbancomment']))) > 0) {
+    if (isset($_POST['newbancomment']) && mb_strlen(trim(stripslashes_array($_POST['newbancomment']))) > 0) {
         $new_ban_comment = trim(stripslashes_array($_POST['newbancomment']));
     }else {
         $new_ban_comment = "";
@@ -410,7 +410,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $valid = false;
         }
 
-        if (isset($_POST['bandata']) && strlen(trim(stripslashes_array($_POST['bandata']))) > 0) {
+        if (isset($_POST['bandata']) && mb_strlen(trim(stripslashes_array($_POST['bandata']))) > 0) {
 
             $ban_data = trim(stripslashes_array($_POST['bandata']));
 
@@ -454,25 +454,25 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $ban_expires = 0;
         }
 
-        if (isset($_POST['bancomment']) && strlen(trim(stripslashes_array($_POST['bancomment']))) > 0) {
+        if (isset($_POST['bancomment']) && mb_strlen(trim(stripslashes_array($_POST['bancomment']))) > 0) {
             $ban_comment = trim(stripslashes_array($_POST['bancomment']));
         }else {
             $ban_comment = "";
         }
 
-        if (isset($_POST['old_bantype']) && strlen(trim(stripslashes_array($_POST['old_bantype']))) > 0) {
+        if (isset($_POST['old_bantype']) && mb_strlen(trim(stripslashes_array($_POST['old_bantype']))) > 0) {
             $old_ban_type = trim(stripslashes_array($_POST['old_bantype']));
         }else {
             $old_ban_type = "";
         }
 
-        if (isset($_POST['old_bandata']) && strlen(trim(stripslashes_array($_POST['old_bandata']))) > 0) {
+        if (isset($_POST['old_bandata']) && mb_strlen(trim(stripslashes_array($_POST['old_bandata']))) > 0) {
             $old_ban_data = trim(stripslashes_array($_POST['old_bandata']));
         }else {
             $old_ban_data = "";
         }
 
-        if (isset($_POST['old_banexpires']) && strlen(trim(stripslashes_array($_POST['old_banexpires']))) > 0) {
+        if (isset($_POST['old_banexpires']) && mb_strlen(trim(stripslashes_array($_POST['old_banexpires']))) > 0) {
             $old_ban_expires = trim(stripslashes_array($_POST['old_banexpires']));
         }else {
             $old_ban_expires = 0;
@@ -523,11 +523,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         $add_new_ban_type = $_POST['newbantype'];
     }
 
-    if (isset($_POST['newbandata']) && strlen(trim(stripslashes_array($_POST['newbandata']))) > 0) {
+    if (isset($_POST['newbandata']) && mb_strlen(trim(stripslashes_array($_POST['newbandata']))) > 0) {
         $add_new_ban_data = $_POST['newbandata'];
     }
 
-    if (isset($_POST['newbancomment']) && strlen(trim(stripslashes_array($_POST['newbancomment']))) > 0) {
+    if (isset($_POST['newbancomment']) && mb_strlen(trim(stripslashes_array($_POST['newbancomment']))) > 0) {
         $add_new_ban_comment = trim(stripslashes_array($_POST['newbancomment']));
     }
 
@@ -698,11 +698,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             $ban_data_array['BANTYPE'] = $_POST['bantype'];
         }
 
-        if (isset($_POST['bandata']) && strlen(trim(stripslashes_array($_POST['bandata']))) > 0) {
+        if (isset($_POST['bandata']) && mb_strlen(trim(stripslashes_array($_POST['bandata']))) > 0) {
             $ban_data_array['BANDATA'] = trim(stripslashes_array($_POST['bandata']));
         }
 
-        if (isset($_POST['bancomment']) && strlen(trim(stripslashes_array($_POST['bancomment']))) > 0) {
+        if (isset($_POST['bancomment']) && mb_strlen(trim(stripslashes_array($_POST['bancomment']))) > 0) {
             $ban_data_array['COMMENT'] = trim(stripslashes_array($_POST['bancomment']));
         }
 

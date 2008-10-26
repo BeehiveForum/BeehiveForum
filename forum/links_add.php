@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.104 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.105 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -198,7 +198,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
         $uri = trim(stripslashes_array($_POST['uri']));
 
-        if (strlen($uri) > 255) {
+        if (mb_strlen($uri) > 255) {
 
             $error_msg_array[] = sprintf($lang['linkurltoolong'], 255);
             $valid = false;
@@ -210,11 +210,11 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $valid = false;
     }
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && mb_strlen(trim(stripslashes_array($_POST['name']))) > 0) {
 
         $name = trim(stripslashes_array($_POST['name']));
 
-        if (strlen($name) > 64) {
+        if (mb_strlen($name) > 64) {
 
             $error_msg_array[] = sprintf($lang['linknametoolong'], 64);
             $valid = false;
@@ -226,7 +226,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $valid = false;
     }
 
-    if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
+    if (isset($_POST['description']) && mb_strlen(trim(stripslashes_array($_POST['description']))) > 0) {
         $description = trim(stripslashes_array($_POST['description']));
     }else {
         $description = "";
@@ -256,11 +256,11 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $fid = 1;
     }
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && mb_strlen(trim(stripslashes_array($_POST['name']))) > 0) {
 
         $name = trim(stripslashes_array($_POST['name']));
 
-        if (strlen($name) > 32) {
+        if (mb_strlen($name) > 32) {
 
             $error_msg_array[] = sprintf($lang['linkfoldernametoolong'], 32);
             $valid = false;

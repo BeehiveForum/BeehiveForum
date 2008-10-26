@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.104 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: install.php,v 1.105 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,9 +67,9 @@ if (isset($_POST['install_method'])) {
         $valid = false;
     }
 
-    if (isset($_POST['forum_webtag']) && strlen(trim(stripslashes_array($_POST['forum_webtag']))) > 0) {
+    if (isset($_POST['forum_webtag']) && mb_strlen(trim(stripslashes_array($_POST['forum_webtag']))) > 0) {
 
-        $forum_webtag = strtoupper(trim(stripslashes_array($_POST['forum_webtag'])));
+        $forum_webtag = mb_strtoupper(trim(stripslashes_array($_POST['forum_webtag'])));
 
         if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", $forum_webtag)) {
 
@@ -77,7 +77,7 @@ if (isset($_POST['install_method'])) {
             $valid = false;
         }
 
-        if (strlen(trim($forum_webtag)) > 32) {
+        if (mb_strlen(trim($forum_webtag)) > 32) {
 
             $error_array[] = "Forum webtag must between 1 and 32 characters in length.\n";
             $valid = false;
@@ -92,17 +92,17 @@ if (isset($_POST['install_method'])) {
         }
     }
 
-    if (isset($_POST['db_server']) && strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
+    if (isset($_POST['db_server']) && mb_strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
         $db_server = trim(stripslashes_array($_POST['db_server']));
     }else {
         $db_server = '';
     }
 
-    if (isset($_POST['db_database']) && strlen(trim(stripslashes_array($_POST['db_database']))) > 0) {
+    if (isset($_POST['db_database']) && mb_strlen(trim(stripslashes_array($_POST['db_database']))) > 0) {
 
         $db_database = trim(stripslashes_array($_POST['db_database']));
 
-        if (strlen(trim($db_database)) > 64) {
+        if (mb_strlen(trim($db_database)) > 64) {
 
             $error_array[] = "Database name must be between 1 and 64 characters in length.\n";
             $valid = false;
@@ -114,19 +114,19 @@ if (isset($_POST['install_method'])) {
         $valid = false;
     }
 
-    if (isset($_POST['db_username']) && strlen(trim(stripslashes_array($_POST['db_username']))) > 0) {
+    if (isset($_POST['db_username']) && mb_strlen(trim(stripslashes_array($_POST['db_username']))) > 0) {
         $db_username = trim(stripslashes_array($_POST['db_username']));
     }else {
         $db_username = '';
     }
 
-    if (isset($_POST['db_password']) && strlen(trim(stripslashes_array($_POST['db_password']))) > 0) {
+    if (isset($_POST['db_password']) && mb_strlen(trim(stripslashes_array($_POST['db_password']))) > 0) {
         $db_password = trim(stripslashes_array($_POST['db_password']));
     }else {
         $db_password = '';
     }
 
-    if (isset($_POST['db_cpassword']) && strlen(trim(stripslashes_array($_POST['db_cpassword']))) > 0) {
+    if (isset($_POST['db_cpassword']) && mb_strlen(trim(stripslashes_array($_POST['db_cpassword']))) > 0) {
         $db_cpassword = trim(stripslashes_array($_POST['db_cpassword']));
     }else {
         $db_cpassword = "";
@@ -134,28 +134,28 @@ if (isset($_POST['install_method'])) {
 
     if (isset($install_method) && $install_method < 2) {
 
-        if (isset($_POST['admin_username']) && strlen(trim(stripslashes_array($_POST['admin_username']))) > 0) {
+        if (isset($_POST['admin_username']) && mb_strlen(trim(stripslashes_array($_POST['admin_username']))) > 0) {
             $admin_username = trim(stripslashes_array($_POST['admin_username']));
         }else {
             $error_array[] = "You must supply a username for your administrator account.\n";
             $valid = false;
         }
 
-        if (isset($_POST['admin_password']) && strlen(trim(stripslashes_array($_POST['admin_password']))) > 0) {
+        if (isset($_POST['admin_password']) && mb_strlen(trim(stripslashes_array($_POST['admin_password']))) > 0) {
             $admin_password = trim(stripslashes_array($_POST['admin_password']));
         }else {
             $error_array[] = "You must supply a password for your administrator account.\n";
             $valid = false;
         }
 
-        if (isset($_POST['admin_cpassword']) && strlen(trim(stripslashes_array($_POST['admin_cpassword']))) > 0) {
+        if (isset($_POST['admin_cpassword']) && mb_strlen(trim(stripslashes_array($_POST['admin_cpassword']))) > 0) {
             $admin_cpassword = trim(stripslashes_array($_POST['admin_cpassword']));
         }else {
             $error_array[] = "You must confirm the password for your administrator account.\n";
             $valid = false;
         }
 
-        if (isset($_POST['admin_email']) && strlen(trim(stripslashes_array($_POST['admin_email']))) > 0) {
+        if (isset($_POST['admin_email']) && mb_strlen(trim(stripslashes_array($_POST['admin_email']))) > 0) {
             $admin_email = trim(stripslashes_array($_POST['admin_email']));
         }else {
             $error_array[] = "You must supply an email address for your administrator account.\n";
@@ -425,19 +425,19 @@ if (isset($_POST['install_method'])) {
 
         fclose($fp);
 
-        if (isset($_POST['db_server']) && strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
+        if (isset($_POST['db_server']) && mb_strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
             $db_server = trim(stripslashes_array($_POST['db_server']));
         }
 
-        if (isset($_POST['db_database']) && strlen(trim(stripslashes_array($_POST['db_database']))) > 0) {
+        if (isset($_POST['db_database']) && mb_strlen(trim(stripslashes_array($_POST['db_database']))) > 0) {
             $db_database = trim(stripslashes_array($_POST['db_database']));
         }
 
-        if (isset($_POST['db_username']) && strlen(trim(stripslashes_array($_POST['db_username']))) > 0) {
+        if (isset($_POST['db_username']) && mb_strlen(trim(stripslashes_array($_POST['db_username']))) > 0) {
             $db_username = trim(stripslashes_array($_POST['db_username']));
         }
 
-        if (isset($_POST['db_password']) && strlen(trim(stripslashes_array($_POST['db_password']))) > 0) {
+        if (isset($_POST['db_password']) && mb_strlen(trim(stripslashes_array($_POST['db_password']))) > 0) {
             $db_password = trim(stripslashes_array($_POST['db_password']));
         }
 

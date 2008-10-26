@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.112 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.113 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -182,7 +182,7 @@ if (!user_is_guest()) {
 
     if (isset($_POST['addcomment'])) {
 
-        if (isset($_POST['comment']) && strlen(trim(stripslashes_array($_POST['comment']))) > 0) {
+        if (isset($_POST['comment']) && mb_strlen(trim(stripslashes_array($_POST['comment']))) > 0) {
 
             $comment = trim(stripslashes_array($_POST['comment']));
 
@@ -226,7 +226,7 @@ if (!user_is_guest()) {
                 $valid = false;
             }
 
-            if (isset($_POST['title']) && strlen(trim(stripslashes_array($_POST['title']))) > 0) {
+            if (isset($_POST['title']) && mb_strlen(trim(stripslashes_array($_POST['title']))) > 0) {
 
                 $title = trim(stripslashes_array($_POST['title']));
 
@@ -236,7 +236,7 @@ if (!user_is_guest()) {
                 $valid = false;
             }
 
-            if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
+            if (isset($_POST['description']) && mb_strlen(trim(stripslashes_array($_POST['description']))) > 0) {
                 $description = trim(stripslashes_array($_POST['description']));
             }else {
                 $description = "";
@@ -296,7 +296,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '500', 'center');
 
-}else if (isset($success_msg) && strlen($success_msg) > 0) {
+}else if (isset($success_msg) && mb_strlen($success_msg) > 0) {
 
     html_display_success_msg($success_msg, '500', 'center');
 }
@@ -318,7 +318,7 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
-echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 35 ? htmlentities_array(substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
+echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", mb_strlen($link['URI']) > 35 ? htmlentities_array(mb_substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";

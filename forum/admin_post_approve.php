@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.75 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.76 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,9 +120,9 @@ if ($start < 0) $start = 0;
 
 // Are we returning somewhere?
 
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+if (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_post_approve.php?webtag=$webtag";
@@ -130,7 +130,7 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 
 // validate the return to page
 
-if (isset($ret) && strlen(trim($ret)) > 0) {
+if (isset($ret) && mb_strlen(trim($ret)) > 0) {
 
     $available_files = array('admin_post_approve.php', 'messages.php');
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));

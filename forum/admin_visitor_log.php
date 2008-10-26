@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.39 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.40 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -212,7 +212,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
         }
 
-        if (isset($visitor['IPADDRESS']) && strlen($visitor['IPADDRESS']) > 0) {
+        if (isset($visitor['IPADDRESS']) && mb_strlen($visitor['IPADDRESS']) > 0) {
 
             if (ip_is_banned($visitor['IPADDRESS'])) {
 
@@ -228,13 +228,13 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">{$lang['unknown']}</td>\n";
         }
 
-        if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {
+        if (isset($visitor['REFERER']) && mb_strlen(trim($visitor['REFERER'])) > 0) {
 
             $visitor['REFERER_FULL'] = $visitor['REFERER'];
 
             if (!$visitor['REFERER'] = split_url($visitor['REFERER'])) {
-                if (strlen($visitor['REFERER_FULL']) > 25) {
-                    $visitor['REFERER'] = substr($visitor['REFERER_FULL'], 0, 25);
+                if (mb_strlen($visitor['REFERER_FULL']) > 25) {
+                    $visitor['REFERER'] = mb_substr($visitor['REFERER_FULL'], 0, 25);
                     $visitor['REFERER'].= "&hellip;";
                 }
             }

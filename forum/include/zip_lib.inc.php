@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: zip_lib.inc.php,v 1.5 2008-07-28 21:05:56 decoyduck Exp $ */
+/* $Id: zip_lib.inc.php,v 1.6 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * zip_lib.inc.php - Zip Creation Class Library
@@ -101,15 +101,15 @@ class zip_file
         $fr   .= "\x08\x00";
         $fr   .= $hexdtime;
 
-        $unc_len = strlen($data);
+        $unc_len = mb_strlen($data);
         $crc     = crc32($data);
         $zdata   = gzcompress($data);
-        $zdata   = substr(substr($zdata, 0, strlen($zdata) - 4), 2); // fix crc bug
-        $c_len   = strlen($zdata);
+        $zdata   = mb_substr(mb_substr($zdata, 0, mb_strlen($zdata) - 4), 2); // fix crc bug
+        $c_len   = mb_strlen($zdata);
         $fr      .= pack('V', $crc);
         $fr      .= pack('V', $c_len);
         $fr      .= pack('V', $unc_len);
-        $fr      .= pack('v', strlen($name));
+        $fr      .= pack('v', mb_strlen($name));
         $fr      .= pack('v', 0);
         $fr      .= $name;
         $fr      .= $zdata;
@@ -125,7 +125,7 @@ class zip_file
         $cdrec .= pack('V', $crc);
         $cdrec .= pack('V', $c_len);
         $cdrec .= pack('V', $unc_len);
-        $cdrec .= pack('v', strlen($name));
+        $cdrec .= pack('v', mb_strlen($name));
         $cdrec .= pack('v', 0 );
         $cdrec .= pack('v', 0 );
         $cdrec .= pack('v', 0 );
@@ -133,7 +133,7 @@ class zip_file
         $cdrec .= pack('V', 32 );
 
         $cdrec .= pack('V', $this -> old_offset );
-        $this -> old_offset += strlen($fr);
+        $this -> old_offset += mb_strlen($fr);
 
         $cdrec .= $name;
 
@@ -151,8 +151,8 @@ class zip_file
             $this -> eof_ctrl_dir .
             pack('v', sizeof($this -> ctrl_dir)) .
             pack('v', sizeof($this -> ctrl_dir)) .
-            pack('V', strlen($ctrldir)) .
-            pack('V', strlen($data)) .
+            pack('V', mb_strlen($ctrldir)) .
+            pack('V', mb_strlen($data)) .
             "\x00\x00";
     }
 

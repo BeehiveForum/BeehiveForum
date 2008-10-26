@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.204 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.205 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -246,7 +246,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
             if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
-                    if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                    if (!is_null($top_user['PEER_NICKNAME']) && mb_strlen($top_user['PEER_NICKNAME']) > 0) {
                         $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                     }
                 }
@@ -277,7 +277,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         if (isset($user_data['LOGON'])) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -319,7 +319,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
             if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
-                    if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                    if (!is_null($top_user['PEER_NICKNAME']) && mb_strlen($top_user['PEER_NICKNAME']) > 0) {
                         $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                     }
                 }
@@ -348,7 +348,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
         if (isset($user_data['LOGON'])) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -390,7 +390,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
             if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
-                    if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                    if (!is_null($top_user['PEER_NICKNAME']) && mb_strlen($top_user['PEER_NICKNAME']) > 0) {
                         $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                     }
                 }
@@ -429,7 +429,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
         if (isset($user_data['LOGON'])) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }

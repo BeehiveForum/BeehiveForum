@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.165 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.166 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -168,8 +168,8 @@ $total_attachment_size = 0;
 
 // Check that $attachment_dir does not have a slash on the end of it.
 
-if (substr($attachment_dir, -1) == '/') {
-    $attachment_dir = substr($attachment_dir, 0, -1);
+if (mb_substr($attachment_dir, -1) == '/') {
+    $attachment_dir = mb_substr($attachment_dir, 0, -1);
 }
 
 // Arrays to hold successfully / failed uploaded filenames.
@@ -189,7 +189,7 @@ if (isset($_POST['upload'])) {
 
         for ($i = 0; $i < sizeof($_FILES['userfile']['name']); $i++) {
 
-            if (isset($_FILES['userfile']['name'][$i]) && strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
+            if (isset($_FILES['userfile']['name'][$i]) && mb_strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
 
                 $filename = trim(stripslashes_array($_FILES['userfile']['name'][$i]));
 

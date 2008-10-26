@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.167 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.168 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -327,7 +327,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
         echo "                            <tr>\n";
 
-        if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
+        if (isset($recent_visitor['AVATAR_URL']) && mb_strlen($recent_visitor['AVATAR_URL']) > 0) {
 
             echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 

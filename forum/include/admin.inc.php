@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.171 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.172 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -171,7 +171,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
         while (($admin_log_entry = db_fetch_array($result))) {
 
             if (isset($admin_log_entry['LOGON']) && isset($admin_log_entry['PEER_NICKNAME'])) {
-                if (!is_null($admin_log_entry['PEER_NICKNAME']) && strlen($admin_log_entry['PEER_NICKNAME']) > 0) {
+                if (!is_null($admin_log_entry['PEER_NICKNAME']) && mb_strlen($admin_log_entry['PEER_NICKNAME']) > 0) {
                     $admin_log_entry['NICKNAME'] = $admin_log_entry['PEER_NICKNAME'];
                 }
             }
@@ -1081,7 +1081,7 @@ function admin_get_visitor_log($offset)
         while (($visitor_array = db_fetch_array($result))) {
 
             if (isset($visitor_array['LOGON']) && isset($visitor_array['PEER_NICKNAME'])) {
-                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
+                if (!is_null($visitor_array['PEER_NICKNAME']) && mb_strlen($visitor_array['PEER_NICKNAME']) > 0) {
                     $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
                 }
             }
@@ -1097,7 +1097,7 @@ function admin_get_visitor_log($offset)
                 $visitor_array['NICKNAME'] = "";
             }
 
-            if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
+            if (isset($visitor_array['REFERER']) && mb_strlen(trim($visitor_array['REFERER'])) > 0) {
 
                 $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
 
@@ -1193,7 +1193,7 @@ function admin_get_user_ip_matches($uid)
 
         while (($user_get_aliases_row = db_fetch_array($result))) {
 
-            if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
+            if (mb_strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
 
                 $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
             }
@@ -1208,7 +1208,7 @@ function admin_get_user_ip_matches($uid)
 
     $user_ip_address_list = implode("', '", $user_ip_address_array);
 
-    if (strlen($user_ip_address_list) > 0) {
+    if (mb_strlen($user_ip_address_list) > 0) {
 
         $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
         $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
@@ -1230,7 +1230,7 @@ function admin_get_user_ip_matches($uid)
             while (($user_aliases = db_fetch_array($result))) {
 
                 if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                    if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                    if (!is_null($user_aliases['PEER_NICKNAME']) && mb_strlen($user_aliases['PEER_NICKNAME']) > 0) {
                         $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
                     }
                 }
@@ -1282,7 +1282,7 @@ function admin_get_user_email_matches($uid)
         while (($user_aliases = db_fetch_array($result))) {
 
             if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_aliases['PEER_NICKNAME']) && mb_strlen($user_aliases['PEER_NICKNAME']) > 0) {
                     $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
                 }
             }
@@ -1334,7 +1334,7 @@ function admin_get_user_referer_matches($uid)
         while (($user_aliases = db_fetch_array($result))) {
 
             if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_aliases['PEER_NICKNAME']) && mb_strlen($user_aliases['PEER_NICKNAME']) > 0) {
                     $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
                 }
             }
@@ -1385,7 +1385,7 @@ function admin_get_user_passwd_matches($uid)
         while (($user_aliases = db_fetch_array($result))) {
 
             if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_aliases['PEER_NICKNAME']) && mb_strlen($user_aliases['PEER_NICKNAME']) > 0) {
                     $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
                 }
             }

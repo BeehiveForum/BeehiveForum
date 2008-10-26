@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.22 2008-10-18 19:19:50 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.23 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -324,7 +324,7 @@ function sitemap_create_file()
                             // If the sitemap file is going to be larger than the 10MB max file size
                             // We need to close the current file and open the next in sequence.
 
-                            if ($bytes_written + ((strlen($sitemap_entry) + strlen($sitemap_footer)) * 2) >= 10485760) {
+                            if ($bytes_written + ((mb_strlen($sitemap_entry) + mb_strlen($sitemap_footer)) * 2) >= 10485760) {
 
                                 // Write the footer to the file
 

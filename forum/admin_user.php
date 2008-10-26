@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.259 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.260 2008-10-26 21:03:49 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -135,7 +135,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_users.php?webtag=$webtag";
@@ -143,7 +143,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 // validate the return to page
 
-if (isset($ret) && strlen(trim($ret)) > 0) {
+if (isset($ret) && mb_strlen(trim($ret)) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -194,7 +194,7 @@ $user_perms = perm_get_forum_user_permissions($uid);
 
 if (isset($_POST['action_submit'])) {
 
-    if (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
+    if (isset($_POST['action']) && mb_strlen(trim(stripslashes_array($_POST['action']))) > 0) {
 
         $post_action = trim(stripslashes_array($_POST['action']));
 
@@ -345,7 +345,7 @@ if (isset($_POST['action_submit'])) {
         exit;
     }
 
-    if (isset($_POST['t_new_password']) && strlen(trim(stripslashes_array($_POST['t_new_password']))) > 0) {
+    if (isset($_POST['t_new_password']) && mb_strlen(trim(stripslashes_array($_POST['t_new_password']))) > 0) {
 
         $t_new_password = trim(stripslashes_array($_POST['t_new_password']));
 
@@ -571,13 +571,13 @@ if (isset($_POST['action_submit'])) {
     }
 }
 
-if (isset($_GET['action']) && strlen(trim(stripslashes_array($_GET['action']))) > 0) {
+if (isset($_GET['action']) && mb_strlen(trim(stripslashes_array($_GET['action']))) > 0) {
     $action = trim(stripslashes_array($_GET['action']));
-}elseif (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
+}elseif (isset($_POST['action']) && mb_strlen(trim(stripslashes_array($_POST['action']))) > 0) {
     $action = trim(stripslashes_array($_POST['action']));
 }
 
-if (isset($action) && strlen(trim($action)) > 0) {
+if (isset($action) && mb_strlen(trim($action)) > 0) {
 
     if ($action == 'reset_passwd') {
 
@@ -932,8 +932,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
                     $user_alias['REFERER_FULL'] = $user_alias['REFERER'];
 
                     if (!$user_alias['REFERER'] = split_url($user_alias['REFERER'])) {
-                        if (strlen($user_alias['REFERER_FULL']) > 25) {
-                            $user_alias['REFERER'] = substr($user_alias['REFERER_FULL'], 0, 25);
+                        if (mb_strlen($user_alias['REFERER_FULL']) > 25) {
+                            $user_alias['REFERER'] = mb_substr($user_alias['REFERER_FULL'], 0, 25);
                             $user_alias['REFERER'].= "&hellip;";
                         }
                     }
@@ -1218,7 +1218,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'center');
 
-}else if (isset($success_html) && strlen(trim($success_html)) > 0) {
+}else if (isset($success_html) && mb_strlen(trim($success_html)) > 0) {
 
     html_display_success_msg($success_html, '600', 'center');
 
@@ -1293,13 +1293,13 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (forum_check_webtag_available($webtag)) {
 
-        if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
+        if (isset($user['REFERER']) && mb_strlen(trim($user['REFERER'])) > 0) {
 
             $user['REFERER_FULL'] = $user['REFERER'];
 
             if (!$user['REFERER'] = split_url($user['REFERER'])) {
-                if (strlen($user['REFERER_FULL']) > 25) {
-                    $user['REFERER'] = substr($user['REFERER_FULL'], 0, 25);
+                if (mb_strlen($user['REFERER_FULL']) > 25) {
+                    $user['REFERER'] = mb_substr($user['REFERER_FULL'], 0, 25);
                     $user['REFERER'].= "&hellip;";
                 }
             }
@@ -1327,13 +1327,13 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             echo "                      </tr>\n";
         }
 
-        if (isset($user['SESSION_REFERER']) && strlen(trim($user['SESSION_REFERER'])) > 0) {
+        if (isset($user['SESSION_REFERER']) && mb_strlen(trim($user['SESSION_REFERER'])) > 0) {
 
             $user['SESSION_REFERER_FULL'] = $user['SESSION_REFERER'];
 
             if (!$user['SESSION_REFERER'] = split_url($user['SESSION_REFERER'])) {
-                if (strlen($user['SESSION_REFERER_FULL']) > 25) {
-                    $user['SESSION_REFERER'] = substr($user['SESSION_REFERER_FULL'], 0, 25);
+                if (mb_strlen($user['SESSION_REFERER_FULL']) > 25) {
+                    $user['SESSION_REFERER'] = mb_substr($user['SESSION_REFERER_FULL'], 0, 25);
                     $user['SESSION_REFERER'].= "&hellip;";
                 }
             }
@@ -1377,7 +1377,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a> ({$lang['banned']})</td>\n";
 
-        }else if (strlen(trim($user['IPADDRESS'])) > 0) {
+        }else if (mb_strlen(trim($user['IPADDRESS'])) > 0) {
 
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a></td>\n";
 

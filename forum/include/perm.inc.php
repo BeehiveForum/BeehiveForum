@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.137 2008-09-14 14:56:02 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.138 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -1136,7 +1136,7 @@ function perm_group_get_users($gid, $offset = 0)
             while (($user_data = db_fetch_array($result))) {
 
                 if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                    if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                         $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                     }
                 }

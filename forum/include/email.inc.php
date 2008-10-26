@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.150 2008-10-18 19:19:50 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.151 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_address_valid($email)
 {
-    return ereg('^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$', $email);
+    return mb_ereg('^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$', $email);
 }
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
@@ -124,7 +124,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
                 // email headers only contain the email address in < >
                 // i.e. <someuser@abeehiveforum.net>
 
-                if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+                if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
             }
         }
     }
@@ -227,7 +227,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
             // email headers only contain the email address in < >
             // i.e. <someuser@abeehiveforum.net>
 
-            if (!@mail($to_user['EMAIL'], $subject, $message, $header)) return false;
+            if (!@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return false;
         }
     }
 
@@ -326,7 +326,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
             // email headers only contain the email address in < >
             // i.e. <someuser@abeehiveforum.net>
 
-            if (!@mail($to_user['EMAIL'], $subject, $message, $header)) return false;
+            if (!@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return false;
 
             // Add the recipient's UID to the exclude user list so they
             // don't also receive a thread subscription notification.
@@ -412,7 +412,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
                 // email headers only contain the email address in < >
                 // i.e. <someuser@abeehiveforum.net>
 
-                if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+                if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
             }
         }
     }
@@ -475,7 +475,7 @@ function email_send_pw_reminder($logon)
             // email headers only contain the email address in < >
             // i.e. <someuser@abeehiveforum.net>
 
-            if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+            if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
     }
 
@@ -530,7 +530,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -590,7 +590,7 @@ function email_send_user_confirmation($tuid)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -650,7 +650,7 @@ function email_send_changed_email_confirmation($tuid)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -708,7 +708,7 @@ function email_send_user_approval_notification($tuid)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -767,7 +767,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -825,7 +825,7 @@ function email_send_user_approved_notification($tuid)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -883,7 +883,7 @@ function email_send_post_approval_notification($tuid)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;
@@ -940,7 +940,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         // email headers only contain the email address in < >
         // i.e. <someuser@abeehiveforum.net>
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+        if (@mb_send_mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;

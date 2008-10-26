@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.28 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.29 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -102,10 +102,10 @@ if (isset($_POST['forum_password'])) {
 
     $forum_password = stripslashes_array($_POST['forum_password']);
 
-    if (strlen(trim($forum_password)) > 0) {
+    if (mb_strlen(trim($forum_password)) > 0) {
 
         $forum_passhash = md5($forum_password);
-        $forum_password = str_repeat(chr(32), strlen($forum_password));
+        $forum_password = str_repeat(chr(32), mb_strlen($forum_password));
 
     }else {
 
@@ -122,7 +122,7 @@ if (isset($_POST['forum_password'])) {
 
 // Check for a returning page.
 
-if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_uri']))) > 0) {
+if (isset($_POST['final_uri']) && mb_strlen(trim(stripslashes_array($_POST['final_uri']))) > 0) {
 
     $final_uri = basename(trim(stripslashes_array($_POST['final_uri'])));
     $redirect_uri = "index.php?webtag=$webtag&final_uri=". rawurlencode($final_uri);
@@ -134,7 +134,7 @@ if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_u
 
 // Validate the return to page
 
-if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
+if (isset($redirect_uri) && mb_strlen(trim($redirect_uri)) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));

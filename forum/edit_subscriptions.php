@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.41 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.42 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -183,9 +183,9 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 
 // Thread search keywords.
 
-if (isset($_GET['thread_search']) && strlen(trim(stripslashes_array($_GET['thread_search']))) > 0) {
+if (isset($_GET['thread_search']) && mb_strlen(trim(stripslashes_array($_GET['thread_search']))) > 0) {
     $thread_search = trim(stripslashes_array($_GET['thread_search']));
-}else if (isset($_POST['thread_search']) && strlen(trim(stripslashes_array($_POST['thread_search']))) > 0) {
+}else if (isset($_POST['thread_search']) && mb_strlen(trim(stripslashes_array($_POST['thread_search']))) > 0) {
     $thread_search = trim(stripslashes_array($_POST['thread_search']));
 }else {
     $thread_search = "";
@@ -219,7 +219,7 @@ $interest_level_array = array(THREAD_IGNORED => $lang['ignored'], THREAD_INTERES
 
 // Check if we're searching or displaying the existing subscriptions.
 
-if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
+if (isset($thread_search) && mb_strlen(trim($thread_search)) > 0) {
     $thread_subscriptions = threads_search_user_subscriptions($thread_search, $view_filter, $start_search);
 }else {
     $thread_subscriptions = threads_get_user_subscriptions($view_filter, $start_main);
@@ -241,7 +241,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (sizeof($thread_subscriptions['thread_array']) < 1) {
 
-    if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
+    if (isset($thread_search) && mb_strlen(trim($thread_search)) > 0) {
 
         html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
 

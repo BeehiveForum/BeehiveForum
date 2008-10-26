@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.62 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.63 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -272,9 +272,9 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
         echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "</td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
 
-        if (isset($user_group['GROUP_DESC']) && strlen(trim($user_group['GROUP_DESC'])) > 0) {
+        if (isset($user_group['GROUP_DESC']) && mb_strlen(trim($user_group['GROUP_DESC'])) > 0) {
 
-            $group_desc_short = (strlen(trim($user_group['GROUP_DESC'])) > 25) ? substr($user_group['GROUP_DESC'], 0, 22). "&hellip;" : $user_group['GROUP_DESC'];
+            $group_desc_short = (mb_strlen(trim($user_group['GROUP_DESC'])) > 25) ? mb_substr($user_group['GROUP_DESC'], 0, 22). "&hellip;" : $user_group['GROUP_DESC'];
 
             echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" nowrap=\"nowrap\"><div title=\"", word_filter_add_ob_tags($user_group['GROUP_DESC']), "\">", word_filter_add_ob_tags($group_desc_short), "</div></td>\n";
 

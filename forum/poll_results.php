@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.43 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.44 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -225,7 +225,7 @@ if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID'
         echo "          <td align=\"left\" class=\"posthead\">\n";
         echo "            <table width=\"100%\">\n";
 
-        if (strlen(trim($poll_data['QUESTION'])) > 0 && strcasecmp($thread_title, $poll_data['QUESTION']) <> 0) {
+        if (mb_strlen(trim($poll_data['QUESTION'])) > 0 && strcasecmp($thread_title, $poll_data['QUESTION']) <> 0) {
 
             echo "              <tr>\n";
             echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(htmlentities_array($poll_data['QUESTION'])), "</td>\n";

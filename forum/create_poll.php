@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.242 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.243 2008-10-26 21:03:49 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -279,7 +279,7 @@ if (isset($_POST['t_sig_html'])) {
 
     $fetched_sig = false;
 
-    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+    if (isset($_POST['t_sig']) && mb_strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
         $t_sig = trim(stripslashes_array($_POST['t_sig']));
     }else {
         $t_sig = "";
@@ -336,7 +336,7 @@ if (isset($_POST['cancel'])) {
         $t_post_html = 'N';
     }
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
 
@@ -346,7 +346,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_question']) && strlen(trim(stripslashes_array($_POST['t_question']))) > 0) {
+    if (isset($_POST['t_question']) && mb_strlen(trim(stripslashes_array($_POST['t_question']))) > 0) {
         $t_question = trim(stripslashes_array($_POST['t_question']));
     }else {
         $t_question = '';
@@ -391,7 +391,7 @@ if (isset($_POST['cancel'])) {
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-                if ($valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+                if ($valid == true && mb_strlen(trim($t_answers_array[$key])) < 1) {
 
                     $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
                     $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
@@ -400,13 +400,13 @@ if (isset($_POST['cancel'])) {
             }
         }
 
-        if (!isset($t_answers_array[0]) || strlen(trim(stripslashes_array($t_answers_array[0]))) == 0) {
+        if (!isset($t_answers_array[0]) || mb_strlen(trim(stripslashes_array($t_answers_array[0]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
-        if (!isset($t_answers_array[1]) || strlen(trim(stripslashes_array($t_answers_array[1]))) == 0) {
+        if (!isset($t_answers_array[1]) || mb_strlen(trim(stripslashes_array($t_answers_array[1]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
@@ -506,7 +506,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_message_text']) && strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
+    if (isset($_POST['t_message_text']) && mb_strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
 
         $t_message_text = trim(stripslashes_array($_POST['t_message_text']));
 
@@ -534,7 +534,7 @@ if (isset($_POST['cancel'])) {
 
 }elseif (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
-    if (isset($_POST['t_message_text']) && strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
+    if (isset($_POST['t_message_text']) && mb_strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
         $t_message_text = trim(stripslashes_array($_POST['t_message_text']));
     }
 
@@ -568,13 +568,13 @@ if (isset($_POST['cancel'])) {
         $t_post_html = 'N';
     }
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
     }else {
         $t_threadtitle = '';
     }
 
-    if (isset($_POST['t_question']) && strlen(trim(stripslashes_array($_POST['t_question']))) > 0) {
+    if (isset($_POST['t_question']) && mb_strlen(trim(stripslashes_array($_POST['t_question']))) > 0) {
         $t_question = trim(stripslashes_array($_POST['t_question']));
     }else {
         $t_question = '';
@@ -590,7 +590,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answers'] as $t_answer) {
 
-            if (strlen(trim(stripslashes_array($t_answer))) > 0) {
+            if (mb_strlen(trim(stripslashes_array($t_answer))) > 0) {
 
                 $t_answers_array[] = trim(stripslashes_array($t_answer));
             }
@@ -664,15 +664,15 @@ $sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false);
 $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();
 
-if (strlen($t_message_text) >= 65535) {
+if (mb_strlen($t_message_text) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_message_text)));
+    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_message_text)));
     $valid = false;
 }
 
-if (strlen($t_sig) >= 65535) {
+if (mb_strlen($t_sig) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
+    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(mb_strlen($t_sig)));
     $valid = false;
 }
 
@@ -730,9 +730,9 @@ if ($valid && isset($_POST['post'])) {
 
             post_save_attachment_id($t_tid, $t_pid, $aid);
 
-            if (strlen($t_message_text) > 0) {
+            if (mb_strlen($t_message_text) > 0) {
 
-                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+                if ($allow_sig == true && mb_strlen(trim($t_sig)) > 0) {
                     $t_message_text.= "<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -907,11 +907,11 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "                  <td align=\"left\">", message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true), "</td>\n";
     echo "                </tr>\n";
 
-    if (strlen($t_message_text) > 0) {
+    if (mb_strlen($t_message_text) > 0) {
 
         $polldata['CONTENT'] = $t_message_text;
 
-        if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+        if ($allow_sig == true && mb_strlen(trim($t_sig)) > 0) {
 
             $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
         }

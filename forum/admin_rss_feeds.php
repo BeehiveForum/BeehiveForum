@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.64 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.65 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -174,11 +174,11 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_url']) && strlen(trim(stripslashes_array($_POST['t_url']))) > 0) {
+    if (isset($_POST['t_url']) && mb_strlen(trim(stripslashes_array($_POST['t_url']))) > 0) {
 
         $t_url = trim(stripslashes_array($_POST['t_url']));
 
-    }elseif (isset($_POST['t_url_new']) && strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
+    }elseif (isset($_POST['t_url_new']) && mb_strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
 
         $t_url = trim(stripslashes_array($_POST['t_url_new']));
 
@@ -213,14 +213,14 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && mb_strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
         $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
     }else {
         $valid = false;
         $error_msg_array[] = $lang['mustspecifyrssfeedname'];
     }
 
-    if (isset($_POST['t_user_new']) && strlen(trim(stripslashes_array($_POST['t_user_new']))) > 0) {
+    if (isset($_POST['t_user_new']) && mb_strlen(trim(stripslashes_array($_POST['t_user_new']))) > 0) {
 
         $t_user_new = trim(stripslashes_array($_POST['t_user_new']));
 
@@ -250,7 +250,7 @@ if (isset($_POST['delete'])) {
         $error_msg_array[] = $lang['mustspecifyrssfeedfolder'];
     }
 
-    if (isset($_POST['t_url_new']) && strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
+    if (isset($_POST['t_url_new']) && mb_strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
 
         $t_url_new = trim(stripslashes_array($_POST['t_url_new']));
 
@@ -262,7 +262,7 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = $lang['rssfeedsupportshttpurlsonly'];
         }
 
-        if (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1) {
+        if (!isset($check_url['host']) || mb_strlen(trim($check_url['host'])) < 1) {
 
             $valid = false;
             $error_msg_array[] = $lang['rssfeedurlformatinvalid'];
@@ -280,7 +280,7 @@ if (isset($_POST['delete'])) {
         $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
     }
 
-    if (isset($_POST['t_prefix_new']) && strlen(trim(stripslashes_array($_POST['t_prefix_new']))) > 0) {
+    if (isset($_POST['t_prefix_new']) && mb_strlen(trim(stripslashes_array($_POST['t_prefix_new']))) > 0) {
         $t_prefix_new = trim(stripslashes_array($_POST['t_prefix_new']));
     }else {
         $t_prefix_new = "";
@@ -318,7 +318,7 @@ if (isset($_POST['delete'])) {
 
         $feed_id = $_POST['feed_id'];
 
-        if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+        if (isset($_POST['t_name']) && mb_strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
 
             $t_new_name = trim(stripslashes_array($_POST['t_name']));
 
@@ -328,13 +328,13 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = $lang['mustspecifyrssfeedname'];
         }
 
-        if (isset($_POST['t_old_name']) && strlen(trim(stripslashes_array($_POST['t_old_name']))) > 0) {
+        if (isset($_POST['t_old_name']) && mb_strlen(trim(stripslashes_array($_POST['t_old_name']))) > 0) {
             $t_old_name = trim(stripslashes_array($_POST['t_old_name']));
         }else {
             $t_old_name = "";
         }
 
-        if (isset($_POST['t_user']) && strlen(trim(stripslashes_array($_POST['t_user']))) > 0) {
+        if (isset($_POST['t_user']) && mb_strlen(trim(stripslashes_array($_POST['t_user']))) > 0) {
 
             $t_new_user = trim(stripslashes_array($_POST['t_user']));
 
@@ -344,7 +344,7 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = $lang['mustspecifyrssfeeduseraccount'];
         }
 
-        if (isset($_POST['t_old_user']) && strlen(trim(stripslashes_array($_POST['t_old_user']))) > 0) {
+        if (isset($_POST['t_old_user']) && mb_strlen(trim(stripslashes_array($_POST['t_old_user']))) > 0) {
             $t_old_user = trim(stripslashes_array($_POST['t_old_user']));
         }else {
             $t_old_user = "";
@@ -366,26 +366,26 @@ if (isset($_POST['delete'])) {
             $t_old_fid = "";
         }
 
-        if (isset($_POST['t_url']) && strlen(trim(stripslashes_array($_POST['t_url']))) > 0) {
+        if (isset($_POST['t_url']) && mb_strlen(trim(stripslashes_array($_POST['t_url']))) > 0) {
             $t_new_url = $_POST['t_url'];
         }else {
             $valid = false;
             $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
         }
 
-        if (isset($_POST['t_old_url']) && strlen(trim(stripslashes_array($_POST['t_old_url']))) > 0) {
+        if (isset($_POST['t_old_url']) && mb_strlen(trim(stripslashes_array($_POST['t_old_url']))) > 0) {
             $t_old_url = $_POST['t_old_url'];
         }else {
             $t_old_url = "";
         }
 
-        if (isset($_POST['t_prefix']) && strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
+        if (isset($_POST['t_prefix']) && mb_strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
             $t_new_prefix = $_POST['t_prefix'];
         }else {
             $t_new_prefix = "";
         }
 
-        if (isset($_POST['t_old_prefix']) && strlen(trim(stripslashes_array($_POST['t_old_prefix']))) > 0) {
+        if (isset($_POST['t_old_prefix']) && mb_strlen(trim(stripslashes_array($_POST['t_old_prefix']))) > 0) {
             $t_old_prefix = $_POST['t_old_prefix'];
         }else {
             $t_old_prefix = "";

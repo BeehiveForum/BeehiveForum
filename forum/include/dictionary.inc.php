@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.60 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.61 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -184,9 +184,9 @@ class dictionary {
     {
         $current_word = $this->content_array[$this->current_word];
 
-        if (strtolower($current_word) == $current_word) {
+        if (mb_strtolower($current_word) == $current_word) {
 
-            $this->content_array[$this->current_word] = strtolower($change_to);
+            $this->content_array[$this->current_word] = mb_strtolower($change_to);
 
         }elseif (ucfirst($current_word) == $current_word) {
 
@@ -209,9 +209,9 @@ class dictionary {
 
     function add_ignored_word($word)
     {
-        if (!in_array(strtolower($word), $this->ignored_words_array)) {
+        if (!in_array(mb_strtolower($word), $this->ignored_words_array)) {
 
-            $this->ignored_words_array[] = strtolower($word);
+            $this->ignored_words_array[] = mb_strtolower($word);
         }
     }
 
@@ -226,7 +226,7 @@ class dictionary {
 
         if (preg_match("/$word_match/iu", $current_word) < 1) {
 
-            if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
+            if (mb_strlen($current_word) > 1 && mb_strtoupper($current_word) != $current_word) return true;
         }
 
         return false;
@@ -234,7 +234,7 @@ class dictionary {
 
     function word_is_ignored()
     {
-        return in_array(strtolower($this->get_current_word()), $this->ignored_words_array);
+        return in_array(mb_strtolower($this->get_current_word()), $this->ignored_words_array);
     }
 
     function word_get_metaphone()
@@ -250,7 +250,7 @@ class dictionary {
 
         // Fetch the current word
 
-        $word = db_escape_string(strtolower($this->get_current_word()));
+        $word = db_escape_string(mb_strtolower($this->get_current_word()));
 
         if (!$this->word_is_valid($word)) return;
 

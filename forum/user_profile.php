@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.150 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.151 2008-10-26 21:03:49 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -145,7 +145,7 @@ if (isset($_GET['close_window'])) {
         exit;
     }
 
-}elseif (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
+}elseif (isset($_GET['logon']) && mb_strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
 
     $logon = trim(stripslashes_array($_GET['logon']));
 
@@ -282,7 +282,7 @@ echo "                          <table width=\"95%\">\n";
 
 if (isset($user_profile['USER_GROUPS']) && sizeof($user_profile['USER_GROUPS']) > 0) {
 
-    $user_groups_list = (strlen(trim($user_profile['USER_GROUPS'])) > 50) ? substr($user_profile['USER_GROUPS'], 0, 47). "&hellip;" : $user_profile['USER_GROUPS'];
+    $user_groups_list = (mb_strlen(trim($user_profile['USER_GROUPS'])) > 50) ? mb_substr($user_profile['USER_GROUPS'], 0, 47). "&hellip;" : $user_profile['USER_GROUPS'];
 
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\"><div title=\"{$lang['groups']}: ", word_filter_add_ob_tags($user_profile['USER_GROUPS']), "\"><span class=\"smalltext\">{$lang['groups']}: ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";

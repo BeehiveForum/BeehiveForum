@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.230 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: search.php,v 1.231 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -221,7 +221,7 @@ if (isset($_GET['show_stop_words'])) {
         exit;
     }
 
-    if (isset($_GET['keywords']) && strlen(trim(stripslashes_array($_GET['keywords']))) > 0) {
+    if (isset($_GET['keywords']) && mb_strlen(trim(stripslashes_array($_GET['keywords']))) > 0) {
 
         $highlight_keywords_array = explode(" ", trim(stripslashes_array($_GET['keywords'])));
         array_walk($highlight_keywords_array, 'mysql_fulltext_callback', '/');
@@ -310,9 +310,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $search_no_matches = false;
 
-    if (isset($_GET['search_string']) && strlen(trim(stripslashes_array($_GET['search_string']))) > 0) {
+    if (isset($_GET['search_string']) && mb_strlen(trim(stripslashes_array($_GET['search_string']))) > 0) {
         $search_arguments['search_string'] = trim(stripslashes_array($_GET['search_string']));
-    }else if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
+    }else if (isset($_POST['search_string']) && mb_strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
         $search_arguments['search_string'] = trim(stripslashes_array($_POST['search_string']));
     }
 
@@ -320,11 +320,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         $search_arguments['method'] = $_POST['method'];
     }
 
-    if (isset($_POST['username']) && strlen(trim(stripslashes_array($_POST['username']))) > 0) {
+    if (isset($_POST['username']) && mb_strlen(trim(stripslashes_array($_POST['username']))) > 0) {
 
         $search_arguments['username'] = trim(stripslashes_array($_POST['username']));
 
-    }elseif (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
+    }elseif (isset($_GET['logon']) && mb_strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
 
         $search_arguments['username'] = trim(stripslashes_array($_GET['logon']));
         $search_arguments['user_include'] = SEARCH_FILTER_USER_POSTS;
@@ -412,7 +412,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
             case SEARCH_NO_KEYWORDS:
 
-                if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
+                if (isset($search_arguments['search_string']) && mb_strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
 
                     $search_string = trim(stripslashes_array($search_arguments['search_string']));
 
@@ -478,21 +478,21 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                     // Limit thread title to 20 characters.
 
-                    if (strlen($message['TITLE']) > 20) {
-                        $message['TITLE'] = word_filter_add_ob_tags(substr(htmlentities_array($message['TITLE']), 0, 20)). "&hellip;";
+                    if (mb_strlen($message['TITLE']) > 20) {
+                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr(htmlentities_array($message['TITLE']), 0, 20)). "&hellip;";
                     }else {
                         $message['TITLE'] = word_filter_add_ob_tags(htmlentities_array($message['TITLE']));
                     }
 
                     // Limit displayed post content to 35 characters
 
-                    if (strlen($message['CONTENT']) > 35) {
-                        $message['CONTENT'] = word_filter_add_ob_tags(substr($message['CONTENT'], 0, 35)). "&hellip;";
+                    if (mb_strlen($message['CONTENT']) > 35) {
+                        $message['CONTENT'] = word_filter_add_ob_tags(mb_substr($message['CONTENT'], 0, 35)). "&hellip;";
                     }else {
                         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
                     }
 
-                    if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
+                    if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || mb_strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                         echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";

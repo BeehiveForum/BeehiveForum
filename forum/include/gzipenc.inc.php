@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.59 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.60 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,7 +57,7 @@ function bh_check_gzip()
     if (isset($_SERVER['HTTP_VIA'])) return false;
 
     if (isset($_SERVER['SERVER_PROTOCOL'])) {
-        if (strpos($_SERVER['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+        if (mb_strpos($_SERVER['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
     }
 
     // determine which gzip encoding the client asked for
@@ -65,8 +65,8 @@ function bh_check_gzip()
 
     if (!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) return false;
 
-    if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
-    if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";
+    if (mb_strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
+    if (mb_strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";
 
     // if everything else false prevent
     // compression just to be safe.
@@ -105,19 +105,19 @@ function bh_gzhandler($contents)
 
                 // Generate the error checking bits
 
-                $size  = strlen($contents);
+                $size  = mb_strlen($contents);
                 $crc32 = crc32($contents);
 
                 // Construct the gzip output with header and error checking bits
 
                 $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-                $ret.= substr($gz_contents, 0, strlen($gz_contents) - 4);
+                $ret.= mb_substr($gz_contents, 0, mb_strlen($gz_contents) - 4);
                 $ret.= pack('V', $crc32);
                 $ret.= pack('V', $size);
 
                 // Get the length of the compressed page
 
-                $length = strlen($ret);
+                $length = mb_strlen($ret);
 
                 // Sends the headers to the client while making sure they
                 // are only sent once.
@@ -139,7 +139,7 @@ function bh_gzhandler($contents)
 
     // get the length of the un-compressed page
 
-    $length = strlen($contents);
+    $length = mb_strlen($contents);
 
     // Sends the headers to the client while making sure they
     // are only sent once.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.136 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.137 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -250,7 +250,7 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
@@ -260,16 +260,16 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
         $post->setContent($t_content);
         $t_content = $post->getContent();
 
-        if (strlen($t_content) >= 65535) {
+        if (mb_strlen($t_content) >= 65535) {
 
-            $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
+            $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
             $valid = false;
         }
 
@@ -328,11 +328,11 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 

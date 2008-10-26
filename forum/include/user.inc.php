@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.367 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.368 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -309,7 +309,7 @@ function user_logon($logon, $passhash)
 
     if (!is_md5($passhash)) return false;
 
-    $logon = db_escape_string(strtoupper($logon));
+    $logon = db_escape_string(mb_strtoupper($logon));
     $passhash = db_escape_string($passhash);
 
     if (!$ipaddress = get_ip_address()) return false;
@@ -369,7 +369,7 @@ function user_get($uid)
 
         if (isset($user_get['PEER_NICKNAME'])) {
 
-            if (!is_null($user_get['PEER_NICKNAME']) && strlen($user_get['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_get['PEER_NICKNAME']) && mb_strlen($user_get['PEER_NICKNAME']) > 0) {
 
                 $user_get['NICKNAME'] = $user_get['PEER_NICKNAME'];
             }
@@ -621,7 +621,7 @@ function user_get_prefs($uid)
     }
 
     // Prune empty values from the arrays (to stop them overwriting valid values)
-    // using strlen() as a callback function.
+    // using mb_strlen() as a callback function.
 
     $global_prefs_array = array_filter($global_prefs_array, "strlen");
     $forum_prefs_array = array_filter($forum_prefs_array, "strlen");
@@ -838,7 +838,7 @@ function user_check_pref($name, $value)
 {
     // Checks to ensure that a preference setting contains valid data
 
-    if (strlen(trim($value)) == 0) return true;
+    if (mb_strlen(trim($value)) == 0) return true;
 
     if ($name == "FIRSTNAME" || $name == "LASTNAME") {
         return preg_match("/^[a-z0-9 ]*$/Diu", $value);
@@ -961,7 +961,7 @@ function user_get_forthcoming_birthdays()
         while (($user_birthday_data = db_fetch_array($result))) {
 
             if (isset($user_birthday_data['PEER_NICKNAME'])) {
-                if (!is_null($user_birthday_data['PEER_NICKNAME']) && strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_birthday_data['PEER_NICKNAME']) && mb_strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
                     $user_birthday_data['NICKNAME'] = $user_birthday_data['PEER_NICKNAME'];
                 }
             }
@@ -1028,7 +1028,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
         while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -1070,7 +1070,7 @@ function user_get_ip_addresses($uid)
 
         while (($user_ip_addresses_row = db_fetch_array($result))) {
 
-            if (strlen($user_ip_addresses_row['IPADDRESS']) > 0) {
+            if (mb_strlen($user_ip_addresses_row['IPADDRESS']) > 0) {
 
                 $user_ip_addresses_array[] = $user_ip_addresses_row['IPADDRESS'];
             }
@@ -1112,7 +1112,7 @@ function user_get_friends($uid)
         while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -1166,7 +1166,7 @@ function user_get_relationships($uid, $offset = 0)
         while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -1279,7 +1279,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
         while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }

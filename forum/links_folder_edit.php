@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_folder_edit.php,v 1.13 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: links_folder_edit.php,v 1.14 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -147,11 +147,11 @@ if (isset($_POST['update'])) {
         $fid = 1;
     }
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && mb_strlen(trim(stripslashes_array($_POST['name']))) > 0) {
 
         $name = trim(stripslashes_array($_POST['name']));
 
-        if (strlen($name) > 32) {
+        if (mb_strlen($name) > 32) {
 
             $error_msg_array[] = sprintf($lang['linkfoldernametoolong'], 32);
             $valid = false;

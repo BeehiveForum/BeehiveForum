@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.93 2008-09-17 18:37:17 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.94 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -78,15 +78,15 @@ function get_forum_list($offset)
 
             foreach ($forum_settings as $key => $value) {
 
-                if (!isset($forum_data[strtoupper($key)])) {
+                if (!isset($forum_data[mb_strtoupper($key)])) {
 
-                    $forum_data[strtoupper($key)] = $value;
+                    $forum_data[mb_strtoupper($key)] = $value;
                 }
             }
 
             // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
 
-            if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
+            if (!isset($forum_data['FORUM_NAME']) || mb_strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                 $forum_data['FORUM_NAME'] = "A Beehive Forum";
             }
 
@@ -196,13 +196,13 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
             // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
 
-            if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
+            if (!isset($forum_data['FORUM_NAME']) || mb_strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                 $forum_data['FORUM_NAME'] = "A Beehive Forum";
             }
 
             // Check the forum description variable is set.
 
-            if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
+            if (!isset($forum_data['FORUM_DESC']) || mb_strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                 $forum_data['FORUM_DESC'] = "";
             }
 

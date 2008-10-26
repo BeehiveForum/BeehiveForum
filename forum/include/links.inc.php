@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.90 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.91 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -94,7 +94,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
         while (($links_data = db_fetch_array($result))) {
 
             if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
-                if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($links_data['PEER_NICKNAME']) && mb_strlen($links_data['PEER_NICKNAME']) > 0) {
                     $links_data['NICKNAME'] = $links_data['PEER_NICKNAME'];
                 }
             }
@@ -357,7 +357,7 @@ function links_get_single($lid)
         $link_array = db_fetch_array($result);
 
         if (isset($link_array['LOGON']) && isset($link_array['PEER_NICKNAME'])) {
-            if (!is_null($link_array['PEER_NICKNAME']) && strlen($link_array['PEER_NICKNAME']) > 0) {
+            if (!is_null($link_array['PEER_NICKNAME']) && mb_strlen($link_array['PEER_NICKNAME']) > 0) {
                 $link_array['NICKNAME'] = $link_array['PEER_NICKNAME'];
             }
         }
@@ -424,7 +424,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
         while (($links_data = db_fetch_array($result))) {
 
             if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
-                if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($links_data['PEER_NICKNAME']) && mb_strlen($links_data['PEER_NICKNAME']) > 0) {
                     $links_data['NICKNAME'] = $links_data['PEER_NICKNAME'];
                 }
             }
@@ -591,7 +591,7 @@ function links_get_comments($lid)
         while (($link_comment_data = db_fetch_array($result))) {
 
             if (isset($link_comment_data['LOGON']) && isset($link_comment_data['PEER_NICKNAME'])) {
-                if (!is_null($link_comment_data['PEER_NICKNAME']) && strlen($link_comment_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($link_comment_data['PEER_NICKNAME']) && mb_strlen($link_comment_data['PEER_NICKNAME']) > 0) {
                     $link_comment_data['NICKNAME'] = $link_comment_data['PEER_NICKNAME'];
                 }
             }

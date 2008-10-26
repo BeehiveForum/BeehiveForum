@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.76 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.77 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -102,7 +102,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['pw']) && strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
+    if (isset($_POST['pw']) && mb_strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
 
         $pw = $_POST['pw'];
 
@@ -112,7 +112,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && mb_strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
 
         $cpw = $_POST['cpw'];
 
@@ -130,13 +130,7 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (!preg_match("/^[a-z0-9_-]+$/Diu", trim(stripslashes_array($_POST['pw'])))) {
-
-            $error_msg_array[] = $lang['passwordinvalidchars'];
-            $valid = false;
-        }
-
-        if (strlen(trim(stripslashes_array($_POST['pw']))) < 6) {
+        if (mb_strlen(trim(stripslashes_array($_POST['pw']))) < 6) {
 
             $error_msg_array[] = $lang['passwdtooshort'];
             $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.173 2008-10-26 16:56:12 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.174 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,20 +57,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function format_user_name($logon, $nickname)
 {
-    if (strlen(trim($nickname)) > 0) {
+    if (mb_strlen(trim($nickname)) > 0) {
 
-        if (strtoupper(strip_tags($logon)) == strtoupper(strip_tags($nickname))) {
+        if (mb_strtoupper(strip_tags($logon)) == mb_strtoupper(strip_tags($nickname))) {
 
             return strip_tags($nickname);
 
         }else {
 
-            return sprintf("%s (%s)", strip_tags($nickname), strtoupper(strip_tags($logon)));
+            return sprintf("%s (%s)", strip_tags($nickname), mb_strtoupper(strip_tags($logon)));
         }
 
     }
 
-    return strtoupper(strip_tags($logon));
+    return mb_strtoupper(strip_tags($logon));
 }
 
 /**
@@ -742,7 +742,7 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 
         if (is_array($value)) {
 
-            if (strlen($key_str) > 0) {
+            if (mb_strlen($key_str) > 0) {
 
                 flatten_array($value, $result_keys, $result_values, "{$key_str}[{$key}]");
 
@@ -753,7 +753,7 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 
         }else {
 
-            if (strlen($key_str) > 0) {
+            if (mb_strlen($key_str) > 0) {
 
                 $result_keys[] = "{$key_str}[{$key}]";
                 $result_values[] = $value;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.98 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: email.php,v 1.99 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -160,7 +160,7 @@ if (isset($_POST['send'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $subject = trim(stripslashes_array($_POST['t_subject']));
 
@@ -170,7 +170,7 @@ if (isset($_POST['send'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_message']) && strlen(trim(stripslashes_array($_POST['t_message']))) > 0) {
+    if (isset($_POST['t_message']) && mb_strlen(trim(stripslashes_array($_POST['t_message']))) > 0) {
 
         $message = trim(stripslashes_array($_POST['t_message']));
 

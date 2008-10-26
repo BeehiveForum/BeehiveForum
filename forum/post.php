@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.371 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: post.php,v 1.372 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,7 +173,7 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
 
     $new_thread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
     }else{
         $error_msg_array[] = $lang['mustenterthreadtitle'];
@@ -366,7 +366,7 @@ if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['post']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
@@ -396,7 +396,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
 if (isset($_POST['more'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
         $t_content = trim(stripslashes_array($_POST['t_content']));
     }
 }
@@ -405,7 +405,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['t_newthread'])) {
 
-        if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+        if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
             $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
         }
@@ -424,7 +424,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
         }
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
     }
@@ -462,15 +462,15 @@ $sig = new MessageText($sig_html, $t_sig, true, false);
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();
 
-if (strlen($t_content) >= 65535) {
+if (mb_strlen($t_content) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
+    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
     $valid = false;
 }
 
-if (strlen($t_sig) >= 65535) {
+if (mb_strlen($t_sig) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
+    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(mb_strlen($t_sig)));
     $valid = false;
 }
 
@@ -500,7 +500,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (isset($_GET['quote_list']) && strlen(trim($_GET['quote_list'])) > 0) {
+    if (isset($_GET['quote_list']) && mb_strlen(trim($_GET['quote_list'])) > 0) {
 
         $quote_list = preg_grep('/[0-9]+/u', explode(',', $_GET['quote_list']));
 
@@ -615,7 +615,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
-if (isset($_POST['to_radio']) && strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
+if (isset($_POST['to_radio']) && mb_strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
     $to_radio = trim(stripslashes_array($_POST['to_radio']));
 }else {
     $to_radio = '';
@@ -633,7 +633,7 @@ if (isset($_POST['t_to_uid_recent']) && is_numeric($_POST['t_to_uid_recent'])) {
     $t_to_uid_recent = '';
 }
 
-if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
+if (isset($_POST['t_to_uid_others']) && mb_strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
     $t_to_uid_others = trim(stripslashes_array($_POST['t_to_uid_others']));
 }else {
     $t_to_uid_others = '';
@@ -774,7 +774,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_tid > 0) {
 
-                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+                if ($allow_sig == true && mb_strlen(trim($t_sig)) > 0) {
                     $t_content.= "<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -914,7 +914,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $post->getContent();
 
-    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+    if ($allow_sig == true && mb_strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 

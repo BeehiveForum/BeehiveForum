@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.84 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.85 2008-10-26 16:46:27 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -231,7 +231,7 @@ function emoticons_apply($content)
 
     foreach ($emoticons_array as $key => $emoticon) {
 
-        $key_encoded = _htmlentities($key);
+        $key_encoded = htmlentities_array($key);
 
         if ($key != $key_encoded) {
 
@@ -300,11 +300,11 @@ function emoticons_get_available($include_text_none = true)
                          if (@file_exists("emoticons/$file/desc.txt")) {
 
                              $pack_name = implode("", file("emoticons/$file/desc.txt"));
-                             $emoticon_sets_txtnon[$file] = _htmlentities($pack_name);
+                             $emoticon_sets_txtnon[$file] = htmlentities_array($pack_name);
 
                          }else {
 
-                             $emoticon_sets_txtnon[$file] = _htmlentities($file);
+                             $emoticon_sets_txtnon[$file] = htmlentities_array($file);
                          }
                      }
 
@@ -313,11 +313,11 @@ function emoticons_get_available($include_text_none = true)
                      if (@file_exists("emoticons/$file/desc.txt")) {
 
                          $pack_name = implode("", file("emoticons/$file/desc.txt"));
-                         $emoticon_sets_normal[$file] = _htmlentities($pack_name);
+                         $emoticon_sets_normal[$file] = htmlentities_array($pack_name);
 
                      }else {
 
-                         $emoticon_sets_normal[$file] = _htmlentities($file);
+                         $emoticon_sets_normal[$file] = htmlentities_array($file);
                      }
                  }
              }
@@ -458,7 +458,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
                 $emot_tooltip_matches = array();
 
                 foreach ($emoticons_array[$i]['matches'] as $emot_match) {
-                    $emot_tooltip_matches[] = _htmlentities($emot_match);
+                    $emot_tooltip_matches[] = htmlentities_array($emot_match);
                 }
 
                 $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));

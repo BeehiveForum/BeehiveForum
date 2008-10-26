@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.120 2008-09-13 14:10:32 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.121 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -36,6 +36,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -134,10 +137,10 @@ if (user_is_guest()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
+}elseif (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+    $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "edit_relations.php?webtag=$webtag";
 }
@@ -222,9 +225,9 @@ if (isset($_POST['save'])) {
 
     $peer_relationship = (double) $peer_user_status | $peer_sig_display | $peer_block_pm;
 
-    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
+    if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
 
-        $peer_nickname = strip_tags(trim(_stripslashes($_POST['nickname'])));
+        $peer_nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 
     }else {
 
@@ -260,7 +263,7 @@ html_draw_top("openprofile.js");
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']))), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']))), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -343,9 +346,9 @@ if (isset($_POST['preview_signature'])) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("uid", _htmlentities($peer_uid)), "\n";
-echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("uid", htmlentities_array($peer_uid)), "\n";
+echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -361,7 +364,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" valign=\"top\">{$lang['nickname']}</td>\n";
-echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", _htmlentities($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

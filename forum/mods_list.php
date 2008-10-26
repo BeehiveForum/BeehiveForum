@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.38 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.39 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -33,6 +33,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -167,7 +170,7 @@ if (($forum_mods_array = mods_list_get_mods(0))) {
     foreach ($forum_mods_array as $forum_mod) {
 
         echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$forum_mod['UID']}\" target=\"_blank\" onclick=\"return openProfile({$forum_mod['UID']}, '$webtag')\">";
-        echo word_filter_add_ob_tags(_htmlentities(format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME']))), "</a></li>\n";
+        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME']))), "</a></li>\n";
     }
 
 }else {
@@ -184,7 +187,7 @@ if (($folder_mods_array = mods_list_get_mods($fid))) {
     foreach ($folder_mods_array as $folder_mod) {
 
         echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$folder_mod['UID']}\" target=\"_blank\" onclick=\"return openProfile({$folder_mod['UID']}, '$webtag')\">";
-        echo word_filter_add_ob_tags(_htmlentities(format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME']))), "</a></li>\n";
+        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME']))), "</a></li>\n";
     }
 
 }else {
@@ -210,8 +213,8 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"mods_list.php\" target=\"_self\">\n";
-echo "    ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "    ", form_input_hidden('fid', _htmlentities($fid)), "\n";
+echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "    ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
 echo "    ". form_submit('close', $lang['close']). "\n";
 echo "  </form>\n";
 echo "</div>\n";

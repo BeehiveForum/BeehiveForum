@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.107 2008-09-22 17:22:09 decoyduck Exp $ */
+/* $Id: display.php,v 1.108 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -162,9 +165,9 @@ if (!$message = messages_get($tid, $pid, 1)) {
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
 
-$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "folder_options.js", "basetarget=_blank");
 
@@ -241,8 +244,8 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <form accept-charset=\"utf-8\" name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
-echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "        ", form_input_hidden("msg", _htmlentities("$tid.$pid")), "\n";
+echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "        ", form_input_hidden("msg", htmlentities_array("$tid.$pid")), "\n";
 
 if (isset($_GET['print_msg']) && is_numeric($_GET['print_msg'])) {
     echo "        ", form_submit("back", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"self.print()\""), "\n";

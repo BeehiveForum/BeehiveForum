@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.320 2008-10-18 20:30:22 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.321 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -119,7 +119,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
         if (is_array($var_array)) {
 
@@ -167,7 +167,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
             foreach ($button_array as $button_name => $button_label) {
-                $button_html_array[] = form_submit(_htmlentities($button_name), _htmlentities($button_label));
+                $button_html_array[] = form_submit(htmlentities_array($button_name), htmlentities_array($button_label));
             }
         }
 

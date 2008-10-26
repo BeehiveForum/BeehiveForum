@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.155 2008-09-14 11:45:16 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.156 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -65,14 +65,14 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
-                    $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
+                    $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
 
             }else {
 
                 if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
 
-                    $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
+                    $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
             }
         }
@@ -103,7 +103,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
         while (($folder_data = db_fetch_array($result))) {
 
-            $available_folders[$folder_data['FID']] = _htmlentities($folder_data['TITLE']);
+            $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
         }
 
         if (sizeof($available_folders) > 0) {

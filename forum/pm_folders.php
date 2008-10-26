@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.29 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.30 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -192,9 +195,9 @@ if (isset($_GET['manage_folder'])) {
 
 if (isset($_POST['save'])) {
 
-    if (isset($_POST['folder_name']) && strlen(trim(_stripslashes($_POST['folder_name']))) > 0) {
+    if (isset($_POST['folder_name']) && strlen(trim(stripslashes_array($_POST['folder_name']))) > 0) {
 
-        $folder_name = trim(_stripslashes($_POST['folder_name']));
+        $folder_name = trim(stripslashes_array($_POST['folder_name']));
 
         if (pm_update_folder_name($manage_folder, $folder_name)) {
 
@@ -260,8 +263,8 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"pm_folder_options\" action=\"pm_folders.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("manage_folder", _htmlentities($manage_folder)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden("manage_folder", htmlentities_array($manage_folder)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -277,7 +280,7 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['foldername']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("folder_name", _htmlentities($pm_folder_names_array[$manage_folder]), 40, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("folder_name", htmlentities_array($pm_folder_names_array[$manage_folder]), 40, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -309,7 +312,7 @@ echo "<h1>{$lang['privatemessages']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"", html_get_frame_name('pm_messages'), "\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', PM_SEARCH_RESULTS), "\n";
 
 $pm_message_count_array = pm_get_folder_message_counts();

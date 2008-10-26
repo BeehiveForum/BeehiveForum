@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.241 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.242 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -35,6 +35,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -276,8 +279,8 @@ if (isset($_POST['t_sig_html'])) {
 
     $fetched_sig = false;
 
-    if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
+    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+        $t_sig = trim(stripslashes_array($_POST['t_sig']));
     }else {
         $t_sig = "";
     }
@@ -333,9 +336,9 @@ if (isset($_POST['cancel'])) {
         $t_post_html = 'N';
     }
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
-        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+        $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
 
     }else {
 
@@ -343,8 +346,8 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_question']) && strlen(trim(_stripslashes($_POST['t_question']))) > 0) {
-        $t_question = trim(_stripslashes($_POST['t_question']));
+    if (isset($_POST['t_question']) && strlen(trim(stripslashes_array($_POST['t_question']))) > 0) {
+        $t_question = trim(stripslashes_array($_POST['t_question']));
     }else {
         $t_question = '';
     }
@@ -379,7 +382,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
 
-        $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
+        $t_answers_array = array_filter(stripslashes_array($_POST['answers']), "strlen");
 
         if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
 
@@ -397,13 +400,13 @@ if (isset($_POST['cancel'])) {
             }
         }
 
-        if (!isset($t_answers_array[0]) || strlen(trim(_stripslashes($t_answers_array[0]))) == 0) {
+        if (!isset($t_answers_array[0]) || strlen(trim(stripslashes_array($t_answers_array[0]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
-        if (!isset($t_answers_array[1]) || strlen(trim(_stripslashes($t_answers_array[1]))) == 0) {
+        if (!isset($t_answers_array[1]) || strlen(trim(stripslashes_array($t_answers_array[1]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
@@ -503,9 +506,9 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_message_text']) && strlen(trim(_stripslashes($_POST['t_message_text']))) > 0) {
+    if (isset($_POST['t_message_text']) && strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
 
-        $t_message_text = trim(_stripslashes($_POST['t_message_text']));
+        $t_message_text = trim(stripslashes_array($_POST['t_message_text']));
 
         if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
 
@@ -531,12 +534,12 @@ if (isset($_POST['cancel'])) {
 
 }elseif (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
-    if (isset($_POST['t_message_text']) && strlen(trim(_stripslashes($_POST['t_message_text']))) > 0) {
-        $t_message_text = trim(_stripslashes($_POST['t_message_text']));
+    if (isset($_POST['t_message_text']) && strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
+        $t_message_text = trim(stripslashes_array($_POST['t_message_text']));
     }
 
     if (isset($_POST['t_sig'])) {
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
+        $t_sig = trim(stripslashes_array($_POST['t_sig']));
     }
 
     if (isset($_POST['emots_toggle_x'])) {
@@ -565,14 +568,14 @@ if (isset($_POST['cancel'])) {
         $t_post_html = 'N';
     }
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
-        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+        $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
     }else {
         $t_threadtitle = '';
     }
 
-    if (isset($_POST['t_question']) && strlen(trim(_stripslashes($_POST['t_question']))) > 0) {
-        $t_question = trim(_stripslashes($_POST['t_question']));
+    if (isset($_POST['t_question']) && strlen(trim(stripslashes_array($_POST['t_question']))) > 0) {
+        $t_question = trim(stripslashes_array($_POST['t_question']));
     }else {
         $t_question = '';
     }
@@ -587,9 +590,9 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answers'] as $t_answer) {
 
-            if (strlen(trim(_stripslashes($t_answer))) > 0) {
+            if (strlen(trim(stripslashes_array($t_answer))) > 0) {
 
-                $t_answers_array[] = trim(_stripslashes($t_answer));
+                $t_answers_array[] = trim(stripslashes_array($t_answer));
             }
         }
     }
@@ -711,7 +714,7 @@ if ($valid && isset($_POST['post'])) {
             }
 
             if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
-                $t_answers_array = _htmlentities($t_answers_array);
+                $t_answers_array = htmlentities_array($t_answers_array);
             }
 
             // Create the poll thread with the poll_flag set to Y and sticky flag set to N
@@ -779,8 +782,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('t_dedupe', _htmlentities($t_dedupe)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('t_dedupe', htmlentities_array($t_dedupe)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -811,7 +814,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". _htmlentities($t_question). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". htmlentities_array($t_question). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
@@ -823,10 +826,10 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $optioncount = 0;
 
     // Poll answers and groups. If HTML is disabled we need to pass
-    // the answers through _htmlentities.
+    // the answers through htmlentities_array.
 
     if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
-        $poll_preview_answers_array = _htmlentities($t_answers_array);
+        $poll_preview_answers_array = htmlentities_array($t_answers_array);
     }else {
         $poll_preview_answers_array = $t_answers_array;
     }
@@ -944,13 +947,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\">", form_input_text("t_threadtitle", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 30, 64, false, "thread_title"), "</td>\n";
+echo "            <td align=\"left\">", form_input_text("t_threadtitle", isset($t_threadtitle) ? htmlentities_array($t_threadtitle) : '', 30, 64, false, "thread_title"), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\"><h2>{$lang['pollquestion']}</h2></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\">", form_input_text("t_question", isset($t_question) ? _htmlentities($t_question) : '', 30, 64, false, "thread_title"), "</td>\n";
+echo "            <td align=\"left\">", form_input_text("t_question", isset($t_question) ? htmlentities_array($t_question) : '', 30, 64, false, "thread_title"), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
@@ -1070,7 +1073,7 @@ for ($i = 0; $i < $answer_count; $i++) {
 
     echo "            <tr>\n";
     echo "              <td align=\"left\">", $i + 1, ". </td>\n";
-    echo "              <td align=\"left\">", form_input_text("answers[]", isset($t_answers_array[$i]) ? _htmlentities($t_answers_array[$i]) : '', 40, 255), "</td>\n";
+    echo "              <td align=\"left\">", form_input_text("answers[]", isset($t_answers_array[$i]) ? htmlentities_array($t_answers_array[$i]) : '', 40, 255), "</td>\n";
     echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 0), "</td>\n";
     echo "              <td align=\"left\">&nbsp;</td>\n";
     echo "            </tr>\n";
@@ -1339,7 +1342,7 @@ echo form_submit("post", $lang['post'], "onclick=\"return autoCheckSpell('$webta
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", _htmlentities($aid));
+    echo form_input_hidden("aid", htmlentities_array($aid));
 }
 
 

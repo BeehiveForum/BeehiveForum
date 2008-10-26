@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.89 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.90 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -256,9 +256,9 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     $link_base = $link_base ? $link_base : "links.php?webtag=$webtag";
 
     if (strstr($link_base, "?")) {
-        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME']));
+        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
     }else {
-        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME']));
+        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
     }
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
@@ -266,9 +266,9 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
         while (($val = array_pop($tree_array))) {
 
             if (($val != $fid && $links) || $link_last_too) {
-                $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME'])). "</a>";
+                $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
             } else {
-                $html.= "&nbsp;&raquo;&nbsp;". word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME']));
+                $html.= "&nbsp;&raquo;&nbsp;". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
             }
         }
     }

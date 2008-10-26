@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: compat.inc.php,v 1.2 2008-02-16 14:16:33 decoyduck Exp $ */
+/* $Id: compat.inc.php,v 1.3 2008-10-26 16:46:27 decoyduck Exp $ */
 
 /**
 * compat.inc.php - Compatibility functions
@@ -38,26 +38,167 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
-if (!function_exists('file_put_contents')) {
+/**
+* Wrapper function for mb_strlen.
+*
+* Gets the length of a string.
+*
+* @return integer - Number of characters in a string.
+* @param string $str - The string being checked for length
+*/
 
-    if (!defined('FILE_APPEND')) define('FILE_APPEND', 1);
+if (!function_exists('mb_strlen')) {
 
-    function file_put_contents($file, $content, $flag = false)
+    function mb_strlen($str)
     {
-        $mode = ($flag == FILE_APPEND || strtoupper($flag) == 'FILE_APPEND') ? 'a' : 'w';
+        return strlen($str);
+    }
+}
 
-        if (($fp = @fopen($file, $mode)) !== false) {
+/**
+* Wrapper function for mb_strpos.
+*
+* Find position of first occurrence of string in a string.
+*
+* @return integer - the numeric position of the first occurrence of needle in haystack or FALSE if not found.
+* @param string $haystack - The string being checked.
+* @param string $needle - The string to find in haystack.
+* @param integer $offset = The search offset. If it is not specified, 0 is used.
+*/
 
-            if (is_array($content)) $content = implode('', $content);
+if (!function_exists('mb_strpos')) {
 
-            $bytes = fwrite($fp, $content);
+    function mb_strpos($haystack, $needle, $offset = 0)
+    {
+        return strpos($haystack, $needle, $offset);
+    }
+}
 
-            fclose($fp);
+/**
+* Wrapper function for mb_strrpos.
+*
+* Find position of last occurrence of string in a string.
+*
+* @return integer - the numeric position of the last occurrence of needle in haystack or FALSE if not found.
+* @param string $haystack - The string being checked.
+* @param string $needle - The string to find in haystack.
+* @param integer $offset = The search offset. If it is not specified, 0 is used.
+*/
 
-            return $bytes;
-        }
+if (!function_exists('mb_strrpos')) {
 
-        return false;
+    function mb_strrpos($haystack, $needle, $offset = 0)
+    {
+        return strrpos($haystack, $needle, $offset);
+    }
+}
+
+/**
+* Wrapper function for mb_stripos.
+*
+* Find position of first occurrence of string in a string, case insensitive.
+*
+* @return integer - the numeric position of the first occurrence of needle in haystack or FALSE if not found.
+* @param string $haystack - The string being checked.
+* @param string $needle - The string to find in haystack.
+* @param integer $offset = The search offset. If it is not specified, 0 is used.
+*/
+
+if (!function_exists('mb_stripos')) {
+
+    function mb_stripos($haystack, $needle, $offset = 0)
+    {
+        return stripos($haystack, $needle, $offset);
+    }
+}
+
+/**
+* Wrapper function for mb_substr.
+*
+* Get part of string
+*
+* @return string - the portion of str specified by the start and length parameters.
+* @param string $str - The string being checked.
+* @param string $start - The first position used in str.
+* @param integer $length = The maximum length of the returned string.
+*/
+
+if (!function_exists('mb_substr')) {
+
+    function mb_substr($str, $start, $length = null)
+    {
+        return is_null($length) ? substr($str, $start) : substr($str, $start, $length);
+    }
+}
+
+/**
+* Wrapper function for mb_strtolower.
+*
+* Make a string lowercase
+*
+* @return string - $str with all alphabetic characters converted to lowercase
+* @param string $str - The string being lowercased.
+*/
+
+if (!function_exists('mb_strtolower')) {
+
+    function mb_strtolower($str)
+    {
+        return strtolower($str);
+    }
+}
+
+/**
+* Wrapper function for mb_strtoupper.
+*
+* Make a string lowercase
+*
+* @return string - $str with all alphabetic characters converted to uppercase
+* @param string $str - The string being uppercased.
+*/
+
+if (!function_exists('mb_strtoupper')) {
+
+    function mb_strtoupper($str)
+    {
+        return strtoupper($str);
+    }
+}
+
+/**
+* Wrapper function for mb_substr_count.
+*
+* Count the number of substring occurrences
+*
+* @return integer - number of times $needle occurs in $haystack
+* @param string $haystack - The string being checked.
+* @param string $needle - The string to find in haystack.
+*/
+
+if (!function_exists('mb_substr_count')) {
+
+    function mb_substr_count($haystack, $needle)
+    {
+        return substr_count($haystack, $needle);
+    }
+}
+
+/**
+* Wrapper function for mb_split.
+*
+* Split string using regular expression
+*
+* @return array
+* @param string $pattern - Case sensitive regular expression.
+* @param string $str - The input string
+* @param integer $needle - If limit is set, the returned array will contain this maximum elements.
+*/
+
+if (!function_exists('mb_split')) {
+
+    function mb_split($pattern, $str, $limit = null)
+    {
+        return is_null($limit) ? split($pattern, $str) : split($pattern, $str, $limit);
     }
 }
 

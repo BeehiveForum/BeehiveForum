@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.107 2008-09-13 23:41:32 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.108 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -210,9 +213,9 @@ if (isset($_POST['save'])) {
 
         if (forum_get_setting('allow_username_changes', 'Y')) {
 
-            if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
+            if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
 
-                $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
+                $user_info_new['LOGON'] = trim(stripslashes_array($_POST['logon']));
 
                 if (!preg_match("/^[a-z0-9_-]+$/Diu", $user_info_new['LOGON'])) {
 
@@ -252,9 +255,9 @@ if (isset($_POST['save'])) {
             }
         }
 
-        if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
+        if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
 
-            $user_info_new['NICKNAME'] = strip_tags(trim(_stripslashes($_POST['nickname'])));
+            $user_info_new['NICKNAME'] = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 
             if (nickname_is_banned($user_info_new['NICKNAME'])) {
 
@@ -268,9 +271,9 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
+        if (isset($_POST['email']) && strlen(trim(stripslashes_array($_POST['email']))) > 0) {
 
-            $user_info_new['EMAIL'] = trim(_stripslashes($_POST['email']));
+            $user_info_new['EMAIL'] = trim(stripslashes_array($_POST['email']));
 
             if (!email_address_valid($user_info_new['EMAIL'])) {
 
@@ -300,9 +303,9 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-            $dob['DAY']   = trim(_stripslashes($_POST['dob_day']));
-            $dob['MONTH'] = trim(_stripslashes($_POST['dob_month']));
-            $dob['YEAR']  = trim(_stripslashes($_POST['dob_year']));
+            $dob['DAY']   = trim(stripslashes_array($_POST['dob_day']));
+            $dob['MONTH'] = trim(stripslashes_array($_POST['dob_month']));
+            $dob['YEAR']  = trim(stripslashes_array($_POST['dob_year']));
 
             $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
 
@@ -316,7 +319,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['firstname'])) {
 
-            $user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
+            $user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
 
             if (!user_check_pref('FIRSTNAME', $user_prefs['FIRSTNAME'])) {
 
@@ -327,7 +330,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['lastname'])) {
 
-            $user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
+            $user_prefs['LASTNAME'] = trim(stripslashes_array($_POST['lastname']));
 
             if (!user_check_pref('LASTNAME', $user_prefs['LASTNAME'])) {
 
@@ -339,7 +342,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['homepage_url'])) {
 
-        $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
+        $user_prefs['HOMEPAGE_URL'] = trim(stripslashes_array($_POST['homepage_url']));
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
 
         if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
@@ -359,7 +362,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['pic_url'])) {
 
-        $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
+        $user_prefs['PIC_URL'] = trim(stripslashes_array($_POST['pic_url']));
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
         if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
@@ -438,7 +441,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['avatar_url'])) {
 
-        $user_prefs['AVATAR_URL'] = trim(_stripslashes($_POST['avatar_url']));
+        $user_prefs['AVATAR_URL'] = trim(stripslashes_array($_POST['avatar_url']));
         $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
         if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
@@ -645,7 +648,7 @@ html_draw_top('attachments.js');
 if ($admin_edit === true) {
 
     $user = user_get($uid);
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
@@ -665,10 +668,10 @@ if ($admin_edit === true) echo "<div align=\"center\">\n";
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_prefs.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('aid', _htmlentities($aid)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('aid', htmlentities_array($aid)), "\n";
 
-if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', _htmlentities($uid)), "\n";
+if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', htmlentities_array($uid)), "\n";
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -706,35 +709,35 @@ if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($ui
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
-        echo "                  <td align=\"left\">", form_input_text("logon", (isset($user_info['LOGON']) ? _htmlentities($user_info['LOGON']) : ""), 45, 15, "", "user_pref_field"), "</td>\n";
+        echo "                  <td align=\"left\">", form_input_text("logon", (isset($user_info['LOGON']) ? htmlentities_array($user_info['LOGON']) : ""), 45, 15, "", "user_pref_field"), "</td>\n";
         echo "                </tr>\n";
 
     }else {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
-        echo "                  <td align=\"left\">", _htmlentities($user_info['LOGON']), "&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", htmlentities_array($user_info['LOGON']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("nickname", (isset($user_info['NICKNAME']) ? _htmlentities($user_info['NICKNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("nickname", (isset($user_info['NICKNAME']) ? htmlentities_array($user_info['NICKNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['emailaddress']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("email", (isset($user_info['EMAIL']) ? _htmlentities($user_info['EMAIL']) : ""), 45, 80, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("email", (isset($user_info['EMAIL']) ? htmlentities_array($user_info['EMAIL']) : ""), 45, 80, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['firstname']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("firstname", (isset($user_prefs['FIRSTNAME']) ? _htmlentities($user_prefs['FIRSTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("firstname", (isset($user_prefs['FIRSTNAME']) ? htmlentities_array($user_prefs['FIRSTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['lastname']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("lastname", (isset($user_prefs['LASTNAME']) ? _htmlentities($user_prefs['LASTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("lastname", (isset($user_prefs['LASTNAME']) ? htmlentities_array($user_prefs['LASTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['dateofbirth']}:&nbsp;</td>\n";
@@ -748,13 +751,13 @@ if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($ui
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", _htmlentities($user_info['LOGON']), "&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", htmlentities_array($user_info['LOGON']), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['homepageURL']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? _htmlentities($user_prefs['HOMEPAGE_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? htmlentities_array($user_prefs['HOMEPAGE_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", '', (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("homepage_url_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
@@ -792,12 +795,12 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['pictureURL']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? _htmlentities($user_prefs['PIC_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['selectattachment']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("pic_aid", $image_attachments_array, (isset($user_prefs['PIC_AID']) ? _htmlentities($user_prefs['PIC_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("pic_aid", $image_attachments_array, (isset($user_prefs['PIC_AID']) ? htmlentities_array($user_prefs['PIC_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -831,24 +834,24 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['avatarURL']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? _htmlentities($user_prefs['AVATAR_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['selectattachment']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("avatar_aid", $image_attachments_array, (isset($user_prefs['AVATAR_AID']) ? _htmlentities($user_prefs['AVATAR_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("avatar_aid", $image_attachments_array, (isset($user_prefs['AVATAR_AID']) ? htmlentities_array($user_prefs['AVATAR_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
     echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['pictureURL']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? _htmlentities($user_prefs['PIC_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['avatarURL']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? _htmlentities($user_prefs['AVATAR_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }

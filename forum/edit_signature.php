@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.121 2008-09-13 23:41:32 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.122 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -183,8 +186,8 @@ $error_msg_array = array();
 
 if (isset($_POST['save']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['sig_content']) && strlen(trim(_stripslashes($_POST['sig_content']))) > 0) {
-        $t_sig_content = trim(_stripslashes($_POST['sig_content']));
+    if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
+        $t_sig_content = trim(stripslashes_array($_POST['sig_content']));
     }else {
         $t_sig_content = "";
     }
@@ -262,7 +265,7 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
@@ -292,7 +295,7 @@ if (isset($t_sig_content)) {
 
     if ($sig_html == "Y") {
 
-        $sig_code = _htmlentities(tidy_html($t_sig_content, false, false));
+        $sig_code = htmlentities_array(tidy_html($t_sig_content, false, false));
 
     }else {
 
@@ -303,7 +306,7 @@ if (isset($t_sig_content)) {
 
     if ($sig_html == "Y") {
 
-        $sig_code = _htmlentities(tidy_html($user_sig['SIG_CONTENT'], false, false));
+        $sig_code = htmlentities_array(tidy_html($user_sig['SIG_CONTENT'], false, false));
 
     }else {
 
@@ -327,10 +330,10 @@ if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($ui
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
 if ($admin_edit === true) {
-    echo "  ", form_input_hidden('siguid', _htmlentities($uid)), "\n";
+    echo "  ", form_input_hidden('siguid', htmlentities_array($uid)), "\n";
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

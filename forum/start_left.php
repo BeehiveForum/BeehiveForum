@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.166 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.167 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -209,8 +212,8 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
             $thread_time = format_time($thread['MODIFIED']);
 
             echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$latest_post\" target=\"", html_get_frame_name('main'), "\" ";
-            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(_htmlentities(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-            echo word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
+            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+            echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
@@ -326,7 +329,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
         if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
         }elseif (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
@@ -334,7 +337,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
             if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
 
-                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
             }else {
 
@@ -348,15 +351,15 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
         if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID'])) {
 
-            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($recent_visitor['NAME'])), "</a></td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($recent_visitor['NAME'])), "</a></td>\n";
 
         }elseif ($recent_visitor['UID'] > 0) {
 
-            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
         }
 
         if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
@@ -428,7 +431,7 @@ if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
 
         echo "                            <tr>\n";
         echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_birthday['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_birthday['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_birthday['LOGON'], $user_birthday['NICKNAME']))), "</a></td>\n";
+        echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_birthday['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_birthday['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_birthday['LOGON'], $user_birthday['NICKNAME']))), "</a></td>\n";
         echo "                              <td align=\"right\" nowrap=\"nowrap\" valign=\"top\">", format_birthday($user_birthday['DOB']), "&nbsp;</td>\n";
         echo "                            </tr>\n";
     }
@@ -481,7 +484,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\">\n";
     echo "                                <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"", html_get_frame_name('main'), "\">\n";
-    echo "                                  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "                                  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "                                  ", form_input_text('msg', '1.1', 10), "\n";
     echo "                                  ", form_submit("go",$lang['goexcmark']), "\n";
     echo "                                </form>\n";

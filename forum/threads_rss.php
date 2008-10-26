@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.70 2008-09-17 19:23:30 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.71 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -276,7 +279,7 @@ if (($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort
 
         if (isset($t_user_array['LOGON'])) {
 
-            $t_user = _htmlentities(format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']));
+            $t_user = htmlentities_array(format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']));
             echo "  <dc:creator>{$t_user}</dc:creator>\n";
         }
 

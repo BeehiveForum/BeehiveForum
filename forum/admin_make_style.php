@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.129 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.130 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -112,9 +115,9 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['stylename']) && strlen(trim(_stripslashes($_POST['stylename']))) > 0) {
+    if (isset($_POST['stylename']) && strlen(trim(stripslashes_array($_POST['stylename']))) > 0) {
 
-        $stylename = trim(_stripslashes($_POST['stylename']));
+        $stylename = trim(stripslashes_array($_POST['stylename']));
 
         if (preg_match("/^[a-z0-9_]+$/Du", $stylename) < 1) {
 
@@ -128,9 +131,9 @@ if (isset($_POST['save'])) {
         $error_msg_array[] = $lang['stylenofilename'];
     }
 
-    if (isset($_POST['styledesc']) && strlen(trim(_stripslashes($_POST['styledesc']))) > 0) {
+    if (isset($_POST['styledesc']) && strlen(trim(stripslashes_array($_POST['styledesc']))) > 0) {
 
-        $styledesc = trim(_stripslashes($_POST['styledesc']));
+        $styledesc = trim(stripslashes_array($_POST['styledesc']));
 
     }else if (isset($stylename) && $valid) {
 
@@ -141,9 +144,9 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['stylesheet']) && strlen(trim(_stripslashes($_POST['stylesheet']))) > 0) {
+    if (isset($_POST['stylesheet']) && strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
 
-        $stylesheet = trim(_stripslashes($_POST['stylesheet']));
+        $stylesheet = trim(stripslashes_array($_POST['stylesheet']));
 
     }elseif (isset($_POST['elements']) && is_array($_POST['elements'])) {
 
@@ -191,12 +194,12 @@ if (isset($_POST['save'])) {
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_make_style.php\">\n";
-                echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-                echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
-                echo "  ", form_input_hidden('stylename', _htmlentities($stylename)), "\n";
-                echo "  ", form_input_hidden('styledesc', _htmlentities($styledesc)), "\n";
+                echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+                echo "  ", form_input_hidden('stylesheet', htmlentities_array($stylesheet)), "\n";
+                echo "  ", form_input_hidden('stylename', htmlentities_array($stylename)), "\n";
+                echo "  ", form_input_hidden('styledesc', htmlentities_array($styledesc)), "\n";
                 echo "  ", form_input_hidden('savefailed', "yes"), "\n";
-                echo "  ", form_input_hidden_array(array('elements' => _stripslashes($_POST['elements']))), "\n";
+                echo "  ", form_input_hidden_array(array('elements' => stripslashes_array($_POST['elements']))), "\n";
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
                 echo "    <tr>\n";
                 echo "      <td align=\"left\">\n";
@@ -240,8 +243,8 @@ if (isset($_POST['save'])) {
 
 }elseif (isset($_POST['download'])) {
 
-    if (isset($_POST['stylesheet']) && strlen(trim(_stripslashes($_POST['stylesheet']))) > 0) {
-        $stylesheet = trim(_stripslashes($_POST['stylesheet']));
+    if (isset($_POST['stylesheet']) && strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
+        $stylesheet = trim(stripslashes_array($_POST['stylesheet']));
     }else {
         $stylesheet = "";
     }
@@ -284,9 +287,9 @@ $blue = mt_rand(0, 255);
 
 if (isset($_POST['go'])) {
 
-    if (isset($_POST['seed']) && (preg_match('/[0-9A-F]{3,6}/u', trim(_stripslashes($_POST['seed']))) > 0)) {
+    if (isset($_POST['seed']) && (preg_match('/[0-9A-F]{3,6}/u', trim(stripslashes_array($_POST['seed']))) > 0)) {
 
-        $seed = trim(_stripslashes($_POST['seed']));
+        $seed = trim(stripslashes_array($_POST['seed']));
         list ($red, $green, $blue) = hexToDec($seed);
     }
 }
@@ -319,7 +322,7 @@ $steps = sizeof($elements);
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" action=\"admin_make_style.php\" method=\"post\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table width=\"85%\" class=\"box\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -396,7 +399,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">{$lang['enterhexcolour']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">", form_input_text('seed', _htmlentities(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "</td>\n";
+echo "                  <td class=\"posthead\" align=\"left\">", form_input_text('seed', htmlentities_array(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -438,11 +441,11 @@ echo "                  <td valign=\"top\" class=\"posthead\" align=\"left\">\n"
 echo "                    <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['filename']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("stylename", isset($_POST['stylename']) ? _htmlentities(_stripslashes($_POST['stylename'])) : '', 35, 10), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("stylename", isset($_POST['stylename']) ? htmlentities_array(stripslashes_array($_POST['stylename'])) : '', 35, 10), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? _htmlentities(_stripslashes($_POST['styledesc'])) : '', 35, 20), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? htmlentities_array(stripslashes_array($_POST['styledesc'])) : '', 35, 20), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -502,7 +505,7 @@ echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td colspan=\"2\" align=\"left\">\n";
 echo "                  <form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
-echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "                    ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "                    <select name=\"mode\" class=\"bhselect\">\n";
 echo "                      <option value=\"0\" selected=\"selected\">{$lang['alldiscussions']}</option>\n";
 echo "                      <option value=\"1\">{$lang['unreaddiscussions']}</option>\n";
@@ -571,7 +574,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
 echo "                  <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
-echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "                    ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "                    <select name=\"markread\" class=\"bhselect\">\n";
 echo "                      <option value=\"0\" selected=\"selected\">{$lang['alldiscussions']}</option>\n";
 echo "                      <option value=\"1\">{$lang['next50discussions']}s</option>\n";
@@ -590,7 +593,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
 echo "                  <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
-echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "                    ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['goexcmark']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";
 echo "                </td>\n";
@@ -604,7 +607,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
 echo "                  <form accept-charset=\"utf-8\" name=\"f_search\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
-echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "                    ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "                    <input type=\"text\" name=\"msg\" class=\"bhinputtext\" value=\"\" size=\"20\" />\n";
 echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['find']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";
@@ -681,7 +684,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <p align=\"center\" class=\"smalltext\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['showmessages']}: &nbsp;1 &nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">2</a></p>\n";
 echo "                    <p align=\"center\"></p>\n";
 echo "                    <form accept-charset=\"utf-8\" name=\"rate_interest\" target=\"_self\" action=\"\" method=\"post\">\n";
-echo "                      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "                      ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "                      {$lang['ratemyinterest']}\n";
 echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"-1\" />{$lang['ignore']} </span>\n";
 echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"0\" checked=\"checked\" />{$lang['normal']} </span>\n";

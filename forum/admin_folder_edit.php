@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.74 2008-08-22 19:07:19 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.75 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -146,39 +149,39 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
-        $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
+    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+        $folder_data['TITLE'] = trim(stripslashes_array($_POST['name']));
     }else {
         $error_msg_array[] = $lang['mustenterfoldername'];
         $valid = false;
     }
 
-    if (isset($_POST['old_name']) && strlen(trim(_stripslashes($_POST['old_name']))) > 0) {
-        $folder_data['OLD_TITLE'] = trim(_stripslashes($_POST['old_name']));
+    if (isset($_POST['old_name']) && strlen(trim(stripslashes_array($_POST['old_name']))) > 0) {
+        $folder_data['OLD_TITLE'] = trim(stripslashes_array($_POST['old_name']));
     }else {
         $folder_data['OLD_TITLE'] = "";
     }
 
-    if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
-        $folder_data['DESCRIPTION'] = trim(_stripslashes($_POST['description']));
+    if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
+        $folder_data['DESCRIPTION'] = trim(stripslashes_array($_POST['description']));
     }else {
         $folder_data['DESCRIPTION'] = "";
     }
 
-    if (isset($_POST['old_description']) && strlen(trim(_stripslashes($_POST['old_description']))) > 0) {
-        $folder_data['OLD_DESCRIPTION'] = trim(_stripslashes($_POST['old_description']));
+    if (isset($_POST['old_description']) && strlen(trim(stripslashes_array($_POST['old_description']))) > 0) {
+        $folder_data['OLD_DESCRIPTION'] = trim(stripslashes_array($_POST['old_description']));
     }else {
         $folder_data['OLD_DESCRIPTION'] = "";
     }
 
-    if (isset($_POST['prefix']) && strlen(trim(_stripslashes($_POST['prefix']))) > 0) {
-        $folder_data['PREFIX'] = trim(_stripslashes($_POST['prefix']));
+    if (isset($_POST['prefix']) && strlen(trim(stripslashes_array($_POST['prefix']))) > 0) {
+        $folder_data['PREFIX'] = trim(stripslashes_array($_POST['prefix']));
     }else {
         $folder_data['PREFIX'] = "";
     }
 
-    if (isset($_POST['old_prefix']) && strlen(trim(_stripslashes($_POST['old_prefix']))) > 0) {
-        $folder_data['OLD_PREFIX'] = trim(_stripslashes($_POST['old_prefix']));
+    if (isset($_POST['old_prefix']) && strlen(trim(stripslashes_array($_POST['old_prefix']))) > 0) {
+        $folder_data['OLD_PREFIX'] = trim(stripslashes_array($_POST['old_prefix']));
     }else {
         $folder_data['OLD_PREFIX'] = "";
     }
@@ -302,7 +305,7 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
 
 html_draw_top();
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; ", word_filter_add_ob_tags(_htmlentities($folder_data['TITLE'])), "</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'center');
@@ -311,11 +314,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('fid', _htmlentities($fid)), "\n";
-echo "  ", form_input_hidden('position', _htmlentities($folder_data['POSITION'])), "\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
+echo "  ", form_input_hidden('position', htmlentities_array($folder_data['POSITION'])), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -331,15 +334,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("name", _htmlentities($folder_data['TITLE']), 30, 32), form_input_hidden("old_name", _htmlentities($folder_data['TITLE'])), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("name", htmlentities_array($folder_data['TITLE']), 30, 32), form_input_hidden("old_name", htmlentities_array($folder_data['TITLE'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($folder_data['DESCRIPTION']), 30, 255), form_input_hidden("old_description", _htmlentities($folder_data['DESCRIPTION'])), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("description", htmlentities_array($folder_data['DESCRIPTION']), 30, 255), form_input_hidden("old_description", htmlentities_array($folder_data['DESCRIPTION'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("prefix", _htmlentities($folder_data['PREFIX']), 30, 16), form_input_hidden("old_prefix", _htmlentities($folder_data['PREFIX'])), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("prefix", htmlentities_array($folder_data['PREFIX']), 30, 16), form_input_hidden("old_prefix", htmlentities_array($folder_data['PREFIX'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -386,7 +389,7 @@ if (($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], 'fid_move'
     echo "        <br />\n";
 }
 
-echo "        ", form_input_hidden("old_perms", _htmlentities($folder_data['PERM'])), "\n";
+echo "        ", form_input_hidden("old_perms", htmlentities_array($folder_data['PERM'])), "\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -473,7 +476,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("allowed_types", $allowed_post_types, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? _htmlentities($folder_data['ALLOWED_TYPES']) : 0), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("allowed_types", $allowed_post_types, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? htmlentities_array($folder_data['ALLOWED_TYPES']) : 0), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

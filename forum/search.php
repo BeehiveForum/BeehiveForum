@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.229 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: search.php,v 1.230 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -218,9 +221,9 @@ if (isset($_GET['show_stop_words'])) {
         exit;
     }
 
-    if (isset($_GET['keywords']) && strlen(trim(_stripslashes($_GET['keywords']))) > 0) {
+    if (isset($_GET['keywords']) && strlen(trim(stripslashes_array($_GET['keywords']))) > 0) {
 
-        $highlight_keywords_array = explode(" ", trim(_stripslashes($_GET['keywords'])));
+        $highlight_keywords_array = explode(" ", trim(stripslashes_array($_GET['keywords'])));
         array_walk($highlight_keywords_array, 'mysql_fulltext_callback', '/');
         $highlight_keywords_preg = implode('$|^', $highlight_keywords_array);
     }
@@ -233,7 +236,7 @@ if (isset($_GET['show_stop_words'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("show_stop_words", "yes"), "\n";
     echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"540\">\n";
     echo "    <tr>\n";
@@ -307,23 +310,23 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $search_no_matches = false;
 
-    if (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
-        $search_arguments['search_string'] = trim(_stripslashes($_GET['search_string']));
-    }else if (isset($_POST['search_string']) && strlen(trim(_stripslashes($_POST['search_string']))) > 0) {
-        $search_arguments['search_string'] = trim(_stripslashes($_POST['search_string']));
+    if (isset($_GET['search_string']) && strlen(trim(stripslashes_array($_GET['search_string']))) > 0) {
+        $search_arguments['search_string'] = trim(stripslashes_array($_GET['search_string']));
+    }else if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
+        $search_arguments['search_string'] = trim(stripslashes_array($_POST['search_string']));
     }
 
     if (isset($_POST['method']) && is_numeric($_POST['method'])) {
         $search_arguments['method'] = $_POST['method'];
     }
 
-    if (isset($_POST['username']) && strlen(trim(_stripslashes($_POST['username']))) > 0) {
+    if (isset($_POST['username']) && strlen(trim(stripslashes_array($_POST['username']))) > 0) {
 
-        $search_arguments['username'] = trim(_stripslashes($_POST['username']));
+        $search_arguments['username'] = trim(stripslashes_array($_POST['username']));
 
-    }elseif (isset($_GET['logon']) && strlen(trim(_stripslashes($_GET['logon']))) > 0) {
+    }elseif (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
 
-        $search_arguments['username'] = trim(_stripslashes($_GET['logon']));
+        $search_arguments['username'] = trim(stripslashes_array($_GET['logon']));
         $search_arguments['user_include'] = SEARCH_FILTER_USER_POSTS;
         $search_arguments['date_from'] = 12;
         $search_arguments['date_to'] = 1;
@@ -409,9 +412,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
             case SEARCH_NO_KEYWORDS:
 
-                if (isset($search_arguments['search_string']) && strlen(trim(_stripslashes($search_arguments['search_string']))) > 0) {
+                if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
 
-                    $search_string = trim(_stripslashes($search_arguments['search_string']));
+                    $search_string = trim(stripslashes_array($search_arguments['search_string']));
 
                     $keywords_error_array = search_strip_keywords($search_string, true);
                     $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
@@ -476,9 +479,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     // Limit thread title to 20 characters.
 
                     if (strlen($message['TITLE']) > 20) {
-                        $message['TITLE'] = word_filter_add_ob_tags(substr(_htmlentities($message['TITLE']), 0, 20)). "&hellip;";
+                        $message['TITLE'] = word_filter_add_ob_tags(substr(htmlentities_array($message['TITLE']), 0, 20)). "&hellip;";
                     }else {
-                        $message['TITLE'] = word_filter_add_ob_tags(_htmlentities($message['TITLE']));
+                        $message['TITLE'] = word_filter_add_ob_tags(htmlentities_array($message['TITLE']));
                     }
 
                     // Limit displayed post content to 35 characters
@@ -492,12 +495,12 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
                     }else {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     }
                 }
             }
@@ -510,8 +513,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         }
 
         echo "<form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("offset", isset($offset) ? _htmlentities($offset) : 0), "\n";
+        echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("offset", isset($offset) ? htmlentities_array($offset) : 0), "\n";
         echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['sortresults']}:</td>\n";
@@ -548,7 +551,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
-    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "        ", form_input_text('msg', '1.1', 10). "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
     echo "      </form>\n";
@@ -564,7 +567,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
-    echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "        ", form_input_text("search_string", "", 20). "\n";
     echo "        ", form_submit("search", $lang['find']). "\n";
     echo "      </form>\n";
@@ -644,7 +647,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" id=\"search_form\" method=\"post\" action=\"search.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -660,7 +663,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("search_string", (isset($search_arguments['search_string']) ? _htmlentities($search_arguments['search_string']) : ''), 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("search_string", (isset($search_arguments['search_string']) ? htmlentities_array($search_arguments['search_string']) : ''), 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -695,7 +698,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", (isset($search_arguments['username']) ? _htmlentities($search_arguments['username']) : ''), 28, 0, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" onclick=\"return openLogonSearch('$webtag', 'username');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, 0, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" onclick=\"return openLogonSearch('$webtag', 'username');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

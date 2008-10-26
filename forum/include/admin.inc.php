@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.170 2008-10-18 19:19:50 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.171 2008-10-26 16:46:27 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1766,12 +1766,12 @@ function admin_prepare_affected_sessions($affected_session)
 
         $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
         $affected_session_text.= "target=\"_blank\" onclick=\"return openProfile({$affected_session['UID']}, '$webtag')\">";
-        $affected_session_text.= word_filter_add_ob_tags(_htmlentities(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
+        $affected_session_text.= word_filter_add_ob_tags(htmlentities_array(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
         $affected_session_text.= "</a></li>\n";
 
     }else {
 
-        $affected_session_text = word_filter_add_ob_tags(_htmlentities(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
+        $affected_session_text = word_filter_add_ob_tags(htmlentities_array(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
     }
 
     return $affected_session_text ;

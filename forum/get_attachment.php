@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.40 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.41 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -228,7 +231,7 @@ if (isset($hash) && is_md5($hash)) {
                     $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
 
                     if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-                        $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                        $remote_etag = substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
                     }else {
                         $remote_etag = false;
                     }
@@ -237,7 +240,7 @@ if (isset($hash) && is_md5($hash)) {
                     $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
 
                     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-                        $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+                        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
                     }else {
                         $remote_last_modified = false;
                     }

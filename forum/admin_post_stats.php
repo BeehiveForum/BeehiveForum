@@ -23,13 +23,16 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.48 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.49 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -230,7 +233,7 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']))), "</td>\n";
+        echo "                  <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']))), "</td>\n";
         echo "                  <td align=\"center\">", user_get_post_count($user_stats['UID']), "</td>\n";
         echo "                  <td align=\"center\">{$user_stats['POST_COUNT']}</td>\n";
         echo "                  <td align=\"center\">", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
@@ -261,7 +264,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

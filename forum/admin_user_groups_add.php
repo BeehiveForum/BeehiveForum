@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.62 2008-09-14 11:45:16 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.63 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -129,9 +132,9 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
+    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
 
-        $t_name = trim(_stripslashes($_POST['t_name']));
+        $t_name = trim(stripslashes_array($_POST['t_name']));
 
     }else {
 
@@ -139,8 +142,8 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim(_stripslashes($_POST['t_description']))) > 0) {
-        $t_description = trim(_stripslashes($_POST['t_description']));
+    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
+        $t_description = trim(stripslashes_array($_POST['t_description']));
     }else {
         $t_description = "";
     }
@@ -215,7 +218,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user_groups_add.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -231,11 +234,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? _htmlentities($t_name) : ""), 30, 64)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : ""), 30, 64)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? _htmlentities($t_description) : ""), 30, 64)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : ""), 30, 64)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -321,10 +324,10 @@ if (($folder_array = folder_get_all())) {
 
         if ($folder['FOLDER_PERM_COUNT'] > 0) {
 
-            echo "                                  ", form_input_hidden("t_new_perms_array[]", _htmlentities($folder['FID'])), "\n";
+            echo "                                  ", form_input_hidden("t_new_perms_array[]", htmlentities_array($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'] , $folder['FOLDER_PERMS'] & USER_PERM_POST_READ), "</td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['FOLDER_PERMS'] & USER_PERM_POST_CREATE), "</td>\n";
             echo "                                    </tr>\n";
@@ -350,10 +353,10 @@ if (($folder_array = folder_get_all())) {
 
         }else {
 
-            echo "                                  ", form_input_hidden("t_new_perms_array[]", _htmlentities($folder['FID'])), "\n";
+            echo "                                  ", form_input_hidden("t_new_perms_array[]", htmlentities_array($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'] , true), "</td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], true), "</td>\n";
             echo "                                    </tr>\n";

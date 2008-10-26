@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.110 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.111 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -31,6 +31,9 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -226,9 +229,9 @@ $prev_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page";
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
 
-$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 light_html_draw_top("title=$forum_name > $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
 

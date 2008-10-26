@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.204 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.205 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -173,9 +173,9 @@ function light_draw_logon_form()
     $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');
 
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", _htmlentities(_stripslashes($user_logon)), 20, 15, "autocomplete=\"off\""). "</p>\n";
-    echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", _htmlentities(_stripslashes($user_password)), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", _htmlentities(_stripslashes($user_passhash))), "</p>\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", htmlentities_array(stripslashes_array($user_logon)), 20, 15, "autocomplete=\"off\""). "</p>\n";
+    echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array(stripslashes_array($user_password)), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", htmlentities_array(stripslashes_array($user_passhash))), "</p>\n";
     echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (strlen($user_password) > 0 && strlen($user_passhash) > 0) && bh_getcookie('bh_light_remember_password'), "autocomplete=\"off\""), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
@@ -196,7 +196,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     if (($uid = bh_session_get_value('UID')) === false) return;
 
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
     echo "  ", light_form_submit("go", $lang['goexcmark']), "\n";
     echo "</form>\n";
@@ -396,7 +396,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
-            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a></h3>";
+            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">", word_filter_add_ob_tags(htmlentities_array($folder_info[$folder_number]['TITLE'])), "</a></h3>";
 
             if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
@@ -460,8 +460,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
                             $thread_time = format_time($thread['MODIFIED']);
 
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
-                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(_htmlentities(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-                            echo word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
+                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+                            echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
                             if ($thread['INTEREST'] == THREAD_INTERESTED) echo "<font color=\"#FF0000\">(HI)</font> ";
                             if ($thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<font color=\"#FF0000\">(Sub)</font> ";
@@ -532,9 +532,9 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         echo "  <h5>{$lang['markasread']}</h5>\n";
         echo "    <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
-        echo "      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "      ", form_input_hidden("mode", _htmlentities($mode)), "\n";
-        echo "      ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";
+        echo "      ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+        echo "      ", form_input_hidden("mode", htmlentities_array($mode)), "\n";
+        echo "      ", form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
         echo "      ", form_input_hidden("mark_read_confirm", 'N'), "\n";
 
         $labels = array($lang['alldiscussions'], $lang['next50discussions']);
@@ -546,12 +546,12 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $selected_option = THREAD_MARK_READ_VISIBLE;
 
             $visible_threads = implode(',', preg_grep("/^[0-9]+$/Du", $visible_threads_array));
-            echo "        ", form_input_hidden("mark_read_threads", _htmlentities($visible_threads)), "\n";
+            echo "        ", form_input_hidden("mark_read_threads", htmlentities_array($visible_threads)), "\n";
         }
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-            echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
+            echo "        ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 
             $labels[] = $lang['selectedfolder'];
             $selected_option = THREAD_MARK_READ_FOLDER;
@@ -738,8 +738,8 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     if ($in_list) {
 
         $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
-        $poll_data['CONTENT'].= form_input_hidden('webtag', _htmlentities($webtag)). "\n";
-        $poll_data['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";
+        $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
+        $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
 
         if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime())) {
 
@@ -757,7 +757,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                         $poll_group_count++;
                     }
 
-                    $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", _htmlentities($poll_results['OPTION_ID'][$i]), '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
+                    $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", htmlentities_array($poll_results['OPTION_ID'][$i]), '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
                     $poll_previous_group = $poll_results['GROUP_ID'][$i];
                 }
             }
@@ -1011,11 +1011,11 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
     if (isset($message['PID'])) {
 
-        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</b> [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>]<br />";
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</b> [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>]<br />";
 
     }else {
 
-        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</b><br />";;
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</b><br />";;
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -1048,7 +1048,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<b>{$lang['to']}: " . word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK'])))."</b>";
+        echo "<b>{$lang['to']}: " . word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK'])))."</b>";
 
         if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">#{$message['REPLY_TO_PID']}</a>]";
 
@@ -1312,14 +1312,14 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
-                    $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
+                    $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
 
             }else {
 
                 if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
 
-                    $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
+                    $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
             }
         }
@@ -1548,7 +1548,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
         if (is_array($var_array)) {
 
@@ -1565,7 +1565,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
             foreach ($button_array as $button_name => $button_label) {
-                $button_html_array[] = light_form_submit(_htmlentities($button_name), _htmlentities($button_label));
+                $button_html_array[] = light_form_submit(htmlentities_array($button_name), htmlentities_array($button_label));
             }
         }
 

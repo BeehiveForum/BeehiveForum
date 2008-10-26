@@ -23,13 +23,16 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.17 2008-09-23 23:54:05 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.18 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -147,7 +150,7 @@ if (($folder_most_threads = stats_get_folder_with_most_threads()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['folderwithmostthreads']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_threads['FID']}\">", _htmlentities($folder_most_threads['TITLE']), "</a> (", number_format($folder_most_threads['THREAD_COUNT'], 0, '.', ','), " {$lang['threads']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_threads['FID']}\">", htmlentities_array($folder_most_threads['TITLE']), "</a> (", number_format($folder_most_threads['THREAD_COUNT'], 0, '.', ','), " {$lang['threads']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -155,7 +158,7 @@ if (($folder_most_posts = stats_get_folder_with_most_posts()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['folderwithmostposts']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_posts['FID']}\">", _htmlentities($folder_most_posts['TITLE']), "</a> (", number_format($folder_most_posts['POST_COUNT'], 0, '.', ','), " {$lang['posts']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_posts['FID']}\">", htmlentities_array($folder_most_posts['TITLE']), "</a> (", number_format($folder_most_posts['POST_COUNT'], 0, '.', ','), " {$lang['posts']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -200,7 +203,7 @@ if (($longest_thread = stats_get_longest_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['longestthread']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " {$lang['posts']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " {$lang['posts']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -208,7 +211,7 @@ if (($most_read_thread = stats_get_most_read_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['mostreadthread']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", _htmlentities(thread_format_prefix($most_read_thread['PREFIX'], $most_read_thread['TITLE'])), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " {$lang['threadviews']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", htmlentities_array(thread_format_prefix($most_read_thread['PREFIX'], $most_read_thread['TITLE'])), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " {$lang['threadviews']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -224,7 +227,7 @@ if (($most_subscribed_thread = stats_get_most_subscribed_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['mostpopularthreadbysubscription']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", _htmlentities(thread_format_prefix($most_subscribed_thread['PREFIX'], $most_subscribed_thread['TITLE'])), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " {$lang['subscribers']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", htmlentities_array(thread_format_prefix($most_subscribed_thread['PREFIX'], $most_subscribed_thread['TITLE'])), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " {$lang['subscribers']})</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -293,7 +296,7 @@ if (($top_poster = stats_get_top_poster()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['topposter']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$top_poster['UID']}\" target=\"_blank\" onclick=\"return openProfile({$top_poster['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($top_poster['LOGON'], $top_poster['NICKNAME']))), "</a> (", number_format($top_poster['POST_COUNT'], 0, '.', ','), " {$lang['posts']}) [<a href=\"admin_post_stats.php?webtag=$webtag\">{$lang['viewtop20']}</a>]</td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$top_poster['UID']}\" target=\"_blank\" onclick=\"return openProfile({$top_poster['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($top_poster['LOGON'], $top_poster['NICKNAME']))), "</a> (", number_format($top_poster['POST_COUNT'], 0, '.', ','), " {$lang['posts']}) [<a href=\"admin_post_stats.php?webtag=$webtag\">{$lang['viewtop20']}</a>]</td>\n";
     echo "                </tr>\n";
 }
 
@@ -523,7 +526,7 @@ if (($newest_user = stats_get_newest_user()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['newestuser']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$newest_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']))), "</a></td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$newest_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']))), "</a></td>\n";
     echo "                </tr>\n";
 }
 
@@ -649,7 +652,7 @@ if (($most_active_user = stats_get_most_active_user()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['mostactiveuser']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$most_active_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$most_active_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($most_active_user['LOGON'], $most_active_user['NICKNAME']))), "</a> (", format_time_display($most_active_user['TOTAL_TIME'], true), ")</td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$most_active_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$most_active_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($most_active_user['LOGON'], $most_active_user['NICKNAME']))), "</a> (", format_time_display($most_active_user['TOTAL_TIME'], true), ")</td>\n";
     echo "                </tr>\n";
 }
 

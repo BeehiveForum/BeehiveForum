@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.178 2008-09-07 13:41:05 decoyduck Exp $ */
+/* $Id: index.php,v 1.179 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -30,6 +30,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -118,9 +121,9 @@ bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
 // Are we being redirected somewhere?
 
-if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-    $final_uri_check = basename(trim(_stripslashes($_GET['final_uri'])));
+    $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -133,7 +136,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
     if (preg_match("/^$available_files_preg/u", $final_uri_check) > 0) {
 
-        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+        $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
 
         if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php|^logout.php/u", $final_uri) > 0) {
 

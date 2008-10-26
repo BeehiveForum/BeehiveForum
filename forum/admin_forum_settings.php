@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.151 2008-10-11 17:40:02 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.152 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -39,6 +39,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -168,22 +171,22 @@ if (isset($_POST['changepermissions'])) {
 
     $valid = true;
 
-    if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
-        $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
+    if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
+        $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
     }else {
         $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
-        $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
+    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
+        $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
     }else {
         $error_msg_array[] = $lang['mustsupplyforumemail'];
         $valid = false;
     }
 
-    if (isset($_POST['forum_desc']) && strlen(trim(_stripslashes($_POST['forum_desc']))) > 0) {
-        $new_forum_settings['forum_desc'] = trim(_stripslashes($_POST['forum_desc']));
+    if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
+        $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
     }else {
         $new_forum_settings['forum_desc'] = "";
     }
@@ -194,15 +197,15 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['forum_content_rating'] = FORUM_RATING_GENERAL;
     }
 
-    if (isset($_POST['forum_keywords']) && strlen(trim(_stripslashes($_POST['forum_keywords']))) > 0) {
-        $new_forum_settings['forum_keywords'] = trim(_stripslashes($_POST['forum_keywords']));
+    if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
+        $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
     }else {
         $new_forum_settings['forum_keywords'] = "";
     }
 
-    if (isset($_POST['default_style']) && style_exists(trim(_stripslashes($_POST['default_style'])))) {
+    if (isset($_POST['default_style']) && style_exists(trim(stripslashes_array($_POST['default_style'])))) {
 
-        $new_forum_settings['default_style'] = trim(_stripslashes($_POST['default_style']));
+        $new_forum_settings['default_style'] = trim(stripslashes_array($_POST['default_style']));
 
     }else {
 
@@ -210,9 +213,9 @@ if (isset($_POST['changepermissions'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_emoticons']) && strlen(trim(_stripslashes($_POST['default_emoticons']))) > 0) {
+    if (isset($_POST['default_emoticons']) && strlen(trim(stripslashes_array($_POST['default_emoticons']))) > 0) {
 
-        $new_forum_settings['default_emoticons'] = trim(_stripslashes($_POST['default_emoticons']));
+        $new_forum_settings['default_emoticons'] = trim(stripslashes_array($_POST['default_emoticons']));
 
         if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
             $error_msg_array[] = $lang['unknownemoticonsname'];
@@ -243,8 +246,8 @@ if (isset($_POST['changepermissions'])) {
             $new_forum_settings['enable_google_analytics'] = "N";
         }
 
-        if (isset($_POST['google_analytics_code']) && strlen(trim(_stripslashes($_POST['google_analytics_code']))) > 0) {
-            $new_forum_settings['google_analytics_code'] = trim(_stripslashes($_POST['google_analytics_code']));
+        if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
+            $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
         }else {
             $new_forum_settings['google_analytics_code'] = "";
         }
@@ -279,20 +282,20 @@ if (isset($_POST['changepermissions'])) {
         forum_update_access($forum_settings['fid'], $_POST['access_level']);
     }
 
-    if (isset($_POST['closed_message']) && strlen(trim(_stripslashes($_POST['closed_message']))) > 0) {
-        $new_forum_settings['closed_message'] = trim(_stripslashes($_POST['closed_message']));
+    if (isset($_POST['closed_message']) && strlen(trim(stripslashes_array($_POST['closed_message']))) > 0) {
+        $new_forum_settings['closed_message'] = trim(stripslashes_array($_POST['closed_message']));
     }else {
         $new_forum_settings['closed_message'] = "";
     }
 
-    if (isset($_POST['restricted_message']) && strlen(trim(_stripslashes($_POST['restricted_message']))) > 0) {
-        $new_forum_settings['restricted_message'] = trim(_stripslashes($_POST['restricted_message']));
+    if (isset($_POST['restricted_message']) && strlen(trim(stripslashes_array($_POST['restricted_message']))) > 0) {
+        $new_forum_settings['restricted_message'] = trim(stripslashes_array($_POST['restricted_message']));
     }else {
         $new_forum_settings['restricted_message'] = "";
     }
 
-    if (isset($_POST['password_protected_message']) && strlen(trim(_stripslashes($_POST['password_protected_message']))) > 0) {
-        $new_forum_settings['password_protected_message'] = trim(_stripslashes($_POST['password_protected_message']));
+    if (isset($_POST['password_protected_message']) && strlen(trim(stripslashes_array($_POST['password_protected_message']))) > 0) {
+        $new_forum_settings['password_protected_message'] = trim(stripslashes_array($_POST['password_protected_message']));
     }else {
         $new_forum_settings['password_protected_message'] = "";
     }
@@ -345,8 +348,8 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['enable_wiki_quick_links'] = "N";
     }
 
-    if (isset($_POST['wiki_integration_uri']) && strlen(trim(_stripslashes($_POST['wiki_integration_uri']))) > 0) {
-        $new_forum_settings['wiki_integration_uri'] = trim(_stripslashes($_POST['wiki_integration_uri']));
+    if (isset($_POST['wiki_integration_uri']) && strlen(trim(stripslashes_array($_POST['wiki_integration_uri']))) > 0) {
+        $new_forum_settings['wiki_integration_uri'] = trim(stripslashes_array($_POST['wiki_integration_uri']));
     }else {
         $new_forum_settings['wiki_integration_uri'] = "";
     }
@@ -426,7 +429,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefsform\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -442,23 +445,23 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_settings['forum_name']) ? _htmlentities($forum_settings['forum_name']) : 'A Beehive Forum'), 42, 255), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_settings['forum_name']) ? htmlentities_array($forum_settings['forum_name']) : 'A Beehive Forum'), 42, 255), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_settings['forum_email']) ? _htmlentities($forum_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_settings['forum_email']) ? htmlentities_array($forum_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($forum_settings['forum_desc']) ? _htmlentities($forum_settings['forum_desc']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($forum_settings['forum_desc']) ? htmlentities_array($forum_settings['forum_desc']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeywords']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_settings['forum_keywords']) ? _htmlentities($forum_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_settings['forum_keywords']) ? htmlentities_array($forum_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumcontentrating']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("forum_content_rating", _htmlentities($content_ratings_array), (isset($forum_settings['forum_content_rating']) ? _htmlentities($forum_settings['forum_content_rating']) : 0)), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("forum_content_rating", htmlentities_array($content_ratings_array), (isset($forum_settings['forum_content_rating']) ? htmlentities_array($forum_settings['forum_content_rating']) : 0)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -468,17 +471,17 @@ if (($available_styles = styles_get_available())) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("default_style", _htmlentities($available_styles), (isset($forum_settings['default_style']) && style_exists($forum_settings['default_style']) ? _htmlentities($forum_settings['default_style']) : 'default')), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("default_style", htmlentities_array($available_styles), (isset($forum_settings['default_style']) && style_exists($forum_settings['default_style']) ? htmlentities_array($forum_settings['default_style']) : 'default')), "</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", _htmlentities($available_emoticons), (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", htmlentities_array($available_emoticons), (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultlanguage']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_language", _htmlentities($available_langs), (isset($forum_settings['default_language']) && in_array($forum_settings['default_language'], $available_langs) ? $forum_settings['default_language'] : 'en')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_language", htmlentities_array($available_langs), (isset($forum_settings['default_language']) && in_array($forum_settings['default_language'], $available_langs) ? $forum_settings['default_language'] : 'en')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -511,7 +514,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", _htmlentities($available_timezones), (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27), false, 'timezone_dropdown'), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", htmlentities_array($available_timezones), (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -750,19 +753,19 @@ echo "                        <td align=\"left\">", form_radio("allow_post_editi
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['postedittimeout']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("post_edit_time", (isset($forum_settings['post_edit_time']) && is_numeric($forum_settings['post_edit_time']) ? _htmlentities($forum_settings['post_edit_time']) : '0'), 20, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("post_edit_time", (isset($forum_settings['post_edit_time']) && is_numeric($forum_settings['post_edit_time']) ? htmlentities_array($forum_settings['post_edit_time']) : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['posteditgraceperiod']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("post_edit_grace_period", (isset($forum_settings['post_edit_grace_period']) && is_numeric($forum_settings['post_edit_grace_period']) ? _htmlentities($forum_settings['post_edit_grace_period']) : '0'), 20, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("post_edit_grace_period", (isset($forum_settings['post_edit_grace_period']) && is_numeric($forum_settings['post_edit_grace_period']) ? htmlentities_array($forum_settings['post_edit_grace_period']) : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['maximumpostlength']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("maximum_post_length", (isset($forum_settings['maximum_post_length']) && is_numeric($forum_settings['maximum_post_length']) ? _htmlentities($forum_settings['maximum_post_length']) : '6226'), 20, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("maximum_post_length", (isset($forum_settings['maximum_post_length']) && is_numeric($forum_settings['maximum_post_length']) ? htmlentities_array($forum_settings['maximum_post_length']) : '6226'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['postfrequency']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("minimum_post_frequency", (isset($forum_settings['minimum_post_frequency']) && is_numeric($forum_settings['minimum_post_frequency']) ? _htmlentities($forum_settings['minimum_post_frequency']) : '0'), 20, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("minimum_post_frequency", (isset($forum_settings['minimum_post_frequency']) && is_numeric($forum_settings['minimum_post_frequency']) ? htmlentities_array($forum_settings['minimum_post_frequency']) : '0'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -812,7 +815,7 @@ echo "                        <td align=\"left\">", form_radio("enable_wiki_quic
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['wikiintegrationuri']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("wiki_integration_uri", (isset($forum_settings['wiki_integration_uri']) ? _htmlentities($forum_settings['wiki_integration_uri']) : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("wiki_integration_uri", (isset($forum_settings['wiki_integration_uri']) ? htmlentities_array($forum_settings['wiki_integration_uri']) : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -862,7 +865,7 @@ if (forum_get_global_setting('allow_forum_google_analytics', 'Y')) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleanalyticsaccountid']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("google_analytics_code", (isset($forum_settings['google_analytics_code']) ? _htmlentities($forum_settings['google_analytics_code']) : ''), 31, 20), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("google_analytics_code", (isset($forum_settings['google_analytics_code']) ? htmlentities_array($forum_settings['google_analytics_code']) : ''), 31, 20), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

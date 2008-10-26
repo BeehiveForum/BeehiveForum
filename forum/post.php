@@ -23,13 +23,16 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.370 2008-10-18 09:47:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.371 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -170,8 +173,8 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
 
     $new_thread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
-        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+        $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
     }else{
         $error_msg_array[] = $lang['mustenterthreadtitle'];
         $valid = false;
@@ -363,9 +366,9 @@ if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['post']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(stripslashes_array($_POST['t_content']));
 
         if (($post_html > POST_HTML_DISABLED) && attachment_embed_check($t_content)) {
 
@@ -381,7 +384,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
+        $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
         if ($sig_html && attachment_embed_check($t_sig)) {
 
@@ -393,8 +396,8 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
 if (isset($_POST['more'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
-        $t_content = trim(_stripslashes($_POST['t_content']));
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+        $t_content = trim(stripslashes_array($_POST['t_content']));
     }
 }
 
@@ -402,9 +405,9 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['t_newthread'])) {
 
-        if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+        if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
-            $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+            $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
         }
 
         if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
@@ -421,14 +424,14 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
         }
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(stripslashes_array($_POST['t_content']));
     }
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
+        $t_sig = trim(stripslashes_array($_POST['t_sig']));
     }
 
     if (isset($_POST['emots_toggle_x'])) {
@@ -509,7 +512,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
             if (($message_array = messages_get($reply_to_tid, $quote_pid))) {
 
-                $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
+                $message_author = htmlentities_array(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
                 $message_content = message_apply_formatting($message_content, false, true);
@@ -612,8 +615,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
-if (isset($_POST['to_radio']) && strlen(trim(_stripslashes($_POST['to_radio']))) > 0) {
-    $to_radio = trim(_stripslashes($_POST['to_radio']));
+if (isset($_POST['to_radio']) && strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
+    $to_radio = trim(stripslashes_array($_POST['to_radio']));
 }else {
     $to_radio = '';
 }
@@ -630,8 +633,8 @@ if (isset($_POST['t_to_uid_recent']) && is_numeric($_POST['t_to_uid_recent'])) {
     $t_to_uid_recent = '';
 }
 
-if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_uid_others']))) > 0) {
-    $t_to_uid_others = trim(_stripslashes($_POST['t_to_uid_others']));
+if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
+    $t_to_uid_others = trim(stripslashes_array($_POST['t_to_uid_others']));
 }else {
     $t_to_uid_others = '';
 }
@@ -870,8 +873,8 @@ if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('t_dedupe', _htmlentities($t_dedupe)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('t_dedupe', htmlentities_array($t_dedupe)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -964,7 +967,7 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "thread_title"), form_input_hidden("t_newthread", "Y"), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 0, 0, false, "thread_title"), form_input_hidden("t_newthread", "Y"), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -973,13 +976,13 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($thread_data['FOLDER_TITLE'])), "</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($thread_data['FOLDER_TITLE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), form_input_hidden("t_tid", _htmlentities($reply_to_tid)), form_input_hidden("t_rpid", _htmlentities($reply_to_pid)), "</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), form_input_hidden("t_tid", htmlentities_array($reply_to_tid)), form_input_hidden("t_rpid", htmlentities_array($reply_to_pid)), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -1153,7 +1156,7 @@ echo "&nbsp;", form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"
 if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", _htmlentities($aid));
+    echo form_input_hidden("aid", htmlentities_array($aid));
 }
 
 if ($allow_sig == true) {

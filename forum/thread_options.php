@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.123 2008-10-18 19:19:50 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.124 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -258,9 +261,9 @@ if (isset($_POST['save'])) {
 
     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
-        if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
+        if (isset($_POST['rename']) && strlen(trim(stripslashes_array($_POST['rename']))) > 0) {
 
-            $t_rename = trim(_stripslashes($_POST['rename']));
+            $t_rename = trim(stripslashes_array($_POST['rename']));
 
             if ($t_rename !== trim($thread_data['TITLE'])) {
 
@@ -356,9 +359,9 @@ if (isset($_POST['save'])) {
 
             if (isset($_POST['sticky_year']) && isset($_POST['sticky_month']) && isset($_POST['sticky_day'])) {
 
-                $sticky_day   = trim(_stripslashes($_POST['sticky_day']));
-                $sticky_month = trim(_stripslashes($_POST['sticky_month']));
-                $sticky_year  = trim(_stripslashes($_POST['sticky_year']));
+                $sticky_day   = trim(stripslashes_array($_POST['sticky_day']));
+                $sticky_month = trim(stripslashes_array($_POST['sticky_month']));
+                $sticky_year  = trim(stripslashes_array($_POST['sticky_year']));
 
                 if (is_numeric($sticky_month) && $sticky_month > 0 && is_numeric($sticky_day) && $sticky_day > 0 && is_numeric($sticky_year) && $sticky_year > 0) {
 
@@ -569,7 +572,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top("basetarget=_blank", "thread_options.js");
 
-    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -587,8 +590,8 @@ if ($thread_data['DELETED'] == 'N') {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden("msg", htmlentities_array($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -604,7 +607,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("markasread", _htmlentities($thread_data['LAST_READ']), 5), " {$lang['postsoutof']} {$thread_data['LENGTH']}</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("markasread", htmlentities_array($thread_data['LAST_READ']), 5), " {$lang['postsoutof']} {$thread_data['LENGTH']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";
@@ -651,7 +654,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("rename", _htmlentities($thread_data['TITLE']), 30, 64), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("rename", htmlentities_array($thread_data['TITLE']), 30, 64), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['movethread']}:</td>\n";
@@ -1029,7 +1032,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top("basetarget=_blank", "thread_options.js");
 
-    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -1043,8 +1046,8 @@ if ($thread_data['DELETED'] == 'N') {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden("msg", htmlentities_array($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.90 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.91 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -151,10 +154,10 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-if (isset($_POST['user_search']) && strlen(trim(_stripslashes($_POST['user_search']))) > 0) {
-    $user_search = trim(_stripslashes($_POST['user_search']));
-}elseif (isset($_GET['user_search']) && strlen(trim(_stripslashes($_GET['user_search']))) > 0) {
-    $user_search = trim(_stripslashes($_GET['user_search']));
+if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+    $user_search = trim(stripslashes_array($_POST['user_search']));
+}elseif (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+    $user_search = trim(stripslashes_array($_GET['user_search']));
 }else {
     $user_search = "";
 }
@@ -222,10 +225,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("user_search", _htmlentities($user_search)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+echo "  ", form_input_hidden("user_search", htmlentities_array($user_search)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -247,7 +250,7 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y", false), "</td>\n";
-        echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&amp;ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']))), "</a></td>\n";
+        echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&amp;ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']))), "</a></td>\n";
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 
@@ -318,10 +321,10 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -338,7 +341,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', _htmlentities($user_search), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', htmlentities_array($user_search), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

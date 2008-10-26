@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.264 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: edit.php,v 1.265 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -340,9 +343,9 @@ if ($allow_html == false) {
     $sig->setHTML(false, true);
 }
 
-if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-    $t_content = trim(_stripslashes($_POST['t_content']));
+    $t_content = trim(stripslashes_array($_POST['t_content']));
 
     if ($post_html && attachment_embed_check($t_content)) {
 
@@ -360,9 +363,9 @@ if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content'])
     }
 }
 
-if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
+if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
 
-    $t_sig = trim(_stripslashes($_POST['t_sig']));
+    $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
     if (attachment_embed_check($t_sig)) {
 
@@ -671,10 +674,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("msg", _htmlentities($edit_msg));
-echo "  ", form_input_hidden("t_to_uid", _htmlentities($to_uid));
-echo "  ", form_input_hidden("t_from_uid", _htmlentities($from_uid));
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("msg", htmlentities_array($edit_msg));
+echo "  ", form_input_hidden("t_to_uid", htmlentities_array($to_uid));
+echo "  ", form_input_hidden("t_from_uid", htmlentities_array($from_uid));
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -710,18 +713,18 @@ echo "                  <table class=\"posthead\" width=\"210\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
 echo "                        <h2>{$lang['folder']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(_htmlentities($threaddata['FOLDER_TITLE'])), "\n";
+echo "                        ", word_filter_add_ob_tags(htmlentities_array($threaddata['FOLDER_TITLE'])), "\n";
 echo "                        <h2>{$lang['threadtitle']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "\n";
+echo "                        ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "\n";
 echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "</a><br /><br />\n";
+    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "</a><br /><br />\n";
 
 }else {
 
-    echo "                        ", word_filter_add_ob_tags(_htmlentities(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "<br /><br />\n";
+    echo "                        ", word_filter_add_ob_tags(htmlentities_array(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "<br /><br />\n";
 }
 
 echo "                        <h2>{$lang['messageoptions']}</h2>\n";
@@ -833,7 +836,7 @@ echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"c
 if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$from_uid', '$aid', '$webtag');\"");
-    echo form_input_hidden('aid', _htmlentities($aid));
+    echo form_input_hidden('aid', htmlentities_array($aid));
 }
 
 if ($allow_sig == true) {

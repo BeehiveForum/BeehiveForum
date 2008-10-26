@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.360 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.361 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -204,11 +207,11 @@ if (user_is_guest()) {
 
             if ($_POST['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
 
-                if (isset($_POST['mark_read_threads']) && strlen(trim(_stripslashes($_POST['mark_read_threads'])))) {
+                if (isset($_POST['mark_read_threads']) && strlen(trim(stripslashes_array($_POST['mark_read_threads'])))) {
 
                     $thread_data = array();
 
-                    $mark_read_threads = trim(_stripslashes($_POST['mark_read_threads']));
+                    $mark_read_threads = trim(stripslashes_array($_POST['mark_read_threads']));
 
                     $mark_read_threads_array = preg_grep("/^[0-9]+$/Du", explode(',', $mark_read_threads));
 
@@ -562,7 +565,7 @@ foreach ($folder_order as $folder_number) {
             echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openFolderOptions($folder_number, '$webtag')\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" border=\"0\" /></a>\n";
         }
 
-        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
+        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags(htmlentities_array($folder_info[$folder_number]['DESCRIPTION'])), "\">", word_filter_add_ob_tags(htmlentities_array($folder_info[$folder_number]['TITLE'])), "</a>\n";
         echo "          </td>\n";
 
         if (bh_session_get_value('UID') > 0) {
@@ -726,8 +729,8 @@ foreach ($folder_order as $folder_number) {
                             echo "&nbsp;</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";
                             echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
-                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(_htmlentities(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-                            echo word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
+                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+                            echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
@@ -804,9 +807,9 @@ foreach ($folder_order as $folder_number) {
                     echo "            </table>\n";
                 }
 
-            }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
+            }elseif ($folder_info[$folder_number]['INTEREST'] != FOLDER_IGNORED) {
 
-                // Only display the additional folder info if the user _DOESN'T_ have the folder on ignore
+                // Only display the additional folder info if the user DOESN'T have the folder on ignore
 
                 echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                 echo "              <tr>\n";
@@ -900,9 +903,9 @@ if (!user_is_guest()) {
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
-    echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "        ", form_input_hidden("mode", _htmlentities($mode)), "\n";
-    echo "        ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";
+    echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "        ", form_input_hidden("mode", htmlentities_array($mode)), "\n";
+    echo "        ", form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
     echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
@@ -914,12 +917,12 @@ if (!user_is_guest()) {
         $selected_option = THREAD_MARK_READ_VISIBLE;
 
         $visible_threads = implode(',', preg_grep("/^[0-9]+$/Du", $visible_threads_array));
-        echo "        ", form_input_hidden("mark_read_threads", _htmlentities($visible_threads)), "\n";
+        echo "        ", form_input_hidden("mark_read_threads", htmlentities_array($visible_threads)), "\n";
     }
 
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
+        echo "        ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 
         $labels[] = $lang['selectedfolder'];
         $selected_option = THREAD_MARK_READ_FOLDER;
@@ -941,10 +944,10 @@ echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
 echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
-echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-    echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
+    echo "        ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 }
 
 echo "        ", form_input_text('msg', '1.1', 10), "\n";

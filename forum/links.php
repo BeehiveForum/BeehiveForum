@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.117 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: links.php,v 1.118 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -221,15 +224,15 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\"><b>{$lang['list']}</b></a></div>\n";
 }
 
-if (isset($_GET['link_added']) && strlen(trim(_stripslashes($_GET['link_added']))) > 0) {
+if (isset($_GET['link_added']) && strlen(trim(stripslashes_array($_GET['link_added']))) > 0) {
 
     $link_added = $_GET['link_added'];
-    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], _htmlentities($link_added)), '65%', 'center');
+    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], htmlentities_array($link_added)), '65%', 'center');
 
-}elseif (isset($_GET['folder_added']) && strlen(trim(_stripslashes($_GET['folder_added']))) > 0) {
+}elseif (isset($_GET['folder_added']) && strlen(trim(stripslashes_array($_GET['folder_added']))) > 0) {
 
     $folder_added = $_GET['folder_added'];
-    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], _htmlentities($folder_added)), '65%', 'center');
+    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], htmlentities_array($folder_added)), '65%', 'center');
 }
 
 // work out where we are in the folder hierarchy and display links to all the higher levels
@@ -279,7 +282,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
             echo "                          <tr>\n";
             echo "                            <td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td>\n";
-            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME'])), "</a>";
+            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])), "</a>";
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
 
@@ -448,12 +451,12 @@ if (sizeof($links['links_array']) > 0 ) {
         if ($link['VISIBLE'] == "N") {
 
             echo "                <tr class=\"link_hidden\">\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\" class=\"link_hidden\">", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\" class=\"link_hidden\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></td>\n";
 
         }else {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></td>\n";
         }
 
         echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";

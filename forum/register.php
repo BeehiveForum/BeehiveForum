@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.193 2008-10-19 17:07:13 decoyduck Exp $ */
+/* $Id: register.php,v 1.194 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -35,6 +35,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -82,9 +85,9 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Where are we going after we've logged on?
 
-if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+    $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -168,8 +171,8 @@ if (isset($_GET['reload_captcha'])) {
     }
 }
 
-if (isset($_GET['private_key']) && strlen(trim(_stripslashes($_GET['private_key']))) > 0) {
-    $text_captcha_private_key = trim(_stripslashes($_GET['private_key']));
+if (isset($_GET['private_key']) && strlen(trim(stripslashes_array($_GET['private_key']))) > 0) {
+    $text_captcha_private_key = trim(stripslashes_array($_GET['private_key']));
 }else {
     $text_captcha_private_key = "";
 }
@@ -217,9 +220,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
+    if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
 
-        $logon = strtoupper(trim(_stripslashes($_POST['logon'])));
+        $logon = strtoupper(trim(stripslashes_array($_POST['logon'])));
 
         if (!preg_match("/^[a-z0-9_-]+$/Diu", $logon)) {
 
@@ -251,9 +254,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
+    if (isset($_POST['pw']) && strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
 
-        $password = trim(_stripslashes($_POST['pw']));
+        $password = trim(stripslashes_array($_POST['pw']));
 
         if (!preg_match("/^[a-z0-9_-]+$/Diu", $password)) {
 
@@ -273,11 +276,11 @@ if (isset($_POST['register'])) {
         $valid.= false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
 
-        $check_password = trim(_stripslashes($_POST['cpw']));
+        $check_password = trim(stripslashes_array($_POST['cpw']));
 
-        if (_htmlentities($check_password) != $check_password) {
+        if (htmlentities_array($check_password) != $check_password) {
 
             $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
@@ -289,9 +292,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
+    if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
 
-        $nickname = strip_tags(trim(_stripslashes($_POST['nickname'])));
+        $nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 
         if (nickname_is_banned($nickname)) {
 
@@ -305,9 +308,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
+    if (isset($_POST['email']) && strlen(trim(stripslashes_array($_POST['email']))) > 0) {
 
-        $email = trim(_stripslashes($_POST['email']));
+        $email = trim(stripslashes_array($_POST['email']));
 
         if (!email_address_valid($email)) {
 
@@ -337,9 +340,9 @@ if (isset($_POST['register'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user_prefs['DOB_DAY']   = trim(_stripslashes($_POST['dob_day']));
-        $new_user_prefs['DOB_MONTH'] = trim(_stripslashes($_POST['dob_month']));
-        $new_user_prefs['DOB_YEAR']  = trim(_stripslashes($_POST['dob_year']));
+        $new_user_prefs['DOB_DAY']   = trim(stripslashes_array($_POST['dob_day']));
+        $new_user_prefs['DOB_MONTH'] = trim(stripslashes_array($_POST['dob_month']));
+        $new_user_prefs['DOB_YEAR']  = trim(stripslashes_array($_POST['dob_year']));
 
         $new_user_prefs['DOB'] = "{$new_user_prefs['DOB_YEAR']}-{$new_user_prefs['DOB_MONTH']}-{$new_user_prefs['DOB_DAY']}";
         $new_user_prefs['DOB_BLANK_FIELDS'] = ($new_user_prefs['DOB_YEAR'] == 0 || $new_user_prefs['DOB_MONTH'] == 0 || $new_user_prefs['DOB_DAY'] == 0) ? true : false;
@@ -350,20 +353,20 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['firstname']) && strlen(trim(_stripslashes($_POST['firstname']))) > 0) {
-        $new_user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
+    if (isset($_POST['firstname']) && strlen(trim(stripslashes_array($_POST['firstname']))) > 0) {
+        $new_user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
     }else {
         $new_user_prefs['FIRSTNAME'] = "";
     }
 
-    if (isset($_POST['lastname']) && strlen(trim(_stripslashes($_POST['lastname']))) > 0) {
-        $new_user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
+    if (isset($_POST['lastname']) && strlen(trim(stripslashes_array($_POST['lastname']))) > 0) {
+        $new_user_prefs['LASTNAME'] = trim(stripslashes_array($_POST['lastname']));
     }else {
         $new_user_prefs['LASTNAME'] = "";
     }
 
-    if (isset($_POST['sig_content']) && strlen(trim(_stripslashes($_POST['sig_content']))) > 0) {
-        $sig_content = trim(_stripslashes($_POST['sig_content']));
+    if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
+        $sig_content = trim(stripslashes_array($_POST['sig_content']));
     }else {
         $sig_content = "";
     }
@@ -372,7 +375,7 @@ if (isset($_POST['register'])) {
         $sig_content = fix_html($sig_content);
         $sig_html = "Y";
     }else {
-        $sig_content = _stripslashes($sig_content);
+        $sig_content = stripslashes_array($sig_content);
         $sig_html = "N";
     }
 
@@ -418,8 +421,8 @@ if (isset($_POST['register'])) {
         $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
     }
 
-    if (isset($_POST['style']) && style_exists(trim(_stripslashes($_POST['style'])))) {
-        $new_user_prefs['STYLE'] = trim(_stripslashes($_POST['style']));
+    if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
+        $new_user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
     }else {
         $new_user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
@@ -432,13 +435,13 @@ if (isset($_POST['register'])) {
 
     if (forum_get_setting('text_captcha_enabled', 'Y')) {
 
-        if (isset($_POST['public_key']) && strlen(trim(_stripslashes($_POST['public_key']))) > 0) {
+        if (isset($_POST['public_key']) && strlen(trim(stripslashes_array($_POST['public_key']))) > 0) {
 
-            $public_key = trim(_stripslashes($_POST['public_key']));
+            $public_key = trim(stripslashes_array($_POST['public_key']));
 
-            if (isset($_POST['private_key']) && strlen(trim(_stripslashes($_POST['private_key']))) > 0) {
+            if (isset($_POST['private_key']) && strlen(trim(stripslashes_array($_POST['private_key']))) > 0) {
 
-                $private_key = trim(_stripslashes($_POST['private_key']));
+                $private_key = trim(stripslashes_array($_POST['private_key']));
 
             }else {
 
@@ -581,8 +584,8 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('user_agree_rules', _htmlentities($user_agree_rules)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('user_agree_rules', htmlentities_array($user_agree_rules)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -600,7 +603,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ""), 45, 15), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? htmlentities_array($logon) : ""), 45, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['passwd']}:</td>\n";
@@ -612,15 +615,15 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['nickname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("nickname", (isset($nickname) ? _htmlentities($nickname) : ""), 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("nickname", (isset($nickname) ? htmlentities_array($nickname) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['email']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("email", (isset($email) ? _htmlentities($email) : ""), 45, 80), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("email", (isset($email) ? htmlentities_array($email) : ""), 45, 80), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['dateofbirth']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? _htmlentities($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? _htmlentities($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? _htmlentities($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
+    echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? htmlentities_array($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? htmlentities_array($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? htmlentities_array($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -657,15 +660,15 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['firstname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? _htmlentities($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? htmlentities_array($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['lastname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? _htmlentities($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? htmlentities_array($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">{$lang['signature']}:</td>\n";
-    echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? _htmlentities($sig_content) : ""), 6, 42), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? htmlentities_array($sig_content) : ""), 6, 42), "</td>\n";
     echo "                      </tr>\n";
     echo "                     <tr>\n";
     echo "                       <td align=\"left\">&nbsp;</td>\n";
@@ -747,7 +750,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['timezonefromGMT']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("timezone", _htmlentities($available_timezones), (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -787,17 +790,17 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("style", _htmlentities($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? _htmlentities($new_user_prefs['STYLE']) : _htmlentities(forum_get_setting('default_style', false, 'default')), "", "register_dropdown"), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? htmlentities_array($new_user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', false, 'default')), "", "register_dropdown"), "</td>\n";
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", _htmlentities($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? _htmlentities($new_user_prefs['EMOTICONS']) : _htmlentities(forum_get_setting('default_emoticons', false, 'default')), "", "register_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($new_user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default')), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">{$lang['preferredlang']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("language", _htmlentities($available_langs), (isset($new_user_prefs['LANGUAGE']) ? _htmlentities($new_user_prefs['LANGUAGE']) : _htmlentities(forum_get_setting('default_language', false, 'en'))), "", "register_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($new_user_prefs['LANGUAGE']) ? htmlentities_array($new_user_prefs['LANGUAGE']) : htmlentities_array(forum_get_setting('default_language', false, 'en'))), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -817,8 +820,8 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
         if (strlen(trim($text_captcha_private_key)) > 0) {
 
-            echo form_input_hidden("private_key", _htmlentities($text_captcha_private_key));
-            echo form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key()));
+            echo form_input_hidden("private_key", htmlentities_array($text_captcha_private_key));
+            echo form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key()));
 
         }else if ($text_captcha->make_image()) {
 
@@ -848,7 +851,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                        <td align=\"left\" valign=\"top\"><a href=\"Javascript:void(0)\" onclick=\"return captcha_reload()\"><img src=\"", style_image('reload.png'), "\" border=\"0\" alt=\"\" /></a></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", "", 20, _htmlentities($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
+            echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", "", 20, htmlentities_array($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key())), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -891,7 +894,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.9 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.10 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -179,10 +182,10 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 
 // Folder search keywords.
 
-if (isset($_GET['folder_search']) && strlen(trim(_stripslashes($_GET['folder_search']))) > 0) {
-    $folder_search = trim(_stripslashes($_GET['folder_search']));
-}else if (isset($_POST['folder_search']) && strlen(trim(_stripslashes($_POST['folder_search']))) > 0) {
-    $folder_search = trim(_stripslashes($_POST['folder_search']));
+if (isset($_GET['folder_search']) && strlen(trim(stripslashes_array($_GET['folder_search']))) > 0) {
+    $folder_search = trim(stripslashes_array($_GET['folder_search']));
+}else if (isset($_POST['folder_search']) && strlen(trim(stripslashes_array($_POST['folder_search']))) > 0) {
+    $folder_search = trim(stripslashes_array($_POST['folder_search']));
 }else {
     $folder_search = "";
 }
@@ -253,10 +256,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"subscriptions\" action=\"folder_subscriptions.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("folder_search", _htmlentities($folder_search)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+echo "  ", form_input_hidden("folder_search", htmlentities_array($folder_search)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -277,7 +280,7 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $folder['FID'], ''), "</td>\n";
-        echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;folder={$folder['FID']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+        echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;folder={$folder['FID']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
 
         if (isset($interest_level_array[$folder['INTEREST']])) {
             echo "                  <td align=\"center\">{$interest_level_array[$folder['INTEREST']]}</td>\n";
@@ -329,10 +332,10 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"folder_subscriptions.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -350,7 +353,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['foldertitle']}: ", form_input_text("folder_search", isset($folder_search) ? _htmlentities($folder_search) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
+echo "                          {$lang['foldertitle']}: ", form_input_text("folder_search", isset($folder_search) ? htmlentities_array($folder_search) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

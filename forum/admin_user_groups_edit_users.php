@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.68 2008-09-13 14:10:32 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.69 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -115,10 +118,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 // Are we returning somewhere?
 
-if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+    $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_user_groups.php?webtag=$webtag";
 }
@@ -179,10 +182,10 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch']))) > 0) {
-    $usersearch = trim(_stripslashes($_GET['usersearch']));
-}else if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-    $usersearch = trim(_stripslashes($_POST['usersearch']));
+if (isset($_GET['usersearch']) && strlen(trim(stripslashes_array($_GET['usersearch']))) > 0) {
+    $usersearch = trim(stripslashes_array($_GET['usersearch']));
+}else if (isset($_POST['usersearch']) && strlen(trim(stripslashes_array($_POST['usersearch']))) > 0) {
+    $usersearch = trim(stripslashes_array($_POST['usersearch']));
 }else {
     $usersearch = "";
 }
@@ -251,11 +254,11 @@ if (isset($_GET['added'])) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -276,7 +279,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
-        echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
         echo "                      </tr>\n";
     }
 }
@@ -323,12 +326,12 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     }
 
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
-    echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
-    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-    echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
+    echo "  ", form_input_hidden("usersearch", htmlentities_array($usersearch)), "\n";
+    echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+    echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -349,7 +352,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
-            echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }
@@ -389,11 +392,11 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
-echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
+echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
+echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -409,7 +412,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? _htmlentities($usersearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "\n";
+echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? htmlentities_array($usersearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

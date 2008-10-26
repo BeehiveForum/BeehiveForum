@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.102 2008-08-20 19:02:58 decoyduck Exp $ */
+/* $Id: logout.php,v 1.103 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -78,8 +81,8 @@ $lang = load_language_file();
 
 if (user_is_guest()) {
 
-    if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-        $final_uri = "&final_uri=". rawurlencode(trim(_stripslashes($_GET['final_uri'])));
+    if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+        $final_uri = "&final_uri=". rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
     }else {
         $final_uri = "";
     }
@@ -115,7 +118,7 @@ $user = user_get(bh_session_get_value('UID'));
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"logon\" action=\"logout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -132,7 +135,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\" nowrap=\"nowrap\">", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</td>\n";
+echo "                        <td align=\"center\" nowrap=\"nowrap\">", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.60 2008-08-20 19:02:58 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.61 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -109,7 +112,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "      <tr>\n";
 echo "        <td align=\"center\">\n";
@@ -125,7 +128,7 @@ echo "                    <td align=\"center\">\n";
 echo "                      <table class=\"posthead\" width=\"95%\">\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\">{$lang['username']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ''), 37, 15), "</td>\n";
+echo "                          <td align=\"left\">", form_input_text("logon", (isset($logon) ? htmlentities_array($logon) : ''), 37, 15), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </td>\n";

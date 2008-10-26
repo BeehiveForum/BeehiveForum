@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.355 2008-10-18 22:24:09 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.356 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,10 +60,10 @@ function get_forum_data()
 
     if (!$db_get_forum_data = db_connect()) return false;
 
-    if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
-        $webtag = trim(_stripslashes($_GET['webtag']));
-    }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
-        $webtag = trim(_stripslashes($_POST['webtag']));
+    if (isset($_GET['webtag']) && strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
+        $webtag = trim(stripslashes_array($_GET['webtag']));
+    }elseif (isset($_POST['webtag']) && strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
+        $webtag = trim(stripslashes_array($_POST['webtag']));
     }
 
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
@@ -122,10 +122,10 @@ function get_forum_data()
 
 function get_webtag()
 {
-    if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
-        return trim(_stripslashes($_GET['webtag']));
-    }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
-        return trim(_stripslashes($_POST['webtag']));
+    if (isset($_GET['webtag']) && strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
+        return trim(stripslashes_array($_GET['webtag']));
+    }elseif (isset($_POST['webtag']) && strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
+        return trim(stripslashes_array($_POST['webtag']));
     }
 
     return false;
@@ -220,7 +220,7 @@ function forum_closed_message()
 
     }else {
 
-        html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], _htmlentities($forum_name)), '600', 'center');
+        html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], htmlentities_array($forum_name)), '600', 'center');
     }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -269,7 +269,7 @@ function forum_restricted_message()
             $apply_for_access_text = sprintf($lang['toapplyforaccessplease'], $forum_owner_pm_link);
 
             html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
-            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name), $apply_for_access_text));
+            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), $apply_for_access_text));
 
             if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
                 html_display_warning_msg($lang['adminforumclosedtip'], '600', 'left');
@@ -281,7 +281,7 @@ function forum_restricted_message()
         }else {
 
             html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
-            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name), ''));
+            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), ''));
             html_draw_bottom();
         }
     }
@@ -362,8 +362,8 @@ function forum_check_password($forum_fid)
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
-        echo "    ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "    ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
+        echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "    ", form_input_hidden('final_uri', htmlentities_array(get_request_uri())), "\n";
         echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
         echo "      <tr>\n";
         echo "        <td align=\"left\">\n";
@@ -378,7 +378,7 @@ function forum_check_password($forum_fid)
         echo "                <table class=\"posthead\" width=\"90%\">\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">{$lang['passwd']}:</td>\n";
-        echo "                    <td align=\"left\">", form_input_password('forum_password', _htmlentities($password), 40, false, "autocomplete=\"off\""), form_input_hidden("forum_passhash", _htmlentities($passhash)), "</td>\n";
+        echo "                    <td align=\"left\">", form_input_password('forum_password', htmlentities_array($password), 40, false, "autocomplete=\"off\""), form_input_hidden("forum_passhash", htmlentities_array($passhash)), "</td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">&nbsp;</td>\n";
@@ -2632,9 +2632,9 @@ function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute
 
 function forum_self_clean_check_xml()
 {
-    if (isset($_SERVER['PHP_SELF']) && strlen(trim(_stripslashes($_SERVER['PHP_SELF']))) > 0) {
+    if (isset($_SERVER['PHP_SELF']) && strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
 
-        $script_filename = basename(trim(_stripslashes($_SERVER['PHP_SELF'])));
+        $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
 
         if (in_array($script_filename, array('pm.php', 'user_stats.php'))) {
 

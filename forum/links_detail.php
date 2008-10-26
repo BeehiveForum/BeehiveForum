@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.111 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.112 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -179,9 +182,9 @@ if (!user_is_guest()) {
 
     if (isset($_POST['addcomment'])) {
 
-        if (isset($_POST['comment']) && strlen(trim(_stripslashes($_POST['comment']))) > 0) {
+        if (isset($_POST['comment']) && strlen(trim(stripslashes_array($_POST['comment']))) > 0) {
 
-            $comment = trim(_stripslashes($_POST['comment']));
+            $comment = trim(stripslashes_array($_POST['comment']));
 
             links_add_comment($lid, $uid, $comment);
             $success_msg = $lang['commentadded'];
@@ -223,9 +226,9 @@ if (!user_is_guest()) {
                 $valid = false;
             }
 
-            if (isset($_POST['title']) && strlen(trim(_stripslashes($_POST['title']))) > 0) {
+            if (isset($_POST['title']) && strlen(trim(stripslashes_array($_POST['title']))) > 0) {
 
-                $title = trim(_stripslashes($_POST['title']));
+                $title = trim(stripslashes_array($_POST['title']));
 
             }else {
 
@@ -233,8 +236,8 @@ if (!user_is_guest()) {
                 $valid = false;
             }
 
-            if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
-                $description = trim(_stripslashes($_POST['description']));
+            if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
+                $description = trim(stripslashes_array($_POST['description']));
             }else {
                 $description = "";
             }
@@ -287,7 +290,7 @@ $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0))
 
 html_draw_top('openprofile.js');
 
-echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</a></h1>\n";
+echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -315,15 +318,15 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
-echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 35 ? _htmlentities(substr($link['URI'], 0, 35)) . '&hellip;' : _htmlentities($link['URI']), "</a></td>\n";
+echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 35 ? htmlentities_array(substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(_htmlentities(format_user_name($link['LOGON'], $link['NICKNAME']))) : $lang['unknownuser']), "</td>\n";
+echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(htmlentities_array(format_user_name($link['LOGON'], $link['NICKNAME']))) : $lang['unknownuser']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
-echo "                      <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($link['DESCRIPTION'])), "</td>\n";
+echo "                      <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($link['DESCRIPTION'])), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
@@ -380,10 +383,10 @@ if (!user_is_guest()) {
     $vote = $vote ? $vote : -1;
 
     echo "<form accept-charset=\"utf-8\" name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "vote"), "\n";
-    echo "  ", form_input_hidden("lid", _htmlentities($lid)), "\n";
-    echo "  ", form_input_hidden("parent_fid", _htmlentities($parent_fid)), "\n";
+    echo "  ", form_input_hidden("lid", htmlentities_array($lid)), "\n";
+    echo "  ", form_input_hidden("parent_fid", htmlentities_array($parent_fid)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -392,7 +395,7 @@ if (!user_is_guest()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} ", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</td>";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} ", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -438,7 +441,7 @@ if (($comments_array = links_get_comments($lid))) {
     foreach ($comments_array as $comment_id => $comment) {
 
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" onclick=\"return openProfile({$comment['UID']}, '$webtag')\">";
-        $profile_link.= word_filter_add_ob_tags(_htmlentities(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";
+        $profile_link.= word_filter_add_ob_tags(htmlentities_array(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";
 
         if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
 
@@ -457,7 +460,7 @@ if (($comments_array = links_get_comments($lid))) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($comment['COMMENT'])), "</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($comment['COMMENT'])), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -480,10 +483,10 @@ if (($comments_array = links_get_comments($lid))) {
 if (!user_is_guest()) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "comment"), "\n";
-    echo "  ", form_input_hidden("lid", _htmlentities($lid)), "\n";
-    echo "  ", form_input_hidden("parent_fid", _htmlentities($parent_fid)), "\n";
+    echo "  ", form_input_hidden("lid", htmlentities_array($lid)), "\n";
+    echo "  ", form_input_hidden("parent_fid", htmlentities_array($parent_fid)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -492,7 +495,7 @@ if (!user_is_guest()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} ", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</td>";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} ", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -526,10 +529,10 @@ if (!user_is_guest()) {
 if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "moderation") . "\n";
-    echo "  ", form_input_hidden("lid", _htmlentities($lid)) . "\n";
-    echo "  ", form_input_hidden("parent_fid", _htmlentities($parent_fid)), "\n";
+    echo "  ", form_input_hidden("lid", htmlentities_array($lid)) . "\n";
+    echo "  ", form_input_hidden("parent_fid", htmlentities_array($parent_fid)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -549,15 +552,15 @@ if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) 
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("title", _htmlentities($link['TITLE']), 45, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("title", htmlentities_array($link['TITLE']), 45, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editaddress']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("uri", _htmlentities($link['URI']), 45, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("uri", htmlentities_array($link['URI']), 45, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editdescription']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($link['DESCRIPTION']), 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("description", htmlentities_array($link['DESCRIPTION']), 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

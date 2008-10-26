@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.112 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.113 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -129,7 +129,7 @@ function stats_output_xml()
 
             foreach ($user_stats['USERS'] as $active_user) {
 
-                $active_user['DISPLAY'] = _htmlentities(format_user_name($active_user['LOGON'], $active_user['NICKNAME']));
+                $active_user['DISPLAY'] = htmlentities_array(format_user_name($active_user['LOGON'], $active_user['NICKNAME']));
 
                 echo "      <user>\n";
                 echo "        <uid>", html_entity_to_decimal($active_user['UID']), "</uid>\n";
@@ -147,7 +147,7 @@ function stats_output_xml()
 
     if (($newest_user = stats_get_newest_user())) {
 
-        $newest_user['DISPLAY'] = _htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']));
+        $newest_user['DISPLAY'] = htmlentities_array(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']));
 
         echo "    <newest>\n";
         echo "      <uid>", html_entity_to_decimal($newest_user['UID']), "</uid>\n";
@@ -175,7 +175,7 @@ function stats_output_xml()
 
     if (($longest_thread = stats_get_longest_thread())) {
 
-        $longest_thread_title = _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']));
+        $longest_thread_title = htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']));
         $longest_thread_post_count = number_format($longest_thread['LENGTH'], 0, ",", ",");
 
         echo "    <longest>\n";

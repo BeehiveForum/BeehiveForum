@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.37 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.38 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -190,8 +190,8 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
         while (($profile_item = db_fetch_array($result))) {
 
-            $profile_header_array[$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
-            $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
+            $profile_header_array[$profile_item['PIID']] = htmlentities_array($profile_item['ITEM_NAME']);
+            $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = htmlentities_array($profile_item['ITEM_NAME']);
         }
     }
 

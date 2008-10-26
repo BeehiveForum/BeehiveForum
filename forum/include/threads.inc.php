@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.329 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.330 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1686,10 +1686,10 @@ function thread_list_draw_top($mode)
     }
 
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("mode", $available_views, _htmlentities($mode), "onchange=\"submit()\""), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("mode", $available_views, htmlentities_array($mode), "onchange=\"submit()\""), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

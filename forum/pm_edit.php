@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.135 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.136 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -247,9 +250,9 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
-        $t_subject = trim(_stripslashes($_POST['t_subject']));
+        $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
     }else {
 
@@ -257,9 +260,9 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(stripslashes_array($_POST['t_content']));
 
         $post->setContent($t_content);
         $t_content = $post->getContent();
@@ -325,13 +328,13 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
-        $t_subject = trim(_stripslashes($_POST['t_subject']));
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+        $t_subject = trim(stripslashes_array($_POST['t_subject']));
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(stripslashes_array($_POST['t_content']));
 
         $post->setContent($t_content);
 
@@ -407,8 +410,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('mid', _htmlentities($mid)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -442,13 +445,13 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></td>\n";
+echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -575,7 +578,7 @@ echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="clo
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$uid', '$aid', '$webtag');\"");
-    echo form_input_hidden('aid', _htmlentities($aid));
+    echo form_input_hidden('aid', htmlentities_array($aid));
 }
 
 echo "                        </td>\n";

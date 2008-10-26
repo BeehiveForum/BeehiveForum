@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.66 2008-09-06 19:23:30 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.67 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -166,15 +169,15 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_top_link_title']) && strlen(trim(_stripslashes($_POST['t_top_link_title']))) > 0) {
-        $t_top_link_title = trim(_stripslashes($_POST['t_top_link_title']));
+    if (isset($_POST['t_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_top_link_title']))) > 0) {
+        $t_top_link_title = trim(stripslashes_array($_POST['t_top_link_title']));
     }else {
         $error_msg_array[] = $lang['notoplevellinktitlespecified'];
         $valid = false;
     }
 
-    if (isset($_POST['t_old_top_link_title']) && strlen(trim(_stripslashes($_POST['t_old_top_link_title']))) > 0) {
-        $t_old_top_link_title = trim(_stripslashes($_POST['t_old_top_link_title']));
+    if (isset($_POST['t_old_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_old_top_link_title']))) > 0) {
+        $t_old_top_link_title = trim(stripslashes_array($_POST['t_old_top_link_title']));
     }else {
         $t_old_top_link_title = "";
     }
@@ -199,16 +202,16 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_title']) && strlen(trim(_stripslashes($_POST['t_title']))) > 0) {
-        $t_title = trim(_stripslashes($_POST['t_title']));
+    if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
+        $t_title = trim(stripslashes_array($_POST['t_title']));
     }else {
         $valid = false;
         $error_msg_array[] = $lang['youmustenteralinktitle'];
     }
 
-    if (isset($_POST['t_uri']) && strlen(trim(_stripslashes($_POST['t_uri']))) > 0) {
+    if (isset($_POST['t_uri']) && strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
 
-        $t_uri = trim(_stripslashes($_POST['t_uri']));
+        $t_uri = trim(stripslashes_array($_POST['t_uri']));
 
         if (preg_match('/^[a-z0-9]+:\/\//iu', $t_uri) < 1) {
 
@@ -243,16 +246,16 @@ if (isset($_POST['delete'])) {
 
         $lid = $_POST['lid'];
 
-        if (isset($_POST['t_title']) && strlen(trim(_stripslashes($_POST['t_title']))) > 0) {
-            $t_title = trim(_stripslashes($_POST['t_title']));
+        if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
+            $t_title = trim(stripslashes_array($_POST['t_title']));
         }else {
             $valid = false;
             $error_msg_array[] = $lang['youmustenteralinktitle'];
         }
 
-        if (isset($_POST['t_uri']) && strlen(trim(_stripslashes($_POST['t_uri']))) > 0) {
+        if (isset($_POST['t_uri']) && strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
 
-            $t_uri = trim(_stripslashes($_POST['t_uri']));
+            $t_uri = trim(stripslashes_array($_POST['t_uri']));
 
             if (preg_match('/^[a-z0-9]+:\/\//iu', $t_uri) < 1) {
 
@@ -265,14 +268,14 @@ if (isset($_POST['delete'])) {
             $t_uri = "";
         }
 
-        if (isset($_POST['t_old_title']) && strlen(trim(_stripslashes($_POST['t_old_title']))) > 0) {
-            $t_old_title = trim(_stripslashes($_POST['t_old_title']));
+        if (isset($_POST['t_old_title']) && strlen(trim(stripslashes_array($_POST['t_old_title']))) > 0) {
+            $t_old_title = trim(stripslashes_array($_POST['t_old_title']));
         }else {
             $t_old_title = "";
         }
 
-        if (isset($_POST['t_old_uri']) && strlen(trim(_stripslashes($_POST['t_old_uri']))) > 0) {
-            $t_old_uri = trim(_stripslashes($_POST['t_old_uri']));
+        if (isset($_POST['t_old_uri']) && strlen(trim(stripslashes_array($_POST['t_old_uri']))) > 0) {
+            $t_old_uri = trim(stripslashes_array($_POST['t_old_uri']));
         }else {
             $t_old_uri = "";
         }
@@ -339,9 +342,9 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_forum_links.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addlink', 'true'), "\n";
-    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+    echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -357,11 +360,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinktitle']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? _htmlentities(_stripslashes($_POST['t_title'])) : ""), 40, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : ""), 40, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinklocation']}:</td>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? _htmlentities(_stripslashes($_POST['t_uri'])) : ""), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? htmlentities_array(stripslashes_array($_POST['t_uri'])) : ""), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -416,7 +419,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     html_draw_top();
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(_htmlentities($forum_link['TITLE'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -425,10 +428,10 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_forum_links.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('lid', _htmlentities($lid)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('lid', htmlentities_array($lid)), "\n";
     echo "  ", form_input_hidden("t_delete[$lid]", "Y"), "\n";
-    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+    echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -444,11 +447,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinktitle']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? _htmlentities(_stripslashes($_POST['t_title'])) : (isset($forum_link['TITLE']) ? _htmlentities($forum_link['TITLE']) : "")), 40, 32), form_input_hidden('t_old_title', _htmlentities($forum_link['TITLE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : (isset($forum_link['TITLE']) ? htmlentities_array($forum_link['TITLE']) : "")), 40, 32), form_input_hidden('t_old_title', htmlentities_array($forum_link['TITLE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinklocation']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? _htmlentities(_stripslashes($_POST['t_uri'])) : (isset($forum_link['URI']) ? _htmlentities($forum_link['URI']) : "")), 40, 255), form_input_hidden('t_old_uri', _htmlentities($forum_link['URI'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? htmlentities_array(stripslashes_array($_POST['t_uri'])) : (isset($forum_link['URI']) ? htmlentities_array($forum_link['URI']) : "")), 40, 255), form_input_hidden('t_old_uri', htmlentities_array($forum_link['URI'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -515,8 +518,8 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_links.php\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -542,22 +545,22 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
             if ($forum_links_array['forum_links_count'] == 1) {
 
-                echo "                  <td align=\"left\" colspan=\"2\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(_htmlentities($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\" colspan=\"2\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
 
             }elseif ($link_index == $forum_links_array['forum_links_count']) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(_htmlentities($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
 
             }elseif ($link_index > 1) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(_htmlentities($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
 
             }else {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(_htmlentities($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
             }
 
             echo "                </tr>\n";
@@ -589,8 +592,8 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "</form>\n";
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_links.php\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -606,7 +609,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['toplinkcaption']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? _htmlentities(_stripslashes($_POST['t_top_link_title'])) : _htmlentities(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), 40, 32), form_input_hidden('t_old_top_link_title', _htmlentities(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? htmlentities_array(stripslashes_array($_POST['t_top_link_title'])) : htmlentities_array(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), 40, 32), form_input_hidden('t_old_top_link_title', htmlentities_array(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

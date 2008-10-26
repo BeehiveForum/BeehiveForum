@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.258 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.259 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -34,6 +34,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -132,8 +135,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+    $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_users.php?webtag=$webtag";
 }
@@ -191,9 +194,9 @@ $user_perms = perm_get_forum_user_permissions($uid);
 
 if (isset($_POST['action_submit'])) {
 
-    if (isset($_POST['action']) && strlen(trim(_stripslashes($_POST['action']))) > 0) {
+    if (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
 
-        $post_action = trim(_stripslashes($_POST['action']));
+        $post_action = trim(stripslashes_array($_POST['action']));
 
         if ($post_action == 'edit_details') {
 
@@ -342,9 +345,9 @@ if (isset($_POST['action_submit'])) {
         exit;
     }
 
-    if (isset($_POST['t_new_password']) && strlen(trim(_stripslashes($_POST['t_new_password']))) > 0) {
+    if (isset($_POST['t_new_password']) && strlen(trim(stripslashes_array($_POST['t_new_password']))) > 0) {
 
-        $t_new_password = trim(_stripslashes($_POST['t_new_password']));
+        $t_new_password = trim(stripslashes_array($_POST['t_new_password']));
 
         if (($user_logon = user_get_logon($uid) && $fuid = bh_session_get_value('UID'))) {
 
@@ -568,10 +571,10 @@ if (isset($_POST['action_submit'])) {
     }
 }
 
-if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) {
-    $action = trim(_stripslashes($_GET['action']));
-}elseif (isset($_POST['action']) && strlen(trim(_stripslashes($_POST['action']))) > 0) {
-    $action = trim(_stripslashes($_POST['action']));
+if (isset($_GET['action']) && strlen(trim(stripslashes_array($_GET['action']))) > 0) {
+    $action = trim(stripslashes_array($_GET['action']));
+}elseif (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
+    $action = trim(stripslashes_array($_POST['action']));
 }
 
 if (isset($action) && strlen(trim($action)) > 0) {
@@ -589,9 +592,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_top('admin.js');
 
         if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
@@ -599,10 +602,10 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+        echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -651,9 +654,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
         $user_history_array = admin_get_user_history($user['UID']);
 
         if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         if (is_array($user_history_array) && sizeof($user_history_array) < 1) {
@@ -663,10 +666,10 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+        echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -837,9 +840,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
         }
 
         if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
@@ -849,10 +852,10 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+        echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -886,8 +889,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-                echo "                              <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
-                echo "                              <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
+                echo "                              <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(htmlentities_array($user_alias['LOGON'])), "</a></td>\n";
+                echo "                              <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(htmlentities_array($user_alias['NICKNAME'])), "</td>\n";
 
                 if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
@@ -1028,18 +1031,18 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_top('admin.js');
 
         if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+        echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -1089,18 +1092,18 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_top('admin.js');
 
         if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+        echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -1147,18 +1150,18 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_top('admin.js');
 
         if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-        echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+        echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -1174,7 +1177,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? _htmlentities($_POST['t_post_count']) : _htmlentities($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? htmlentities_array($_POST['t_post_count']) : htmlentities_array($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -1206,9 +1209,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
 html_draw_top('admin.js', 'openprofile.js');
 
 if (forum_check_webtag_available($webtag)) {
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }else {
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -1235,9 +1238,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
@@ -1256,11 +1259,11 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openProfile($uid, '$webtag')\">", _htmlentities($user['LOGON']), "</a></td>\n";
+    echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openProfile($uid, '$webtag')\">", htmlentities_array($user['LOGON']), "</a></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";
-    echo "                        <td align=\"left\">", _htmlentities($user['NICKNAME']), "</td>\n";
+    echo "                        <td align=\"left\">", htmlentities_array($user['NICKNAME']), "</td>\n";
     echo "                      </tr>\n";
 
     if (email_address_valid($user['EMAIL'])) {
@@ -1661,10 +1664,10 @@ if (forum_check_webtag_available($webtag)) {
 
         foreach ($folder_array as $fid => $folder) {
 
-            echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
+            echo "                                  ", form_input_hidden("t_update_perms_array[]", htmlentities_array($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
             echo "                                    </tr>\n";

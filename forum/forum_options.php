@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.145 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.146 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -155,7 +158,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['language'])) {
-        $user_prefs['LANGUAGE'] = trim(_stripslashes($_POST['language']));
+        $user_prefs['LANGUAGE'] = trim(stripslashes_array($_POST['language']));
     }else {
         $user_prefs['LANGUAGE'] = "";
     }
@@ -329,7 +332,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['posts_per_page'])) {
-        $user_prefs['POSTS_PER_PAGE'] = trim(_stripslashes($_POST['posts_per_page']));
+        $user_prefs['POSTS_PER_PAGE'] = trim(stripslashes_array($_POST['posts_per_page']));
     }else {
         $user_prefs['POSTS_PER_PAGE'] = 20;
     }
@@ -341,7 +344,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['font_size'])) {
-        $user_prefs['FONT_SIZE'] = trim(_stripslashes($_POST['font_size']));
+        $user_prefs['FONT_SIZE'] = trim(stripslashes_array($_POST['font_size']));
     }else {
         $user_prefs['FONT_SIZE'] = 10;
     }
@@ -352,9 +355,9 @@ if (isset($_POST['save'])) {
         $user_prefs_global['FONT_SIZE'] = false;
     }
 
-    if (isset($_POST['style']) && style_exists(trim(_stripslashes($_POST['style'])))) {
+    if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
 
-        $user_prefs['STYLE'] = trim(_stripslashes($_POST['style']));
+        $user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
         $user_prefs_global['STYLE'] = false;
 
     }else {
@@ -364,7 +367,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['emoticons'])) {
-        $user_prefs['EMOTICONS'] = trim(_stripslashes($_POST['emoticons']));
+        $user_prefs['EMOTICONS'] = trim(stripslashes_array($_POST['emoticons']));
         $user_prefs_global['EMOTICONS'] = false;
     }else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
@@ -372,7 +375,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['start_page'])) {
-        $user_prefs['START_PAGE'] = trim(_stripslashes($_POST['start_page']));
+        $user_prefs['START_PAGE'] = trim(stripslashes_array($_POST['start_page']));
     }else {
         $user_prefs['START_PAGE'] = 0;
     }
@@ -511,7 +514,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forum_options.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -527,7 +530,7 @@ echo "                  <td align=\"left\" rowspan=\"3\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("timezone", _htmlentities($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -565,7 +568,7 @@ echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['preferredlang']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("language", _htmlentities($available_langs), (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", '', (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("language_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -691,7 +694,7 @@ if (($available_styles = styles_get_available())) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("style", _htmlentities($available_styles), (isset($user_prefs['STYLE']) && style_exists($user_prefs['STYLE'])) ? _htmlentities($user_prefs['STYLE']) : _htmlentities(forum_get_setting('default_style', false, 'default'))), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($user_prefs['STYLE']) && style_exists($user_prefs['STYLE'])) ? htmlentities_array($user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', false, 'default'))), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -699,7 +702,7 @@ if (sizeof($available_emoticons) > 1) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('', '$webtag')\">{$lang['preview']}</a>]:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("emoticons", _htmlentities($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? _htmlentities($user_prefs['EMOTICONS']) : _htmlentities(forum_get_setting('default_emoticons', false, 'default'))), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default'))), "</td>\n";
     echo "                </tr>\n";
 }
 

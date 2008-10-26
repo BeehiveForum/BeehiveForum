@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.38 2008-09-21 14:06:35 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.39 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -192,15 +195,15 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($visitor['NAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($visitor['NAME'])), "</a></td>\n";
 
         }elseif ($visitor['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
         }
 
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
@@ -271,7 +274,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_visitor_log.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.75 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.76 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -89,7 +92,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['key']) && is_md5(trim(_stripslashes($_POST['key'])))) {
+    if (isset($_POST['key']) && is_md5(trim(stripslashes_array($_POST['key'])))) {
 
         $key = $_POST['key'];
 
@@ -99,7 +102,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
+    if (isset($_POST['pw']) && strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
 
         $pw = $_POST['pw'];
 
@@ -109,7 +112,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
 
         $cpw = $_POST['cpw'];
 
@@ -121,19 +124,19 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
 
-        if (_htmlentities($pw) != $pw) {
+        if (htmlentities_array($pw) != $pw) {
 
             $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
         }
 
-        if (!preg_match("/^[a-z0-9_-]+$/Diu", trim(_stripslashes($_POST['pw'])))) {
+        if (!preg_match("/^[a-z0-9_-]+$/Diu", trim(stripslashes_array($_POST['pw'])))) {
 
             $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;
         }
 
-        if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
+        if (strlen(trim(stripslashes_array($_POST['pw']))) < 6) {
 
             $error_msg_array[] = $lang['passwdtooshort'];
             $valid = false;
@@ -200,9 +203,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"forgot_pw\" action=\"change_pw.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
-echo "  ", form_input_hidden("key", _htmlentities($key)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
+echo "  ", form_input_hidden("key", htmlentities_array($key)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

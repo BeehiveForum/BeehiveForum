@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.90 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.91 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,19 +46,19 @@ function logon_get_cookies(&$username_array, &$password_array, &$passhash_array)
     // Username array
 
     if (!$username_array = bh_getcookie('bh_remember_username', 'is_array')) {
-        $username_array = explode(",", _stripslashes(bh_getcookie('bh_remember_username', 'strlen', '')));
+        $username_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_username', 'strlen', '')));
     }
 
     // Password array
 
     if (!$password_array = bh_getcookie('bh_remember_password', 'is_array')) {
-        $password_array = explode(",", _stripslashes(bh_getcookie('bh_remember_password', 'strlen', '')));
+        $password_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_password', 'strlen', '')));
     }
 
     // Passhash array
 
     if (!$passhash_array = bh_getcookie('bh_remember_passhash', 'is_array')) {
-        $passhash_array = explode(",", _stripslashes(bh_getcookie('bh_remember_passhash', 'strlen', '')));
+        $passhash_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_passhash', 'strlen', '')));
     }
 
     // Remove any invalid entries.
@@ -74,7 +74,7 @@ function logon_update_logon_cookie($old_logon, $new_logon)
 {
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
-    if (($key = _array_search($old_logon, $username_array)) !== false) {
+    if (($key = array_search_ci($old_logon, $username_array)) !== false) {
 
         $username_array[$key] = $new_logon;
 
@@ -105,7 +105,7 @@ function logon_update_password_cookie($logon, $password)
 {
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
-    if (($key = _array_search($logon, $username_array)) !== false) {
+    if (($key = array_search_ci($logon, $username_array)) !== false) {
 
         $password_array[$key] = str_repeat(chr(32), strlen($password));
         $passhash_array[$key] = md5($password);
@@ -164,7 +164,7 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
         // Search for the specified logon in the existing cookies
         // and remove it if it's found.
 
-        if (($key = _array_search($logon, $username_array)) !== false) {
+        if (($key = array_search_ci($logon, $username_array)) !== false) {
 
             unset($username_array[$key]);
             unset($password_array[$key]);
@@ -236,8 +236,8 @@ function logon_perform()
 
         // Prepare the form data.
 
-        $logon    = _stripslashes($_POST['user_logon']);
-        $password = _stripslashes($_POST['user_password']);
+        $logon    = stripslashes_array($_POST['user_logon']);
+        $password = stripslashes_array($_POST['user_password']);
 
         // Check if the user wants to save their password.
 
@@ -254,9 +254,9 @@ function logon_perform()
 
         }else {
 
-            if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
+            if (isset($_POST['user_passhash']) && is_md5(stripslashes_array($_POST['user_passhash']))) {
 
-                $passhash = _stripslashes($_POST['user_passhash']);
+                $passhash = stripslashes_array($_POST['user_passhash']);
 
             }else {
 
@@ -347,10 +347,10 @@ function logon_draw_form($logon_options)
     logon_unset_post_data();
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
-        echo form_input_hidden_array(_stripslashes($_POST));
+        echo form_input_hidden_array(stripslashes_array($_POST));
     }
 
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"265\">\n";
     echo "    <tr>\n";
@@ -374,7 +374,7 @@ function logon_draw_form($logon_options)
         echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
         echo "                        <td align=\"left\" nowrap=\"nowrap\">";
 
-        $username_dropdown_array = array_flip(_htmlentities($username_array));
+        $username_dropdown_array = array_flip(htmlentities_array($username_array));
         array_walk($username_dropdown_array, create_function('&$item, $key', '$item = $key;'));
 
         $username_dropdown_other = array(0 => array('name' => $lang['otherdotdotdot'], 'class' => 'bhlogonother'));
@@ -387,7 +387,7 @@ function logon_draw_form($logon_options)
         $current_logon = key($username_array);
 
         echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword('$webtag')\" autocomplete=\"off\"", "bhlogondropdown");
-        echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
+        echo form_input_hidden("user_logon", htmlentities_array($username_array[$current_logon]));
 
         $username_array_keys = array_keys($username_array);
 
@@ -397,8 +397,8 @@ function logon_draw_form($logon_options)
 
                 if (isset($passhash_array[$username_key]) && is_md5($passhash_array[$username_key])) {
 
-                    echo form_input_hidden("user_password$username_key", _htmlentities($password_array[$username_key]));
-                    echo form_input_hidden("user_passhash$username_key", _htmlentities($passhash_array[$username_key]));
+                    echo form_input_hidden("user_password$username_key", htmlentities_array($password_array[$username_key]));
+                    echo form_input_hidden("user_passhash$username_key", htmlentities_array($passhash_array[$username_key]));
 
                 }else {
 
@@ -422,7 +422,7 @@ function logon_draw_form($logon_options)
 
             if (isset($passhash_array[$current_logon]) && is_md5($passhash_array[$current_logon])) {
 
-                echo "                        <td align=\"left\">", form_input_password("user_password", _htmlentities($password_array[$current_logon]), 24, false, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", _htmlentities($passhash_array[$current_logon])), "</td>\n";
+                echo "                        <td align=\"left\">", form_input_password("user_password", htmlentities_array($password_array[$current_logon]), 24, false, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", htmlentities_array($passhash_array[$current_logon])), "</td>\n";
 
             }else {
 
@@ -453,11 +453,11 @@ function logon_draw_form($logon_options)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? _htmlentities($password_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? _htmlentities($passhash_array[0]) : "")), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? htmlentities_array($password_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? htmlentities_array($passhash_array[0]) : "")), "</td>\n";
             echo "                      </tr>\n";
         }
     }
@@ -494,9 +494,9 @@ function logon_draw_form($logon_options)
             echo "</form>\n";
         }
 
-        if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+        if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-            $final_uri = rawurlencode(trim(_stripslashes($_GET['final_uri'])));
+            $final_uri = rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
 
             $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
             $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
@@ -525,7 +525,7 @@ function logon_draw_form($logon_options)
 function logon_unset_post_data()
 {
     if (!$username_array = bh_getcookie('bh_remember_username', 'is_array')) {
-        $username_array = explode(",", _stripslashes(bh_getcookie('bh_remember_username', 'strlen', '')));
+        $username_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_username', 'strlen', '')));
     }
 
     for ($i = 0; $i < sizeof($username_array); $i++) {

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.97 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: email.php,v 1.98 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -157,9 +160,9 @@ if (isset($_POST['send'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
-        $subject = trim(_stripslashes($_POST['t_subject']));
+        $subject = trim(stripslashes_array($_POST['t_subject']));
 
     }else {
 
@@ -167,9 +170,9 @@ if (isset($_POST['send'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_message']) && strlen(trim(_stripslashes($_POST['t_message']))) > 0) {
+    if (isset($_POST['t_message']) && strlen(trim(stripslashes_array($_POST['t_message']))) > 0) {
 
-        $message = trim(_stripslashes($_POST['t_message']));
+        $message = trim(stripslashes_array($_POST['t_message']));
 
     }else {
 
@@ -179,13 +182,13 @@ if (isset($_POST['send'])) {
 
     if (!user_allow_email($to_user['UID'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(_htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
+        $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
         $valid = false;
     }
 
     if (!email_address_valid($to_user['EMAIL'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(_htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
+        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
         $valid = false;
     }
 
@@ -208,14 +211,14 @@ if (isset($_POST['send'])) {
     }
 }
 
-$title = sprintf($lang['sendemailtouser'], _htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME'])));
+$title = sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME'])));
 
 html_draw_top("title=$title", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_email\" action=\"email.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("to_uid", _htmlentities($to_uid)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("to_uid", htmlentities_array($to_uid)), "\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '480', 'center');
@@ -229,22 +232,22 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"480\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf($lang['sendemailtouser'], _htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
-echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($from_user['NICKNAME'])), " (", word_filter_add_ob_tags(_htmlentities($from_user['EMAIL'])), ")</td>\n";
+echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($from_user['NICKNAME'])), " (", word_filter_add_ob_tags(htmlentities_array($from_user['EMAIL'])), ")</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("t_subject", (isset($subject) ? _htmlentities($subject) : ''), 54, 128), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", (isset($subject) ? htmlentities_array($subject) : ''), 54, 128), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
-echo "                        <td align=\"left\">", form_textarea("t_message", (isset($message) ? _htmlentities($message) : ''), 12, 51), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("t_message", (isset($message) ? htmlentities_array($message) : ''), 12, 51), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

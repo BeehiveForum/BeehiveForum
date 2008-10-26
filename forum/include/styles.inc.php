@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.26 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.27 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,11 +60,11 @@ function styles_get_available()
                             if (@file_exists("forums/$webtag/styles/$file/desc.txt")) {
 
                                 $local_style_name = implode("", file("forums/$webtag/styles/$file/desc.txt"));
-                                $available_forum_styles[$file] = _htmlentities(trim($local_style_name));
+                                $available_forum_styles[$file] = htmlentities_array(trim($local_style_name));
 
                             }else {
 
-                                $available_forum_styles[$file] = _htmlentities(trim($file));
+                                $available_forum_styles[$file] = htmlentities_array(trim($file));
                             }
                         }
                     }
@@ -88,11 +88,11 @@ function styles_get_available()
                         if (@file_exists("styles/$file/desc.txt")) {
 
                             $global_style_name = implode("", file("styles/$file/desc.txt"));
-                            $available_global_styles[$file] = _htmlentities(trim($global_style_name));
+                            $available_global_styles[$file] = htmlentities_array(trim($global_style_name));
 
                         }else {
 
-                            $available_global_styles[$file] = _htmlentities(trim($file));
+                            $available_global_styles[$file] = htmlentities_array(trim($file));
                         }
                     }
                 }

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.141 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.142 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -33,6 +33,9 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -170,9 +173,9 @@ if (isset($_POST['t_newthread'])) {
 
     $new_thread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
-        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+        $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
 
     }else {
 
@@ -198,9 +201,9 @@ if (isset($_POST['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = _stripslashes($_POST['t_content']);
+        $t_content = stripslashes_array($_POST['t_content']);
 
     }else {
 
@@ -214,7 +217,7 @@ if (isset($_POST['t_newthread'])) {
 
         if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
 
-            $t_content = _stripslashes($_POST['t_content']);
+            $t_content = stripslashes_array($_POST['t_content']);
 
         }else {
 
@@ -265,8 +268,8 @@ if (isset($_POST['t_sig_html'])) {
 
     $fetched_sig = false;
 
-    if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
-        $t_sig = _stripslashes($_POST['t_sig']);
+    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+        $t_sig = stripslashes_array($_POST['t_sig']);
     }else {
         $t_sig = "";
     }
@@ -613,7 +616,7 @@ if (!$new_thread) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
-echo form_input_hidden('t_dedupe', _htmlentities($t_dedupe));
+echo form_input_hidden('t_dedupe', htmlentities_array($t_dedupe));
 
 if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
@@ -629,7 +632,7 @@ if ($new_thread) {
     echo "<p>{$lang['selectfolder']}: ";
     echo light_folder_draw_dropdown($t_fid, "t_fid"), "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
-    echo light_form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 30, 64);
+    echo light_form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 30, 64);
     echo "</p>\n";
     echo form_input_hidden("t_newthread", "Y");
 
@@ -653,8 +656,8 @@ if ($new_thread) {
     }else {
 
         echo "<h1>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h1>\n";
-        echo form_input_hidden("t_tid", _htmlentities($reply_to_tid));
-        echo form_input_hidden("t_rpid", _htmlentities($reply_to_pid))."\n";
+        echo form_input_hidden("t_tid", htmlentities_array($reply_to_tid));
+        echo form_input_hidden("t_rpid", htmlentities_array($reply_to_pid))."\n";
     }
 }
 
@@ -663,10 +666,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
-echo "<p>", light_form_textarea("t_content", _htmlentities($post->getTidyContent()), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", _htmlentities($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", _htmlentities($t_sig_html))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", htmlentities_array($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
 }
 
 if ($allow_html == true) {

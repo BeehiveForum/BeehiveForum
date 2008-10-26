@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.41 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.42 2008-10-26 16:56:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -387,7 +387,7 @@ function rmdir_recursive($path)
 
 function unregister_globals()
 {
-    if (ini_get(register_globals)) {
+    if (ini_get('register_globals')) {
 
         $super_globals_array = array('_REQUEST', '_SESSION', '_SERVER', '_ENV', '_FILES');
 

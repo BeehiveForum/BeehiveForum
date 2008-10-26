@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.91 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.92 2008-10-26 16:56:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -74,7 +74,7 @@ function logon_update_logon_cookie($old_logon, $new_logon)
 {
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
-    if (($key = array_search_ci($old_logon, $username_array)) !== false) {
+    if (($key = array_isearch($old_logon, $username_array)) !== false) {
 
         $username_array[$key] = $new_logon;
 
@@ -105,7 +105,7 @@ function logon_update_password_cookie($logon, $password)
 {
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
-    if (($key = array_search_ci($logon, $username_array)) !== false) {
+    if (($key = array_isearch($logon, $username_array)) !== false) {
 
         $password_array[$key] = str_repeat(chr(32), strlen($password));
         $passhash_array[$key] = md5($password);
@@ -164,7 +164,7 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
         // Search for the specified logon in the existing cookies
         // and remove it if it's found.
 
-        if (($key = array_search_ci($logon, $username_array)) !== false) {
+        if (($key = array_isearch($logon, $username_array)) !== false) {
 
             unset($username_array[$key]);
             unset($password_array[$key]);

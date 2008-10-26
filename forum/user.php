@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.73 2008-09-07 13:41:05 decoyduck Exp $ */
+/* $Id: user.php,v 1.74 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -121,9 +124,9 @@ html_draw_top('frame_set_html', 'pm_popup_disabled');
 
 $frameset = new html_frameset_cols('250,*');
 
-if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
+if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0) {
 
-    $requested_page = trim(_stripslashes($_GET['page']));
+    $requested_page = trim(stripslashes_array($_GET['page']));
 
     $available_pages = get_available_user_control_files();
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));

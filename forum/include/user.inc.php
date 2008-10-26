@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.366 2008-09-13 20:32:58 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.367 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1540,6 +1540,43 @@ function user_prefs_prep_attachments($image_attachments_array)
     }
 
     return $attachments_array_prepared;
+}
+
+/**
+* Get Local Time.
+*
+* Get's user's local time as a Unix timestamp by checking their timezone,
+* GMT and DST offsets and day light savings settings.
+*
+* @return integer
+* @param void
+*/
+
+function user_get_local_time()
+{
+    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
+        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+    }
+
+    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+    }
+
+    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
+        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
+    }
+
+    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
+        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+    }
+
+    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
+    }else {
+        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
+    }
+
+    return $local_time;
 }
 
 ?>

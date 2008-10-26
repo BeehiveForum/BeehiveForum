@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_options.php,v 1.10 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: folder_options.php,v 1.11 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -212,7 +215,7 @@ if (isset($_POST['save'])) {
 
 html_draw_top("basetarget=_blank", "folder_options.js");
 
-echo "<h1>{$lang['folderoptions']} &raquo; ", word_filter_add_ob_tags(_htmlentities($folder_data['TITLE'])), "</h1>\n";
+echo "<h1>{$lang['folderoptions']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -226,8 +229,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"folder_options\" action=\"folder_options.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("fid", _htmlentities($fid)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("fid", htmlentities_array($fid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

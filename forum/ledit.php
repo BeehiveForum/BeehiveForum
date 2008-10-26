@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.44 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.45 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -31,6 +31,9 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -330,9 +333,9 @@ if ($allow_html == false) {
     $sig->setHTML(false, true);
 }
 
-if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-    $t_content = trim(_stripslashes($_POST['t_content']));
+    $t_content = trim(stripslashes_array($_POST['t_content']));
 
     if ($post_html && attachment_embed_check($t_content)) {
 
@@ -350,9 +353,9 @@ if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content'])
     }
 }
 
-if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
+if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
 
-    $t_sig = trim(_stripslashes($_POST['t_sig']));
+    $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
     if (attachment_embed_check($t_sig)) {
 
@@ -596,19 +599,19 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo form_input_hidden("t_msg", _htmlentities($edit_msg));
-echo form_input_hidden("t_to_uid", _htmlentities($to_uid));
-echo form_input_hidden("t_from_uid", _htmlentities($from_uid));
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo form_input_hidden("t_msg", htmlentities_array($edit_msg));
+echo form_input_hidden("t_to_uid", htmlentities_array($to_uid));
+echo form_input_hidden("t_from_uid", htmlentities_array($from_uid));
 
 if ($valid && isset($_POST['preview'])) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
 }
 
-echo "<p>", light_form_textarea("t_content", _htmlentities($post->getTidyContent()), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", _htmlentities($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", htmlentities_array($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
 }
 
 if ($allow_html == true) {

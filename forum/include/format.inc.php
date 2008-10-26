@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.171 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.172 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,6 +38,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 /**
@@ -315,33 +316,15 @@ function format_time_display($seconds, $abbrv_units = true)
 * @param mixed $var - variable to encode - supports array of strings.
 */
 
-function _htmlentities($var)
+function htmlentities_array($var)
 {
     $var = smart_quotes_clean_up($var);
 
     if (is_array($var)) {
-        return array_map('_htmlentities', $var);
+        return array_map('htmlentities_array', $var);
     }
 
     return htmlentities($var, ENT_COMPAT, 'UTF-8');
-}
-
-/**
-* UTF-8 and ENT_COMPAT enforced html_entity_decode
-*
-* Ensures use of UTF-8 and ENT_COMPAT settings for html_entity_decode.
-*
-* @return mixed
-* @param mixed $var - variable to encode - supports array of strings.
-*/
-
-function _htmlentities_decode($var)
-{
-    if (is_array($var)) {
-        return array_map('_htmlentities_decode', $var);
-    }
-
-    return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
 }
 
 /**
@@ -569,11 +552,11 @@ function strip_paragraphs($string)
 * @param mixed  $var - Variable to convert (array or string)
 */
 
-function _stripslashes($var)
+function stripslashes_array($var)
 {
    if (is_array($var)) {
 
-       return array_map('_stripslashes', $var);
+       return array_map('stripslashes_array', $var);
 
    }elseif (get_magic_quotes_gpc() == 1) {
 
@@ -626,7 +609,7 @@ function in_range($var, $low, $high)
 * @param mixed  $var - Variable to convert (array or string)
 */
 
-function _array_search($needle, $haystack)
+function array_search_ci($needle, $haystack)
 {
     foreach ($haystack as $key => $value) {
 
@@ -662,43 +645,6 @@ function is_md5($hash)
 }
 
 /**
-* Get Local Time.
-*
-* Get's user's local time as a Unix timestamp by checking their timezone,
-* GMT and DST offsets and day light savings settings.
-*
-* @return integer
-* @param void
-*/
-
-function get_local_time()
-{
-    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
-        $timezone_id = forum_get_setting('forum_timezone', false, 27);
-    }
-
-    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
-    }
-
-    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
-        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
-    }
-
-    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
-        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
-    }
-
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
-        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
-    }else {
-        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
-    }
-
-    return $local_time;
-}
-
-/**
 * Calulate Age from DOB
 *
 * Calculates age from MySQL DATE field (YYYY-MM-DD)
@@ -715,7 +661,7 @@ function format_age($dob)
 
         list(, $birth_year, $birth_month, $birth_day) = $matches_array;
 
-        list($today_day, $today_month, $today_year) = explode('-', date('j-n-Y', get_local_time()));
+        list($today_day, $today_month, $today_year) = explode('-', date('j-n-Y', user_get_local_time()));
 
         $age = ($today_year - $birth_year);
 

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.111 2008-10-11 17:40:03 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.112 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -120,8 +123,8 @@ mkdir_recursive("forums/$webtag", 0755);
 
 // Check to see if we're submitting new page or retrieving the old one.
 
-if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
-    $t_content = trim(_stripslashes($_POST['t_content']));
+if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    $t_content = trim(stripslashes_array($_POST['t_content']));
 }else {
     $t_content = forum_load_start_page();
 }
@@ -163,7 +166,7 @@ if (isset($_POST['save'])) {
             html_draw_bottom();
             exit;
 
-        }else if (isset($_FILES['cssfile']['type']) && trim(_stripslashes($_FILES['cssfile']['type'])) == 'text/css') {
+        }else if (isset($_FILES['cssfile']['type']) && trim(stripslashes_array($_FILES['cssfile']['type'])) == 'text/css') {
 
             $path_parts = pathinfo($_FILES['cssfile']['name']);
 
@@ -224,7 +227,7 @@ echo $tools->preload();
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"startpage\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

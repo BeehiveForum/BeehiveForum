@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.149 2008-08-22 19:07:20 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.150 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -327,7 +330,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         echo "                  <tr>\n";
         echo "                    <td align=\"left\" valign=\"top\"><span title=\"", format_time($admin_log_entry['CREATED'], true), "\">", format_time($admin_log_entry['CREATED']), "</td>\n";
 
-        $entry_array = _htmlentities(explode("\x00", $admin_log_entry['ENTRY']));
+        $entry_array = htmlentities_array(explode("\x00", $admin_log_entry['ENTRY']));
 
         foreach ($entry_array as $key => $value) {
             if (strlen($value) < 1) $entry_array[$key] = "Unknown";
@@ -802,7 +805,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         if ($auto_update === true) {
             echo "                    <td align=\"left\" valign=\"top\">{$lang['none']}</td>\n";
         }else {
-            echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(_htmlentities(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']))), "</a></td>\n";
+            echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']))), "</a></td>\n";
         }
 
         echo "                    <td align=\"left\">", $action_text, "</td>\n";
@@ -831,7 +834,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_viewlog.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

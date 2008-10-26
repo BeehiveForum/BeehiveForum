@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.27 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.28 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -97,7 +100,7 @@ $forum_password = "";
 
 if (isset($_POST['forum_password'])) {
 
-    $forum_password = _stripslashes($_POST['forum_password']);
+    $forum_password = stripslashes_array($_POST['forum_password']);
 
     if (strlen(trim($forum_password)) > 0) {
 
@@ -119,9 +122,9 @@ if (isset($_POST['forum_password'])) {
 
 // Check for a returning page.
 
-if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri']))) > 0) {
+if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_uri']))) > 0) {
 
-    $final_uri = basename(trim(_stripslashes($_POST['final_uri'])));
+    $final_uri = basename(trim(stripslashes_array($_POST['final_uri'])));
     $redirect_uri = "index.php?webtag=$webtag&final_uri=". rawurlencode($final_uri);
 
 }else {

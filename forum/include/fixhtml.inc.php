@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.143 2008-10-18 20:30:22 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.144 2008-10-26 16:46:27 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1076,7 +1076,7 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 */
 function tidy_html_callback ($matches)
 {
-    return "<code language=\"{$matches[1]}\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
+    return "<code language=\"{$matches[1]}\">". htmlentities_array_decode(strip_tags($matches[2])). "</code>";
 }
 /**
 * Used by tidy_html to convert <code> tags
@@ -1559,7 +1559,7 @@ function add_paragraphs($html, $br_only = true)
 */
 function make_html ($html, $br_only = false, $emoticons = true, $links = true)
 {
-    $html = _htmlentities($html);
+    $html = htmlentities_array($html);
 
     if ($links == true) {
         $html = make_links($html);

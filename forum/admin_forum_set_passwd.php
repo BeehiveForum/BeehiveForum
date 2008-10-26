@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.38 2008-09-13 14:10:30 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.39 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -112,10 +115,10 @@ if (!$forum_fid = forum_get_setting('fid')) {
     exit;
 }
 
-if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+    $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_forums.php?webtag=$webtag";
 }
@@ -163,8 +166,8 @@ if (isset($_POST['save'])) {
 
     if (($forum_passhash = forum_get_password($forum_settings['fid']))) {
 
-        if (isset($_POST['current_passwd']) && strlen(trim(_stripslashes($_POST['current_passwd']))) > 0) {
-            $t_current_passhash = md5(trim(_stripslashes($_POST['current_passwd'])));
+        if (isset($_POST['current_passwd']) && strlen(trim(stripslashes_array($_POST['current_passwd']))) > 0) {
+            $t_current_passhash = md5(trim(stripslashes_array($_POST['current_passwd'])));
         }else {
             $error_msg_array[] = $lang['currentpasswdrequired'];
             $valid = false;
@@ -180,15 +183,15 @@ if (isset($_POST['save'])) {
         }
     }
 
-    if (isset($_POST['new_passwd']) && strlen(trim(_stripslashes($_POST['new_passwd']))) > 0) {
-        $t_new_passwd = trim(_stripslashes($_POST['new_passwd']));
+    if (isset($_POST['new_passwd']) && strlen(trim(stripslashes_array($_POST['new_passwd']))) > 0) {
+        $t_new_passwd = trim(stripslashes_array($_POST['new_passwd']));
     }else {
         $error_msg_array[] = $lang['newpasswdrequired'];
         $valid = false;
     }
 
-    if (isset($_POST['confirm_passwd']) && strlen(trim(_stripslashes($_POST['confirm_passwd']))) > 0) {
-        $t_confirm_passwd = trim(_stripslashes($_POST['confirm_passwd']));
+    if (isset($_POST['confirm_passwd']) && strlen(trim(stripslashes_array($_POST['confirm_passwd']))) > 0) {
+        $t_confirm_passwd = trim(stripslashes_array($_POST['confirm_passwd']));
     }else {
         $error_msg_array[] = $lang['confirmpasswordrequired'];
         $valid = false;
@@ -214,7 +217,7 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (_htmlentities($t_new_passwd) != $t_new_passwd) {
+        if (htmlentities_array($t_new_passwd) != $t_new_passwd) {
 
             $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
@@ -247,8 +250,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"passwd\" action=\"admin_forum_set_passwd.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('ret', _htmlentities($ret)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('ret', htmlentities_array($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

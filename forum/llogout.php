@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.60 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.61 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -31,6 +31,9 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -100,8 +103,8 @@ light_html_draw_top("robots=noindex,nofollow");
 $user = user_get(bh_session_get_value('UID'));
 
 echo "<form accept-charset=\"utf-8\" name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "<p>", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</p>\n";
+echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "<p>", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</p>\n";
 echo "<p>", light_form_submit("logout", $lang['logout']), "</p>\n";
 echo "</form>\n";
 

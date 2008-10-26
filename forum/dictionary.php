@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.53 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.54 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -116,13 +119,13 @@ if (user_is_guest()) {
 
 // Form Object ID
 
-if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0) {
+if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
 
-    $obj_id = trim(_stripslashes($_POST['obj_id']));
+    $obj_id = trim(stripslashes_array($_POST['obj_id']));
 
-}elseif (isset($_GET['obj_id']) && strlen(trim(_stripslashes($_GET['obj_id']))) > 0) {
+}elseif (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
 
-    $obj_id = trim(_stripslashes($_GET['obj_id']));
+    $obj_id = trim(stripslashes_array($_GET['obj_id']));
 
 }else {
 
@@ -134,9 +137,9 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
 
 // Form content
 
-if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
+if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']))) > 0) {
 
-    $t_content = trim(_stripslashes($_POST['content']));
+    $t_content = trim(stripslashes_array($_POST['content']));
 
 }else {
 
@@ -149,8 +152,8 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
     echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
 
     echo "<form accept-charset=\"utf-8\" name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('obj_id', _htmlentities($obj_id)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('obj_id', htmlentities_array($obj_id)), "\n";
     echo "  ", form_input_hidden('content', ""), "\n";
     echo "</form>\n";
 
@@ -160,8 +163,8 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
 
 // Ignored words
 
-if (isset($_POST['ignored_words']) && strlen(trim(_stripslashes($_POST['ignored_words']))) > 0) {
-    $t_ignored_words = trim(_stripslashes($_POST['ignored_words']));
+if (isset($_POST['ignored_words']) && strlen(trim(stripslashes_array($_POST['ignored_words']))) > 0) {
+    $t_ignored_words = trim(stripslashes_array($_POST['ignored_words']));
 }else {
     $t_ignored_words = "";
 }
@@ -241,9 +244,9 @@ if (isset($_POST['ignoreall'])) {
 
     // User wants to ignore all references of the current word
 
-    if (isset($_POST['word']) && strlen(trim(_stripslashes($_POST['word']))) > 0) {
+    if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
 
-        $t_ignored_word = trim(_stripslashes($_POST['word']));
+        $t_ignored_word = trim(stripslashes_array($_POST['word']));
         $dictionary->add_ignored_word($t_ignored_word);
     }
 
@@ -253,9 +256,9 @@ if (isset($_POST['ignoreall'])) {
 
     // User wants to add the current word to his dictionary
 
-    if (isset($_POST['word']) && strlen(trim(_stripslashes($_POST['word']))) > 0) {
+    if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
 
-        $t_custom_word = trim(_stripslashes($_POST['word']));
+        $t_custom_word = trim(stripslashes_array($_POST['word']));
         $dictionary->add_custom_word($t_custom_word);
     }
 
@@ -265,9 +268,9 @@ if (isset($_POST['ignoreall'])) {
 
     // User has selected to change the current word
 
-    if (isset($_POST['change_to']) && strlen(trim(_stripslashes($_POST['change_to']))) > 0) {
+    if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
 
-         $t_change_to = trim(_stripslashes($_POST['change_to']));
+         $t_change_to = trim(stripslashes_array($_POST['change_to']));
          $dictionary->correct_current_word($t_change_to);
     }
 
@@ -277,9 +280,9 @@ if (isset($_POST['ignoreall'])) {
 
     // User has selected to change the current word
 
-    if (isset($_POST['change_to']) && strlen(trim(_stripslashes($_POST['change_to']))) > 0) {
+    if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
 
-         $t_change_to = trim(_stripslashes($_POST['change_to']));
+         $t_change_to = trim(stripslashes_array($_POST['change_to']));
          $dictionary->correct_all_word_matches($t_change_to);
     }
 
@@ -308,12 +311,12 @@ if (($dictionary->is_check_complete())) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('obj_id', _htmlentities($dictionary->get_obj_id())), "\n";
-echo "  ", form_input_hidden('ignored_words', _htmlentities($dictionary->get_ignored_words())), "\n";
-echo "  ", form_input_hidden('content', _htmlentities($dictionary->get_content())), "\n";
-echo "  ", form_input_hidden('current_word', _htmlentities($dictionary->get_current_word_index())), "\n";
-echo "  ", form_input_hidden('offset_match', _htmlentities($dictionary->get_offset_match())), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('obj_id', htmlentities_array($dictionary->get_obj_id())), "\n";
+echo "  ", form_input_hidden('ignored_words', htmlentities_array($dictionary->get_ignored_words())), "\n";
+echo "  ", form_input_hidden('content', htmlentities_array($dictionary->get_content())), "\n";
+echo "  ", form_input_hidden('current_word', htmlentities_array($dictionary->get_current_word_index())), "\n";
+echo "  ", form_input_hidden('offset_match', htmlentities_array($dictionary->get_offset_match())), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -358,14 +361,14 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">{$lang['notindictionary']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">", form_input_text("word_display", _htmlentities($dictionary->get_current_word()), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", _htmlentities($dictionary->get_current_word())), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\">", form_input_text("word_display", htmlentities_array($dictionary->get_current_word()), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", htmlentities_array($dictionary->get_current_word())), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['changeto']}:</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"270\">", form_input_text("change_to", _htmlentities($dictionary->get_best_suggestion()), 32, false, false, "dictionary_change_to"), "</td>\n";
+echo "                  <td align=\"left\" width=\"270\">", form_input_text("change_to", htmlentities_array($dictionary->get_best_suggestion()), 32, false, false, "dictionary_change_to"), "</td>\n";
 echo "                  <td align=\"left\" rowspan=\"2\" width=\"130\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
@@ -409,7 +412,7 @@ if (($suggestions_array = $dictionary->get_suggestions_array())) {
 
 }elseif (($dictionary->is_check_complete())) {
 
-    echo "                    ", form_input_text("change_to", _htmlentities($dictionary->get_best_suggestion()), 32, false, "disabled=\"disabled\"", "dictionary_best_selection"), "\n";
+    echo "                    ", form_input_text("change_to", htmlentities_array($dictionary->get_best_suggestion()), 32, false, "disabled=\"disabled\"", "dictionary_best_selection"), "\n";
 
 }else {
 

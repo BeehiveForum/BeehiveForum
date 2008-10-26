@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.136 2008-09-02 20:11:52 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.137 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -287,10 +290,10 @@ if (isset($_POST['delete_confirm'])) {
 
             echo "<br />\n";
             echo "<form accept-charset=\"utf-8\" id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
-            echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-            echo "  ", form_input_hidden('popup', _htmlentities($popup)), "\n";
-            echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
-            echo "  ". form_input_hidden('uid', _htmlentities($uid)), "\n";
+            echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+            echo "  ", form_input_hidden('popup', htmlentities_array($popup)), "\n";
+            echo "  ". form_input_hidden('aid', htmlentities_array($aid)), "\n";
+            echo "  ". form_input_hidden('uid', htmlentities_array($uid)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -412,10 +415,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('popup', _htmlentities($popup)), "\n";
-echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
-echo "  ". form_input_hidden('uid', _htmlentities($uid)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('popup', htmlentities_array($popup)), "\n";
+echo "  ". form_input_hidden('aid', htmlentities_array($aid)), "\n";
+echo "  ". form_input_hidden('uid', htmlentities_array($uid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

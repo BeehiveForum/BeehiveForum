@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.203 2008-10-25 18:22:07 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.204 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -251,7 +251,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
+                $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
@@ -282,7 +282,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
+            $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
@@ -324,7 +324,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
+                $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
@@ -353,7 +353,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
+            $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
@@ -395,7 +395,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
+                $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
@@ -434,7 +434,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
+            $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
@@ -677,8 +677,8 @@ class MessageText {
     {
         if ($this->html > POST_HTML_DISABLED) {
 
-            if ($this->tinymce) return _htmlentities(tidy_html($this->text, false, $this->links, true));
-            return _htmlentities(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
+            if ($this->tinymce) return htmlentities_array(tidy_html($this->text, false, $this->links, true));
+            return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
         }
 
         return strip_tags($this->text);

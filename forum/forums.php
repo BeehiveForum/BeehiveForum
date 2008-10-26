@@ -20,13 +20,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.101 2008-10-18 20:30:22 decoyduck Exp $ */
+/* $Id: forums.php,v 1.102 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -140,10 +143,10 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 // Webtag search
 
-if (isset($_POST['webtag_search']) && strlen(trim(_stripslashes($_POST['webtag_search']))) > 0) {
-    $webtag_search = trim(_stripslashes($_POST['webtag_search']));
-}elseif (isset($_GET['webtag_search']) && strlen(trim(_stripslashes($_GET['webtag_search']))) > 0) {
-    $webtag_search = trim(_stripslashes($_GET['webtag_search']));
+if (isset($_POST['webtag_search']) && strlen(trim(stripslashes_array($_POST['webtag_search']))) > 0) {
+    $webtag_search = trim(stripslashes_array($_POST['webtag_search']));
+}elseif (isset($_GET['webtag_search']) && strlen(trim(stripslashes_array($_GET['webtag_search']))) > 0) {
+    $webtag_search = trim(stripslashes_array($_GET['webtag_search']));
 }else {
     $webtag_search = "";
 }
@@ -268,14 +271,14 @@ if (isset($_POST['change_view'])) {
 
 $final_uri = "";
 
-if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/u", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
+    if (preg_match("/^$available_files_preg/u", basename(trim(stripslashes_array($_GET['final_uri'])))) > 0) {
 
-        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+        $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
         $final_uri = href_cleanup_query_keys($final_uri, 'webtag');
     }
 }
@@ -387,12 +390,12 @@ if (!user_is_guest()) {
 
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("page", _htmlentities($page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
-        echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
-        echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";
+        echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
+        echo "  ", form_input_hidden("webtag_search", htmlentities_array($webtag_search)), "\n";
+        echo "  ", form_input_hidden("view_type", htmlentities_array($view_type)), "\n";
+        echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";
+        echo "  ", form_input_hidden("sort_dir", htmlentities_array($sort_dir)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -404,35 +407,35 @@ if (!user_is_guest()) {
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
 
         if ($sort_by == 'FORUM_NAME' && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }elseif ($sort_by == 'FORUM_NAME' && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }
 
         if ($sort_by == 'FORUM_DESC' && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }elseif ($sort_by == 'FORUM_DESC' && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }
 
         echo "                   <td class=\"subhead\" align=\"left\">{$lang['unreadmessages']}</td>\n";
 
         if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }elseif ($sort_by == 'LAST_VISIT' && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }
 
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
@@ -591,11 +594,11 @@ if (!user_is_guest()) {
 
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("page", _htmlentities($page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
-        echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";
+        echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
+        echo "  ", form_input_hidden("webtag_search", htmlentities_array($webtag_search)), "\n";
+        echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";
+        echo "  ", form_input_hidden("sort_dir", htmlentities_array($sort_dir)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -607,35 +610,35 @@ if (!user_is_guest()) {
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
 
         if ($sort_by == 'FORUM_NAME' && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }elseif ($sort_by == 'FORUM_NAME' && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumname']}</a></td>\n";
         }
 
         if ($sort_by == 'FORUM_DESC' && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }elseif ($sort_by == 'FORUM_DESC' && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['forumdesc']}</a></td>\n";
         }
 
         echo "                   <td class=\"subhead\" align=\"left\">{$lang['unreadmessages']}</td>\n";
 
         if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }elseif ($sort_by == 'LAST_VISIT' && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=ASC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", _htmlentities($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\"><a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">{$lang['lastvisited']}</a></td>\n";
         }
 
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
@@ -759,7 +762,7 @@ if (!user_is_guest()) {
 
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -774,7 +777,7 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("webtag_search", (isset($webtag_search) ? _htmlentities($webtag_search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
+    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("webtag_search", (isset($webtag_search) ? htmlentities_array($webtag_search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -805,9 +808,9 @@ if (!user_is_guest()) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("page", _htmlentities($page)), "\n";
-    echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
+    echo "  ", form_input_hidden("webtag_search", htmlentities_array($webtag_search)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

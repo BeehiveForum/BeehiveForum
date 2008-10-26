@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.220 2008-10-12 10:37:01 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.221 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -241,12 +244,12 @@ $allow_html = true;
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
-        $t_subject = trim(_stripslashes($_POST['t_subject']));
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+        $t_subject = trim(stripslashes_array($_POST['t_subject']));
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
-        $t_content = trim(_stripslashes($_POST['t_content']));
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+        $t_content = trim(stripslashes_array($_POST['t_content']));
     }
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
@@ -261,8 +264,8 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
         $t_to_uid = 0;
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
-        $t_recipient_list = trim(_stripslashes($_POST['t_recipient_list']));
+    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+        $t_recipient_list = trim(stripslashes_array($_POST['t_recipient_list']));
     }
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
@@ -365,9 +368,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User clicked the send or preview button - check the data that was submitted
 
-    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
-        $t_subject = trim(_stripslashes($_POST['t_subject']));
+        $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
     }else {
 
@@ -375,9 +378,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(stripslashes_array($_POST['t_content']));
 
         $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 
@@ -422,9 +425,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         }
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(_stripslashes($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
 
         $t_new_recipient_array['TO_UID'] = array();
         $t_new_recipient_array['LOGON']  = array();
@@ -498,18 +501,18 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User click the save button - Check the data that was submitted.
 
-    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
-        $t_subject = trim(_stripslashes($_POST['t_subject']));
+        $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
     }else {
 
         $t_subject = "";
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(stripslashes_array($_POST['t_content']));
 
         $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 
@@ -538,9 +541,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $aid = md5(uniqid(mt_rand()));
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(_stripslashes($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
 
         if (sizeof($t_recipient_array) > 10) {
 
@@ -565,7 +568,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
 
-        $message_author = _htmlentities(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
+        $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
         if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
@@ -611,7 +614,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
 
-        $message_author = _htmlentities(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
+        $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
         if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
@@ -806,9 +809,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
-echo "  ", form_input_hidden("t_dedupe", _htmlentities($t_dedupe));
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
+echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -874,7 +877,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
@@ -907,7 +910,7 @@ if (($friends_array = pm_user_get_friends())) {
     echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_OTHERS, $lang['others'], (isset($to_radio) && $to_radio == POST_RADIO_OTHERS) ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -919,7 +922,7 @@ if (($friends_array = pm_user_get_friends())) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
     echo "                      </tr>\n";
 }
 
@@ -1061,7 +1064,7 @@ echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="clo
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", _htmlentities($aid));
+    echo form_input_hidden("aid", htmlentities_array($aid));
 }
 
 echo "                        </td>\n";
@@ -1078,15 +1081,15 @@ echo $tools->js();
 
 if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    echo form_input_hidden("replyto", _htmlentities($t_reply_mid)), "\n";
+    echo form_input_hidden("replyto", htmlentities_array($t_reply_mid)), "\n";
 
 }elseif (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
 
-    echo form_input_hidden("fwdmsg", _htmlentities($t_forward_mid)), "\n";
+    echo form_input_hidden("fwdmsg", htmlentities_array($t_forward_mid)), "\n";
 
 }elseif (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
 
-    echo form_input_hidden("editmsg", _htmlentities($t_edit_mid)), "\n";
+    echo form_input_hidden("editmsg", htmlentities_array($t_edit_mid)), "\n";
 }
 
 if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {

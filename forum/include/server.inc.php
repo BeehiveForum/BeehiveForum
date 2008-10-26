@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.40 2008-09-03 22:31:46 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.41 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -376,42 +376,31 @@ function rmdir_recursive($path)
 }
 
 /**
-* Prepares a path for use in a URL.
+* Unregister Global variables.
 *
-* Prepare a path for use in a URL. Converts backslashes to forward slashes
-* and removes trailing slash. Doesn't valid the path.
+* Undoes PHP's register_globals support by iterating through the $GLOBALS array
+* and removing all REQUEST (inc. GET and POST), SESSION, SERVER, ENV, FILES.
 *
 * @return boolean
-* @param string $pathname - Path to prepare.
+* @param string $pathname - Path to create
 */
 
-function prepare_path_for_url($pathname)
+function unregister_globals()
 {
-    $pathname = preg_replace('/\\\/u', '/', $pathname);
-    return rtrim($pathname, '/');
-}
+    if (ini_get(register_globals)) {
 
-// Executed by every script that includes server.inc.php.
-// This crudely disables PHP's register_globals functionality.
+        $super_globals_array = array('_REQUEST', '_SESSION', '_SERVER', '_ENV', '_FILES');
 
-foreach ($_GET as $get_key => $get_value) {
+        foreach ($super_globals_array as $super_global) {
 
-    if (ereg('^([a-zA-Z]|_) {1}([a-zA-Z0-9]|_)*$', $get_key)) {
-        eval("unset(\${$get_key});");
-    }
-}
+            foreach ($GLOBALS[$super_global] as $global_key => $global_var) {
 
-foreach ($_POST as $post_key => $post_value) {
+                if ($global_var === $GLOBALS[$global_key]) {
 
-    if (ereg('^([a-zA-Z]|_) {1}([a-zA-Z0-9]|_)*$', $post_key)) {
-        eval("unset(\${$post_key});");
-    }
-}
-
-foreach ($_REQUEST as $request_key => $request_value) {
-
-    if (ereg('^([a-zA-Z]|_) {1}([a-zA-Z0-9]|_)*$', $request_key)) {
-        eval("unset(\${$request_key});");
+                    unset($GLOBALS[$global_key]);
+                }
+            }
+        }
     }
 }
 

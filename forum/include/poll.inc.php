@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.241 2008-09-06 19:23:30 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.242 2008-10-26 16:46:27 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -489,11 +489,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_data['CONTENT'].= "                  <tr>\n";
     $poll_data['CONTENT'].= "                    <td align=\"left\">\n";
     $poll_data['CONTENT'].= "                      <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-    $poll_data['CONTENT'].= "                        ". form_input_hidden("webtag", _htmlentities($webtag)). "\n";
-    $poll_data['CONTENT'].= "                        ". form_input_hidden('tid', _htmlentities($tid)). "\n";
+    $poll_data['CONTENT'].= "                        ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
+    $poll_data['CONTENT'].= "                        ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
     $poll_data['CONTENT'].= "                        <table width=\"560\">\n";
     $poll_data['CONTENT'].= "                          <tr>\n";
-    $poll_data['CONTENT'].= "                            <td align=\"left\"><h2>". word_filter_add_ob_tags(_htmlentities($poll_question)). "</h2></td>\n";
+    $poll_data['CONTENT'].= "                            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question)). "</h2></td>\n";
     $poll_data['CONTENT'].= "                          </tr>\n";
 
     $poll_group_count = 1;
@@ -544,19 +544,19 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                         if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-                            $drop_down_data[$poll_results['OPTION_ID'][$key]] = word_filter_add_ob_tags(_htmlentities($poll_results['OPTION_NAME'][$key]));
+                            $drop_down_data[$poll_results['OPTION_ID'][$key]] = word_filter_add_ob_tags(htmlentities_array($poll_results['OPTION_NAME'][$key]));
 
                         }else {
 
                             $poll_data['CONTENT'].= "                                <tr>\n";
-                            $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", _htmlentities($poll_results['OPTION_ID'][$key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
+                            $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
                             $poll_data['CONTENT'].= "                                </tr>\n";
                         }
 
                     }else {
 
                         $poll_data['CONTENT'].= "                                <tr>\n";
-                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", _htmlentities($poll_results['OPTION_ID'][$key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
+                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
                         $poll_data['CONTENT'].= "                                </tr>\n";
                     }
 
@@ -1005,19 +1005,19 @@ function poll_preview_form($poll_results, $poll_data)
 
                 if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-                    $drop_down_data[$poll_results['OPTION_ID'][$option_key]] = word_filter_add_ob_tags(_htmlentities($poll_results['OPTION_NAME'][$option_key]));
+                    $drop_down_data[$poll_results['OPTION_ID'][$option_key]] = word_filter_add_ob_tags(htmlentities_array($poll_results['OPTION_NAME'][$option_key]));
 
                 }else {
 
                     $poll_display.= "                      <tr>\n";
-                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", _htmlentities($poll_results['OPTION_ID'][$option_key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
+                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
                     $poll_display.= "                      </tr>\n";
                 }
 
             }else {
 
                 $poll_display.= "                      <tr>\n";
-                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", _htmlentities($poll_results['OPTION_ID'][$option_key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
+                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
                 $poll_display.= "                      </tr>\n";
             }
 
@@ -2029,7 +2029,7 @@ function poll_public_ballot_user_callback($user_data)
         $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" ";
         $user_profile_link_html.= "onclick=\"return openProfile('%1\$s', '%1\$3')\">%2\$s</a>";
 
-        return sprintf($user_profile_link_html, $user_data['UID'], word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME']))), $webtag);
+        return sprintf($user_profile_link_html, $user_data['UID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME']))), $webtag);
 
     }else {
 
@@ -2086,8 +2086,8 @@ function poll_confirm_close($tid)
     poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, false, false, true, $show_sigs, true);
 
     echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
-    echo form_input_hidden("webtag", _htmlentities($webtag));
-    echo form_input_hidden("tid", _htmlentities($tid));
+    echo form_input_hidden("webtag", htmlentities_array($webtag));
+    echo form_input_hidden("tid", htmlentities_array($tid));
     echo form_input_hidden("confirm_pollclose", "Y");
     echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
     echo "</form>\n";

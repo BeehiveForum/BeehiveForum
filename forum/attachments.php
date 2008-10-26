@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.164 2008-08-25 19:20:25 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.165 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -188,7 +191,7 @@ if (isset($_POST['upload'])) {
 
             if (isset($_FILES['userfile']['name'][$i]) && strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
 
-                $filename = trim(_stripslashes($_FILES['userfile']['name'][$i]));
+                $filename = trim(stripslashes_array($_FILES['userfile']['name'][$i]));
 
                 if (isset($_FILES['userfile']['error'][$i]) && $_FILES['userfile']['error'][$i] > 0) {
 
@@ -291,8 +294,8 @@ if (isset($_POST['upload'])) {
             echo "<h1>{$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
             echo "<form accept-charset=\"utf-8\" name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
-            echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-            echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
+            echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+            echo "  ". form_input_hidden('aid', htmlentities_array($aid)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -428,18 +431,18 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else {
 
     if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
-        html_display_success_msg(sprintf($lang['successfullyuploaded'], _htmlentities(implode(", ", $upload_success))), '600', 'left');
+        html_display_success_msg(sprintf($lang['successfullyuploaded'], htmlentities_array(implode(", ", $upload_success))), '600', 'left');
     }
 
     if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
-        html_display_error_msg(sprintf($lang['failedtoupload'], _htmlentities(implode(", ", $upload_failure))), '600', 'left');
+        html_display_error_msg(sprintf($lang['failedtoupload'], htmlentities_array(implode(", ", $upload_failure))), '600', 'left');
     }
 }
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ". form_input_hidden('aid', htmlentities_array($aid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

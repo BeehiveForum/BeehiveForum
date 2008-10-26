@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.129 2008-09-17 18:40:00 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.130 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -115,14 +115,14 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         $error_report_verbose = false;
     }
 
-    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim(_stripslashes($GLOBALS['error_report_email_addr_to']))) > 0) {
-        $error_report_email_addr_to = trim(_stripslashes($GLOBALS['error_report_email_addr_to']));
+    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_to']))) > 0) {
+        $error_report_email_addr_to = trim(stripslashes_array($GLOBALS['error_report_email_addr_to']));
     }else {
         $error_report_email_addr_to = '';
     }
 
-    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(_stripslashes($GLOBALS['error_report_email_addr_from']))) > 0) {
-        $error_report_email_addr_from = trim(_stripslashes($GLOBALS['error_report_email_addr_from']));
+    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_from']))) > 0) {
+        $error_report_email_addr_from = trim(stripslashes_array($GLOBALS['error_report_email_addr_from']));
     }else {
         $error_report_email_addr_from = '$error_report_email_addr_from';
     }
@@ -212,15 +212,15 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
                         if (sizeof($debug_backtrace['args']) > 0) {
 
-                            $debug_backtrace_file_line = sprintf("%s:%s", _htmlentities(basename($debug_backtrace['file'])), _htmlentities($debug_backtrace['line']));
-                            $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", _htmlentities($debug_backtrace['function']), _htmlentities(bh_error_handler_process_args($debug_backtrace['args'])));
+                            $debug_backtrace_file_line = sprintf("%s:%s", htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
+                            $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", htmlentities_array($debug_backtrace['function']), htmlentities_array(bh_error_handler_process_args($debug_backtrace['args'])));
 
                             $error_msg_array[] = sprintf("<p>%s:%s</p>", $debug_backtrace_file_line, $debug_backtrace_func_args);
 
                         }else {
 
-                            $debug_backtrace_file_line = sprintf("%s:%s", _htmlentities(basename($debug_backtrace['file'])), _htmlentities($debug_backtrace['line']));
-                            $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", _htmlentities($debug_backtrace['function']));
+                            $debug_backtrace_file_line = sprintf("%s:%s", htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
+                            $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", htmlentities_array($debug_backtrace['function']));
 
                             $error_msg_array[] = sprintf("<p>%s:%s</p>", $debug_backtrace_file_line, $debug_backtrace_func_args);
                         }
@@ -406,7 +406,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
-        echo "  ", form_input_hidden_array(_stripslashes($_POST)), "\n";
+        echo "  ", form_input_hidden_array(stripslashes_array($_POST)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.74 2008-09-13 17:45:58 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.75 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -117,10 +120,10 @@ if ($start < 0) $start = 0;
 
 // Are we returning somewhere?
 
-if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+    $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_post_approve.php?webtag=$webtag";
 }
@@ -305,9 +308,9 @@ if (isset($msg) && validate_msg($msg)) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+        echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -404,9 +407,9 @@ if (isset($msg) && validate_msg($msg)) {
 
             echo "                 <tr>\n";
             echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']))), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']))), "</a></td>\n";
             echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
-            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" onclick=\"return openProfile({$post_approval_entry['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']))) . "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" onclick=\"return openProfile({$post_approval_entry['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']))) . "</a></td>\n";
             echo "                   <td align=\"left\">", format_time($post_approval_entry['CREATED']), "</td>\n";
             echo "                 </tr>\n";
         }

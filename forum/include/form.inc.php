@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.130 2008-10-03 18:35:18 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.131 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -107,7 +107,7 @@ function form_input_hidden_array($array)
 
         if (($key_name != 'webtag') && isset($array_values[$key])) {
 
-            $result_var.= form_input_hidden(_htmlentities($key_name), _htmlentities($array_values[$key]));
+            $result_var.= form_input_hidden(htmlentities_array($key_name), htmlentities_array($array_values[$key]));
         }
     }
 
@@ -433,7 +433,7 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
     $webtag = get_webtag();
 
     $html = "<form accept-charset=\"utf-8\" method=\"get\" action=\"$href\" target=\"$target\">";
-    $html.= form_input_hidden("webtag", _htmlentities($webtag));
+    $html.= form_input_hidden("webtag", htmlentities_array($webtag));
 
     if (is_array($var_array)) {
 
@@ -441,7 +441,7 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 
             if (!is_array($var_value)) {
 
-                $html.= form_input_hidden($var_name, _htmlentities($var_value));
+                $html.= form_input_hidden($var_name, htmlentities_array($var_value));
             }
         }
     }

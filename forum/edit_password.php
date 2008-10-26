@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.75 2008-09-06 20:13:56 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.76 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -130,9 +133,9 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['opw']) && strlen(trim(_stripslashes($_POST['opw']))) > 0) {
+    if (isset($_POST['opw']) && strlen(trim(stripslashes_array($_POST['opw']))) > 0) {
 
-        $t_old_pass = trim(_stripslashes($_POST['opw']));
+        $t_old_pass = trim(stripslashes_array($_POST['opw']));
 
     }else {
 
@@ -140,9 +143,9 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['npw']) && strlen(trim(_stripslashes($_POST['npw']))) > 0) {
+    if (isset($_POST['npw']) && strlen(trim(stripslashes_array($_POST['npw']))) > 0) {
 
-        $t_new_pass = trim(_stripslashes($_POST['npw']));
+        $t_new_pass = trim(stripslashes_array($_POST['npw']));
 
     }else {
 
@@ -150,9 +153,9 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
 
-        $t_confirm_pass = trim(_stripslashes($_POST['cpw']));
+        $t_confirm_pass = trim(stripslashes_array($_POST['cpw']));
 
     }else {
 
@@ -168,7 +171,7 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (_htmlentities($t_new_pass) != $t_new_pass) {
+        if (htmlentities_array($t_new_pass) != $t_new_pass) {
 
             $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
@@ -250,7 +253,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_password.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

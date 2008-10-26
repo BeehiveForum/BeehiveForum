@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.58 2008-09-06 19:23:30 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.59 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -121,21 +124,21 @@ if (isset($_POST['add'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
-        $t_name = trim(_stripslashes($_POST['t_name']));
+    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+        $t_name = trim(stripslashes_array($_POST['t_name']));
     }else {
         $error_msg_array[] = $lang['mustenterfoldername'];
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim(_stripslashes($_POST['t_description']))) > 0) {
-        $t_description = trim(_stripslashes($_POST['t_description']));
+    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
+        $t_description = trim(stripslashes_array($_POST['t_description']));
     }else {
         $t_description = "";
     }
 
-    if (isset($_POST['t_prefix']) && strlen(trim(_stripslashes($_POST['t_prefix']))) > 0) {
-        $t_prefix = trim(_stripslashes($_POST['t_prefix']));
+    if (isset($_POST['t_prefix']) && strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
+        $t_prefix = trim(stripslashes_array($_POST['t_prefix']));
     }else {
         $t_prefix = "";
     }
@@ -196,8 +199,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_folder_add.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -213,15 +216,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? _htmlentities($t_name) : ""), 30, 32)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : ""), 30, 32)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? _htmlentities($t_description) : ""), 30, 255)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : ""), 30, 255)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? _htmlentities($t_prefix) : ""), 30, 16)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? htmlentities_array($t_prefix) : ""), 30, 16)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

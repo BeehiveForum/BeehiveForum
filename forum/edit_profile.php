@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.103 2008-09-13 23:41:32 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.104 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -35,6 +35,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -213,7 +216,7 @@ if (isset($_POST['save'])) {
 
             foreach ($t_entry_array as $piid => $profile_entry) {
 
-                $profile_entry = trim(_stripslashes($profile_entry));
+                $profile_entry = trim(stripslashes_array($profile_entry));
 
                 if ($admin_edit) {
 
@@ -259,7 +262,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
     if ($admin_edit === true) {
 
         $user = user_get($uid);
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editprofile']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editprofile']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
     }else {
 
@@ -279,9 +282,9 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
-    if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', _htmlentities($uid)), "\n";
+    if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', htmlentities_array($uid)), "\n";
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -344,14 +347,14 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-            $profile_item_options_array = _htmlentities(explode("\n", $profile_item['OPTIONS']));
+            $profile_item_options_array = htmlentities_array(explode("\n", $profile_item['OPTIONS']));
 
             profile_item_add_clear_entry($profile_item_options_array, $profile_item['TYPE']);
 
             if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
-                echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY']))), "</td>\n";
+                echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY']))), "</td>\n";
             }else {
-                echo "                        <td align=\"left\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY'])), false, 'bhinputprofileitem'), "</td>\n";
+                echo "                        <td align=\"left\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, 'bhinputprofileitem'), "</td>\n";
             }
 
             if ($admin_edit === false) {
@@ -362,7 +365,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
-            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
@@ -374,7 +377,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         }else {
 
-            echo "                        <td align=\"left\" valign=\"top\">", form_input_text("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\">", form_input_text("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";

@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.67 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.68 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -113,7 +116,7 @@ if (!forum_check_access_level()) {
 
 // Check to see if user has requested a pack to view
 
-if (isset($_GET['pack']) && strlen(trim(_stripslashes($_GET['pack']))) > 0) {
+if (isset($_GET['pack']) && strlen(trim(stripslashes_array($_GET['pack']))) > 0) {
     $user_emoticon_pack = $_GET['pack'];
 }
 
@@ -232,7 +235,7 @@ if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")))
         echo "                            <td align=\"left\">";
 
         foreach ($emot['matches'] as $emot_match) {
-            echo _htmlentities($emot_match), " &nbsp; ";
+            echo htmlentities_array($emot_match), " &nbsp; ";
         }
 
         echo "      </td>\n";

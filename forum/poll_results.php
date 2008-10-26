@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.42 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.43 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -193,9 +196,9 @@ $poll_user_count = 0;
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
 
-$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "openprofile.js", "folder_options.js", 'pm_popup_disabled');
 
@@ -225,7 +228,7 @@ if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID'
         if (strlen(trim($poll_data['QUESTION'])) > 0 && strcasecmp($thread_title, $poll_data['QUESTION']) <> 0) {
 
             echo "              <tr>\n";
-            echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(_htmlentities($poll_data['QUESTION'])), "</td>\n";
+            echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(htmlentities_array($poll_data['QUESTION'])), "</td>\n";
             echo "              </tr>\n";
         }
 
@@ -288,8 +291,8 @@ if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
-    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
+    echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "        ", form_input_hidden("tid", htmlentities_array($tid)), "\n";
     echo "        View Style: ", form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
     echo "      </form>\n";
     echo "    </td>\n";
@@ -299,7 +302,7 @@ if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ". form_submit('close', $lang['close']). "\n";
 echo "</form>\n";
 echo "</div>\n";

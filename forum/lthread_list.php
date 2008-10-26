@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.107 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.108 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -31,6 +31,9 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -193,11 +196,11 @@ if (user_is_guest()) {
 
             if ($_POST['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
 
-                if (isset($_POST['mark_read_threads']) && strlen(trim(_stripslashes($_POST['mark_read_threads'])))) {
+                if (isset($_POST['mark_read_threads']) && strlen(trim(stripslashes_array($_POST['mark_read_threads'])))) {
 
                     $thread_data = array();
 
-                    $mark_read_threads = trim(_stripslashes($_POST['mark_read_threads']));
+                    $mark_read_threads = trim(stripslashes_array($_POST['mark_read_threads']));
 
                     $mark_read_threads_array = preg_grep("/^[0-9]+$/Du", explode(',', $mark_read_threads));
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.555 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.556 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -773,11 +773,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
-        echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</a></span>";
+        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</a></span>";
 
     }else {
 
-        echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>";
+        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>";
     }
 
     $temp_ignore = false;
@@ -827,7 +827,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
-        echo word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK']))), "</a></span>";
+        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
 
@@ -1430,10 +1430,10 @@ function messages_interest_form($tid,$pid)
     echo "                <td align=\"center\">\n";
 
     echo "<form accept-charset=\"utf-8\" name=\"rate_interest\" target=\"_self\" action=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
-    echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "{$lang['ratemyinterest']}: \n";
-    echo form_radio_array("setinterest", array(-1 => "{$lang['ignore']} ", 0 => "{$lang['normal']} ", 1 => "{$lang['interested']} ", 2 => "{$lang['subscribe']} "), _htmlentities($interest));
-    echo form_input_hidden("tid", _htmlentities($tid));
+    echo form_radio_array("setinterest", array(-1 => "{$lang['ignore']} ", 0 => "{$lang['normal']} ", 1 => "{$lang['interested']} ", 2 => "{$lang['subscribe']} "), htmlentities_array($interest));
+    echo form_input_hidden("tid", htmlentities_array($tid));
     echo form_submit("apply", $lang['apply']);
     echo "\n";
     echo "</form>\n";

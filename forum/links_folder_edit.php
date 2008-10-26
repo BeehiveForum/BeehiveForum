@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_folder_edit.php,v 1.12 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: links_folder_edit.php,v 1.13 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -144,9 +147,9 @@ if (isset($_POST['update'])) {
         $fid = 1;
     }
 
-    if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
 
-        $name = trim(_stripslashes($_POST['name']));
+        $name = trim(stripslashes_array($_POST['name']));
 
         if (strlen($name) > 32) {
 
@@ -196,8 +199,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"folderadd\" action=\"links_folder_edit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("fid", htmlentities_array($fid)) . "\n";
 echo "  ", form_input_hidden("mode", LINKS_ADD_FOLDER) . "\n";
 echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
@@ -214,7 +217,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text('name', isset($name) ? _htmlentities($name) : _htmlentities($folders[$fid]['NAME']), 50, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text('name', isset($name) ? htmlentities_array($name) : htmlentities_array($folders[$fid]['NAME']), 50, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

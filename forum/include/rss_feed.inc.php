@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.62 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.63 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -277,15 +277,15 @@ function rss_check_feeds()
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
-                    $rss_title = _htmlentities(strip_tags($rss_item->title));
+                    $rss_title = htmlentities_array(strip_tags($rss_item->title));
 
-                    $rss_feed_name = _htmlentities($rss_feed['NAME']);
+                    $rss_feed_name = htmlentities_array($rss_feed['NAME']);
 
                     $rss_quote_source = "$rss_feed_name $rss_title";
 
                     if (isset($rss_feed['PREFIX']) && strlen(trim($rss_feed['PREFIX'])) > 0) {
 
-                        $rss_feed_prefix = _htmlentities($rss_feed['PREFIX']);
+                        $rss_feed_prefix = htmlentities_array($rss_feed['PREFIX']);
                         $rss_title = "$rss_feed_prefix $rss_title";
                     }
 
@@ -302,7 +302,7 @@ function rss_check_feeds()
 
                     if (strlen($rss_item->description) > 1) {
 
-                        $rss_item_description = _htmlentities_decode($rss_item->description);
+                        $rss_item_description = htmlentities_array_decode($rss_item->description);
 
                         $rss_item_post = new MessageText(true, $rss_item_description);
                         $rss_item_post->setHTML(POST_HTML_AUTO);

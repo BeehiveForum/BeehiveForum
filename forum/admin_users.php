@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.184 2008-09-23 23:54:06 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.185 2008-10-26 16:46:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -175,10 +178,10 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-if (isset($_GET['user_search']) && strlen(trim(_stripslashes($_GET['user_search']))) > 0) {
-    $user_search = trim(_stripslashes($_GET['user_search']));
-}elseif (isset($_POST['user_search']) && strlen(trim(_stripslashes($_POST['user_search']))) > 0) {
-    $user_search = trim(_stripslashes($_POST['user_search']));
+if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+    $user_search = trim(stripslashes_array($_GET['user_search']));
+}elseif (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+    $user_search = trim(stripslashes_array($_POST['user_search']));
 }else {
     $user_search = "";
 }
@@ -240,7 +243,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
                         $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
                         $redirect_uri.= "&user_search=%s&kicked=true";
 
-                        header_redirect(sprintf($redirect_uri, _htmlentities($user_search)));
+                        header_redirect(sprintf($redirect_uri, htmlentities_array($user_search)));
                         exit;
                     }
                 }
@@ -280,7 +283,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
                         $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
                         $redirect_uri.= "&user_search=%s&approved=true";
 
-                        header_redirect(sprintf($redirect_uri, _htmlentities($user_search)));
+                        header_redirect(sprintf($redirect_uri, htmlentities_array($user_search)));
                         exit;
                     }
                 }
@@ -320,16 +323,16 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else {
 
-    html_display_warning_msg(sprintf($lang['manageusersexp'], _htmlentities($sort_by_array[$sort_by])), '86%', 'center');
+    html_display_warning_msg(sprintf($lang['manageusersexp'], htmlentities_array($sort_by_array[$sort_by])), '86%', 'center');
 }
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
-echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
-echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('user_search', htmlentities_array($user_search)), "\n";
+echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";
+echo "  ", form_input_hidden("sort_dir", htmlentities_array($sort_dir)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -341,43 +344,43 @@ echo "                 <tr>\n";
 echo "                   <td class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }
 
 if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
 }elseif ($sort_by == 'LAST_VISIT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
 }
 
 if ($sort_by == 'REGISTERED' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
 }elseif ($sort_by == 'REGISTERED' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
 }
 
 if ($sort_by == 'ACTIVE' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }elseif ($sort_by == 'ACTIVE' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }
 
 echo "                 </tr>\n";
@@ -388,7 +391,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y", ""), "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT'], 1), "</td>\n";
@@ -490,10 +493,10 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_arr
 }
 
 echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"get\">\n";
-echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
-echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";
-echo "  ", form_input_hidden("filter", _htmlentities($filter)), "\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";
+echo "  ", form_input_hidden("sort_dir", htmlentities_array($sort_dir)), "\n";
+echo "  ", form_input_hidden("filter", htmlentities_array($filter)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -508,7 +511,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', _htmlentities($user_search), 25, 64), " ", form_submit('search', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', htmlentities_array($user_search), 25, 64), " ", form_submit('search', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.84 2008-09-08 20:38:01 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.85 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -424,7 +424,7 @@ class TextAreaHTML {
         $str.= form_radio("co_{$ta}_rb", "submit", $lang['submittedcode'], false, "onclick=\"co_{$ta}_show('submit');\"")."\n";
         $str.= "&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['fixhtmlexplanation']}');\">?</a>]\n";
 
-        $str.= form_input_hidden("co_{$ta}_old", _htmlentities($text))."\n";
+        $str.= form_input_hidden("co_{$ta}_old", htmlentities_array($text))."\n";
         $str.= form_input_hidden("co_{$ta}_current", "correct")."\n";;
 
         $str.= "<script language=\"Javascript\" type=\"text/javascript\">\n";

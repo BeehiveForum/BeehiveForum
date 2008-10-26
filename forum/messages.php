@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.285 2008-09-08 20:38:01 decoyduck Exp $ */
+/* $Id: messages.php,v 1.286 2008-10-26 16:46:24 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -32,6 +32,9 @@ define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+// Disable PHP's register_globals
+unregister_globals();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -248,9 +251,9 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
 
-$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 html_draw_top("onunload=clearFocus()", "title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "htmltools.js", "folder_options.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
 
@@ -501,7 +504,7 @@ if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
 echo "</div>\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_parent\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('quote_list', ''), "\n";
 echo "  ", form_input_hidden('replyto', ''), "\n";
 echo "</form>\n";
@@ -509,8 +512,8 @@ echo "</form>\n";
 echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('t_tid', _htmlentities($tid)), "\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('t_tid', htmlentities_array($tid)), "\n";
 echo "  ", form_input_hidden('t_rpid', '0'), "\n";
 
 $quick_reply_tools = new TextAreaHTML('quick_reply_form');

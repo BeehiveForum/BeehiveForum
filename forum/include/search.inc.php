@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.214 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.215 2008-10-26 16:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -175,9 +175,9 @@ function search_execute($search_arguments, &$error)
 
     /// Keyword based search.
 
-    if (isset($search_arguments['search_string']) && strlen(trim(_stripslashes($search_arguments['search_string']))) > 0) {
+    if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
 
-        $search_string = trim(_stripslashes($search_arguments['search_string']));
+        $search_string = trim(stripslashes_array($search_arguments['search_string']));
 
         $search_keywords_array = search_strip_keywords($search_string);
 
@@ -764,14 +764,14 @@ function folder_search_dropdown($selected_folder)
 
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
-                    $available_folders[$folder_data['FID']] = _htmlentities($folder_data['TITLE']);
+                    $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
                 }
 
             }else {
 
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $available_folders[$folder_data['FID']] = _htmlentities($folder_data['TITLE']);
+                    $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
                 }
             }
         }

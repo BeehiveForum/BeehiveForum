@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.95 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.96 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -171,7 +171,7 @@ function user_get_profile($uid)
             }
         }
 
-        if (isset($user_prefs['PIC_URL']) && strlen($user_prefs['PIC_URL']) > 0) {
+        if (isset($user_prefs['PIC_URL']) && mb_strlen($user_prefs['PIC_URL']) > 0) {
             $user_profile['PIC_URL'] = $user_prefs['PIC_URL'];
         }
 
@@ -179,7 +179,7 @@ function user_get_profile($uid)
             $user_profile['PIC_AID'] = $user_prefs['PIC_AID'];
         }
 
-        if (isset($user_prefs['AVATAR_URL']) && strlen($user_prefs['AVATAR_URL']) > 0) {
+        if (isset($user_prefs['AVATAR_URL']) && mb_strlen($user_prefs['AVATAR_URL']) > 0) {
             $user_profile['AVATAR_URL'] = $user_prefs['AVATAR_URL'];
         }
 
@@ -187,7 +187,7 @@ function user_get_profile($uid)
             $user_profile['AVATAR_AID'] = $user_prefs['AVATAR_AID'];
         }
 
-        if (isset($user_prefs['HOMEPAGE_URL']) && strlen($user_prefs['HOMEPAGE_URL']) > 0) {
+        if (isset($user_prefs['HOMEPAGE_URL']) && mb_strlen($user_prefs['HOMEPAGE_URL']) > 0) {
             $user_profile['HOMEPAGE_URL'] = $user_prefs['HOMEPAGE_URL'];
         }
 
@@ -197,7 +197,7 @@ function user_get_profile($uid)
 
         if (isset($user_profile['PEER_NICKNAME'])) {
 
-            if (!is_null($user_profile['PEER_NICKNAME']) && strlen($user_profile['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_profile['PEER_NICKNAME']) && mb_strlen($user_profile['PEER_NICKNAME']) > 0) {
 
                 $user_profile['NICKNAME'] = $user_profile['PEER_NICKNAME'];
             }
@@ -363,7 +363,7 @@ function user_get_profile_image($uid)
 
         $user_profile_data = db_fetch_array($result);
 
-        if (isset($user_profile_data['PIC_URL']) && strlen($user_profile_data['PIC_URL']) > 0) {
+        if (isset($user_profile_data['PIC_URL']) && mb_strlen($user_profile_data['PIC_URL']) > 0) {
             return $user_profile_data['PIC_URL'];
         }
     }

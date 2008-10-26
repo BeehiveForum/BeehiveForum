@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.29 2008-09-23 23:54:07 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.30 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -124,9 +124,9 @@ function decToHex ($r, $g, $b)
 function hexToDec ($rgb)
 {
 
-    $r = substr ($rgb, 0, 2);
-    $g = substr ($rgb, 2, 2);
-    $b = substr ($rgb, 4, 2);
+    $r = mb_substr ($rgb, 0, 2);
+    $g = mb_substr ($rgb, 2, 2);
+    $b = mb_substr ($rgb, 4, 2);
 
     return array(hexdec($r), hexdec($g), hexdec($b));
 

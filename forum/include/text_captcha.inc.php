@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.36 2008-10-18 20:30:22 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.37 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,7 +123,7 @@ class captcha {
     function verify_keys($private_key_check)
     {
         $this->generate_private_key();
-        return (strtolower($private_key_check) == strtolower($this->private_key));
+        return (mb_strtolower($private_key_check) == mb_strtolower($this->private_key));
     }
 
     function get_image_filename()
@@ -239,7 +239,7 @@ class captcha {
 
                 for ($i = 0, $text_x = intval(mt_rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
 
-                    $text = strtoupper(substr($this->private_key, $i, 1));
+                    $text = mb_strtoupper(mb_substr($this->private_key, $i, 1));
 
                     $text_angle = intval(mt_rand(($this->max_rotation * -1), $this->max_rotation));
 
@@ -328,12 +328,12 @@ class captcha {
 
     function is_font($file)
     {
-        return (substr($file, -3) == 'ttf');
+        return (mb_substr($file, -3) == 'ttf');
     }
 
     function generate_public_key()
     {
-        $this->public_key = substr(md5(uniqid(mt_rand(), true)), 0, $this->num_chars);
+        $this->public_key = mb_substr(md5(uniqid(mt_rand(), true)), 0, $this->num_chars);
         $this->pub_key_done = true;
 
         return true;
@@ -345,7 +345,7 @@ class captcha {
             return false;
         }
 
-        $this->private_key = substr(md5($this->key.$this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
+        $this->private_key = mb_substr(md5($this->key.$this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
         $this->prv_key_done = true;
 
         return true;

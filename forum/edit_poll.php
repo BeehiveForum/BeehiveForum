@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.172 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.173 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -249,7 +249,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $t_post_html = 'N';
     }
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
 
@@ -259,7 +259,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if (isset($_POST['question']) && strlen(trim(stripslashes_array($_POST['question']))) > 0) {
+    if (isset($_POST['question']) && mb_strlen(trim(stripslashes_array($_POST['question']))) > 0) {
         $t_question = trim(stripslashes_array($_POST['question']));
     }else {
         $t_question = $t_threadtitle;
@@ -282,7 +282,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-                if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+                if ($poll_answers_valid == true && mb_strlen(trim($t_answers_array[$key])) < 1) {
 
                     $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
 
@@ -293,13 +293,13 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
             }
         }
 
-        if (!isset($t_answers_array[0]) || strlen(trim(stripslashes_array($t_answers_array[0]))) == 0) {
+        if (!isset($t_answers_array[0]) || mb_strlen(trim(stripslashes_array($t_answers_array[0]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
-        if (!isset($t_answers_array[1]) || strlen(trim(stripslashes_array($t_answers_array[1]))) == 0) {
+        if (!isset($t_answers_array[1]) || mb_strlen(trim(stripslashes_array($t_answers_array[1]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
@@ -431,11 +431,11 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $t_post_html = 'N';
     }
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
     }
 
-    if (isset($_POST['question']) && strlen(trim(stripslashes_array($_POST['question']))) > 0) {
+    if (isset($_POST['question']) && mb_strlen(trim(stripslashes_array($_POST['question']))) > 0) {
         $t_question = trim(stripslashes_array($_POST['question']));
     }
 

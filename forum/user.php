@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.74 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: user.php,v 1.75 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -124,7 +124,7 @@ html_draw_top('frame_set_html', 'pm_popup_disabled');
 
 $frameset = new html_frameset_cols('250,*');
 
-if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0) {
+if (isset($_GET['page']) && mb_strlen(trim(stripslashes_array($_GET['page']))) > 0) {
 
     $requested_page = trim(stripslashes_array($_GET['page']));
 

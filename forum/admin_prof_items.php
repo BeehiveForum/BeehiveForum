@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.135 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.136 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -228,7 +228,7 @@ if (isset($_POST['additemsubmit'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && mb_strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
 
         $t_new_name = trim(stripslashes_array($_POST['t_name_new']));
 
@@ -248,7 +248,7 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_options_new']) && strlen(trim(stripslashes_array($_POST['t_options_new']))) > 0) {
+    if (isset($_POST['t_options_new']) && mb_strlen(trim(stripslashes_array($_POST['t_options_new']))) > 0) {
 
         $t_options_new = trim(stripslashes_array($_POST['t_options_new']));
 
@@ -270,7 +270,7 @@ if (isset($_POST['additemsubmit'])) {
                 $error_msg_array[] = $lang['profileitemhyperlinkssupportshttpurlsonly'];
             }
 
-            if ($valid && (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1)) {
+            if ($valid && (!isset($check_url['host']) || mb_strlen(trim($check_url['host'])) < 1)) {
 
                 $valid = false;
                 $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
@@ -324,7 +324,7 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && mb_strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
 
         $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
 
@@ -344,7 +344,7 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_options_new']) && strlen(trim(stripslashes_array($_POST['t_options_new']))) > 0) {
+    if (isset($_POST['t_options_new']) && mb_strlen(trim(stripslashes_array($_POST['t_options_new']))) > 0) {
 
         $t_options_new = trim(stripslashes_array($_POST['t_options_new']));
 
@@ -366,7 +366,7 @@ if (isset($_POST['additemsubmit'])) {
                 $error_msg_array[] = $lang['profileitemhyperlinkssupportshttpurlsonly'];
             }
 
-            if ($valid && (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1)) {
+            if ($valid && (!isset($check_url['host']) || mb_strlen(trim($check_url['host'])) < 1)) {
 
                 $valid = false;
                 $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];

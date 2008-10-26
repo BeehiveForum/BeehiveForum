@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.10 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.11 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -182,9 +182,9 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 
 // Folder search keywords.
 
-if (isset($_GET['folder_search']) && strlen(trim(stripslashes_array($_GET['folder_search']))) > 0) {
+if (isset($_GET['folder_search']) && mb_strlen(trim(stripslashes_array($_GET['folder_search']))) > 0) {
     $folder_search = trim(stripslashes_array($_GET['folder_search']));
-}else if (isset($_POST['folder_search']) && strlen(trim(stripslashes_array($_POST['folder_search']))) > 0) {
+}else if (isset($_POST['folder_search']) && mb_strlen(trim(stripslashes_array($_POST['folder_search']))) > 0) {
     $folder_search = trim(stripslashes_array($_POST['folder_search']));
 }else {
     $folder_search = "";
@@ -218,7 +218,7 @@ $interest_level_array = array(FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRI
 
 // Check if we're searching or displaying the existing subscriptions.
 
-if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
+if (isset($folder_search) && mb_strlen(trim($folder_search)) > 0) {
     $folder_subscriptions = folders_search_user_subscriptions($folder_search, $view_filter, $start_search);
 }else {
     $folder_subscriptions = folders_get_user_subscriptions($view_filter, $start_main);
@@ -240,7 +240,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (sizeof($folder_subscriptions['folder_array']) < 1) {
 
-    if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
+    if (isset($folder_search) && mb_strlen(trim($folder_search)) > 0) {
 
         html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
 

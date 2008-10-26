@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.130 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.131 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -115,13 +115,13 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         $error_report_verbose = false;
     }
 
-    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_to']))) > 0) {
+    if (isset($GLOBALS['error_report_email_addr_to']) && mb_strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_to']))) > 0) {
         $error_report_email_addr_to = trim(stripslashes_array($GLOBALS['error_report_email_addr_to']));
     }else {
         $error_report_email_addr_to = '';
     }
 
-    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_from']))) > 0) {
+    if (isset($GLOBALS['error_report_email_addr_from']) && mb_strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_from']))) > 0) {
         $error_report_email_addr_from = trim(stripslashes_array($GLOBALS['error_report_email_addr_from']));
     }else {
         $error_report_email_addr_from = '$error_report_email_addr_from';
@@ -180,7 +180,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Add the file and line number to the error message array
 
-        if (strlen(trim(basename($errfile))) > 0) {
+        if (mb_strlen(trim(basename($errfile))) > 0) {
 
             $error_msg_array[] = "<p><b>Error Message:</b></p>";
             $error_msg_array[] = sprintf("<p>Error in line $errline of file %s</p>", basename($errfile));
@@ -254,7 +254,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         // Get PHP interface (CGI, APACHE, IIS, etc)
 
         if (($php_sapi = php_sapi_name())) {
-            $version_strings[] = strtoupper($php_sapi);
+            $version_strings[] = mb_strtoupper($php_sapi);
         }
 
         // Get MySQL version if available.
@@ -334,7 +334,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check to see if we need to send the error report by email
 
-        if (strlen($error_report_email_addr_to) > 0) {
+        if (mb_strlen($error_report_email_addr_to) > 0) {
 
             $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
 
@@ -437,7 +437,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "    </tr>\n";
         echo "  </table>\n";
 
-        if (isset($_GET['retry_error']) && isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        if (isset($_GET['retry_error']) && isset($_POST['t_content']) && mb_strlen(trim($_POST['t_content'])) > 0) {
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";

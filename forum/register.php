@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.194 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: register.php,v 1.195 2008-10-26 21:03:49 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -85,7 +85,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Where are we going after we've logged on?
 
-if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && mb_strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
     $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
 
@@ -171,7 +171,7 @@ if (isset($_GET['reload_captcha'])) {
     }
 }
 
-if (isset($_GET['private_key']) && strlen(trim(stripslashes_array($_GET['private_key']))) > 0) {
+if (isset($_GET['private_key']) && mb_strlen(trim(stripslashes_array($_GET['private_key']))) > 0) {
     $text_captcha_private_key = trim(stripslashes_array($_GET['private_key']));
 }else {
     $text_captcha_private_key = "";
@@ -220,23 +220,17 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
+    if (isset($_POST['logon']) && mb_strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
 
-        $logon = strtoupper(trim(stripslashes_array($_POST['logon'])));
+        $logon = mb_strtoupper(trim(stripslashes_array($_POST['logon'])));
 
-        if (!preg_match("/^[a-z0-9_-]+$/Diu", $logon)) {
-
-            $error_msg_array[] = $lang['usernameinvalidchars'];
-            $valid = false;
-        }
-
-        if (strlen($logon) < 2) {
+        if (mb_strlen($logon) < 2) {
 
             $error_msg_array[] = $lang['usernametooshort'];
             $valid = false;
         }
 
-        if (strlen($logon) > 15) {
+        if (mb_strlen($logon) > 15) {
 
             $error_msg_array[] = $lang['usernametoolong'];
             $valid = false;
@@ -254,17 +248,11 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['pw']) && strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
+    if (isset($_POST['pw']) && mb_strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
 
         $password = trim(stripslashes_array($_POST['pw']));
 
-        if (!preg_match("/^[a-z0-9_-]+$/Diu", $password)) {
-
-            $error_msg_array[] = $lang['passwordinvalidchars'];
-            $valid = false;
-        }
-
-        if (strlen($password) < 6) {
+        if (mb_strlen($password) < 6) {
 
             $error_msg_array[] = $lang['passwdtooshort'];
             $valid = false;
@@ -276,7 +264,7 @@ if (isset($_POST['register'])) {
         $valid.= false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && mb_strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
 
         $check_password = trim(stripslashes_array($_POST['cpw']));
 
@@ -292,7 +280,7 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
+    if (isset($_POST['nickname']) && mb_strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
 
         $nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 
@@ -308,7 +296,7 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['email']) && strlen(trim(stripslashes_array($_POST['email']))) > 0) {
+    if (isset($_POST['email']) && mb_strlen(trim(stripslashes_array($_POST['email']))) > 0) {
 
         $email = trim(stripslashes_array($_POST['email']));
 
@@ -353,19 +341,19 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['firstname']) && strlen(trim(stripslashes_array($_POST['firstname']))) > 0) {
+    if (isset($_POST['firstname']) && mb_strlen(trim(stripslashes_array($_POST['firstname']))) > 0) {
         $new_user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
     }else {
         $new_user_prefs['FIRSTNAME'] = "";
     }
 
-    if (isset($_POST['lastname']) && strlen(trim(stripslashes_array($_POST['lastname']))) > 0) {
+    if (isset($_POST['lastname']) && mb_strlen(trim(stripslashes_array($_POST['lastname']))) > 0) {
         $new_user_prefs['LASTNAME'] = trim(stripslashes_array($_POST['lastname']));
     }else {
         $new_user_prefs['LASTNAME'] = "";
     }
 
-    if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
+    if (isset($_POST['sig_content']) && mb_strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
         $sig_content = trim(stripslashes_array($_POST['sig_content']));
     }else {
         $sig_content = "";
@@ -435,11 +423,11 @@ if (isset($_POST['register'])) {
 
     if (forum_get_setting('text_captcha_enabled', 'Y')) {
 
-        if (isset($_POST['public_key']) && strlen(trim(stripslashes_array($_POST['public_key']))) > 0) {
+        if (isset($_POST['public_key']) && mb_strlen(trim(stripslashes_array($_POST['public_key']))) > 0) {
 
             $public_key = trim(stripslashes_array($_POST['public_key']));
 
-            if (isset($_POST['private_key']) && strlen(trim(stripslashes_array($_POST['private_key']))) > 0) {
+            if (isset($_POST['private_key']) && mb_strlen(trim(stripslashes_array($_POST['private_key']))) > 0) {
 
                 $private_key = trim(stripslashes_array($_POST['private_key']));
 
@@ -475,7 +463,7 @@ if (isset($_POST['register'])) {
             $valid = false;
         }
 
-        if (strtolower($logon) == strtolower($password)) {
+        if (mb_strtolower($logon) == mb_strtolower($password)) {
 
             $error_msg_array[] = $lang['usernamesameaspasswd'];
             $valid = false;
@@ -511,7 +499,7 @@ if (isset($_POST['register'])) {
             // Generate the MD5 checksum of the user's password for saving in their cookie.
 
             $passhash = md5($password);
-            $password = str_repeat(chr(32), strlen($password));
+            $password = str_repeat(chr(32), mb_strlen($password));
 
             // Update the cookies.
 
@@ -818,7 +806,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     if (forum_get_setting('text_captcha_enabled', 'Y') && ($text_captcha->generate_keys())) {
 
-        if (strlen(trim($text_captcha_private_key)) > 0) {
+        if (mb_strlen(trim($text_captcha_private_key)) > 0) {
 
             echo form_input_hidden("private_key", htmlentities_array($text_captcha_private_key));
             echo form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key()));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.61 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.62 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -81,7 +81,7 @@ if (isset($_POST['request'])) {
 
     if (isset($_POST['logon'])) {
 
-        $logon = strtoupper($_POST['logon']);
+        $logon = mb_strtoupper($_POST['logon']);
 
         if (email_send_pw_reminder($logon)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.152 2008-09-05 22:32:03 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.153 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -142,7 +142,7 @@ function thread_get($tid, $inc_deleted = false)
         }
 
         if (isset($thread_data['LOGON']) && isset($thread_data['PEER_NICKNAME'])) {
-            if (!is_null($thread_data['PEER_NICKNAME']) && strlen($thread_data['PEER_NICKNAME']) > 0) {
+            if (!is_null($thread_data['PEER_NICKNAME']) && mb_strlen($thread_data['PEER_NICKNAME']) > 0) {
                 $thread_data['NICKNAME'] = $thread_data['PEER_NICKNAME'];
             }
         }
@@ -1386,7 +1386,7 @@ function thread_search($thread_search, $offset = 0)
 
 function thread_format_prefix($prefix, $thread_title)
 {
-    if (strlen(trim($prefix)) > 0) {
+    if (mb_strlen(trim($prefix)) > 0) {
         return "{$prefix} {$thread_title}";
     }
 

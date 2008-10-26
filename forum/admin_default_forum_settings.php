@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.133 2008-10-26 16:46:23 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.134 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -168,32 +168,32 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['cancel_unread_cutoff'])) unset($_POST['messages_unread_cutoff']);
 
-    if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
+    if (isset($_POST['forum_name']) && mb_strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
     }else {
         $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
+    if (isset($_POST['forum_email']) && mb_strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
     }else {
         $new_forum_settings['forum_email'] = "admin@abeehiveforum.net";
     }
 
-    if (isset($_POST['forum_noreply_email']) && strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
+    if (isset($_POST['forum_noreply_email']) && mb_strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
         $new_forum_settings['forum_noreply_email'] = trim(stripslashes_array($_POST['forum_noreply_email']));
     }else {
         $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
     }
 
-    if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
+    if (isset($_POST['forum_desc']) && mb_strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
         $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
     }else {
         $new_forum_settings['forum_desc'] = "";
     }
 
-    if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
+    if (isset($_POST['forum_keywords']) && mb_strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
         $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
     }else {
         $new_forum_settings['forum_keywords'] = "";
@@ -258,7 +258,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_rules_enabled'] = "N";
     }
 
-    if (isset($_POST['forum_rules_message']) && strlen(trim(stripslashes_array($_POST['forum_rules_message']))) > 0) {
+    if (isset($_POST['forum_rules_message']) && mb_strlen(trim(stripslashes_array($_POST['forum_rules_message']))) > 0) {
         $new_forum_settings['forum_rules_message'] = trim(stripslashes_array($_POST['forum_rules_message']));
     }else {
         $new_forum_settings['forum_rules_message'] = "";
@@ -276,7 +276,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['allow_forum_google_analytics'] = "N";
     }
 
-    if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
+    if (isset($_POST['google_analytics_code']) && mb_strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
         $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
     }else {
         $new_forum_settings['google_analytics_code'] = "";
@@ -300,13 +300,13 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['google_adsense_display_pages'] = GOOGLE_ADSENSE_MESSAGES_ONLY;
     }
 
-    if (isset($_POST['google_adsense_clientid']) && strlen(trim(stripslashes_array($_POST['google_adsense_clientid']))) > 0) {
+    if (isset($_POST['google_adsense_clientid']) && mb_strlen(trim(stripslashes_array($_POST['google_adsense_clientid']))) > 0) {
         $new_forum_settings['google_adsense_clientid'] = trim(stripslashes_array($_POST['google_adsense_clientid']));
     }else {
         $new_forum_settings['google_adsense_clientid'] = "";
     }
 
-    if (isset($_POST['google_adsense_adchannel']) && strlen(trim(stripslashes_array($_POST['google_adsense_adchannel']))) > 0) {
+    if (isset($_POST['google_adsense_adchannel']) && mb_strlen(trim(stripslashes_array($_POST['google_adsense_adchannel']))) > 0) {
         $new_forum_settings['google_adsense_adchannel'] = trim(stripslashes_array($_POST['google_adsense_adchannel']));
     }else {
         $new_forum_settings['google_adsense_adchannel'] = "";
@@ -473,11 +473,11 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['attachments_enabled'] = "N";
     }
 
-    if (isset($_POST['attachment_dir']) && strlen(trim(stripslashes_array($_POST['attachment_dir']))) > 0) {
+    if (isset($_POST['attachment_dir']) && mb_strlen(trim(stripslashes_array($_POST['attachment_dir']))) > 0) {
 
         $new_forum_settings['attachment_dir'] = trim(stripslashes_array($_POST['attachment_dir']));
 
-    }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
+    }elseif (mb_strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
 
         $error_msg_array[] = $lang['attachmentdirblank'];
         $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.112 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.113 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -123,7 +123,7 @@ mkdir_recursive("forums/$webtag", 0755);
 
 // Check to see if we're submitting new page or retrieving the old one.
 
-if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
     $t_content = trim(stripslashes_array($_POST['t_content']));
 }else {
     $t_content = forum_load_start_page();
@@ -157,7 +157,7 @@ if (isset($_POST['save'])) {
 
 }elseif (isset($_POST['upload'])) {
 
-    if (isset($_FILES['cssfile']['tmp_name']) && strlen(trim($_FILES['cssfile']['tmp_name'])) > 0) {
+    if (isset($_FILES['cssfile']['tmp_name']) && mb_strlen(trim($_FILES['cssfile']['tmp_name'])) > 0) {
 
         if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] > 0) {
 
@@ -193,7 +193,7 @@ if (isset($_POST['save'])) {
 
 }else if (isset($_POST['download'])) {
 
-    $content_length = strlen($t_content);
+    $content_length = mb_strlen($t_content);
 
     header("Content-Type: application/x-ms-download", true);
     header("Content-Length: $content_length", true);

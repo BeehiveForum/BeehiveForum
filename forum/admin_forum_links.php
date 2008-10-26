@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.67 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.68 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -169,14 +169,14 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_top_link_title']))) > 0) {
+    if (isset($_POST['t_top_link_title']) && mb_strlen(trim(stripslashes_array($_POST['t_top_link_title']))) > 0) {
         $t_top_link_title = trim(stripslashes_array($_POST['t_top_link_title']));
     }else {
         $error_msg_array[] = $lang['notoplevellinktitlespecified'];
         $valid = false;
     }
 
-    if (isset($_POST['t_old_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_old_top_link_title']))) > 0) {
+    if (isset($_POST['t_old_top_link_title']) && mb_strlen(trim(stripslashes_array($_POST['t_old_top_link_title']))) > 0) {
         $t_old_top_link_title = trim(stripslashes_array($_POST['t_old_top_link_title']));
     }else {
         $t_old_top_link_title = "";
@@ -202,14 +202,14 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
+    if (isset($_POST['t_title']) && mb_strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
         $t_title = trim(stripslashes_array($_POST['t_title']));
     }else {
         $valid = false;
         $error_msg_array[] = $lang['youmustenteralinktitle'];
     }
 
-    if (isset($_POST['t_uri']) && strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
+    if (isset($_POST['t_uri']) && mb_strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
 
         $t_uri = trim(stripslashes_array($_POST['t_uri']));
 
@@ -246,14 +246,14 @@ if (isset($_POST['delete'])) {
 
         $lid = $_POST['lid'];
 
-        if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
+        if (isset($_POST['t_title']) && mb_strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
             $t_title = trim(stripslashes_array($_POST['t_title']));
         }else {
             $valid = false;
             $error_msg_array[] = $lang['youmustenteralinktitle'];
         }
 
-        if (isset($_POST['t_uri']) && strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
+        if (isset($_POST['t_uri']) && mb_strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
 
             $t_uri = trim(stripslashes_array($_POST['t_uri']));
 
@@ -268,13 +268,13 @@ if (isset($_POST['delete'])) {
             $t_uri = "";
         }
 
-        if (isset($_POST['t_old_title']) && strlen(trim(stripslashes_array($_POST['t_old_title']))) > 0) {
+        if (isset($_POST['t_old_title']) && mb_strlen(trim(stripslashes_array($_POST['t_old_title']))) > 0) {
             $t_old_title = trim(stripslashes_array($_POST['t_old_title']));
         }else {
             $t_old_title = "";
         }
 
-        if (isset($_POST['t_old_uri']) && strlen(trim(stripslashes_array($_POST['t_old_uri']))) > 0) {
+        if (isset($_POST['t_old_uri']) && mb_strlen(trim(stripslashes_array($_POST['t_old_uri']))) > 0) {
             $t_old_uri = trim(stripslashes_array($_POST['t_old_uri']));
         }else {
             $t_old_uri = "";

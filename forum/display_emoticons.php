@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.68 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.69 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,7 +116,7 @@ if (!forum_check_access_level()) {
 
 // Check to see if user has requested a pack to view
 
-if (isset($_GET['pack']) && strlen(trim(stripslashes_array($_GET['pack']))) > 0) {
+if (isset($_GET['pack']) && mb_strlen(trim(stripslashes_array($_GET['pack']))) > 0) {
     $user_emoticon_pack = $_GET['pack'];
 }
 

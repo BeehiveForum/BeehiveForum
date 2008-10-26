@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.73 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.74 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -108,9 +108,9 @@ $lang = load_language_file();
 
 // Are we returning somewhere?
 
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+if (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_user_groups.php?webtag=$webtag";
@@ -118,7 +118,7 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 
 // validate the return to page
 
-if (isset($ret) && strlen(trim($ret)) > 0) {
+if (isset($ret) && mb_strlen(trim($ret)) > 0) {
 
     $available_pages = array('admin_user_groups.php', 'admin_user.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
@@ -182,7 +182,7 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+    if (isset($_POST['t_name']) && mb_strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
 
         $t_name = trim(stripslashes_array($_POST['t_name']));
 
@@ -192,7 +192,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
+    if (isset($_POST['t_description']) && mb_strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
         $t_description = trim(stripslashes_array($_POST['t_description']));
     }else {
         $t_description = "";

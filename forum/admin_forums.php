@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.97 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.98 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -245,9 +245,9 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_webtag']) && strlen(trim(stripslashes_array($_POST['t_webtag']))) > 0) {
+    if (isset($_POST['t_webtag']) && mb_strlen(trim(stripslashes_array($_POST['t_webtag']))) > 0) {
 
-        $t_webtag = strtoupper(trim(stripslashes_array($_POST['t_webtag'])));
+        $t_webtag = mb_strtoupper(trim(stripslashes_array($_POST['t_webtag'])));
 
         if (!preg_match("/^[A-Z0-9_]+$/Du", $t_webtag)) {
 
@@ -261,14 +261,14 @@ if (isset($_POST['delete'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+    if (isset($_POST['t_name']) && mb_strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
         $t_name = trim(stripslashes_array($_POST['t_name']));
     }else {
         $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
-    if (isset($_POST['t_owner']) && strlen(trim(stripslashes_array($_POST['t_owner']))) > 0) {
+    if (isset($_POST['t_owner']) && mb_strlen(trim(stripslashes_array($_POST['t_owner']))) > 0) {
 
         $t_owner = trim(stripslashes_array($_POST['t_owner']));
 
@@ -346,14 +346,14 @@ if (isset($_POST['delete'])) {
 
     if (($valid && $forum_data = forum_get($fid))) {
 
-        if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+        if (isset($_POST['t_name']) && mb_strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
             $t_name = trim(stripslashes_array($_POST['t_name']));
         }else {
             $error_msg_array[] = $lang['mustsupplyforumname'];
             $valid = false;
         }
 
-        if (isset($_POST['t_owner']) && strlen(trim(stripslashes_array($_POST['t_owner']))) > 0) {
+        if (isset($_POST['t_owner']) && mb_strlen(trim(stripslashes_array($_POST['t_owner']))) > 0) {
 
             $t_owner = trim(stripslashes_array($_POST['t_owner']));
 

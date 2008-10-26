@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.265 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: edit.php,v 1.266 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -343,7 +343,7 @@ if ($allow_html == false) {
     $sig->setHTML(false, true);
 }
 
-if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
     $t_content = trim(stripslashes_array($_POST['t_content']));
 
@@ -356,14 +356,14 @@ if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_conte
     $post->setContent($t_content);
     $t_content = $post->getContent();
 
-    if (strlen($t_content) >= 65535) {
+    if (mb_strlen($t_content) >= 65535) {
 
-        $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
+        $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
         $valid = false;
     }
 }
 
-if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+if (isset($_POST['t_sig']) && mb_strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
 
     $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
@@ -376,9 +376,9 @@ if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) 
     $sig->setContent($t_sig);
     $t_sig = $sig->getContent();
 
-    if (strlen($t_sig) >= 65535) {
+    if (mb_strlen($t_sig) >= 65535) {
 
-        $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
+        $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(mb_strlen($t_sig)));
         $valid = false;
     }
 }
@@ -413,7 +413,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (strlen(trim($t_content)) == 0) {
+    if (mb_strlen(trim($t_content)) == 0) {
 
         $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
@@ -485,7 +485,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (strlen(trim($t_content)) == 0) {
+    if (mb_strlen(trim($t_content)) == 0) {
 
         $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;

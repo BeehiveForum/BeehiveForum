@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.130 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.131 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -115,11 +115,11 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['stylename']) && strlen(trim(stripslashes_array($_POST['stylename']))) > 0) {
+    if (isset($_POST['stylename']) && mb_strlen(trim(stripslashes_array($_POST['stylename']))) > 0) {
 
         $stylename = trim(stripslashes_array($_POST['stylename']));
 
-        if (preg_match("/^[a-z0-9_]+$/Du", $stylename) < 1) {
+        if (preg_match("/^[A_Z0-9_-]+$/Diu", $stylename) < 1) {
 
             $error_msg_array[] = $lang['stylefilenamemayonlycontain'];
             $valid = false;
@@ -131,7 +131,7 @@ if (isset($_POST['save'])) {
         $error_msg_array[] = $lang['stylenofilename'];
     }
 
-    if (isset($_POST['styledesc']) && strlen(trim(stripslashes_array($_POST['styledesc']))) > 0) {
+    if (isset($_POST['styledesc']) && mb_strlen(trim(stripslashes_array($_POST['styledesc']))) > 0) {
 
         $styledesc = trim(stripslashes_array($_POST['styledesc']));
 
@@ -144,7 +144,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['stylesheet']) && strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
+    if (isset($_POST['stylesheet']) && mb_strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
 
         $stylesheet = trim(stripslashes_array($_POST['stylesheet']));
 
@@ -156,8 +156,8 @@ if (isset($_POST['save'])) {
 
             foreach ($_POST['elements'] as $key => $value) {
 
-                $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
-                $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
+                $stylesheet = str_replace("\$elements[$key]", mb_strtoupper($value), $stylesheet);
+                $stylesheet = str_replace("\$text_colour[$key]", mb_strtoupper(contrastFont($value)), $stylesheet);
             }
 
         }else {
@@ -243,13 +243,13 @@ if (isset($_POST['save'])) {
 
 }elseif (isset($_POST['download'])) {
 
-    if (isset($_POST['stylesheet']) && strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
+    if (isset($_POST['stylesheet']) && mb_strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
         $stylesheet = trim(stripslashes_array($_POST['stylesheet']));
     }else {
         $stylesheet = "";
     }
 
-    $length = strlen($stylesheet);
+    $length = mb_strlen($stylesheet);
 
     header("Content-Type: application/x-ms-download", true);
     header("Content-Length: $length", true);
@@ -342,7 +342,7 @@ if (isset($_POST['save'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", mb_strtoupper($value), "</a>\n";
         echo "                  </td>\n";
     }
 
@@ -351,7 +351,7 @@ if (isset($_POST['save'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $colour, "; color: #", contrastFont($colour), "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $colour, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $colour, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", mb_strtoupper($colour), "</a>\n";
         echo "                  </td>\n";
 
         $elements[$key] = $colour;
@@ -399,7 +399,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">{$lang['enterhexcolour']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">", form_input_text('seed', htmlentities_array(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "</td>\n";
+echo "                  <td class=\"posthead\" align=\"left\">", form_input_text('seed', htmlentities_array(mb_strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

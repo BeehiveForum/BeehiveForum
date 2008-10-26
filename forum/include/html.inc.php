@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.321 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.322 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,7 +116,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
 
-    if (is_string($href) && strlen(trim($href)) > 0) {
+    if (is_string($href) && mb_strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -160,7 +160,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "        <td align=\"left\">&nbsp;</td>\n";
     echo "      </tr>\n";
 
-    if (is_string($href) && strlen(trim($href)) > 0) {
+    if (is_string($href) && mb_strlen(trim($href)) > 0) {
 
         $button_html_array = array();
 
@@ -182,7 +182,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "    </table>\n";
     echo "  </div>\n";
 
-    if (is_string($href) && strlen(trim($href)) > 0) {
+    if (is_string($href) && mb_strlen(trim($href)) > 0) {
         echo "</form>\n";
     }
 }
@@ -651,7 +651,7 @@ function html_get_frame_name($basename)
 
 function html_get_top_frame_name()
 {
-    if (isset($GLOBALS['frame_top_target']) && strlen(trim($GLOBALS['frame_top_target'])) > 0) {
+    if (isset($GLOBALS['frame_top_target']) && mb_strlen(trim($GLOBALS['frame_top_target'])) > 0) {
         return $GLOBALS['frame_top_target'];
     }
 
@@ -754,17 +754,17 @@ function html_draw_top()
     foreach ($arg_array as $key => $func_args) {
 
         if (preg_match('/^title=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($title)) < 1) $title = $func_matches[1];
+            if (mb_strlen(trim($title)) < 1) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
         if (preg_match('/^class=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($body_class)) < 1) $body_class = $func_matches[1];
+            if (mb_strlen(trim($body_class)) < 1) $body_class = $func_matches[1];
             unset($arg_array[$key]);
         }
 
         if (preg_match('/^basetarget=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($base_target)) < 1) $base_target = $func_matches[1];
+            if (mb_strlen(trim($base_target)) < 1) $base_target = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -779,7 +779,7 @@ function html_draw_top()
         }
 
         if (preg_match('/^tinymce_auto_focus=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($tinymce_auto_focus)) < 1) $tinymce_auto_focus = $func_matches[1];
+            if (mb_strlen(trim($tinymce_auto_focus)) < 1) $tinymce_auto_focus = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -829,9 +829,9 @@ function html_draw_top()
         }
     }
 
-    if (strlen(trim($title)) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
-    if (strlen(trim($body_class)) < 1) $body_class = false;
-    if (strlen(trim($base_target)) < 1) $base_target = false;
+    if (mb_strlen(trim($title)) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    if (mb_strlen(trim($body_class)) < 1) $body_class = false;
+    if (mb_strlen(trim($base_target)) < 1) $base_target = false;
 
     if (!isset($resize_width)) $resize_width = 0;
 
@@ -860,7 +860,7 @@ function html_draw_top()
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 
-    }elseif (strlen(trim($robots)) > 0) {
+    }elseif (mb_strlen(trim($robots)) > 0) {
 
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
@@ -1156,8 +1156,8 @@ function html_draw_top()
     if ($frame_set_html === false) {
 
         echo "<body", ($body_class) ? " class=\"$body_class\"" : "";
-        echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
-        echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
+        echo (mb_strlen($onload) > 0) ? " onload=\"$onload\"" : "";
+        echo (mb_strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
         echo ">\n";
 
         // Default height and width are overridden by
@@ -1340,8 +1340,8 @@ class html_frame
     function output_html()
     {
         echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", $this->src, $this->name, $this->frameborder);
-        echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
-        echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
+        echo (mb_strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
+        echo (mb_strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
         echo sprintf("%s/>\n", $this->allowtransparency);
     }
 }
@@ -1349,7 +1349,7 @@ class html_frame
 function html_get_page_footer()
 {
     if (($page_footer = forum_get_setting('forum_page_footer'))) {
-        return (strlen(trim($page_footer)) > 0) ? $page_footer : false;
+        return (mb_strlen(trim($page_footer)) > 0) ? $page_footer : false;
     }
 
     return false;
@@ -1362,7 +1362,7 @@ function html_get_google_analytics_code()
         if (forum_get_setting('enable_google_analytics', 'Y')) {
 
             if (($google_analytics_code = forum_get_setting('google_analytics_code'))) {
-                return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
+                return (mb_strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
             }
         }
 
@@ -1371,7 +1371,7 @@ function html_get_google_analytics_code()
         if (forum_get_global_setting('enable_google_analytics', 'Y')) {
 
             if (($google_analytics_code = forum_get_global_setting('google_analytics_code'))) {
-                return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
+                return (mb_strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
             }
         }
     }
@@ -1418,7 +1418,7 @@ function html_output_google_adsense_settings(&$banner_width, &$banner_height)
     // No idea what format the client ID should be in
     // So we'll just assume it's right if it's a non-empty string.
 
-    if (strlen(trim($google_adsense_clientid)) > 0) {
+    if (mb_strlen(trim($google_adsense_clientid)) > 0) {
 
         // Get the Ad colours.
 
@@ -1547,7 +1547,7 @@ function style_image($img)
 function bh_setcookie($name, $value, $expires = 0)
 {
     $cookie_domain = (isset($GLOBALS['cookie_domain'])) ? $GLOBALS['cookie_domain'] : "";
-    $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
+    $cookie_secure = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on');
 
     if (!defined('BEEHIVEMODE_LIGHT')) {
 
@@ -1583,7 +1583,7 @@ function bh_getcookie($cookie_name, $callback = false, $default = false)
 
             }else if (is_string($callback)) {
 
-                return strtoupper($_COOKIE[$cookie_name]) == strtoupper($callback);
+                return mb_strtoupper($_COOKIE[$cookie_name]) == mb_strtoupper($callback);
             }
         }
 
@@ -1665,7 +1665,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
 
         foreach ($uri_query_keys as $key => $key_name) {
 
-            if (strlen($key_name) > 0) {
+            if (mb_strlen($key_name) > 0) {
 
                 if ($remove_keys === false || (is_array($remove_keys) && !in_array($key_name, $remove_keys)) || $key_name != $remove_keys) {
 
@@ -1797,28 +1797,28 @@ function html_get_forum_uri($append_path = "", $allow_https = true)
 {
     $uri_array = array();
 
-    if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
+    if (isset($_SERVER['REQUEST_URI']) && mb_strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
         $uri_array = @parse_url($_SERVER['REQUEST_URI']);
     }
 
-    if (!isset($uri_array['scheme']) || strlen(trim($uri_array['scheme'])) < 1) {
+    if (!isset($uri_array['scheme']) || mb_strlen(trim($uri_array['scheme'])) < 1) {
 
-        if (isset($_SERVER['HTTP_SCHEME']) && strlen(trim($_SERVER['HTTP_SCHEME'])) > 0) {
+        if (isset($_SERVER['HTTP_SCHEME']) && mb_strlen(trim($_SERVER['HTTP_SCHEME'])) > 0) {
 
             $uri_array['scheme'] = $_SERVER['HTTP_SCHEME'];
 
-        }elseif (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
+        }elseif (isset($_SERVER['HTTPS']) && mb_strlen(trim($_SERVER['HTTPS'])) > 0) {
 
-            $uri_array['scheme'] = (strtolower($_SERVER['HTTPS']) != 'off' && $allow_https === true) ? 'https' : 'http';
+            $uri_array['scheme'] = (mb_strtolower($_SERVER['HTTPS']) != 'off' && $allow_https === true) ? 'https' : 'http';
 
         }else {
 
             $uri_array['scheme'] = 'http';
         }
 
-        if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
+        if (isset($_SERVER['HTTP_HOST']) && mb_strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
 
-            if (strpos($_SERVER['HTTP_HOST'], ':') > 0) {
+            if (mb_strpos($_SERVER['HTTP_HOST'], ':') > 0) {
 
                 list($uri_array['host'], $uri_array['port']) = explode(':', $_SERVER['HTTP_HOST']);
 
@@ -1827,14 +1827,14 @@ function html_get_forum_uri($append_path = "", $allow_https = true)
                 $uri_array['host'] = $_SERVER['HTTP_HOST'];
             }
 
-        }else if (isset($_SERVER['SERVER_NAME']) && strlen(trim($_SERVER['SERVER_NAME'])) > 0) {
+        }else if (isset($_SERVER['SERVER_NAME']) && mb_strlen(trim($_SERVER['SERVER_NAME'])) > 0) {
 
             $uri_array['host'] = $_SERVER['SERVER_NAME'];
         }
 
-        if (!isset($uri_array['port']) || strlen(trim($uri_array['port'])) < 1) {
+        if (!isset($uri_array['port']) || mb_strlen(trim($uri_array['port'])) < 1) {
 
-            if (isset($_SERVER['SERVER_PORT']) && strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
+            if (isset($_SERVER['SERVER_PORT']) && mb_strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
 
                 if ($_SERVER['SERVER_PORT'] != '80') {
 
@@ -1843,9 +1843,9 @@ function html_get_forum_uri($append_path = "", $allow_https = true)
             }
         }
 
-        if (!isset($uri_array['path']) || strlen(trim($uri_array['path'])) < 1) {
+        if (!isset($uri_array['path']) || mb_strlen(trim($uri_array['path'])) < 1) {
 
-            if (isset($_SERVER['PATH_INFO']) && strlen(trim($_SERVER['PATH_INFO'])) > 0) {
+            if (isset($_SERVER['PATH_INFO']) && mb_strlen(trim($_SERVER['PATH_INFO'])) > 0) {
 
                 $path = @parse_url($_SERVER['PATH_INFO']);
 
@@ -1870,7 +1870,7 @@ function html_get_forum_uri($append_path = "", $allow_https = true)
 
     $uri_array['path'] = rtrim($uri_array['path'], '/');
 
-    if (strlen(trim($append_path)) > 0) {
+    if (mb_strlen(trim($append_path)) > 0) {
         $uri_array['path'].= $append_path;
     }
 

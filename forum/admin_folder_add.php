@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.59 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.60 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -124,20 +124,20 @@ if (isset($_POST['add'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+    if (isset($_POST['t_name']) && mb_strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
         $t_name = trim(stripslashes_array($_POST['t_name']));
     }else {
         $error_msg_array[] = $lang['mustenterfoldername'];
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
+    if (isset($_POST['t_description']) && mb_strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
         $t_description = trim(stripslashes_array($_POST['t_description']));
     }else {
         $t_description = "";
     }
 
-    if (isset($_POST['t_prefix']) && strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
+    if (isset($_POST['t_prefix']) && mb_strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
         $t_prefix = trim(stripslashes_array($_POST['t_prefix']));
     }else {
         $t_prefix = "";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.215 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.216 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,7 +58,7 @@ function search_execute($search_arguments, &$error)
     if (!isset($search_arguments['sstart']) || !is_numeric($search_arguments['sstart'])) $search_arguments['sstart'] = 0;
     if (!isset($search_arguments['fid']) || !is_numeric($search_arguments['fid'])) $search_arguments['fid'] = 0;
     if (!isset($search_arguments['include']) || !is_numeric($search_arguments['include'])) $search_arguments['include'] = 2;
-    if (!isset($search_arguments['username']) || strlen(trim($search_arguments['username'])) < 1) $search_arguments['username'] = "";
+    if (!isset($search_arguments['username']) || mb_strlen(trim($search_arguments['username'])) < 1) $search_arguments['username'] = "";
     if (!isset($search_arguments['user_include']) || !is_numeric($search_arguments['user_include'])) $search_arguments['user_include'] = 0;
     if (!isset($search_arguments['sort_by']) || !is_numeric($search_arguments['sort_by'])) $search_arguments['sort_by'] = 1;
     if (!isset($search_arguments['sort_dir']) || !is_numeric($search_arguments['sort_dir'])) $search_arguments['sort_dir'] = 1;
@@ -115,7 +115,7 @@ function search_execute($search_arguments, &$error)
 
     // Username based search.
 
-    if (isset($search_arguments['username']) && strlen(trim($search_arguments['username'])) > 0) {
+    if (isset($search_arguments['username']) && mb_strlen(trim($search_arguments['username'])) > 0) {
 
         // Base query slightly different if you're not searching by keywords
 
@@ -175,7 +175,7 @@ function search_execute($search_arguments, &$error)
 
     /// Keyword based search.
 
-    if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
+    if (isset($search_arguments['search_string']) && mb_strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
 
         $search_string = trim(stripslashes_array($search_arguments['search_string']));
 
@@ -230,7 +230,7 @@ function search_execute($search_arguments, &$error)
 
     }else {
 
-        if (!isset($search_arguments['username']) || strlen(trim($search_arguments['username'])) < 1) {
+        if (!isset($search_arguments['username']) || mb_strlen(trim($search_arguments['username'])) < 1) {
 
             $error = SEARCH_NO_KEYWORDS;
             return false;
@@ -555,7 +555,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
         while (($search_result = db_fetch_array($result))) {
 
             if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
-                if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
+                if (!is_null($search_result['PEER_NICKNAME']) && mb_strlen($search_result['PEER_NICKNAME']) > 0) {
                     $search_result['FROM_NICKNAME'] = $search_result['PEER_NICKNAME'];
                 }
             }

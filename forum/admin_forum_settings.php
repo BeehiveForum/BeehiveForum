@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.152 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.153 2008-10-26 21:03:49 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -171,21 +171,21 @@ if (isset($_POST['changepermissions'])) {
 
     $valid = true;
 
-    if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
+    if (isset($_POST['forum_name']) && mb_strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
     }else {
         $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
+    if (isset($_POST['forum_email']) && mb_strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
     }else {
         $error_msg_array[] = $lang['mustsupplyforumemail'];
         $valid = false;
     }
 
-    if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
+    if (isset($_POST['forum_desc']) && mb_strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
         $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
     }else {
         $new_forum_settings['forum_desc'] = "";
@@ -197,7 +197,7 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['forum_content_rating'] = FORUM_RATING_GENERAL;
     }
 
-    if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
+    if (isset($_POST['forum_keywords']) && mb_strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
         $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
     }else {
         $new_forum_settings['forum_keywords'] = "";
@@ -213,7 +213,7 @@ if (isset($_POST['changepermissions'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_emoticons']) && strlen(trim(stripslashes_array($_POST['default_emoticons']))) > 0) {
+    if (isset($_POST['default_emoticons']) && mb_strlen(trim(stripslashes_array($_POST['default_emoticons']))) > 0) {
 
         $new_forum_settings['default_emoticons'] = trim(stripslashes_array($_POST['default_emoticons']));
 
@@ -246,7 +246,7 @@ if (isset($_POST['changepermissions'])) {
             $new_forum_settings['enable_google_analytics'] = "N";
         }
 
-        if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
+        if (isset($_POST['google_analytics_code']) && mb_strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
             $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
         }else {
             $new_forum_settings['google_analytics_code'] = "";
@@ -282,19 +282,19 @@ if (isset($_POST['changepermissions'])) {
         forum_update_access($forum_settings['fid'], $_POST['access_level']);
     }
 
-    if (isset($_POST['closed_message']) && strlen(trim(stripslashes_array($_POST['closed_message']))) > 0) {
+    if (isset($_POST['closed_message']) && mb_strlen(trim(stripslashes_array($_POST['closed_message']))) > 0) {
         $new_forum_settings['closed_message'] = trim(stripslashes_array($_POST['closed_message']));
     }else {
         $new_forum_settings['closed_message'] = "";
     }
 
-    if (isset($_POST['restricted_message']) && strlen(trim(stripslashes_array($_POST['restricted_message']))) > 0) {
+    if (isset($_POST['restricted_message']) && mb_strlen(trim(stripslashes_array($_POST['restricted_message']))) > 0) {
         $new_forum_settings['restricted_message'] = trim(stripslashes_array($_POST['restricted_message']));
     }else {
         $new_forum_settings['restricted_message'] = "";
     }
 
-    if (isset($_POST['password_protected_message']) && strlen(trim(stripslashes_array($_POST['password_protected_message']))) > 0) {
+    if (isset($_POST['password_protected_message']) && mb_strlen(trim(stripslashes_array($_POST['password_protected_message']))) > 0) {
         $new_forum_settings['password_protected_message'] = trim(stripslashes_array($_POST['password_protected_message']));
     }else {
         $new_forum_settings['password_protected_message'] = "";
@@ -348,7 +348,7 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['enable_wiki_quick_links'] = "N";
     }
 
-    if (isset($_POST['wiki_integration_uri']) && strlen(trim(stripslashes_array($_POST['wiki_integration_uri']))) > 0) {
+    if (isset($_POST['wiki_integration_uri']) && mb_strlen(trim(stripslashes_array($_POST['wiki_integration_uri']))) > 0) {
         $new_forum_settings['wiki_integration_uri'] = trim(stripslashes_array($_POST['wiki_integration_uri']));
     }else {
         $new_forum_settings['wiki_integration_uri'] = "";

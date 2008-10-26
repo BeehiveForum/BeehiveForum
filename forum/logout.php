@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.103 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: logout.php,v 1.104 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -81,7 +81,7 @@ $lang = load_language_file();
 
 if (user_is_guest()) {
 
-    if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+    if (isset($_GET['final_uri']) && mb_strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
         $final_uri = "&final_uri=". rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
     }else {
         $final_uri = "";

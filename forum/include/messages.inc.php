@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.556 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.557 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,13 +108,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
             if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
-                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
+                if (!is_null($message['PTNICK']) && mb_strlen($message['PTNICK']) > 0) {
                     $message['TNICK'] = $message['PTNICK'];
                 }
             }
 
             if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
-                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
+                if (!is_null($message['PFNICK']) && mb_strlen($message['PFNICK']) > 0) {
                     $message['FNICK'] = $message['PFNICK'];
                 }
             }
@@ -164,13 +164,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
 
             if (isset($messages['PTNICK'])) {
-                if (!is_null($messages['PTNICK']) && strlen($messages['PTNICK']) > 0) {
+                if (!is_null($messages['PTNICK']) && mb_strlen($messages['PTNICK']) > 0) {
                     $messages['TNICK'] = $messages['PTNICK'];
                 }
             }
 
             if (isset($messages['PFNICK'])) {
-                if (!is_null($messages['PFNICK']) && strlen($messages['PFNICK']) > 0) {
+                if (!is_null($messages['PFNICK']) && mb_strlen($messages['PFNICK']) > 0) {
                     $messages['FNICK'] = $messages['PFNICK'];
                 }
             }
@@ -273,7 +273,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                 if ($noemots == 0 || $nowiki == 0) {
 
-                    if (strpos($message_parts[$i], 'div class="quotetext" id="code-') !== false) {
+                    if (mb_strpos($message_parts[$i], 'div class="quotetext" id="code-') !== false) {
 
                         if ($noemots == 0) {
 
@@ -291,7 +291,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
                             $i += 2;
                         }
 
-                    }else if (strpos($message_parts[$i], 'div class="quotetext" id="spoiler"') !== false) {
+                    }else if (mb_strpos($message_parts[$i], 'div class="quotetext" id="spoiler"') !== false) {
 
                         $opendivs = -1;
 
@@ -338,7 +338,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                     }else if ($fakenoemots == 'div' || $fakenowiki == 'div') {
 
-                        if (substr($message_parts[$i], 0, 4) == 'div ' || $message_parts[$i] == 'div') {
+                        if (mb_substr($message_parts[$i], 0, 4) == 'div ' || $message_parts[$i] == 'div') {
 
                             if ($opendivs != -1) {
 
@@ -380,7 +380,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                 if ($nowiki == 0) {
 
-                    if (substr($message_parts[$i], 0, 2) == 'a ' || $message_parts[$i] == 'a') {
+                    if (mb_substr($message_parts[$i], 0, 2) == 'a ' || $message_parts[$i] == 'a') {
 
                         $nowiki++;
                         $opena++;
@@ -390,7 +390,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                 }else {
 
-                    if (substr($message_parts[$i], 0, 2) == 'a ' || $message_parts[$i] == 'a') {
+                    if (mb_substr($message_parts[$i], 0, 2) == 'a ' || $message_parts[$i] == 'a') {
 
                         $opena++;
 
@@ -461,7 +461,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
         if ($enable_wiki_words) {
 
             $wiki_location = forum_get_setting('wiki_integration_uri', false, "");
-            if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
+            if (mb_strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
         $message_parts = preg_split('/<\/?nowiki>/u', $message);
@@ -637,9 +637,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Check length of post to see if we should truncate it for display --------
 
-    if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
+    if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
-        $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
+        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
@@ -1134,7 +1134,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     }
                 }
 
-                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
+                if (isset($message['IPADDRESS']) && mb_strlen($message['IPADDRESS']) > 0) {
 
                     if (ip_is_banned($message['IPADDRESS'])) {
 
@@ -1161,7 +1161,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             }else {
 
-                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
+                if (isset($message['IPADDRESS']) && mb_strlen($message['IPADDRESS']) > 0) {
 
                     if ($uid == $message['FROM_UID']) {
 
@@ -1494,7 +1494,7 @@ function message_get_user_array($tid, $pid)
         $user_array = db_fetch_array($result);
 
         if (isset($user_array['LOGON']) && isset($user_array['PEER_NICKNAME'])) {
-            if (!is_null($user_array['PEER_NICKNAME']) && strlen($user_array['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_array['PEER_NICKNAME']) && mb_strlen($user_array['PEER_NICKNAME']) > 0) {
                 $user_array['NICKNAME'] = $user_array['PEER_NICKNAME'];
             }
         }

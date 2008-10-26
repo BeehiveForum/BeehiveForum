@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.242 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.243 2008-10-26 21:03:52 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -90,7 +90,7 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
 
     foreach ($poll_options as $key => $poll_option) {
 
-        if (strlen(trim($poll_option)) > 0) {
+        if (mb_strlen(trim($poll_option)) > 0) {
 
             $poll_option_name  = db_escape_string($poll_option);
             $poll_option_group = (isset($poll_answer_groups[$key]) && is_numeric($poll_answer_groups[$key])) ? $poll_answer_groups[$key] : 1;
@@ -166,7 +166,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
 
     foreach ($poll_options as $key => $poll_option) {
 
-        if (strlen(trim($poll_option)) > 0) {
+        if (mb_strlen(trim($poll_option)) > 0) {
 
             $option_name  = db_escape_string($poll_option);
             $option_group = (isset($poll_answer_groups[$key]) && is_numeric($poll_answer_groups[$key])) ? $poll_answer_groups[$key] : 1;
@@ -240,13 +240,13 @@ function poll_get($tid)
         }
 
         if (isset($poll_data['TLOGON']) && isset($poll_data['PTNICK'])) {
-            if (!is_null($poll_data['PTNICK']) && strlen($poll_data['PTNICK']) > 0) {
+            if (!is_null($poll_data['PTNICK']) && mb_strlen($poll_data['PTNICK']) > 0) {
                 $poll_data['TNICK'] = $poll_data['PTNICK'];
             }
         }
 
         if (isset($poll_data['FLOGON']) && isset($poll_data['PFNICK'])) {
-            if (!is_null($poll_data['PFNICK']) && strlen($poll_data['PFNICK']) > 0) {
+            if (!is_null($poll_data['PFNICK']) && mb_strlen($poll_data['PFNICK']) > 0) {
                 $poll_data['FNICK'] = $poll_data['PFNICK'];
             }
         }
@@ -410,7 +410,7 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
         if (!isset($user_poll_votes_array['NICKNAME'])) $user_poll_votes_array['NICKNAME'] = "";
 
         if (isset($user_poll_votes_array['LOGON']) && isset($user_poll_votes_array['PEER_NICKNAME'])) {
-            if (!is_null($user_poll_votes_array['PEER_NICKNAME']) && strlen($user_poll_votes_array['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_poll_votes_array['PEER_NICKNAME']) && mb_strlen($user_poll_votes_array['PEER_NICKNAME']) > 0) {
                 $user_poll_votes_array['NICKNAME'] = $user_poll_votes_array['PEER_NICKNAME'];
             }
         }
@@ -473,7 +473,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $user_poll_votes_array = poll_get_user_vote($tid);
 
-    if (isset($poll_data['QUESTION']) && strlen(trim($poll_data['QUESTION'])) > 0) {
+    if (isset($poll_data['QUESTION']) && mb_strlen(trim($poll_data['QUESTION'])) > 0) {
         $poll_question = $poll_data['QUESTION'];
     } else {
         $poll_question = thread_get_title($tid);
@@ -518,7 +518,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                 if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$key];
 
-                if (strlen(trim($poll_results['OPTION_NAME'][$key])) > 0) {
+                if (mb_strlen(trim($poll_results['OPTION_NAME'][$key])) > 0) {
 
                     if ($poll_results['GROUP_ID'][$key] <> $poll_previous_group) {
 
@@ -616,7 +616,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                     if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-                    if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+                    if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
                         if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
 
@@ -647,7 +647,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         foreach ($poll_results_option_id_keys as $option_key) {
 
-            if (strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+            if (mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
                 $poll_data['CONTENT'].= "                                <li>". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</li>\n";
             }
@@ -978,7 +978,7 @@ function poll_preview_form($poll_results, $poll_data)
 
         if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (strlen(trim($poll_results['OPTION_NAME'][$option_key])) > 0) {
+        if (mb_strlen(trim($poll_results['OPTION_NAME'][$option_key])) > 0) {
 
             if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
 
@@ -1084,7 +1084,7 @@ function poll_preview_graph_horz($poll_results)
 
         if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+        if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
             $poll_display.= "                                <tr>\n";
             $poll_display.= "                                  <td align=\"left\" width=\"280\" class=\"postbody\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
@@ -1177,7 +1177,7 @@ function poll_preview_graph_vert($poll_results)
 
         if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+        if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
             if ($poll_results['VOTES'][$option_key] > 0) {
 
@@ -1216,7 +1216,7 @@ function poll_preview_graph_vert($poll_results)
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+        if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
             if (isset($total_votes[$poll_results['GROUP_ID'][$option_key]]) && $total_votes[$poll_results['GROUP_ID'][$option_key]] > 0) {
                 $vote_percent = round((100 / $total_votes[$poll_results['GROUP_ID'][$option_key]]) * $poll_results['VOTES'][$option_key], 2);
@@ -1289,7 +1289,7 @@ function poll_horizontal_graph($tid)
 
         if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+        if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
             if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
 
@@ -1558,7 +1558,7 @@ function poll_vertical_graph($tid)
 
         if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+        if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
             if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
 
@@ -1601,7 +1601,7 @@ function poll_vertical_graph($tid)
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-        if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+        if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
             if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
                 $poll_display.= "                                  <td align=\"left\" style=\"width: 2px; border-left: 1px solid #000000\">&nbsp;</td>\n";
@@ -1899,7 +1899,7 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 
             if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-            if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+            if (isset($poll_results['OPTION_NAME'][$option_key]) && mb_strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
                 if ($poll_previous_group <> $poll_results['GROUP_ID'][$option_key]) {
 

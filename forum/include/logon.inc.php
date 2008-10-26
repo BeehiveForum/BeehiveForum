@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.92 2008-10-26 16:56:12 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.93 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -107,7 +107,7 @@ function logon_update_password_cookie($logon, $password)
 
     if (($key = array_isearch($logon, $username_array)) !== false) {
 
-        $password_array[$key] = str_repeat(chr(32), strlen($password));
+        $password_array[$key] = str_repeat(chr(32), mb_strlen($password));
         $passhash_array[$key] = md5($password);
 
         // Remove old format cookies
@@ -247,10 +247,10 @@ function logon_perform()
         // which isn't all spaces (trim will make it's length 0) then
         // use that, otherwise check the user_passhash cookie.
 
-        if (strlen(trim($password)) > 0) {
+        if (mb_strlen(trim($password)) > 0) {
 
             $passhash = md5($password);
-            $password = str_repeat(chr(32), strlen($password));
+            $password = str_repeat(chr(32), mb_strlen($password));
 
         }else {
 
@@ -393,7 +393,7 @@ function logon_draw_form($logon_options)
 
         foreach ($username_array_keys as $username_key) {
 
-            if (isset($password_array[$username_key]) && strlen($password_array[$username_key]) > 0) {
+            if (isset($password_array[$username_key]) && mb_strlen($password_array[$username_key]) > 0) {
 
                 if (isset($passhash_array[$username_key]) && is_md5($passhash_array[$username_key])) {
 
@@ -418,7 +418,7 @@ function logon_draw_form($logon_options)
         echo "                      <tr>\n";
         echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
 
-        if (isset($password_array[$current_logon]) && strlen($password_array[$current_logon]) > 0) {
+        if (isset($password_array[$current_logon]) && mb_strlen($password_array[$current_logon]) > 0) {
 
             if (isset($passhash_array[$current_logon]) && is_md5($passhash_array[$current_logon])) {
 
@@ -466,7 +466,7 @@ function logon_draw_form($logon_options)
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && strlen($password_array[0]) > 0 && isset($passhash_array[0]) && strlen($passhash_array[0]) > 0 && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && mb_strlen($password_array[0]) > 0 && isset($passhash_array[0]) && mb_strlen($passhash_array[0]) > 0 && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -494,7 +494,7 @@ function logon_draw_form($logon_options)
             echo "</form>\n";
         }
 
-        if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+        if (isset($_GET['final_uri']) && mb_strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
             $final_uri = rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
 

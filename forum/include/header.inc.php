@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.42 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.43 2008-10-26 21:03:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -189,7 +189,7 @@ function header_check_etag($local_etag)
     if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-        $remote_etag = substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
     }else {
         $remote_etag = false;
     }

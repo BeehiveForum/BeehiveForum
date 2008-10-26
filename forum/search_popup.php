@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.41 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.42 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -192,11 +192,11 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
 // Form Object ID
 
-if (isset($_POST['obj_name']) && strlen(trim(stripslashes_array($_POST['obj_name']))) > 0) {
+if (isset($_POST['obj_name']) && mb_strlen(trim(stripslashes_array($_POST['obj_name']))) > 0) {
 
     $obj_name = trim(stripslashes_array($_POST['obj_name']));
 
-}elseif (isset($_GET['obj_name']) && strlen(trim(stripslashes_array($_GET['obj_name']))) > 0) {
+}elseif (isset($_GET['obj_name']) && mb_strlen(trim(stripslashes_array($_GET['obj_name']))) > 0) {
 
     $obj_name = trim(stripslashes_array($_GET['obj_name']));
 
@@ -214,7 +214,7 @@ if (isset($_POST['selection']) && is_array($_POST['selection'])) {
 
     $selection_array = $_POST['selection'];
 
-}else if (isset($_GET['selection']) && strlen(trim(stripslashes_array($_GET['selection']))) > 0) {
+}else if (isset($_GET['selection']) && mb_strlen(trim(stripslashes_array($_GET['selection']))) > 0) {
 
     $selection_array = preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selection'])));
 
@@ -254,11 +254,11 @@ $error_msg_array = array();
 
 // Check to see if we're searching for anything
 
-if (isset($_GET['search_query']) && strlen(trim(stripslashes_array($_GET['search_query']))) > 0) {
+if (isset($_GET['search_query']) && mb_strlen(trim(stripslashes_array($_GET['search_query']))) > 0) {
 
     $search_query = trim(stripslashes_array($_GET['search_query']));
 
-}elseif (isset($_POST['search_query']) && strlen(trim(stripslashes_array($_POST['search_query']))) > 0) {
+}elseif (isset($_POST['search_query']) && mb_strlen(trim(stripslashes_array($_POST['search_query']))) > 0) {
 
     $search_query = trim(stripslashes_array($_POST['search_query']));
 }
@@ -294,7 +294,7 @@ if (isset($_POST['select'])) {
 
     if (isset($_POST['selection']) && is_array($_POST['selection'])) {
         $selection = implode(';', array_splice(array_unique($_POST['selection']), 0, 10));
-    }elseif (isset($_POST['selection']) && strlen(trim(stripslashes_array($_POST['selection']))) > 0) {
+    }elseif (isset($_POST['selection']) && mb_strlen(trim(stripslashes_array($_POST['selection']))) > 0) {
         $selection = trim(stripslashes_array($_POST['selection']));
     }else {
         $selection = "";
@@ -321,7 +321,7 @@ $search_results_array = array();
 
 // If everything is OK we can perform the search.
 
-if (isset($search_query) && strlen(trim($search_query)) > 0) {
+if (isset($search_query) && mb_strlen(trim($search_query)) > 0) {
 
     if ($type == SEARCH_POPUP_TYPE_USER) {
 

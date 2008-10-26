@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.142 2008-10-26 16:46:24 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.143 2008-10-26 21:03:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,7 +173,7 @@ if (isset($_POST['t_newthread'])) {
 
     $new_thread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && mb_strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
 
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
 
@@ -201,7 +201,7 @@ if (isset($_POST['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = stripslashes_array($_POST['t_content']);
 
@@ -215,7 +215,7 @@ if (isset($_POST['t_newthread'])) {
 
     if (isset($_POST['t_tid'])) {
 
-        if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
+        if (isset($_POST['t_content']) && mb_strlen($_POST['t_content']) > 0) {
 
             $t_content = stripslashes_array($_POST['t_content']);
 
@@ -268,7 +268,7 @@ if (isset($_POST['t_sig_html'])) {
 
     $fetched_sig = false;
 
-    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+    if (isset($_POST['t_sig']) && mb_strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
         $t_sig = stripslashes_array($_POST['t_sig']);
     }else {
         $t_sig = "";
@@ -491,7 +491,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_tid > 0) {
 
-                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+                if ($allow_sig == true && mb_strlen(trim($t_sig)) > 0) {
                     $t_content.= "<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -589,7 +589,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $t_content;
 
-    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+    if ($allow_sig == true && mb_strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 

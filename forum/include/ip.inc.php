@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.40 2008-10-26 21:03:52 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.41 2008-10-30 20:42:56 decoyduck Exp $ */
 
 /**
 * ip.inc.php - IP Address related functions
@@ -41,6 +41,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     header("Location: ../index.php");
     exit;
 }
+
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 
 /**
 * Get Client IP

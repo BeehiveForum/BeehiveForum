@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.45 2008-09-06 20:13:57 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.46 2008-10-30 20:42:56 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -39,6 +39,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");

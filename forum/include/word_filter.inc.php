@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.57 2008-10-26 21:03:52 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.58 2008-10-30 20:42:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");

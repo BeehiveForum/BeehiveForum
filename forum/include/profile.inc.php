@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.100 2008-10-26 16:46:27 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.101 2008-10-30 20:42:56 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -39,6 +39,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.51 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.52 2008-10-30 20:42:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.143 2008-10-26 21:03:49 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.144 2008-10-30 20:42:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -60,6 +60,7 @@ $forum_settings = forum_get_settings();
 
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");

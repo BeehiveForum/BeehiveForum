@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.29 2008-10-26 21:03:49 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.30 2008-10-30 20:42:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -44,6 +44,7 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 // Check that Beehive is installed correctly
 check_install();
 
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");

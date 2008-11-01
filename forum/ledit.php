@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.47 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.48 2008-11-01 11:35:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -609,10 +609,10 @@ if ($valid && isset($_POST['preview'])) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
 }
 
-echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", htmlentities_array($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
 }
 
 if ($allow_html == true) {

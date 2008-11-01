@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.110 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.111 2008-11-01 21:46:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -212,7 +212,7 @@ if (isset($_POST['save'])) {
 
     if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
 
-        if (forum_get_setting('allow_username_changes', 'Y')) {
+        if (forum_get_setting('allow_username_changes', 'Y') || (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
             if (isset($_POST['logon']) && mb_strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
 
@@ -700,7 +700,7 @@ echo "                </tr>\n";
 
 if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
 
-    if (forum_get_setting('allow_username_changes', 'Y')) {
+    if (forum_get_setting('allow_username_changes', 'Y') || (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";

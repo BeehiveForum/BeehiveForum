@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.323 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.324 2008-11-01 00:00:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -353,16 +353,14 @@ function html_get_top_page()
             if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.html")) {
                 return "$forum_path/forums/$webtag/styles/$user_style/top.html";
             }
+        }
 
-        }else {
+        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
+            return "$forum_path/forums/$webtag/top.php";
+        }
 
-            if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
-                return "$forum_path/forums/$webtag/top.php";
-            }
-
-            if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
-                return "$forum_path/forums/$webtag/top.html";
-            }
+        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
+            return "$forum_path/forums/$webtag/top.html";
         }
     }
 
@@ -417,21 +415,19 @@ function html_get_style_sheet()
                     return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
                 }
             }
+        }
 
-        }else {
+        if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/$script_filename.css")) {
 
-            if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/$script_filename.css")) {
-
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$script_filename.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/$script_filename.css?%s", date('YmdHis', $modified_time));
-                }
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$script_filename.css"))) {
+                return sprintf("$forum_path/forums/$webtag/styles/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
+        }
 
-            if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/style.css")) {
+        if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/style.css")) {
 
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/style.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/style.css?%s", date('YmdHis', $modified_time));
-                }
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/style.css"))) {
+                return sprintf("$forum_path/forums/$webtag/styles/style.css?%s", date('YmdHis', $modified_time));
             }
         }
     }
@@ -534,20 +530,18 @@ function html_get_start_page_style_sheet()
 
             $user_style = basename($user_style);
 
-            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/start_main.css")) {
+            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css")) {
 
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/start_main.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/start_main.css?%s", date('YmdHis', $modified_time));
+                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css"))) {
+                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css?%s", date('YmdHis', $modified_time));
                 }
             }
+        }
 
-        }else {
+        if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/start_main_additional.css")) {
 
-            if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/start_main.css")) {
-
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/start_main.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/start_main.css?%s", date('YmdHis', $modified_time));
-                }
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/start_main_additional.css"))) {
+                return sprintf("$forum_path/forums/$webtag/styles/start_main_additional.css?%s", date('YmdHis', $modified_time));
             }
         }
     }
@@ -560,18 +554,18 @@ function html_get_start_page_style_sheet()
 
         $user_style = basename($user_style);
 
-        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/start_main.css")) {
+        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/start_main_additional.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/start_main.css"))) {
-                return sprintf("$forum_path/styles/$user_style/start_main.css?%s", date('YmdHis', $modified_time));
+            if (($modified_time = @filemtime("$forum_path/styles/$user_style/start_main_additional.css"))) {
+                return sprintf("$forum_path/styles/$user_style/start_main_additional.css?%s", date('YmdHis', $modified_time));
             }
         }
     }
 
-    if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/start_main.css")) {
+    if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/start_main_additional.css")) {
 
-        if (($modified_time = @filemtime("$forum_path/styles/start_main.css"))) {
-            return sprintf("$forum_path/styles/start_main.css?%s", date('YmdHis', $modified_time));
+        if (($modified_time = @filemtime("$forum_path/styles/start_main_additional.css"))) {
+            return sprintf("$forum_path/styles/start_main_additional.css?%s", date('YmdHis', $modified_time));
         }
     }
 

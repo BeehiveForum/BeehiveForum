@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.300 2008-10-25 18:22:08 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.301 2008-11-01 00:00:25 decoyduck Exp $ */
 
 // British English language file
 
@@ -1717,12 +1717,10 @@ $lang['userprofileempty'] = "thi\$ U\$3R H@s NOT PH1lLEd 1n TH31r PROf1LE oR IT 
 // Registration (register.php) -----------------------------------------
 
 $lang['newuserregistrationsarenotpermitted'] = "s0rrY, n3w us3R r39I\$+r4T10n5 @r3 NOT @LLowEd r19h+ n0w. PL3A\$3 ch3ck b4ck L4t3r.";
-$lang['usernameinvalidchars'] = "u53RN4mE C4N 0nLY conT41n @-z, 0-9, _ - CHar@c+3r5";
 $lang['usernametooshort'] = "u5ERN@M3 mus+ 83 4 M1nIMUm 0ph 2 CHar4c+ers LONg";
 $lang['usernametoolong'] = "u53rN4m3 Mus+ Be 4 m4x1muM 0ph 15 Ch@RAc+ERS L0n9";
 $lang['usernamerequired'] = "a Logon nam3 i\$ r3qU1r3d";
 $lang['passwdmustnotcontainHTML'] = "p@S\$WOrd MUst N0t cont@1n HTMl TAG\$";
-$lang['passwordinvalidchars'] = "p@5\$wORd C@N 0NLY C0nT4IN A-z, 0-9, _ - CH4r4c+3r5";
 $lang['passwdtooshort'] = "p4SSWORd MUS+ 8e 4 M1nIMum 0ph 6 ch@R4C+3Rs LONG";
 $lang['passwdrequired'] = "a p@s\$woRD 15 R3QUIRED";
 $lang['confirmationpasswdrequired'] = "a cONF1RmA+1oN P4\$\$WOrD I\$ R3QUIREd";

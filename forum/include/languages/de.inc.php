@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.98 2008-10-25 18:22:07 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.99 2008-11-01 00:00:25 decoyduck Exp $ */
 
 // German language file
 
@@ -1662,12 +1662,10 @@ $lang['userprofileempty'] = "Benutzer hat kein Profil oder ist auf Privat gestel
 // Registration (register.php) -----------------------------------------
 
 $lang['newuserregistrationsarenotpermitted'] = "Leider sind neue Benutzeranmeldungen im Moment nicht erlaubt. Bitte spaeter noch einmal probieren.";
-$lang['usernameinvalidchars'] = "Benutzername kann nur a-z, 0-9, _ - Zeichen beinhalten";
 $lang['usernametooshort'] = "Benutzername muss mind. 2 Zeichen lang sein";
 $lang['usernametoolong'] = "Benutzername darf max. 15 Zeichen lang sein";
 $lang['usernamerequired'] = "Ein Anmeldename ist notwendig";
 $lang['passwdmustnotcontainHTML'] = "Passwort darf keine HTML-tags beinhalten";
-$lang['passwordinvalidchars'] = "Passwort kann nur a-z, 0-9, _ - Zeichen beinhalten";
 $lang['passwdtooshort'] = "Passwort muss mind. 6 Zeichen lang sein";
 $lang['passwdrequired'] = "Ein Passwort ist notwendig";
 $lang['confirmationpasswdrequired'] = "Eine Passwortbestaetigung muss eingegeben sein";

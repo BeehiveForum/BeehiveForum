@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.144 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.145 2008-11-01 11:35:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -667,10 +667,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
-echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", htmlentities_array($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
 }
 
 if ($allow_html == true) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.173 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.174 2008-11-01 21:46:56 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -626,6 +626,15 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     return array('user_count' => $user_get_all_count,
                  'user_array' => $user_get_all_array);
 }
+
+/**
+* Fetch user
+*
+* Fetch the details for the specified user.
+*
+* @return mixed - Array on success boolean false on failure.
+* @param integer $uid - UID of the user account to fetch.
+*/
 
 function admin_user_get($uid)
 {
@@ -1247,6 +1256,16 @@ function admin_get_user_ip_matches($uid)
     return $user_aliases_array;
 }
 
+/**
+* Fetch list of user aliases
+*
+* Fetches a list of aliases (Email Address matches) from database
+* for the specified user UID.
+*
+* @return array
+* @param integer $uid - User UID for searching.
+*/
+
 function admin_get_user_email_matches($uid)
 {
     if (!$db_admin_get_user_email_matches = db_connect()) return false;
@@ -1297,6 +1316,16 @@ function admin_get_user_email_matches($uid)
 
     return $user_email_aliases_array;
 }
+
+/**
+* Fetch list of user aliases
+*
+* Fetches a list of aliases (HTTP Referer matches) from database
+* for the specified user UID.
+*
+* @return array
+* @param integer $uid - User UID for searching.
+*/
 
 function admin_get_user_referer_matches($uid)
 {
@@ -1350,6 +1379,16 @@ function admin_get_user_referer_matches($uid)
     return $user_referer_aliases_array;
 }
 
+/**
+* Fetch list of user aliases
+*
+* Fetches a list of aliases (Password matches) from database
+* for the specified user UID.
+*
+* @return array
+* @param integer $uid - User UID for searching.
+*/
+
 function admin_get_user_passwd_matches($uid)
 {
     if (!$db_admin_get_user_passwd_matches = db_connect()) return false;
@@ -1400,6 +1439,16 @@ function admin_get_user_passwd_matches($uid)
 
     return $user_passwd_aliases_array;
 }
+
+/**
+* Fetch user history
+*
+* Fetches user account changes including logon, nickname, email address
+* and password changes made to a user account.
+*
+* @return array
+* @param integer $uid - User UID to get history for
+*/
 
 function admin_get_user_history($uid)
 {
@@ -1469,6 +1518,15 @@ function admin_get_user_history($uid)
     return $user_history_array;
 }
 
+/**
+* Clear user history
+*
+* Clear user history for the speicifed user account.
+*
+* @return array
+* @param integer $uid - UID of user to clear history from.
+*/
+
 function admin_clear_user_history($uid)
 {
     if (!$db_admin_clear_user_history = db_connect()) return false;
@@ -1482,6 +1540,15 @@ function admin_clear_user_history($uid)
     return (db_affected_rows($db_admin_clear_user_history) > 0);
 }
 
+/**
+* Approve user account
+*
+* Approve the specified user account.
+*
+* @return array
+* @param integer $uid - UID of user account to approve.
+*/
+
 function admin_approve_user($uid)
 {
     if (!$db_admin_approve_user = db_connect()) return false;
@@ -1494,6 +1561,16 @@ function admin_approve_user($uid)
 
     return (db_affected_rows($db_admin_approve_user) > 0);
 }
+
+/**
+* Delete user account
+*
+* Delete the specified user account.
+*
+* @return array
+* @param integer $uid - UID of user account to delete.
+* @param boolean $delete_content - Optional - Optionally delete all content made by user.
+*/
 
 function admin_delete_user($uid, $delete_content = false)
 {
@@ -1742,6 +1819,15 @@ function admin_delete_user($uid, $delete_content = false)
     return false;
 }
 
+/**
+* Delete user's posts.
+*
+* Delete users posts from the current forum.
+*
+* @return array
+* @param integer $uid - UID of user account to delete posts for.
+*/
+
 function admin_delete_users_posts($uid)
 {
     if (!$db_admin_delete_users_posts = db_connect()) return false;
@@ -1759,6 +1845,16 @@ function admin_delete_users_posts($uid)
     return true;
 }
 
+/**
+* Format affected session array
+*
+* Helper function for check_affected_sessions that formats an affected
+* session array into a human readable output.
+*
+* @return string
+* @param array $affected_session - Array of affected session data from check_affected_sessions() function.
+*/
+
 function admin_prepare_affected_sessions($affected_session)
 {
     $webtag = get_webtag();
@@ -1775,8 +1871,18 @@ function admin_prepare_affected_sessions($affected_session)
         $affected_session_text = word_filter_add_ob_tags(htmlentities_array(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
     }
 
-    return $affected_session_text ;
+    return $affected_session_text;
 }
+
+/**
+* Send user approval notification
+*
+* Sends an email to all global forum admins to notify them that
+* a user account requires approval.
+*
+* @return boolean
+* @param void
+*/
 
 function admin_send_user_approval_notification()
 {
@@ -1804,6 +1910,16 @@ function admin_send_user_approval_notification()
     return $notification_success;
 }
 
+/**
+* Send user approval notification
+*
+* Sends an email to all global forum admins to notify them that
+* a new user account has been created.
+*
+* @return boolean
+* @param integer $new_user_uid - New User account UID
+*/
+
 function admin_send_new_user_notification($new_user_uid)
 {
     if (!$db_admin_send_new_user_notification = db_connect()) return false;
@@ -1826,6 +1942,17 @@ function admin_send_new_user_notification($new_user_uid)
 
     return true;
 }
+
+/**
+* Send post approval notification
+*
+* Sends an email to all global forum admins and folder moderators
+* to notify them that a new post or thread has been created that
+* requires approval
+*
+* @return boolean
+* @param integer $fid - Folder where the post or thread was created.
+*/
 
 function admin_send_post_approval_notification($fid)
 {

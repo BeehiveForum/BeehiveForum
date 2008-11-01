@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.127 2008-10-25 18:22:07 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.128 2008-11-01 00:00:25 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1662,12 +1662,10 @@ $lang['userprofileempty'] = "Cet utilisateur n'a pas complété leur profile ou 
 // Registration (register.php) -----------------------------------------
 
 $lang['newuserregistrationsarenotpermitted'] = "Désolé, le forum n'accepte pas de nouveaux enregistrements d'utilisateurs en ce moment. Veuillez ré-essayer plus tard.";
-$lang['usernameinvalidchars'] = "Le nom d'utilisateur peut contenir seulement les caractères a-z, 0-9, _ -";
 $lang['usernametooshort'] = "Le nom d'utilisateur doit contenir aumoins 2 caractères comme minimum";
 $lang['usernametoolong'] = "Le nom d'utilisateur peut contenir un maximum de 15 caractères";
 $lang['usernamerequired'] = "Un nom d'utilisateur est requis";
 $lang['passwdmustnotcontainHTML'] = "Le mot de passe ne doit pas inclure des balises HTML";
-$lang['passwordinvalidchars'] = "Le mot de passe peut contenir seulement les caractères a-z, 0-9, _ -";
 $lang['passwdtooshort'] = "Le mot de passe doit être un minimum de 6 caractères de long";
 $lang['passwdrequired'] = "Un mot de passe est requis";
 $lang['confirmationpasswdrequired'] = "Un mot de passe de confirmation est requis";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.114 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.115 2008-11-01 00:00:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,7 +173,7 @@ if (isset($_POST['save'])) {
 
             if ((isset($path_parts['extension']) && $path_parts['extension'] == 'css')) {
 
-                if (@move_uploaded_file($_FILES['cssfile']['tmp_name'], "forums/$webtag/start_main.css")) {
+                if (@move_uploaded_file($_FILES['cssfile']['tmp_name'], "forums/$webtag/start_main_additional.css")) {
 
                     admin_add_log_entry(EDITED_START_PAGE);
                     header_redirect("admin_startpage.php?webtag=$webtag&uploaded=true");

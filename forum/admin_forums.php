@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.99 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.100 2008-11-02 00:17:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -678,23 +678,23 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '600', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
 
     }else if (isset($_GET['added'])) {
 
-        html_display_success_msg($lang['successfullycreatednewforum'], '600', 'center');
+        html_display_success_msg($lang['successfullycreatednewforum'], '700', 'center');
 
     }else if (isset($_GET['edited'])) {
 
-        html_display_success_msg($lang['successfullyupdatedforum'], '600', 'center');
+        html_display_success_msg($lang['successfullyupdatedforum'], '700', 'center');
 
     }else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg($lang['successfullyremovedselectedforums'], '600', 'center');
+        html_display_success_msg($lang['successfullyremovedselectedforums'], '700', 'center');
 
     }else if (sizeof($forums_array['forums_array']) < 1) {
 
-        html_display_warning_msg($lang['noexistingforums'], '600', 'center');
+        html_display_warning_msg($lang['noexistingforums'], '700', 'center');
     }
 
     echo "<br />\n";

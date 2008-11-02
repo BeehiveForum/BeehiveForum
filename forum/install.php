@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.106 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: install.php,v 1.107 2008-11-02 20:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -227,14 +227,7 @@ if (isset($_POST['install_method'])) {
 
                 $config_file = "";
 
-                if ((@$fp = fopen('install/config.inc.php', 'r'))) {
-
-                    while (!feof($fp)) {
-
-                        $config_file.= fgets($fp, 100);
-                    }
-
-                    fclose($fp);
+                if (($config_file = @file_get_contents('install/config.inc.php'))) {
 
                     // Database details
 
@@ -255,11 +248,7 @@ if (isset($_POST['install_method'])) {
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if ((@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w"))) {
-
-                            fwrite($fp, $config_file);
-                            fclose($fp);
-
+                        if (@file_put_contents('install/config.inc.php', $config_file)) {
                             $config_saved = true;
                         }
 
@@ -417,14 +406,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if ((@$fp = fopen('install/config.inc.php', 'r'))) {
-
-        while (!feof($fp)) {
-
-            $config_file.= fgets($fp, 100);
-        }
-
-        fclose($fp);
+    if (($config_file = @file_get_contents('install/config.inc.php'))) {
 
         if (isset($_POST['db_server']) && mb_strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
             $db_server = trim(stripslashes_array($_POST['db_server']));
@@ -622,10 +604,10 @@ echo "                        <td align=\"left\" width=\"220\" class=\"postbody\
 echo "                        <td align=\"left\" class=\"postbody\">\n";
 echo "                          <select name=\"install_method\" id =\"install_method\" class=\"install_dropdown\" tabindex=\"1\">\n";
 echo "                            <option value=\"\">Please select...</option>\n";
-echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
-echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
-echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.8.x to 0.8.4</option>\n";
+echo "                            <option value=\"0\" ", (isset($_POST['install_method']) && $_POST['install_method'] == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
+echo "                            <option value=\"1\" ", (isset($_POST['install_method']) && $_POST['install_method'] == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
+echo "                            <option value=\"2\" ", (isset($_POST['install_method']) && $_POST['install_method'] == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
+echo "                            <option value=\"3\" ", (isset($_POST['install_method']) && $_POST['install_method'] == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.8.x to 0.8.4</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -663,23 +645,23 @@ echo "                  <td align=\"center\" colspan=\"2\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($_POST['db_server']) && mb_strlen(trim(stripslashes_array($_POST['db_server']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['db_server']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($_POST['db_database']) && mb_strlen(trim(stripslashes_array($_POST['db_database']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['db_database']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Username:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($_POST['db_username']) && mb_strlen(trim(stripslashes_array($_POST['db_username']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['db_username']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"", (isset($db_password) ? $db_password : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"", (isset($_POST['db_password']) && mb_strlen(trim(stripslashes_array($_POST['db_password']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['db_password']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"", (isset($db_cpassword) ? $db_cpassword : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"", (isset($_POST['db_cpassword']) && mb_strlen(trim(stripslashes_array($_POST['db_cpassword']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['db_cpassword']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -711,19 +693,19 @@ echo "                  <td align=\"center\" colspan=\"2\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Username:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"8\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($_POST['admin_username']) && mb_strlen(trim(stripslashes_array($_POST['admin_username']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['admin_username']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"8\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Email Address:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"9\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($_POST['admin_email']) && mb_strlen(trim(stripslashes_array($_POST['admin_email']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['admin_email']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"9\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"", (isset($admin_password) ? $admin_password : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"", (isset($_POST['admin_password']) && mb_strlen(trim(stripslashes_array($_POST['admin_password']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['admin_password']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"", (isset($admin_cpassword) ? $admin_cpassword : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"", (isset($_POST['admin_cpassword']) && mb_strlen(trim(stripslashes_array($_POST['admin_cpassword']))) > 0 ? htmlentities_array(trim(stripslashes_array($_POST['admin_cpassword']))) : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -754,13 +736,13 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\"", (isset($_POST['remove_conflicts']) && $_POST['remove_conflicts'] == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup. Recommended only if install fails to complete.</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\"", (isset($_POST['skip_dictionary']) && $_POST['skip_dictionary'] == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"skip_dictionary\">Skip dictionary setup. Recommended only if install fails to complete.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\" /><label for=\"enable_error_reports\">Enable error reports by email to Admin Email Address.  (New installs only)</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\"", (isset($_POST['enable_error_reports']) && $_POST['enable_error_reports'] == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"enable_error_reports\">Enable error reports by email to Admin Email Address.  (New installs only)</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.185 2008-10-03 18:35:18 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.186 2008-11-02 20:14:06 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -1326,16 +1326,15 @@ if (!$result = @db_query($sql, $db_install)) {
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
-    if (@file_exists($dictionary_file)) {
+    $dictionary_path = str_replace('\\', '/', rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR));
 
-        $dictionary_path = rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR);
-        $dictionary_file = $dictionary_path. DIRECTORY_SEPARATOR. 'english.dic';
+    if (@file_exists("$dictionary_path/english.dic")) {
 
-        $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
+        $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' INTO TABLE DICTIONARY ";
         $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
         $sql.= "(WORD, SOUND)";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             // SQL import method failed, now we need to resort to
             // loading the file in PHP and running queries to MySQL.

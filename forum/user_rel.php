@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.123 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.124 2008-11-03 21:26:35 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -138,9 +138,9 @@ if (user_is_guest()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+}elseif (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "edit_relations.php?webtag=$webtag";
@@ -148,7 +148,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 // validate the return to page
 
-if (isset($ret) && mb_strlen(trim($ret)) > 0) {
+if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array('edit_relations.php', 'messages.php', 'user_profile.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
@@ -226,7 +226,7 @@ if (isset($_POST['save'])) {
 
     $peer_relationship = (double) $peer_user_status | $peer_sig_display | $peer_block_pm;
 
-    if (isset($_POST['nickname']) && mb_strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
+    if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
 
         $peer_nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 

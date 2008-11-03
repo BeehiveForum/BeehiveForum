@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.126 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.127 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -262,7 +262,7 @@ if (isset($_POST['save'])) {
 
     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
-        if (isset($_POST['rename']) && mb_strlen(trim(stripslashes_array($_POST['rename']))) > 0) {
+        if (isset($_POST['rename']) && strlen(trim(stripslashes_array($_POST['rename']))) > 0) {
 
             $t_rename = trim(stripslashes_array($_POST['rename']));
 

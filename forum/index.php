@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.181 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: index.php,v 1.182 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -122,7 +122,7 @@ bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
 // Are we being redirected somewhere?
 
-if (isset($_GET['final_uri']) && mb_strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
     $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
 
@@ -219,7 +219,7 @@ if ($skip_logon_page === true) {
 
         if (get_webtag()) {
 
-            if (isset($final_uri) && mb_strlen(trim($final_uri)) > 0) {
+            if (isset($final_uri) && strlen(trim($final_uri)) > 0) {
 
                 $final_uri = sprintf("forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=%s", rawurlencode($final_uri));
 
@@ -259,7 +259,7 @@ if ($skip_logon_page === true) {
         $other_logon = "";
     }
 
-    if (isset($final_uri) && mb_strlen($final_uri) > 0) {
+    if (isset($final_uri) && strlen($final_uri) > 0) {
 
         $final_uri = sprintf("logon.php?webtag=$webtag$other_logon&amp;final_uri=%s", rawurlencode($final_uri));
 

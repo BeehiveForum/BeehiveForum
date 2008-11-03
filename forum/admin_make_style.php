@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.132 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.133 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,7 +116,7 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['stylename']) && mb_strlen(trim(stripslashes_array($_POST['stylename']))) > 0) {
+    if (isset($_POST['stylename']) && strlen(trim(stripslashes_array($_POST['stylename']))) > 0) {
 
         $stylename = trim(stripslashes_array($_POST['stylename']));
 
@@ -132,7 +132,7 @@ if (isset($_POST['save'])) {
         $error_msg_array[] = $lang['stylenofilename'];
     }
 
-    if (isset($_POST['styledesc']) && mb_strlen(trim(stripslashes_array($_POST['styledesc']))) > 0) {
+    if (isset($_POST['styledesc']) && strlen(trim(stripslashes_array($_POST['styledesc']))) > 0) {
 
         $styledesc = trim(stripslashes_array($_POST['styledesc']));
 
@@ -145,7 +145,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['stylesheet']) && mb_strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
+    if (isset($_POST['stylesheet']) && strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
 
         $stylesheet = trim(stripslashes_array($_POST['stylesheet']));
 
@@ -244,7 +244,7 @@ if (isset($_POST['save'])) {
 
 }elseif (isset($_POST['download'])) {
 
-    if (isset($_POST['stylesheet']) && mb_strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
+    if (isset($_POST['stylesheet']) && strlen(trim(stripslashes_array($_POST['stylesheet']))) > 0) {
         $stylesheet = trim(stripslashes_array($_POST['stylesheet']));
     }else {
         $stylesheet = "";

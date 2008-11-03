@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.104 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: forums.php,v 1.105 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -144,9 +144,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 // Webtag search
 
-if (isset($_POST['webtag_search']) && mb_strlen(trim(stripslashes_array($_POST['webtag_search']))) > 0) {
+if (isset($_POST['webtag_search']) && strlen(trim(stripslashes_array($_POST['webtag_search']))) > 0) {
     $webtag_search = trim(stripslashes_array($_POST['webtag_search']));
-}elseif (isset($_GET['webtag_search']) && mb_strlen(trim(stripslashes_array($_GET['webtag_search']))) > 0) {
+}elseif (isset($_GET['webtag_search']) && strlen(trim(stripslashes_array($_GET['webtag_search']))) > 0) {
     $webtag_search = trim(stripslashes_array($_GET['webtag_search']));
 }else {
     $webtag_search = "";
@@ -272,7 +272,7 @@ if (isset($_POST['change_view'])) {
 
 $final_uri = "";
 
-if (isset($_GET['final_uri']) && mb_strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -377,7 +377,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
 if (!user_is_guest()) {
 
-    if (isset($webtag_search) && mb_strlen($webtag_search) > 0) {
+    if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
         echo "<h1>{$lang['myforums']} &raquo; {$lang['searchresults']}</h1>\n";
 
@@ -457,7 +457,7 @@ if (!user_is_guest()) {
                     echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
                 }
 
-                if (isset($final_uri) && mb_strlen($final_uri) > 0) {
+                if (isset($final_uri) && strlen($final_uri) > 0) {
 
                     if (strstr($final_uri, '?')) {
 
@@ -473,7 +473,7 @@ if (!user_is_guest()) {
                     echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
                 }
 
-                if (isset($forum['FORUM_DESC']) && mb_strlen(trim($forum['FORUM_DESC'])) > 0) {
+                if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
 
                     $forum_desc_short = (mb_strlen(trim($forum['FORUM_DESC'])) > 50) ? mb_substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : $forum['FORUM_DESC'];
 
@@ -660,7 +660,7 @@ if (!user_is_guest()) {
                     echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
                 }
 
-                if (isset($final_uri) && mb_strlen($final_uri) > 0) {
+                if (isset($final_uri) && strlen($final_uri) > 0) {
 
                     if (strstr($final_uri, '?')) {
 
@@ -676,7 +676,7 @@ if (!user_is_guest()) {
                     echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">", word_filter_add_ob_tags($forum['FORUM_NAME']), "</a></td>\n";
                 }
 
-                if (isset($forum['FORUM_DESC']) && mb_strlen(trim($forum['FORUM_DESC'])) > 0) {
+                if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
 
                     $forum_desc_short = (mb_strlen(trim($forum['FORUM_DESC'])) > 50) ? mb_substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : $forum['FORUM_DESC'];
 
@@ -833,7 +833,7 @@ if (!user_is_guest()) {
             echo "                <tr>\n";
             echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
 
-            if (isset($final_uri) && mb_strlen($final_uri) > 0) {
+            if (isset($final_uri) && strlen($final_uri) > 0) {
 
                 if (strstr($final_uri, '?')) {
 

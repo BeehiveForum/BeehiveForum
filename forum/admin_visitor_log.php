@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.41 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.42 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -213,7 +213,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
         }
 
-        if (isset($visitor['IPADDRESS']) && mb_strlen($visitor['IPADDRESS']) > 0) {
+        if (isset($visitor['IPADDRESS']) && strlen($visitor['IPADDRESS']) > 0) {
 
             if (ip_is_banned($visitor['IPADDRESS'])) {
 
@@ -229,7 +229,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">{$lang['unknown']}</td>\n";
         }
 
-        if (isset($visitor['REFERER']) && mb_strlen(trim($visitor['REFERER'])) > 0) {
+        if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {
 
             $visitor['REFERER_FULL'] = $visitor['REFERER'];
 

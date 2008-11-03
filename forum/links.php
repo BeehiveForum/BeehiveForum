@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.120 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: links.php,v 1.121 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -225,12 +225,12 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\"><b>{$lang['list']}</b></a></div>\n";
 }
 
-if (isset($_GET['link_added']) && mb_strlen(trim(stripslashes_array($_GET['link_added']))) > 0) {
+if (isset($_GET['link_added']) && strlen(trim(stripslashes_array($_GET['link_added']))) > 0) {
 
     $link_added = $_GET['link_added'];
     html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], htmlentities_array($link_added)), '65%', 'center');
 
-}elseif (isset($_GET['folder_added']) && mb_strlen(trim(stripslashes_array($_GET['folder_added']))) > 0) {
+}elseif (isset($_GET['folder_added']) && strlen(trim(stripslashes_array($_GET['folder_added']))) > 0) {
 
     $folder_added = $_GET['folder_added'];
     html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], htmlentities_array($folder_added)), '65%', 'center');
@@ -462,7 +462,7 @@ if (sizeof($links['links_array']) > 0 ) {
 
         echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
 
-        if (isset($link['RATING']) && mb_strlen($link['RATING']) > 0) {
+        if (isset($link['RATING']) && strlen($link['RATING']) > 0) {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", number_format($link['RATING'], 1, ".", ","), "</td>\n";
         }else {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">&nbsp;</td>\n";

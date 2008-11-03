@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.115 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.116 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -344,7 +344,7 @@ function stats_get_active_user_list()
         }
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-            if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
                 $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
@@ -558,7 +558,7 @@ function stats_get_newest_user()
         $user_data = db_fetch_array($result);
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-            if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
                 $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
@@ -614,7 +614,7 @@ function stats_get_post_tallys($start_stamp, $end_stamp)
         while (($user_stats = db_fetch_array($result))) {
 
             if (isset($user_stats['LOGON']) && isset($user_stats['PEER_NICKNAME'])) {
-                if (!is_null($user_stats['PEER_NICKNAME']) && mb_strlen($user_stats['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_stats['PEER_NICKNAME']) && strlen($user_stats['PEER_NICKNAME']) > 0) {
                     $user_stats['NICKNAME'] = $user_stats['PEER_NICKNAME'];
                 }
             }
@@ -921,7 +921,7 @@ function stats_get_most_popular_forum_style()
 
         $style_data = db_fetch_array($result);
 
-        if (mb_strlen(trim($style_data['STYLE'])) < 1) {
+        if (strlen(trim($style_data['STYLE'])) < 1) {
             $style_data['STYLE'] = forum_get_setting('default_style', false, 'default');
         }
 
@@ -947,7 +947,7 @@ function stats_get_most_popular_emoticon_pack()
 
         $emoticon_data = db_fetch_array($result);
 
-        if (mb_strlen(trim($emoticon_data['EMOTICONS'])) < 1) {
+        if (strlen(trim($emoticon_data['EMOTICONS'])) < 1) {
             $emoticon_data['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
         }
 
@@ -973,7 +973,7 @@ function stats_get_most_popular_language()
 
         $language_data = db_fetch_array($result);
 
-        if (mb_strlen(trim($language_data['LANGUAGE'])) < 1) {
+        if (strlen(trim($language_data['LANGUAGE'])) < 1) {
             $language_data['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
         }
 

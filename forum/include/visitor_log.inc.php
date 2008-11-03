@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.40 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.41 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,9 +123,9 @@ function visitor_log_get_recent()
                 $visitor_array['NICKNAME'] = "";
             }
 
-            if (isset($visitor_array['AVATAR_URL_FORUM']) && mb_strlen($visitor_array['AVATAR_URL_FORUM']) > 0) {
+            if (isset($visitor_array['AVATAR_URL_FORUM']) && strlen($visitor_array['AVATAR_URL_FORUM']) > 0) {
                 $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_FORUM'];
-            }elseif (isset($visitor_array['AVATAR_URL_GLOBAL']) && mb_strlen($visitor_array['AVATAR_URL_GLOBAL']) > 0) {
+            }elseif (isset($visitor_array['AVATAR_URL_GLOBAL']) && strlen($visitor_array['AVATAR_URL_GLOBAL']) > 0) {
                 $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_GLOBAL'];
             }
 
@@ -137,7 +137,7 @@ function visitor_log_get_recent()
 
             if (isset($visitor_array['PEER_NICKNAME'])) {
 
-                if (!is_null($visitor_array['PEER_NICKNAME']) && mb_strlen($visitor_array['PEER_NICKNAME']) > 0) {
+                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
 
                     $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
                 }
@@ -392,7 +392,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Filter by user name / search engine bot name
 
-    if (($user_search !== false) && mb_strlen(trim($user_search)) > 0) {
+    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
         $user_search = db_escape_string(str_replace('%', '', $user_search));
 
@@ -543,7 +543,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -559,9 +559,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                 $user_data['NICKNAME'] = "";
             }
 
-            if (isset($user_data['AVATAR_URL_FORUM']) && mb_strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+            if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
                 $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-            }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && mb_strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+            }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
                 $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
             }
 

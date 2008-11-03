@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.56 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.57 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,11 +120,11 @@ if (user_is_guest()) {
 
 // Form Object ID
 
-if (isset($_POST['obj_id']) && mb_strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
+if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
 
     $obj_id = trim(stripslashes_array($_POST['obj_id']));
 
-}elseif (isset($_GET['obj_id']) && mb_strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
+}elseif (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
 
     $obj_id = trim(stripslashes_array($_GET['obj_id']));
 
@@ -138,7 +138,7 @@ if (isset($_POST['obj_id']) && mb_strlen(trim(stripslashes_array($_POST['obj_id'
 
 // Form content
 
-if (isset($_POST['content']) && mb_strlen(trim(stripslashes_array($_POST['content']))) > 0) {
+if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']))) > 0) {
 
     $t_content = trim(stripslashes_array($_POST['content']));
 
@@ -164,7 +164,7 @@ if (isset($_POST['content']) && mb_strlen(trim(stripslashes_array($_POST['conten
 
 // Ignored words
 
-if (isset($_POST['ignored_words']) && mb_strlen(trim(stripslashes_array($_POST['ignored_words']))) > 0) {
+if (isset($_POST['ignored_words']) && strlen(trim(stripslashes_array($_POST['ignored_words']))) > 0) {
     $t_ignored_words = trim(stripslashes_array($_POST['ignored_words']));
 }else {
     $t_ignored_words = "";
@@ -245,7 +245,7 @@ if (isset($_POST['ignoreall'])) {
 
     // User wants to ignore all references of the current word
 
-    if (isset($_POST['word']) && mb_strlen(trim(stripslashes_array($_POST['word']))) > 0) {
+    if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
 
         $t_ignored_word = trim(stripslashes_array($_POST['word']));
         $dictionary->add_ignored_word($t_ignored_word);
@@ -257,7 +257,7 @@ if (isset($_POST['ignoreall'])) {
 
     // User wants to add the current word to his dictionary
 
-    if (isset($_POST['word']) && mb_strlen(trim(stripslashes_array($_POST['word']))) > 0) {
+    if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
 
         $t_custom_word = trim(stripslashes_array($_POST['word']));
         $dictionary->add_custom_word($t_custom_word);
@@ -269,7 +269,7 @@ if (isset($_POST['ignoreall'])) {
 
     // User has selected to change the current word
 
-    if (isset($_POST['change_to']) && mb_strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
+    if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
 
          $t_change_to = trim(stripslashes_array($_POST['change_to']));
          $dictionary->correct_current_word($t_change_to);
@@ -281,7 +281,7 @@ if (isset($_POST['ignoreall'])) {
 
     // User has selected to change the current word
 
-    if (isset($_POST['change_to']) && mb_strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
+    if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
 
          $t_change_to = trim(stripslashes_array($_POST['change_to']));
          $dictionary->correct_all_word_matches($t_change_to);

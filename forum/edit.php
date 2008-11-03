@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.267 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: edit.php,v 1.268 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -344,7 +344,7 @@ if ($allow_html == false) {
     $sig->setHTML(false, true);
 }
 
-if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
     $t_content = trim(stripslashes_array($_POST['t_content']));
 
@@ -364,7 +364,7 @@ if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_co
     }
 }
 
-if (isset($_POST['t_sig']) && mb_strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
 
     $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
@@ -414,7 +414,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (mb_strlen(trim($t_content)) == 0) {
+    if (strlen(trim($t_content)) < 1) {
 
         $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
@@ -486,7 +486,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (mb_strlen(trim($t_content)) == 0) {
+    if (strlen(trim($t_content)) < 1) {
 
         $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;

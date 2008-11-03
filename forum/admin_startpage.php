@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.115 2008-11-01 00:00:25 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.116 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -124,7 +124,7 @@ mkdir_recursive("forums/$webtag", 0755);
 
 // Check to see if we're submitting new page or retrieving the old one.
 
-if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
     $t_content = trim(stripslashes_array($_POST['t_content']));
 }else {
     $t_content = forum_load_start_page();
@@ -158,7 +158,7 @@ if (isset($_POST['save'])) {
 
 }elseif (isset($_POST['upload'])) {
 
-    if (isset($_FILES['cssfile']['tmp_name']) && mb_strlen(trim($_FILES['cssfile']['tmp_name'])) > 0) {
+    if (isset($_FILES['cssfile']['tmp_name']) && strlen(trim($_FILES['cssfile']['tmp_name'])) > 0) {
 
         if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] > 0) {
 

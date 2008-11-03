@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.98 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.99 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -207,14 +207,14 @@ if (isset($_POST['delete'])) {
 
     }else {
 
-        if (isset($_POST['add_new_filter_name']) && mb_strlen(trim(stripslashes_array($_POST['add_new_filter_name'])))) {
+        if (isset($_POST['add_new_filter_name']) && strlen(trim(stripslashes_array($_POST['add_new_filter_name']))) > 0) {
            $add_new_filter_name = trim(stripslashes_array($_POST['add_new_filter_name']));
         }else {
            $valid = false;
            $error_msg_array[] = $lang['mustspecifyfiltername'];
         }
 
-        if (isset($_POST['add_new_match_text']) && mb_strlen(trim(stripslashes_array($_POST['add_new_match_text'])))) {
+        if (isset($_POST['add_new_match_text']) && strlen(trim(stripslashes_array($_POST['add_new_match_text']))) > 0) {
            $add_new_match_text = trim(stripslashes_array($_POST['add_new_match_text']));
         }else {
            $valid = false;
@@ -234,7 +234,7 @@ if (isset($_POST['delete'])) {
             $add_new_filter_enabled = WORD_FILTER_DISABLED;
         }
 
-        if (isset($_POST['add_new_replace_text']) && mb_strlen(trim(stripslashes_array($_POST['add_new_replace_text'])))) {
+        if (isset($_POST['add_new_replace_text']) && strlen(trim(stripslashes_array($_POST['add_new_replace_text']))) > 0) {
            $add_new_replace_text = trim(stripslashes_array($_POST['add_new_replace_text']));
         }else {
            $add_new_replace_text = "";
@@ -264,14 +264,14 @@ if (isset($_POST['delete'])) {
         $error_msg_array[] = $lang['mustspecifyfilterid'];
     }
 
-    if (isset($_POST['filter_name']) && mb_strlen(trim(stripslashes_array($_POST['filter_name'])))) {
+    if (isset($_POST['filter_name']) && strlen(trim(stripslashes_array($_POST['filter_name']))) > 0) {
         $filter_name = trim(stripslashes_array($_POST['filter_name']));
     }else {
         $valid = false;
         $error_msg_array[] = $lang['mustspecifyfiltername'];
     }
 
-    if (isset($_POST['match_text']) && mb_strlen(trim(stripslashes_array($_POST['match_text'])))) {
+    if (isset($_POST['match_text']) && strlen(trim(stripslashes_array($_POST['match_text']))) > 0) {
         $match_text = trim(stripslashes_array($_POST['match_text']));
     }else {
         $valid = false;
@@ -291,7 +291,7 @@ if (isset($_POST['delete'])) {
         $filter_enabled = WORD_FILTER_DISABLED;
     }
 
-    if (isset($_POST['replace_text']) && mb_strlen(trim(stripslashes_array($_POST['replace_text'])))) {
+    if (isset($_POST['replace_text']) && strlen(trim(stripslashes_array($_POST['replace_text']))) > 0) {
         $replace_text = trim(stripslashes_array($_POST['replace_text']));
     }else {
         $replace_text = "";

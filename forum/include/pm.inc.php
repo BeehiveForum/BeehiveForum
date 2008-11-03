@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.262 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.263 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -185,13 +185,13 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
         while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-                if (!is_null($pm_data['PFNICK']) && mb_strlen($pm_data['PFNICK']) > 0) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
                     $pm_data['FNICK'] = $pm_data['PFNICK'];
                 }
             }
 
             if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-                if (!is_null($pm_data['PTNICK']) && mb_strlen($pm_data['PTNICK']) > 0) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
                     $pm_data['TNICK'] = $pm_data['PTNICK'];
                 }
             }
@@ -273,13 +273,13 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
         while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-                if (!is_null($pm_data['PFNICK']) && mb_strlen($pm_data['PFNICK']) > 0) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
                     $pm_data['FNICK'] = $pm_data['PFNICK'];
                 }
             }
 
             if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-                if (!is_null($pm_data['PTNICK']) && mb_strlen($pm_data['PTNICK']) > 0) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
                     $pm_data['TNICK'] = $pm_data['PTNICK'];
                 }
             }
@@ -361,13 +361,13 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
         while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-                if (!is_null($pm_data['PFNICK']) && mb_strlen($pm_data['PFNICK']) > 0) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
                     $pm_data['FNICK'] = $pm_data['PFNICK'];
                 }
             }
 
             if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-                if (!is_null($pm_data['PTNICK']) && mb_strlen($pm_data['PTNICK']) > 0) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
                     $pm_data['TNICK'] = $pm_data['PTNICK'];
                 }
             }
@@ -451,13 +451,13 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
         while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-                if (!is_null($pm_data['PFNICK']) && mb_strlen($pm_data['PFNICK']) > 0) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
                     $pm_data['FNICK'] = $pm_data['PFNICK'];
                 }
             }
 
             if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-                if (!is_null($pm_data['PTNICK']) && mb_strlen($pm_data['PTNICK']) > 0) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
                     $pm_data['TNICK'] = $pm_data['PTNICK'];
                 }
             }
@@ -539,13 +539,13 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
         while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-                if (!is_null($pm_data['PFNICK']) && mb_strlen($pm_data['PFNICK']) > 0) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
                     $pm_data['FNICK'] = $pm_data['PFNICK'];
                 }
             }
 
             if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-                if (!is_null($pm_data['PTNICK']) && mb_strlen($pm_data['PTNICK']) > 0) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
                     $pm_data['TNICK'] = $pm_data['PTNICK'];
                 }
             }
@@ -688,13 +688,13 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
         while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-                if (!is_null($pm_data['PFNICK']) && mb_strlen($pm_data['PFNICK']) > 0) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
                     $pm_data['FNICK'] = $pm_data['PFNICK'];
                 }
             }
 
             if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-                if (!is_null($pm_data['PTNICK']) && mb_strlen($pm_data['PTNICK']) > 0) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
                     $pm_data['TNICK'] = $pm_data['PTNICK'];
                 }
             }
@@ -910,7 +910,7 @@ function pm_user_get_friends()
             if (isset($user_data['LOGON'])) {
 
                 if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                    if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
+                    if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
                         $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                     }
                 }
@@ -1098,7 +1098,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
     }else {
 
-        if (isset($pm_message_array['RECIPIENTS']) && mb_strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
+        if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
 
             $recipient_array = preg_split("/[;|,]/u", trim($pm_message_array['RECIPIENTS']));
 
@@ -1149,7 +1149,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                      <tr>\n";
     echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
 
-    if (mb_strlen(trim($pm_message_array['SUBJECT'])) > 0) {
+    if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
         echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(htmlentities_array($pm_message_array['SUBJECT'])), "</span></td>\n";
 
@@ -1991,7 +1991,7 @@ function pm_check_messages()
     echo "  <outbox>$pm_outbox_count</outbox>\n";
     echo "  <unread>$pm_unread_count</unread>\n";
 
-    if (isset($pm_notification) && mb_strlen(trim($pm_notification)) > 0) {
+    if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
         echo "  <notification><![CDATA[", html_js_safe_str(wordwrap($pm_notification, 65, "\n")), "]]></notification>\n";
     }
 
@@ -2692,7 +2692,7 @@ function pm_get_folder_names()
 
         while (($folder_name_data = db_fetch_array($result))) {
 
-            if (mb_strlen(trim($folder_name_data['TITLE'])) > 0) {
+            if (strlen(trim($folder_name_data['TITLE'])) > 0) {
 
                 $pm_folder_names_array[$folder_name_data['FID']] = $folder_name_data['TITLE'];
             }

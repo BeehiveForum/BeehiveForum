@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.223 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.224 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -245,11 +245,11 @@ $allow_html = true;
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
     }
 
-    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
         $t_content = trim(stripslashes_array($_POST['t_content']));
     }
 
@@ -265,7 +265,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
         $t_to_uid = 0;
     }
 
-    if (isset($_POST['t_recipient_list']) && mb_strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
         $t_recipient_list = trim(stripslashes_array($_POST['t_recipient_list']));
     }
 
@@ -369,7 +369,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User clicked the send or preview button - check the data that was submitted
 
-    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
@@ -379,7 +379,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
@@ -426,7 +426,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         }
     }
 
-    if (isset($_POST['t_recipient_list']) && mb_strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
 
         $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
 
@@ -502,7 +502,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User click the save button - Check the data that was submitted.
 
-    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
@@ -511,7 +511,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $t_subject = "";
     }
 
-    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
@@ -542,7 +542,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $aid = md5(uniqid(mt_rand()));
     }
 
-    if (isset($_POST['t_recipient_list']) && mb_strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
 
         $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
 
@@ -678,7 +678,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_recipient_list = $pm_data['RECIPIENTS'];
 
-        if (mb_strlen($t_recipient_list) > 0) {
+        if (strlen($t_recipient_list) > 0) {
             $to_radio = POST_RADIO_OTHERS;
         }elseif ($t_to_uid > 0) {
             $to_radio = POST_RADIO_FRIENDS;

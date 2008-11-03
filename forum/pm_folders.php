@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.32 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.33 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -196,7 +196,7 @@ if (isset($_GET['manage_folder'])) {
 
 if (isset($_POST['save'])) {
 
-    if (isset($_POST['folder_name']) && mb_strlen(trim(stripslashes_array($_POST['folder_name']))) > 0) {
+    if (isset($_POST['folder_name']) && strlen(trim(stripslashes_array($_POST['folder_name']))) > 0) {
 
         $folder_name = trim(stripslashes_array($_POST['folder_name']));
 

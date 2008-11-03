@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.359 2008-11-02 00:17:53 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.360 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,9 +61,9 @@ function get_forum_data()
 
     if (!$db_get_forum_data = db_connect()) return false;
 
-    if (isset($_GET['webtag']) && mb_strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
+    if (isset($_GET['webtag']) && strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
         $webtag = trim(stripslashes_array($_GET['webtag']));
-    }elseif (isset($_POST['webtag']) && mb_strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
+    }elseif (isset($_POST['webtag']) && strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
         $webtag = trim(stripslashes_array($_POST['webtag']));
     }
 
@@ -123,9 +123,9 @@ function get_forum_data()
 
 function get_webtag()
 {
-    if (isset($_GET['webtag']) && mb_strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
+    if (isset($_GET['webtag']) && strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
         return trim(stripslashes_array($_GET['webtag']));
-    }elseif (isset($_POST['webtag']) && mb_strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
+    }elseif (isset($_POST['webtag']) && strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
         return trim(stripslashes_array($_POST['webtag']));
     }
 
@@ -383,7 +383,7 @@ function forum_check_password($forum_fid)
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">&nbsp;</td>\n";
-        echo "                    <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], (mb_strlen($password) > 0 && mb_strlen($passhash) > 0)), "</td>\n";
+        echo "                    <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], (strlen($password) > 0 && strlen($passhash) > 0)), "</td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -897,7 +897,7 @@ function forum_load_start_page()
 
         if (($content = @file_get_contents("forums/$webtag/start_main.php"))) {
 
-            return mb_strlen($content) > 0 ? $content : false;
+            return strlen($content) > 0 ? $content : false;
         }
     }
 
@@ -2237,7 +2237,7 @@ function forum_get_permissions($fid, $offset = 0)
         while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && mb_strlen($user_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
@@ -2325,7 +2325,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
     $forums_array = array();
 
-    if (mb_strlen(trim($forum_search)) > 0) {
+    if (strlen(trim($forum_search)) > 0) {
 
         $forum_search_array = explode(";", $forum_search);
         $forum_search_array = array_map('forum_search_array_clean', $forum_search_array);
@@ -2363,13 +2363,13 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
                 // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
 
-                if (!isset($forum_data['FORUM_NAME']) || mb_strlen(trim($forum_data['FORUM_NAME'])) < 1) {
+                if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                     $forum_data['FORUM_NAME'] = "A Beehive Forum";
                 }
 
                 // Check the forum description is set.
 
-                if (!isset($forum_data['FORUM_DESC']) || mb_strlen(trim($forum_data['FORUM_DESC'])) < 1) {
+                if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                     $forum_data['FORUM_DESC'] = "";
                 }
 
@@ -2634,7 +2634,7 @@ function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute
 
 function forum_self_clean_check_xml()
 {
-    if (isset($_SERVER['PHP_SELF']) && mb_strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
+    if (isset($_SERVER['PHP_SELF']) && strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
 
         $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
 

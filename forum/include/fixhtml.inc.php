@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.146 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.147 2008-11-03 21:26:38 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -166,7 +166,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $lang_geshi = $code_highlighter->get_language_name_from_extension(mb_strtolower($lang));
 
-                                        if (mb_strlen($lang_geshi) > 0) {
+                                        if (strlen($lang_geshi) > 0) {
                                             $code_highlighter->set_language($lang_geshi);
                                         } else {
                                             $code_highlighter->set_language(mb_strtolower($lang));
@@ -222,7 +222,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                         $source_name = stristr($html_parts[$i], " source=");
                         $source_name = mb_substr($source_name, 8);
 
-                        if (mb_strlen($source_name) > 0) {
+                        if (strlen($source_name) > 0) {
 
                             $qu = mb_substr($source_name, 0, 1);
 
@@ -260,7 +260,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                         $url_name = stristr($html_parts[$i], " url=");
                         $url_name = mb_substr($url_name, 5);
 
-                        if (mb_strlen($url_name) > 0) {
+                        if (strlen($url_name) > 0) {
 
                             $qu = mb_substr($url_name, 0, 1);
 
@@ -295,7 +295,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                             $url_name = "";
                         }
 
-                        if (mb_strlen($url_name) > 0) {
+                        if (strlen($url_name) > 0) {
 
                             if ($source_name == "") {
 
@@ -524,7 +524,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                 for ($j = 0; $j < count($tmp_tags); $j++){
 
-                                    if (mb_strlen($tmp_tags[$j]) > 0) {
+                                    if (strlen($tmp_tags[$j]) > 0) {
 
                                         array_push($last_tag, $tmp_tags[$j]);
 
@@ -641,7 +641,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 $tag = $html_parts[$i];
 
-                if (mb_strlen($tag) > 0 && $tag != "/") {
+                if (strlen($tag) > 0 && $tag != "/") {
 
                     if (($tag == 'noemots' && $noemots > 0) || ($tag == '/noemots' && $noemots > 1)) {
                         // disallows <noemots> nesting
@@ -694,7 +694,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
         for ($i = 0; $i < count($reverse_lt); $i++) {
 
-            if (mb_strlen($reverse_lt[$i]) > 0) {
+            if (strlen($reverse_lt[$i]) > 0) {
 
                 $ret_text.= "</". $reverse_lt[$i]. ">";
             }
@@ -1153,7 +1153,7 @@ function clean_styles ($style)
 
         foreach ($attribute_names_array as $key => $attribute) {
 
-            if (isset($attribute_values_array[$key]) && mb_strlen($attribute_values_array[$key]) > 0) {
+            if (isset($attribute_values_array[$key]) && strlen($attribute_values_array[$key]) > 0) {
 
                 $value = clean_styles_restrict($attribute_values_array[$key]);
                 $clean_style_array[] = "$attribute: $value";
@@ -1277,7 +1277,7 @@ function add_paragraphs($html, $br_only = true)
     $html_a = array($html);
     $html_p = 0;
 
-    while (mb_strlen(trim($html_a[count($html_a) - 1])) > 0) {
+    while (strlen(trim($html_a[count($html_a) - 1])) > 0) {
 
         $cur_pos = mb_strlen($html_a[$html_p]);
 
@@ -1510,7 +1510,7 @@ function add_paragraphs($html, $br_only = true)
                 }
             }
 
-            if ($p_open == true && !preg_match('/<\/p>$/Diu', $tmp[$j]) && mb_strlen(trim($tmp[$j])) > 0) {
+            if ($p_open == true && !preg_match('/<\/p>$/Diu', $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
 
                 $tmp[$j].= "</p>";
             }
@@ -1524,7 +1524,7 @@ function add_paragraphs($html, $br_only = true)
 
                 if (preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i + 1], $tag) > 0) {
 
-                    if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true && mb_strlen(trim($html_a[$i])) > 0) {
+                    if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
                         $html_a[$i].= "\n\n";
                     }

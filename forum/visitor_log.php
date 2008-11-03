@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.136 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.137 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -136,7 +136,7 @@ $profile_items_selected_array = array();
 
 if (isset($_POST['profile_selection'])) {
 
-    if (mb_strlen(trim(stripslashes_array($_POST['profile_selection']))) > 0) {
+    if (strlen(trim(stripslashes_array($_POST['profile_selection']))) > 0) {
 
         $profile_selection = explode(",", $_POST['profile_selection']);
 
@@ -155,7 +155,7 @@ if (isset($_POST['profile_selection'])) {
 
 }else if (isset($_GET['profile_selection'])) {
 
-    if (mb_strlen(trim(stripslashes_array($_GET['profile_selection']))) > 0) {
+    if (strlen(trim(stripslashes_array($_GET['profile_selection']))) > 0) {
 
         $profile_selection = explode(",", $_GET['profile_selection']);
 
@@ -308,9 +308,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-if (isset($_POST['user_search']) && mb_strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_POST['user_search']));
-}elseif (isset($_GET['user_search']) && mb_strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+}elseif (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_GET['user_search']));
 }else {
     $user_search = "";
@@ -387,7 +387,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
 
-        if (isset($user_array['AVATAR_URL']) && mb_strlen($user_array['AVATAR_URL']) > 0) {
+        if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
             echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" height=\"15\" width=\"15\" /></td>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.111 2008-11-01 21:46:56 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.112 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -214,7 +214,7 @@ if (isset($_POST['save'])) {
 
         if (forum_get_setting('allow_username_changes', 'Y') || (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
-            if (isset($_POST['logon']) && mb_strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
+            if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
 
                 $user_info_new['LOGON'] = trim(stripslashes_array($_POST['logon']));
 
@@ -250,7 +250,7 @@ if (isset($_POST['save'])) {
             }
         }
 
-        if (isset($_POST['nickname']) && mb_strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
+        if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
 
             $user_info_new['NICKNAME'] = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 
@@ -266,7 +266,7 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (isset($_POST['email']) && mb_strlen(trim(stripslashes_array($_POST['email']))) > 0) {
+        if (isset($_POST['email']) && strlen(trim(stripslashes_array($_POST['email']))) > 0) {
 
             $user_info_new['EMAIL'] = trim(stripslashes_array($_POST['email']));
 
@@ -340,7 +340,7 @@ if (isset($_POST['save'])) {
         $user_prefs['HOMEPAGE_URL'] = trim(stripslashes_array($_POST['homepage_url']));
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
 
-        if (mb_strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
+        if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
 
             if (preg_match('/^http:\/\//u', $user_prefs['HOMEPAGE_URL']) < 1) {
 
@@ -360,7 +360,7 @@ if (isset($_POST['save'])) {
         $user_prefs['PIC_URL'] = trim(stripslashes_array($_POST['pic_url']));
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
-        if (mb_strlen(trim($user_prefs['PIC_URL'])) > 0) {
+        if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
             if (preg_match('/^http:\/\//u', $user_prefs['PIC_URL']) < 1) {
 
@@ -380,14 +380,14 @@ if (isset($_POST['save'])) {
         $user_prefs['PIC_AID'] = $_POST['pic_aid'];
         $user_prefs_global['PIC_AID'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
-        if (mb_strlen(trim($user_prefs['PIC_AID'])) > 0) {
+        if (strlen(trim($user_prefs['PIC_AID'])) > 0) {
 
             if (!is_md5($user_prefs['PIC_AID'])) {
 
                 $error_msg_array[] = $lang['invalidattachmentid'];
                 $valid = false;
 
-            }elseif (isset($user_prefs['PIC_URL']) && mb_strlen(trim($user_prefs['PIC_URL'])) > 0) {
+            }elseif (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
                 $error_msg_array[] = $lang['profilepictureconflict'];
                 $valid = false;
@@ -439,7 +439,7 @@ if (isset($_POST['save'])) {
         $user_prefs['AVATAR_URL'] = trim(stripslashes_array($_POST['avatar_url']));
         $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
-        if (mb_strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+        if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 
             if (preg_match('/^http:\/\//u', $user_prefs['AVATAR_URL']) < 1) {
 
@@ -459,14 +459,14 @@ if (isset($_POST['save'])) {
         $user_prefs['AVATAR_AID'] = $_POST['avatar_aid'];
         $user_prefs_global['AVATAR_AID'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
-        if (mb_strlen(trim($user_prefs['AVATAR_AID'])) > 0) {
+        if (strlen(trim($user_prefs['AVATAR_AID'])) > 0) {
 
             if (!is_md5($user_prefs['AVATAR_AID'])) {
 
                 $error_msg_array[] = $lang['invalidattachmentid'];
                 $valid = false;
 
-            }elseif (isset($user_prefs['AVATAR_URL']) && mb_strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+            }elseif (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 
                 $error_msg_array[] = $lang['avatarpictureconflict'];
                 $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.78 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.79 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -134,7 +134,7 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['opw']) && mb_strlen(trim(stripslashes_array($_POST['opw']))) > 0) {
+    if (isset($_POST['opw']) && strlen(trim(stripslashes_array($_POST['opw']))) > 0) {
 
         $t_old_pass = trim(stripslashes_array($_POST['opw']));
 
@@ -144,7 +144,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['npw']) && mb_strlen(trim(stripslashes_array($_POST['npw']))) > 0) {
+    if (isset($_POST['npw']) && strlen(trim(stripslashes_array($_POST['npw']))) > 0) {
 
         $t_new_pass = trim(stripslashes_array($_POST['npw']));
 
@@ -154,7 +154,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['cpw']) && mb_strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
 
         $t_confirm_pass = trim(stripslashes_array($_POST['cpw']));
 

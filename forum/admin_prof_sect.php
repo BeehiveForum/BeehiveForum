@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.121 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.122 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -164,7 +164,7 @@ if (isset($_POST['delete_sections'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name_new']) && mb_strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
         $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
     }else {
         $error_msg_array[] = $lang['mustsepecifyaprofilesectionname'];
@@ -191,7 +191,7 @@ if (isset($_POST['delete_sections'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_name_new']) && mb_strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
         $t_new_name = trim(stripslashes_array($_POST['t_name_new']));
     }else {
         $error_msg_array[] = $lang['mustsepecifyaprofilesectionname'];

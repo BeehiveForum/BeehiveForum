@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.187 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.188 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -179,9 +179,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-if (isset($_GET['user_search']) && mb_strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_GET['user_search']));
-}elseif (isset($_POST['user_search']) && mb_strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+}elseif (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_POST['user_search']));
 }else {
     $user_search = "";
@@ -293,7 +293,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
     }
 }
 
-if (isset($user_search) && mb_strlen($user_search) > 0) {
+if (isset($user_search) && strlen($user_search) > 0) {
     $admin_user_array = admin_user_search($user_search, $sort_by, $sort_dir, $filter, $start);
 }else {
     $admin_user_array = admin_user_get_all($sort_by, $sort_dir, $filter, $start);
@@ -313,7 +313,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (sizeof($admin_user_array['user_array']) < 1) {
 
-    if (isset($user_search) && mb_strlen($user_search) > 0) {
+    if (isset($user_search) && strlen($user_search) > 0) {
 
         html_display_error_msg($lang['yoursearchdidnotreturnanymatches'], '86%', 'center');
 

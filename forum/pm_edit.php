@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.138 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.139 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -251,7 +251,7 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
@@ -261,7 +261,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
@@ -329,11 +329,11 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && mb_strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
     }
 
-    if (isset($_POST['t_content']) && mb_strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 

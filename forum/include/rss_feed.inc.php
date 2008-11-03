@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.65 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.66 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -87,7 +87,7 @@ function rss_read_stream($filename)
     // If we do have a URL query we need to prefix it with a ?
 
     if (!isset($url_array['query']) || empty($url_array['query'])) $url_array['query'] = "";
-    if (mb_strlen($url_array['query']) > 0) $url_array['query'] = "?{$url_array['query']}";
+    if (strlen($url_array['query']) > 0) $url_array['query'] = "?{$url_array['query']}";
 
     // No path, we'll assume we're fetching from the root.
 
@@ -284,7 +284,7 @@ function rss_check_feeds()
 
                     $rss_quote_source = "$rss_feed_name $rss_title";
 
-                    if (isset($rss_feed['PREFIX']) && mb_strlen(trim($rss_feed['PREFIX'])) > 0) {
+                    if (isset($rss_feed['PREFIX']) && strlen(trim($rss_feed['PREFIX'])) > 0) {
 
                         $rss_feed_prefix = htmlentities_array($rss_feed['PREFIX']);
                         $rss_title = "$rss_feed_prefix $rss_title";
@@ -301,7 +301,7 @@ function rss_check_feeds()
                         $rss_title.= " ...";
                     }
 
-                    if (mb_strlen($rss_item->description) > 1) {
+                    if (strlen($rss_item->description) > 1) {
 
                         $rss_item_description = htmlentities_array_decode($rss_item->description);
 
@@ -370,7 +370,7 @@ function rss_get_feeds($offset)
         while (($rss_feed_data = db_fetch_array($result))) {
 
             if (isset($rss_feed_data['LOGON']) && isset($rss_feed_data['PEER_NICKNAME'])) {
-                if (!is_null($rss_feed_data['PEER_NICKNAME']) && mb_strlen($rss_feed_data['PEER_NICKNAME']) > 0) {
+                if (!is_null($rss_feed_data['PEER_NICKNAME']) && strlen($rss_feed_data['PEER_NICKNAME']) > 0) {
                     $rss_feed_data['NICKNAME'] = $rss_feed_data['PEER_NICKNAME'];
                 }
             }
@@ -468,7 +468,7 @@ function rss_get_feed($feed_id)
         $rss_feed_array = db_fetch_array($result);
 
         if (isset($rss_feed_array['LOGON']) && isset($rss_feed_array['PEER_NICKNAME'])) {
-            if (!is_null($rss_feed_array['PEER_NICKNAME']) && mb_strlen($rss_feed_array['PEER_NICKNAME']) > 0) {
+            if (!is_null($rss_feed_array['PEER_NICKNAME']) && strlen($rss_feed_array['PEER_NICKNAME']) > 0) {
                 $rss_feed_array['NICKNAME'] = $rss_feed_array['PEER_NICKNAME'];
             }
         }

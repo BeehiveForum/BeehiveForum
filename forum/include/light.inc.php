@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.207 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.208 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,12 +72,12 @@ function light_html_draw_top()
     foreach ($arg_array as $key => $func_args) {
 
         if (preg_match('/^title=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (mb_strlen($title) < 1) $title = $func_matches[1];
+            if (strlen($title) < 1) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
         if (preg_match('/^robots=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (mb_strlen($robots) < 1) $robots = $func_matches[1];
+            if (strlen($robots) < 1) $robots = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -87,7 +87,7 @@ function light_html_draw_top()
         }
     }
 
-    if (mb_strlen($title) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    if (strlen($title) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
@@ -106,7 +106,7 @@ function light_html_draw_top()
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 
-    }elseif (mb_strlen(trim($robots)) > 0) {
+    }elseif (strlen(trim($robots)) > 0) {
 
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
@@ -177,7 +177,7 @@ function light_draw_logon_form()
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", htmlentities_array(stripslashes_array($user_logon)), 20, 15, "autocomplete=\"off\""). "</p>\n";
     echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array(stripslashes_array($user_password)), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", htmlentities_array(stripslashes_array($user_passhash))), "</p>\n";
-    echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (mb_strlen($user_password) > 0 && mb_strlen($user_passhash) > 0) && bh_getcookie('bh_light_remember_password'), "autocomplete=\"off\""), "</p>\n";
+    echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (strlen($user_password) > 0 && strlen($user_passhash) > 0) && bh_getcookie('bh_light_remember_password'), "autocomplete=\"off\""), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
 }
@@ -652,7 +652,7 @@ function light_form_dropdown_array($name, $options_array, $default = "", $custom
 {
     $html = "<select name=\"$name\"";
 
-    if (mb_strlen(trim($custom_html)) > 0) {
+    if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
     }
 
@@ -675,7 +675,7 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
 {
     $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
 
-    if (mb_strlen(trim($custom_html)) > 0) {
+    if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
     }
 
@@ -708,7 +708,7 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
         $html.= " checked=\"checked\"";
     }
 
-    if (mb_strlen(trim($custom_html)) > 0) {
+    if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
     }
 
@@ -750,7 +750,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                 if ($poll_previous_group === false) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-                if (mb_strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
+                if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
                     if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
 
@@ -771,7 +771,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                     if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-                    if (mb_strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
+                    if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
                         if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
 
@@ -790,7 +790,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                     if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-                    if (mb_strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
+                    if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
                         if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
 
@@ -1338,7 +1338,7 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_h
 {
     $html = "<textarea name=\"$name\"";
 
-    if (mb_strlen(trim($custom_html)) > 0) {
+    if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
     }
 
@@ -1363,7 +1363,7 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
         $html.= " checked=\"checked\"";
     }
 
-    if (mb_strlen(trim($custom_html)) > 0) {
+    if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
     }
 
@@ -1376,7 +1376,7 @@ function light_form_field($name, $value = "", $width = false, $maxchars = false,
 {
     $html = "<input type=\"$type\" name=\"$name\" value=\"$value\"";
 
-    if (mb_strlen(trim($custom_html)) > 0) {
+    if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
     }
 
@@ -1546,7 +1546,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
 
-    if (is_string($href) && mb_strlen(trim($href)) > 0) {
+    if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -1559,7 +1559,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
     echo "<h2>$string_msg</h2>\n";
 
-    if (is_string($href) && mb_strlen(trim($href)) > 0) {
+    if (is_string($href) && strlen(trim($href)) > 0) {
 
         $button_html_array = array();
 
@@ -1575,7 +1575,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
         }
     }
 
-    if (is_string($href) && mb_strlen(trim($href)) > 0) {
+    if (is_string($href) && strlen(trim($href)) > 0) {
         echo "</form>\n";
     }
 }

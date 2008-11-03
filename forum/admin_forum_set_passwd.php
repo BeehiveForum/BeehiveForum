@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.41 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.42 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,9 +116,9 @@ if (!$forum_fid = forum_get_setting('fid')) {
     exit;
 }
 
-if (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_forums.php?webtag=$webtag";
@@ -130,7 +130,7 @@ $error_msg_array = array();
 
 // validate the return to page
 
-if (isset($ret) && mb_strlen(trim($ret)) > 0) {
+if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -167,7 +167,7 @@ if (isset($_POST['save'])) {
 
     if (($forum_passhash = forum_get_password($forum_settings['fid']))) {
 
-        if (isset($_POST['current_passwd']) && mb_strlen(trim(stripslashes_array($_POST['current_passwd']))) > 0) {
+        if (isset($_POST['current_passwd']) && strlen(trim(stripslashes_array($_POST['current_passwd']))) > 0) {
             $t_current_passhash = md5(trim(stripslashes_array($_POST['current_passwd'])));
         }else {
             $error_msg_array[] = $lang['currentpasswdrequired'];
@@ -184,14 +184,14 @@ if (isset($_POST['save'])) {
         }
     }
 
-    if (isset($_POST['new_passwd']) && mb_strlen(trim(stripslashes_array($_POST['new_passwd']))) > 0) {
+    if (isset($_POST['new_passwd']) && strlen(trim(stripslashes_array($_POST['new_passwd']))) > 0) {
         $t_new_passwd = trim(stripslashes_array($_POST['new_passwd']));
     }else {
         $error_msg_array[] = $lang['newpasswdrequired'];
         $valid = false;
     }
 
-    if (isset($_POST['confirm_passwd']) && mb_strlen(trim(stripslashes_array($_POST['confirm_passwd']))) > 0) {
+    if (isset($_POST['confirm_passwd']) && strlen(trim(stripslashes_array($_POST['confirm_passwd']))) > 0) {
         $t_confirm_passwd = trim(stripslashes_array($_POST['confirm_passwd']));
     }else {
         $error_msg_array[] = $lang['confirmpasswordrequired'];

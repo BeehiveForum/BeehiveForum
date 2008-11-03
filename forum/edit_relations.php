@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.93 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.94 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -155,9 +155,9 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-if (isset($_POST['user_search']) && mb_strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_POST['user_search']));
-}elseif (isset($_GET['user_search']) && mb_strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+}elseif (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_GET['user_search']));
 }else {
     $user_search = "";
@@ -196,7 +196,7 @@ if (isset($_POST['delete'])) {
 
 // Check if we're searching for a user or simply listing the existing relationships.
 
-if (isset($user_search) && mb_strlen(trim($user_search)) > 0) {
+if (isset($user_search) && strlen(trim($user_search)) > 0) {
     $user_peers_array = user_search_relationships($user_search, $start_search, $uid);
 }else {
     $user_peers_array = user_get_relationships($uid, $start_main);
@@ -214,7 +214,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (sizeof($user_peers_array['user_array']) < 1) {
 
-    if (isset($user_search) && mb_strlen(trim($user_search)) > 0) {
+    if (isset($user_search) && strlen(trim($user_search)) > 0) {
 
         html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
 

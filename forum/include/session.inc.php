@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.366 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.367 2008-11-03 21:26:38 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1186,7 +1186,7 @@ function parse_array($array, $sep, &$result_var)
     if (!is_array($array)) return false;
 
     if (!is_string($result_var)) $result_var = "";
-    if (!is_string($sep) || mb_strlen($sep) < 1) $sep = "&";
+    if (!is_string($sep) || strlen($sep) < 1) $sep = "&";
 
     $preg_sep = preg_quote($sep, "/");
 
@@ -1289,7 +1289,7 @@ function bh_session_is_search_engine()
 {
     if (!$db_bh_session_is_search_engine = db_connect()) return false;
 
-    if (isset($_SERVER['HTTP_USER_AGENT']) && mb_strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
+    if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 
         $http_user_agent = db_escape_string($_SERVER['HTTP_USER_AGENT']);
 
@@ -1312,7 +1312,7 @@ function bh_session_get_referer()
 {
     if (($http_referer = bh_session_get_value('REFERER')) === false) {
 
-        if (isset($_SERVER['HTTP_REFERER']) && mb_strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
+        if (isset($_SERVER['HTTP_REFERER']) && strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
 
             $http_referer = trim($_SERVER['HTTP_REFERER']);
             $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');

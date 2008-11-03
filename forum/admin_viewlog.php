@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.152 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.153 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -334,7 +334,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         $entry_array = htmlentities_array(explode("\x00", $admin_log_entry['ENTRY']));
 
         foreach ($entry_array as $key => $value) {
-            if (mb_strlen($value) < 1) $entry_array[$key] = "Unknown";
+            if (strlen($value) < 1) $entry_array[$key] = "Unknown";
         }
 
         switch ($admin_log_entry['ACTION']) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.77 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.78 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -150,38 +150,38 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['name']) && mb_strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
         $folder_data['TITLE'] = trim(stripslashes_array($_POST['name']));
     }else {
         $error_msg_array[] = $lang['mustenterfoldername'];
         $valid = false;
     }
 
-    if (isset($_POST['old_name']) && mb_strlen(trim(stripslashes_array($_POST['old_name']))) > 0) {
+    if (isset($_POST['old_name']) && strlen(trim(stripslashes_array($_POST['old_name']))) > 0) {
         $folder_data['OLD_TITLE'] = trim(stripslashes_array($_POST['old_name']));
     }else {
         $folder_data['OLD_TITLE'] = "";
     }
 
-    if (isset($_POST['description']) && mb_strlen(trim(stripslashes_array($_POST['description']))) > 0) {
+    if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
         $folder_data['DESCRIPTION'] = trim(stripslashes_array($_POST['description']));
     }else {
         $folder_data['DESCRIPTION'] = "";
     }
 
-    if (isset($_POST['old_description']) && mb_strlen(trim(stripslashes_array($_POST['old_description']))) > 0) {
+    if (isset($_POST['old_description']) && strlen(trim(stripslashes_array($_POST['old_description']))) > 0) {
         $folder_data['OLD_DESCRIPTION'] = trim(stripslashes_array($_POST['old_description']));
     }else {
         $folder_data['OLD_DESCRIPTION'] = "";
     }
 
-    if (isset($_POST['prefix']) && mb_strlen(trim(stripslashes_array($_POST['prefix']))) > 0) {
+    if (isset($_POST['prefix']) && strlen(trim(stripslashes_array($_POST['prefix']))) > 0) {
         $folder_data['PREFIX'] = trim(stripslashes_array($_POST['prefix']));
     }else {
         $folder_data['PREFIX'] = "";
     }
 
-    if (isset($_POST['old_prefix']) && mb_strlen(trim(stripslashes_array($_POST['old_prefix']))) > 0) {
+    if (isset($_POST['old_prefix']) && strlen(trim(stripslashes_array($_POST['old_prefix']))) > 0) {
         $folder_data['OLD_PREFIX'] = trim(stripslashes_array($_POST['old_prefix']));
     }else {
         $folder_data['OLD_PREFIX'] = "";

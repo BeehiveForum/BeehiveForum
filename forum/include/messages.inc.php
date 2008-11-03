@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.558 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.559 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -109,13 +109,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
             if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
-                if (!is_null($message['PTNICK']) && mb_strlen($message['PTNICK']) > 0) {
+                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
                     $message['TNICK'] = $message['PTNICK'];
                 }
             }
 
             if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
-                if (!is_null($message['PFNICK']) && mb_strlen($message['PFNICK']) > 0) {
+                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
                     $message['FNICK'] = $message['PFNICK'];
                 }
             }
@@ -165,13 +165,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
 
             if (isset($messages['PTNICK'])) {
-                if (!is_null($messages['PTNICK']) && mb_strlen($messages['PTNICK']) > 0) {
+                if (!is_null($messages['PTNICK']) && strlen($messages['PTNICK']) > 0) {
                     $messages['TNICK'] = $messages['PTNICK'];
                 }
             }
 
             if (isset($messages['PFNICK'])) {
-                if (!is_null($messages['PFNICK']) && mb_strlen($messages['PFNICK']) > 0) {
+                if (!is_null($messages['PFNICK']) && strlen($messages['PFNICK']) > 0) {
                     $messages['FNICK'] = $messages['PFNICK'];
                 }
             }
@@ -462,7 +462,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
         if ($enable_wiki_words) {
 
             $wiki_location = forum_get_setting('wiki_integration_uri', false, "");
-            if (mb_strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
+            if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
         $message_parts = preg_split('/<\/?nowiki>/u', $message);
@@ -1135,7 +1135,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     }
                 }
 
-                if (isset($message['IPADDRESS']) && mb_strlen($message['IPADDRESS']) > 0) {
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
                     if (ip_is_banned($message['IPADDRESS'])) {
 
@@ -1162,7 +1162,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             }else {
 
-                if (isset($message['IPADDRESS']) && mb_strlen($message['IPADDRESS']) > 0) {
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
                     if ($uid == $message['FROM_UID']) {
 
@@ -1495,7 +1495,7 @@ function message_get_user_array($tid, $pid)
         $user_array = db_fetch_array($result);
 
         if (isset($user_array['LOGON']) && isset($user_array['PEER_NICKNAME'])) {
-            if (!is_null($user_array['PEER_NICKNAME']) && mb_strlen($user_array['PEER_NICKNAME']) > 0) {
+            if (!is_null($user_array['PEER_NICKNAME']) && strlen($user_array['PEER_NICKNAME']) > 0) {
                 $user_array['NICKNAME'] = $user_array['PEER_NICKNAME'];
             }
         }

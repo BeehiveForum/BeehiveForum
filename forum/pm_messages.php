@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.64 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.65 2008-11-03 21:26:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -371,7 +371,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
 if (isset($_POST['search'])) {
 
-    if (isset($_POST['search_string']) && mb_strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
+    if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
         $search_string = trim(stripslashes_array($_POST['search_string']));
     }else {
         $search_string = '';
@@ -397,7 +397,7 @@ if (isset($_POST['search'])) {
 
             case SEARCH_NO_KEYWORDS:
 
-                if (isset($search_string) && mb_strlen(trim($search_string)) > 0) {
+                if (isset($search_string) && strlen(trim($search_string)) > 0) {
 
                     $keywords_error_array = search_strip_keywords($search_string, true);
                     $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
@@ -641,7 +641,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\">";
 
-        if (mb_strlen(trim($message['SUBJECT'])) > 0) {
+        if (strlen(trim($message['SUBJECT'])) > 0) {
 
             echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($message['SUBJECT'])), "</a>";
 
@@ -681,7 +681,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
-            if (isset($message['RECIPIENTS']) && mb_strlen(trim($message['RECIPIENTS'])) > 0) {
+            if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
 
                 $recipient_array = preg_split("/[;|,]/u", trim($message['RECIPIENTS']));
 
@@ -719,7 +719,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
             if ($message['TYPE'] & PM_SAVED_DRAFT) {
 
-                if (isset($message['RECIPIENTS']) && mb_strlen(trim($message['RECIPIENTS'])) > 0) {
+                if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
 
                     $recipient_array = preg_split("/[;|,]/u", trim($message['RECIPIENTS']));
 

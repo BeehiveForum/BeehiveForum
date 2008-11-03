@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.175 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.176 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,7 +58,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function format_user_name($logon, $nickname)
 {
-    if (mb_strlen(trim($nickname)) > 0) {
+    if (strlen(trim($nickname)) > 0) {
 
         if (mb_strtoupper(strip_tags($logon)) == mb_strtoupper(strip_tags($nickname))) {
 
@@ -743,7 +743,7 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 
         if (is_array($value)) {
 
-            if (mb_strlen($key_str) > 0) {
+            if (strlen($key_str) > 0) {
 
                 flatten_array($value, $result_keys, $result_values, "{$key_str}[{$key}]");
 
@@ -754,7 +754,7 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 
         }else {
 
-            if (mb_strlen($key_str) > 0) {
+            if (strlen($key_str) > 0) {
 
                 $result_keys[] = "{$key_str}[{$key}]";
                 $result_values[] = $value;

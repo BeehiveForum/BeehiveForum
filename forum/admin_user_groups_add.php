@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.65 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.66 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -133,7 +133,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && mb_strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
 
         $t_name = trim(stripslashes_array($_POST['t_name']));
 
@@ -143,7 +143,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && mb_strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
+    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
         $t_description = trim(stripslashes_array($_POST['t_description']));
     }else {
         $t_description = "";

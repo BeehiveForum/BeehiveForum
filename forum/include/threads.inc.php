@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.332 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.333 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1226,7 +1226,7 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
         while (($thread = db_fetch_array($result))) {
 
             if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
-                if (!is_null($thread['PEER_NICKNAME']) && mb_strlen($thread['PEER_NICKNAME']) > 0) {
+                if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
                     $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
                 }
             }
@@ -1356,7 +1356,7 @@ function threads_process_list($result)
             }
 
             if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
-                if (!is_null($thread['PEER_NICKNAME']) && mb_strlen($thread['PEER_NICKNAME']) > 0) {
+                if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
                     $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
                 }
             }

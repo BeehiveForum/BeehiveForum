@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.43 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.44 2008-11-03 21:26:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,7 +77,7 @@ function ban_check($user_sess, $user_is_guest = false)
         $ban_check_where_array[]  = "('$ipaddress' LIKE BANDATA AND BANTYPE = $ban_type_ip)";
     }
 
-    if (isset($user_sess['REFERER']) && mb_strlen(trim($user_sess['REFERER'])) > 0) {
+    if (isset($user_sess['REFERER']) && strlen(trim($user_sess['REFERER'])) > 0) {
 
         $referer = db_escape_string($user_sess['REFERER']);
 
@@ -87,7 +87,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
     if ($user_is_guest === false) {
 
-        if (isset($user_sess['LOGON']) && mb_strlen(trim($user_sess['LOGON'])) > 0) {
+        if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
 
             $logon = db_escape_string($user_sess['LOGON']);
 
@@ -95,7 +95,7 @@ function ban_check($user_sess, $user_is_guest = false)
             $ban_check_where_array[] = "('$logon' LIKE BANDATA AND BANTYPE = $ban_type_logon)";
         }
 
-        if (isset($user_sess['NICKNAME']) && mb_strlen(trim($user_sess['NICKNAME'])) > 0) {
+        if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
 
             $nickname = db_escape_string($user_sess['NICKNAME']);
 
@@ -103,7 +103,7 @@ function ban_check($user_sess, $user_is_guest = false)
             $ban_check_where_array[]  = "('$nickname' LIKE BANDATA AND BANTYPE = $ban_type_nick)";
         }
 
-        if (isset($user_sess['EMAIL']) && mb_strlen(trim($user_sess['EMAIL'])) > 0) {
+        if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
 
             $email = db_escape_string($user_sess['EMAIL']);
 
@@ -115,7 +115,7 @@ function ban_check($user_sess, $user_is_guest = false)
     $ban_check_select_list = implode(", ", $ban_check_select_array);
     $ban_check_where_query = implode(" OR ", $ban_check_where_array);
 
-    if (mb_strlen(trim($ban_check_where_query)) > 0 && mb_strlen(trim($ban_check_select_list)) > 0) {
+    if (strlen(trim($ban_check_where_query)) > 0 && strlen(trim($ban_check_select_list)) > 0) {
 
         $sql = "SELECT ID, BANTYPE, BANDATA, $ban_check_select_list ";
         $sql.= "FROM {$table_data['PREFIX']}BANNED WHERE $ban_check_where_query ";
@@ -438,7 +438,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
         while (($user_session = db_fetch_array($result))) {
 
             if (isset($user_session['LOGON']) && isset($user_session['PEER_NICKNAME'])) {
-                if (!is_null($user_session['PEER_NICKNAME']) && mb_strlen($user_session['PEER_NICKNAME']) > 0) {
+                if (!is_null($user_session['PEER_NICKNAME']) && strlen($user_session['PEER_NICKNAME']) > 0) {
                     $user_session['NICKNAME'] = $user_session['PEER_NICKNAME'];
                 }
             }

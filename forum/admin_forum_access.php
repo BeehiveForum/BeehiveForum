@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.77 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.78 2008-11-03 21:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -118,9 +118,9 @@ if (!$forum_fid = forum_get_setting('fid')) {
     exit;
 }
 
-if (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && mb_strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
 }else {
     $ret = "admin_forums.php?webtag=$webtag";
@@ -128,7 +128,7 @@ if (isset($_GET['ret']) && mb_strlen(trim(stripslashes_array($_GET['ret']))) > 0
 
 // validate the return to page
 
-if (isset($ret) && mb_strlen(trim($ret)) > 0) {
+if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -181,9 +181,9 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-if (isset($_POST['user_search']) && mb_strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_POST['user_search']));
-}else if (isset($_GET['user_search']) && mb_strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+}else if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_GET['user_search']));
 }else {
     $user_search = '';
@@ -352,7 +352,7 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 
-if (isset($user_search) && mb_strlen(trim($user_search)) > 0) {
+if (isset($user_search) && strlen(trim($user_search)) > 0) {
 
     $user_search_array = admin_user_search($user_search, 'LOGON', 'ASC', 0, $start_search);
 

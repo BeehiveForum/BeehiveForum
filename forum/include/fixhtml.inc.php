@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.147 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.148 2008-11-06 21:32:23 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -926,9 +926,10 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     if ($linebreaks == true) {
 
-        $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
-        $html = preg_replace("/<p( [^>]*)?>/iu", "\n\n", $html);
-        $html = preg_replace('/<\/p( [^>]*)?>/iu', "\n\n", $html);
+        $html = preg_replace("/<br( [^>]*)?>(\n)?/Diu", "\n", $html);
+        $html = preg_replace("/(\n\n)?<p( [^>]*)?>(\n\n)?/Diu", "", trim($html));
+        $html = preg_replace("/<\/p( [^>]*)?>(\n\n)?$/Diu", "", $html);
+        $html = preg_replace("/<\/p( [^>]*)?>(\n\n)?/Diu", "\n\n", $html);
     }
 
     // turn autoconverted links back into text

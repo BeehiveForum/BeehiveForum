@@ -22,14 +22,14 @@
 
             ed.onNodeChange.add(function(ed, cm, n) {
                 cm.setActive('bhquote', n.nodeName == 'DIV' && n.className == 'quote' && !n.name);
-		cm.setActive('bhcode', n.nodeName == 'PRE' && n.className == 'code' && !n.name);
-		cm.setActive('bhspoiler', n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name);
-		cm.setActive('bhnoemots', n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name);
+                cm.setActive('bhcode', n.nodeName == 'PRE' && n.className == 'code' && !n.name);
+                cm.setActive('bhspoiler', n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name);
+                cm.setActive('bhnoemots', n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name);
 
-		cm.setDisabled('bhquote', !(n.nodeName == 'DIV' && n.className == 'quote' && !n.name) && ed.selection.getContent().length == 0);
-		cm.setDisabled('bhcode', !(n.nodeName == 'PRE' && n.className == 'code' && !n.name) && ed.selection.getContent().length == 0);
-		cm.setDisabled('bhspoiler', !(n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name) && ed.selection.getContent().length == 0);
-		cm.setDisabled('bhnoemots', !(n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name) && ed.selection.getContent().length == 0);
+                cm.setDisabled('bhquote', !(n.nodeName == 'DIV' && n.className == 'quote' && !n.name) && ed.selection.getContent().length == 0);
+                cm.setDisabled('bhcode', !(n.nodeName == 'PRE' && n.className == 'code' && !n.name) && ed.selection.getContent().length == 0);
+                cm.setDisabled('bhspoiler', !(n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name) && ed.selection.getContent().length == 0);
+                cm.setDisabled('bhnoemots', !(n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name) && ed.selection.getContent().length == 0);
             });
         },
 
@@ -46,73 +46,73 @@
         addQuote : function() {
             var ed = this.editor, dom = tinymce.DOM;
 
-	    if (this.inQuote()) {
-	    
-	        ed.dom.remove(ed.selection.getNode().previousSibling);
-		ed.dom.remove(ed.selection.getNode(), true);
-		return;
-	    
-	    }else if (ed.selection.getContent().length > 0) {
+            if (this.inQuote()) {
+        
+                ed.dom.remove(ed.selection.getNode().previousSibling);
+                ed.dom.remove(ed.selection.getNode(), true);
+                return;
+        
+            }else if (ed.selection.getContent().length > 0) {
             
                 var beehivePluginContainer = dom.create('div', { 'class' : 'bhplugincontainer' });
             
                 var quoteText = dom.create('div', { id : 'quote', 'class' : 'quotetext' });
-	        var quoteMain = dom.create('div', { 'class' : 'quote' }, ed.selection.getContent());
+                var quoteMain = dom.create('div', { 'class' : 'quote' }, ed.selection.getContent());
 
-	        dom.add(quoteText, 'b', {}, ed.getLang('beehive.quoteText'));
+                dom.add(quoteText, 'b', {}, ed.getLang('beehive.quoteText'));
 
                 dom.add(beehivePluginContainer, quoteText);
-	        dom.add(beehivePluginContainer, quoteMain);
+                dom.add(beehivePluginContainer, quoteMain);
 
-		if (ed.selection.getContent().length == ed.getContent().length) {
-   		    dom.add(beehivePluginContainer, dom.create('br'));
-		}
+                if (ed.selection.getContent().length == ed.getContent().length) {
+                    dom.add(beehivePluginContainer, dom.create('br'));
+                }
 
-	        ed.selection.setNode(beehivePluginContainer);
-	        this.removeContainer();
-	    }
+                ed.selection.setNode(beehivePluginContainer);
+                this.removeContainer();
+            }
         },
     
         addCode : function() {
             var ed = this.editor, dom = tinymce.DOM;
 
-	    if (this.inCode()) {
+            if (this.inCode()) {
 
-	        ed.dom.remove(ed.selection.getNode().previousSibling);
-		ed.dom.remove(ed.selection.getNode(), true);
-		return;
-	    
-	    }else if (ed.selection.getContent().length > 0) {
+                ed.dom.remove(ed.selection.getNode().previousSibling);
+                ed.dom.remove(ed.selection.getNode(), true);
+                return;
+        
+            }else if (ed.selection.getContent().length > 0) {
             
                 var beehivePluginContainer = dom.create('div', { 'class' : 'bhplugincontainer' });
     
                 var codeText = dom.create('div', { id : 'code-tinymce', 'class' : 'quotetext' });    
                 var codeMain = dom.create('pre', { 'class' : 'code' }, ed.selection.getContent());
-    	 
+         
                 dom.add(codeText, 'b', {}, ed.getLang('beehive.codeText'));
 
                 dom.add(beehivePluginContainer, codeText);
-	        dom.add(beehivePluginContainer, codeMain);
+                dom.add(beehivePluginContainer, codeMain);
 
-		if (ed.selection.getContent().length == ed.getContent().length) {
-   		    dom.add(beehivePluginContainer, dom.create('br'));
-		}
+                if (ed.selection.getContent().length == ed.getContent().length) {
+                    dom.add(beehivePluginContainer, dom.create('br'));
+                }
 
-	        ed.selection.setNode(beehivePluginContainer);
-	        this.removeContainer();
-	    }
+                ed.selection.setNode(beehivePluginContainer);
+                this.removeContainer();
+            }
         },
     
         addSpoiler : function() {
             var ed = this.editor, dom = tinymce.DOM;
 
-	    if (this.inSpoiler()) {
+            if (this.inSpoiler()) {
 
-	        ed.dom.remove(ed.selection.getNode().previousSibling);
-		ed.dom.remove(ed.selection.getNode(), true);
-		return;
-	    
-	    }else if (ed.selection.getContent().length > 0) {
+                ed.dom.remove(ed.selection.getNode().previousSibling);
+                ed.dom.remove(ed.selection.getNode(), true);
+                return;
+        
+            }else if (ed.selection.getContent().length > 0) {
             
                 var beehivePluginContainer = dom.create('div', { 'class' : 'bhplugincontainer' });
     
@@ -122,25 +122,25 @@
                 dom.add(spoilerText, 'b', {}, ed.getLang('beehive.spoilerText'));
     
                 dom.add(beehivePluginContainer, spoilerText);
-	        dom.add(beehivePluginContainer, spoilerMain);
+                dom.add(beehivePluginContainer, spoilerMain);
 
-		if (ed.selection.getContent().length == ed.getContent().length) {
-   		    dom.add(beehivePluginContainer, dom.create('br'));
-		}
+                if (ed.selection.getContent().length == ed.getContent().length) {
+                    dom.add(beehivePluginContainer, dom.create('br'));
+                }
 
-	        ed.selection.setNode(beehivePluginContainer);
-	        this.removeContainer();
-	    }
+                ed.selection.setNode(beehivePluginContainer);
+                this.removeContainer();
+            }
         },
     
         addNoEmots : function() {
             var ed = this.editor, p = ed.dom.getPos(ed.dom.getParent(ed.selection.getNode(), '*'));    
-	    
-	    if (this.inNoEmots()) {
-	        ed.dom.remove(ed.selection.getNode(), true);
-	    }else if (ed.selection.getContent().length > 0) {
+        
+            if (this.inNoEmots()) {
+                ed.dom.remove(ed.selection.getNode(), true);
+            }else if (ed.selection.getContent().length > 0) {
                 ed.selection.setNode(ed.dom.create('span', { 'class' : 'noemots' }, ed.selection.getContent()));
-	    }
+            }
         },
     
         openSpellCheck : function() {
@@ -150,30 +150,30 @@
             }
         },
 
-	inQuote : function() {
-	    var ed = this.editor, dom = tinymce.DOM;
-	    return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'DIV' && n.className == 'quote' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
-	},
-
-	inCode : function() {
-	    var ed = this.editor, dom = tinymce.DOM;
-	    return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'PRE' && n.className == 'code' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
-	},
-
-	inSpoiler : function() {
-	    var ed = this.editor, dom = tinymce.DOM;
-	    return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'DIV' && n.className == 'spoiler' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
-	},
-
-	inNoEmots : function() {
-	    var ed = this.editor, dom = tinymce.DOM;
-	    return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'SPAN' && n.className == 'noemots')});
+        inQuote : function() {
+            var ed = this.editor, dom = tinymce.DOM;
+            return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'DIV' && n.className == 'quote' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
         },
 
-	removeContainer : function() {
-	    var ed = this.editor, dom = tinymce.DOM;
-	    ed.dom.remove(ed.dom.getParent(ed.selection.getNode(), function(n) {return tinymce.DOM.hasClass(n, 'bhplugincontainer');}), true);
-	}
+        inCode : function() {
+            var ed = this.editor, dom = tinymce.DOM;
+            return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'PRE' && n.className == 'code' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
+        },
+
+        inSpoiler : function() {
+            var ed = this.editor, dom = tinymce.DOM;
+            return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'DIV' && n.className == 'spoiler' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
+        },
+
+        inNoEmots : function() {
+            var ed = this.editor, dom = tinymce.DOM;
+            return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'SPAN' && n.className == 'noemots')});
+            },
+
+        removeContainer : function() {
+            var ed = this.editor, dom = tinymce.DOM;
+            ed.dom.remove(ed.dom.getParent(ed.selection.getNode(), function(n) {return tinymce.DOM.hasClass(n, 'bhplugincontainer');}), true);
+        }
     });
 
     tinymce.PluginManager.add('beehive', tinymce.plugins.beehive);

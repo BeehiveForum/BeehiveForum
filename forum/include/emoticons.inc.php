@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.87 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.88 2008-11-06 18:45:48 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -403,6 +403,8 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
 
             if (@file_exists("forums/$webtag/emoticons/$emoticon_set/definitions.php")) {
                 include ("forums/$webtag/emoticons/$emoticon_set/definitions.php");
+            }elseif (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+                include("emoticons/$emoticon_set/definitions.php");
             }
 
         }else {
@@ -467,7 +469,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
                 $html.= "<img src=\"emoticons/$emoticon_set/{$emoticons_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emoticons_array[$i]['matches'][0]) ." ');\" /> ";
             }
 
-            if ($num < sizeof($emoticons_array)) {
+            if ($display_limit < sizeof($emoticons_array)) {
 
                 $html.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" onclick=\"return openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.77 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: user.php,v 1.78 2008-11-08 13:49:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -101,10 +101,6 @@ if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
-
-// Load language file
-
-$lang = load_language_file();
 
 // Check that we have access to this forum
 

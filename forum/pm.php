@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.145 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: pm.php,v 1.146 2008-11-08 13:49:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -95,10 +95,6 @@ if (!bh_session_user_approved()) {
     html_user_require_approval();
     exit;
 }
-
-// Load language file
-
-$lang = load_language_file();
 
 // Guests don't have access to PM system.
 

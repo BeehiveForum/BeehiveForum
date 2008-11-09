@@ -1,4 +1,5 @@
 <?php
+
 /*======================================================================
 Copyright Project Beehive Forum 2002
 
@@ -20,14 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.148 2008-11-06 21:32:23 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.149 2008-11-09 19:27:39 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
 * fix_html - strips illegal tags; enforces correct nesting of tags; converts BH custom tags; more!
 * clean_attributes - strips illegal attributes; makes sure attributes are put in quotes etc.
 * tidy_html - unconverts BH custom tags; removes auto-links
-* tidy_html_callback - used by tidy_html to unconvert BH custom <code> tags
+* tidy_html_code_tag_callback - Used by tidy_html to convert <code> tags
+* tidy_html_pre_tag_callback - Used by tidy_html to convert <code> tags
 * clean_styles - stops absolute CSS positioning; stops a javascript hack
 * add_paragraphs - fancier version of nl2br. Can add <p> tags but this is temperamental at times
 * make_html - equivalent of fix_html when HTML isn't used - converts links to HTML, calls add_paragraphs
@@ -72,20 +74,19 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 * @param boolean $links Toggle to automatically convert http://.. etc. to HTML links (default=true)
 * @param array $bad_tags Illegal tags to be filtered (there is a default: array("plaintext", "applet", ...))
 */
-function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
+function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('plaintext', 'applet', 'body', 'html', 'head', 'title', 'base', 'meta', '!doctype', 'button', 'fieldset', 'form', 'frame', 'frameset', 'iframe', 'input', 'label', 'legend', 'link', 'noframes', 'noscript', 'object', 'optgroup', 'option', 'param', 'script', 'select', 'style', 'textarea', 'xmp'))
 {
     $fix_html_code_text = 'code:';
     $fix_html_quote_text = 'quote:';
     $fix_html_spoiler_text = 'spoiler:';
 
-    $geshi_path = "geshi/geshi";
+    $geshi_path = 'geshi/geshi';
 
-    $code_highlighter = new GeSHi("", "", $geshi_path);
+    $code_highlighter = new GeSHi('', '', $geshi_path);
 
-    $code_highlighter->set_link_target("_blank");
-    $code_highlighter->set_encoding("UTF-8");
+    $code_highlighter->set_link_target('_blank');
+    $code_highlighter->set_encoding('UTF-8');
 
-    // reset these to overcome bug(?) in GeSHi when switching languages
     $code_highlighter->error = false;
     $code_highlighter->strict_mode = false;
 
@@ -94,37 +95,32 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
     if (!empty($html)) {
 
         if ($emoticons == false) {
-            $html = '<noemots>'.$html.'</noemots>';
+            $html = '<noemots>'. $html. '</noemots>';
         }
 
         $html_parts = preg_split('/<([^<>]+)>/u', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        $htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noemots", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "spoiler", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
+        $htmltags = array('a', 'abbr', 'acronym', 'address', 'applet', 'area', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'font', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'isindex', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'marquee', 'menu', 'meta', 'noemots', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'q', 'quote', 's', 'samp', 'script', 'select', 'small', 'span', 'spoiler', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var');
 
         $htmltags = array_diff($htmltags, $bad_tags);
         $bad_tags = array();
 
-        for ($i = 0; $i < count($html_parts); $i++) {
+        $html_parts_count = count($html_parts);
+
+        for ($i = 0; $i < $html_parts_count; $i++) {
 
             if ($i % 2) {
 
-                // remove trailing / in single tags: <  />
+                $html_parts[$i] = preg_replace("/\s*\/?$/u", '', $html_parts[$i]);
 
-                $html_parts[$i] = preg_replace('/\s*\/?$/Du', '', $html_parts[$i]);
+                $tag = explode(' ', $html_parts[$i]);
 
-                // BH tag <code> replace
-                // <code><b>Text</b></code>
-                // with
-                // <pre>&lt;b&gt;Text&lt;b&gt;</pre>
-
-                $tag = explode(" ", $html_parts[$i]);
-
-                if (mb_substr($tag[0], 0, 1) == "/") {
+                if (substr($tag[0], 0, 1) == '/') {
 
                     $close = true;
                     $tag = mb_substr($tag[0], 1);
 
-                } else {
+                }else {
 
                     $close = false;
                     $tag = $tag[0];
@@ -134,54 +130,54 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 if (in_array($tag, $htmltags)) {
 
-                    if ($tag == "code" && $close == true) {
+                    if ($tag == 'code' && $close == true) {
 
-                        $html_parts[$i] = "/pre";
+                        $html_parts[$i] = '/pre';
 
-                    }else if ($tag == "code") {
+                    }else if ($tag == 'code') {
 
                         $lang_tmp = array();
 
-                        preg_match('/ language=["\']?([^"\']+)/iu', $html_parts[$i], $lang_tmp);
+                        preg_match("/ language=[\"\']?([^\"\']+)/iu", $html_parts[$i], $lang_tmp);
 
-                        $lang = isset($lang_tmp[1]) ? $lang_tmp[1] : "";
+                        $lang = isset($lang_tmp[1]) ? $lang_tmp[1] : '';
 
-                        $tmpcode = "";
+                        $tmpcode = '';
 
-                        $html_parts[$i] = "pre class=\"code\"";
+                        $html_parts[$i] = 'pre class="code"';
 
                         $open_code = 1;
 
-                        for ($j = $i + 1; $j < count($html_parts); $j++) {
+                        for ($j = $i + 1; $j < $html_parts_count; $j++) {
 
                             if ($j % 2) {
 
-                                if (mb_substr($html_parts[$j], 0, 5) == "/code") {
+                                if (substr($html_parts[$j], 0, 5) == '/code') {
 
                                     if ($open_code == 1) {
 
-                                        $html_parts[$j] = "/pre";
+                                        $html_parts[$j] = '/pre';
 
                                         $code_highlighter->set_source($tmpcode);
 
-                                        $lang_geshi = $code_highlighter->get_language_name_from_extension(mb_strtolower($lang));
+                                        $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
 
                                         if (strlen($lang_geshi) > 0) {
                                             $code_highlighter->set_language($lang_geshi);
-                                        } else {
-                                            $code_highlighter->set_language(mb_strtolower($lang));
+                                        }else {
+                                            $code_highlighter->set_language(strtolower($lang));
                                         }
 
-                                        set_error_handler("geshi_error_handler");
+                                        set_error_handler('geshi_error_handler');
 
                                         $tmpcode = $code_highlighter->parse_code();
-                                        $tmpcode = preg_replace('/<\/?pre( [^>]*)?>/u', '', $tmpcode);
+                                        $tmpcode = preg_replace("/<\/?pre( [^>]*)?>/u", '', $tmpcode);
 
                                         restore_error_handler();
 
-                                        array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
+                                        array_splice($html_parts, $i + 1, $j - $i - 1, $tmpcode);
 
-                                        $tmpcode = "<closed>";
+                                        $tmpcode = '<closed>';
 
                                         break;
 
@@ -190,12 +186,12 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                         $open_code--;
                                     }
 
-                                }else if (mb_substr($html_parts[$j], 0, 4) == "code") {
+                                }else if (substr($html_parts[$j], 0, 4) == 'code') {
 
                                     $open_code++;
                                 }
 
-                                $tmpcode.= "<".$html_parts[$j].">";
+                                $tmpcode.= '<'. $html_parts[$j]. '>';
 
                             }else {
 
@@ -203,23 +199,23 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                             }
                         }
 
-                        if ($tmpcode != "<closed>") {
+                        if ($tmpcode != '<closed>') {
 
-                            array_splice($html_parts, $i+1, 0, array("", "/pre"));
-                            $i+= 2;
+                            array_splice($html_parts, $i + 1, 0, array('', '/pre'));
+                            $i += 2;
                         }
 
-                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code-$lang\"", "", "b", "$lang $fix_html_code_text", "/b", "", "/div", ""));
+                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code-$lang\"", '', 'b', $lang. ' '. $fix_html_code_text, '/b', '', '/div', ''));
 
-                        $i+= 10;
+                        $i += 10;
 
-                    }else if ($tag == "quote" && $close == true) {
+                    }else if ($tag == 'quote' && $close == true) {
 
-                        $html_parts[$i] = "/div";
+                        $html_parts[$i] = '/div';
 
-                    }else if ($tag == "quote") {
+                    }else if ($tag == 'quote') {
 
-                        $source_name = stristr($html_parts[$i], " source=");
+                        $source_name = stristr($html_parts[$i], ' source=');
                         $source_name = mb_substr($source_name, 8);
 
                         if (strlen($source_name) > 0) {
@@ -236,13 +232,15 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                 $qu = false;
                             }
 
-                            for ($j = $source_pos; $j <= mb_strlen($source_name); $j++) {
+                            $source_name_length = mb_strlen($source_name);
+
+                            for ($j = $source_pos; $j <= $source_name_length; $j++) {
 
                                 $ctmp = mb_substr($source_name, $j, 1);
 
-                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == " ")) {
+                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == ' ')) {
 
-                                    if ($ctmp != " ") {
+                                    if ($ctmp != ' ') {
                                         $j--;
                                     }
 
@@ -254,10 +252,10 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                         }else {
 
-                            $source_name = "";
+                            $source_name = '';
                         }
 
-                        $url_name = stristr($html_parts[$i], " url=");
+                        $url_name = stristr($html_parts[$i], ' url=');
                         $url_name = mb_substr($url_name, 5);
 
                         if (strlen($url_name) > 0) {
@@ -274,13 +272,15 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                 $qu = false;
                             }
 
-                            for ($j = $url_pos; $j <= mb_strlen($url_name); $j++) {
+                            $url_name_length = mb_strlen($url_name);
+
+                            for ($j = $url_pos; $j <= $url_name_length; $j++) {
 
                                 $ctmp = mb_substr($url_name, $j, 1);
 
-                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == " ")) {
+                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == ' ')) {
 
-                                    if ($ctmp != " ") {
+                                    if ($ctmp != ' ') {
                                         $j--;
                                     }
 
@@ -292,91 +292,93 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                         }else {
 
-                            $url_name = "";
+                            $url_name = '';
                         }
 
-                        if (strlen($url_name) > 0) {
+                        if (mb_strlen(trim($url_name)) > 0) {
 
-                            if ($source_name == "") {
+                            if ($source_name == '') {
 
                                 $source_name = $url_name;
                             }
 
                             $html_parts[$i] = "div class=\"quote\"";
 
-                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", "", "b", "$fix_html_quote_text ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
+                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', '', "a href=\"$url_name\"", $source_name, '/a', '', '/div', ''));
 
-                            $i+= 12;
+                            $i += 12;
 
                         }else {
 
                             $html_parts[$i] = "div class=\"quote\"";
-                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", "", "b", "$fix_html_quote_text ", "/b", $source_name, "/div", ""));
-                            $i+= 8;
+                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', $source_name, '/div', ''));
+                            $i += 8;
                         }
 
-                    }else if ($tag == "spoiler" && $close == true) {
+                    }else if ($tag == 'spoiler' && $close == true) {
 
-                        $html_parts[$i] = "/div";
+                        $html_parts[$i] = '/div';
 
-                    }else if ($tag == "spoiler") {
+                    }else if ($tag == 'spoiler') {
 
                         $html_parts[$i] = "div class=\"spoiler\"";
 
-                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"spoiler\"", "", "b", "$fix_html_spoiler_text ", "/b", "", "/div", ""));
+                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"spoiler\"", '', 'b', "$fix_html_spoiler_text ", '/b', '', '/div', ''));
 
-                        $i+= 8;
+                        $i += 8;
                     }
 
                 }else {
 
-                    $html_parts[$i-1].= "&lt;".$html_parts[$i]."&gt;";
-                    $html_parts[$i] = "";
+                    $html_parts[$i - 1].= '&lt;'. $html_parts[$i]. '&gt;';
+                    $html_parts[$i] = '';
                 }
 
             }else {
 
-                $html_parts[$i] = str_replace("<", "&lt;", $html_parts[$i]);
-                $html_parts[$i] = str_replace(">", "&gt;", $html_parts[$i]);
+                $html_parts[$i] = str_replace('<', '&lt;', $html_parts[$i]);
+                $html_parts[$i] = str_replace('>', '&gt;', $html_parts[$i]);
             }
         }
 
-        $close = "";
+        $close = '';
 
         $opentags = array();
         $last_tag = array();
-        $single_tags = array("br", "img", "hr", "area", "embed");
+        $single_tags = array('br', 'img', 'hr', 'area', 'embed');
 
         $no_nest = array();
-        $no_nest["p"] = array("table", "li");
-        $no_nest["li"] = array("ul", "ol");
-        $no_nest["td"] = array("tr");
-        $no_nest["tr"] = array("table");
+        $no_nest['p'] = array('table', 'li');
+        $no_nest['li'] = array('ul', 'ol');
+        $no_nest['td'] = array('tr');
+        $no_nest['tr'] = array('table');
 
         $nest = array();
-        $nest["td"] = array("tr");
-        $nest["th"] = array("tr");
-        $nest["tr"] = array("table");
-        $nest["tbody"] = array("table");
-        $nest["tfoot"] = array("table");
-        $nest["thead"] = array("table");
-        $nest["caption"] = array("table");
-        $nest["colgroup"] = array("table");
-        $nest["col"] = array("table");
+        $nest['td'] = array('tr');
+        $nest['th'] = array('tr');
+        $nest['tr'] = array('table');
+        $nest['tbody'] = array('table');
+        $nest['tfoot'] = array('table');
+        $nest['thead'] = array('table');
+        $nest['caption'] = array('table');
+        $nest['colgroup'] = array('table');
+        $nest['col'] = array('table');
 
-        $nest["map"] = array("area");
-        $nest["param"] = array("object");
-        $nest["li"] = array("ul", "ol");
+        $nest['map'] = array('area');
+        $nest['param'] = array('object');
+        $nest['li'] = array('ul', 'ol');
 
-        for ($i = 0; $i < count($html_parts); $i++) {
+        $html_parts_count = count($html_parts);
+
+        for ($i = 0; $i < $html_parts_count; $i++) {
 
             if ($i % 2) {
 
-                if (mb_substr($html_parts[$i],0,1) == "/") { // closing tag
+                if (substr($html_parts[$i],0,1) == '/') { // closing tag
 
-                    $tag_bits = explode(" ", mb_substr($html_parts[$i],1));
+                    $tag_bits = explode(' ', mb_substr($html_parts[$i],1));
 
-                    if (mb_substr($tag_bits[0], -1) == "/") {
+                    if (substr($tag_bits[0], -1) == '/') {
 
                         $tag_bits[0] = mb_substr($tag_bits[0], 0, -1);
                     }
@@ -388,15 +390,15 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                         $opentags[$tag] = 0;
                     }
 
-                    $html_parts[$i] = "/".$tag;
+                    $html_parts[$i] = '/'. $tag;
 
                     // filter 'bad' tags or single tags
 
                     if (in_array($tag, $bad_tags) || in_array($tag, $single_tags)) {
 
-                        $html_parts[$i-1].= $html_parts[$i+1];
+                        $html_parts[$i - 1].= $html_parts[$i + 1];
                         array_splice($html_parts, $i, 2);
-                        $i-= 2;
+                        $i -= 2;
 
                     }else {
 
@@ -412,7 +414,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                         }else if ($opentags[$tag] <= 0) {
 
-                            $html_parts[$i-1].= $html_parts[$i+1];
+                            $html_parts[$i - 1].= $html_parts[$i + 1];
                             array_splice($html_parts, $i, 2);
                             $i--;
 
@@ -424,14 +426,12 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             // wrap white-text
 
-                            $ta = array("/".$last_tag2, "");
+                            $ta = array('/'. $last_tag2, '');
 
-                            $white_space_matches_array = array();
+                            if (preg_match("/( )?\s+$/u", $html_parts[$i - 1], $ws) > 0) {
 
-                            if (preg_match('/( )?\s+$/Du', $html_parts[$i-1], $white_space_matches_array) > 0) {
-
-                                $html_parts[$i-1] = preg_replace('/( )?\s+$/Du', '$1', $html_parts[$i-1]);
-                                $ta[1] = $white_space_matches_array[0];
+                                $html_parts[$i - 1] = preg_replace("/( )?\s+$/u", "$1", $html_parts[$i - 1]);
+                                $ta[1] = $ws[0];
                             }
 
                             array_splice($html_parts, $i, 0, $ta);
@@ -442,12 +442,12 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 }else {
 
-                    if (mb_substr($html_parts[$i], -1) == "/") {
+                    if (substr($html_parts[$i], -1) == '/') {
 
                         $html_parts[$i] = mb_substr($html_parts[$i], 0, -1);
                     }
 
-                    $firstspace = mb_strpos($html_parts[$i], " ");
+                    $firstspace = mb_strpos($html_parts[$i], ' ');
 
                     if (is_integer($firstspace)) {
 
@@ -470,15 +470,17 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                     if (in_array($tag, $bad_tags)) {
 
-                        $html_parts[$i-1].= $html_parts[$i+1];
+                        $html_parts[$i - 1].= $html_parts[$i + 1];
                         array_splice($html_parts, $i, 2);
-                        $i-= 2;
+                        $i -= 2;
 
-                    }else if (!in_array($tag, $single_tags)) {
+                    }else if(!in_array($tag, $single_tags)) {
 
                         if (in_array($tag, array_keys($nest))) {
 
-                            for ($nc = 0; $nc < count($nest[$tag]); $nc++) {
+                            $nest_count = count($nest[$tag]);
+
+                            for ($nc = 0; $nc < $nest_count; $nc++) {
 
                                 if (in_array($nest[$tag][$nc], array_keys($opentags))) {
 
@@ -512,9 +514,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                         break;
                                     }
 
-                                    array_splice($html_parts, $tmp_len, 0, array($nest[$tmp_nest][0], ""));
+                                    array_splice($html_parts, $tmp_len, 0, array($nest[$tmp_nest][0], ''));
 
-                                    $i+= 2;
+                                    $i += 2;
                                     array_splice($tmp_tags, 1, 0, $nest[$tmp_nest][0]);
                                     $last_tag2 = $tmp_tags[1];
                                     $tmp_nest = $nest[$tmp_nest][0];
@@ -522,7 +524,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                 $tmp_len = count($last_tag);
 
-                                for ($j = 0; $j < count($tmp_tags); $j++){
+                                $tmp_tags_count = count($tmp_tags);
+
+                                for ($j = 0; $j < $tmp_tags_count; $j++){
 
                                     if (strlen($tmp_tags[$j]) > 0) {
 
@@ -554,19 +558,21 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             $opencount = 0;
 
-                            for ($j=0; $j<count($no_nest[$tag]); $j++) {
+                            $no_nest_count = count($no_nest[$tag]);
+
+                            for ($j = 0; $j < $no_nest_count; $j++) {
 
                                 if (in_array($no_nest[$tag][$j], array_keys($opentags))) {
 
-                                    $opencount+= $opentags[$no_nest[$tag][$j]];
+                                    $opencount += $opentags[$no_nest[$tag][$j]];
                                 }
                             }
 
-                            if ($tag == "p") $opencount++;
+                            if ($tag == 'p') $opencount++;
 
                             if ($opentags[$tag] > $opencount) {
 
-                                for ($j = count($last_tag) - 2; $j >= 0; $j--) {
+                                for($j = count($last_tag) - 2; $j >= 0; $j--) {
 
                                     if ($last_tag[$j] == $tag) {
 
@@ -575,14 +581,14 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                     }else {
 
-                                        array_splice($html_parts, $i, 0, array("/".$last_tag[$j], ""));
+                                        array_splice($html_parts, $i, 0, array('/'. $last_tag[$j], ''));
 
-                                        $white_space_matches_array = array();
+                                        // wrap white-text
 
-                                        if (preg_match('/( )?\s+$/Du', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                                        if (preg_match("/( )?\s+$/u", $html_parts[$i - 1], $ws) > 0) {
 
-                                            $html_parts[$i-1] = preg_replace('/( )?\s+$/Du', '$1', $html_parts[$i-1]);
-                                            $html_parts[$i+1] = $white_space_matches_array[0]. $html_parts[$i+1];
+                                            $html_parts[$i - 1] = preg_replace("/( )?\s+$/u", "$1", $html_parts[$i - 1]);
+                                            $html_parts[$i + 1] = $ws[0]. $html_parts[$i + 1];
                                         }
 
                                         $opentags[$last_tag[$j]]--;
@@ -591,14 +597,13 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                     }
                                 }
 
-                                array_splice($html_parts, $i, 0, array("/".$tag, ""));
+                                array_splice($html_parts, $i, 0, array('/'. $tag, ''));
 
-                                $white_space_matches_array = array();
+                                // wrap white-text
+                                if (preg_match("/( )?\s+$/u", $html_parts[$i - 1], $ws) > 0) {
 
-                                if (preg_match('/( )?\s+$/Du', $html_parts[$i-1], $white_space_matches_array) > 0) {
-
-                                    $html_parts[$i-1] = preg_replace('/( )?\s+$/Du', '$1', $html_parts[$i-1]);
-                                    $html_parts[$i+1] = $white_space_matches_array[0]. $html_parts[$i+1];
+                                    $html_parts[$i - 1] = preg_replace("/( )?\s+$/u", "$1", $html_parts[$i - 1]);
+                                    $html_parts[$i + 1] = $ws[0]. $html_parts[$i + 1];
                                 }
 
                                 $opentags[$tag]--;
@@ -608,15 +613,15 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                     // make XHTML single tag
 
-                    }else if (mb_substr($html_parts[$i], -2) != " /") {
+                    }else if(substr($html_parts[$i], -2) != ' /') {
 
-                        if (mb_substr($html_parts[$i], -1) != "/") {
+                        if (substr($html_parts[$i], -1) != '/') {
 
-                            $html_parts[$i].= " /";
+                            $html_parts[$i].= ' /';
 
                         }else {
 
-                            $html_parts[$i] = mb_substr($html_parts[$i], 0, -1). " /";
+                            $html_parts[$i] = mb_substr($html_parts[$i], 0, -1). ' /';
                         }
                     }
                 }
@@ -625,7 +630,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
         // reconstruct the HTML
 
-        $tag = "";
+        $tag = '';
 
         $tag_code  = false;
         $tag_quote = false;
@@ -635,52 +640,54 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
         $atags = 0;
 
-        for ($i = 0; $i < count($html_parts); $i++) {
+        $html_parts_count = count($html_parts);
+
+        for ($i = 0; $i < $html_parts_count; $i++) {
 
             if ($i % 2) {
 
                 $tag = $html_parts[$i];
 
-                if (strlen($tag) > 0 && $tag != "/") {
+                if (mb_strlen(trim($tag)) > 0 && $tag != '/') {
 
                     if (($tag == 'noemots' && $noemots > 0) || ($tag == '/noemots' && $noemots > 1)) {
                         // disallows <noemots> nesting
-                    } else {
-                        $ret_text.= "<".$tag.">";
+                    }else {
+                        $ret_text.= '<'. $tag. '>';
                     }
 
                     if ($tag == 'noemots') {
                         $noemots++;
-                    } else if ($tag == '/noemots') {
+                    }else if ($tag == '/noemots') {
                         $noemots--;
                     }
 
                     if ($tag == 'pre class="code"') {
                         $tag_code = true;
-                    } else if ($tag == 'div class="quotetext"') {
+                    }else if ($tag == 'div class="quotetext"') {
                         $tag_quote = true;
                     }
 
-                    if ($tag == 'div class="spoiler"' || (mb_substr($tag, 0, 3) == 'div' && $spoiler > 0)) {
+                    if ($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0)) {
                         $spoiler++;
-                    } else if ($spoiler > 0 && $tag == '/div') {
+                    }else if ($spoiler > 0 && $tag == '/div') {
                         $spoiler--;
                     }
 
                     if ($tag_code == true && $tag == '/pre') {
                         $tag_code = false;
-                    } else if ($tag_quote == true && $tag == '/div') {
+                    }else if ($tag_quote == true && $tag == '/div') {
                         $tag_quote = false;
                     }
 
-                    if (mb_substr($tag,0,2) == 'a ' || $tag == 'a') {
+                    if (substr($tag, 0, 2) == 'a ' || $tag == 'a') {
                         $atags++;
-                    } else if ($tag == '/a') {
+                    }else if ($tag == '/a') {
                         $atags--;
                     }
                 }
 
-            } else {
+            }else {
 
                 if ($links == true && $atags == 0 && $tag_code == false && $spoiler == 0) {
                     $html_parts[$i] = make_links($html_parts[$i]);
@@ -692,11 +699,13 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
         $reverse_lt = array_reverse($last_tag);
 
-        for ($i = 0; $i < count($reverse_lt); $i++) {
+        $reverse_lt_count = count($reverse_lt);
+
+        for ($i = 0; $i < $reverse_lt_count; $i++) {
 
             if (strlen($reverse_lt[$i]) > 0) {
 
-                $ret_text.= "</". $reverse_lt[$i]. ">";
+                $ret_text.= '</'. $reverse_lt[$i]. '>';
             }
         }
 
@@ -704,7 +713,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
     }else{
 
-        return "";
+        return '';
     }
 }
 
@@ -719,54 +728,53 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 * @return string
 * @param string $tag Everything between the < and > (e.g. $tag = 'a href="file.html"').
 */
-function clean_attributes ($tag)
+function clean_attributes($tag)
 {
     $valid = array();
-    $valid["_global"] = array("style", "align", "class", "id", "title", "dir", "lang", "accesskey", "tabindex");
+    $valid['_global'] = array('style', 'align', 'class', 'id', 'title', 'dir', 'lang', 'accesskey', 'tabindex');
 
-    $valid["a"] = array("href", "title");
-    $valid["hr"] = array("size", "width", "noshade");
-    $valid["br"] = array("clear");
-    $valid["font"] = array("size", "color", "face");
-    $valid["blockquote"] = array("cite");
-    $valid["pre"] = array("width");
-    $valid["del"] = array("cite", "datetime");
-    $valid["ins"] = $valid["del"];
+    $valid['a'] = array('href', 'title');
+    $valid['hr'] = array('size', 'width', 'noshade');
+    $valid['br'] = array('clear');
+    $valid['font'] = array('size', 'color', 'face');
+    $valid['blockquote'] = array('cite');
+    $valid['pre'] = array('width');
 
+    $valid['del'] = array('cite', 'datetime');
+    $valid['ins'] = array('cite', 'datetime');
 
-    $valid["img"] = array("src", "width", "height", "alt", "border", "usemap", "longdesc", "vspace", "hspace", "ismap");
-    $valid["map"] = array("name");
-    $valid["area"] = array("shape", "coords", "href", "alt", "nohref");
+    $valid['img'] = array('src', 'width', 'height', 'alt', 'border', 'usemap', 'longdesc', 'vspace', 'hspace', 'ismap');
+    $valid['map'] = array('name');
+    $valid['area'] = array('shape', 'coords', 'href', 'alt', 'nohref');
 
-    $valid["table"] = array("border", "cellspacing", "cellpadding", "width", "height", "summary", "bgcolor", "background", "frame", "rules", "bordercolor");
-    $valid["tbody"] = array("char", "charoff", "valign");
-    $valid["tfoot"] = $valid["tbody"];
-    $valid["thead"] = $valid["tbody"];
-    $valid["td"] = array("abbr", "axis", "background", "bgcolor", "char", "charoff", "colspan", "height", "headers", "rowspan", "scope", "valign", "width", "nowrap");
-    $valid["th"] = $valid["td"];
-    $valid["tr"] = array("bgcolor", "char", "charoff", "valign");
+    $valid['table'] = array('border', 'cellspacing', 'cellpadding', 'width', 'height', 'summary', 'bgcolor', 'background', 'frame', 'rules', 'bordercolor');
+    $valid['tbody'] = array('char', 'charoff', 'valign');
+    $valid['tfoot'] = $valid['tbody'];
+    $valid['thead'] = $valid['tbody'];
+    $valid['td'] = array('abbr', 'axis', 'background', 'bgcolor', 'char', 'charoff', 'colspan', 'height', 'headers', 'rowspan', 'scope', 'valign', 'width', 'nowrap');
+    $valid['th'] = $valid['td'];
+    $valid['tr'] = array('bgcolor', 'char', 'charoff', 'valign');
 
-    $valid["colgroup"] = array("span", "width", "char", "charoff", "valign");
-    $valid["col"] = $valid["colgroup"];
+    $valid['colgroup'] = array('span', 'width', 'char', 'charoff', 'valign');
+    $valid['col'] = $valid['colgroup'];
 
-    $valid["ul"] = array("type", "start");
-    $valid["ol"] = $valid["ul"];
-    $valid["il"] = $valid["ul"];
+    $valid['ul'] = array('type', 'start');
+    $valid['ol'] = $valid['ul'];
+    $valid['il'] = $valid['ul'];
 
-    $valid["embed"] = array("src", "type", "pluginspage", "pluginurl", "border", "frameborder", "height", "width", "units", "hidden", "hspace", "vspace", "name", "palette", "wmode", "menu", "bgcolor");
+    $valid['embed'] = array('src', 'type', 'pluginspage', 'pluginurl', 'border', 'frameborder', 'height', 'width', 'units', 'hidden', 'hspace', 'vspace', 'name', 'palette', 'wmode', 'menu', 'bgcolor');
 
-    //$valid["object"] = array("archive", "classid", "codebase", "codetype", "data", "declare", "height", "width", "name", "standby", "type", "usemap");
-    //$valid["param"] = array("name", "id", "value", "valuetype", "type");
+    $valid['marquee'] = array('direction', 'behavior', 'loop', 'scrollamount', 'scrolldelay', 'height', 'width', 'hspace', 'vspace');
 
-    $valid["marquee"] = array("direction", "behavior", "loop", "scrollamount", "scrolldelay", "height", "width", "hspace", "vspace");
+    $urls = array('href', 'background', 'src', 'pluginspage', 'pluginurl');
 
-    $urls = array("href", "background", "src", "pluginspage", "pluginurl");
+    $split_tag = preg_split("/\s+/u", $tag);
 
-    $split_tag = preg_split('/\s+/u', $tag);
+    $split_tag_count = count($split_tag);
 
-    for ($i = 1; $i < count($split_tag); $i++) {
+    for ($i = 1; $i < $split_tag_count; $i++) {
 
-        $quote = mb_substr($split_tag[$i], mb_strpos($split_tag[$i], "=")+1, 1);
+        $quote = mb_substr($split_tag[$i], mb_strpos($split_tag[$i], '=') + 1, 1);
 
         if ($quote == "\"" || $quote == "'") {
 
@@ -776,16 +784,16 @@ function clean_attributes ($tag)
 
                 $tempstr = $split_tag[$i];
 
-                for ($j = $i + 1; $j < count($split_tag); $j++) {
+                for ($j = $i + 1; $j < $split_tag_count; $j++) {
 
-                    $tempstr.= " ".$split_tag[$j];
+                    $tempstr.= ' '. $split_tag[$j];
                     $lastchar = mb_substr($split_tag[$j], -1);
 
                     if ($lastchar == $quote) {
 
                         $split_tag[$i] = $tempstr;
 
-                        array_splice($split_tag, $i+1, $j-$i);
+                        array_splice($split_tag, $i + 1, $j - $i);
 
                         break;
                     }
@@ -800,18 +808,18 @@ function clean_attributes ($tag)
 
     if (in_array($tag_name, $valid_tags)) {
 
-        for ($i = 1; $i < count($split_tag); $i++) {
+        for($i = 1; $i < count($split_tag); $i++) {
 
-            $attrib = explode("=", $split_tag[$i]);
+            $attrib = explode('=', $split_tag[$i]);
 
-            if (!in_array(mb_strtolower($attrib[0]), $valid[$tag_name]) && !in_array(mb_strtolower($attrib[0]), $valid["_global"])) {
+            if (!in_array(strtolower($attrib[0]), $valid[$tag_name]) && !in_array(strtolower($attrib[0]), $valid['_global'])) {
 
                 array_splice($split_tag, $i, 1);
                 $i--;
 
             }else {
 
-                $tmp_attrib = mb_strtolower($attrib[0])."=";
+                $tmp_attrib = mb_strtolower($attrib[0]). "=";
                 $attrib_value = mb_substr($split_tag[$i], mb_strlen($tmp_attrib));
 
                 $first_char = mb_substr($attrib_value, 0, 1);
@@ -827,17 +835,17 @@ function clean_attributes ($tag)
                     $attrib_value = mb_substr($attrib_value, 0, -1);
                 }
 
-                if ($tmp_attrib == "style=") {
+                if ($tmp_attrib == 'style=') {
 
                     $attrib_value = clean_styles($attrib_value);
                 }
 
-                if (in_array(mb_substr($tmp_attrib,0,-1), $urls)) {
+                if (in_array(substr($tmp_attrib,0,-1), $urls)) {
 
-                    $attrib_value = preg_replace("/javascript:/ixu", "", $attrib_value);
+                    $attrib_value = preg_replace("/javascript:/ixu", '', $attrib_value);
                 }
 
-                $tmp_attrib.= "\"".$attrib_value."\"";
+                $tmp_attrib.= "\"". $attrib_value. "\"";
 
                 $split_tag[$i] = $tmp_attrib;
             }
@@ -845,18 +853,18 @@ function clean_attributes ($tag)
 
     }else {
 
-        for ($i = 1; $i < count($split_tag); $i++) {
+        for($i = 1; $i < count($split_tag); $i++) {
 
-            $attrib = explode("=", $split_tag[$i]);
+            $attrib = explode('=', $split_tag[$i]);
 
-            if (!in_array(mb_strtolower($attrib[0]), $valid["_global"])) {
+            if (!in_array(strtolower($attrib[0]), $valid['_global'])) {
 
                 array_splice($split_tag, $i, 1);
                 $i--;
 
             }else {
 
-                $tmp_attrib = mb_strtolower($attrib[0])."=";
+                $tmp_attrib = mb_strtolower($attrib[0]). '=';
                 $attrib_value = mb_substr($split_tag[$i], mb_strlen($tmp_attrib));
 
                 $first_char = mb_substr($attrib_value, 0, 1);
@@ -872,12 +880,12 @@ function clean_attributes ($tag)
                     $attrib_value = mb_substr($attrib_value, 0, -1);
                 }
 
-                if ($tmp_attrib == "style=") {
+                if ($tmp_attrib == 'style=') {
 
                     $attrib_value = clean_styles($attrib_value);
                 }
 
-                $tmp_attrib.= "\"".$attrib_value."\"";
+                $tmp_attrib.= "\"". $attrib_value. "\"";
 
                 $split_tag[$i] = $tmp_attrib;
             }
@@ -886,9 +894,9 @@ function clean_attributes ($tag)
 
     $new_tag = $tag_name;
 
-    for ($i = 1;$i < count($split_tag); $i++) {
+    for ($i = 1; $i < $split_tag_count; $i++) {
 
-        $new_tag.= " ". $split_tag[$i];
+        $new_tag.= ' '. $split_tag[$i];
     }
 
     return $new_tag;
@@ -909,14 +917,14 @@ function clean_attributes ($tag)
 * @param boolean $links Toggle if HTML links are to be converted to text (default=true)
 * @param boolean $tidymce Toggle if using the TidyMCE WYSIWYG toolbar (default=false)
 */
-function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
+function tidy_html($html, $linebreaks = true, $links = true, $tidymce = false)
 {
     if ($tidymce) {
 
-        $html = str_replace("<noemots>", "<span class=\"noemots\">", $html);
-        $html = str_replace("</noemots>", "</span>", $html);
+        $html = str_replace('<noemots>', '<span class="noemots">', $html);
+        $html = str_replace('</noemots>', '</span>', $html);
 
-        $html = preg_replace_callback('/<pre class="code">(.*?)<\/pre>/isu', 'tidy_html_callback_2', $html);
+        $html = preg_replace_callback("/<pre class=\"code\">(.*?)<\/pre>/isu", "tidy_html_pre_tag_callback", $html);
 
         return $html;
     }
@@ -926,100 +934,39 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     if ($linebreaks == true) {
 
-        $html = preg_replace("/<br( [^>]*)?>(\n)?/Diu", "\n", $html);
-        $html = preg_replace("/(\n\n)?<p( [^>]*)?>(\n\n)?/Diu", "", trim($html));
-        $html = preg_replace("/<\/p( [^>]*)?>(\n\n)?$/Diu", "", $html);
-        $html = preg_replace("/<\/p( [^>]*)?>(\n\n)?/Diu", "\n\n", $html);
+        $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
+        $html = preg_replace("/<p( [^>]*)?>/iu", '', $html);
+        $html = preg_replace("/<\/p( [^>]*)?>(\n\n)?/iu", "\n\n", $html);
     }
 
     // turn autoconverted links back into text
 
     if ($links == true) {
 
-        $html = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/u', '$3', $html);
-        $html = preg_replace('/<a href="(mailto:)?([^"]*)">((mailto:)?\\2)<\/a>/u', '$3', $html);
+        $html = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/u", "$3", $html);
+        $html = preg_replace("/<a href=\"(mailto:)?([^\"]*)\">((mailto:)?\\2)<\/a>/u", "$3", $html);
     }
 
     // make <code>..</code> tag, and html_entity_decode
 
-    $html = preg_replace_callback('/<div class="quotetext" id="code-([^"]*)">.*?<\/div>.*?<pre class="code">(.*?)<\/pre>/isu', 'tidy_html_callback', $html);
+    $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code-([^\"]*)\">.*?<\/div>.*?<pre class=\"code\">(.*?)<\/pre>/isu", "tidy_html_code_tag_callback", $html);
 
     // make <quote source=".." url="..">..</quote> tag
 
-    $html_left = "";
+    $html_left = '';
     $html_right = $html;
 
-    while (($pos = mb_strpos($html_right, "<div class=\"quotetext\" id=\"quote\">")) > -1) {
+    while (($pos = mb_strpos($html_right, '<div class="quotetext" id="quote">')) > -1) {
 
         $html_left.= mb_substr($html_right, 0, $pos);
 
         $matches = array();
 
-        if (preg_match('/^<div class="quotetext" id="quote">.+?(<a href="([^"]*)">)?([^<>]*)(<\/a>)?<\/div>\s*<div class="quote">.*<\/div>/isu', mb_substr($html_right, $pos), $matches) > 0) {
+        if (preg_match("/^<div class=\"quotetext\" id=\"quote\">.+?(<a href=\"([^\"]*)\">)?([^<>]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/isu", mb_substr($html_right, $pos), $matches) > 0) {
 
-            $html_left.= "<quote source=\"{$matches[3]}\" url=\"{$matches[2]}\">";
+            $html_left.= '<quote source="'. $matches[3]. '" url="'. $matches[2]. '">';
 
-            $search = "class=\"quote\"";
-
-            $j = mb_strpos($html_right, $search);
-
-            $first = $j + mb_strlen($search) + 1;
-
-            $open_num = 1;
-
-            while (1 != 2) {
-
-                $open = mb_strpos($html_right, "<div", $j);
-                $close = mb_strpos($html_right, "</div>", $j);
-
-                if (!is_integer($open)) {
-                    $open = $close+1;
-                }
-
-                if ($close < $open && $open_num == 1) {
-
-                    $j = $close;
-                    break;
-
-                } else if ($close < $open) {
-
-                    $open_num--;
-                    $open = $close;
-
-                } else {
-
-                    $open_num++;
-                }
-
-                $j = $open+1;
-            }
-
-            $html_left.= tidy_html(mb_substr($html_right, $first, $j-$first), $linebreaks)."</quote>";
-            $html_right = mb_substr($html_right, $j + mb_strlen("</div>"));
-
-        }else {
-
-            $html_left.= mb_substr($html_right, $pos, 1);
-            $html_right = mb_substr($html_right, $pos + 1);
-        }
-    }
-
-    $html = $html_left.$html_right;
-
-    // make <spoiler>..</spoiler> tag
-
-    $html_left = "";
-    $html_right = $html;
-
-    while (($pos = mb_strpos($html_right, "<div class=\"quotetext\" id=\"spoiler\">")) > -1) {
-
-        $html_left.= mb_substr($html_right, 0, $pos);
-
-        if (preg_match('/^<div class="quotetext" id="spoiler">.+?<\/div>.*?<div class="spoiler">.*<\/div>/isu', mb_substr($html_right, $pos))) {
-
-            $html_left.= "<spoiler>";
-
-            $search = "class=\"spoiler\"";
+            $search = 'class="quote"';
 
             $j = mb_strpos($html_right, $search);
 
@@ -1029,12 +976,11 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
             while (1 != 2) {
 
-                $open = mb_strpos($html_right, "<div", $j);
-                $close = mb_strpos($html_right, "</div>", $j);
+                $open = mb_strpos($html_right, '<div', $j);
+                $close = mb_strpos($html_right, '</div>', $j);
 
                 if (!is_integer($open)) {
-
-                    $open = $close+1;
+                    $open = $close + 1;
                 }
 
                 if ($close < $open && $open_num == 1) {
@@ -1052,11 +998,11 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
                     $open_num++;
                 }
 
-                $j = $open+1;
+                $j = $open + 1;
             }
 
-            $html_left.= tidy_html(mb_substr($html_right, $first, $j-$first), $linebreaks)."</spoiler>";
-            $html_right = mb_substr($html_right, $j + mb_strlen("</div>"));
+            $html_left.= tidy_html(substr($html_right, $first, $j - $first), $linebreaks). '</quote>';
+            $html_right = mb_substr($html_right, $j + mb_strlen('</div>'));
 
         }else {
 
@@ -1065,7 +1011,68 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
         }
     }
 
-    $html = $html_left.$html_right;
+    $html = $html_left. $html_right;
+
+    // make <spoiler>..</spoiler> tag
+
+    $html_left = '';
+    $html_right = $html;
+
+    while (($pos = mb_strpos($html_right, '<div class="quotetext" id="spoiler">')) > -1) {
+
+        $html_left.= mb_substr($html_right, 0, $pos);
+
+        if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\">.+?<\/div>.*?<div class=\"spoiler\">.*<\/div>/isu", mb_substr($html_right, $pos))) {
+
+            $html_left.= '<spoiler>';
+
+            $search = "class=\"spoiler\"";
+
+            $j = mb_strpos($html_right, $search);
+
+            $first = $j + mb_strlen($search) + 1;
+
+            $open_num = 1;
+
+            while (1 != 2) {
+
+                $open = mb_strpos($html_right, '<div', $j);
+                $close = mb_strpos($html_right, '</div>', $j);
+
+                if (!is_integer($open)) {
+
+                    $open = $close + 1;
+                }
+
+                if ($close < $open && $open_num == 1) {
+
+                    $j = $close;
+                    break;
+
+                }else if ($close < $open) {
+
+                    $open_num--;
+                    $open = $close;
+
+                }else {
+
+                    $open_num++;
+                }
+
+                $j = $open + 1;
+            }
+
+            $html_left.= tidy_html(substr($html_right, $first, $j - $first), $linebreaks).'</spoiler>';
+            $html_right = mb_substr($html_right, $j + mb_strlen('</div>'));
+
+        }else {
+
+            $html_left.= mb_substr($html_right, $pos, 1);
+            $html_right = mb_substr($html_right, $pos + 1);
+        }
+    }
+
+    $html = $html_left. $html_right;
 
     return $html;
 }
@@ -1076,19 +1083,20 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 * @return string
 * @param array $matches Array returned by preg_replace_callback
 */
-function tidy_html_callback ($matches)
+function tidy_html_code_tag_callback($matches)
 {
-    return "<code language=\"{$matches[1]}\">". htmlentities_array_decode(strip_tags($matches[2])). "</code>";
+    return '<code language="{$matches[1]}">'. htmlentities_array_decode(strip_tags($matches[2])). '</code>';
 }
+
 /**
 * Used by tidy_html to convert <code> tags
 *
 * @return string
 * @param array $matches Array returned by preg_replace_callback
 */
-function tidy_html_callback_2 ($matches)
+function tidy_html_pre_tag_callback($matches)
 {
-    return "<pre class=\"code\">". strip_tags($matches[1], '<br>'). "</pre>";
+    return '<pre class="code">'. strip_tags($matches[1]). '</pre>';
 }
 
 /**
@@ -1100,8 +1108,7 @@ function tidy_html_callback_2 ($matches)
 * @return string
 * @param string $style The inline CSS style text (e.g. <span style="font:italic"> would need $style="font:italic")
 */
-
-function clean_styles ($style)
+function clean_styles($style)
 {
     // Prevent inline comments
 
@@ -1167,7 +1174,7 @@ function clean_styles ($style)
         }
     }
 
-    return "";
+    return '';
 }
 
 /**
@@ -1180,7 +1187,6 @@ function clean_styles ($style)
 * @return string
 * @param array $matches is the matches from a regular expression used in preg_replace_callback.
 */
-
 function clean_styles_restrict($value)
 {
     $matches = array();
@@ -1193,26 +1199,26 @@ function clean_styles_restrict($value)
 
                 case 'px':
 
-                    if ($matches[1] < 0) return "0px";
-                    if ($matches[1] > 350) return "350px";
+                    if ($matches[1] < 0) return '0px';
+                    if ($matches[1] > 350) return '350px';
                     break;
 
                 case 'pt':
 
-                    if ($matches[1] < 0) return "0pt";
-                    if ($matches[1] > 250) return "250pt";
+                    if ($matches[1] < 0) return '0pt';
+                    if ($matches[1] > 250) return '250pt';
                     break;
 
                 case 'em':
 
-                    if ($matches[1] < 0) return "0em";
-                    if ($matches[1] > 25) return "25em";
+                    if ($matches[1] < 0) return '0em';
+                    if ($matches[1] > 25) return '25em';
                     break;
 
                 case '%':
 
-                    if ($matches[1] < 0) return "0%";
-                    if ($matches[1] > 100) return "100%";
+                    if ($matches[1] < 0) return '0%';
+                    if ($matches[1] > 100) return '100%';
                     break;
             }
 
@@ -1247,33 +1253,27 @@ function clean_styles_restrict($value)
 *
 * @return string
 * @param string $html The HTML which needs <br /> and <p> tags adding.
-* @param boolean $base Toggle indicates HTML isn't nested within other HTML (default=true)
 * @param boolean $br_only Toggle indicates not to use <p> tags (default=true)
 */
 function add_paragraphs($html, $br_only = true)
 {
-    $html = str_replace("\r", "", $html);
+    $html = str_replace("\r", '', $html);
 
-    $tags = array("table", "div", "pre", "ul", "ol", "object", "font");
+    $tags = array('table', 'div', 'pre', 'ul', 'ol', 'object', 'font');
 
     $tags_nest = array();
 
-    // = array of nested tags which contain content, or
-    // = array (a, b)
-    //      a == true when you want linebreaks added (default false)
-    //      b == true when tag is inline (default false)
+    $tags_nest['table'] = array('td', 'th');
+    $tags_nest['ul'] = array('li');
+    $tags_nest['ol'] = array('li');
+    $tags_nest['div'] = array(true);
+    $tags_nest['pre'] = array(false);
+    $tags_nest['object'] = array(false);
+    $tags_nest['font'] = array(true, true);
+    $tags_nest['a'] = array(true, true);
+    $tags_nest['span'] = array(true, true);
 
-    $tags_nest["table"] = array("td", "th");
-    $tags_nest["ul"] = array("li");
-    $tags_nest["ol"] = array("li");
-    $tags_nest["div"] = array(true);
-    $tags_nest["pre"] = array(false);
-    $tags_nest["object"] = array(false);
-    $tags_nest["font"] = array(true, true);
-    $tags_nest["a"] = array(true, true);
-    $tags_nest["span"] = array(true, true);
-
-    $cur_tag = "";
+    $cur_tag = '';
 
     $html_a = array($html);
     $html_p = 0;
@@ -1282,9 +1282,11 @@ function add_paragraphs($html, $br_only = true)
 
         $cur_pos = mb_strlen($html_a[$html_p]);
 
-        for ($i = 0; $i < count($tags); $i++) {
+        $tags_count = count($tags);
 
-            $open = mb_strpos($html_a[$html_p], "<". $tags[$i]);
+        for ($i = 0; $i < $tags_count; $i++) {
+
+            $open = mb_strpos($html_a[$html_p], '<'. $tags[$i]);
 
             if ($open < $cur_pos && is_integer($open)) {
 
@@ -1301,11 +1303,11 @@ function add_paragraphs($html, $br_only = true)
 
         while (1 != 2) {
 
-            $open = mb_strpos($html_a[$html_p], "<".$cur_tag, $j);
-            $close = mb_strpos($html_a[$html_p], "</".$cur_tag, $j);
+            $open = mb_strpos($html_a[$html_p], '<'. $cur_tag, $j);
+            $close = mb_strpos($html_a[$html_p], '</'. $cur_tag, $j);
 
             if (!is_integer($open)) {
-                $open = $close+1;
+                $open = $close + 1;
             }
 
             if ($close < $open && $open_num == 0) {
@@ -1322,28 +1324,30 @@ function add_paragraphs($html, $br_only = true)
                 $open_num++;
             }
 
-            $j = $open+1;
+            $j = $open + 1;
         }
 
-        $close = mb_strpos($html_a[$html_p], ">", $close) + 1;
+        $close = mb_strpos($html_a[$html_p], '>', $close) + 1;
 
-        $html_a[$html_p+1] = mb_substr($html_a[$html_p], $cur_pos, $close-$cur_pos);
+        $html_a[$html_p+1] = mb_substr($html_a[$html_p], $cur_pos, $close - $cur_pos);
         $html_a[$html_p+2] = mb_substr($html_a[$html_p], $close);
         $html_a[$html_p] = mb_substr($html_a[$html_p], 0, $cur_pos);
 
-        $html_p+= 2;
+        $html_p += 2;
     }
 
-    $return = "";
+    $return = '';
     $p_open = false;
 
-    for ($i = 0; $i < count($html_a); $i++) {
+    $html_a_count = count($html_a);
+
+    for ($i = 0; $i < $html_a_count; $i++) {
 
         if ($i % 2) {
 
             $tag = array();
 
-            preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i], $tag);
+            preg_match("/^<(\w+)(\b[^<>]*)>/iu", $html_a[$i], $tag);
 
             if (isset($tag[1]) && isset($tags_nest[$tag[1]])) {
 
@@ -1351,14 +1355,16 @@ function add_paragraphs($html, $br_only = true)
 
                     $nest = $tags_nest[$tag[1]];
 
-                    for ($j = 0; $j < count($nest); $j++) {
+                    $nest_count = count($nest);
+
+                    for ($j = 0; $j < $nest_count; $j++) {
 
                         $offset = 0;
 
-                        while (is_integer(mb_strpos($html_a[$i], "<". $nest[$j], $offset))) {
+                        while (is_integer(strpos($html_a[$i], '<'. $nest[$j], $offset))) {
 
-                            $cur_pos = mb_strpos($html_a[$i], "<".$nest[$j], $offset);
-                            $cur_pos = mb_strpos($html_a[$i], ">", $cur_pos)+1;
+                            $cur_pos = mb_strpos($html_a[$i], '<'. $nest[$j], $offset);
+                            $cur_pos = mb_strpos($html_a[$i], '>', $cur_pos)+1;
 
                             $k = $cur_pos;
 
@@ -1366,11 +1372,11 @@ function add_paragraphs($html, $br_only = true)
 
                             while (1 != 2) {
 
-                                $open = mb_strpos($html_a[$i], "<".$nest[$j], $k);
-                                $close = mb_strpos($html_a[$i], "</".$nest[$j], $k);
+                                $open = mb_strpos($html_a[$i], '<'. $nest[$j], $k);
+                                $close = mb_strpos($html_a[$i], '</'. $nest[$j], $k);
 
                                 if (!is_integer($open)) {
-                                    $open = $close+1;
+                                    $open = $close + 1;
                                 }
 
                                 if ($close < $open && $open_num == 0) {
@@ -1387,61 +1393,61 @@ function add_paragraphs($html, $br_only = true)
                                     $open_num++;
                                 }
 
-                                $k = $open+1;
+                                $k = $open + 1;
                             }
 
                             $tmp = array();
 
                             $tmp[0] = mb_substr($html_a[$i], 0, $cur_pos);
-                            $tmp[1] = mb_substr($html_a[$i], $cur_pos, $close-$cur_pos);
+                            $tmp[1] = mb_substr($html_a[$i], $cur_pos, $close - $cur_pos);
                             $tmp[2] = mb_substr($html_a[$i], $close);
 
                             $tmp[1] = add_paragraphs($tmp[1], true);
 
-                            $offset = mb_strlen($tmp[0].$tmp[1]);
+                            $offset = mb_strlen($tmp[0]. $tmp[1]);
 
-                            $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
+                            $html_a[$i] = $tmp[0]. $tmp[1]. $tmp[2];
                         }
                     }
 
                 }else if ($tags_nest[$tag[1]][0] == true) {
 
-                    $cur_pos = mb_strpos($html_a[$i], ">") + 1;
-                    $close = mb_strrpos($html_a[$i], "<");
+                    $cur_pos = mb_strpos($html_a[$i], '>') + 1;
+                    $close = mb_strrpos($html_a[$i], '<');
 
                     $tmp = array();
 
                     $tmp[0] = mb_substr($html_a[$i], 0, $cur_pos);
-                    $tmp[1] = mb_substr($html_a[$i], $cur_pos, $close-$cur_pos);
+                    $tmp[1] = mb_substr($html_a[$i], $cur_pos, $close - $cur_pos);
                     $tmp[2] = mb_substr($html_a[$i], $close);
 
                     $tmp[1] = add_paragraphs($tmp[1], true);
 
-                    $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
+                    $html_a[$i] = $tmp[0]. $tmp[1]. $tmp[2];
                 }
+            }
 
-                if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {
+            if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {
 
-                    if (trim($html_a[$i+1]) == "") {
+                if (trim($html_a[$i + 1]) == '') {
 
-                        $return.= $html_a[$i]."\n";
-
-                    }else {
-
-                        $return.= $html_a[$i]."\n\n";
-                    }
+                    $return.= $html_a[$i]. "\n";
 
                 }else {
 
-                    $return.= $html_a[$i];
+                    $return.= $html_a[$i]. "\n\n";
                 }
+
+            }else {
+
+                $return.= $html_a[$i];
             }
 
         }else if ($br_only == false) {
 
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([^\n\r])/iu', "$1\n$3", $html_a[$i]);
-            $html_a[$i] = preg_replace('/([^\n\r])(<p( [^>]*)?>)/iu', "$1\n\n$2", $html_a[$i]);
-            $html_a[$i] = preg_replace('/(<\/p( [^>]*)?>)([^\n\r])/iu', "</p>\n\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/iu", "$1\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/iu", "$1\n\n$2", $html_a[$i]);
+            $html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/iu", "</p>\n\n$3", $html_a[$i]);
 
             $tmp = mb_split("\n", $html_a[$i]);
 
@@ -1449,75 +1455,77 @@ function add_paragraphs($html, $br_only = true)
 
                 $p_open = true;
 
-                if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/u', $tmp[0])) {
+                if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/u", $tmp[0])) {
 
-                    $tmp[0] = "<p>".$tmp[0];
+                    $tmp[0] = '<p>'. $tmp[0];
                 }
             }
 
-            for ($j = 0; $j < count($tmp) - 1; $j++) {
+            $tmp_count = count($tmp) - 1;
 
-                if (preg_match('/<\/p>$/Diu', $tmp[$j]) > 0) {
+            for ($j = 0; $j < $tmp_count; $j++) {
+
+                if (preg_match("/<\/p>$/iu", $tmp[$j]) > 0) {
 
                     $p_open = false;
 
-                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/Diu', '', $tmp[$j+1]);
+                    $tmp[$j + 1] = preg_replace("/^<p( [^>]*)?>/iu", '', $tmp[$j + 1]);
+                    $tmp[$j + 1] = preg_replace("/<br( [^>]*)?>$/Diu", '', $tmp[$j + 1]);
+                    $tmp[$j + 1] = preg_replace("/<\/p>$/iu", '', $tmp[$j + 1]);
 
-                    if (!isset($tmp[$j+2])) break;
+                    if (!isset($tmp[$j + 2])) break;
 
                     $p_open = true;
 
-                    if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/u', $tmp[$j+2])) {
+                    if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/u", $tmp[$j + 2])) {
 
-                        $tmp[$j+2] = "<p>".$tmp[$j+2];
+                        $tmp[$j + 2] = '<p>'. $tmp[$j + 2];
                     }
 
                     $j++;
 
-                }else if (!preg_match('/<br( [^>]*)?>$/Di', $tmp[$j])) {
+                }else if (!preg_match("/<br( [^>]*)?>$/Diu", $tmp[$j])) {
 
-                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/Diu', '', $tmp[$j+1]);
+                    $tmp[$j + 1] = preg_replace("/^<p( [^>]*)?>/iu", '', $tmp[$j + 1]);
+                    $tmp[$j + 1] = preg_replace("/<br( [^>]*)?>$/Diu", '', $tmp[$j + 1]);
+                    $tmp[$j + 1] = preg_replace("/<\/p>$/iu", '', $tmp[$j + 1]);
 
-                    if (preg_match('/^\s*$/Du', $tmp[$j+1]) > 0 && $p_open == true) {
+                    if (preg_match("/^\s*$/u", $tmp[$j + 1]) > 0 && $p_open == true) {
 
                         $p_open = false;
 
-                        $tmp[$j].= "</p>";
+                        $tmp[$j].= '</p>';
 
-                        if (!isset($tmp[$j+2])) break;
+                        if (!isset($tmp[$j + 2])) break;
 
                         $p_open = true;
 
-                        if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/u', $tmp[$j+2])) {
+                        if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/u", $tmp[$j + 2])) {
 
-                            $tmp[$j+2] = "<p>".$tmp[$j+2];
+                            $tmp[$j + 2] = '<p>'. $tmp[$j + 2];
                         }
 
                         $j++;
 
                     }else {
-                        $tmp[$j].= "<br />";
+                        $tmp[$j].= '<br />';
                     }
 
                 }else {
 
-                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/Diu', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/Diu', '', $tmp[$j+1]);
+                    $tmp[$j + 1] = preg_replace("/^<p( [^>]*)?>/iu", '', $tmp[$j + 1]);
+                    $tmp[$j + 1] = preg_replace("/<br( [^>]*)?>$/Diu", '', $tmp[$j + 1]);
+                    $tmp[$j + 1] = preg_replace("/<\/p>$/iu", '', $tmp[$j + 1]);
                 }
             }
 
-            if ($p_open == true && !preg_match('/<\/p>$/Diu', $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
+            if ($p_open == true && !preg_match("/<\/p>$/iu", $tmp[$j]) && mb_strlen(trim($tmp[$j])) > 0) {
 
-                $tmp[$j].= "</p>";
+                $tmp[$j].= '</p>';
             }
 
             $html_a[$i] = implode("\n", $tmp);
-            $html_a[$i] = preg_replace('/(<p( [^>]*)?>)\s*<\/p>/iu', '$1&nbsp;</p>', $html_a[$i]);
+            $html_a[$i] = preg_replace("/(<p( [^>]*)?>)\s*<\/p>/iu", "$1&nbsp;</p>", $html_a[$i]);
 
             $tag = array();
 
@@ -1536,12 +1544,12 @@ function add_paragraphs($html, $br_only = true)
 
         }else {
 
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([\r\n]*)?/iu', "\n", $html_a[$i]);
-            $html_a[$i] = preg_replace('/([\r\n]*)?(<p( [^>]*)?>)([\r\n]*)?/iu', "", $html_a[$i]);
-            $html_a[$i] = preg_replace('/([\r\n]*)?(<\/p( [^>]*)?>)([\r\n]*)?/iu', "\n\n", $html_a[$i]);
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)|(<p( [^>]*)?>)|(<\/p( [^>]*)?>)/iu', '', $html_a[$i]);
+            $html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/iu", "$1\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/iu", "$1\n\n$2", $html_a[$i]);
+            $html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/iu", "</p>\n\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace("/(<br( [^>]*)?>)|(<p( [^>]*)?>)|(<\/p( [^>]*)?>)/iu", '', $html_a[$i]);
 
-            $html_a[$i] = nl2br(trim($html_a[$i]));
+            $html_a[$i] = nl2br($html_a[$i]);
 
             $return.= $html_a[$i];
         }
@@ -1559,7 +1567,7 @@ function add_paragraphs($html, $br_only = true)
 * @param boolean $emoticons Toggle to allow emoticons in message (default=true), false just sets $html = "<noemots>$html</noemots>"
 * @param boolean $links Toggle to allow automatic conversion of text links to HTML (default=true)
 */
-function make_html ($html, $br_only = false, $emoticons = true, $links = true)
+function make_html($html, $br_only = false, $emoticons = true, $links = true)
 {
     $html = htmlentities_array($html);
 
@@ -1568,7 +1576,7 @@ function make_html ($html, $br_only = false, $emoticons = true, $links = true)
     }
 
     if ($emoticons == false) {
-        $html = '<noemots>'.$html.'</noemots>';
+        $html = '<noemots>'. $html. '</noemots>';
     }
 
     $html = add_paragraphs($html, $br_only);
@@ -1582,20 +1590,16 @@ function make_html ($html, $br_only = false, $emoticons = true, $links = true)
 * @return string
 * @param string $html Text to be parsed for links.
 */
-function make_links ($html)
+function make_links($html)
 {
-    $html = " ".$html;
+    $html = ' '. $html;
 
     // URL:
-    $html = preg_replace('/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu', '$1<a href="$2">$2</a>', $html);
-    $html = preg_replace('/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu', '$1<a href="http://$2">$2</a>', $html);
+    $html = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu", "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu", "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:
-    $html = preg_replace('/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/iu', '$1<a href="mailto:$3">$2$3</a>', $html);
-
-    // This one breaks PHP - causes a 30 second page timeout.
-
-    //$html = preg_replace("/\b(mailto:)?(((\w+-?)+\.?)*\w+@((\w+-?)+\.)+\w+)/i", "<a href=\"mailto:$2\">$1$2</a>", $html);
+    $html = preg_replace("/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/iu", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
 
     return mb_substr($html, 1);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.149 2008-11-09 19:27:39 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.150 2008-11-09 20:19:17 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -105,9 +105,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
         $htmltags = array_diff($htmltags, $bad_tags);
         $bad_tags = array();
 
-        $html_parts_count = count($html_parts);
-
-        for ($i = 0; $i < $html_parts_count; $i++) {
+        for ($i = 0; $i < count($html_parts); $i++) {
 
             if ($i % 2) {
 
@@ -148,7 +146,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $open_code = 1;
 
-                        for ($j = $i + 1; $j < $html_parts_count; $j++) {
+                        for ($j = $i + 1; $j < count($html_parts); $j++) {
 
                             if ($j % 2) {
 
@@ -368,9 +366,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
         $nest['param'] = array('object');
         $nest['li'] = array('ul', 'ol');
 
-        $html_parts_count = count($html_parts);
-
-        for ($i = 0; $i < $html_parts_count; $i++) {
+        for ($i = 0; $i < count($html_parts); $i++) {
 
             if ($i % 2) {
 
@@ -478,9 +474,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         if (in_array($tag, array_keys($nest))) {
 
-                            $nest_count = count($nest[$tag]);
-
-                            for ($nc = 0; $nc < $nest_count; $nc++) {
+                            for ($nc = 0; $nc < count($nest[$tag]); $nc++) {
 
                                 if (in_array($nest[$tag][$nc], array_keys($opentags))) {
 
@@ -524,9 +518,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                 $tmp_len = count($last_tag);
 
-                                $tmp_tags_count = count($tmp_tags);
-
-                                for ($j = 0; $j < $tmp_tags_count; $j++){
+                                for ($j = 0; $j < count($tmp_tags); $j++){
 
                                     if (strlen($tmp_tags[$j]) > 0) {
 
@@ -558,9 +550,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             $opencount = 0;
 
-                            $no_nest_count = count($no_nest[$tag]);
-
-                            for ($j = 0; $j < $no_nest_count; $j++) {
+                            for ($j = 0; $j < count($no_nest[$tag]); $j++) {
 
                                 if (in_array($no_nest[$tag][$j], array_keys($opentags))) {
 
@@ -640,9 +630,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         $atags = 0;
 
-        $html_parts_count = count($html_parts);
-
-        for ($i = 0; $i < $html_parts_count; $i++) {
+        for ($i = 0; $i < count($html_parts); $i++) {
 
             if ($i % 2) {
 
@@ -699,9 +687,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         $reverse_lt = array_reverse($last_tag);
 
-        $reverse_lt_count = count($reverse_lt);
-
-        for ($i = 0; $i < $reverse_lt_count; $i++) {
+        for ($i = 0; $i < count($reverse_lt); $i++) {
 
             if (strlen($reverse_lt[$i]) > 0) {
 
@@ -770,13 +756,11 @@ function clean_attributes($tag)
 
     $split_tag = preg_split("/\s+/u", $tag);
 
-    $split_tag_count = count($split_tag);
-
-    for ($i = 1; $i < $split_tag_count; $i++) {
+    for ($i = 1; $i < count($split_tag); $i++) {
 
         $quote = mb_substr($split_tag[$i], mb_strpos($split_tag[$i], '=') + 1, 1);
 
-        if ($quote == "\"" || $quote == "'") {
+        if ($quote == '"' || $quote == "'") {
 
             $lastchar = mb_substr($split_tag[$i], -1);
 
@@ -784,7 +768,7 @@ function clean_attributes($tag)
 
                 $tempstr = $split_tag[$i];
 
-                for ($j = $i + 1; $j < $split_tag_count; $j++) {
+                for ($j = $i + 1; $j < count($split_tag); $j++) {
 
                     $tempstr.= ' '. $split_tag[$j];
                     $lastchar = mb_substr($split_tag[$j], -1);
@@ -894,7 +878,7 @@ function clean_attributes($tag)
 
     $new_tag = $tag_name;
 
-    for ($i = 1; $i < $split_tag_count; $i++) {
+    for ($i = 1; $i < count($split_tag); $i++) {
 
         $new_tag.= ' '. $split_tag[$i];
     }
@@ -1282,9 +1266,7 @@ function add_paragraphs($html, $br_only = true)
 
         $cur_pos = mb_strlen($html_a[$html_p]);
 
-        $tags_count = count($tags);
-
-        for ($i = 0; $i < $tags_count; $i++) {
+        for ($i = 0; $i < count($tags); $i++) {
 
             $open = mb_strpos($html_a[$html_p], '<'. $tags[$i]);
 
@@ -1339,9 +1321,7 @@ function add_paragraphs($html, $br_only = true)
     $return = '';
     $p_open = false;
 
-    $html_a_count = count($html_a);
-
-    for ($i = 0; $i < $html_a_count; $i++) {
+    for ($i = 0; $i < count($html_a); $i++) {
 
         if ($i % 2) {
 
@@ -1355,9 +1335,7 @@ function add_paragraphs($html, $br_only = true)
 
                     $nest = $tags_nest[$tag[1]];
 
-                    $nest_count = count($nest);
-
-                    for ($j = 0; $j < $nest_count; $j++) {
+                    for ($j = 0; $j < count($nest); $j++) {
 
                         $offset = 0;
 
@@ -1461,9 +1439,7 @@ function add_paragraphs($html, $br_only = true)
                 }
             }
 
-            $tmp_count = count($tmp) - 1;
-
-            for ($j = 0; $j < $tmp_count; $j++) {
+            for ($j = 0; $j < count($tmp) - 1; $j++) {
 
                 if (preg_match("/<\/p>$/iu", $tmp[$j]) > 0) {
 

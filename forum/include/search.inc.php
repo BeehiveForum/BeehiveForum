@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.219 2008-11-14 21:43:43 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.220 2008-11-14 21:45:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -841,6 +841,8 @@ function search_output_opensearch_xml()
     $forum_path = html_get_forum_uri();
 
     $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    header('Content-type: text/xml; charset=UTF-8', true);
 
     echo "<?xml version=\"1.0\"?>\n";
     echo "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\">\n";

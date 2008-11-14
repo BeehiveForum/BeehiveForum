@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.263 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.264 2008-11-14 21:45:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1937,7 +1937,7 @@ function pm_check_messages()
 {
     // Outputting XML
 
-    header('Content-Type: text/xml', true);
+    header('Content-type: text/xml; charset=UTF-8', true);
 
     // Load the Language file
 

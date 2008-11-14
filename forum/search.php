@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.233 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: search.php,v 1.234 2008-11-14 21:43:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -79,6 +79,13 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 $webtag = get_webtag();
 
+// Open Search support (FireFox 2.0, etc.)
+
+if (isset($_GET['opensearch'])) {
+    search_output_opensearch_xml();
+    exit;
+}
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
@@ -118,13 +125,6 @@ $lang = load_language_file();
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Open Search support (FireFox 2.0, etc.)
-
-if (isset($_GET['opensearch'])) {
-    search_output_opensearch_xml();
-    exit;
 }
 
 if (user_is_guest()) {

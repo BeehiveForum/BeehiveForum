@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.218 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.219 2008-11-14 21:43:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -836,6 +836,8 @@ function search_output_opensearch_xml()
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $forum_path = html_get_forum_uri();
 
     $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
@@ -844,7 +846,11 @@ function search_output_opensearch_xml()
     echo "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\">\n";
     echo "<ShortName>$title</ShortName>\n";
     echo "<Description>$title</Description>\n";
-    echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">$forum_path/forums/$webtag/favicon.ico</Image>\n";
+
+    if (@file_exists("forums/$webtag/favicon.ico")) {
+        echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">$forum_path/forums/$webtag/favicon.ico</Image>\n";
+    }
+
     echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_path/search.php?webtag=$webtag&amp;search_string={searchTerms}\"/>\n";
     echo "</OpenSearchDescription>\n";
 }

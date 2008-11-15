@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.66 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.67 2008-11-15 15:30:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -303,7 +303,7 @@ function rss_check_feeds()
 
                     if (strlen($rss_item->description) > 1) {
 
-                        $rss_item_description = htmlentities_array_decode($rss_item->description);
+                        $rss_item_description = htmlentities_decode_array($rss_item->description);
 
                         $rss_item_post = new MessageText(true, $rss_item_description);
                         $rss_item_post->setHTML(POST_HTML_AUTO);

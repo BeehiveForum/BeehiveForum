@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.176 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.177 2008-11-15 15:30:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -326,6 +326,24 @@ function htmlentities_array($var)
     }
 
     return htmlentities($var, ENT_COMPAT, 'UTF-8');
+}
+
+/**
+* UTF-8 and ENT_COMPAT enforced html_entity_decode
+*
+* Ensures use of UTF-8 and ENT_COMPAT settings for html_entity_decode.
+*
+* @return mixed
+* @param mixed $var - variable to encode - supports array of strings.
+*/
+
+function htmlentities_decode_array($var)
+{
+    if (is_array($var)) {
+        return array_map('htmlentities_decode_array', $var);
+    }
+
+    return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
 }
 
 /**

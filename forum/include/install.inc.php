@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.86 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.87 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -402,7 +402,7 @@ function install_column_exists($table_name, $column_name)
     $table_name = db_escape_string($table_name);
     $column_name = db_escape_string($column_name);
 
-    $sql = "SHOW COLUMNS FROM $table_name LIKE '$column_name'";
+    $sql = "SHOW COLUMNS FROM `$table_name` LIKE '$column_name'";
 
     if (!$result = db_query($sql, $db_install_column_exists)) return false;
 
@@ -415,7 +415,7 @@ function install_index_exists($table_name, $index_name)
 
     $table_name = db_escape_string($table_name);
 
-    $sql = "SHOW INDEXES FROM $table_name";
+    $sql = "SHOW INDEXES FROM `$table_name`";
 
     if (!$result = db_query($sql, $db_install_index_exists)) return false;
 
@@ -503,7 +503,7 @@ function install_remove_table($table_name)
 
     $table_name = db_escape_string($table_name);
 
-    $sql = "DROP TABLE IF EXISTS $table_name";
+    $sql = "DROP TABLE IF EXISTS `$table_name`";
 
     if (!$result = @db_query($sql, $install_remove_table)) return false;
 
@@ -516,7 +516,7 @@ function install_remove_indexes($table_name)
 
     $table_name = db_escape_string($table_name);
 
-    $sql = "SHOW INDEX FROM $table_name";
+    $sql = "SHOW INDEX FROM `$table_name`";
 
     if (!$result = @db_query($sql, $db_install_remove_indexes)) return false;
 
@@ -524,7 +524,7 @@ function install_remove_indexes($table_name)
 
         if (preg_match("/^PRIMARY$/", mb_strtoupper($row['Key_name'])) < 1) {
 
-            $sql = "ALTER IGNORE TABLE $table_name DROP INDEX $key_name";
+            $sql = "ALTER IGNORE TABLE `$table_name` DROP INDEX `$key_name`";
             @db_query($sql, $db_install_remove_indexes);
         }
     }

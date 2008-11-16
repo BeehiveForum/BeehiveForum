@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.162 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.163 2008-11-16 01:54:15 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -436,7 +436,7 @@ function delete_attachment($hash)
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
         $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
         $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
         $sql.= "WHERE PAF.HASH = '$hash'";
 
     }else {
@@ -523,7 +523,7 @@ function delete_attachment_thumbnail($hash)
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
         $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
         $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
         $sql.= "WHERE PAF.HASH = '$hash'";
 
     }else {
@@ -666,8 +666,8 @@ function get_folder_fid($aid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.AID = '$aid'";
 
     if (!$result = db_query($sql, $db_get_folder_fid)) return false;

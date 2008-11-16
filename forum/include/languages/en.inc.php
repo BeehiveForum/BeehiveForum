@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.599 2008-11-01 00:00:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.600 2008-11-16 01:54:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -940,7 +940,7 @@ $lang['enablegoogleanalytics'] = "Enable Google Analytics";
 $lang['allowforumgoogleanalytics'] = "Allow Google Analytics on each forum";
 $lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
 $lang['googleadsense'] = "Google AdSense";
-$lang['enablegoogleadsenseadverts'] = "Show Google AdSense Ads";
+$lang['displaygoogleadsenseadverts'] = "Display AdSense Ads for";
 $lang['displaygoogleadsenseadstousers'] = "Display AdSense Ads for";
 $lang['displaygoogleadsenseadsonpages'] = "Display AdSense Ads on";
 $lang['googleadsenseclientid'] = "AdSense Client ID";
@@ -953,8 +953,13 @@ $lang['googleadsenseurlcolour'] = "URL Colour";
 $lang['googleadsensetextcolour'] = "Text Colour";
 $lang['allusers'] = "All Users";
 $lang['guestsonly'] = "Guests Only";
-$lang['allpages'] = "All pages";
-$lang['messagesonly'] = "Messages only";
+$lang['allpages'] = "Top of every page";
+$lang['topofmessagesframe'] = "Top of messages";
+$lang['afterfirstmessage'] = "After 1st message";
+$lang['afterthirdmessage'] = "After 3rd message";
+$lang['afterfifthmessage'] = "After 5th messages";
+$lang['aftertenthmessage'] = "After 10th messages";
+$lang['afterrandommessage'] = "Randomly on messages page.";
 $lang['usemydefaultaccountsetting'] = "Use my default account setting";
 $lang['textonlyads'] = "Text only Ads";
 $lang['textandimageads'] = "Text and Image Ads";

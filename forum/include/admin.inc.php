@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.175 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.176 2008-11-16 01:54:15 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -79,7 +79,7 @@ function admin_add_log_entry($action, $data = "")
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (CREATED, UID, ACTION, ENTRY) ";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
     $sql.= "VALUES (NOW(), '$uid', '$action', '$data')";
 
     if (!db_query($sql, $db_admin_add_log_entry)) return false;
@@ -108,7 +108,7 @@ function admin_prune_log($remove_type, $remove_days)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}ADMIN_LOG ";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}ADMIN_LOG` ";
     $sql.= "WHERE UNIX_TIMESTAMP(CREATED) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
     $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
@@ -151,9 +151,9 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
     $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED ";
-    $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
+    $sql.= "FROM `{$table_data['PREFIX']}ADMIN_LOG` ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "ORDER BY ADMIN_LOG.$sort_by $sort_dir LIMIT $offset, 10";
 
@@ -213,7 +213,7 @@ function admin_get_word_filter_list($offset)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, ";
-    $sql.= "FILTER_TYPE, FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "FILTER_TYPE, FILTER_ENABLED FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
@@ -262,7 +262,7 @@ function admin_get_word_filter($filter_id)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "FILTER_ENABLED FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
 
     if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
@@ -293,7 +293,7 @@ function admin_delete_word_filter($filter_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!db_query($sql, $db_user_delete_word_filter)) return false;
@@ -316,7 +316,7 @@ function admin_clear_word_filter()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = 0";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` WHERE UID = 0";
 
     if (!db_query($sql, $db_admin_clear_word_filter)) return false;
 
@@ -347,7 +347,7 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
     $sql.= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
@@ -382,7 +382,7 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}WORD_FILTER SET FILTER_NAME = '$filter_name', ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
@@ -848,7 +848,7 @@ function admin_forum_get_post_count($fid)
 
     if (($table_data = forum_get_table_prefix($fid))) {
 
-        $sql = "SELECT COUNT(PID) FROM {$table_data['PREFIX']}POST";
+        $sql = "SELECT COUNT(PID) FROM `{$table_data['PREFIX']}POST`";
 
         if (!$result = db_query($sql, $db_admin_forum_get_post_count)) return false;
 
@@ -888,7 +888,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     $ban_data_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ID, BANTYPE, BANDATA, COMMENT, ";
-    $sql.= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
@@ -938,7 +938,7 @@ function admin_get_ban($ban_id)
 
     $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT, UNIX_TIMESTAMP(EXPIRES) AS EXPIRES, ";
     $sql.= "DAY(EXPIRES) AS EXPIRESDAY, MONTH(EXPIRES) AS EXPIRESMONTH, ";
-    $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE ID = '$ban_id'";
 
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
@@ -1001,10 +1001,10 @@ function admin_get_post_approval_queue($offset = 0)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TITLE, FOLDER.TITLE AS FOLDER_TITLE, FOLDER.PREFIX, ";
     $sql.= "USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
-    $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE UNIX_TIMESTAMP(POST.APPROVED) = '0' AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
@@ -1068,7 +1068,7 @@ function admin_get_visitor_log($offset)
     $sql.= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
     $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
     $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
@@ -1193,7 +1193,7 @@ function admin_get_user_ip_matches($uid)
 
     // Fetch the user's last 10 IP addresses from the POST table
 
-    $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
+    $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
     $sql.= "AND LENGTH(IPADDRESS) > 0 LIMIT 0, 10";
 
@@ -1222,11 +1222,11 @@ function admin_get_user_ip_matches($uid)
 
         $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
         $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
-        $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
         $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS ";
         $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
         $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
         $sql.= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
@@ -1290,7 +1290,7 @@ function admin_get_user_email_matches($uid)
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.EMAIL FROM USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE (USER.EMAIL = '$user_email_address') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
@@ -1351,7 +1351,7 @@ function admin_get_user_referer_matches($uid)
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE (USER.REFERER = '$user_http_referer') ";
     $sql.= "AND LENGTH(USER.REFERER) > 0 ";
@@ -1413,7 +1413,7 @@ function admin_get_user_passwd_matches($uid)
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.PASSWD FROM USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE (USER.PASSWD = '$user_passwd') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
@@ -1836,8 +1836,8 @@ function admin_delete_users_posts($uid)
 
     if (!is_numeric($uid)) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
-    $sql.= "SELECT TID, PID, NULL FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid' ";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
+    $sql.= "SELECT TID, PID, NULL FROM `{$table_data['PREFIX']}POST` WHERE FROM_UID = '$uid' ";
     $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
     if (!db_query($sql, $db_admin_delete_users_posts)) return false;

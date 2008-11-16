@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.105 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: forums.php,v 1.106 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -510,13 +510,20 @@ if (!user_is_guest()) {
                     echo "                  <td align=\"left\" valign=\"top\">{$lang['never']}</td>\n";
                 }
 
-                if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
+                if (isset($forum['INTEREST'])) {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    if ($forum['INTEREST'] == FORUM_IGNORED) {
+
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+
+                    }else {
+
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    }
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -716,13 +723,20 @@ if (!user_is_guest()) {
                     echo "                  <td align=\"left\" valign=\"top\">{$lang['never']}</td>\n";
                 }
 
-                if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
+                if (isset($forum['INTEREST'])) {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    if ($forum['INTEREST'] == FORUM_IGNORED) {
+
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+
+                    }else {
+
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    }
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
                 }
 
                 echo "                </tr>\n";

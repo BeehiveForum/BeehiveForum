@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.327 2008-11-09 18:56:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.328 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -36,6 +36,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
+include_once(BH_INCLUDE_PATH. "adsense.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -1155,33 +1156,9 @@ function html_draw_top()
         echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
         echo ">\n";
 
-        // Default height and width are overridden by
-        // the call to html_output_google_adsense_settings()
-        // which takes by-ref vars to change.
+        if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
 
-        $banner_width = 468;
-        $banner_height = 60;
-
-        // Check Adsense support is actually enabled and the settings
-        // are valid before we try and output the banner Javascript.
-
-        if (forum_get_global_setting('google_adsense_enabled', 'Y') && html_output_google_adsense_settings($banner_width, $banner_height)) {
-
-            $google_adsense_background_colour = forum_get_global_setting('google_adsense_background_colour', false, 'EEEEEE');
-            $google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour', false, '999999');
-            $google_adsense_border_colour = forum_get_global_setting('google_adsense_border_colour', false, 'EEEEEE');
-
-            echo "<div style=\"width: {$banner_width}px; margin: auto; color: #$google_adsense_text_colour; background-color: #$google_adsense_background_colour; border: 1px solid #$google_adsense_border_colour\">\n";
-            echo "  <script language=\"Javascript\" type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
-
-            // If only available for Guests and user is a guest add a note to the bottom
-            // to tell them they can register to remove the adverts.
-
-            if (user_is_guest() && forum_get_global_setting('google_adsense_display_users', GOOGLE_ADSENSE_GUESTS_ONLY)) {
-                echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
-            }
-
-            echo "</div>\n";
+            adsense_output_html();
             echo "<br />\n";
         }
     }
@@ -1374,116 +1351,63 @@ function html_get_google_analytics_code()
     return false;
 }
 
-function html_output_google_adsense_settings(&$banner_width, &$banner_height)
+function html_output_adsense_settings()
 {
     // Check the required settings!
 
-    if (!$google_adsense_adtype = forum_get_global_setting('google_adsense_adtype')) return false;
-    if (!$google_adsense_adchannel = forum_get_global_setting('google_adsense_adchannel')) return false;
-    if (!$google_adsense_clientid = forum_get_global_setting('google_adsense_clientid')) return false;
+    if (($adsense_client_id = adsense_client_id()) && ($adsense_ad_channel = adsense_ad_channel())) {
 
-    // Check we're not on nav.php
+        // Ad type to display (text, image, etc.)
 
-    if (preg_match('/^nav\.php/i', basename($_SERVER['PHP_SELF'])) > 0) return false;
+        $adsense_ad_type = adsense_ad_type();
 
-    // Array of ad type settings
+        // Which pages and users to display to.
 
-    $google_adsense_adtype_array = array(GOOGLE_ADSENSE_ACCOUNT_DEFAULT => '',
-                                         GOOGLE_ADSENSE_TEXT_ONLY       => 'text',
-                                         GOOGLE_ADSENSE_TEXT_AND_IMAGES => 'text_image');
+        $adsense_display_users = google_adsense_display_users();
+        $adsense_display_pages = google_adsense_display_pages();
 
-    // Check the adtype is valid
+        // AdSense colours.
 
-    if (!in_array($google_adsense_adtype, array_keys($google_adsense_adtype_array))) {
-        $google_adsense_adtype = GOOGLE_ADSENSE_ACCOUNT_DEFAULT;
-    }
+        $adsense_bg_colour = adsense_background_colour();
+        $adsense_text_colour = adsense_text_colour();
+        $adsense_url_colour = adsense_url_colour();
+        $adsense_link_colour = adsense_link_colour();
 
-    // Check the user account type - If not a guest and only showing ads to guests
-    // then we have nothing to do.
+        // Get banner size
 
-    if (!user_is_guest() && forum_get_global_setting('google_adsense_display_users', GOOGLE_ADSENSE_GUESTS_ONLY)) return false;
+        $banner_format = adsense_get_banner_type($banner_width, $banner_height);
 
-    // Check the page we're on to see if we should display the Ads or not.
-    // If set to display on messages.php only and we're not on messages.php bail out.
+        // No idea what format the client ID should be in
+        // So we'll just assume it's right if it's a non-empty string.
 
-    if (preg_match('/^messages\.php/i', basename($_SERVER['PHP_SELF'])) < 1) {
-        if (forum_get_global_setting('google_adsense_display_pages', GOOGLE_ADSENSE_MESSAGES_ONLY)) return false;
-    }
+        if (strlen(trim($adsense_client_id)) > 0) {
 
-    // No idea what format the client ID should be in
-    // So we'll just assume it's right if it's a non-empty string.
+            // Output the settings for the Ads. - google_color_border is set to
+            // the same as google_color_bg here and we add our own border around
+            // the ad when we display it.
 
-    if (strlen(trim($google_adsense_clientid)) > 0) {
+            echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+            echo "<!--\n\n";
+            echo "google_ad_client = \"$adsense_client_id\";\n";
+            echo "google_alternate_color = \"$adsense_bg_colour\";\n";
+            echo "google_ad_width = $banner_width\n";
+            echo "google_ad_height = $banner_height\n";
+            echo "google_ad_format = \"$banner_format\";\n";
+            echo "google_ad_channel = \"$adsense_ad_channel\";\n";
+            echo "google_ad_type = \"{$adsense_ad_type}\";\n";
+            echo "google_color_border = \"$adsense_bg_colour\";\n";
+            echo "google_color_bg = \"$adsense_bg_colour\";\n";
+            echo "google_color_link = \"$adsense_link_colour\";\n";
+            echo "google_color_url = \"$adsense_url_colour\";\n";
+            echo "google_color_text = \"$adsense_text_colour\";\n";
+            echo "//-->\n";
+            echo "</script>\n";
 
-        // Get the Ad colours.
-
-        $google_adsense_background_colour = forum_get_global_setting('google_adsense_background_colour', false, 'EEEEEE');
-        $google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour', false, '999999');
-        $google_adsense_url_colour = forum_get_global_setting('google_adsense_url_colour', false, '009900');
-        $google_adsense_link_colour = forum_get_global_setting('google_adsense_border_colour', false, '4490B4');
-
-        // Output the settings for the Ads.
-
-        echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-        echo "<!--\n\n";
-        echo "google_ad_client = \"$google_adsense_clientid\";\n";
-        echo "google_ad_channel = \"$google_adsense_adchannel\";\n";
-        echo "google_ad_type = \"{$google_adsense_adtype_array[$google_adsense_adtype]}\";\n";
-        echo "google_color_border = \"$google_adsense_background_colour\";\n";
-        echo "google_color_bg = \"$google_adsense_background_colour\";\n";
-        echo "google_color_link = \"$google_adsense_link_colour\";\n";
-        echo "google_color_url = \"$google_adsense_url_colour\";\n";
-        echo "google_color_text = \"$google_adsense_text_colour\";\n";
-
-        $page_adsense_widths_preg_array = array('admin_menu\.php' => array('234x60_as', 234, 60),
-                                                'display_emoticons\.php' => array('468x60_as', 468, 60),
-                                                'attachments\.php' => array('468x60_as', 468, 60),
-                                                'edit_attachments\.php' => array('468x60_as', 468, 60),
-                                                'email\.php' => array('468x60_as', 468, 60),
-                                                'folder_options\.php' => array('468x60_as', 468, 60),
-                                                'mods_list\.php' => array('468x60_as', 468, 60),
-                                                'pm_folders\.php' => array('234x60_as', 234, 60),
-                                                'poll_results\.php' => array('468x60_as', 468, 60),
-                                                'search_popup\.php' => array('468x60_as', 468, 60),
-                                                'search\.php.+show_stop_words=true' => array('468x60_as', 468, 60),
-                                                'start_left\.php' => array('234x60_as', 234, 60),
-                                                'thread_list\.php' => array('234x60_as', 234, 60),
-                                                'user_profile\.php' => array('468x60_as', 468, 60));
-
-        $page_adsense_widths_preg = implode(")|^(", array_keys($page_adsense_widths_preg_array));
-
-        if (preg_match("/^($page_adsense_widths_preg)/u", basename($_SERVER['PHP_SELF']), $adsense_width_match) > 0) {
-
-            $adsense_width_match = (isset($adsense_width_match[0])) ? preg_quote($adsense_width_match[0], '/') : '';
-
-            if (isset($page_adsense_widths_preg_array[$adsense_width_match])) {
-
-                $banner_width  = $page_adsense_widths_preg_array[$adsense_width_match][1];
-                $banner_height = $page_adsense_widths_preg_array[$adsense_width_match][2];
-
-                echo "google_ad_format = \"{$page_adsense_widths_preg_array[$adsense_width_match][0]}\";\n";
-                echo "google_ad_width = {$page_adsense_widths_preg_array[$adsense_width_match][1]};\n";
-                echo "google_ad_height = {$page_adsense_widths_preg_array[$adsense_width_match][2]};\n\n";
-
-            }else {
-
-                echo "google_ad_format = \"468x60_as\";\n";
-                echo "google_ad_width = 468;\n";
-                echo "google_ad_height = 60;\n\n";
-            }
-
-        }else {
-
-            echo "google_ad_format = \"468x60_as\";\n";
-            echo "google_ad_width = 468;\n";
-            echo "google_ad_height = 60;\n\n";
+            return true;
         }
-
-        echo "//-->\n";
-        echo "</script>\n";
     }
 
-    return true;
+    return false;
 }
 
 function html_js_safe_str($str)

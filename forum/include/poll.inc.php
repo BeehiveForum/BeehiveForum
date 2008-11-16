@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.245 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.246 2008-11-16 01:54:15 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -82,7 +82,7 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, ";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, ";
     $sql.= "POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) ";
     $sql.= "VALUES ('$tid', $poll_closes, '$poll_change_vote', '$poll_type', '$poll_show_results', ";
     $sql.= "'$poll_vote_type', '$poll_option_type', '$poll_question', '$poll_allow_guests')";
@@ -96,7 +96,7 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
             $poll_option_name  = db_escape_string($poll_option);
             $poll_option_group = (isset($poll_answer_groups[$key]) && is_numeric($poll_answer_groups[$key])) ? $poll_answer_groups[$key] : 1;
 
-            $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$poll_option_name', '$poll_option_group')";
 
             if (!db_query($sql, $db_poll_create)) return false;
@@ -130,19 +130,19 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET TITLE = '$thread_title' WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_poll_edit)) return false;
 
     if ($poll_delete_votes) {
 
-        $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
+        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_POLL_VOTES` WHERE TID = '$tid'";
         if (!db_query($sql, $db_poll_edit)) return false;
     }
 
     if (is_numeric($poll_closes)) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$poll_change_vote', ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET CHANGEVOTE = '$poll_change_vote', ";
         $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$poll_show_results', ";
         $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$poll_option_type', ";
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests', ";
@@ -152,7 +152,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
 
     }else {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$poll_change_vote', ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET CHANGEVOTE = '$poll_change_vote', ";
         $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$poll_show_results', ";
         $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$poll_option_type', ";
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests' ";
@@ -161,7 +161,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
         if (!db_query($sql, $db_poll_edit)) return false;
     }
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}POLL_VOTES` WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_poll_edit)) return false;
 
@@ -172,7 +172,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
             $option_name  = db_escape_string($poll_option);
             $option_group = (isset($poll_answer_groups[$key]) && is_numeric($poll_answer_groups[$key])) ? $poll_answer_groups[$key] : 1;
 
-            $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
             if (!db_query($sql, $db_poll_edit)) return false;
@@ -202,11 +202,11 @@ function poll_get($tid)
     $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
     $sql.= "POLL.ALLOWGUESTS, POST.EDITED_BY, POST.APPROVED_BY, POST.IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}POLL` POLL ON (POST.TID = POLL.TID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
@@ -275,8 +275,8 @@ function poll_get_votes($tid)
 
     $sql = "SELECT POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
     $sql.= "POLL_VOTES.GROUP_ID, COUNT(USER_POLL_VOTES.UID) AS VOTE_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}POLL_VOTES POLL_VOTES LEFT JOIN ";
-    $sql.= "{$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES LEFT JOIN ";
+    $sql.= "`{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
     $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
     $sql.= "WHERE POLL_VOTES.TID = '$tid' GROUP BY POLL_VOTES.OPTION_ID";
@@ -321,14 +321,14 @@ function poll_get_total_votes($tid, &$total_votes, &$guest_votes)
     if (!is_numeric($tid)) return 0;
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(DISTINCT UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT COUNT(DISTINCT UID) FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID > 0";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
 
     list($total_votes) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT COUNT(UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT COUNT(UID) FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID = 0";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
@@ -358,12 +358,12 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
         $sql.= "USER_POLL_VOTES.UID, USER_POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME ";
-        $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
+        $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ";
         $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID ";
         $sql.= "AND POLL_VOTES.TID = USER_POLL_VOTES.TID) ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER_POLL_VOTES.TID = '$tid'";
 
@@ -375,12 +375,12 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
         $sql.= "USER_POLL_VOTES.UID, GROUP_CONCAT(POLL_VOTES.OPTION_NAME SEPARATOR ', ') AS OPTION_NAMES ";
-        $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
+        $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}POLL` POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ";
         $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID AND POLL_VOTES.TID = POLL.TID) ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '0') ";
         $sql.= "WHERE USER_POLL_VOTES.TID = '$tid' AND POLL.VOTETYPE = 1 ";
         $sql.= "GROUP BY USER_POLL_VOTES.UID ";
@@ -442,7 +442,7 @@ function poll_get_user_vote($tid)
     if (user_is_guest()) return false;
 
     $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_get_user_vote)) return false;
@@ -1637,7 +1637,7 @@ function poll_get_table_votes($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UID, OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT UID, OPTION_ID FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid'";
 
     if (!$result_votes = db_query($sql, $db_poll_get_votes)) return false;
@@ -2102,7 +2102,7 @@ function poll_close($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = 1";
+    $sql = "SELECT FROM_UID FROM `{$table_data['PREFIX']}POST` WHERE TID = '$tid' AND PID = 1";
 
     if (!$result = db_query($sql, $db_poll_close)) return false;
 
@@ -2114,7 +2114,7 @@ function poll_close($tid)
 
             $timestamp = mktime();
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET ";
+            $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET ";
             $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = '$tid'";
 
             if (!db_query($sql, $db_poll_close)) return false;
@@ -2132,7 +2132,7 @@ function poll_is_closed($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = '$tid'";
+    $sql = "SELECT CLOSES FROM `{$table_data['PREFIX']}POLL` WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_is_closed)) return false;
 
@@ -2164,7 +2164,7 @@ function poll_vote($tid, $vote_array)
 
             if (is_numeric($user_vote)) {
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
+                $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES` (TID, UID, OPTION_ID, TSTAMP) ";
                 $sql.= "VALUES ('$tid', '$uid', '$user_vote', NOW())";
 
                 if (!db_query($sql, $db_poll_vote)) return false;
@@ -2185,7 +2185,7 @@ function poll_delete_vote($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
 
     if (!db_query($sql, $db_poll_delete_vote)) return false;
@@ -2201,7 +2201,7 @@ function thread_is_poll($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = '$tid'";
+    $sql = "SELECT CLOSES FROM `{$table_data['PREFIX']}POLL` WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_is_poll)) return false;
 
@@ -2224,8 +2224,8 @@ function poll_check_tabular_votes($tid, $votes_array)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT POLL.POLLTYPE, MAX(POLL_VOTES.GROUP_ID) AS GROUP_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}POLL POLL ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}POLL` POLL ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ";
     $sql.= "ON (POLL_VOTES.TID = POLL.TID) WHERE POLL.TID = '$tid' GROUP BY POLL.TID";
 
     if (!$result = db_query($sql, $db_poll_check_tabular_votes)) return false;

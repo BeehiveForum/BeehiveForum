@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.370 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.371 2008-11-16 01:54:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -212,7 +212,7 @@ function user_increment_post_count($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "SET POST_COUNT = POST_COUNT + 1 WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_increment_post_count)) return false;
@@ -229,7 +229,7 @@ function user_update_post_count($uid, $post_count)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_update_post_count)) return false;
@@ -245,7 +245,7 @@ function user_reset_post_count($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "SET POST_COUNT = NULL WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_reset_post_count)) return false;
@@ -358,7 +358,7 @@ function user_get($uid)
 
         $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
         $sql.= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
         $sql.= "WHERE USER.UID = '$uid'";
     }
@@ -529,7 +529,7 @@ function user_get_sig($uid, &$content, &$html)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = '$uid'";
+    $sql = "SELECT CONTENT, HTML FROM `{$table_data['PREFIX']}USER_SIG` WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_sig)) return false;
 
@@ -613,7 +613,7 @@ function user_get_prefs($uid)
         $sql.= "START_PAGE, LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, ";
         $sql.= "USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ";
         $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, ENABLE_WIKI_WORDS, USE_OVERFLOW_RESIZE, ";
-        $sql.= "REPLY_QUICK FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+        $sql.= "REPLY_QUICK FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
@@ -792,7 +792,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     if ((sizeof($forum_prefs_array) > 0) && ($table_data = get_table_prefix())) {
 
-        $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+        $sql = "SELECT UID FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
 
         if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
 
@@ -808,7 +808,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 $update_prefs_sql = implode(", ", $update_prefs_array);
 
-                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_PREFS SET $update_prefs_sql WHERE UID = '$uid'";
+                $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
 
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
@@ -826,7 +826,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $update_prefs_columns_sql = implode(", ", array_keys($update_prefs_array));
                 $update_prefs_values_sql  = implode("', '", array_values($update_prefs_array));
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, $update_prefs_columns_sql) VALUES ('$uid', '$update_prefs_values_sql') ";
+                $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PREFS` (UID, $update_prefs_columns_sql) VALUES ('$uid', '$update_prefs_values_sql') ";
 
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
@@ -888,7 +888,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         if (!$table_data = get_table_prefix()) return false;
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_SIG` (UID, CONTENT, HTML) ";
         $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY UPDATE ";
         $sql.= "CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 
@@ -942,9 +942,9 @@ function user_get_forthcoming_birthdays()
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS.DOB, ";
     $sql.= "DAYOFMONTH(USER_PREFS.DOB) AS BDAY, MONTH(USER_PREFS.DOB) AS BMONTH ";
     $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_GLOBAL ";
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY > 1 ";
     $sql.= "OR USER_PREFS_GLOBAL.DOB_DISPLAY > 1) ";
@@ -1007,7 +1007,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "FROM USER USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
@@ -1063,7 +1063,7 @@ function user_get_ip_addresses($uid)
 
     // Fetch the last 20 IP addresses from the POST table
 
-    $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
+    $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_user_get_ip_addresses)) return false;
@@ -1097,9 +1097,9 @@ function user_get_friends($uid)
     $sess_uid = bh_session_get_value('UID');
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "USER_PEER.RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
     $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
@@ -1146,7 +1146,7 @@ function user_get_relationships($uid, $offset = 0)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
     $sql.= "LIMIT $offset, 10";
@@ -1198,7 +1198,7 @@ function user_get_peer_relationship($uid, $peer_uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
+    $sql = "SELECT RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     if (!$result = db_query($sql, $db_user_get_peer_relationship)) return false;
@@ -1221,7 +1221,7 @@ function user_get_peer_nickname($uid, $peer_uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PEER_NICKNAME FROM {$table_data['PREFIX']}USER_PEER ";
+    $sql = "SELECT PEER_NICKNAME FROM `{$table_data['PREFIX']}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     if (!$result = db_query($sql, $db_user_get_peer_nickname)) return false;
@@ -1258,7 +1258,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "FROM USER USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
@@ -1316,7 +1316,7 @@ function user_get_word_filter_list($offset)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, ";
     $sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED ";
-    $sql.= "FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
@@ -1360,7 +1360,7 @@ function user_get_word_filter($filter_id)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "FILTER_ENABLED FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE FID = '$filter_id' AND UID = '$uid' ";
     $sql.= "ORDER BY FID";
 
@@ -1384,7 +1384,7 @@ function user_get_word_filter_count()
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(FID) AS FILTER_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_word_filter_count)) return false;
@@ -1402,7 +1402,7 @@ function user_clear_word_filter()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = '$uid'";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_clear_word_filter)) return false;
 
@@ -1424,7 +1424,7 @@ function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
     $sql.= "VALUES ('$uid', '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
@@ -1450,7 +1450,7 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}WORD_FILTER SET FILTER_NAME = '$filter_name', ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
@@ -1470,7 +1470,7 @@ function user_delete_word_filter($filter_id)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
 
     if (!db_query($sql, $db_user_delete_word_filter)) return false;

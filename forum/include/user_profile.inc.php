@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.98 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.99 2008-11-16 01:54:16 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -63,7 +63,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     $entry = db_escape_string($entry);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY, PRIVACY) ";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PROFILE` (UID, PIID, ENTRY, PRIVACY) ";
     $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
     $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
 
@@ -102,15 +102,15 @@ function user_get_profile($uid)
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $sql.= "USER_PEER.RELATIONSHIP, SESSIONS.HASH FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = USER.UID) ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
     $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)) ";
@@ -313,10 +313,10 @@ function user_get_profile_entries($uid)
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, ";
     $sql.= "PROFILE_ITEM.TYPE, PROFILE_ITEM.OPTIONS, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
-    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "FROM `{$table_data['PREFIX']}PROFILE_SECTION` PROFILE_SECTION ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}PROFILE_ITEM` PROFILE_ITEM ";
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PROFILE` USER_PROFILE ";
     $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid' ";
     $sql.= "AND (USER_PROFILE.PRIVACY = 0 OR USER_PROFILE.UID = '$session_uid' ";
     $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)))) ";
@@ -356,7 +356,7 @@ function user_get_profile_image($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PIC_URL FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+    $sql = "SELECT PIC_URL FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_profile_image)) return false;
 
@@ -380,7 +380,7 @@ function user_get_post_count($uid)
 
     if (!$db_user_get_post_count = db_connect()) return false;
 
-    $sql = "SELECT POST_COUNT FROM {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "SELECT POST_COUNT FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid' AND POST_COUNT IS NOT NULL";
 
     if (!$result = db_query($sql, $db_user_get_post_count)) return false;
@@ -391,8 +391,8 @@ function user_get_post_count($uid)
         return $post_count;
     }
 
-    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK (UID, POST_COUNT) ";
-    $sql.= "SELECT '$uid', COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}USER_TRACK` (UID, POST_COUNT) ";
+    $sql.= "SELECT '$uid', COUNT(POST.PID) AS POST_COUNT FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE POST_COUNT = VALUES(POST_COUNT)";
 
     if (!$result = db_query($sql, $db_user_get_post_count)) return false;

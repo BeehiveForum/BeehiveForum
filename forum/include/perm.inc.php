@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.140 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.141 2008-11-16 01:54:15 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -195,7 +195,7 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
     $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
@@ -679,7 +679,7 @@ function perm_group_get_folders($gid)
 
         $sql = "SELECT FOLDER.FID, FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS, ";
         $sql.= "COUNT(GROUP_PERMS.PERM) AS GROUP_PERM_COUNT, BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-        $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
         $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
         $sql.= "AND GROUP_PERMS.GID = '$gid' AND GROUP_PERMS.FORUM = '$forum_fid') ";
         $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
@@ -884,7 +884,7 @@ function perm_user_get_folders($uid)
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";

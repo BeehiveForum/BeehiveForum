@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.42 2008-10-26 16:56:12 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.43 2008-11-16 01:57:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -34,6 +34,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
+}
+
+if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
 }
 
 include_once(BH_INCLUDE_PATH. "compat.inc.php");

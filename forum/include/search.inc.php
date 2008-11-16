@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.220 2008-11-14 21:45:26 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.221 2008-11-16 01:54:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,7 +85,7 @@ function search_execute($search_arguments, &$error)
 
     // Peer portion of the query for removing rows from ignored users - the same for all searches
 
-    $peer_join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $peer_join_sql = "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $peer_join_sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
 
     $peer_where_sql = "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
@@ -139,11 +139,11 @@ function search_execute($search_arguments, &$error)
 
         // FROM query uses POST table if we're not using keyword searches.
 
-        $from_sql = "FROM {$table_data['PREFIX']}POST POST ";
+        $from_sql = "FROM `{$table_data['PREFIX']}POST` POST ";
 
         // Join to the THREAD table for the TID
 
-        $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+        $join_sql = "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
 
         // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
 
@@ -187,10 +187,10 @@ function search_execute($search_arguments, &$error)
 
         if ($filtered_keyword_count > 0 && $filtered_keyword_count == $unfiltered_keyword_count) {
 
-            $from_sql = "FROM {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
+            $from_sql = "FROM `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
 
-            $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
-            $join_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
+            $join_sql = "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
+            $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
 
             $having_sql = "HAVING RELEVANCE > 0.2";
 
@@ -449,7 +449,7 @@ function search_save_keywords($keywords_array)
 
     $keywords = db_escape_string(implode("\x00", $keywords_array));
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";
     $sql.= "WHERE UID = '$uid'";
 
@@ -467,7 +467,7 @@ function search_get_keywords()
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT LAST_SEARCH_KEYWORDS FROM ";
-    $sql.= "{$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "`{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_search_get_keywords)) return false;
@@ -510,9 +510,9 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
     $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
     $sql.= "LEFT JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
     $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
 
@@ -752,7 +752,7 @@ function folder_search_dropdown($selected_folder)
 
     $access_allowed = USER_PERM_POST_READ;
 
-    $sql = "SELECT FID, TITLE FROM {$table_data['PREFIX']}FOLDER ";
+    $sql = "SELECT FID, TITLE FROM `{$table_data['PREFIX']}FOLDER` ";
     $sql.= "ORDER BY FID ";
 
     if (!$result = db_query($sql, $db_folder_search_dropdown)) return false;
@@ -800,7 +800,7 @@ function check_search_frequency()
     if ($search_min_frequency == 0) return true;
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) FROM {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "UNIX_TIMESTAMP(NOW()) FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_check_search_frequency)) return false;
@@ -811,7 +811,7 @@ function check_search_frequency()
 
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+            $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
             $sql.= "SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_search_frequency)) return false;
@@ -821,7 +821,7 @@ function check_search_frequency()
 
     }else{
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
         $sql.= "(UID, LAST_SEARCH) VALUES ('$uid', NOW())";
 
         if (!$result = db_query($sql, $db_check_search_frequency)) return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.23 2008-10-26 21:03:52 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.24 2008-11-16 01:54:16 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -116,7 +116,7 @@ function sitemap_forum_get_threads($forum_fid)
     if (($table_data = forum_get_table_prefix($forum_fid))) {
 
         $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD LEFT JOIN GROUP_PERMS ";
+        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD LEFT JOIN GROUP_PERMS ";
         $sql.= "ON (GROUP_PERMS.FID = THREAD.FID) ";
         $sql.= "WHERE GROUP_PERMS.PERM & $user_perm_guest_access > 0 ";
         $sql.= "AND GROUP_PERMS.GID = '0' ORDER BY THREAD.TID";

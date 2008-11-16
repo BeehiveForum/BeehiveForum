@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.46 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.47 2008-11-16 01:54:16 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -58,7 +58,7 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 
     if ($relationship == USER_NORMAL && ($nickname == "" || $nickname == $previous_nickname)) {
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}USER_PEER ";
+        $sql = "DELETE FROM `{$table_data['PREFIX']}USER_PEER` ";
         $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
         if (!db_query($sql, $db_user_rel_update)) return false;
@@ -67,7 +67,7 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 
         $nickname = db_escape_string($nickname);
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PEER` ";
         $sql.= "(UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
         $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', '$nickname') ";
         $sql.= "ON DUPLICATE KEY UPDATE RELATIONSHIP = VALUES(RELATIONSHIP), ";
@@ -102,7 +102,7 @@ function user_get_relationship($uid, $peer_uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
+    $sql = "SELECT RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     if (!$result = db_query($sql, $db_user_get_relationship)) return false;

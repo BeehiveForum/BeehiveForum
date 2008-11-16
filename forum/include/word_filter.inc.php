@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.59 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.60 2008-11-16 01:54:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,7 +60,7 @@ function word_filter_get($uid, &$word_filter_array)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FID, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE ";
-    $sql.= "FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' AND FILTER_ENABLED = 1 ";
     $sql.= "ORDER BY FID ";
 

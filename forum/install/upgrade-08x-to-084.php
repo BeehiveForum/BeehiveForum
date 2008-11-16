@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.17 2008-10-23 19:20:49 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.18 2008-11-16 01:54:16 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -56,7 +56,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 if (db_num_rows($result) > 0) {
 
-    $sql = "SELECT FID, CONCAT('`', DATABASE_NAME, '`.', WEBTAG) AS PREFIX FROM FORUMS";
+    $sql = "SELECT FID, CONCAT(DATABASE_NAME, '`.`', WEBTAG) AS PREFIX FROM FORUMS";
 
     if (($result = @db_query($sql, $db_install))) {
 
@@ -80,7 +80,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
     // Removed unused entries from Admin Log.
 
-    $sql = "DELETE FROM {$table_prefix}_ADMIN_LOG WHERE ACTION IN (6, 61, 68, 69)";
+    $sql = "DELETE FROM `{$table_prefix}_ADMIN_LOG` WHERE ACTION IN (6, 61, 68, 69)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -92,7 +92,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
         // Better support for deleted threads.
 
-        $sql = "ALTER TABLE {$table_prefix}_THREAD ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
+        $sql = "ALTER TABLE `{$table_prefix}_THREAD` ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
 
         if (!$result = @db_query($sql, $db_install)) {
 
@@ -105,7 +105,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
         // Better support for unread cut-off.
 
-        $sql = "ALTER TABLE {$table_prefix}_THREAD ADD UNREAD_PID MEDIUMINT(8) NULL AFTER LENGTH";
+        $sql = "ALTER TABLE `{$table_prefix}_THREAD` ADD UNREAD_PID MEDIUMINT(8) NULL AFTER LENGTH";
 
         if (!$result = @db_query($sql, $db_install)) {
 
@@ -116,7 +116,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
     // Update existing deleted threads
 
-    $sql = "UPDATE {$table_prefix}_THREAD SET DELETED = 'Y' WHERE LENGTH = 0";
+    $sql = "UPDATE `{$table_prefix}_THREAD` SET DELETED = 'Y' WHERE LENGTH = 0";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -130,9 +130,9 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
         // Make sure the data is up to date - Also fixes the threads that are
         // inaccessible to due to bug in user delete code.
 
-        $sql = "INSERT INTO {$table_prefix}_THREAD (TID, UNREAD_PID) ";
-        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$table_prefix}_THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) ";
+        $sql = "INSERT INTO `{$table_prefix}_THREAD` (TID, UNREAD_PID) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM `{$table_prefix}_THREAD` THREAD ";
+        $sql.= "LEFT JOIN `{$table_prefix}_POST` POST ON (POST.TID = THREAD.TID) ";
         $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
@@ -146,9 +146,9 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
         // Fix the threads which are inaccessible due to a bug in the delete user code.
 
-        $sql = "INSERT INTO {$table_prefix}_THREAD (TID, LENGTH) ";
-        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$table_prefix}_THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) ";
+        $sql = "INSERT INTO `{$table_prefix}_THREAD` (TID, LENGTH) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM `{$table_prefix}_THREAD` THREAD ";
+        $sql.= "LEFT JOIN `{$table_prefix}_POST` POST ON (POST.TID = THREAD.TID) ";
         $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH)";
 
         if (!$result = @db_query($sql, $db_install)) {
@@ -160,8 +160,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
     // Reset the unread data so that none of the data has LAST_READ > LENGTH
 
-    $sql = "UPDATE {$table_prefix}_USER_THREAD USER_THREAD ";
-    $sql.= "LEFT JOIN {$table_prefix}_THREAD THREAD ON (THREAD.TID = USER_THREAD.TID) ";
+    $sql = "UPDATE `{$table_prefix}_USER_THREAD` USER_THREAD ";
+    $sql.= "LEFT JOIN `{$table_prefix}_THREAD` THREAD ON (THREAD.TID = USER_THREAD.TID) ";
     $sql.= "SET USER_THREAD.LAST_READ = THREAD.LENGTH WHERE USER_THREAD.LAST_READ > THREAD.LENGTH";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -173,7 +173,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
     // Delete any remaining 0 length threads from the THREADS table so they
     // don't appear in the thread list.
 
-    $sql = "DELETE FROM {$table_prefix}_THREAD WHERE LENGTH = 0";
+    $sql = "DELETE FROM `{$table_prefix}_THREAD` WHERE LENGTH = 0";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -185,7 +185,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
         // Add field for reply_quick
 
-        $sql = "ALTER TABLE {$table_prefix}_USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+        $sql = "ALTER TABLE `{$table_prefix}_USER_PREFS` ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
 
         if (!$result = @db_query($sql, $db_install)) {
 
@@ -198,7 +198,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
         // New User preference for thread list folder order
 
-        $sql = "ALTER TABLE {$table_prefix}_USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
+        $sql = "ALTER TABLE `{$table_prefix}_USER_PREFS` ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
 
         if (!$result = @db_query($sql, $db_install)) {
 
@@ -209,12 +209,12 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
     // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
 
-    $sql = "INSERT INTO {$table_prefix}_THREAD (TID, FID, BY_UID, TITLE, LENGTH, ";
+    $sql = "INSERT INTO `{$table_prefix}_THREAD` (TID, FID, BY_UID, TITLE, LENGTH, ";
     $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
     $sql.= "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, THREAD.LENGTH, ";
     $sql.= "THREAD.POLL_FLAG, THREAD.CREATED, MAX(POST.CREATED), THREAD.CLOSED, THREAD.STICKY, ";
-    $sql.= "THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK FROM {$table_prefix}_THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_prefix}_POST POST ON (POST.TID = THREAD.TID) GROUP BY THREAD.TID ";
+    $sql.= "THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK FROM `{$table_prefix}_THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_prefix}_POST` POST ON (POST.TID = THREAD.TID) GROUP BY THREAD.TID ";
     $sql.= "ON DUPLICATE KEY UPDATE MODIFIED = VALUES(MODIFIED)";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -223,7 +223,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
         return;
     }
 
-    $sql = "UPDATE {$table_prefix}_POST POST, {$table_prefix}_POST_CONTENT POST_CONTENT ";
+    $sql = "UPDATE `{$table_prefix}_POST` POST, `{$table_prefix}_POST_CONTENT` POST_CONTENT ";
     $sql.= "SET POST.APPROVED = NOW(), POST.APPROVED_BY = POST.FROM_UID ";
     $sql.= "WHERE POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID ";
     $sql.= "AND POST_CONTENT.CONTENT IS NULL ";
@@ -238,7 +238,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_prefix) {
 
         // New User preference for thread list folder order
 
-        $sql = "ALTER TABLE {$table_prefix}_BANNED ADD EXPIRES DATETIME NOT NULL";
+        $sql = "ALTER TABLE `{$table_prefix}_BANNED` ADD EXPIRES DATETIME NOT NULL";
 
         if (!$result = @db_query($sql, $db_install)) {
 

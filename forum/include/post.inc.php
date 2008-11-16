@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.207 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.208 2008-11-16 01:54:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,13 +75,13 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), 0, '$ipaddress')";
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) ";
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
@@ -93,7 +93,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
         // Insert the post content. This query can take some time
         // because of the FULLTEXT indexing used for seatching
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
         if (db_query($sql, $db_post_create)) {
@@ -130,7 +130,7 @@ function post_approve($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_approve)) return false;
@@ -174,7 +174,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}THREAD " ;
+    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` " ;
     $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, CREATED, MODIFIED, CLOSED) ";
     $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', NOW(), NOW(), $closed)";
 
@@ -198,16 +198,16 @@ function post_update_thread_length($tid, $length)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($length)) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
     $sql.= "SET LENGTH = '$length', MODIFIED = NOW() WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_post_update_thread_length)) return false;
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}THREAD (TID, UNREAD_PID) ";
-        $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, UNREAD_PID) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
         $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
         $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
@@ -236,7 +236,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     if (isset($default_uid) && $default_uid != 0) {
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-        $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
@@ -265,7 +265,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
@@ -309,7 +309,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
     if (isset($default_uid) && $default_uid != 0) {
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-        $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
@@ -336,7 +336,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
@@ -380,7 +380,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     if (isset($default_uid) && $default_uid != 0) {
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-        $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
@@ -416,9 +416,9 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     }
 
     $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
     $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
@@ -452,7 +452,7 @@ function get_user_posts($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid'";
+    $sql = "SELECT TID, PID FROM `{$table_data['PREFIX']}POST` WHERE FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_get_user_posts)) return false;
 
@@ -483,7 +483,7 @@ function check_ddkey($ddkey)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UNIX_TIMESTAMP(DDKEY) FROM ";
-    $sql.= "{$table_data['PREFIX']}USER_TRACK WHERE UID = '$uid'";
+    $sql.= "`{$table_data['PREFIX']}USER_TRACK` WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_check_ddkey)) return false;
 
@@ -491,7 +491,7 @@ function check_ddkey($ddkey)
 
         list($ddkey_check) = db_fetch_array($result);
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
         $sql.= "SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
@@ -500,7 +500,7 @@ function check_ddkey($ddkey)
 
         $ddkey_check = "";
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK (UID, DDKEY) ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', FROM_UNIXTIME($ddkey))";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
@@ -522,7 +522,7 @@ function check_post_frequency()
     if ($minimum_post_frequency == 0) return true;
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) + $minimum_post_frequency, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) FROM {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "UNIX_TIMESTAMP(NOW()) FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_check_post_frequency)) return false;
@@ -533,7 +533,7 @@ function check_post_frequency()
 
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
+            $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
             $sql.= "SET LAST_POST = NOW() WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_post_frequency)) return false;
@@ -543,7 +543,7 @@ function check_post_frequency()
 
     }else{
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
         $sql.= "(UID, LAST_POST) VALUES ('$uid', NOW())";
 
         if (!$result = db_query($sql, $db_check_post_frequency)) return false;

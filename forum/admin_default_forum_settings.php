@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.136 2008-11-03 21:26:34 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.137 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -68,10 +68,6 @@ include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
@@ -147,19 +143,23 @@ $sitemap_freq_periods = array(DAY_IN_SECONDS  => $lang['onceaday'],
 
 // Array of valid Google Adsense ad user account types
 
-$google_adsense_user_type_array = array(GOOGLE_ADSENSE_ALL_USERS   => $lang['allusers'],
-                                        GOOGLE_ADSENSE_GUESTS_ONLY => $lang['guestsonly']);
+$google_adsense_user_type_array = array(ADSENSE_DISPLAY_NONE, ADSENSE_DISPLAY_ALL_USERS, ADSENSE_DISPLAY_GUESTS);
 
 // Array of valid Google Adsense ad page types
 
-$google_adsense_page_type_array = array(GOOGLE_ADSENSE_ALL_PAGES => $lang['allpages'],
-                                        GOOGLE_ADSENSE_MESSAGES_ONLY => $lang['messagesonly']);
+$google_adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['allpages'],
+                                        ADSENSE_DISPLAY_TOP_OF_MESSAGES  => $lang['topofmessagesframe'],
+                                        ADSENSE_DISPLAY_AFTER_FIRST_MSG  => $lang['afterfirstmessage'],
+                                        ADSENSE_DISPLAY_AFTER_THIRD_MSG  => $lang['afterthirdmessage'],
+                                        ADSENSE_DISPLAY_AFTER_FIFTH_MSG  => $lang['afterfifthmessage'],
+                                        ADSENSE_DISPLAY_AFTER_TENTH_MSG  => $lang['aftertenthmessage'],
+                                        ADSENSE_DISPLAY_AFTER_RANDOM_MSG => $lang['afterrandommessage']);
 
 // Array of valid Google Adsense ad types.
 
-$google_adsense_ad_type_array = array(GOOGLE_ADSENSE_ACCOUNT_DEFAULT => $lang['usemydefaultaccountsetting'],
-                                      GOOGLE_ADSENSE_TEXT_ONLY       => $lang['textonlyads'],
-                                      GOOGLE_ADSENSE_TEXT_AND_IMAGES => $lang['textandimageads']);
+$google_adsense_ad_type_array = array(ADSENSE_ACCOUNT_DEFAULT => $lang['usemydefaultaccountsetting'],
+                                      ADSENSE_TEXT_ONLY       => $lang['textonlyads'],
+                                      ADSENSE_TEXT_AND_IMAGES => $lang['textandimageads']);
 
 // Submit code.
 
@@ -283,22 +283,16 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['google_analytics_code'] = "";
     }
 
-    if (isset($_POST['google_adsense_enabled']) && $_POST['google_adsense_enabled'] == "Y") {
-        $new_forum_settings['google_adsense_enabled'] = "Y";
+    if (isset($_POST['google_adsense_display']) && in_array($_POST['google_adsense_display'], $google_adsense_user_type_array)) {
+        $new_forum_settings['google_adsense_display'] = $_POST['google_adsense_display'];
     }else {
-        $new_forum_settings['google_adsense_enabled'] = "N";
-    }
-
-    if (isset($_POST['google_adsense_display_users']) && in_array($_POST['google_adsense_display_users'], array_keys($google_adsense_user_type_array))) {
-        $new_forum_settings['google_adsense_display_users'] = $_POST['google_adsense_display_users'];
-    }else {
-        $new_forum_settings['google_adsense_display_users'] = GOOGLE_ADSENSE_GUESTS_ONLY;
+        $new_forum_settings['google_adsense_display'] = ADSENSE_DISPLAY_NONE;
     }
 
     if (isset($_POST['google_adsense_display_pages']) && in_array($_POST['google_adsense_display_pages'], array_keys($google_adsense_page_type_array))) {
         $new_forum_settings['google_adsense_display_pages'] = $_POST['google_adsense_display_pages'];
     }else {
-        $new_forum_settings['google_adsense_display_pages'] = GOOGLE_ADSENSE_MESSAGES_ONLY;
+        $new_forum_settings['google_adsense_display_pages'] = ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
     }
 
     if (isset($_POST['google_adsense_clientid']) && strlen(trim(stripslashes_array($_POST['google_adsense_clientid']))) > 0) {
@@ -316,7 +310,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     if (isset($_POST['google_adsense_adtype']) && in_array($_POST['google_adsense_adtype'], array_keys($google_adsense_ad_type_array))) {
         $new_forum_settings['google_adsense_adtype'] = $_POST['google_adsense_adtype'];
     }else {
-        $new_forum_settings['google_adsense_adtype'] = GOOGLE_ADSENSE_MESSAGES_ONLY;
+        $new_forum_settings['google_adsense_adtype'] = ADSENSE_ACCOUNT_DEFAULT;
     }
 
     if (isset($_POST['google_adsense_border_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', stripslashes_array($_POST['google_adsense_border_colour'])) > 0) {
@@ -974,24 +968,16 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['enablegoogleadsenseadverts']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("google_adsense_enabled", "Y", $lang['yes'], (isset($forum_global_settings['google_adsense_enabled']) && $forum_global_settings['google_adsense_enabled'] == "Y")), "&nbsp;", form_radio("google_adsense_enabled", "N", $lang['no'], (isset($forum_global_settings['google_adsense_enabled']) && $forum_global_settings['google_adsense_enabled'] == "N") || !isset($forum_global_settings['google_adsense_enabled'])), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['displaygoogleadsenseadstousers']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("google_adsense_display_users", GOOGLE_ADSENSE_ALL_USERS, $lang['allusers'], (isset($forum_global_settings['google_adsense_display_users']) && $forum_global_settings['google_adsense_display_users'] == GOOGLE_ADSENSE_ALL_USERS)), "&nbsp;", form_radio("google_adsense_display_users", GOOGLE_ADSENSE_GUESTS_ONLY, $lang['guestsonly'], (isset($forum_global_settings['google_adsense_display_users']) && $forum_global_settings['google_adsense_display_users'] == GOOGLE_ADSENSE_GUESTS_ONLY) || !isset($forum_global_settings['google_adsense_display_users'])), "</td>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['displaygoogleadsenseadstousers']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("google_adsense_display", ADSENSE_DISPLAY_ALL_USERS, $lang['allusers'], (isset($forum_global_settings['google_adsense_display']) && $forum_global_settings['google_adsense_display'] == ADSENSE_DISPLAY_ALL_USERS)), "&nbsp;", form_radio("google_adsense_display", ADSENSE_DISPLAY_GUESTS, $lang['guestsonly'], (isset($forum_global_settings['google_adsense_display']) && $forum_global_settings['google_adsense_display'] == ADSENSE_DISPLAY_GUESTS) || !isset($forum_global_settings['google_adsense_display'])), "&nbsp;", form_radio("google_adsense_display", ADSENSE_DISPLAY_NONE, $lang['disabled'], (isset($forum_global_settings['google_adsense_display']) && $forum_global_settings['google_adsense_display'] == ADSENSE_DISPLAY_NONE) || !isset($forum_global_settings['google_adsense_display'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['displaygoogleadsenseadsonpages']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("google_adsense_display_pages", GOOGLE_ADSENSE_ALL_PAGES, $lang['allpages'], (isset($forum_global_settings['google_adsense_display_pages']) && $forum_global_settings['google_adsense_display_pages'] == GOOGLE_ADSENSE_ALL_PAGES)), "&nbsp;", form_radio("google_adsense_display_pages", GOOGLE_ADSENSE_MESSAGES_ONLY, $lang['messagesonly'], (isset($forum_global_settings['google_adsense_display_pages']) && $forum_global_settings['google_adsense_display_pages'] == GOOGLE_ADSENSE_MESSAGES_ONLY) || !isset($forum_global_settings['google_adsense_display_pages'])), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('google_adsense_display_pages', $google_adsense_page_type_array, (isset($forum_global_settings['google_adsense_display_pages']) && in_array($forum_global_settings['google_adsense_display_pages'], array_keys($google_adsense_page_type_array)) ? $forum_global_settings['google_adsense_display_pages'] : ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"230\" nowrap=\"nowrap\">{$lang['googleadsenseclientid']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("google_adsense_clientid", (isset($forum_global_settings['google_adsense_clientid']) ? htmlentities_array($forum_global_settings['google_adsense_clientid']) : ''), 21, 40), "&nbsp;</td>\n";
@@ -1002,7 +988,7 @@ echo "                        <td align=\"left\">", form_input_text("google_adse
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadtype']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array('google_adsense_adtype', $google_adsense_ad_type_array, (isset($forum_global_settings['google_adsense_adtype']) ? $forum_global_settings['google_adsense_adtype'] : GOOGLE_ADSENSE_ACCOUNT_DEFAULT)), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('google_adsense_adtype', $google_adsense_ad_type_array, (isset($forum_global_settings['google_adsense_adtype']) ? $forum_global_settings['google_adsense_adtype'] : ADSENSE_ACCOUNT_DEFAULT)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

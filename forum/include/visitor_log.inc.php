@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.41 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.42 2008-11-16 01:54:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -65,9 +65,9 @@ function visitor_log_get_recent()
         $sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
         $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
         $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
         $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
@@ -90,9 +90,9 @@ function visitor_log_get_recent()
         $sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
         $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
         $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
         $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
@@ -179,8 +179,8 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
     $sql = "SELECT PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
-    $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+    $sql.= "FROM `{$table_data['PREFIX']}PROFILE_ITEM` PROFILE_ITEM ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}PROFILE_SECTION` PROFILE_SECTION ";
     $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID) ";
     $sql.= "WHERE PROFILE_SECTION.PSID IS NOT NULL ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION";
@@ -327,7 +327,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Joins to check the ANON_LOGON setting.
 
-    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
     $join_sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
 
     $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
@@ -342,12 +342,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Join for the POST_COUNT.
 
-    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $join_sql.= "ON (USER_TRACK.UID = USER.UID) ";
 
     // Join for user relationship
 
-    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $join_sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
 
     // Join for the search bot data
@@ -366,9 +366,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
         if (is_numeric($column)) {
 
-            $join_sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM_{$column} ";
+            $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}PROFILE_ITEM` PROFILE_ITEM_{$column} ";
             $join_sql.= "ON (PROFILE_ITEM_{$column}.PIID = '$column') ";
-            $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE_{$column} ";
+            $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PROFILE` USER_PROFILE_{$column} ";
             $join_sql.= "ON (USER_PROFILE_{$column}.PIID = PROFILE_ITEM_{$column}.PIID ";
             $join_sql.= "AND USER_PROFILE_{$column}.UID = USER.UID ";
             $join_sql.= "AND (USER_PROFILE_{$column}.PRIVACY = 0 ";

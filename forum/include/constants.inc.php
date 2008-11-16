@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.157 2008-11-06 18:45:48 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.158 2008-11-16 01:54:15 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -606,14 +606,20 @@ define('USER_ALIAS_REFERER', 3);
 
 // Google AdSense support
 
-define('GOOGLE_ADSENSE_ALL_USERS', 0);
-define('GOOGLE_ADSENSE_GUESTS_ONLY', 1);
+define('ADSENSE_DISPLAY_NONE', 0);
+define('ADSENSE_DISPLAY_GUESTS', 1);
+define('ADSENSE_DISPLAY_ALL_USERS', 2);
 
-define('GOOGLE_ADSENSE_ALL_PAGES', 0);
-define('GOOGLE_ADSENSE_MESSAGES_ONLY', 1);
+define('ADSENSE_DISPLAY_TOP_OF_ALL_PAGES', 0);
+define('ADSENSE_DISPLAY_TOP_OF_MESSAGES',  1);
+define('ADSENSE_DISPLAY_AFTER_FIRST_MSG',  2);
+define('ADSENSE_DISPLAY_AFTER_THIRD_MSG',  3);
+define('ADSENSE_DISPLAY_AFTER_FIFTH_MSG',  4);
+define('ADSENSE_DISPLAY_AFTER_TENTH_MSG',  5);
+define('ADSENSE_DISPLAY_AFTER_RANDOM_MSG', 6);
 
-define('GOOGLE_ADSENSE_ACCOUNT_DEFAULT', 0);
-define('GOOGLE_ADSENSE_TEXT_ONLY', 1);
-define('GOOGLE_ADSENSE_TEXT_AND_IMAGES', 2);
+define('ADSENSE_ACCOUNT_DEFAULT', 0);
+define('ADSENSE_TEXT_ONLY', 1);
+define('ADSENSE_TEXT_AND_IMAGES', 2);
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.360 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.361 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -79,7 +79,7 @@ function get_forum_data()
                 $webtag = db_escape_string($webtag);
 
                 $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
-                $sql.= "CONCAT('`', DATABASE_NAME, '`.', WEBTAG, '_') AS PREFIX ";
+                $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
                 $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
                 if (($result = db_query($sql, $db_get_forum_data))) {
@@ -99,7 +99,7 @@ function get_forum_data()
             // the databse
 
             $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
-            $sql.= "CONCAT('`', DATABASE_NAME, '`.', WEBTAG, '_') AS PREFIX ";
+            $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
             if (($result = db_query($sql, $db_get_forum_data))) {
@@ -656,17 +656,17 @@ function forum_check_global_setting_name($setting_name)
                                          'forum_maintenance_schedule', 'google_adsense_text_colour', 'google_adsense_url_colour',
                                          'google_adsense_link_colour', 'google_adsense_background_colour', 'google_adsense_border_colour',
                                          'google_adsense_adtype', 'google_adsense_adchannel', 'google_adsense_clientid',
-                                         'google_adsense_display_pages', 'google_adsense_display_users', 'google_adsense_enabled',
-                                         'pm_system_prune_folders_last_run', 'thread_auto_prune_unread_data_last_run',
-                                         'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'enable_google_analytics',
-                                         'allow_forum_google_analytics', 'google_analytics_code', 'guest_account_enabled',
-                                         'guest_show_recent', 'message_cache_enabled', 'messages_unread_cutoff',
-                                         'messages_unread_cutoff_custom', 'new_user_email_notify', 'new_user_mark_as_of_int',
-                                         'new_user_pm_notify_email', 'new_user_pm_notify', 'pm_allow_attachments',
-                                         'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
-                                         'require_unique_email', 'require_user_approval', 'search_min_frequency',
-                                         'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
-                                         'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled');
+                                         'google_adsense_display', 'google_adsense_display_pages',  'pm_system_prune_folders_last_run',
+                                         'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run',
+                                         'sitemap_create_file_last_run', 'enable_google_analytics', 'allow_forum_google_analytics',
+                                         'google_analytics_code', 'guest_account_enabled', 'guest_show_recent',
+                                         'message_cache_enabled', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
+                                         'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
+                                         'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune',
+                                         'pm_max_user_messages', 'require_email_confirmation', 'require_unique_email',
+                                         'require_user_approval', 'search_min_frequency', 'send_new_user_email',
+                                         'session_cutoff', 'sitemap_enabled', 'sitemap_freq', 'showpopuponnewpm',
+                                         'show_pms', 'text_captcha_enabled');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }
@@ -716,7 +716,7 @@ function forum_get_table_prefix($fid)
 
     if (!is_numeric($fid)) return false;
 
-    $sql = "SELECT CONCAT('`', DATABASE_NAME, '`.', WEBTAG, '_') AS PREFIX, ";
+    $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_forum_get_table_prefix)) return false;
@@ -2333,7 +2333,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
         $forum_search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '%", $forum_search_array);
         $forum_search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $forum_search_array);
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT('`', FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
         $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
         $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUMS ";
         $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
@@ -2392,7 +2392,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                 if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
 
                     $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
-                    $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
+                    $sql.= "FROM `{$forum_data['PREFIX']}THREAD THREAD LEFT JOIN {$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
                     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
                     $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
 
@@ -2409,7 +2409,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
                 // Total number of messages
 
-                $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
 
                 if (!$result_messages_count = db_query($sql, $db_forum_search)) return false;
@@ -2425,8 +2425,8 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                 // Get unread to me message count
 
                 $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
-                $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
-                $sql.= "LEFT JOIN {$forum_data['PREFIX']}POST POST ";
+                $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
+                $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
                 $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
                 $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
@@ -2466,7 +2466,7 @@ function forum_get_all_prefixes()
 {
     if (!$db_forum_get_all_prefixes = db_connect()) return false;
 
-    $sql = "SELECT CONCAT('`', DATABASE_NAME, '`.', WEBTAG, '_') AS PREFIX, ";
+    $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID FROM FORUMS ";
 
     if (!$result = db_query($sql, $db_forum_get_all_prefixes)) return false;

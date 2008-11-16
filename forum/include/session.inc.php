@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.367 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.368 2008-11-16 01:54:16 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -625,7 +625,7 @@ function bh_update_user_time($uid)
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_UPDATED) AS USER_TIME_UPDATED, ";
     $sql.= "UNIX_TIMESTAMP(NOW()) AS TIME FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN  {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $sql.= "LEFT JOIN  `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' ";
     $sql.= "AND VISITOR_LOG.UID = '$uid'";
@@ -739,7 +739,7 @@ function bh_update_user_time($uid)
                 // updated will be 1 otherwise we need to try and save
                 // the data.
 
-                $sql = "SELECT COUNT(UID) FROM {$table_data['PREFIX']}USER_TRACK ";
+                $sql = "SELECT COUNT(UID) FROM `{$table_data['PREFIX']}USER_TRACK` ";
                 $sql.= "WHERE UID = '$uid'";
 
                 if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
@@ -748,14 +748,14 @@ function bh_update_user_time($uid)
 
                 if ($user_count > 0) {
 
-                    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
+                    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` SET $update_columns, ";
                     $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
 
                     if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
 
                 }else {
 
-                    $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+                    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
                     $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
                     $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
                     $sql.= "FROM_UNIXTIME('$session_total_time'), NOW())";

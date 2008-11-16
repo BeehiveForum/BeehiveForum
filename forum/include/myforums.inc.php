@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.96 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.97 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,7 @@ function get_forum_list($offset)
     $forums_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
-    $sql.= "CONCAT('`', FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
+    $sql.= "CONCAT(FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
@@ -99,7 +99,7 @@ function get_forum_list($offset)
 
             // Get number of messages on forum
 
-            $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$forum_data['PREFIX']}POST POST ";
+            $sql = "SELECT COUNT(PID) AS POST_COUNT FROM `{$forum_data['PREFIX']}POST` POST ";
 
             if (!$result_post_count = db_query($sql, $db_get_forum_list)) return false;
 
@@ -147,7 +147,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
     if ($view_type == FORUMS_SHOW_ALL) {
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT('`', FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
         $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
         $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
         $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
@@ -158,7 +158,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
     }elseif ($view_type == FORUMS_SHOW_FAVS) {
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT('`', FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
         $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
         $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
         $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
@@ -169,7 +169,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
     }elseif ($view_type == FORUMS_SHOW_IGNORED) {
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT('`', FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
         $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
         $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
         $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
@@ -226,7 +226,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
 
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
-                $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
+                $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
                 $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
 
@@ -243,7 +243,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
             // Total number of messages
 
-            $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
+            $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
 
             if (!$result_messages_count = db_query($sql, $db_get_my_forums)) return false;
@@ -259,8 +259,8 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             // Get unread to me message count
 
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
-            $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
-            $sql.= "LEFT JOIN {$forum_data['PREFIX']}POST POST ";
+            $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
+            $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
             $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
             $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 

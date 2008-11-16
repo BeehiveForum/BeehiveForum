@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.152 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.153 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -160,7 +160,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
     $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/Du", $exclude_user_array));
 
     $sql = "SELECT USER_THREAD.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_THREAD.UID) ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_THREAD.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_THREAD.TID = '$tid' ";
@@ -264,7 +264,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
     $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/Du", $exclude_user_array));
 
     $sql = "SELECT USER_FOLDER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_FOLDER` USER_FOLDER ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_FOLDER.UID) ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_FOLDER.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_FOLDER.FID = '$fid' ";

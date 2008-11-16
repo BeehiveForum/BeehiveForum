@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.81 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.82 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,14 +53,14 @@ function post_update($fid, $tid, $pid, $content)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST_CONTENT` SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
     if (!db_query($sql, $db_post_update)) return false;
 
     if (bh_session_check_perm(USER_PERM_POST_APPROVAL, $fid) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET APPROVED = 0, APPROVED_BY = 0 ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = 0, APPROVED_BY = 0 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
         if (!db_query($sql, $db_post_update)) return false;
@@ -81,7 +81,7 @@ function post_add_edit_text($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_add_edit_text)) return false;
@@ -102,23 +102,23 @@ function post_delete($tid, $pid)
 
     if (thread_is_poll($tid) && $pid == 1) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
         $sql.= "SET POLL_FLAG = 'N' WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_post_delete)) return false;
     }
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET DELETED = 'Y' ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y' ";
     $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
 
     if (!db_query($sql, $db_post_delete)) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST_CONTENT` SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_delete)) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET APPROVED = NOW(), ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = NOW(), ";
     $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_delete)) return false;

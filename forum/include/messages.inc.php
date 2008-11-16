@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.559 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.560 2008-11-16 01:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,12 +71,12 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
     $sql .= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql .= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK ";
-    $sql .= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql .= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql .= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_TO ";
     $sql .= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql .= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
     $sql .= "AND POST.PID >= '$pid' ";
@@ -196,7 +196,7 @@ function message_get_content($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return "";
 
-    $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
+    $sql = "SELECT CONTENT FROM `{$table_data['PREFIX']}POST_CONTENT` ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$result = db_query($sql, $db_message_get_content)) return false;
@@ -1454,7 +1454,7 @@ function message_get_user($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return "";
 
-    $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST ";
+    $sql = "SELECT FROM_UID FROM `{$table_data['PREFIX']}POST` ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$result = db_query($sql, $db_message_get_user)) return false;
@@ -1482,9 +1482,9 @@ function message_get_user_array($tid, $pid)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
@@ -1551,7 +1551,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
         if ($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
-            $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}USER_THREAD ";
+            $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM `{$table_data['PREFIX']}USER_THREAD` ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
             if (!$result = db_query($sql, $db_message_update_read)) return false;
@@ -1560,7 +1560,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
             if ($thread_count > 0) {
 
-                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+                $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
                 $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
                 $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
                 $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
@@ -1569,7 +1569,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
             }else {
 
-                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+                $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}USER_THREAD` ";
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NOW())";
 
@@ -1579,7 +1579,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
         // Mark posts as Viewed
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = NOW() ";
         $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' ";
         $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
 
@@ -1588,14 +1588,14 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     // Update thread viewed counter
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD_STATS ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD_STATS` ";
     $sql.= "SET VIEWCOUNT = VIEWCOUNT + 1 WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_message_update_read)) return false;
 
     if (db_affected_rows($db_message_update_read) < 1) {
 
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}THREAD_STATS ";
+        $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}THREAD_STATS` ";
         $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1)";
 
         if (!$result = db_query($sql, $db_message_update_read)) return false;
@@ -1626,7 +1626,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
         if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+            $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
@@ -1634,7 +1634,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
-                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+                $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}USER_THREAD` ";
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
@@ -1645,7 +1645,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
     // Mark posts as Viewed...
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
     if (!db_query($sql, $db_message_set_read)) return false;
@@ -1678,12 +1678,12 @@ function messages_get_most_recent($uid, $fid = false)
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
     $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, ";
-    $sql.= "THREAD.UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+    $sql.= "THREAD.UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON ";
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_FOLDER` USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
     $sql.= "AND THREAD.LENGTH > 0 AND (USER_PEER.RELATIONSHIP IS NULL ";
@@ -1752,12 +1752,12 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
     $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, ";
-    $sql.= "THREAD.UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+    $sql.= "THREAD.UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON ";
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_FOLDER` USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
     $sql.= "AND THREAD.LENGTH > 0 AND (USER_PEER.RELATIONSHIP IS NULL ";

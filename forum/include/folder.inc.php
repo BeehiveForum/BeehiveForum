@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.159 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.160 2008-11-16 10:47:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -294,7 +294,7 @@ function folder_get_available_by_forum($forum_fid)
 
     $sql = "SELECT GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
     $sql.= "FROM GROUP_PERMS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_PERMS.FORUM = 1 AND GROUP_PERMS.FID > 0 ";
+    $sql.= "WHERE GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID > 0 ";
     $sql.= "GROUP BY GROUP_PERMS.FID HAVING PERM & $access_allowed > 0";
 
     $result = db_query($sql, $db_folder_get_available_by_forum);

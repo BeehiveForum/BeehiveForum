@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.361 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.362 2008-11-17 21:16:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -628,35 +628,33 @@ function forum_save_default_settings($forum_settings_array)
 
 function forum_check_setting_name($setting_name)
 {
-    $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering',
-                                  'closed_message', 'default_emoticons', 'default_language',
-                                  'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links',
-                                  'enable_google_analytics', 'force_word_filter', 'forum_desc',
-                                  'forum_content_rating', 'forum_dl_saving', 'forum_email', 'forum_keywords',
-                                  'google_adsense_enabled', 'google_adsense_text_colour', 'google_adsense_url_colour',
-                                  'google_adsense_link_colour', 'google_adsense_background_colour', 'forum_timezone',
-                                  'google_adsense_border_colour', 'google_analytics_code', 'forum_name',
-                                  'forum_links_top_link', 'guest_account_enabled', 'guest_show_recent',
-                                  'maximum_post_length', 'minimum_post_frequency', 'password_protected_message',
-                                  'poll_allow_guests', 'post_edit_grace_period', 'post_edit_time',
-                                  'require_post_approval', 'restricted_message', 'show_links',
-                                  'show_stats', 'wiki_integration_uri');
+    $valid_forum_settings = array('adsense_display_users', 'adsense_display_pages', 'allow_polls',
+                                  'allow_post_editing', 'allow_search_spidering', 'closed_message',
+                                  'default_emoticons', 'default_language', 'default_style',
+                                  'enable_wiki_integration', 'enable_wiki_quick_links', 'enable_google_analytics',
+                                  'force_word_filter', 'forum_desc', 'forum_content_rating',
+                                  'forum_dl_saving', 'forum_email', 'forum_keywords',
+                                  'forum_name', 'forum_links_top_link', 'google_analytics_code',
+                                  'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
+                                  'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
+                                  'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
+                                  'restricted_message', 'show_links', 'show_stats',
+                                  'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
 }
 
 function forum_check_global_setting_name($setting_name)
 {
-    $valid_global_forum_settings = array('active_sess_cutoff', 'allow_new_registrations', 'allow_search_spidering',
+    $valid_global_forum_settings = array('adsense_publisher_id', 'adsense_large_ad_id', 'adsense_medium_ad_id',
+                                         'adsense_small_ad_id', 'adsense_display_users', 'adsense_display_pages',
+                                         'active_sess_cutoff', 'allow_new_registrations', 'allow_search_spidering',
                                          'allow_username_changes', 'attachments_allow_embed', 'attachments_enabled',
                                          'attachments_max_user_space', 'attachment_allow_guests', 'attachment_dir',
                                          'attachment_use_old_method', 'bh_remove_stale_sessions_last_run', 'forum_desc',
                                          'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
                                          'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
-                                         'forum_maintenance_schedule', 'google_adsense_text_colour', 'google_adsense_url_colour',
-                                         'google_adsense_link_colour', 'google_adsense_background_colour', 'google_adsense_border_colour',
-                                         'google_adsense_adtype', 'google_adsense_adchannel', 'google_adsense_clientid',
-                                         'google_adsense_display', 'google_adsense_display_pages',  'pm_system_prune_folders_last_run',
+                                         'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
                                          'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run',
                                          'sitemap_create_file_last_run', 'enable_google_analytics', 'allow_forum_google_analytics',
                                          'google_analytics_code', 'guest_account_enabled', 'guest_show_recent',

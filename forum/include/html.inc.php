@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.329 2008-11-16 01:57:40 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.330 2008-11-17 21:16:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1359,51 +1359,29 @@ function html_output_adsense_settings()
 {
     // Check the required settings!
 
-    if (($adsense_client_id = adsense_client_id()) && ($adsense_ad_channel = adsense_ad_channel())) {
-
-        // Ad type to display (text, image, etc.)
-
-        $adsense_ad_type = adsense_ad_type();
-
-        // Which pages and users to display to.
-
-        $adsense_display_users = google_adsense_display_users();
-        $adsense_display_pages = google_adsense_display_pages();
-
-        // AdSense colours.
-
-        $adsense_bg_colour = adsense_background_colour();
-        $adsense_text_colour = adsense_text_colour();
-        $adsense_url_colour = adsense_url_colour();
-        $adsense_link_colour = adsense_link_colour();
-
-        // Get banner size
-
-        $banner_format = adsense_get_banner_type($banner_width, $banner_height);
+    if (($adsense_publisher_id = adsense_publisher_id())) {
 
         // No idea what format the client ID should be in
         // So we'll just assume it's right if it's a non-empty string.
 
-        if (strlen(trim($adsense_client_id)) > 0) {
+        if (strlen(trim($adsense_publisher_id)) > 0) {
 
-            // Output the settings for the Ads. - google_color_border is set to
-            // the same as google_color_bg here and we add our own border around
-            // the ad when we display it.
+            // Get banner size and type
 
-            echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+            adsense_get_banner_type($ad_type, $ad_width, $ad_height);
+
+            // Get the slot id from the forum settings.
+
+            $ad_slot_id = adsense_slot_id($ad_type);
+
+            // Output the settings Javascript.
+
+            echo "<script type=\"text/javascript\">\n";
             echo "<!--\n\n";
-            echo "google_ad_client = \"$adsense_client_id\";\n";
-            echo "google_alternate_color = \"$adsense_bg_colour\";\n";
-            echo "google_ad_width = $banner_width\n";
-            echo "google_ad_height = $banner_height\n";
-            echo "google_ad_format = \"$banner_format\";\n";
-            echo "google_ad_channel = \"$adsense_ad_channel\";\n";
-            echo "google_ad_type = \"{$adsense_ad_type}\";\n";
-            echo "google_color_border = \"$adsense_bg_colour\";\n";
-            echo "google_color_bg = \"$adsense_bg_colour\";\n";
-            echo "google_color_link = \"$adsense_link_colour\";\n";
-            echo "google_color_url = \"$adsense_url_colour\";\n";
-            echo "google_color_text = \"$adsense_text_colour\";\n";
+            echo "google_ad_client = \"$adsense_publisher_id\";\n";
+            echo "google_ad_slot = \"$ad_slot_id\";\n";
+            echo "google_ad_width = $ad_width\n";
+            echo "google_ad_height = $ad_height\n\n";
             echo "//-->\n";
             echo "</script>\n";
 

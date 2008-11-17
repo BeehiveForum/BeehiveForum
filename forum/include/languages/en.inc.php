@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.600 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.601 2008-11-17 21:16:24 decoyduck Exp $ */
 
 // British English language file
 
@@ -939,30 +939,24 @@ $lang['googleanalytics'] = "Google Analytics";
 $lang['enablegoogleanalytics'] = "Enable Google Analytics";
 $lang['allowforumgoogleanalytics'] = "Allow Google Analytics on each forum";
 $lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
+
 $lang['googleadsense'] = "Google AdSense";
-$lang['displaygoogleadsenseadverts'] = "Display AdSense Ads for";
-$lang['displaygoogleadsenseadstousers'] = "Display AdSense Ads for";
-$lang['displaygoogleadsenseadsonpages'] = "Display AdSense Ads on";
-$lang['googleadsenseclientid'] = "AdSense Client ID";
-$lang['googleadsenseadchannel'] = "AdSense Ad Channel";
-$lang['googleadsenseadtype'] = "AdSense Ad Type";
-$lang['googleadsenseadbordercolour'] = "Border Colour";
-$lang['googleadsensebackgroundcolour'] = "Background Colour";
-$lang['googleadsenselinkcolour'] = "Link Colour";
-$lang['googleadsenseurlcolour'] = "URL Colour";
-$lang['googleadsensetextcolour'] = "Text Colour";
-$lang['allusers'] = "All Users";
-$lang['guestsonly'] = "Guests Only";
-$lang['allpages'] = "Top of every page";
-$lang['topofmessagesframe'] = "Top of messages";
-$lang['afterfirstmessage'] = "After 1st message";
-$lang['afterthirdmessage'] = "After 3rd message";
-$lang['afterfifthmessage'] = "After 5th messages";
-$lang['aftertenthmessage'] = "After 10th messages";
-$lang['afterrandommessage'] = "Randomly on messages page.";
-$lang['usemydefaultaccountsetting'] = "Use my default account setting";
-$lang['textonlyads'] = "Text only Ads";
-$lang['textandimageads'] = "Text and Image Ads";
+$lang['adsensepublisherid'] = "AdSense publisher id";
+$lang['adsenselargeadid'] = "Large sized (728x90) ad slot id";
+$lang['adsensemediumadid'] = "Medium sized (468x60) ad slot id";
+$lang['adsensesmalladid'] = "Small sized (234x60) ad slot id";
+$lang['adsenseallusers'] = "All Users";
+$lang['adsenseguestsonly'] = "Guests only";
+$lang['adsensenoone'] = "No-one (disabled)";
+$lang['adsensedisplayadsforusers'] = "Display AdSense Ads for";
+$lang['adsensedisplayadsonpages'] = "Display AdSense Ads on";
+$lang['adsenseallpages'] = "Top of every page";
+$lang['adsensetopofmessages'] = "Top of messages";
+$lang['adsenseafterfirstmessage'] = "After 1st message";
+$lang['adsenseafterthirdmessage'] = "After 3rd message";
+$lang['adsenseafterfifthmessage'] = "After 5th message";
+$lang['adsenseaftertenthmessage'] = "After 10th message";
+$lang['adsenseafterrandommessage'] = "After a random message";
 $lang['registertoremoveadverts'] = "Register to remove these adverts.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
@@ -1021,6 +1015,7 @@ $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account
 $lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>.";
 $lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
 $lang['forum_settings_help_65'] = "To change Google AdSense account details and other settings please see Global Forum Settings";
+$lang['forum_settings_help_66'] = "Your Beehive Forum supports howing 3 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

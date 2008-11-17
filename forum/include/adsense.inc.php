@@ -21,112 +21,85 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.1 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.2 2008-11-17 21:16:24 decoyduck Exp $ */
 
-function adsense_client_id()
+function adsense_publisher_id()
 {
-    if (($google_adsense_clientid = forum_get_global_setting('google_adsense_clientid'))) {
-        return $google_adsense_clientid;
+    if (($adsense_publisher_id = forum_get_global_setting('adsense_publisher_id'))) {
+        return $adsense_publisher_id;
     }
 
     return false;
 }
 
-function adsense_ad_channel()
+function adsense_large_ad_id()
 {
-    if (($google_adsense_adchannel = forum_get_global_setting('google_adsense_adchannel'))) {
-        return $google_adsense_adchannel;
+    if (($adsense_large_ad_id = forum_get_global_setting('adsense_large_ad_id'))) {
+        return $adsense_large_ad_id;
     }
 
     return false;
 }
 
-function adsense_ad_type()
+function adsense_medium_ad_id()
 {
-    $google_adsense_adtype_array = array(ADSENSE_ACCOUNT_DEFAULT => '',
-                                         ADSENSE_TEXT_ONLY       => 'text',
-                                         ADSENSE_TEXT_AND_IMAGES => 'text_image');
-
-    if (($google_adsense_adtype = forum_get_global_setting('google_adsense_adtype'))) {
-
-        if (in_array($google_adsense_adtype, array_keys($google_adsense_adtype_array))) {
-
-            return $google_adsense_adtype_array[$google_adsense_adtype];
-        }
+    if (($adsense_medium_ad_id = forum_get_global_setting('adsense_medium_ad_id'))) {
+        return $adsense_medium_ad_id;
     }
 
-    return '';
+    return false;
 }
 
-function google_adsense_display_users()
+function adsense_small_ad_id()
 {
-    if (($google_adsense_display = forum_get_global_setting('google_adsense_display'))) {
-        return $google_adsense_display;
+    if (($adsense_small_ad_id = forum_get_global_setting('adsense_small_ad_id'))) {
+        return $adsense_small_ad_id;
+    }
+
+    return false;
+}
+
+function adsense_display_users()
+{
+    if (($adsense_display_users = forum_get_global_setting('adsense_display_users'))) {
+        return $adsense_display_users;
     }
 
     return ADSENSE_DISPLAY_NONE;
 }
 
-function google_adsense_display_pages()
+function adsense_display_pages()
 {
-    if (($google_adsense_display_pages = forum_get_global_setting('google_adsense_display_pages'))) {
-        return $google_adsense_display_pages;
+    if (($adsense_display_pages = forum_get_global_setting('adsense_display_pages'))) {
+        return $adsense_display_pages;
     }
 
     return ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
 }
 
-function adsense_border_colour()
-{
-    if (($google_adsense_border_colour = forum_get_global_setting('google_adsense_border_colour'))) {
-        return $google_adsense_border_colour;
-    }
-
-    return 'EEEEEE';
-}
-
-function adsense_background_colour()
-{
-    if (($google_adsense_bg_colour = forum_get_global_setting('google_adsense_background_colour'))) {
-        return $google_adsense_bg_colour;
-    }
-
-    return 'EEEEEE';
-}
-
-function adsense_text_colour()
-{
-    if (($google_adsense_text_colour = forum_get_global_setting('google_adsense_text_colour'))) {
-        return $google_adsense_text_colour;
-    }
-
-    return '999999';
-}
-
-function adsense_url_colour()
-{
-    if (($google_adsense_url_colour = forum_get_global_setting('google_adsense_url_colour'))) {
-        return $google_adsense_url_colour;
-    }
-
-    return '009900';
-}
-
-function adsense_link_colour()
-{
-    if (($google_adsense_border_colour = forum_get_global_setting('google_adsense_border_colour'))) {
-        return $google_adsense_border_colour;
-    }
-
-    return '4490B4';
-}
-
 function adsense_check_user()
 {
-    $adsense_display_users = google_adsense_display_users();
+    $adsense_display_users = adsense_display_users();
 
     if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) return true;
     if ($adsense_display_users == ADSENSE_DISPLAY_ALL_USERS) return true;
+
+    return false;
+}
+
+function adsense_slot_id($ad_type)
+{
+    $forum_setting_names_array = array('small'  => 'adsense_small_ad_id',
+                                       'medium' => 'adsense_medium_ad_id',
+                                       'large'  => 'adsense_large_ad_id');
+
+    if (!in_array($ad_type, array_keys($forum_setting_names_array))) {
+        $ad_type = 'adsense_large_ad_id';
+    }
+
+    if (($adsense_slot_id = forum_get_setting($forum_setting_names_array[$ad_type]))) {
+        return $adsense_slot_id;
+    }
 
     return false;
 }
@@ -135,9 +108,12 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
 {
     static $random_pid = false;
 
-    $adsense_display_pages = google_adsense_display_pages();
+    $adsense_display_pages = adsense_display_pages();
 
-    if (preg_match('/^nav\.php/i', basename($_SERVER['PHP_SELF'])) > 0) return false;
+    $admin_area_files_array = get_available_admin_files();
+    $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', $admin_area_files_array));
+
+    if (preg_match("/^nav\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
 
     if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)) return true;
 
@@ -153,10 +129,10 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
                 $random_pid = min(mt_rand(0, $posts_per_page), $thread_length);
             }
 
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIRST_MSG) && ($pid == 0)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_THIRD_MSG) && ($pid == 2)) return true;
+            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIRST_MSG) && ($pid == 1)) return true;
+            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_THIRD_MSG) && ($pid == 3)) return true;
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIFTH_MSG) && ($pid == 4)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_TENTH_MSG) && ($pid == 9)) return true;
+            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_TENTH_MSG) && ($pid == 10)) return true;
 
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_RANDOM_MSG) && ($pid == $random_pid)) return true;
         }
@@ -165,40 +141,41 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
     return false;
 }
 
-function adsense_get_banner_type(&$banner_width, &$banner_height)
+function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 {
-    $banner_width = 468;
-    $banner_height = 60;
+    $ad_type = 'large';
+    $ad_width = 728;
+    $ad_height = 90;
 
-    $page_adsense_widths_preg_array = array('admin_menu\.php' => array('234x60_as', 234, 60),
-                                            'display_emoticons\.php' => array('468x60_as', 468, 60),
-                                            'attachments\.php' => array('468x60_as', 468, 60),
-                                            'edit_attachments\.php' => array('468x60_as', 468, 60),
-                                            'email\.php' => array('468x60_as', 468, 60),
-                                            'folder_options\.php' => array('468x60_as', 468, 60),
-                                            'mods_list\.php' => array('468x60_as', 468, 60),
-                                            'pm_folders\.php' => array('234x60_as', 234, 60),
-                                            'poll_results\.php' => array('468x60_as', 468, 60),
-                                            'search_popup\.php' => array('468x60_as', 468, 60),
-                                            'search\.php.+show_stop_words=true' => array('468x60_as', 468, 60),
-                                            'start_left\.php' => array('234x60_as', 234, 60),
-                                            'thread_list\.php' => array('234x60_as', 234, 60),
-                                            'user_profile\.php' => array('468x60_as', 468, 60));
+    $adsense_settings_preg_array = array('admin_menu\.php' => array('small', 234, 60),
+                                         'display_emoticons\.php' => array('medium', 468, 60),
+                                         'attachments\.php' => array('medium', 468, 60),
+                                         'edit_attachments\.php' => array('medium', 468, 60),
+                                         'email\.php' => array('medium', 468, 60),
+                                         'folder_options\.php' => array('medium', 468, 60),
+                                         'mods_list\.php' => array('medium', 468, 60),
+                                         'pm_folders\.php' => array('small', 234, 60),
+                                         'poll_results\.php' => array('medium', 468, 60),
+                                         'search_popup\.php' => array('medium', 468, 60),
+                                         'search\.php.+show_stop_words=true' => array('medium', 468, 60),
+                                         'start_left\.php' => array('small', 234, 60),
+                                         'thread_list\.php' => array('small', 234, 60),
+                                         'user_menu\.php' => array('small', 234, 60),
+                                         'user_profile\.php' => array('medium', 468, 60));
 
-    $page_adsense_widths_preg = implode(")|^(", array_keys($page_adsense_widths_preg_array));
+    $adsense_page_names_preg = implode(")|^(", array_keys($adsense_settings_preg_array));
 
-    if (preg_match("/^($page_adsense_widths_preg)/u", basename($_SERVER['PHP_SELF']), $adsense_width_match) > 0) {
+    if (preg_match("/^($adsense_page_names_preg)/u", basename($_SERVER['PHP_SELF']), $adsense_settings_match) > 0) {
 
-        $adsense_width_match = (isset($adsense_width_match[0])) ? preg_quote($adsense_width_match[0], '/') : '';
+        $adsense_settings_match = (isset($adsense_settings_match[0])) ? preg_quote($adsense_settings_match[0], '/') : '';
 
-        if (isset($page_adsense_widths_preg_array[$adsense_width_match])) {
+        if (isset($adsense_settings_preg_array[$adsense_settings_match])) {
 
-            list($banner_format, $banner_width, $banner_height) = $page_adsense_widths_preg_array[$adsense_width_match];
-            return $banner_format;
+            list($ad_type, $ad_width, $ad_height) = $adsense_settings_preg_array[$adsense_settings_match];
         }
     }
 
-    return '468x60_as';
+    return true;
 }
 
 function adsense_output_html()
@@ -207,18 +184,14 @@ function adsense_output_html()
 
     if ($adsense_displayed === false) {
 
-        adsense_get_banner_type($banner_width, $banner_height);
+        if (($adsense_publisher_id = adsense_publisher_id())) {
 
-        if (($adsense_client_id = adsense_client_id()) && ($adsense_ad_channel = adsense_ad_channel())) {
+            adsense_get_banner_type($ad_type, $ad_width, $ad_height);
 
-            $adsense_bg_colour = adsense_background_colour();
-            $adsense_border_colour = adsense_border_colour();
-            $adsense_text_colour = adsense_text_colour();
-
-            echo "<div style=\"width: {$banner_width}px; margin: auto; color: #$adsense_text_colour; background-color: #$adsense_bg_colour; border: 1px solid #$adsense_border_colour\">\n";
+            echo "<div class=\"google_adsense_container\" style=\"width: {$ad_width}px; margin: auto\">\n";
             echo "  <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 
-            if (user_is_guest() && forum_get_global_setting('google_adsense_display', ADSENSE_DISPLAY_GUESTS)) {
+            if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
                 echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
             }
 

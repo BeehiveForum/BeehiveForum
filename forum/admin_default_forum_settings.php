@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.137 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.138 2008-11-17 21:16:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -143,23 +143,19 @@ $sitemap_freq_periods = array(DAY_IN_SECONDS  => $lang['onceaday'],
 
 // Array of valid Google Adsense ad user account types
 
-$google_adsense_user_type_array = array(ADSENSE_DISPLAY_NONE, ADSENSE_DISPLAY_ALL_USERS, ADSENSE_DISPLAY_GUESTS);
+$adsense_user_type_array = array(ADSENSE_DISPLAY_NONE      => $lang['adsensenoone'],
+                                 ADSENSE_DISPLAY_ALL_USERS => $lang['adsenseallusers'],
+                                 ADSENSE_DISPLAY_GUESTS    => $lang['adsenseguestsonly']);
 
 // Array of valid Google Adsense ad page types
 
-$google_adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['allpages'],
-                                        ADSENSE_DISPLAY_TOP_OF_MESSAGES  => $lang['topofmessagesframe'],
-                                        ADSENSE_DISPLAY_AFTER_FIRST_MSG  => $lang['afterfirstmessage'],
-                                        ADSENSE_DISPLAY_AFTER_THIRD_MSG  => $lang['afterthirdmessage'],
-                                        ADSENSE_DISPLAY_AFTER_FIFTH_MSG  => $lang['afterfifthmessage'],
-                                        ADSENSE_DISPLAY_AFTER_TENTH_MSG  => $lang['aftertenthmessage'],
-                                        ADSENSE_DISPLAY_AFTER_RANDOM_MSG => $lang['afterrandommessage']);
-
-// Array of valid Google Adsense ad types.
-
-$google_adsense_ad_type_array = array(ADSENSE_ACCOUNT_DEFAULT => $lang['usemydefaultaccountsetting'],
-                                      ADSENSE_TEXT_ONLY       => $lang['textonlyads'],
-                                      ADSENSE_TEXT_AND_IMAGES => $lang['textandimageads']);
+$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adsenseallpages'],
+                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES  => $lang['adsensetopofmessages'],
+                                 ADSENSE_DISPLAY_AFTER_FIRST_MSG  => $lang['adsenseafterfirstmessage'],
+                                 ADSENSE_DISPLAY_AFTER_THIRD_MSG  => $lang['adsenseafterthirdmessage'],
+                                 ADSENSE_DISPLAY_AFTER_FIFTH_MSG  => $lang['adsenseafterfifthmessage'],
+                                 ADSENSE_DISPLAY_AFTER_TENTH_MSG  => $lang['adsenseaftertenthmessage'],
+                                 ADSENSE_DISPLAY_AFTER_RANDOM_MSG => $lang['adsenseafterrandommessage']);
 
 // Submit code.
 
@@ -283,64 +279,40 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['google_analytics_code'] = "";
     }
 
-    if (isset($_POST['google_adsense_display']) && in_array($_POST['google_adsense_display'], $google_adsense_user_type_array)) {
-        $new_forum_settings['google_adsense_display'] = $_POST['google_adsense_display'];
+    if (isset($_POST['adsense_publisher_id']) && strlen(trim(stripslashes_array($_POST['adsense_publisher_id']))) > 0) {
+        $new_forum_settings['adsense_publisher_id'] = trim(stripslashes_array($_POST['adsense_publisher_id']));
     }else {
-        $new_forum_settings['google_adsense_display'] = ADSENSE_DISPLAY_NONE;
+        $new_forum_settings['adsense_publisher_id'] = '';
     }
 
-    if (isset($_POST['google_adsense_display_pages']) && in_array($_POST['google_adsense_display_pages'], array_keys($google_adsense_page_type_array))) {
-        $new_forum_settings['google_adsense_display_pages'] = $_POST['google_adsense_display_pages'];
+    if (isset($_POST['adsense_large_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_large_ad_id']))) > 0) {
+        $new_forum_settings['adsense_large_ad_id'] = trim(stripslashes_array($_POST['adsense_large_ad_id']));
     }else {
-        $new_forum_settings['google_adsense_display_pages'] = ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
+        $new_forum_settings['adsense_large_ad_id'] = '';
     }
 
-    if (isset($_POST['google_adsense_clientid']) && strlen(trim(stripslashes_array($_POST['google_adsense_clientid']))) > 0) {
-        $new_forum_settings['google_adsense_clientid'] = trim(stripslashes_array($_POST['google_adsense_clientid']));
+    if (isset($_POST['adsense_medium_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_medium_ad_id']))) > 0) {
+        $new_forum_settings['adsense_medium_ad_id'] = trim(stripslashes_array($_POST['adsense_medium_ad_id']));
     }else {
-        $new_forum_settings['google_adsense_clientid'] = "";
+        $new_forum_settings['adsense_medium_ad_id'] = '';
     }
 
-    if (isset($_POST['google_adsense_adchannel']) && strlen(trim(stripslashes_array($_POST['google_adsense_adchannel']))) > 0) {
-        $new_forum_settings['google_adsense_adchannel'] = trim(stripslashes_array($_POST['google_adsense_adchannel']));
+    if (isset($_POST['adsense_small_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_small_ad_id']))) > 0) {
+        $new_forum_settings['adsense_small_ad_id'] = trim(stripslashes_array($_POST['adsense_small_ad_id']));
     }else {
-        $new_forum_settings['google_adsense_adchannel'] = "";
+        $new_forum_settings['adsense_small_ad_id'] = '';
     }
 
-    if (isset($_POST['google_adsense_adtype']) && in_array($_POST['google_adsense_adtype'], array_keys($google_adsense_ad_type_array))) {
-        $new_forum_settings['google_adsense_adtype'] = $_POST['google_adsense_adtype'];
+    if (isset($_POST['adsense_display_users']) && in_array($_POST['adsense_display_users'], array_keys($adsense_user_type_array))) {
+        $new_forum_settings['adsense_display_users'] = $_POST['adsense_display_users'];
     }else {
-        $new_forum_settings['google_adsense_adtype'] = ADSENSE_ACCOUNT_DEFAULT;
+        $new_forum_settings['adsense_display_users'] = ADSENSE_DISPLAY_NONE;
     }
 
-    if (isset($_POST['google_adsense_border_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', stripslashes_array($_POST['google_adsense_border_colour'])) > 0) {
-        $new_forum_settings['google_adsense_border_colour'] = ltrim(stripslashes_array($_POST['google_adsense_border_colour']), '#');
+    if (isset($_POST['adsense_display_pages']) && in_array($_POST['adsense_display_pages'], array_keys($adsense_page_type_array))) {
+        $new_forum_settings['adsense_display_pages'] = $_POST['adsense_display_pages'];
     }else {
-        $new_forum_settings['google_adsense_border_colour'] = "";
-    }
-
-    if (isset($_POST['google_adsense_background_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', stripslashes_array($_POST['google_adsense_background_colour'])) > 0) {
-        $new_forum_settings['google_adsense_background_colour'] = ltrim(stripslashes_array($_POST['google_adsense_background_colour']), '#');
-    }else {
-        $new_forum_settings['google_adsense_background_colour'] = "";
-    }
-
-    if (isset($_POST['google_adsense_link_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', stripslashes_array($_POST['google_adsense_link_colour'])) > 0) {
-        $new_forum_settings['google_adsense_link_colour'] = ltrim(stripslashes_array($_POST['google_adsense_link_colour']), '#');
-    }else {
-        $new_forum_settings['google_adsense_link_colour'] = "";
-    }
-
-    if (isset($_POST['google_adsense_url_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', stripslashes_array($_POST['google_adsense_url_colour'])) > 0) {
-        $new_forum_settings['google_adsense_url_colour'] = ltrim(stripslashes_array($_POST['google_adsense_url_colour']), '#');
-    }else {
-        $new_forum_settings['google_adsense_url_colour'] = "";
-    }
-
-    if (isset($_POST['google_adsense_text_colour']) && preg_match('/#?([0-9A-F]{3,6})/i', stripslashes_array($_POST['google_adsense_text_colour'])) > 0) {
-        $new_forum_settings['google_adsense_text_colour'] = ltrim(stripslashes_array($_POST['google_adsense_text_colour']), '#');
-    }else {
-        $new_forum_settings['google_adsense_text_colour'] = "";
+        $new_forum_settings['adsense_display_pages'] = ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
     }
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
@@ -968,56 +940,46 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['displaygoogleadsenseadstousers']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("google_adsense_display", ADSENSE_DISPLAY_ALL_USERS, $lang['allusers'], (isset($forum_global_settings['google_adsense_display']) && $forum_global_settings['google_adsense_display'] == ADSENSE_DISPLAY_ALL_USERS)), "&nbsp;", form_radio("google_adsense_display", ADSENSE_DISPLAY_GUESTS, $lang['guestsonly'], (isset($forum_global_settings['google_adsense_display']) && $forum_global_settings['google_adsense_display'] == ADSENSE_DISPLAY_GUESTS) || !isset($forum_global_settings['google_adsense_display'])), "&nbsp;", form_radio("google_adsense_display", ADSENSE_DISPLAY_NONE, $lang['disabled'], (isset($forum_global_settings['google_adsense_display']) && $forum_global_settings['google_adsense_display'] == ADSENSE_DISPLAY_NONE) || !isset($forum_global_settings['google_adsense_display'])), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['displaygoogleadsenseadsonpages']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array('google_adsense_display_pages', $google_adsense_page_type_array, (isset($forum_global_settings['google_adsense_display_pages']) && in_array($forum_global_settings['google_adsense_display_pages'], array_keys($google_adsense_page_type_array)) ? $forum_global_settings['google_adsense_display_pages'] : ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)), "</td>\n";
+echo "                        <td align=\"left\" width=\"255\" nowrap=\"nowrap\">{$lang['adsensepublisherid']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("adsense_publisher_id", (isset($forum_global_settings['adsense_publisher_id']) ? htmlentities_array($forum_global_settings['adsense_publisher_id']) : ''), 25, 40), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"230\" nowrap=\"nowrap\">{$lang['googleadsenseclientid']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_clientid", (isset($forum_global_settings['google_adsense_clientid']) ? htmlentities_array($forum_global_settings['google_adsense_clientid']) : ''), 21, 40), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsenselargeadid']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("adsense_large_ad_id", (isset($forum_global_settings['adsense_large_ad_id']) ? htmlentities_array($forum_global_settings['adsense_large_ad_id']) : ''), 25, 40), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadchannel']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_adchannel", (isset($forum_global_settings['google_adsense_adchannel']) ? htmlentities_array($forum_global_settings['google_adsense_adchannel']) : ''), 27, 40), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsensemediumadid']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("adsense_medium_ad_id", (isset($forum_global_settings['adsense_medium_ad_id']) ? htmlentities_array($forum_global_settings['adsense_medium_ad_id']) : ''), 25, 40), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadtype']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array('google_adsense_adtype', $google_adsense_ad_type_array, (isset($forum_global_settings['google_adsense_adtype']) ? $forum_global_settings['google_adsense_adtype'] : ADSENSE_ACCOUNT_DEFAULT)), "</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsensesmalladid']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("adsense_small_ad_id", (isset($forum_global_settings['adsense_small_ad_id']) ? htmlentities_array($forum_global_settings['adsense_small_ad_id']) : ''), 25, 40), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['adsensedisplayadsforusers']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('adsense_display_users', $adsense_user_type_array, (isset($forum_global_settings['adsense_display_users']) && in_array($forum_global_settings['adsense_display_users'], array_keys($adsense_user_type_array)) ? $forum_global_settings['adsense_display_users'] : ADSENSE_DISPLAY_NONE)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsensedisplayadsonpages']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('adsense_display_pages', $adsense_page_type_array, (isset($forum_global_settings['adsense_display_pages']) && in_array($forum_global_settings['adsense_display_pages'], array_keys($adsense_page_type_array)) ? $forum_global_settings['adsense_display_pages'] : ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseadbordercolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_border_colour", (isset($forum_global_settings['google_adsense_border_colour']) ? sprintf('#%s', htmlentities_array($forum_global_settings['google_adsense_border_colour'])) : ''), 15, 7), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsensebackgroundcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_background_colour", (isset($forum_global_settings['google_adsense_background_colour']) ? sprintf('#%s', htmlentities_array($forum_global_settings['google_adsense_background_colour'])) : ''), 15, 7), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenselinkcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_link_colour", (isset($forum_global_settings['google_adsense_link_colour']) ? sprintf('#%s', htmlentities_array($forum_global_settings['google_adsense_link_colour'])) : ''), 15, 7), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsenseurlcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_url_colour", (isset($forum_global_settings['google_adsense_url_colour']) ? sprintf('#%s', htmlentities_array($forum_global_settings['google_adsense_url_colour'])) : ''), 15, 7), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleadsensetextcolour']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("google_adsense_text_colour", (isset($forum_global_settings['google_adsense_text_colour']) ? sprintf('#%s', htmlentities_array($forum_global_settings['google_adsense_text_colour'])) : ''), 15, 7), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_66']}</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"center\" colspan=\"2\">\n";
+
 
 html_display_warning_msg($lang['forum_settings_help_63'], '95%', 'center');
 html_display_warning_msg($lang['forum_settings_help_64'], '95%', 'center');

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.2 2008-11-17 21:16:24 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.3 2008-11-19 19:27:43 decoyduck Exp $ */
 
 function adsense_publisher_id()
 {
@@ -185,6 +185,8 @@ function adsense_output_html()
     if ($adsense_displayed === false) {
 
         if (($adsense_publisher_id = adsense_publisher_id())) {
+
+            $adsense_display_users = adsense_display_users()
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
 

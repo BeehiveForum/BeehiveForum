@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.4 2008-11-19 20:18:31 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.5 2008-11-19 20:19:53 decoyduck Exp $ */
 
 function adsense_publisher_id()
 {
@@ -193,10 +193,6 @@ function adsense_output_html()
             $adsense_display_users = adsense_display_users();
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
-
-            if (bh_session_get_value('UID') == 19) {
-                echo '<pre>';
-                print_r($
 
             echo "<div class=\"google_adsense_container\" style=\"width: {$ad_width}px; margin: auto\">\n";
             echo "  <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";

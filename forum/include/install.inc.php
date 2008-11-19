@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.88 2008-11-16 01:57:40 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.89 2008-11-19 19:16:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -368,7 +368,7 @@ function install_get_webtags()
 {
     if (!$db_install_get_webtags = db_connect()) return false;
 
-    $sql = "SELECT FID, WEBTAG FROM FORUMS";
+    $sql = "SELECT FID, WEBTAG, CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX FROM FORUMS";
 
     if (!$result = db_query($sql, $db_install_get_webtags)) return false;
 
@@ -377,7 +377,7 @@ function install_get_webtags()
         $forum_webtag_array = array();
 
         while (($forum_webtags_data = db_fetch_array($result))) {
-            $forum_webtag_array[$forum_webtags_data['FID']] = $forum_webtags_data['WEBTAG'];
+            $forum_webtag_array[$forum_webtags_data['FID']] = $forum_webtags_data;
         }
 
         return $forum_webtag_array;
@@ -386,40 +386,42 @@ function install_get_webtags()
     return false;
 }
 
-function install_table_exists($table_name)
+function install_format_table_prefix($database_name, $webtag)
+{
+    return sprintf('`%s`.`%s_', $database_name, $webtag);
+}
+
+function install_table_exists($database_name, $table_name)
 {
     if (!$db_install_table_exists = db_connect()) return false;
 
     $table_name = db_escape_string($table_name);
 
-    $sql = "SHOW TABLES LIKE '$table_name'";
+    $sql = "SHOW TABLES FROM `$database_name` LIKE '$table_name'";
 
     if (!$result = db_query($sql, $db_install_table_exists)) return false;
 
     return (db_num_rows($result) > 0);
 }
 
-function install_column_exists($table_name, $column_name)
+function install_column_exists($database_name, $table_name, $column_name)
 {
     if (!$db_install_column_exists = db_connect()) return false;
 
-    $table_name = db_escape_string($table_name);
     $column_name = db_escape_string($column_name);
 
-    $sql = "SHOW COLUMNS FROM `$table_name` LIKE '$column_name'";
+    $sql = "SHOW COLUMNS FROM `{$database_name}`.`{$table_name}` LIKE '$column_name'";
 
     if (!$result = db_query($sql, $db_install_column_exists)) return false;
 
     return (db_num_rows($result) > 0);
 }
 
-function install_index_exists($table_name, $index_name)
+function install_index_exists($database_name, $table_name, $index_name)
 {
     if (!$db_install_index_exists = db_connect()) return false;
 
-    $table_name = db_escape_string($table_name);
-
-    $sql = "SHOW INDEXES FROM `$table_name`";
+    $sql = "SHOW INDEXES FROM `{$database_name}`.`$table_name`";
 
     if (!$result = db_query($sql, $db_install_index_exists)) return false;
 
@@ -430,12 +432,17 @@ function install_index_exists($table_name, $index_name)
     return false;
 }
 
-function install_check_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false, $remove_conflicts = false)
+function install_check_table_conflicts($database_name, $webtag, $forum_tables = false, $global_tables = false, $remove_conflicts = false)
 {
     $conflicting_tables_array = array();
 
-    if (is_array($forum_tables) && sizeof($forum_tables) < 1) $forum_tables = false;
-    if (is_array($global_tables) && sizeof($global_tables) < 1) $global_tables = false;
+    if ((!is_array($forum_tables) || sizeof($forum_tables) < 1) && !is_bool($forum_tables)) {
+        $forum_tables = false;
+    }
+
+    if ((!is_array($global_tables) || sizeof($global_tables) < 1) && !is_bool($global_tables)) {
+        $global_tables = false;
+    }
 
     if ($forum_tables === true) {
 
@@ -463,18 +470,17 @@ function install_check_table_conflicts($webtag = false, $forum_tables = false, $
                                'VISITOR_LOG');
     }
 
-    if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/Du", $webtag) > 0) {
+    if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
 
-        if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
+        foreach ($forum_tables as $forum_table) {
 
-            foreach ($forum_tables as $forum_table) {
+            $check_forum_table = "{$webtag}_{$forum_table}";
 
-                if (install_table_exists("{$webtag}_{$forum_table}")) {
+            if (install_table_exists($database_name, $check_forum_table)) {
 
-                    if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table("{$webtag}_{$forum_table}"))) {
+                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($check_forum_table))) {
 
-                        $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";
-                    }
+                    $conflicting_tables_array[] = "'$check_forum_table'";
                 }
             }
         }
@@ -482,34 +488,28 @@ function install_check_table_conflicts($webtag = false, $forum_tables = false, $
 
     if (is_array($global_tables) && sizeof($global_tables) > 0) {
 
-        foreach ($global_tables as $global_table) {
+        foreach ($global_tables as $check_global_table) {
 
-            if (install_table_exists($global_table)) {
+            if (install_table_exists($database_name, $check_global_table)) {
 
-                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($global_table))) {
+                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($check_global_table))) {
 
-                    $conflicting_tables_array[] = "'{$global_table}'";
+                    $conflicting_tables_array[] = "'{$check_global_table}'";
                 }
             }
         }
     }
 
-    if (sizeof($conflicting_tables_array) > 0) {
-        return $conflicting_tables_array;
-    }
-
-    return false;
+    return (sizeof($conflicting_tables_array) > 0) ? $conflicting_tables_array : false;
 }
 
 function install_remove_table($table_name)
 {
     if (!$db_install_remove_table = db_connect()) return false;
 
-    $table_name = db_escape_string($table_name);
-
     $sql = "DROP TABLE IF EXISTS `$table_name`";
 
-    if (!$result = @db_query($sql, $install_remove_table)) return false;
+    if (!$result = db_query($sql, $db_install_remove_table)) return false;
 
     return true;
 }

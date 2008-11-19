@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.153 2008-11-15 18:33:42 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.154 2008-11-19 19:16:47 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -895,11 +895,11 @@ function clean_attributes($tag)
 * @param string $html The HTML to be tidied.
 * @param boolean $linebreaks Toggle if <br /> and <p> tags are to be converted (default=true)
 * @param boolean $links Toggle if HTML links are to be converted to text (default=true)
-* @param boolean $tidymce Toggle if using the TidyMCE WYSIWYG toolbar (default=false)
+* @param boolean $tidy_mce Toggle if using the TidyMCE WYSIWYG toolbar (default=false)
 */
-function tidy_html($html, $linebreaks = true, $links = true, $tidymce = false)
+function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
 {
-    if ($tidymce) {
+    if ($tidy_mce) {
 
         $html = str_replace('<noemots>', '<span class="noemots">', $html);
         $html = str_replace('</noemots>', '</span>', $html);

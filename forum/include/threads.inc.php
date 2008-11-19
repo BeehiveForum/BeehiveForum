@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.334 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.335 2008-11-19 19:16:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1450,15 +1450,10 @@ function threads_mark_all_read()
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, `{$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH,` NOW(), ";
-    $sql.= "`{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD` ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` ON ";
-    $sql.= "(`{$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID` ";
-    $sql.= "AND `{$table_data['PREFIX']}USER_THREAD.UID` = '$uid') ";
-    $sql.= "WHERE (`{$table_data['PREFIX']}THREAD.MODIFIED` > ";
-    $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
-    $sql.= "AND (`{$table_data['PREFIX']}THREAD.LENGTH > {$table_data['PREFIX']}USER_THREAD.LAST_READ` ";
-    $sql.= "OR `{$table_data['PREFIX']}USER_THREAD.LAST_READ` IS NULL) ";
+    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, NOW(), USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
+    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
     if (!db_query($sql, $db_threads_mark_all_read)) return false;
@@ -1477,17 +1472,11 @@ function threads_mark_50_read()
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, `{$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH,` NOW(), ";
-    $sql.= "`{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD` ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` ON ";
-    $sql.= "(`{$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID` ";
-    $sql.= "AND `{$table_data['PREFIX']}USER_THREAD.UID` = '$uid') ";
-    $sql.= "WHERE (`{$table_data['PREFIX']}THREAD.MODIFIED` > ";
-    $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
-    $sql.= "AND (`{$table_data['PREFIX']}THREAD.LENGTH > {$table_data['PREFIX']}USER_THREAD.LAST_READ` ";
-    $sql.= "OR `{$table_data['PREFIX']}USER_THREAD.LAST_READ` IS NULL) ";
-    $sql.= "ORDER BY `{$table_data['PREFIX']}THREAD.MODIFIED` DESC LIMIT 0, 50 ";
-    $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
+    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, NOW(), USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
+    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50 ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
     if (!db_query($sql, $db_threads_mark_50_read)) return false;
 
@@ -1507,15 +1496,10 @@ function threads_mark_folder_read($fid)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, `{$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH,` NOW(), ";
-    $sql.= "`{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD` ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` ON ";
-    $sql.= "(`{$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID` ";
-    $sql.= "AND `{$table_data['PREFIX']}USER_THREAD.UID` = '$uid') ";
-    $sql.= "WHERE `{$table_data['PREFIX']}THREAD.FID = '$fid' AND ({$table_data['PREFIX']}THREAD.MODIFIED` > ";
-    $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
-    $sql.= "AND (`{$table_data['PREFIX']}THREAD.LENGTH > {$table_data['PREFIX']}USER_THREAD.LAST_READ` ";
-    $sql.= "OR `{$table_data['PREFIX']}USER_THREAD.LAST_READ` IS NULL) ";
+    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, NOW(), USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE THREAD.FID = '$fid' AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
+    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
     if (!db_query($sql, $db_threads_mark_folder_read)) return false;
@@ -1538,16 +1522,10 @@ function threads_mark_read($tid_array)
     $tid_list = implode(",", array_keys($tid_array));
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, `{$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH,` NOW(), ";
-    $sql.= "`{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD` ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` ON ";
-    $sql.= "(`{$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID` ";
-    $sql.= "AND `{$table_data['PREFIX']}USER_THREAD.UID` = '$uid') ";
-    $sql.= "WHERE `{$table_data['PREFIX']}THREAD.TID` IN ($tid_list) ";
-    $sql.= "AND (`{$table_data['PREFIX']}THREAD.MODIFIED` > ";
-    $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
-    $sql.= "AND (`{$table_data['PREFIX']}THREAD.LENGTH > {$table_data['PREFIX']}USER_THREAD.LAST_READ` ";
-    $sql.= "OR `{$table_data['PREFIX']}USER_THREAD.LAST_READ` IS NULL) ";
+    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, NOW(), USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE THREAD.TID IN ($tid_list) AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
+    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
     if (!db_query($sql, $db_threads_mark_read)) return false;

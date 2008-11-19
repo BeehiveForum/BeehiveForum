@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.371 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.372 2008-11-19 19:16:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -604,7 +604,7 @@ function user_get_prefs($uid)
         $global_prefs_array = db_fetch_array($result, DB_RESULT_ASSOC);
     }
 
-    // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
+    // 3. The user's per-forum prefs, in GLOBAL USER_PREFS (not all prefs are set here e.g. name):
 
     if (($table_data = get_table_prefix())) {
 
@@ -783,7 +783,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach ($forum_prefix_array as $forum_prefix) {
 
-                $sql = "UPDATE LOW_PRIORITY {$forum_prefix}USER_PREFS SET $update_prefs_sql WHERE UID = '$uid'";
+                $sql = "UPDATE LOW_PRIORITY `{$forum_prefix}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
 
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
@@ -877,7 +877,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         foreach ($forum_prefix_array as $forum_prefix) {
 
-            $sql = "INSERT INTO {$forum_prefix}USER_SIG (UID, CONTENT, HTML) ";
+            $sql = "INSERT INTO `{$forum_prefix}USER_SIG (UID, CONTENT, HTML) ";
             $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY ";
             $sql.= "UPDATE CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 

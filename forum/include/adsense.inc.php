@@ -21,21 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.5 2008-11-19 20:19:53 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.6 2008-11-19 21:30:35 decoyduck Exp $ */
 
 function adsense_publisher_id()
 {
     if (($adsense_publisher_id = forum_get_global_setting('adsense_publisher_id'))) {
         return $adsense_publisher_id;
-    }
-
-    return false;
-}
-
-function adsense_large_ad_id()
-{
-    if (($adsense_large_ad_id = forum_get_global_setting('adsense_large_ad_id'))) {
-        return $adsense_large_ad_id;
     }
 
     return false;
@@ -90,11 +81,10 @@ function adsense_check_user()
 function adsense_slot_id($ad_type)
 {
     $forum_setting_names_array = array('small'  => 'adsense_small_ad_id',
-                                       'medium' => 'adsense_medium_ad_id',
-                                       'large'  => 'adsense_large_ad_id');
+                                       'medium' => 'adsense_medium_ad_id');
 
     if (!in_array($ad_type, array_keys($forum_setting_names_array))) {
-        $ad_type = 'adsense_large_ad_id';
+        $ad_type = 'medium';
     }
 
     if (($adsense_slot_id = forum_get_setting($forum_setting_names_array[$ad_type]))) {
@@ -143,39 +133,11 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
 
 function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 {
-    $ad_type = 'large';
-    $ad_width = 728;
-    $ad_height = 90;
+    $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
 
-    $adsense_settings_preg_array = array('admin_menu\.php' => array('small', 234, 60),
-                                         'display_emoticons\.php' => array('medium', 468, 60),
-                                         'attachments\.php' => array('medium', 468, 60),
-                                         'edit_attachments\.php' => array('medium', 468, 60),
-                                         'email\.php' => array('medium', 468, 60),
-                                         'folder_options\.php' => array('medium', 468, 60),
-                                         'mods_list\.php' => array('medium', 468, 60),
-                                         'pm_folders\.php' => array('small', 234, 60),
-                                         'poll_results\.php' => array('medium', 468, 60),
-                                         'search_popup\.php' => array('medium', 468, 60),
-                                         'search\.php.+show_stop_words=true' => array('medium', 468, 60),
-                                         'start_left\.php' => array('small', 234, 60),
-                                         'thread_list\.php' => array('small', 234, 60),
-                                         'user_menu\.php' => array('small', 234, 60),
-                                         'user_profile\.php' => array('medium', 468, 60));
-
-    $adsense_page_names_preg = implode(")|^(", array_keys($adsense_settings_preg_array));
-
-    if (preg_match("/^($adsense_page_names_preg)/u", basename($_SERVER['PHP_SELF']), $adsense_settings_match) > 0) {
-
-        $adsense_settings_match = (isset($adsense_settings_match[0])) ? preg_quote($adsense_settings_match[0], '/') : '';
-
-        if (isset($adsense_settings_preg_array[$adsense_settings_match])) {
-
-            list($ad_type, $ad_width, $ad_height) = $adsense_settings_preg_array[$adsense_settings_match];
-        }
+    if (preg_match("/^pm_folder\.php|^start_left\.php|^thread_list\.php|^user_menu\.php/u", basename($_SERVER['PHP_SELF'])) > 0) {
+        $ad_type = 'small'; $ad_width = 234; $ad_height = 60;
     }
-
-    return true;
 }
 
 function adsense_output_html()

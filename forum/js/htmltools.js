@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.31 2008-07-28 21:05:58 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.32 2008-11-19 21:30:35 decoyduck Exp $ */
 
 var selected_text = '';
 var active_field  = '';
@@ -33,10 +33,20 @@ function set_focus()
 
 function active_text(t, dbl)
 {
-    if (t.createTextRange) {        
+    if (t.createTextRange) {
         
-        t.caretPos = document.selection.createRange().duplicate();      
-        active_field.t = "";
+        var selection = document.selection;
+
+        try {
+
+            var range = selection.createRange();
+            t.caretPos = range.duplicate();      
+            active_field.t = '';
+
+        }catch (e) {
+
+            return;
+        }
     }
     
     active_field = t;

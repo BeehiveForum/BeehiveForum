@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.601 2008-11-17 21:16:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.602 2008-11-19 21:30:35 decoyduck Exp $ */
 
 // British English language file
 
@@ -942,7 +942,6 @@ $lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
 
 $lang['googleadsense'] = "Google AdSense";
 $lang['adsensepublisherid'] = "AdSense publisher id";
-$lang['adsenselargeadid'] = "Large sized (728x90) ad slot id";
 $lang['adsensemediumadid'] = "Medium sized (468x60) ad slot id";
 $lang['adsensesmalladid'] = "Small sized (234x60) ad slot id";
 $lang['adsenseallusers'] = "All Users";
@@ -1015,7 +1014,7 @@ $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account
 $lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>.";
 $lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
 $lang['forum_settings_help_65'] = "To change Google AdSense account details and other settings please see Global Forum Settings";
-$lang['forum_settings_help_66'] = "Your Beehive Forum supports howing 3 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
+$lang['forum_settings_help_66'] = "Your Beehive Forum supports howing 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

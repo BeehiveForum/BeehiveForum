@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.138 2008-11-17 21:16:24 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.139 2008-11-19 21:30:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -283,12 +283,6 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['adsense_publisher_id'] = trim(stripslashes_array($_POST['adsense_publisher_id']));
     }else {
         $new_forum_settings['adsense_publisher_id'] = '';
-    }
-
-    if (isset($_POST['adsense_large_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_large_ad_id']))) > 0) {
-        $new_forum_settings['adsense_large_ad_id'] = trim(stripslashes_array($_POST['adsense_large_ad_id']));
-    }else {
-        $new_forum_settings['adsense_large_ad_id'] = '';
     }
 
     if (isset($_POST['adsense_medium_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_medium_ad_id']))) > 0) {
@@ -945,10 +939,6 @@ echo "                        <td align=\"left\">", form_input_text("adsense_pub
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsenselargeadid']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("adsense_large_ad_id", (isset($forum_global_settings['adsense_large_ad_id']) ? htmlentities_array($forum_global_settings['adsense_large_ad_id']) : ''), 25, 40), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsensemediumadid']}:</td>\n";

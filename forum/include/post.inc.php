@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.208 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.209 2008-11-19 19:16:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -568,7 +568,7 @@ class MessageText {
     private $original_text = "";
     private $emoticons = true;
     private $links = true;
-    private $tinymce = false;
+    private $tiny_mce = false;
 
     public $diff = false;
 
@@ -577,7 +577,7 @@ class MessageText {
         $post_prefs = bh_session_get_post_page_prefs();
 
         if (($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
-            $this->tinymce = true;
+            $this->tiny_mce = true;
         }
 
         $this->diff = false;
@@ -644,7 +644,7 @@ class MessageText {
 
             $text = fix_html($text, $this->emoticons, $this->links);
 
-            if ($this->tinymce) {
+            if ($this->tiny_mce) {
 
                 if (strcmp($text, $this->original_text) <> 0) {
                     $this->diff = true;
@@ -678,7 +678,7 @@ class MessageText {
     {
         if ($this->html > POST_HTML_DISABLED) {
 
-            if ($this->tinymce) return htmlentities_array(tidy_html($this->text, false, $this->links, true));
+            if ($this->tiny_mce) return htmlentities_array(tidy_html($this->text, false, $this->links, true));
             return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
         }
 
@@ -703,10 +703,17 @@ class MessageTextParse {
     private $message = "";
     private $sig = "";
     private $original = "";
+    private $tiny_mce = false;
 
-    function MessageTextParse ($message, $emots_default = true, $links_enabled = true)
+    function MessageTextParse($message, $emots_default = true, $links_enabled = true)
     {
         $this->original = $message;
+
+        $post_prefs = bh_session_get_post_page_prefs();
+
+        if (($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
+            $this->tiny_mce = true;
+        }
 
         $message_parts = preg_split('/(<[^<>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -725,8 +732,6 @@ class MessageTextParse {
 
         $message = implode('', $message_parts);
 
-        $message = trim($message);
-
         $emoticons = $emots_default;
 
         if (preg_match('/^<noemots>.*<\/noemots>$/Dsu', $message) > 0) {
@@ -735,12 +740,14 @@ class MessageTextParse {
 
         $html = POST_HTML_DISABLED;
 
-        $message_check_links = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/u', '\3', $message);
+        $links_replace_count = 0;
 
-        if (strcmp($message_check_links, $message) == 0) {
-            $links = $links_enabled;
-        }else {
+        $message = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/u', '\3', $message, -1, $links_replace_count);
+
+        if ($links_replace_count > 0) {
             $links = true;
+        }else {
+            $links = $links_enabled;
         }
 
         $message_check_html = strip_tags($message, '<p><br>');
@@ -755,8 +762,10 @@ class MessageTextParse {
 
         }else {
 
-            $message = tidy_html($message_check_html);
+            $message = htmlentities_decode_array(tidy_html($message_check_html, true, $links, $this->tiny_mce));
         }
+
+        $message = trim($message);
 
         $this->message = $message;
         $this->sig = $signature;

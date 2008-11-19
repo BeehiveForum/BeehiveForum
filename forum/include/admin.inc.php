@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.176 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.177 2008-11-19 19:16:47 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1598,94 +1598,94 @@ function admin_delete_user($uid, $delete_content = false)
 
             // Get a list of available forums
 
-            if (($forum_prefix_array = forum_get_all_prefixes())) {
+            if (($forum_table_prefix_array = forum_get_all_prefixes())) {
 
                 // Loop through all forums and delete all the user data from every forum.
 
-                foreach ($forum_prefix_array as $forum_prefix) {
+                foreach ($forum_table_prefix_array as $forum_table_prefix) {
 
                     // Delete log entries created by the user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}ADMIN_LOG WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}ADMIN_LOG` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Links created by the user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}LINKS WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}LINKS` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Link Votes made by the user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}LINKS_VOTE WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}LINKS_VOTE` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Link Comments made by the user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}LINKS_COMMENT WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}LINKS_COMMENT` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Poll Votes made by the user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_POLL_VOTES WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_POLL_VOTES` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Relationship data for the user and relationships
                     // with this user made by other users.
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_PEER WHERE UID = '$uid' OR PEER_UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_PEER` WHERE UID = '$uid' OR PEER_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete folder preferences set by the user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_FOLDER WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_FOLDER` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Preferences
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_PREFS WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_PREFS` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Profile.
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_PROFILE WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_PROFILE` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Signature
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_SIG WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_SIG` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Thread Read Data
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_THREAD WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_THREAD` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Tracking data (Post Count, etc.)
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}USER_TRACK WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_TRACK` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Word Filter Entries made by user
 
-                    $sql = "DELETE QUICK FROM {$forum_prefix}WORD_FILTER WHERE UID = '$uid'";
+                    $sql = "DELETE QUICK FROM `{$forum_table_prefix}WORD_FILTER` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Polls created by user
 
-                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}THREAD ";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` ";
                     $sql.= "SET POLL_FLAG = 'N' WHERE BY_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
@@ -1693,15 +1693,15 @@ function admin_delete_user($uid, $delete_content = false)
                     // Delete threads started by the user where
                     // the thread only contains a single post.
 
-                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}THREAD SET DELETED = 'Y' ";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y' ";
                     $sql.= "WHERE BY_UID = '$uid' AND LENGTH = 1";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete content of posts made by this user
 
-                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}POST_CONTENT POST_CONTENT ";
-                    $sql.= "LEFT JOIN {$forum_prefix}POST POST ON (POST.TID = POST_CONTENT.TID ";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST_CONTENT` POST_CONTENT ";
+                    $sql.= "LEFT JOIN `{$forum_table_prefix}POST` POST ON (POST.TID = POST_CONTENT.TID ";
                     $sql.= "AND POST.PID = POST_CONTENT.PID) SET POST_CONTENT.CONTENT = NULL ";
                     $sql.= "WHERE POST.FROM_UID = '$uid'";
 
@@ -1710,7 +1710,7 @@ function admin_delete_user($uid, $delete_content = false)
                     // Mark posts made by this user as approved so they don't appear in the
                     // approval queue.
 
-                    $sql = "UPDATE LOW_PRIORITY {$forum_prefix}POST SET APPROVED = NOW(), ";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` SET APPROVED = NOW(), ";
                     $sql.= "APPROVED_BY = '$approve_uid' WHERE FROM_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;

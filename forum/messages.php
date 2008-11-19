@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.289 2008-11-19 20:18:31 decoyduck Exp $ */
+/* $Id: messages.php,v 1.290 2008-11-19 20:20:56 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -621,7 +621,7 @@ if ($msg_count > 0) {
 
         }
 
-        if (adsense_check_users() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
+        if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
 
             echo "<br />\n";
             adsense_output_html();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.3 2008-11-19 19:27:43 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.4 2008-11-19 20:18:31 decoyduck Exp $ */
 
 function adsense_publisher_id()
 {
@@ -113,7 +113,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
     $admin_area_files_array = get_available_admin_files();
     $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', $admin_area_files_array));
 
-    if (preg_match("/^nav\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
+    if (preg_match("/^nav\.php|^logon\.php|^logout\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
 
     if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)) return true;
 
@@ -129,10 +129,10 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
                 $random_pid = min(mt_rand(0, $posts_per_page), $thread_length);
             }
 
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIRST_MSG) && ($pid == 1)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_THIRD_MSG) && ($pid == 3)) return true;
+            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIRST_MSG) && ($pid == 0)) return true;
+            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_THIRD_MSG) && ($pid == 2)) return true;
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIFTH_MSG) && ($pid == 4)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_TENTH_MSG) && ($pid == 10)) return true;
+            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_TENTH_MSG) && ($pid == 9)) return true;
 
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_RANDOM_MSG) && ($pid == $random_pid)) return true;
         }
@@ -182,13 +182,21 @@ function adsense_output_html()
 {
     static $adsense_displayed = false;
 
+    $webtag = get_webtag();
+
+    $lang = load_language_file();
+
     if ($adsense_displayed === false) {
 
         if (($adsense_publisher_id = adsense_publisher_id())) {
 
-            $adsense_display_users = adsense_display_users()
+            $adsense_display_users = adsense_display_users();
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
+
+            if (bh_session_get_value('UID') == 19) {
+                echo '<pre>';
+                print_r($
 
             echo "<div class=\"google_adsense_container\" style=\"width: {$ad_width}px; margin: auto\">\n";
             echo "  <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";

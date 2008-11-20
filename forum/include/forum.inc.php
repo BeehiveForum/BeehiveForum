@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.364 2008-11-19 21:30:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.365 2008-11-20 18:54:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -866,16 +866,11 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
             foreach ($forum_prefix_array as $forum_prefix) {
 
-                $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` ";
-                $sql.= "USING `{$forum_prefix}USER_THREAD` ";
-                $sql.= "LEFT JOIN `{$forum_prefix}THREAD` ";
-                $sql.= "ON (`{$forum_prefix}USER_THREAD`.TID = ";
-                $sql.= "`{$forum_prefix}THREAD`.TID) ";
-                $sql.= "WHERE `{$forum_prefix}THREAD`.MODIFIED IS NOT NULL ";
-                $sql.= "AND `{$forum_prefix}THREAD`.MODIFIED < ";
-                $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-                $sql.= "AND (`{$forum_prefix}USER_THREAD`.INTEREST IS NULL ";
-                $sql.= "OR `{$forum_prefix}USER_THREAD`.INTEREST = 0) ";
+                $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` USER_THREAD ";
+                $sql.= "USING `{$forum_prefix}USER_THREAD` USER_THREAD LEFT JOIN `{$forum_prefix}THREAD` THREAD ";
+                $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE THREAD.MODIFIED IS NOT NULL ";
+                $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+                $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST = 0)";
 
                 if (!db_query($sql, $db_forum_update_unread_data)) return false;
             }

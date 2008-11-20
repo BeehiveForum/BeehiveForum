@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.335 2008-11-19 19:16:47 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.336 2008-11-20 18:54:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1728,16 +1728,11 @@ function thread_auto_prune_unread_data()
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) > 0) {
 
-        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_THREAD` ";
-        $sql.= "USING `{$table_data['PREFIX']}USER_THREAD` ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "ON (`{$table_data['PREFIX']}USER_THREAD.TID` = ";
-        $sql.= "`{$table_data['PREFIX']}THREAD.TID)` ";
-        $sql.= "WHERE `{$table_data['PREFIX']}THREAD.MODIFIED` IS NOT NULL ";
-        $sql.= "AND `{$table_data['PREFIX']}THREAD.MODIFIED` < ";
-        $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "AND (`{$table_data['PREFIX']}USER_THREAD.INTEREST` IS NULL ";
-        $sql.= "OR `{$table_data['PREFIX']}USER_THREAD.INTEREST` = 0) ";
+        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+        $sql.= "USING `{$table_data['PREFIX']}USER_THREAD` USER_THREAD LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
+        $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE THREAD.MODIFIED IS NOT NULL ";
+        $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST = 0)";
 
         if (!db_query($sql, $db_thread_prune_unread_data)) return false;
     }

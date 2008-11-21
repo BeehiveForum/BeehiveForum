@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.210 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.211 2008-11-21 19:07:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1336,7 +1336,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
 function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = false)
 {
-    $html = "<textarea name=\"$name\"";
+    $html = "<textarea name=\"$name\" class=\"bhlightinput\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
@@ -1357,7 +1357,7 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_h
 
 function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
+    $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\" class=\"bhlightinput\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -1374,7 +1374,7 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
 
 function light_form_field($name, $value = "", $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
-    $html = "<input type=\"$type\" name=\"$name\" value=\"$value\"";
+    $html = "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"bhlightinput\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));

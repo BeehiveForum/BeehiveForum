@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.372 2008-11-19 19:16:47 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.373 2008-11-21 19:07:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -877,7 +877,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         foreach ($forum_prefix_array as $forum_prefix) {
 
-            $sql = "INSERT INTO `{$forum_prefix}USER_SIG (UID, CONTENT, HTML) ";
+            $sql = "INSERT INTO `{$forum_prefix}USER_SIG` (UID, CONTENT, HTML) ";
             $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY ";
             $sql.= "UPDATE CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 

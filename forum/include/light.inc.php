@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.211 2008-11-21 19:07:25 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.212 2008-11-22 22:19:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -180,6 +180,191 @@ function light_draw_logon_form()
     echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (strlen($user_password) > 0 && strlen($user_passhash) > 0) && bh_getcookie('bh_light_remember_password'), "autocomplete=\"off\""), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
+}
+
+function light_draw_messages($msg)
+{
+    if (!validate_msg($msg)) return false;
+
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    $lang = load_language_file();
+
+    list($tid, $pid) = explode('.', $msg);
+
+    if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
+
+        if ($posts_per_page < 10) $posts_per_page = 10;
+        if ($posts_per_page > 30) $posts_per_page = 30;
+
+    }else {
+
+        $posts_per_page = 20;
+    }
+
+    if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+
+        light_html_draw_top("robots=noindex,nofollow");
+        light_html_display_error_msg($lang['threadcouldnotbefound']);
+        light_html_draw_bottom();
+        exit;
+    }
+
+    if (!$folder_data = folder_get($thread_data['FID'])) {
+
+        html_draw_top();
+        html_error_msg($lang['foldercouldnotbefound']);
+        html_draw_bottom();
+        exit;
+    }
+
+    if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
+
+        light_html_draw_top("robots=noindex,nofollow");
+        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_draw_bottom();
+        exit;
+    }
+
+    // Previous and Next page links
+
+    $prev_page = ($pid - $posts_per_page > 0) ? $pid - $posts_per_page : 1;
+
+    $next_page = ($pid + $posts_per_page < $thread_data['LENGTH']) ? $pid + $posts_per_page : $thread_data['LENGTH'];
+
+    // SEF links.
+
+    $contents_href = "lthread_list.php?webtag=$webtag";
+
+    $first_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.1";
+
+    $last_page_href  = "lmessages.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}";
+
+    $parent_href = "lthread_list.php?webtag=DEFAULT&amp;folder={$folder_data['FID']}";
+
+    $next_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$next_page";
+
+    $prev_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page";
+
+    // Forum name, folder title and thread title.
+
+    $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    $folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
+
+    $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+
+    light_html_draw_top("title=$forum_name > $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
+
+    $foldertitle = folder_get_title($thread_data['FID']);
+
+    $msg_count = count($messages);
+
+    light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
+
+    if (($tracking_data_array = thread_get_tracking_data($tid))) {
+
+        foreach ($tracking_data_array as $tracking_data) {
+
+            if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_MERGE) { // Thread merged
+
+                if ($tracking_data['TID'] == $tid) {
+
+                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+
+                    echo "<p>", sprintf($lang['thisthreadhasmoved'], $thread_link), "</p>\n";
+                }
+
+                if ($tracking_data['NEW_TID'] == $tid) {
+
+                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+
+                    echo "<p>", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</p>\n";
+                }
+
+            }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
+
+                if ($tracking_data['TID'] == $tid) {
+
+                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+
+                    echo "<p>", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</p>\n";
+                }
+
+                if ($tracking_data['NEW_TID'] == $tid) {
+
+                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+
+                    echo "<p>", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</p>\n";
+                }
+            }
+        }
+    }
+
+    if ($msg_count > 0) {
+
+        $first_msg = $messages[0]['PID'];
+
+        foreach ($messages as $message) {
+
+            if (isset($message['RELATIONSHIP'])) {
+
+                if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
+                    $message['CONTENT'] = message_get_content($tid, $message['PID']);
+                }else {
+                    $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
+                }
+
+            }else {
+
+              $message['CONTENT'] = message_get_content($tid, $message['PID']);
+
+            }
+
+            if ($thread_data['POLL_FLAG'] == 'Y') {
+
+                if ($message['PID'] == 1) {
+
+                    light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false);
+                    $last_pid = $message['PID'];
+
+                }else {
+
+                    light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false);
+                    $last_pid = $message['PID'];
+                }
+
+            }else {
+
+                light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
+                $last_pid = $message['PID'];
+            }
+        }
+    }
+
+    unset($messages, $message);
+
+    if ($last_pid < $thread_data['LENGTH']) {
+
+        $npid = $last_pid + 1;
+        echo form_quick_button("lmessages.php", $lang['keepreading'], array('msg' => "$tid.$npid"));
+    }
+
+    light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
+
+    if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
+        echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
+    }
+
+    if (($msg_count > 0 && !user_is_guest())) {
+        messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
+    }
 }
 
 function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start_from = 0)

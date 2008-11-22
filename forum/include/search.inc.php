@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.221 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.222 2008-11-22 22:19:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,26 +53,8 @@ function search_execute($search_arguments, &$error)
 
     // Ensure the bare minimum of variables are set
 
-    if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) $search_arguments['date_from'] = 7;
-    if (!isset($search_arguments['date_to']) || !is_numeric($search_arguments['date_to'])) $search_arguments['date_to'] = 2;
-    if (!isset($search_arguments['group_by_thread']) || !is_numeric($search_arguments['group_by_thread'])) $search_arguments['group_by_thread'] = 0;
-    if (!isset($search_arguments['sstart']) || !is_numeric($search_arguments['sstart'])) $search_arguments['sstart'] = 0;
-    if (!isset($search_arguments['fid']) || !is_numeric($search_arguments['fid'])) $search_arguments['fid'] = 0;
-    if (!isset($search_arguments['include']) || !is_numeric($search_arguments['include'])) $search_arguments['include'] = 2;
-    if (!isset($search_arguments['username']) || strlen(trim($search_arguments['username'])) < 1) $search_arguments['username'] = "";
-    if (!isset($search_arguments['user_include']) || !is_numeric($search_arguments['user_include'])) $search_arguments['user_include'] = 0;
-    if (!isset($search_arguments['sort_by']) || !is_numeric($search_arguments['sort_by'])) $search_arguments['sort_by'] = 1;
-    if (!isset($search_arguments['sort_dir']) || !is_numeric($search_arguments['sort_dir'])) $search_arguments['sort_dir'] = 1;
-
-    // Sort dir from form is numeric, which needs to be translated to ASC or DESC.
-
-    $sort_dir_array = array(1 => 'DESC', 2 => 'ASC');
-
-    if (in_array($search_arguments['sort_dir'], array_keys($sort_dir_array))) {
-        $search_arguments['sort_dir'] = $sort_dir_array[$search_arguments['sort_dir']];
-    }else {
-        $search_arguments['sort_dir'] = 'DESC';
-    }
+    if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) $search_arguments['date_from'] = SEARCH_FROM_ONE_MONTH_AGO;
+    if (!isset($search_arguments['date_to']) || !is_numeric($search_arguments['date_to'])) $search_arguments['date_to'] = SEARCH_TO_TODAY;
 
     if (!$db_search_execute = db_connect()) return false;
 
@@ -143,7 +125,7 @@ function search_execute($search_arguments, &$error)
 
         // Join to the THREAD table for the TID
 
-        $join_sql = "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+        $join_sql = "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
 
         // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
 
@@ -157,11 +139,18 @@ function search_execute($search_arguments, &$error)
 
             if (($user_uid = user_get_by_logon(trim($username)))) {
 
-                if ($search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS) {
+                if (isset($search_arguments['user_include']) && is_numeric($search_arguments['user_include'])) {
 
-                    $where_sql.= "AND THREAD.BY_UID = '{$user_uid['UID']}' AND POST.PID = 1 ";
+                    if ($search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS) {
 
-                }elseif ($search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) {
+                        $where_sql.= "AND THREAD.BY_UID = '{$user_uid['UID']}' AND POST.PID = 1 ";
+
+                    }elseif ($search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) {
+
+                        $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
+                    }
+
+                }else {
 
                     $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
                 }
@@ -189,8 +178,8 @@ function search_execute($search_arguments, &$error)
 
             $from_sql = "FROM `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
 
-            $join_sql = "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
-            $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
+            $join_sql = "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
+            $join_sql.= "INNER JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
 
             $having_sql = "HAVING RELEVANCE > 0.2";
 
@@ -246,31 +235,6 @@ function search_execute($search_arguments, &$error)
         $group_sql = "";
     }
 
-    // Order the results.
-
-    switch($search_arguments['sort_by']) {
-
-        case SEARCH_SORT_NUM_REPLIES:
-
-            $order_sql = "ORDER BY THREAD.LENGTH {$search_arguments['sort_dir']}";
-            break;
-
-        case SEARCH_SORT_FOLDER_NAME:
-
-            $order_sql = "ORDER BY THREAD.FID {$search_arguments['sort_dir']}";
-            break;
-
-        case SEARCH_SORT_AUTHOR_NAME:
-
-            $order_sql = "ORDER BY FROM_UID {$search_arguments['sort_dir']}";
-            break;
-
-        default:
-
-            $order_sql = "ORDER BY DATE_CREATED {$search_arguments['sort_dir']}";
-            break;
-    }
-
     // Set a limit of 1000 results.
 
     $limit_sql = "LIMIT 0, 1000";
@@ -279,7 +243,7 @@ function search_execute($search_arguments, &$error)
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
     $sql.= "$where_sql $peer_where_sql $group_sql $having_sql ";
-    $sql.= "$order_sql $limit_sql";
+    $sql.= "$limit_sql";
 
     // If the user has performed a search within the last x minutes bail out
 
@@ -496,6 +460,8 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
+    $search_keywords = search_get_keywords();
+
     $sort_dir_array = array(1 => 'DESC', 2 => 'ASC');
 
     if (in_array($sort_dir, array_keys($sort_dir_array))) {
@@ -509,7 +475,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
     $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED, ";
     $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
@@ -554,6 +520,8 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
         $search_results_array = array();
 
         while (($search_result = db_fetch_array($result))) {
+
+            $search_result['KEYWORDS'] = $search_keywords;
 
             if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
                 if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
@@ -611,57 +579,57 @@ function search_date_range($from, $to)
 
     switch($from) {
 
-      case 1:  // Today
+      case SEARCH_FROM_TODAY:  // Today
 
         $from_timestamp = mktime(0, 0, 0, $month, $day, $year);
         break;
 
-      case 2:  // Yesterday
+      case SEARCH_FROM_YESTERDAY:  // Yesterday
 
         $from_timestamp = mktime(0, 0, 0, $month, $day - 1, $year);
         break;
 
-      case 3:  // Day before yesterday
+      case SEARCH_FROM_DAYBEFORE:  // Day before yesterday
 
         $from_timestamp = mktime(0, 0, 0, $month, $day - 2, $year);
         break;
 
-      case 4:  // 1 week ago
+      case SEARCH_FROM_ONE_WEEK_AGO:  // 1 week ago
 
         $from_timestamp = mktime(0, 0, 0, $month, $day - 7, $year);
         break;
 
-      case 5:  // 2 weeks ago
+      case SEARCH_FROM_TWO_WEEKS_AGO:  // 2 weeks ago
 
         $from_timestamp = mktime(0, 0, 0, $month, $day - 14, $year);
         break;
 
-      case 6:  // 3 weeks ago
+      case SEARCH_FROM_THREE_WEEKS_AGO:  // 3 weeks ago
 
         $from_timestamp = mktime(0, 0, 0, $month, $day - 21, $year);
         break;
 
-      case 7:  // 1 month ago
+      case SEARCH_FROM_ONE_MONTH_AGO:  // 1 month ago
 
         $from_timestamp = mktime(0, 0, 0, $month - 1, $day, $year);
         break;
 
-      case 8:  // 2 months ago
+      case SEARCH_FROM_TWO_MONTHS_AGO:  // 2 months ago
 
         $from_timestamp = mktime(0, 0, 0, $month - 2, $day, $year);
         break;
 
-      case 9:  // 3 months ago
+      case SEARCH_FROM_THREE_MONTHS_AGO:  // 3 months ago
 
         $from_timestamp = mktime(0, 0, 0, $month - 3, $day, $year);
         break;
 
-      case 10: // 6 months ago
+      case SEARCH_FROM_SIX_MONTHS_AGO: // 6 months ago
 
         $from_timestamp = mktime(0, 0, 0, $month - 6, $day, $year);
         break;
 
-      case 11: // 1 year ago
+      case SEARCH_FROM_ONE_YEAR_AGO: // 1 year ago
 
         $from_timestamp = mktime(0, 0, 0, $month, $day, $year - 1);
         break;
@@ -670,62 +638,62 @@ function search_date_range($from, $to)
 
     switch($to) {
 
-      case 1:  // Now
+      case SEARCH_TO_NOW:  // Now
 
         $to_timestamp = mktime();
         break;
 
-      case 2:  // Today
+      case SEARCH_TO_TODAY:  // Today
 
         $to_timestamp = mktime(23, 59, 59, $month, $day, $year);
         break;
 
-      case 3:  // Yesterday
+      case SEARCH_TO_YESTERDAY:  // Yesterday
 
         $to_timestamp = mktime(23, 59, 59, $month, $day - 1, $year);
         break;
 
-      case 4:  // Day before yesterday
+      case SEARCH_TO_DAYBEFORE:  // Day before yesterday
 
         $to_timestamp = mktime(23, 59, 59, $month, $day - 2, $year);
         break;
 
-      case 5:  // 1 week ago
+      case SEARCH_TO_ONE_WEEK_AGO:  // 1 week ago
 
         $to_timestamp = mktime(23, 59, 59, $month, $day - 7, $year);
         break;
 
-      case 6:  // 2 weeks ago
+      case SEARCH_TO_TWO_WEEKS_AGO:  // 2 weeks ago
 
         $to_timestamp = mktime(23, 59, 59, $month, $day - 14, $year);
         break;
 
-      case 7:  // 3 weeks ago
+      case SEARCH_TO_THREE_WEEKS_AGO:  // 3 weeks ago
 
         $to_timestamp = mktime(23, 59, 59, $month, $day - 21, $year);
         break;
 
-      case 8:  // 1 month ago
+      case SEARCH_TO_ONE_MONTH_AGO:  // 1 month ago
 
         $to_timestamp = mktime(23, 59, 59, $month - 1, $day, $year);
         break;
 
-      case 9:  // 2 months ago
+      case SEARCH_TO_TWO_MONTHS_AGO:  // 2 months ago
 
         $to_timestamp = mktime(23, 59, 59, $month - 2, $day, $year);
         break;
 
-      case 10: // 3 months ago
+      case SEARCH_TO_THREE_MONTHS_AGO: // 3 months ago
 
         $to_timestamp = mktime(23, 59, 59, $month - 3, $day, $year);
         break;
 
-      case 11: // 6 months ago
+      case SEARCH_TO_SIX_MONTHS_AGO: // 6 months ago
 
         $to_timestamp = mktime(23, 59, 59, $month - 6, $day, $year);
         break;
 
-      case 12: // 1 year ago
+      case SEARCH_TO_ONE_YEAR_AGO: // 1 year ago
 
         $to_timestamp = mktime(23, 59, 59, $month, $day, $year - 1);
         break;

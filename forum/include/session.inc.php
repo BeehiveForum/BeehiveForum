@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.368 2008-11-16 01:54:16 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.369 2008-12-09 18:26:46 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1224,6 +1224,8 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     if ($encoded_uri_query) {
 

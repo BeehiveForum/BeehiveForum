@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.134 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.135 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -265,7 +265,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$id\">";
+        $html.= "<label for=\"$id\" name=\"label_$name\">";
 
         foreach ($text as $text_part) {
 
@@ -275,7 +275,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
             }else {
 
-                $html.= "</label>$text_part<label for=\"$id\">";
+                $html.= "</label>$text_part<label for=\"$id\" name=\"label_$name\">";
             }
         }
 
@@ -283,7 +283,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
     }elseif (strlen(trim($text)) > 0) {
 
-        $html.= "<label for=\"$id\">$text</label>";
+        $html.= "<label for=\"$id\" name=\"label_$name\">$text</label>";
     }
 
     $html.= "</span>";

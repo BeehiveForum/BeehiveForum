@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.189 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: logon.php,v 1.190 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -161,16 +161,14 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
     }else {
 
-        if (!defined('BEEHIVEMODE_LIGHT')) bh_setcookie("bh_logon_failed", "1");
-
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
+            header_redirect("index.php?webtag=$webtag&logon_failed=true&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
 
         }else {
 
-            header_redirect("index.php?webtag=$webtag", $lang['usernameorpasswdnotvalid']);
+            header_redirect("index.php?webtag=$webtag&logon_failed=true", $lang['usernameorpasswdnotvalid']);
         }
     }
 
@@ -187,7 +185,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
     }
 }
 
-html_draw_top('logon.js');
+html_draw_top('logon.js', 'onload=toogleAutoLogon()');
 
 echo "<div align=\"center\">\n";
 

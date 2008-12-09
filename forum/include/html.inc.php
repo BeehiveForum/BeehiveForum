@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.330 2008-11-17 21:16:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.331 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1478,7 +1478,7 @@ function bh_getcookie($cookie_name, $callback = false, $default = false)
 
         if ($callback !== false) {
 
-            if (function_exists($callback)) {
+            if (function_exists($callback) && is_callable($callback)) {
 
                 return ($callback($_COOKIE[$cookie_name])) ? $_COOKIE[$cookie_name] : $default;
 
@@ -1508,9 +1508,9 @@ function bh_remove_all_cookies()
 
     // Remove logon tracking and session cookies
 
-    bh_setcookie("bh_logon_failed", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
 
     // Remove the old saved logon cookies
 
@@ -1556,6 +1556,8 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri_query_array = array();
 
         parse_str($uri_array['query'], $uri_query_array);
+        
+        unset($uri_array['query']);
 
         $uri_query_keys = array();
         $uri_query_values = array();
@@ -1582,8 +1584,10 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
                 }
             }
         }
-
-        $uri_array['query'] = implode($seperator, $new_uri_query_array);
+        
+        if (sizeof($new_uri_query_array) > 0) {
+            $uri_array['query'] = implode($seperator, $new_uri_query_array);
+        }
 
         $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
         $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
@@ -1591,10 +1595,6 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
         $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
         $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
-
-        $uri = rtrim($uri, '?');
-        $uri = rtrim($uri, '&');
-        $uri = rtrim($uri, '&amp;');
     }
 
     return $uri;

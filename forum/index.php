@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.185 2008-12-09 18:33:25 decoyduck Exp $ */
+/* $Id: index.php,v 1.186 2008-12-09 18:37:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -282,23 +282,23 @@ if ($skip_logon_page === true) {
 
     if (isset($final_uri) && strlen($final_uri) > 0) {
 
-        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success&amp;final_uri=%s", rawurlencode($final_uri));
+        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
 
     }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
 
     }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
+        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
 
     }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
 
     }else {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success";
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
     }
 
     $frameset = new html_frameset_rows("60,*");

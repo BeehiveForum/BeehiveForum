@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.106 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: logout.php,v 1.107 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -61,7 +61,6 @@ include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -74,88 +73,20 @@ $user_sess = bh_session_check(false);
 
 $webtag = get_webtag();
 
-// Load Language File
+// After we've logged out redirect to index.php
 
-$lang = load_language_file();
-
-// User was a guest that now wants to logon
-
-if (user_is_guest()) {
-
-    if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
-        $final_uri = "&final_uri=". rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
-    }else {
-        $final_uri = "";
-    }
-
-    bh_session_remove_cookies();
-    bh_setcookie("bh_logon", "1");
-    header_redirect("index.php?webtag=$webtag$final_uri");
-    exit;
+if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+    $final_uri = "&final_uri=". rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
+}else {
+    $final_uri = "";
 }
 
-// The logout link on nav.php needs to be redirected to index.php
+bh_session_remove_cookies();
 
-if (isset($_GET['check_cookie'])) {
+bh_setcookie("bh_logon", "1");
+bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
 
-    header_redirect("index.php?webtag=$webtag&final_uri=logout.php%3Fwebtag%3D$webtag");
-    exit;
-}
-
-// Where are we going after we've logged off?
-
-if (isset($_POST['logout'])) {
-
-    bh_session_end();
-    bh_setcookie("bh_logon", "1");
-
-    header_redirect("index.php?webtag=$webtag", $lang['youhaveloggedout']);
-}
-
-html_draw_top();
-
-$user = user_get(bh_session_get_value('UID'));
-
-echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "<form accept-charset=\"utf-8\" name=\"logon\" action=\"logout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"subhead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['logout']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"center\" nowrap=\"nowrap\">", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_submit("logout", $lang['logout']), "</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form></div>\n";
-
-html_draw_bottom();
+header_redirect("index.php?webtag=$webtag&logout_success=true$final_uri");
+exit;
 
 ?>

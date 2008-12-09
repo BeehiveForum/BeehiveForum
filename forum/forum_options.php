@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.147 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.148 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -498,7 +498,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "if (top.document.body.rows) {\n\n";
 
     if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
-        echo "    top.document.body.rows='60, ' + ". max($user_prefs['FONT_SIZE']* 2, 22) ."+ ', *';\n";
+        echo "    top.document.body.rows='60, ' + ". max($user_prefs['FONT_SIZE'] * 2, 22) ."+ ', *';\n";
     }else {
         echo "    top.document.body.rows='60, 22, *';\n";
     }

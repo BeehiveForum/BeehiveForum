@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.95 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.96 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,7 +42,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function logon_get_cookies(&$username_array, &$password_array, &$passhash_array)
+function logon_get_cookies(&$username_array, &$password_array, &$passhash_array, &$auto_logon = false)
 {
     // Username array
 
@@ -61,6 +61,10 @@ function logon_get_cookies(&$username_array, &$password_array, &$passhash_array)
     if (!$passhash_array = bh_getcookie('bh_remember_passhash', 'is_array')) {
         $passhash_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_passhash', 'strlen', '')));
     }
+    
+    // Auto Logon cookie
+    
+    $auto_logon = bh_getcookie('bh_auto_logon', 'Y');
 
     // Remove any invalid entries.
 
@@ -134,7 +138,7 @@ function logon_update_password_cookie($logon, $password)
     }
 }
 
-function logon_update_cookies($logon, $password, $passhash, $save_password)
+function logon_update_cookies($logon, $password, $passhash, $save_password, $auto_logon)
 {
     // Retrieve the existing cookies
 
@@ -152,6 +156,10 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
             bh_setcookie("bh_light_remember_username", $logon, time() + YEAR_IN_SECONDS);
             bh_setcookie("bh_light_remember_password", $password, time() + YEAR_IN_SECONDS);
             bh_setcookie("bh_light_remember_passhash", $passhash, time() + YEAR_IN_SECONDS);
+            
+            if ($auto_logon === true) {
+                bh_setcookie("bh_light_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
+            }
 
         }else {
 
@@ -209,6 +217,12 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
         bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
+        
+        // Set the auto logon cookie if required.
+        
+        if ($auto_logon === true) {
+            bh_setcookie("bh_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
+        }        
     }
 }
 
@@ -243,6 +257,10 @@ function logon_perform()
         // Check if the user wants to save their password.
 
         $save_password = isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y');
+        
+        // Check if the user wants to automatically logon.
+        
+        $auto_logon = isset($_POST['auto_logon']) && ($_POST['auto_logon'] == 'Y');
 
         // Check the password submitted by the user. If it's a string
         // which isn't all spaces (trim will make it's length 0) then
@@ -286,7 +304,7 @@ function logon_perform()
 
             // Update the cookies.
 
-            logon_update_cookies($logon, $password, $passhash, $save_password);
+            logon_update_cookies($logon, $password, $passhash, $save_password, $auto_logon);
 
             return true;
         }
@@ -295,6 +313,33 @@ function logon_perform()
     return false;
 }
 
+function logon_perform_auto()
+{
+    if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
+    
+        if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
+
+            if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
+
+                if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+
+                    $username = mb_strtoupper($username_array[0]);
+                    $passhash = $passhash_array[0];
+
+                    if (($uid = user_logon($username, $passhash))) {
+
+                        bh_session_init($uid);
+                        header_redirect(get_request_uri());
+                        exit;
+                    }
+                }
+            }
+        }
+    }
+    
+    return false;
+}        
+    
 function logon_draw_form($logon_options)
 {
     $lang = load_language_file();
@@ -311,7 +356,7 @@ function logon_draw_form($logon_options)
 
     // Retrieve existing cookie data if any
 
-    logon_get_cookies($username_array, $password_array, $passhash_array);
+    logon_get_cookies($username_array, $password_array, $passhash_array, $auto_logon);
 
     // If the user clicked the 'Other' button we need to
     // hide the logon dropdown and replace it with a normal
@@ -321,9 +366,9 @@ function logon_draw_form($logon_options)
 
     // Check for previously failed logon.
 
-    if (bh_getcookie('bh_logon_failed') && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
-
-        bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
+    if (isset($_GET['logout_success'])) {
+        html_display_success_msg($lang['youhavesuccessfullyloggedout'], '500', 'center');
+    }else if (isset($_GET['logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
         html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');
     }
 
@@ -353,7 +398,7 @@ function logon_draw_form($logon_options)
 
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"265\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"320\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -367,12 +412,12 @@ function logon_draw_form($logon_options)
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
     if ((sizeof($username_array) > 1) && $other_logon === false) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
+        echo "                        <td align=\"left\" width=\"90\">{$lang['username']}:</td>\n";
         echo "                        <td align=\"left\" nowrap=\"nowrap\">";
 
         $username_dropdown_array = array_flip(htmlentities_array($username_array));
@@ -417,7 +462,7 @@ function logon_draw_form($logon_options)
         echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
+        echo "                        <td align=\"left\">{$lang['passwd']}:</td>\n";
 
         if (isset($password_array[$current_logon]) && strlen($password_array[$current_logon]) > 0) {
 
@@ -442,22 +487,22 @@ function logon_draw_form($logon_options)
         if ($other_logon === true) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
+            echo "                        <td align=\"left\" width=\"90\">{$lang['username']}:</td>\n";
             echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
+            echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
             echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, 32, "autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
 
         }else {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
+            echo "                        <td align=\"left\" width=\"90\">{$lang['username']}:</td>\n";
             echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
+            echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
             echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? htmlentities_array($password_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? htmlentities_array($passhash_array[0]) : "")), "</td>\n";
             echo "                      </tr>\n";
         }
@@ -467,12 +512,20 @@ function logon_draw_form($logon_options)
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && strlen($password_array[0]) > 0 && isset($passhash_array[0]) && strlen($passhash_array[0]) > 0 && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && strlen($password_array[0]) > 0 && isset($passhash_array[0]) && strlen($passhash_array[0]) > 0 && $other_logon === false), "autocomplete=\"off\" onclick=\"toogleAutoLogon()\""), "</td>\n";
         echo "                      </tr>\n";
+        
+        if (!($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
+        
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">", form_checkbox("auto_logon", "Y", $lang['logmeinautomatically'], false, "autocomplete=\"off\" onclick=\"changeAutoLogon()\""), "</td>\n";
+            echo "                      </tr>\n";
+        }        
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";        
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -483,10 +536,19 @@ function logon_draw_form($logon_options)
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";        
+    echo "    </tr>\n";    
+    echo "    <tr>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
+    echo "    </tr>\n";    
     echo "  </table>\n";
     echo "</form>\n";
+    echo "<br />\n";
 
     if (!($logon_options & LOGON_FORM_HIDE_LINKS)) {
+    
+        echo "<hr class=\"bhlogonseparator\" />\n";
 
         if (user_guest_enabled()) {
 

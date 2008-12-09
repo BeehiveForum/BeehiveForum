@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.602 2008-11-19 21:30:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.603 2008-12-09 18:26:46 decoyduck Exp $ */
 
 // British English language file
 
@@ -1241,8 +1241,11 @@ $lang['linkfoldernametoolong'] = "Folder name too long. Maximum length is %s cha
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
+$lang['youhavesuccessfullyloggedout'] = "Your have successfully logged out.";
+$lang['rememberusername'] = "Remember username";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";
+$lang['logmeinautomatically'] = "Log me in automatically";
 $lang['enterasa'] = "Enter as a %s";
 $lang['donthaveanaccount'] = "Don't have an account? %s";
 $lang['registernow'] = "Register now";

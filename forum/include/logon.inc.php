@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.96 2008-12-09 18:26:46 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.97 2008-12-09 18:33:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -366,7 +366,7 @@ function logon_draw_form($logon_options)
 
     // Check for previously failed logon.
 
-    if (isset($_GET['logout_success'])) {
+    if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
         html_display_success_msg($lang['youhavesuccessfullyloggedout'], '500', 'center');
     }else if (isset($_GET['logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
         html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');

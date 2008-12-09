@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.184 2008-12-09 18:26:46 decoyduck Exp $ */
+/* $Id: index.php,v 1.185 2008-12-09 18:33:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -101,11 +101,27 @@ $session_active = bh_session_active();
 
 // Check for login failure.
 
-$logon_failed = isset($_GET['logon_failed']) ? 'true' : 'false';
+if (isset($_GET['logon_failed'])) {
+    $logon_failed = '&amp;logon_failed=true';
+}else {
+    $logon_failed = false;
+}
 
 // Check for log out notification.
 
-$logout_success = isset($_GET['logout_success']) ? 'true' : 'false';
+if (isset($_GET['logout_success'])) {
+    $logout_success = '&amp;logout_success=true';
+}else {
+    $logout_success = false;
+}
+
+// Check for other logon button click
+
+if (isset($_GET['other_logon'])) {
+    $other_logon = '&amp;other_logon=true';
+}else {
+    $other_logon = false;
+}
 
 // Check to see if the user is trying to change their password.
 
@@ -187,7 +203,7 @@ if ($skip_logon_page === true) {
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-}else if ($session_active && $logon_failed !== 'true') {
+}else if ($session_active && $logon_failed === false) {
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -264,31 +280,25 @@ if ($skip_logon_page === true) {
 
 }else {
 
-    if (isset($_GET['other_logon'])) {
-        $other_logon = "&amp;other_logon=true";
-    }else {
-        $other_logon = "";
-    }
-
     if (isset($final_uri) && strlen($final_uri) > 0) {
 
-        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon&amp;logout_success=$logout_success&amp;final_uri=%s", rawurlencode($final_uri));
+        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success&amp;final_uri=%s", rawurlencode($final_uri));
 
     }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;logout_success=$logout_success&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
 
     }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;logout_success=$logout_success&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
+        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
 
     }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;logout_success=$logout_success&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
 
     }else {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;logout_success=$logout_success";
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success";
     }
 
     $frameset = new html_frameset_rows("60,*");
@@ -301,7 +311,7 @@ $frameset->output_html(false);
 echo "<noframes>\n";
 echo "<body>\n";
 
-if ($session_active && $logon_failed !== 'true') {
+if ($session_active && $logon_failed === false) {
 
     if (forum_check_webtag_available($webtag)) {
 

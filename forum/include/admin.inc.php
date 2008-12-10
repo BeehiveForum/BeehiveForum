@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.177 2008-11-19 19:16:47 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.178 2008-12-10 19:23:03 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -42,6 +42,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");

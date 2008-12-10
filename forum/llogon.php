@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.69 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.70 2008-12-10 19:23:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,6 +71,12 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+// See if we can try and logon automatically
+
+logon_perform_auto();
+
+// Load user session
+
 $user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
@@ -117,7 +123,9 @@ light_html_draw_top("robots=noindex,nofollow");
 
 echo "<h1>{$lang['logon']}</h1>\n";
 
-if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
+    light_html_display_success_msg($lang['youhavesuccessfullyloggedout']);
+}else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 

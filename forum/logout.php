@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.108 2008-12-09 18:33:25 decoyduck Exp $ */
+/* $Id: logout.php,v 1.109 2008-12-10 19:23:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -81,7 +81,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     $final_uri = "";
 }
 
-bh_session_remove_cookies();
+bh_session_end();
 
 bh_setcookie("bh_logon", "1");
 bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);

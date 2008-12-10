@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.62 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.63 2008-12-10 19:23:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -78,39 +78,20 @@ $webtag = get_webtag();
 
 $user_sess = bh_session_check();
 
-// Load language file
+bh_session_end();
 
-$lang = load_language_file();
-
-// User was a guest that now wants to logon
+bh_setcookie("bh_logon", "1");
+bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
 
 if (user_is_guest()) {
 
-    bh_session_remove_cookies();
-    bh_setcookie("bh_logon", "1");
     header_redirect("llogon.php?webtag=$webtag");
+    exit;
+
+}else {
+
+    header_redirect("llogon.php?webtag=$webtag&logout_success=true");
+    exit;
 }
-
-// Where are we going after we've logged off?
-
-if (isset($_POST['logout'])) {
-
-    bh_session_end();
-    header_redirect("llogon.php?webtag=$webtag", $lang['youhaveloggedout']);
-}
-
-light_html_draw_top("robots=noindex,nofollow");
-
-$user = user_get(bh_session_get_value('UID'));
-
-echo "<form accept-charset=\"utf-8\" name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "<p>", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</p>\n";
-echo "<p>", light_form_submit("logout", $lang['logout']), "</p>\n";
-echo "</form>\n";
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
-
-light_html_draw_bottom();
 
 ?>

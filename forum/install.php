@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.109 2008-11-16 01:57:40 decoyduck Exp $ */
+/* $Id: install.php,v 1.110 2008-12-10 19:23:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -46,6 +46,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 
 // Check the PHP version
 

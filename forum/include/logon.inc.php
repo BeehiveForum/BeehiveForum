@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.97 2008-12-09 18:33:25 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.98 2008-12-10 19:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,6 +37,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -190,6 +191,12 @@ function logon_update_cookies($logon, $password, $passhash, $save_password, $aut
 
             array_unshift($password_array, $password);
             array_unshift($passhash_array, $passhash);
+            
+            // Set the auto logon cookie if required.
+
+            if ($auto_logon === true) {
+                bh_setcookie("bh_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
+            }            
 
         }else {
 
@@ -217,12 +224,6 @@ function logon_update_cookies($logon, $password, $passhash, $save_password, $aut
         bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
-        
-        // Set the auto logon cookie if required.
-        
-        if ($auto_logon === true) {
-            bh_setcookie("bh_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
-        }        
     }
 }
 
@@ -315,22 +316,45 @@ function logon_perform()
 
 function logon_perform_auto()
 {
-    if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
+    $webtag = get_webtag();
     
-        if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
+    forum_check_webtag_available($webtag);
+    
+    if (defined("BEEHIVEMODE_LIGHT")) {
+        
+        if (bh_getcookie("bh_auto_logon", "Y")) {
 
-            if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
+            $user_logon = bh_getcookie('bh_light_remember_username', 'strlen', '');
+            $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');        
+            
+            if (($uid = user_logon($user_logon, $user_passhash))) {
 
-                if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+                bh_session_init($uid);
+                header_redirect("index.php?webtag=$webtag&noframes");
+                exit;
+            }            
+        }
+            
+    }else {
+    
+        if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
+            
+            if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
 
-                    $username = mb_strtoupper($username_array[0]);
-                    $passhash = $passhash_array[0];
+                if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
 
-                    if (($uid = user_logon($username, $passhash))) {
+                    if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
 
-                        bh_session_init($uid);
-                        header_redirect(get_request_uri());
-                        exit;
+                        $username = mb_strtoupper($username_array[0]);
+                        $passhash = $passhash_array[0];
+
+                        if (($uid = user_logon($username, $passhash))) {
+
+                            bh_session_init($uid);
+
+                            header_redirect(get_request_uri());
+                            exit;
+                        }
                     }
                 }
             }

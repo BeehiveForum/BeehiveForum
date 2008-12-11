@@ -574,6 +574,15 @@ a {
     font-size: 8pt
 }
 
+.bhinputcheckboxdisabled, .bhinputradiodisabled {
+    color: #808080;
+}
+
+.bhlightinput {
+    max-width: 90%;
+    max-height: 40%;
+}
+
 .bhinputprofileitem {
     width: 300px;
 }

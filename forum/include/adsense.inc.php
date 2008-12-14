@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.7 2008-12-10 19:23:03 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.8 2008-12-14 22:49:35 decoyduck Exp $ */
 
 /**
 * adsense.inc.php - admin functions
@@ -122,7 +122,7 @@ function adsense_slot_id($ad_type)
 function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length = NULL)
 {
     static $random_pid = false;
-
+    
     $adsense_display_pages = adsense_display_pages();
 
     $admin_area_files_array = get_available_admin_files();
@@ -132,7 +132,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
 
     if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)) return true;
 
-    if ((preg_match('/^messages\.php/i', basename($_SERVER['PHP_SELF'])) > 0)) {
+    if ((preg_match('/^messages\.php|^lmessages\.php/i', basename($_SERVER['PHP_SELF'])) > 0)) {
 
         if (is_null($pid)) {
 
@@ -152,7 +152,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_RANDOM_MSG) && ($pid == $random_pid)) return true;
         }
     }
-
+    
     return false;
 }
 

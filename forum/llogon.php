@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.70 2008-12-10 19:23:04 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.71 2008-12-14 22:49:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,13 +71,24 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// See if we can try and logon automatically
+// Check we have a webtag
 
-logon_perform_auto();
+$webtag = get_webtag();
+
+// Validate the webtag
+
+forum_check_webtag_available($webtag);
 
 // Load user session
 
 $user_sess = bh_session_check(false);
+
+// See if we're already logged in
+
+if (bh_session_active() && !user_is_guest()) {
+    header_redirect("lthread_list.php?webtag=$webtag");
+    exit;
+}
 
 // Check to see if the user is banned.
 
@@ -99,13 +110,11 @@ if (!bh_session_user_approved()) {
 
 $lang = load_language_file();
 
-// Check we have a webtag
-
-$webtag = get_webtag();
-
 // Error messages string
 
 $error_msg_array = array();
+
+// Check for logon post data
 
 if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 

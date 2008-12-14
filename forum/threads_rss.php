@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.74 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.75 2008-12-14 22:49:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -148,42 +148,13 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
     $sort_created = 'N';
 }
 
-// Check we have a webtag
+// See if we can try and logon automatically
 
-if (!forum_check_webtag_available($webtag)) {
-    header_server_error();
-}
+logon_perform_auto();
 
-// Check we're logged in correctly
+// Load the user session
 
-if (!$user_sess = bh_session_check(false)) {
-
-    // Retrieve existing cookie data if any and try
-    // and log in the last used user account.
-
-    if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
-
-        if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
-
-            if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-
-                $username = mb_strtoupper($username_array[0]);
-                $passhash = $passhash_array[0];
-
-                if (($uid = user_logon($username, $passhash))) {
-
-                    bh_session_init($uid);
-                    header_redirect("threads_rss.php?webtag=$webtag&fid=$fid&limit=$limit&sort_created=$sort_created");
-                    exit;
-
-                }else {
-
-                    header_server_error();
-                }
-            }
-        }
-    }
-}
+$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 

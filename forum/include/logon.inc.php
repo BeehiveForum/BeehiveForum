@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.98 2008-12-10 19:23:03 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.99 2008-12-14 22:49:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -320,9 +320,9 @@ function logon_perform_auto()
     
     forum_check_webtag_available($webtag);
     
-    if (defined("BEEHIVEMODE_LIGHT")) {
-        
-        if (bh_getcookie("bh_auto_logon", "Y")) {
+    if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
+    
+        if (defined("BEEHIVEMODE_LIGHT")) {
 
             $user_logon = bh_getcookie('bh_light_remember_username', 'strlen', '');
             $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');        
@@ -330,15 +330,12 @@ function logon_perform_auto()
             if (($uid = user_logon($user_logon, $user_passhash))) {
 
                 bh_session_init($uid);
-                header_redirect("index.php?webtag=$webtag&noframes");
+                echo "header_redirect(\"index.php?webtag=$webtag&noframes\");\n";
                 exit;
             }            
-        }
             
-    }else {
+        }else {
     
-        if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
-            
             if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
 
                 if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {

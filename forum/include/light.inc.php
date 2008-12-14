@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.214 2008-12-10 19:23:03 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.215 2008-12-14 22:49:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "adsense.inc.php");
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -150,6 +151,12 @@ function light_html_draw_top()
 
     echo "</head>\n";
     echo "<body>\n";
+    
+    if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
+
+        adsense_output_html();
+        echo "<br />\n";
+    }    
 }
 
 function light_html_draw_bottom()
@@ -315,7 +322,7 @@ function light_draw_messages($msg)
 
         $first_msg = $messages[0]['PID'];
 
-        foreach ($messages as $message) {
+        foreach ($messages as $message_number => $message) {
 
             if (isset($message['RELATIONSHIP'])) {
 
@@ -349,6 +356,12 @@ function light_draw_messages($msg)
                 light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
                 $last_pid = $message['PID'];
             }
+            
+            if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
+
+                echo "<br />\n";
+                adsense_output_html();
+            }            
         }
     }
 

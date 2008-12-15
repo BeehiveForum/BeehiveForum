@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: compat.inc.php,v 1.4 2008-10-26 18:15:03 decoyduck Exp $ */
+/* $Id: compat.inc.php,v 1.5 2008-12-15 21:18:09 decoyduck Exp $ */
 
 /**
 * compat.inc.php - Compatibility functions
@@ -296,6 +296,103 @@ if (!function_exists('mb_eregi_replace')) {
     function mb_eregi_replace($pattern, $replacement, $string)
     {
         return eregi_replace($pattern, $replacement, $string);
+    }
+}
+
+/**
+* Wrapper function for sys_get_temp_dir.
+*
+* Returns the path of the directory PHP stores temporary files in by default.
+*
+* @return string - The path of the temporary directory
+* @param void
+*/
+
+if (!function_exists('sys_get_temp_dir')) {
+
+    function sys_get_temp_dir()
+    {
+        if (!empty($_ENV['TMP'])) return realpath($_ENV['TMP']);
+        if (!empty($_ENV['TMPDIR'])) return realpath( $_ENV['TMPDIR']);
+        if (!empty($_ENV['TEMP'])) return realpath( $_ENV['TEMP']);
+     
+        $temp_file = tempnam(uniqid(rand(), true), '');
+      
+        if (file_exists($temp_file)) {
+      
+            unlink($temp_file);
+            return realpath(dirname($temp_file));
+        }
+    }
+}
+
+/**
+* Wrapper function for file_put_contents.
+*
+* Write a string to a file
+*
+* @return mixed - The number of bytes written of false on failure
+* @param string $file - Path to the file where to write the data. 
+* @param string $data - The data to write
+* @param integer $flags - Set flags to FILE_APPEND to append the content to the file.
+
+*/
+
+if (!function_exists('file_put_contents')) {
+
+    if (!defined('FILE_APPEND')) define('FILE_APPEND', 1);
+
+    function file_put_contents($file, $data, $flags = false)
+    {
+        $mode = ($flags == FILE_APPEND || strtoupper($flags) == 'FILE_APPEND') ? 'a' : 'w';
+
+        if (($fp = @fopen($file, $mode)) !== false) {
+
+            if (is_array($data)) $data = implode($data);
+
+            $bytes = fwrite($fp, $data);
+
+            fclose($fp);
+
+            return $bytes;
+        }
+
+        return false;
+    }
+}
+
+/**
+* Wrapper function for array_combine.
+*
+* Creates an array by using one array for keys and another for its values
+*
+* @return mixed - Returns the combined array, FALSE if the number of elements for each array isn't equal or if the arrays are empty. 
+* @param array $input_array_1 - Array of keys to be used.
+* @param array $input_array_2 - Array of values to be used.
+* @param integer $flags - Set flags to FILE_APPEND to append the content to the file.
+
+*/
+
+if (!function_exists('array_combine')) {
+
+    function array_combine($input_array_1, $input_array_2) 
+    {
+        $output_array = array();
+   
+        $input_array_1 = array_values($input_array_1);
+        $input_array_2 = array_values($input_array_2);
+        
+        if (sizeof($input_array_1) < 1) return false;
+        if (sizeof($input_array_2) < 1) return false;
+        
+        if (sizeof($input_array_1) == sizeof($input_array_2)) {
+   
+            foreach($input_array_1 as $key => $value) {
+                $output_array[(string)$value] = $input_array_2[$key];
+            }
+
+            return $output_array;
+        }
     }
 }
 

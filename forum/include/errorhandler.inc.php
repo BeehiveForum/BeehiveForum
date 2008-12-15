@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.135 2008-11-19 19:16:47 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.136 2008-12-15 07:39:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,14 +52,6 @@ include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
-
-// Define PHP 5.0's new E_STRICT constant here if it's not defined.
-// This will be meaningless to PHP versions below 5.0 but it saves
-// us doing some dodgy if checking against the version number later.
-
-if (!defined("E_STRICT")) {
-    define("E_STRICT", 2048);
-}
 
 // Set the error reporting level to report all error messages.
 // If this is changed to include E_STRICT Beehive will probably

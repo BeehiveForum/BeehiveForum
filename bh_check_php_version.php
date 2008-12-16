@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_php_version.php,v 1.11 2008-12-15 21:18:09 decoyduck Exp $ */
+/* $Id: bh_check_php_version.php,v 1.12 2008-12-16 19:29:20 decoyduck Exp $ */
 
 // Requires PHP PEAR to be installed and PHP_CompatInfo Class.
 // See: http://www.laurent-laville.org/index.php?module=pear&desc=pci
@@ -30,10 +30,11 @@ require_once 'PHP/CompatInfo.php';
 
 // Set some options
 
-$options = array('debug'            => false,  // Debug mode
-                 'recurse_dir'      => true,  // Recurse all directories below 'forum'
-                 'ignore_dirs'      => array('forum\geshi', 'forum\tiny_mce'),  // Ignore Geshi and TinyMCE
-                 'ignore_functions' => array('sys_get_temp_dir', 'file_put_contents', 'array_combine')); // Ignore these functions
+$options = array('debug'            => false,
+                 'recurse_dir'      => true,
+                 'ignore_files'     => array('forum\include\compat.inc.php'),
+                 'ignore_dirs'      => array('forum\include\db', 'forum\geshi', 'forum\tiny_mce'),                 
+                 'ignore_functions' => array('sys_get_temp_dir', 'file_put_contents', 'array_combine')); 
 
 // Tell the user what we're doing.
 

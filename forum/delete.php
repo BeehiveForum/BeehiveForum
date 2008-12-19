@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.145 2008-11-03 21:26:34 decoyduck Exp $ */
+/* $Id: delete.php,v 1.146 2008-12-19 21:44:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -196,7 +196,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
+if (!$thread_data = thread_get($tid)) {
 
     html_draw_top();
     html_error_msg($lang['threadcouldnotbefound']);
@@ -252,9 +252,17 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
+        
+        if ($thread_data['LENGTH'] > 1) {
 
-        header_redirect("discussion.php?webtag=$webtag&msg=$msg&delete_success=$msg");
-        exit;
+            header_redirect("discussion.php?webtag=$webtag&msg=$msg&delete_success=$msg");
+            exit;
+        
+        }else {
+        
+            header_redirect("discussion.php?webtag=$webtag&delete_success=$msg");
+            exit;
+        }
 
     }else {
 
@@ -306,11 +314,11 @@ echo "                  <td align=\"left\">\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true);
+    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, true, true);
 
 }else {
 
-    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
+    message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, false, false, false, $show_sigs, true);
 }
 
 echo "                  </td>\n";

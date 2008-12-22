@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.365 2008-11-20 18:54:42 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.366 2008-12-22 23:19:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -111,11 +111,11 @@ function get_forum_data()
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
                 }
             }
-        }
-    }
+        }       
 
-    if (!forums_check_available_dbs($forum_data['DATABASE_NAME'])) {
-        trigger_error('Invalid database name for selected forum webtag. Please check FORUMS table for errors.', E_USER_ERROR);
+        if (!forums_check_available_dbs($forum_data['DATABASE_NAME'])) {
+            trigger_error('Invalid database name for selected forum webtag. Please check FORUMS table for errors.', E_USER_ERROR);
+        }        
     }
 
     return $forum_data;

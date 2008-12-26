@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.604 2008-12-10 19:23:03 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.605 2008-12-26 12:36:03 decoyduck Exp $ */
 
 // British English language file
 
@@ -927,6 +927,7 @@ $lang['sendnewuseremailnotifications'] = "Send notification to global forum owne
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
+$lang['userattachmentspaceperpost'] = "Attachment space per post";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['allowgueststoaccessattachments'] = "Allow Guests to access attachments";

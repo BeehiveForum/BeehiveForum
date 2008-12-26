@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.163 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.164 2008-12-26 12:36:03 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -573,40 +573,140 @@ function delete_attachment_thumbnail($hash)
 *
 * Gets the free attachment space for the specified User ID
 *
-* @return integer
-* @param integer $uid - User ID
+* @return integer - Free space in bytes
+* @param integer $uid - User ID for checking per-user attachment space
+* @param md5 hash $aud - Attachment AID for checking per-post attachment space
 */
 
-function get_free_attachment_space($uid)
+function get_free_attachment_space($uid, $aid)
+{
+    // Get max settings for attachment space (default: 1MB)
+    
+    $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
+
+    // Get the user's used attachment space (global and per-post)
+    
+    $user_attachment_space = get_user_attachment_space($uid);   
+    $post_attachment_space = get_post_attachment_space($aid);
+    
+    // If Max user attachment space > 0 use that to check the free space.
+    // Checking that Max post attachment space > 0 and lower than max user space.
+    
+    if ($max_user_attachment_space > 0) {
+        
+        if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space)) {
+        
+            return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);        
+            
+        }else {
+
+            return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);        
+        }
+    }
+    
+    // If Max post attachment space > 0 use that to check against the used post attachment space.
+    
+    if ($max_post_attachment_space > 0) {
+        return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
+    }
+    
+    // All out of space?
+    
+    return 0;
+}
+
+/**
+* Get max user attachment space
+*
+* Gets the maximum amount of space available to the user
+*
+* @return integer - Available space in bytes or -1 for no limit.
+* @param integer $uid - User ID for checking per-user attachment space
+*/
+
+function get_max_attachment_space()
+{
+    // Get max settings for attachment space (default: 1MB)
+    
+    $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
+    
+    if ($max_user_attachment_space > 0) {
+        return $max_user_attachment_space;
+    }else if ($max_post_attachment_space > 0) {
+        return $max_post_attachment_space;
+    }
+    
+    return 0;
+}    
+
+/**
+* Get used user attachment space
+*
+* Gets the amount of space used by the user for all their attachments.
+*
+* @return integer - Used space in bytes.
+* @param integer $uid - User ID for checking per-user attachment space
+*/
+
+function get_user_attachment_space($uid)
 {
     $used_attachment_space = 0;
 
-    if (!$db_get_free_attachment_space = db_connect()) return false;
+    if (!$db_get_free_user_attachment_space = db_connect()) return 0;
 
-    if (!is_numeric($uid)) return false;
+    if (!is_numeric($uid)) return 0;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return 0;
 
-    $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+    $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
 
-    if ($max_attachment_space > 0) {
+    if (!$result = db_query($sql, $db_get_free_user_attachment_space)) return 0;
 
-        $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    while (($attachment_data = db_fetch_array($result))) {
 
-        if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
+        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
-        while (($attachment_data = db_fetch_array($result))) {
-
-            if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
-
-                $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
-            }
+            $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
         }
-
-        return (($max_attachment_space - $used_attachment_space) < 0) ? 0 : ($max_attachment_space - $used_attachment_space);
     }
 
-    return 0;
+    return $used_attachment_space;
+}
+
+/**
+* Get free attachment space
+*
+* Gets the free attachment space for the specified Post AID
+*
+* @return integer - Used space in bytes
+* @param md5 hash $aud - Attachment AID for checking per-post attachment space
+*/
+
+function get_post_attachment_space($aid)
+{
+    $used_attachment_space = 0;
+
+    if (!$db_get_free_post_attachment_space = db_connect()) return 0;
+
+    if (!is_md5($aid)) return 0;
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return 0;
+
+    $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE AID = '$aid'";
+
+    if (!$result = db_query($sql, $db_get_free_post_attachment_space)) return 0;
+
+    while (($attachment_data = db_fetch_array($result))) {
+
+        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
+
+            $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
+        }
+    }
+
+    return $used_attachment_space;
 }
 
 /**

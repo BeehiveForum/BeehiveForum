@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.168 2008-11-03 21:26:34 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.169 2008-12-26 12:36:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -157,11 +157,11 @@ $uid = bh_session_get_value('UID');
 
 // Maximum attachment space
 
-$max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+$max_attachment_space = get_max_attachment_space();
 
 // Get user's free attachment space.
 
-$users_free_space = get_free_attachment_space($uid);
+$users_free_space = get_free_attachment_space($uid, $aid);
 
 // Accumlative attachment file size.
 
@@ -226,7 +226,7 @@ if (isset($_POST['upload'])) {
 
                             attachment_create_thumb($filepath);
 
-                            if ($users_free_space > 0) {
+                            if (($users_free_space > 0)) {
                                 $users_free_space -= $filesize;
                             }
 

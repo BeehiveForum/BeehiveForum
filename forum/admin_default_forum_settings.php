@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.139 2008-11-19 21:30:35 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.140 2008-12-26 12:36:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -449,6 +449,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }else {
         $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
     }
+    
+    if (isset($_POST['attachments_max_post_space']) && is_numeric($_POST['attachments_max_post_space'])) {
+        $new_forum_settings['attachments_max_post_space'] = ($_POST['attachments_max_post_space'] * 1024) * 1024;
+    }else {
+        $new_forum_settings['attachments_max_post_space'] = 1048576; // 1MB in bytes
+    }    
 
     if (isset($_POST['attachments_allow_embed']) && $_POST['attachments_allow_embed'] == "Y") {
         $new_forum_settings['attachments_allow_embed'] = "Y";
@@ -1315,6 +1321,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['userattachmentspace']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("attachments_max_user_space", (isset($forum_global_settings['attachments_max_user_space'])) ? htmlentities_array(($forum_global_settings['attachments_max_user_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;(MB)</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['userattachmentspaceperpost']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachments_max_post_space", (isset($forum_global_settings['attachments_max_post_space'])) ? htmlentities_array(($forum_global_settings['attachments_max_post_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;(MB)</td>\n";
 echo "                      </tr>\n";
 
 if (isset($forum_global_settings['attachments_enabled']) && $forum_global_settings['attachments_enabled'] == "Y") {

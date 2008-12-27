@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.198 2008-11-14 21:45:26 decoyduck Exp $ */
+/* $Id: register.php,v 1.199 2008-12-27 12:16:03 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -504,7 +504,7 @@ if (isset($_POST['register'])) {
 
             // Update the cookies.
 
-            logon_update_cookies($logon, $password, $passhash, $save_password);
+            logon_update_cookies($logon, $password, $passhash, $save_password, false);
 
             // Check to see if the user is going somewhere after they have registered.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.18 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.19 2008-12-30 22:18:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 
@@ -31,9 +31,9 @@ include_once(BH_INCLUDE_PATH. "format.inc.php");
 
 // Get our target language file.
 
-if (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1]))) > 0) {
+if (isset($_SERVER['argv'][1]) && strlen(trim(stripslashes_array($_SERVER['argv'][1]))) > 0) {
 
-    $target_language_file = trim(_stripslashes($_SERVER['argv'][1]));
+    $target_language_file = trim(stripslashes_array($_SERVER['argv'][1]));
 
     if (!$lang_fix = file(BH_INCLUDE_PATH. "/languages/$target_language_file")) {
 
@@ -49,9 +49,9 @@ if (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1])
 
 // Get our optional updates file
 
-if (isset($_SERVER['argv'][2]) && strlen(trim(_stripslashes($_SERVER['argv'][2]))) > 0) {
+if (isset($_SERVER['argv'][2]) && strlen(trim(stripslashes_array($_SERVER['argv'][2]))) > 0) {
 
-    $additions_file = trim(_stripslashes($_SERVER['argv'][2]));
+    $additions_file = trim(stripslashes_array($_SERVER['argv'][2]));
 
     if (!$lang_add = file(BH_INCLUDE_PATH. "/languages/$additions_file")) {
 

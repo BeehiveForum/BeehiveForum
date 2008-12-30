@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.83 2008-12-26 12:36:03 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.84 2008-12-30 22:18:36 decoyduck Exp $ */
 
-// American English language file
+// British English language file
 
 // Language character set and text direction options -------------------
 
@@ -135,12 +135,14 @@ $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delete";
 $lang['deleted'] = "Deleted";
 $lang['edit'] = "Edit";
+$lang['export'] = "Export";
 $lang['privileges'] = "Privileges";
 $lang['ignore'] = "Ignore";
 $lang['normal'] = "Normal";
 $lang['interested'] = "Interested";
 $lang['subscribe'] = "Subscribe";
 $lang['apply'] = "Apply";
+$lang['enable'] = "Enable";
 $lang['download'] = "Download";
 $lang['save'] = "Save";
 $lang['update'] = "Update";
@@ -232,6 +234,7 @@ $lang['thefollowingerrorswereencountered'] = "The following errors were encounte
 $lang['admintools'] = "Admin Tools";
 $lang['forummanagement'] = "Forum Management";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
+$lang['managefolder'] = "Manage Folder";
 $lang['managefolders'] = "Manage Folders";
 $lang['manageforums'] = "Manage Forums";
 $lang['manageforumpermissions'] = "Manage Forum Permissions";
@@ -350,7 +353,6 @@ $lang['userdetails'] = "User Details";
 $lang['edituserdetails'] = "Edit User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
-$lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['folderaccess'] = "Folder Access";
 $lang['possiblealiases'] = "Possible Aliases";
 $lang['ipaddressmatches'] = "IP Address Matches";
@@ -384,6 +386,7 @@ $lang['failedtoupdateglobaluserpermissions'] = "Failed to update global user per
 $lang['failedtoupdatefolderaccesssettings'] = "Failed to update folder access settings";
 $lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
 $lang['userfilter'] = "User filter";
+$lang['withselected'] = "With selected";
 $lang['onlineusers'] = "Online users";
 $lang['offlineusers'] = "Offline users";
 $lang['usersawaitingapproval'] = "Users awaiting approval";
@@ -474,6 +477,8 @@ $lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
+$lang['forumisnotsettorestrictedmode'] = "Forum is not set to Restricted Mode. Do you want to enable it now?";
+$lang['forumisnotsettopasswordprotectedmode'] = "Forum is not set to Password Protected Mode. Do you want to enable it now?";
 $lang['groups'] = "Groups";
 $lang['nousergroups'] = "No User Groups have been set up. To add a group click the 'Add New' button below.";
 $lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";
@@ -581,7 +586,9 @@ $lang['checkban'] = "Check Ban";
 $lang['editban'] = "Edit Ban";
 $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
+$lang['banexpires'] = "Ban Expires";
 $lang['bancomment'] = "Comment";
+$lang['optionalbrackets'] = "(Optional)";
 $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
 $lang['nicknameban'] = "Nickname ban";
@@ -592,6 +599,7 @@ $lang['affectsessionwarnadd'] = "This ban may affect the following active user s
 $lang['noaffectsessionwarn'] = "This ban affects no active sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
+$lang['expirydateisinvalid'] = "Expiry date is invalid";
 $lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
 $lang['failedtoaddnewban'] = "Failed to add new ban";
 $lang['failedtoremovebans'] = "Failed to remove some or all of the selected bans";
@@ -600,11 +608,15 @@ $lang['successfullyaddedban'] = "Successfully added ban";
 $lang['successfullyupdatedban'] = "Successfully updated ban";
 $lang['noexistingbandata'] = "There is no existing ban data. To add a ban click the 'Add New' button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254";
+$lang['selecteddateisinthepast'] = "Selected date is in the past";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count";
+$lang['changepostcount'] = "Change Post Count";
 $lang['resetpostcount'] = "Reset Post Count";
+$lang['successfullyresetpostcount'] = "Successfully Reset Post Count";
+$lang['successfullyupdatedpostcount'] = "Successfully Updated Post Count";
 $lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
 $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
@@ -617,7 +629,7 @@ $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
 $lang['addnew'] = "Add New";
 $lang['deleteselected'] = "Delete Selected";
-$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
+$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 $lang['moreadminoptions'] = "More Admin Options";
@@ -855,6 +867,7 @@ $lang['forumemail'] = "Forum Email";
 $lang['forumnoreplyemail'] = "No-Reply Email";
 $lang['forumdesc'] = "Forum Description";
 $lang['forumkeywords'] = "Forum Keywords";
+$lang['forumcontentrating'] = "Forum Content Rating";
 $lang['defaultstyle'] = "Default Style";
 $lang['defaultemoticons'] = "Default Emoticons";
 $lang['defaultlanguage'] = "Default Language";
@@ -923,6 +936,28 @@ $lang['forumstatusmessages'] = "Forum Status Messages";
 $lang['forumclosedmessage'] = "Forum Closed Message";
 $lang['forumrestrictedmessage'] = "Forum Restricted Message";
 $lang['forumpasswordprotectedmessage'] = "Forum Password Protected Message";
+$lang['googleanalytics'] = "Google Analytics";
+$lang['enablegoogleanalytics'] = "Enable Google Analytics";
+$lang['allowforumgoogleanalytics'] = "Allow Google Analytics on each forum";
+$lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
+
+$lang['googleadsense'] = "Google AdSense";
+$lang['adsensepublisherid'] = "AdSense publisher id";
+$lang['adsensemediumadid'] = "Medium sized (468x60) ad slot id";
+$lang['adsensesmalladid'] = "Small sized (234x60) ad slot id";
+$lang['adsenseallusers'] = "All Users";
+$lang['adsenseguestsonly'] = "Guests only";
+$lang['adsensenoone'] = "No-one (disabled)";
+$lang['adsensedisplayadsforusers'] = "Display AdSense Ads for";
+$lang['adsensedisplayadsonpages'] = "Display AdSense Ads on";
+$lang['adsenseallpages'] = "Top of every page";
+$lang['adsensetopofmessages'] = "Top of messages";
+$lang['adsenseafterfirstmessage'] = "After 1st message";
+$lang['adsenseafterthirdmessage'] = "After 3rd message";
+$lang['adsenseafterfifthmessage'] = "After 5th message";
+$lang['adsenseaftertenthmessage'] = "After 10th message";
+$lang['adsenseafterrandommessage'] = "After a random message";
+$lang['registertoremoveadverts'] = "Register to remove these adverts.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -975,6 +1010,12 @@ $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can 
 $lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn't exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
 $lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
 $lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
+$lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
+$lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account you will need to sign up for one by clicking <a href=\"https://www.google.com/analytics/\" target=\"_blank\">here</a>.";
+$lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>.";
+$lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
+$lang['forum_settings_help_65'] = "To change Google AdSense account details and other settings please see Global Forum Settings";
+$lang['forum_settings_help_66'] = "Your Beehive Forum supports 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -997,6 +1038,8 @@ $lang['canonlyuploadmaximum'] = "You can only upload a maximum of 10 files at a 
 $lang['deleteattachments'] = "Delete attachments";
 $lang['deleteattachmentsconfirm'] = "Are you sure you want to delete the selected attachments?";
 $lang['deletethumbnailsconfirm'] = "Are you sure you want to delete the selected attachments thumbnails?";
+$lang['failedtodeleteallselectedattachments'] = "Failed to delete all of the selected attachments";
+$lang['failedtodeleteallselectedattachmentthumbnails'] = "Failed to delete all of the selected attachment thumbnails";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -1199,8 +1242,10 @@ $lang['linkfoldernametoolong'] = "Folder name too long. Maximum length is %s cha
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
+$lang['youhavesuccessfullyloggedout'] = "You have successfully logged out.";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";
+$lang['logmeinautomatically'] = "Log me in automatically";
 $lang['enterasa'] = "Enter as a %s";
 $lang['donthaveanaccount'] = "Don't have an account? %s";
 $lang['registernow'] = "Register now";
@@ -1210,8 +1255,6 @@ $lang['cookiessuccessfullydeleted'] = "Cookies successfully deleted";
 $lang['forgottenpasswd'] = "Forgot password";
 $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
-$lang['youhaveloggedout'] = "You have logged out.";
-$lang['currentlyloggedinas'] = "You are currently logged in as %s";
 $lang['logonbutton'] = "Logon";
 $lang['otherdotdotdot'] = "Other...";
 $lang['yoursessionhasexpired'] = "Your session has expired. You will need to login again to continue.";
@@ -1345,6 +1388,7 @@ $lang['messagedeletedbyuser'] = "Message %s.%s deleted %s by %s";
 $lang['messagedeleted'] = "Message %s.%s was deleted";
 $lang['viewinframeset'] = "View in Frameset";
 $lang['pressctrlentertoquicklysubmityourpost'] = "Press Ctrl+Enter to quickly submit your post";
+$lang['invalidmsgidornomessageidspecified'] = "Invalid Message ID or no Message ID specified.";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1378,6 +1422,9 @@ $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
+$lang['saveselectedmessages'] = "Save Selected Messages";
+$lang['deleteselectedmessages'] = "Delete Selected Messages";
+$lang['exportselectedmessages'] = "Export Selected Messages";
 $lang['nosubject'] = "No Subject";
 $lang['norecipients'] = "No Recipients";
 $lang['timesent'] = "Time Sent";
@@ -1421,6 +1468,9 @@ $lang['successfullydeletedselectedmessages'] = "Successfully deleted selected me
 $lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
 $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
 $lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
+$lang['deletemessagesconfirmation'] = "Are you sure you want to delete all of the selected messages?";
+$lang['youmustselectsomemessages'] = "You must select some messages to process";
+$lang['successfullyrenamedfolder'] = "Successfully Renamed Folder";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1449,7 +1499,10 @@ $lang['changepassword'] = "Change Password";
 $lang['currentpasswd'] = "Current Password";
 $lang['newpasswd'] = "New Password";
 $lang['confirmpasswd'] = "Confirm Password";
-$lang['passwdsdonotmatch'] = "Passwords do not match.";
+$lang['currentpasswdrequired'] = "Current Password is required";
+$lang['newpasswdrequired'] = "New Password is required";
+$lang['confirmpasswordrequired'] = "Confirm Password is required";
+$lang['currentpasswddoesnotmatch'] = "Current Password does not match saved password";
 $lang['nicknamerequired'] = "Nickname is required!";
 $lang['emailaddressrequired'] = "Email address is required!";
 $lang['logonnotpermitted'] = "Logon not permitted. Choose another!";
@@ -1730,6 +1783,7 @@ $lang['ignore_completely_exp'] = "Threads and posts to or from user will appear 
 $lang['display'] = "Display";
 $lang['displaysig_exp'] = "User's signature is displayed on their posts.";
 $lang['hidesig_exp'] = "User's signature is hidden on their posts.";
+$lang['youcannotchangeuserrelationshipforownaccount'] = "You cannot change user relationship for your own user account";
 $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator.";
 $lang['previewsignature'] = "Preview Signature";
 
@@ -1783,9 +1837,12 @@ $lang['clickheretoviewresults'] = "Click here to view results.";
 // Search Popup (search_popup.php) -------------------------------------
 
 $lang['select'] = "Select";
+$lang['currentselection'] = "Current Selection";
+$lang['addtoselection'] = "Add to Selection";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";
+$lang['maximumselectionoftenlimitreached'] = "Maximum selection limit of 10 has been reached";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -2027,6 +2084,8 @@ $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
 $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
+$lang['threadwassuccessfullydeleted'] = "Thread was successfully deleted";
+$lang['threadwassuccessfullyundeleted'] = "Thread was successfully undeleted";
 $lang['failedtoupdatethreadreadstatus'] = "Failed to update thread read status";
 $lang['failedtoupdatethreadinterest'] = "Failed to update thread interest";
 $lang['failedtorenamethread'] = "Failed to rename thread";
@@ -2076,6 +2135,7 @@ $lang['posteditingallowed'] = "Post editing allowed";
 $lang['postdeletionallowed'] = "Post deletion allowed";
 $lang['attachmentsallowed'] = "Attachments allowed";
 $lang['htmlpostingallowed'] = "HTML posting allowed";
+$lang['usersignatureallowed'] = "User Signature allowed";
 $lang['guestaccessallowed'] = "Guest access allowed";
 $lang['postapprovalrequired'] = "Post approval required";
 
@@ -2133,6 +2193,7 @@ $lang['pmexportonefilepermessage'] = "One file per message";
 $lang['pmexportattachments'] = "Export attachments";
 $lang['pmexportincludestyle'] = "Include forum style sheet";
 $lang['pmexportwordfilter'] = "Apply word filter to messages";
+$lang['failedtoexportmessages'] = "Failed to export messages";
 
 // Thread merge / split options
 

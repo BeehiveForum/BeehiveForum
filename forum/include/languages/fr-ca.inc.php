@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.128 2008-11-01 00:00:25 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.129 2008-12-30 22:18:36 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1208,8 +1208,6 @@ $lang['cookiessuccessfullydeleted'] = "Suppression des témoins réussie";
 $lang['forgottenpasswd'] = "Vous avez oublié votre mot de passe?";
 $lang['usingaPDA'] = "Vous utilisez un assistant personnel numérique (PDA)?";
 $lang['lightHTMLversion'] = "Version HTML légèr";
-$lang['youhaveloggedout'] = "Vous avez fermé votre session.";
-$lang['currentlyloggedinas'] = "Vous êtes en session actuelle sous le nom d'utilisateur %s";
 $lang['logonbutton'] = "Ouvrir session";
 $lang['otherdotdotdot'] = "Autre...";
 $lang['yoursessionhasexpired'] = "Votre session s'est terminée. Vous devez ouvrir une nouvelle session pour continuer.";

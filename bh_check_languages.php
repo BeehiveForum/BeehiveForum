@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.40 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.41 2008-12-30 22:18:36 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -66,7 +66,7 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 
                 if (!is_array($slave_lang) || !isset($slave_lang[$master_lang_key])) {
 
-                    $master_lang_value = addcslashes($master_lang_value, "\n\t");
+                    $master_lang_value = addcslashes($master_lang_value, "\n\t\"\$");
 
                     if (preg_match('/\+|\-/u', $compare_method) > 0) {
 
@@ -82,7 +82,7 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 
                 }else if (($slave_lang[$master_lang_key] == $master_lang_value) && $show_ut == true) {
 
-                    $master_lang_value = addcslashes($master_lang_value, "\n\t");
+                    $master_lang_value = addcslashes($master_lang_value, "\n\t\"\$");
 
                     if ((preg_match("/^_/u", $master_lang_key) < 1) && (preg_match("/=/u", $compare_method) > 0)) {
 

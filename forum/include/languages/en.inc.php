@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.605 2008-12-26 12:36:03 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.606 2008-12-30 22:18:36 decoyduck Exp $ */
 
 // British English language file
 
@@ -477,7 +477,7 @@ $lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
-$lang['forumisnotsettorestrictedmode'] = "Forum is not set to Resricted Mode. Do you want to enable it now?";
+$lang['forumisnotsettorestrictedmode'] = "Forum is not set to Restricted Mode. Do you want to enable it now?";
 $lang['forumisnotsettopasswordprotectedmode'] = "Forum is not set to Password Protected Mode. Do you want to enable it now?";
 $lang['groups'] = "Groups";
 $lang['nousergroups'] = "No User Groups have been set up. To add a group click the 'Add New' button below.";
@@ -525,8 +525,8 @@ $lang['replytothreads'] = "Reply to threads";
 $lang['createnewthreads'] = "Create new threads";
 $lang['editposts'] = "Edit posts";
 $lang['deleteposts'] = "Delete posts";
-$lang['postssuccessfullydeleted'] = "Posts Successfully Deleted";
-$lang['failedtodeleteusersposts'] = "Failed To Delete User's Posts";
+$lang['postssuccessfullydeleted'] = "Posts were successfully deleted";
+$lang['failedtodeleteusersposts'] = "Failed to delete user's posts";
 $lang['uploadattachments'] = "Upload attachments";
 $lang['moderatefolder'] = "Moderate folder";
 $lang['postinhtml'] = "Post in HTML";
@@ -561,7 +561,7 @@ $lang['allownewuserregistrations'] = "Allow new user registrations";
 $lang['requireemailconfirmation'] = "Require email confirmation";
 $lang['usetextcaptcha'] = "Use text-captcha";
 $lang['textcaptchafonterror'] = "Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>text_captcha/fonts</b> on your server.";
-$lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and sub-directories are not writable by the web server / PHP process.";
+$lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
 $lang['textcaptchagderror'] = "Text-captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text-captcha support.";
 $lang['newuserpreferences'] = "New User Preferences";
 $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
@@ -629,7 +629,7 @@ $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
 $lang['addnew'] = "Add New";
 $lang['deleteselected'] = "Delete Selected";
-$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
+$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 $lang['moreadminoptions'] = "More Admin Options";
@@ -1015,7 +1015,7 @@ $lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account
 $lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>.";
 $lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
 $lang['forum_settings_help_65'] = "To change Google AdSense account details and other settings please see Global Forum Settings";
-$lang['forum_settings_help_66'] = "Your Beehive Forum supports howing 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
+$lang['forum_settings_help_66'] = "Your Beehive Forum supports 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1104,7 +1104,7 @@ $lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s.\
 // Thread Subscription notification ------------------------------------
 
 $lang['threadsubnotification_subject'] = "Subscription Notification from %s";
-$lang['threadsubnotification'] = "Hello %s,\n\n%s posted a message in a thread you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
+$lang['threadsubnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
 
 // Folder Subscription notification ------------------------------------
 
@@ -1134,7 +1134,7 @@ $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because
 // Admin New User Approval notification -----------------------------------------
 
 $lang['newuserapprovalsubject'] = "New User Approval Notification for %s";
-$lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\"or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Admin New User notification -----------------------------------------
 
@@ -1255,8 +1255,6 @@ $lang['cookiessuccessfullydeleted'] = "Cookies successfully deleted";
 $lang['forgottenpasswd'] = "Forgotten your password?";
 $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
-$lang['youhaveloggedout'] = "You have logged out.";
-$lang['currentlyloggedinas'] = "You are currently logged in as %s";
 $lang['logonbutton'] = "Logon";
 $lang['otherdotdotdot'] = "Other...";
 $lang['yoursessionhasexpired'] = "Your session has expired. You will need to login again to continue.";
@@ -2010,7 +2008,7 @@ $lang['wordfilterstats'] = "Word Filter Stats";
 
 $lang['numberoffolders'] = "Number of folders";
 $lang['folderwithmostthreads'] = "Folder with most threads";
-$lang['folderwithmostposts'] = "Folder with most posts ";
+$lang['folderwithmostposts'] = "Folder with most posts";
 $lang['totalnumberofthreads'] = "Total number of threads";
 $lang['longestthread'] = "Longest thread";
 $lang['mostreadthread'] = "Most read thread";
@@ -2025,14 +2023,14 @@ $lang['averagepostsperuser'] = "Average posts per user";
 $lang['topposter'] = "Top poster";
 $lang['totalnumberofpolls'] = "Total number of polls";
 $lang['totalnumberofpolloptions'] = "Total number of poll options";
-$lang['averagevotesperpoll'] = "Averge votes per poll";
+$lang['averagevotesperpoll'] = "Average votes per poll";
 $lang['totalnumberofpollvotes'] = "Total number of poll votes";
 $lang['totalnumberofattachments'] = "Total number of attachments";
 $lang['averagenumberofattachmentsperpost'] = "Average attachment count per post";
 $lang['mostdownloadedattachment'] = "Most downloaded attachment";
 $lang['mostusedforumstyle'] = "Most used forum style";
 $lang['mostusedlanguuagefile'] = "Most used language file";
-$lang['mostusedtimezone'] = "Most used Timezone";
+$lang['mostusedtimezone'] = "Most used Time zone";
 $lang['mostusedemoticonpack'] = "Most used Emoticon pack";
 
 $lang['numberofusers'] = "Number of users";
@@ -2059,7 +2057,7 @@ $lang['averageage'] = "Average age";
 $lang['mostpopularbirthday'] = "Most popular birthday";
 $lang['nobirthdaydataavailable'] = "No Birthday Data Available";
 $lang['numberofusersusingwordfilter'] = "Number of users using word filter";
-$lang['numberofuserreleationships'] = "Number of user releationships";
+$lang['numberofuserreleationships'] = "Number of user relationships";
 $lang['averageage'] = "Average age";
 $lang['averagerelationshipsperuser'] = "Average relationships per user";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.369 2008-12-09 18:26:46 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.370 2008-12-30 22:18:37 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -444,8 +444,8 @@ function bh_guest_session_init($update_visitor_log = true)
 *
 * Checks the user cookies and session to see if the current user is logged in.
 *
-* @return mixed
-* @param string $session_key - Named key of the session variable to fetch.
+* @return bool
+* @param void
 */
 
 function bh_session_active()
@@ -1224,7 +1224,7 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     if ($encoded_uri_query) {

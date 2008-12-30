@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.146 2008-11-08 13:49:33 decoyduck Exp $ */
+/* $Id: pm.php,v 1.147 2008-12-30 22:25:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -138,17 +138,17 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     if (isset($_GET['message_sent'])) {
 
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_sent=true", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_sent=true#message", html_get_frame_name('pm_messages'), 0);
 
     }elseif (isset($_GET['message_saved'])) {
 
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_saved=true", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_saved=true#message", html_get_frame_name('pm_messages'), 0);
 
     }else {
 
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder#message", html_get_frame_name('pm_messages'), 0);
     }
 
 }elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {

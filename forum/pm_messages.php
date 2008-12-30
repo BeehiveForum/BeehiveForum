@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.65 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.66 2008-12-30 22:25:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -287,7 +287,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
             if (pm_delete_messages($process_messages)) {
 
-                header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&deleted=true");
+                header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&deleted=true#message");
                 exit;
 
             }else {
@@ -351,7 +351,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
         if (pm_archive_messages($process_messages)) {
 
-            header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&archived=true");
+            header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&archived=true#message");
             exit;
 
         }else {
@@ -639,15 +639,15 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             }
         }
 
-        echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\">";
+        echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\" valign=\"top\">";
 
         if (strlen(trim($message['SUBJECT'])) > 0) {
 
-            echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($message['SUBJECT'])), "</a>";
+            echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page#message\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($message['SUBJECT'])), "</a>";
 
         }else {
 
-            echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\"><i>{$lang['nosubject']}</i></a>";
+            echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page#message\" target=\"_self\"><i>{$lang['nosubject']}</i></a>";
         }
 
         if (isset($message['AID']) && pm_has_attachments($message['MID'])) {
@@ -816,7 +816,8 @@ if (isset($pm_message_array) && is_array($pm_message_array)) {
 
     $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-    echo "  <br />\n";
+    echo "  <a name=\"message\"></a>\n";
+    echo "  <br />\n";    
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";

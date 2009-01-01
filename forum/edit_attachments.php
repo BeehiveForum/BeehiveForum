@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.138 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.139 2009-01-01 23:03:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,8 +173,12 @@ if (isset($_GET['popup']) && is_numeric($_GET['popup'])) {
 
 }else {
 
-    $popup = "";
+    $popup = 0;
 }
+
+// Default to showing user or post free space depending on settings
+
+$user_space_only = false;
 
 // Get any AID from the GET or POST request
 
@@ -196,7 +200,8 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
 }else {
 
-    $aid = "";
+    $aid = false;
+    $user_space_only = true;
     $t_fid = 0;
 }
 
@@ -212,7 +217,8 @@ if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_F
     exit;
 }
 
-$users_free_space = get_free_attachment_space($uid);
+$users_free_space = get_free_attachment_space($uid, $aid, $user_space_only);
+
 $total_attachment_size = 0;
 
 if (isset($_POST['delete_confirm'])) {
@@ -235,7 +241,7 @@ if (isset($_POST['delete_confirm'])) {
 
         if ($valid) {
 
-            header_redirect("attachments.php?webtag=$webtag&aid=$aid");
+            header_redirect("edit_attachments.php?webtag=$webtag&aid=$aid&popup=$popup");
             exit;
         }
     }
@@ -260,7 +266,7 @@ if (isset($_POST['delete_confirm'])) {
 
         if ($valid) {
 
-            header_redirect("attachments.php?webtag=$webtag&aid=$aid");
+            header_redirect("edit_attachments.php?webtag=$webtag&aid=$aid&popup=$popup");
             exit;
         }
     }
@@ -662,13 +668,18 @@ echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nb
 echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
-echo "                </tr>\n";
+
+if (is_md5($aid) || ($user_space_only === false)) {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($users_free_space), "</td>\n";
+    echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
 echo "                </tr>\n";

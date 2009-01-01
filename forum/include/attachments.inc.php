@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.164 2008-12-26 12:36:03 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.165 2009-01-01 23:03:51 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -578,7 +578,7 @@ function delete_attachment_thumbnail($hash)
 * @param md5 hash $aud - Attachment AID for checking per-post attachment space
 */
 
-function get_free_attachment_space($uid, $aid)
+function get_free_attachment_space($uid, $aid, $user_space_only = false)
 {
     // Get max settings for attachment space (default: 1MB)
     
@@ -593,9 +593,9 @@ function get_free_attachment_space($uid, $aid)
     // If Max user attachment space > 0 use that to check the free space.
     // Checking that Max post attachment space > 0 and lower than max user space.
     
-    if ($max_user_attachment_space > 0) {
+    if (($max_user_attachment_space > 0) || ($user_space_only === true)) {
         
-        if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space)) {
+        if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space) && ($user_space_only === false)) {
         
             return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);        
             

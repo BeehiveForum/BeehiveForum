@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.139 2009-01-01 23:03:51 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.140 2009-01-03 15:51:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -176,10 +176,6 @@ if (isset($_GET['popup']) && is_numeric($_GET['popup'])) {
     $popup = 0;
 }
 
-// Default to showing user or post free space depending on settings
-
-$user_space_only = false;
-
 // Get any AID from the GET or POST request
 
 if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
@@ -187,7 +183,11 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
     $aid = $_GET['aid'];
 
     if (!$t_fid = get_folder_fid($aid)) {
-        $t_fid = 0;
+        
+        html_draw_top('pm_popup_disabled');
+        html_error_msg($lang['aidnotspecified']);
+        html_draw_bottom();
+        exit;
     }
 
 }elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -195,13 +195,16 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
     $aid = $_POST['aid'];
 
     if (!$t_fid = get_folder_fid($aid)) {
-        $t_fid = 0;
-    }
 
+        html_draw_top('pm_popup_disabled');
+        html_error_msg($lang['aidnotspecified']);
+        html_draw_bottom();
+        exit;
+    }
+    
 }else {
 
     $aid = false;
-    $user_space_only = true;
     $t_fid = 0;
 }
 
@@ -217,9 +220,22 @@ if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_F
     exit;
 }
 
-$users_free_space = get_free_attachment_space($uid, $aid, $user_space_only);
+// Total attachment space used
 
 $total_attachment_size = 0;
+
+// Free space
+
+if (is_md5($aid)) {
+
+    $users_free_space = get_free_post_attachment_space($aid);
+    
+}else {
+
+    $users_free_space = get_free_user_attachment_space($uid);
+}
+
+// Check for attachment deletion.
 
 if (isset($_POST['delete_confirm'])) {
 
@@ -669,7 +685,7 @@ echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">",
 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (is_md5($aid) || ($user_space_only === false)) {
+if (is_md5($aid)) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";

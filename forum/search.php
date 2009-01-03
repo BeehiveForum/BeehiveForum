@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.234 2008-11-14 21:43:43 decoyduck Exp $ */
+/* $Id: search.php,v 1.235 2009-01-03 15:51:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -380,7 +380,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         }else {
 
-            header_redirect("search.php?webtag=$webtag&search_success=true");
+            header_redirect("search.php?webtag=$webtag&search_success=true&sort_by=$sort_by&sort_dir=$sort_dir");
             exit;
         }
 
@@ -513,6 +513,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
             echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by\">{$lang['findmore']}</a><br />\n";
         }
 
+        echo "<br />\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
         echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
         echo "  ", form_input_hidden("offset", isset($offset) ? htmlentities_array($offset) : 0), "\n";
@@ -591,7 +592,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }elseif (isset($_GET['search_success'])) {
 
     $frame_target = html_get_frame_name('left');
-    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0\" target=\"$frame_target\">%s</a>", $lang['clickheretoviewresults']);
+    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"$frame_target\">%s</a>", $lang['clickheretoviewresults']);
 
     echo "<div id=\"search_success\">\n";
     html_display_success_msg(sprintf($lang['searchsuccessfullycompleted'], $results_link), '500', 'center');
@@ -600,9 +601,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
     echo "if (top.document.body.rows) {\n";
-    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n";
+    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0&sort_by=$sort_by&sort_dir=$sort_dir');\n";
     echo "}else if (top.document.body.cols) {\n";
-    echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n";
+    echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0&sort_by=$sort_by&sort_dir=$sort_dir');\n";
     echo "}\n\n";
     echo "var search_success_container = getObjById('search_success');\n\n";
     echo "if (typeof search_success_container == 'object') {\n";

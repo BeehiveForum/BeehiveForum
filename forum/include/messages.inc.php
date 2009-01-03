@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.560 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.561 2009-01-03 21:22:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1549,32 +1549,30 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     if (!user_is_guest()) {
 
-        if ($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
+        if (($last_read < $length) && ($unread_cutoff_stamp !== false) && ($modified > $unread_cutoff_stamp)) {
 
-            $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM `{$table_data['PREFIX']}USER_THREAD` ";
-            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+            // Get the last PID within the unread-cut-off.
+            
+            $sql = "SELECT MAX(POST.PID) AS UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+            $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
+            $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID";
+            
+            if (!$result = db_query($sql, $db_message_update_read)) return false;
+            
+            list($unread_pid) = db_fetch_array($result, DB_RESULT_NUM);
+            
+            // If the specified PID is lower than the cut-off set it to the cut-off.
+            
+            $pid = ($pid < $unread_pid) ? $unread_pid : $pid;
+            
+            // Update the unread data.
+            
+            $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT) ";
+            $sql.= "VALUES ('$uid', '$tid', '$pid', NOW()) ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), ";
+            $sql.= "LAST_READ_AT = NOW()";
 
             if (!$result = db_query($sql, $db_message_update_read)) return false;
-
-            list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-            if ($thread_count > 0) {
-
-                $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
-                $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-                $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
-                $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
-
-               if (!$result = db_query($sql, $db_message_update_read)) return false;
-
-            }else {
-
-                $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}USER_THREAD` ";
-                $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
-                $sql.= "VALUES ($uid, $tid, $pid, NOW())";
-
-                if (!$result = db_query($sql, $db_message_update_read)) return false;
-            }
         }
 
         // Mark posts as Viewed
@@ -1588,18 +1586,11 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     // Update thread viewed counter
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD_STATS` ";
-    $sql.= "SET VIEWCOUNT = VIEWCOUNT + 1 WHERE TID = '$tid'";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_STATS` ";
+    $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1) ON DUPLICATE KEY ";
+    $sql.= "UPDATE VIEWCOUNT = VIEWCOUNT + 1";
 
     if (!$result = db_query($sql, $db_message_update_read)) return false;
-
-    if (db_affected_rows($db_message_update_read) < 1) {
-
-        $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}THREAD_STATS` ";
-        $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1)";
-
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
-    }
 
     return true;
 }
@@ -1624,7 +1615,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
     if ($uid > 0) {
 
-        if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
+        if (($unread_cutoff_stamp !== false) && ($modified > $unread_cutoff_stamp)) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.336 2008-11-20 18:54:42 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.337 2009-01-03 21:22:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1726,7 +1726,7 @@ function thread_auto_prune_unread_data()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) > 0) {
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
         $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
         $sql.= "USING `{$table_data['PREFIX']}USER_THREAD` USER_THREAD LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";

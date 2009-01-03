@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.165 2009-01-01 23:03:51 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.166 2009-01-03 15:51:08 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -575,10 +575,10 @@ function delete_attachment_thumbnail($hash)
 *
 * @return integer - Free space in bytes
 * @param integer $uid - User ID for checking per-user attachment space
-* @param md5 hash $aud - Attachment AID for checking per-post attachment space
+* @param md5 hash $aid - Attachment AID for checking per-post attachment space
 */
 
-function get_free_attachment_space($uid, $aid, $user_space_only = false)
+function get_free_attachment_space($uid, $aid)
 {
     // Get max settings for attachment space (default: 1MB)
     
@@ -593,9 +593,9 @@ function get_free_attachment_space($uid, $aid, $user_space_only = false)
     // If Max user attachment space > 0 use that to check the free space.
     // Checking that Max post attachment space > 0 and lower than max user space.
     
-    if (($max_user_attachment_space > 0) || ($user_space_only === true)) {
+    if ($max_user_attachment_space > 0) {
         
-        if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space) && ($user_space_only === false)) {
+        if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space)) {
         
             return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);        
             
@@ -614,6 +614,42 @@ function get_free_attachment_space($uid, $aid, $user_space_only = false)
     // All out of space?
     
     return 0;
+}
+
+/**
+* Get free user attachment space
+*
+* Gets the free user (global) attachment space for the specified User ID
+*
+* @return integer - Free space in bytes
+* @param integer $uid - User ID for checking per-user attachment space
+*/
+
+function get_free_user_attachment_space($uid)
+{
+    $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+    
+    $user_attachment_space = get_user_attachment_space($uid);
+    
+    return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
+}
+
+/**
+* Get free post attachment space
+*
+* Gets the free post attachment space for the specified Post AID
+*
+* @return integer - Free space in bytes
+* @param md5 hash $aid - Attachment AID for checking post attachment space
+*/
+
+function get_free_post_attachment_space($aid)
+{
+    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
+    
+    $post_attachment_space = get_post_attachment_space($aid);
+    
+    return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
 }
 
 /**
@@ -766,7 +802,8 @@ function get_folder_fid($aid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = PAI.TID AND POST.PID = PAI.PID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.AID = '$aid'";
 

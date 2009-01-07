@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.178 2008-12-10 19:23:03 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.179 2009-01-07 20:59:49 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -430,6 +430,8 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     }else {
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
+    
+    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $user_get_all_array = array();
 
@@ -482,7 +484,8 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
+    $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
@@ -553,6 +556,8 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     }else {
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
+    
+    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $user_get_all_array = array();
 
@@ -593,7 +598,8 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "SESSIONS.HASH, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
+    $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";

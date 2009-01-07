@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.265 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.266 2009-01-07 20:59:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2715,7 +2715,7 @@ function pm_update_folder_name($folder, $folder_name)
     $sql = "INSERT INTO PM_FOLDERS (UID, FID, TITLE) VALUES('$uid', '$folder', '$folder_name') ";
     $sql.= "ON DUPLICATE KEY UPDATE TITLE = VALUES(TITLE)";
 
-    if (!$result = db_query($sql, $db_pm_update_folder_name)) return false;
+    if (!db_query($sql, $db_pm_update_folder_name)) return false;
 
     return true;
 }
@@ -2730,7 +2730,7 @@ function pm_reset_folder_name($folder)
 
     $sql = "DELETE FROM PM_FOLDERS WHERE UID = '$uid' AND FID = '$folder'";
 
-    if (!$result = db_query($sql, $db_pm_reset_folder_name)) return false;
+    if (!db_query($sql, $db_pm_reset_folder_name)) return false;
 
     return db_affected_rows($db_pm_reset_folder_name) > 0;
 }

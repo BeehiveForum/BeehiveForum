@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.100 2008-12-18 17:58:49 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.101 2009-01-07 20:59:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,8 +72,10 @@ function logon_get_cookies(&$username_array, &$password_array, &$passhash_array,
     $username_array = array_filter($username_array, 'strlen');
     $password_array = array_filter($password_array, 'strlen');
     $passhash_array = array_filter($passhash_array, 'strlen');
-
-    return (is_array($username_array) && is_array($password_array) && is_array($passhash_array));
+    
+    // Check auto_logon cookie
+    
+    $auto_logon = (($auto_logon != 'Y') && ($auto_logon != 'N')) ? 'N' : $auto_logon;
 }
 
 function logon_update_logon_cookie($old_logon, $new_logon)
@@ -336,22 +338,21 @@ function logon_perform_auto()
             
         }else {
     
-            if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
+            logon_get_cookies($username_array, $password_array, $passhash_array);
 
-                if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
+            if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
 
-                    if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+                if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
 
-                        $username = mb_strtoupper($username_array[0]);
-                        $passhash = $passhash_array[0];
+                    $username = mb_strtoupper($username_array[0]);
+                    $passhash = $passhash_array[0];
 
-                        if (($uid = user_logon($username, $passhash))) {
+                    if (($uid = user_logon($username, $passhash))) {
 
-                            bh_session_init($uid);
+                        bh_session_init($uid);
 
-                            header_redirect(get_request_uri(true, false));
-                            exit;
-                        }
+                        header_redirect(get_request_uri(true, false));
+                        exit;
                     }
                 }
             }
@@ -377,7 +378,7 @@ function logon_draw_form($logon_options)
 
     // Retrieve existing cookie data if any
 
-    logon_get_cookies($username_array, $password_array, $passhash_array, $auto_logon);
+    logon_get_cookies($username_array, $password_array, $passhash_array);
 
     // If the user clicked the 'Other' button we need to
     // hide the logon dropdown and replace it with a normal

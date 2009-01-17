@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.91 2008-12-15 21:18:09 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.92 2009-01-17 23:37:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -509,7 +509,7 @@ function install_remove_table($table_name)
 
     $sql = "DROP TABLE IF EXISTS `$table_name`";
 
-    if (!$result = db_query($sql, $db_install_remove_table)) return false;
+    if (!db_query($sql, $db_install_remove_table)) return false;
 
     return true;
 }
@@ -521,12 +521,12 @@ function install_remove_indexes($table_name)
     $table_name = db_escape_string($table_name);
 
     $sql = "SHOW INDEX FROM `$table_name`";
+    
+    if (!$result = db_query($sql, $db_install_remove_indexes)) return false;
 
-    if (!$result = @db_query($sql, $db_install_remove_indexes)) return false;
+    while ((list(,,$key_name) = db_fetch_array($result, DB_RESULT_NUM))) {
 
-    while (($table_data = db_fetch_array($result))) {
-
-        if (preg_match("/^PRIMARY$/", mb_strtoupper($row['Key_name'])) < 1) {
+        if (preg_match("/^PRIMARY$/", mb_strtoupper($key_name)) < 1) {
 
             $sql = "ALTER IGNORE TABLE `$table_name` DROP INDEX `$key_name`";
             @db_query($sql, $db_install_remove_indexes);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.43 2008-11-16 01:57:40 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.44 2009-01-17 23:37:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -106,64 +106,6 @@ function server_get_cpu_load()
 
             return $cpu_load;
         }
-    }
-
-    return false;
-}
-
-/**
-* Check directory exists and is writable
-*
-* Check that the specified directory exists and is writable by PHP.
-*
-* @return boolean
-* @param string $dir - Directory to check
-*/
-
-function system_check_dir($dir)
-{
-    return (@is_dir($dir) && @is_writable($dir));
-}
-
-/**
-* Fetch the system temp dir
-*
-* Fetches the system temp dir
-*
-* @return string
-* @param void
-*/
-
-function system_get_temp_dir()
-{
-    $env_array = array_merge($_ENV, $_SERVER);
-
-    if (function_exists('sys_get_temp_dir')) {
-
-        if (system_check_dir(sys_get_temp_dir())) {
-            return sys_get_temp_dir();
-        }
-
-    }elseif (isset($env_array['TEMP']) && system_check_dir($env_array['TEMP'])) {
-
-        return $env_array['TEMP'];
-
-    }elseif (isset($env_array['TMP']) && system_check_dir($env_array['TMP'])) {
-
-        return $env_array['TMP'];
-
-    }elseif (isset($env_array['TMPDIR']) && system_check_dir($env_array['TMPDIR'])) {
-
-        return $env_array['TMPDIR'];
-
-    }elseif (@file_exists('/tmp/') && system_check_dir('/tmp/')) {
-
-        return '/tmp/';
-
-    }elseif (($temp_file = @tempnam(md5(uniqid(mt_rand())), ''))) {
-
-        unlink($temp_file);
-        return realpath(dirname($temp_file));
     }
 
     return false;

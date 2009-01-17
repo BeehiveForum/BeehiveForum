@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: compat.inc.php,v 1.5 2008-12-15 21:18:09 decoyduck Exp $ */
+/* $Id: compat.inc.php,v 1.6 2009-01-17 23:37:45 decoyduck Exp $ */
 
 /**
 * compat.inc.php - Compatibility functions
@@ -323,6 +323,8 @@ if (!function_exists('sys_get_temp_dir')) {
             unlink($temp_file);
             return realpath(dirname($temp_file));
         }
+        
+        return false;
     }
 }
 
@@ -393,6 +395,8 @@ if (!function_exists('array_combine')) {
 
             return $output_array;
         }
+        
+        return false;
     }
 }
 

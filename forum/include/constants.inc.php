@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.160 2008-12-10 19:23:03 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.161 2009-01-17 23:37:45 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -64,11 +64,6 @@ define('UNREAD_MESSAGES_DISABLED', -1);
 define('DB_RESULT_ASSOC', 1);
 define('DB_RESULT_NUM',   2);
 define('DB_RESULT_BOTH',  3);
-
-// Constants for sort directions
-
-define('SORT_DIR_ASC', 1);
-define('SORT_DIR_DESC', 0);
 
 // Thread list constants
 
@@ -526,13 +521,6 @@ define('SEARCH_TO_TWO_MONTHS_AGO', 9);
 define('SEARCH_TO_THREE_MONTHS_AGO', 10);
 define('SEARCH_TO_SIX_MONTHS_AGO', 11);
 define('SEARCH_TO_ONE_YEAR_AGO', 12);
-
-// Search sort types
-
-define('SEARCH_SORT_CREATED', 1);
-define('SEARCH_SORT_NUM_REPLIES', 2);
-define('SEARCH_SORT_FOLDER_NAME', 3);
-define('SEARCH_SORT_AUTHOR_NAME', 4);
 
 // Search User include types
 

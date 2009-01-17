@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.14 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.15 2009-01-17 23:37:45 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -94,7 +94,7 @@ function cache_check($cache_id)
 
         if (class_exists('Cache_Lite')) {
 
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, system_get_temp_dir()));
+            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
 
             $message_cache = new Cache_Lite($cache_options);
 
@@ -138,7 +138,7 @@ function cache_save($cache_id, $content)
 
         if (class_exists('Cache_Lite')) {
 
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, system_get_temp_dir()));
+            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
 
             $message_cache = new Cache_Lite($cache_options);
 
@@ -179,7 +179,7 @@ function cache_remove($cache_id)
 
         if (class_exists('Cache_Lite')) {
 
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, system_get_temp_dir()));
+            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
 
             $message_cache = new Cache_Lite($cache_options);
 

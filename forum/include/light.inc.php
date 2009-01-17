@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.215 2008-12-14 22:49:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.216 2009-01-17 23:37:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -195,7 +195,7 @@ function light_draw_logon_form()
 
 function light_draw_messages($msg)
 {
-    if (!validate_msg($msg)) return false;
+    if (!validate_msg($msg)) return;
 
     $webtag = get_webtag();
 
@@ -263,13 +263,9 @@ function light_draw_messages($msg)
 
     $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
-
     $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
     light_html_draw_top("title=$forum_name > $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
-
-    $foldertitle = folder_get_title($thread_data['FID']);
 
     $msg_count = count($messages);
 
@@ -319,8 +315,6 @@ function light_draw_messages($msg)
     }
 
     if ($msg_count > 0) {
-
-        $first_msg = $messages[0]['PID'];
 
         foreach ($messages as $message_number => $message) {
 

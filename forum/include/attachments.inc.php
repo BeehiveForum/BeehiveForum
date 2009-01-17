@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.166 2009-01-03 15:51:08 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.167 2009-01-17 23:37:45 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -71,7 +71,7 @@ function attachments_get_upload_tmp_dir()
         if (is_writable($upload_tmp_dir)) return $upload_tmp_dir;
     }
 
-    if (($upload_tmp_dir = @system_get_temp_dir()) !== false) {
+    if (($upload_tmp_dir = @sys_get_temp_dir()) !== false) {
         if (is_writable($upload_tmp_dir)) return $upload_tmp_dir;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.368 2009-01-03 21:22:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.369 2009-01-17 23:37:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2376,7 +2376,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
                     $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
 
-                    if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
+                    if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
 
                     list($unread_messages) = db_fetch_array($result_unread_count, DB_RESULT_NUM);
 

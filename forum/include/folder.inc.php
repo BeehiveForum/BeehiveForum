@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.161 2008-11-17 21:16:24 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.162 2009-01-17 23:37:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -303,7 +303,7 @@ function folder_get_available_by_forum($forum_fid)
 
         $folder_list_array = array();
 
-        while ($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             $folder_list_array[] = $folder_data['FID'];
         }

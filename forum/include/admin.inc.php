@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.179 2009-01-07 20:59:49 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.180 2009-01-17 23:37:45 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1594,10 +1594,15 @@ function admin_delete_user($uid, $delete_content = false)
     $pm_saved_out    = PM_SAVED_OUT;
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
+    
+    // UID of current user
+    
+    $admin_uid = bh_session_get_value('UID');
+    
+    // Before we delete we verify the user account exists and that
+    // the user is not the current user account.
 
-    // Before we delete we verify the user account exists.
-
-    if (($user_logon = user_get_logon($uid))) {
+    if (($user_logon = user_get_logon($uid)) && ($admin_uid != $uid)) {
 
         // Check to see if we're also deleting the user's content.
 
@@ -1718,7 +1723,7 @@ function admin_delete_user($uid, $delete_content = false)
                     // approval queue.
 
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` SET APPROVED = NOW(), ";
-                    $sql.= "APPROVED_BY = '$approve_uid' WHERE FROM_UID = '$uid'";
+                    $sql.= "APPROVED_BY = '$admin_uid' WHERE FROM_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
                 }

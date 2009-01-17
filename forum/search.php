@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.235 2009-01-03 15:51:08 decoyduck Exp $ */
+/* $Id: search.php,v 1.236 2009-01-17 23:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -132,20 +132,28 @@ if (user_is_guest()) {
     exit;
 }
 
-if (isset($_GET['sort_by']) && is_numeric($_GET['sort_by'])) {
-    $sort_by = $_GET['sort_by'];
-}elseif (isset($_POST['sort_by']) && is_numeric($_POST['sort_by'])) {
-    $sort_by = $_POST['sort_by'];
+if (isset($_GET['sort_by'])) {
+    if ($_GET['sort_by'] == "LENGTH") {
+        $sort_by = "LENGTH";
+    } elseif ($_GET['sort_by'] == "FID") {
+        $sort_by = "FID";
+    } elseif ($_GET['sort_by'] == "FROM_UID") {
+        $sort_by = "FROM_UID";
+    } else {
+        $sort_by = "CREATED";
+    }   
 }else {
-    $sort_by = 1;
+    $sort_by = "CREATED";
 }
 
-if (isset($_GET['sort_dir']) && is_numeric($_GET['sort_dir'])) {
-    $sort_dir = $_GET['sort_dir'];
-}elseif (isset($_POST['sort_dir']) && is_numeric($_POST['sort_dir'])) {
-    $sort_dir = $_POST['sort_dir'];
+if (isset($_GET['sort_dir'])) {
+    if ($_GET['sort_dir'] == "DESC") {
+        $sort_dir = "DESC";
+    } else {
+        $sort_dir = "ASC";
+    }   
 }else {
-    $sort_dir = SORT_DIR_DESC;
+    $sort_dir = "ASC";
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
@@ -186,15 +194,15 @@ $search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
 
 // Drop down sort by options
 
-$search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
-                              SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'],
-                              SEARCH_SORT_FOLDER_NAME => $lang['foldername'],
-                              SEARCH_SORT_AUTHOR_NAME => $lang['authorname']);
+$search_sort_by_array = array('CREATED'  => $lang['lastpostdate'],
+                              'LENGTH'   => $lang['numberofreplies'],
+                              'FID'      => $lang['foldername'],
+                              'FROM_UID' => $lang['authorname']);
 
 // Drop down sort dir options
 
-$search_sort_dir_array = array(SORT_DIR_DESC => $lang['decendingorder'],
-                               SORT_DIR_ASC  => $lang['ascendingorder']);
+$search_sort_dir_array = array('ASC'  => $lang['ascendingorder'], 
+                               'DESC' => $lang['decendingorder']);
 
 // Get a list of available folders.
 
@@ -461,7 +469,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
         if ($offset >= 20) {
-            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by\">{$lang['prevpage']}</a>\n";
+            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['prevpage']}</a>\n";
         }
 
         echo "<ol start=\"", $offset + 1, "\">\n";
@@ -510,7 +518,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by\">{$lang['findmore']}</a><br />\n";
+            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['findmore']}</a><br />\n";
         }
 
         echo "<br />\n";
@@ -755,11 +763,11 @@ echo "                        <td align=\"left\">", form_dropdown_array("date_to
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, (isset($search_arguments['sort_by']) && in_array($search_arguments['sort_by'], array_keys($search_sort_by_array)) ? $search_arguments['sort_by'] : SEARCH_SORT_CREATED), false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, (isset($search_arguments['sort_by']) && in_array($search_arguments['sort_by'], array_keys($search_sort_by_array)) ? $search_arguments['sort_by'] : 'CREATED'), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, (isset($search_arguments['sort_dir']) && in_array($search_arguments['sort_dir'], array_keys($search_sort_dir_array)) ? $search_arguments['sort_dir'] : SORT_DIR_DESC), false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, (isset($search_arguments['sort_dir']) && in_array($search_arguments['sort_dir'], array_keys($search_sort_dir_array)) ? $search_arguments['sort_dir'] : 'DESC'), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";

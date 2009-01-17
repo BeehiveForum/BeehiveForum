@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.331 2008-12-09 18:26:46 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.332 2009-01-17 23:37:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -522,8 +522,6 @@ function html_get_start_page_style_sheet()
     $webtag = get_webtag(true);
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
-
-    $script_filename = basename($_SERVER['PHP_SELF'], '.php');
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -1366,6 +1364,10 @@ function html_output_adsense_settings()
 
         if (strlen(trim($adsense_publisher_id)) > 0) {
 
+            // Default banner size and type
+            
+            $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
+            
             // Get banner size and type
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);

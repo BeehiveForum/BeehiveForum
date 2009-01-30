@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.291 2008-12-10 19:23:04 decoyduck Exp $ */
+/* $Id: messages.php,v 1.292 2009-01-30 10:14:37 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -338,7 +338,7 @@ if (isset($_GET['highlight'])) {
 
 // Check for search words to highlight -------------------------------------
 
-if (sizeof($highlight_array) > 0) {
+if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 
     $highlight_pattern = array();
     $highlight_replace = array();

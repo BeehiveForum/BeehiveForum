@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.561 2009-01-03 21:22:59 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.562 2009-01-30 10:14:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -659,7 +659,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Check for search words to highlight -------------------------------------
 
-    if (sizeof($highlight_array) > 0) {
+    if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 
         $highlight_pattern = array();
         $highlight_replace = array();

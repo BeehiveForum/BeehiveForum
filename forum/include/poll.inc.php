@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.246 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.247 2009-01-30 10:14:36 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -462,7 +462,7 @@ function poll_get_user_vote($tid)
     return false;
 }
 
-function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight = array())
+function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $lang = load_language_file();
 
@@ -869,7 +869,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(bh_session_get_value('UID'), $poll_data['FROM_UID']);
 
-    message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
+    message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
 }
 
 function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)

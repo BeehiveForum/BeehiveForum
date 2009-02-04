@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.112 2008-12-14 22:49:35 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.113 2009-02-04 22:15:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -66,6 +66,7 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "light.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");

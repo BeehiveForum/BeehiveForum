@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.369 2009-01-17 23:37:45 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.370 2009-02-08 16:28:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2519,7 +2519,7 @@ function forum_update_last_visit($uid)
 
     $forum_fid = $table_data['FID'];
 
-    if (!user_is_guest()) {
+    if ($uid > 0) {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
         $sql.= "VALUES ('$uid', '$forum_fid', NOW()) ON DUPLICATE KEY ";

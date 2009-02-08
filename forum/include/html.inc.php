@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.332 2009-01-17 23:37:46 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.333 2009-02-08 16:28:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1574,7 +1574,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
 
                 if ($remove_keys === false || (is_array($remove_keys) && !in_array($key_name, $remove_keys)) || $key_name != $remove_keys) {
 
-                    if (isset($uri_query_values[$key])) {
+                    if (isset($uri_query_values[$key]) && strlen($uri_query_values[$key]) > 0) {
 
                         $uri_query_values[$key] = urlencode($uri_query_values[$key]);
                         $new_uri_query_array[] = "$key_name={$uri_query_values[$key]}";

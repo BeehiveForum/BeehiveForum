@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.370 2008-12-30 22:18:37 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.371 2009-02-08 16:28:54 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -113,7 +113,8 @@ function bh_session_check($show_session_fail = true)
         $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, ";
         $sql.= "USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+        $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+        $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress'";
 
         if (!$result = db_query($sql, $db_bh_session_check)) return false;
 
@@ -161,7 +162,14 @@ function bh_session_check($show_session_fail = true)
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if ((($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
+            if ((($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid) || defined('BEEHIVE_INSTALL_NOWARN')) {
+
+                // Update the user time stats before we update the session
+
+                bh_update_user_time($user_sess['UID']);
+
+                // If the user has changed forums we should update SESSIONS.FID
+                // and call bh_update_visitor_log and forum_update_last_visit()
 
                 if ($user_sess['FID'] != $forum_fid) {
 
@@ -174,16 +182,12 @@ function bh_session_check($show_session_fail = true)
 
                     forum_update_last_visit($user_sess['UID']);
 
-                    bh_update_user_time($user_sess['UID']);
-
                 }else {
 
                     $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
                     $sql.= "WHERE HASH = '$user_hash'";
 
                     if (!$result = db_query($sql, $db_bh_session_check)) return false;
-
-                    bh_update_user_time($user_sess['UID']);
                 }
             }
 
@@ -272,8 +276,9 @@ function bh_session_expired()
 
             }else {
 
-                $sep = strstr($request_uri, '?') ? "&" : "?";
-                $request_uri = "{$request_uri}{$sep}reload_frames=true";
+                if (!stristr($request_uri, 'reload_frames')) {
+                    $request_uri = "{$request_uri}&reload_frames";
+                }
 
                 header_redirect($request_uri, $lang['loggedinsuccessfully']);
                 exit;
@@ -618,157 +623,28 @@ function bh_update_user_time($uid)
 
     if (!$db_bh_update_user_time = db_connect()) return false;
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $sql = "INSERT INTO DEFAULT_USER_TRACK (UID, USER_TIME_BEST) ";
+    $sql.= "SELECT USER_FORUM.UID, FROM_UNIXTIME(UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) ";
+    $sql.= "FROM SESSIONS INNER JOIN USER_FORUM ON (USER_FORUM.UID = SESSIONS.UID AND USER_FORUM.FID = SESSIONS.FID) ";
+    $sql.= "LEFT JOIN DEFAULT_USER_TRACK USER_TRACK ON (USER_TRACK.UID = USER_FORUM.UID) ";
+    $sql.= "WHERE SESSIONS.UID = '$uid' AND SESSIONS.FID = '$forum_fid' ";
+    $sql.= "AND ((UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) > UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) ";
+    $sql.= "OR USER_TRACK.USER_TIME_BEST IS NULL) ON DUPLICATE KEY UPDATE USER_TIME_BEST = VALUES(USER_TIME_BEST)";
 
-    $sql = "SELECT UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
-    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_UPDATED) AS USER_TIME_UPDATED, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) AS TIME FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN  `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
-    $sql.= "ON (USER_TRACK.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' ";
-    $sql.= "AND VISITOR_LOG.UID = '$uid'";
+    if (!db_query($sql, $db_bh_update_user_time)) return false;
 
-    if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
+    $sql = "INSERT INTO DEFAULT_USER_TRACK (UID, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
+    $sql.= "SELECT USER_FORUM.UID, FROM_UNIXTIME(COALESCE(UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL), 0) + ";
+    $sql.= "(SESSIONS.TIME - COALESCE(USER_TRACK.USER_TIME_UPDATED, USER_FORUM.LAST_VISIT, SESSIONS.TIME))), SESSIONS.TIME ";
+    $sql.= "FROM SESSIONS INNER JOIN USER_FORUM ON (USER_FORUM.UID = SESSIONS.UID AND USER_FORUM.FID = SESSIONS.FID) ";
+    $sql.= "LEFT JOIN DEFAULT_USER_TRACK USER_TRACK ON (USER_TRACK.UID = USER_FORUM.UID) ";
+    $sql.= "WHERE SESSIONS.UID = '$uid' AND SESSIONS.FID = '$forum_fid' ";
+    $sql.= "ON DUPLICATE KEY UPDATE USER_TIME_TOTAL = VALUES(USER_TIME_TOTAL), ";
+    $sql.= "USER_TIME_UPDATED = VALUES(USER_TIME_UPDATED)";
 
-    if (db_num_rows($result) > 0) {
+    if (!db_query($sql, $db_bh_update_user_time)) return false;
 
-        // Fetch the existing data from the database.
-
-        $user_track = db_fetch_array($result);
-
-        // Initialise our update array for updating the database.
-
-        $update_columns_array = array();
-
-        // If the user doesn't have a LAST_LOGON  set we need to
-        // set it to something otherwise things mess up.
-
-        if (!isset($user_track['LAST_LOGON']) || is_null($user_track['LAST_LOGON'])) {
-            $user_track['LAST_LOGON'] = $user_track['TIME'];
-        }
-
-        // Ensure that the LAST_LOGON is never in the future.
-
-        if ($user_track['LAST_LOGON'] > $user_track['TIME']) {
-            $user_track['LAST_LOGON'] = $user_track['TIME'];
-        }
-
-        // If the user doesn't have a USER_TIME_BEST or USER_TIME_TOTAL we need to
-        // set them to 0 for the rest of the function to work as expected.
-
-        if (!isset($user_track['USER_TIME_BEST']) || is_null($user_track['USER_TIME_BEST'])) {
-            $user_track['USER_TIME_BEST'] = 0;
-        }
-
-        if (!isset($user_track['USER_TIME_TOTAL']) || is_null($user_track['USER_TIME_TOTAL'])) {
-            $user_track['USER_TIME_TOTAL'] = 0;
-        }
-
-        // Default values for a few variables just incase.
-
-        $session_length = 0;
-        $session_difference = 0;
-        $session_total_time = 0;
-
-        // If the current MySQL server time is newer than the last logon
-        // we should calculate the session length.
-
-        if ($user_track['TIME'] > $user_track['LAST_LOGON']) {
-            $session_length = $user_track['TIME'] - $user_track['LAST_LOGON'];
-        }
-
-        // If the session length calculated above is higher than USER_TIME_BEST
-        // we need to update the database to reflect that.
-
-        if ($session_length > $user_track['USER_TIME_BEST']) {
-            $update_columns_array[] = "USER_TIME_BEST = FROM_UNIXTIME('$session_length')";
-        }
-
-        // If the user doesn't have a USER_TIME_UPDATED set then we need
-        // to calculate the difference between TIME and LAST_LOGON and
-        // set USER_TIME_UPDATED to some value.
-        //
-        // If the user's LAST_LOGON is newer than USER_TIME_UPDATED then
-        // they have just logged on and we need to calculate the difference
-        // between TIME and LAST_LOGON.
-        //
-        // If the user's USER_TIME_UPDATED is newer than LAST_LOGON then
-        // this is not the first time we're updating this session and we
-        // should instead calculate the difference between
-        // TIME and USER_TIME_UPDATED.
-
-
-        if (!isset($user_track['USER_TIME_UPDATED']) || is_null($user_track['USER_TIME_UPDATED'])) {
-
-            $user_track['USER_TIME_UPDATED'] = 0;
-
-            $session_total_time = ($user_track['TIME'] - $user_track['LAST_LOGON']);
-            $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_total_time')";
-
-        }elseif ($user_track['LAST_LOGON'] > $user_track['USER_TIME_UPDATED']) {
-
-            $session_difference = ($user_track['TIME'] - $user_track['LAST_LOGON']);
-            $session_total_time = ($user_track['USER_TIME_TOTAL'] + $session_difference);
-
-            $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_total_time')";
-
-        }elseif ($user_track['TIME'] > $user_track['USER_TIME_UPDATED']) {
-
-            $session_difference = ($user_track['TIME'] - $user_track['USER_TIME_UPDATED']);
-            $session_total_time = ($user_track['USER_TIME_TOTAL'] + $session_difference);
-
-            $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_total_time')";
-        }
-
-        // We don't update all the time otherwise that would create
-        // too much load on the server.
-
-        if ($user_track['TIME'] > ($user_track['USER_TIME_UPDATED'] + $active_sess_cutoff)) {
-
-            // We need to have something to update otherwise
-            // the query won't work and MySQL will generate
-            // an error which we don't want.
-
-            if (sizeof($update_columns_array) > 0) {
-
-                $update_columns = implode(", ", $update_columns_array);
-
-                // Try and update first. If it works the number of rows
-                // updated will be 1 otherwise we need to try and save
-                // the data.
-
-                $sql = "SELECT COUNT(UID) FROM `{$table_data['PREFIX']}USER_TRACK` ";
-                $sql.= "WHERE UID = '$uid'";
-
-                if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
-
-                list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-                if ($user_count > 0) {
-
-                    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` SET $update_columns, ";
-                    $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
-
-                    if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
-
-                }else {
-
-                    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
-                    $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
-                    $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
-                    $sql.= "FROM_UNIXTIME('$session_total_time'), NOW())";
-
-                    if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
-                }
-
-                return true;
-            }
-        }
-    }
-
-    return false;
+    return true;
 }
 
 /**
@@ -835,7 +711,10 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     if ($update_visitor_log === true) {
 
+        bh_update_user_time($uid);
+
         bh_update_visitor_log($uid, $forum_fid);
+
         forum_update_last_visit($uid);
     }
 
@@ -1178,7 +1057,7 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 * @return bool
 * @param array $array - Array to parse
 * @param string $sep - seperator to use to seperate array key and value pairs.
-* @param string $result_var - By reference result variable which contains the returned string.
+* @param string $result_var - By reference result variable which the result is appended to.
 */
 
 function parse_array($array, $sep, &$result_var)
@@ -1188,23 +1067,29 @@ function parse_array($array, $sep, &$result_var)
     if (!is_string($result_var)) $result_var = "";
     if (!is_string($sep) || strlen($sep) < 1) $sep = "&";
 
-    $preg_sep = preg_quote($sep, "/");
-
     $array_keys = array();
     $array_values = array();
 
     flatten_array($array, $array_keys, $array_values);
 
+    $result_array = array();
+
     foreach ($array_keys as $key => $key_name) {
 
         if (($key_name != 'webtag') && isset($array_values[$key])) {
 
-            $array_values[$key] = urlencode($array_values[$key]);
-            $result_var.= "$key_name={$array_values[$key]}{$sep}";
+            if (strlen($array_values[$key]) > 0) {
+
+                $result_array[] = sprintf("%s=%s", $key_name, urlencode($array_values[$key]));
+
+            }else {
+
+                $result_array[] = $key_name;
+            }
         }
     }
 
-    $result_var = preg_replace("/$preg_sep$/Du", "", $result_var);
+    $result_var.= implode($sep, $result_array);
 
     return true;
 }
@@ -1253,12 +1138,6 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
             parse_array($_GET, "&", $request_uri);
         }
     }
-
-    // Remove trailing question mark / & / &amp;
-
-    $request_uri = rtrim($request_uri, '?');
-    $request_uri = rtrim($request_uri, '&');
-    $request_uri = rtrim($request_uri, '&amp;');
 
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.

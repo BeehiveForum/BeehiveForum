@@ -873,6 +873,7 @@ a {
 .dictionary_pretty_content {
     height: 200px;
     overflow: auto;
+    width: 385px;
 }
 
 .dictionary_word_display {

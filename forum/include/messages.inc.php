@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.562 2009-01-30 10:14:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.563 2009-02-16 20:15:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -63,25 +63,25 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
-    $sql .= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
-    $sql .= "POST.APPROVED_BY, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql .= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
-    $sql .= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
-    $sql .= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK ";
-    $sql .= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
-    $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
-    $sql .= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_TO ";
-    $sql .= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql .= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
-    $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql .= "WHERE POST.TID = '$tid' ";
-    $sql .= "AND POST.PID >= '$pid' ";
-    $sql .= "ORDER BY POST.PID ";
-    $sql .= "LIMIT 0, $limit";
+    $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
+    $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
+    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
+    $sql.= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
+    $sql.= "POST.APPROVED_BY, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
+    $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
+    $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_TO ";
+    $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
+    $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
+    $sql.= "WHERE POST.TID = '$tid' ";
+    $sql.= "AND POST.PID >= '$pid' ";
+    $sql.= "ORDER BY POST.PID ";
+    $sql.= "LIMIT 0, $limit";
 
     $result = db_unbuffered_query($sql, $db_messages_get);
 

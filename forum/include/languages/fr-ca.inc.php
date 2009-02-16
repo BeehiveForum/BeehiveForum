@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.129 2008-12-30 22:18:36 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.130 2009-02-16 20:15:13 decoyduck Exp $ */
 
-// French Canadian language file
+// British English language file
 
 // Language character set and text direction options -------------------
 
@@ -135,12 +135,14 @@ $lang['pm_reply'] = "Répondre en MP";
 $lang['delete'] = "supprimer";
 $lang['deleted'] = "supprimé";
 $lang['edit'] = "Modifier";
+$lang['export'] = "Exporter";
 $lang['privileges'] = "Privilèges";
 $lang['ignore'] = "Ignorer";
 $lang['normal'] = "Normale";
 $lang['interested'] = "Interessé";
 $lang['subscribe'] = "S'abonner à";
 $lang['apply'] = "Appliquer";
+$lang['enable'] = "Activer";
 $lang['download'] = "Télécharger";
 $lang['save'] = "Enregistrer";
 $lang['update'] = "Mettre à jour";
@@ -232,6 +234,7 @@ $lang['thefollowingerrorswereencountered'] = "Les erreures suivantes ont été r
 $lang['admintools'] = "OUtils admin";
 $lang['forummanagement'] = "Gestion du forum";
 $lang['accessdeniedexp'] = "Vous n'avez pas les droits d'accès pour utiliser cette section.";
+$lang['managefolder'] = "Gérer fichier";
 $lang['managefolders'] = "Organiser les dossiers";
 $lang['manageforums'] = "Organiser les forums";
 $lang['manageforumpermissions'] = "Organiser les droits d'accès du forum";
@@ -350,7 +353,6 @@ $lang['userdetails'] = "Détails d'utilisateur";
 $lang['edituserdetails'] = "Modifiez détails de l'utilisateur";
 $lang['warning_caps'] = "MISE EN GARDE";
 $lang['userdeleteallpostswarning'] = "Êtes-vous certain de vouloir supprimer tous les messages de l'utilisateur sélectionné? Une fois supprimés, les messages ne peuvent être récupérés et seront perdus pour toujours.";
-$lang['postssuccessfullydeleted'] = "Suppression de messages réussie.";
 $lang['folderaccess'] = "Accès aux dossiers";
 $lang['possiblealiases'] = "Pseudonymes possibles";
 $lang['ipaddressmatches'] = "Adresses IP appariées";
@@ -384,6 +386,7 @@ $lang['failedtoupdateglobaluserpermissions'] = "Mise à jour des permissions d'u
 $lang['failedtoupdatefolderaccesssettings'] = "Mise à jour des options d'accès aux dossiers a échoué";
 $lang['manageusersexp'] = "Cette liste démontre une sélection d'utilisateurs qui ont ouvert une session sur votre forum, triée par %s. Pour modifier les droits d'accès d'un utilisateur, cliquer sur leur nom.";
 $lang['userfilter'] = "Filtre des usagers";
+$lang['withselected'] = "Avec sélection";
 $lang['onlineusers'] = "Usagers en ligne";
 $lang['offlineusers'] = "Usagers hors ligne";
 $lang['usersawaitingapproval'] = "Usagers en attente d'approbation";
@@ -474,6 +477,8 @@ $lang['failedtocreatenewfolder'] = "La création d'un nouveau fichier a échoué
 $lang['failedtodeletefolder'] = "La suppression du dossier a échoué.";
 $lang['failedtoupdatefolder'] = "La mise à jour du fichier a échoué";
 $lang['cannotdeletefolderwiththreads'] = "Impossible de supprimer les dossiers contenant toujours des fils de discussion.";
+$lang['forumisnotsettorestrictedmode'] = "Le forum n'est pas régler au mode d'Accès limité. Voulez-vous l'activer maintenant?";
+$lang['forumisnotsettopasswordprotectedmode'] = "Le forum n'est pas régler au mode Protégé par mot de passe. Voulez-vous l'activer maintenant?";
 $lang['groups'] = "Groupes";
 $lang['nousergroups'] = "Aucun groupe d'utilisateurs n'a été créé. Pour ajouter un groupe cliquez le bouton 'Ajoutez nouveau' ci-dessous.";
 $lang['suppliedgidisnotausergroup'] = "L'identification de group fournie n'est pas un groupe d'utilisateur";
@@ -581,7 +586,9 @@ $lang['checkban'] = "Vérifier bannissement";
 $lang['editban'] = "Modifier bannissement";
 $lang['bantype'] = "Type de bannissement";
 $lang['bandata'] = "Données de bannissement";
+$lang['banexpires'] = "Bannissement termine";
 $lang['bancomment'] = "Commentaire";
+$lang['optionalbrackets'] = "(Optionnel)";
 $lang['ipban'] = "Bannissement par IP";
 $lang['logonban'] = "Bannissement par ouverture de session";
 $lang['nicknameban'] = "Bannissement par pseudonyme";
@@ -592,6 +599,7 @@ $lang['affectsessionwarnadd'] = "Ce bannissment pourrait affecter les sessions d
 $lang['noaffectsessionwarn'] = "Ce banissement n'affecte aucune session active";
 $lang['mustspecifybantype'] = "Vous devez indiquer un type de bannissement";
 $lang['mustspecifybandata'] = "Vous devez indiquer des données de bannissement";
+$lang['expirydateisinvalid'] = "Date d'échéance est invalide";
 $lang['successfullyremovedselectedbans'] = "Lever de bannissements sélectionnés réussi";
 $lang['failedtoaddnewban'] = "Ajout de nouveau bannissement échoué";
 $lang['failedtoremovebans'] = "Lever de certains ou de tous les bannissment sélectionnés échoué";
@@ -600,16 +608,21 @@ $lang['successfullyaddedban'] = "Ajout de bannissement réussi";
 $lang['successfullyupdatedban'] = "Mise à jour du bannissement réussi";
 $lang['noexistingbandata'] = "Il n'y a pas de données de bannissement existantes. Pour ajouter des données de bannissement, veuillez cliquer le bouton ci-dessous.";
 $lang['youcanusethepercentwildcard'] = "Vous pouvez utiliser le caractère de remplacement pourcentage (%) dans n'importe quelle liste de bannissement afin d'obtenir des correspondances partielles, ex. '192.168.0.%' bannirait toutes les adresses IP dans la gamme de 192.168.0.1 à travers 192.168.0.254</p>\n ";
+$lang['selecteddateisinthepast'] = "la date sélectionnée est dans le passé";
 $lang['cannotusewildcardonown'] = "Vous ne pouvez pas ajouter % comme concordance de caractère de remplacement seul!";
 $lang['requirepostapproval'] = "Exiger approbation du message";
 $lang['adminforumtoolsusercounterror'] = "Il doit y avoir au moins un utilisateur avec accès aux outils admin et aux outils de forum sur tous les forums!";
 $lang['postcount'] = "Compte de postes";
+$lang['changepostcount'] = "Changer compte des messages";
 $lang['resetpostcount'] = "Réinitialisation du compte de postes";
+$lang['successfullyresetpostcount'] = "Réinitialisation du compte des messages réussie";
+$lang['successfullyupdatedpostcount'] = "Mise à jour du compte des messages réussie";
 $lang['failedtoresetuserpostcount'] = "La réinitialisation du compte de publication a échoué";
 $lang['failedtochangeuserpostcount'] = "Le changement du compte de publication de l'utilisateur a échoué";
 $lang['postapprovalqueue'] = "File d'attente d'approbation de messages";
 $lang['nopostsawaitingapproval'] = "Aucun message en attente d'approbation";
 $lang['failedtoapproveuser'] = "L'approbation de l'utilisateur %s a échoué";
+$lang['endsession'] = "Terminer session (éjecter)";
 $lang['visitorlog'] = "Feuille de contrôle des visiteurs";
 $lang['novisitorslogged'] = "Aucun visiteur journalisé";
 $lang['addselectedusers'] = "Ajouter usagers sélectionnés";
@@ -854,6 +867,7 @@ $lang['forumemail'] = "Courriel du forum";
 $lang['forumnoreplyemail'] = "Courriel 'No-Reply'";
 $lang['forumdesc'] = "Description du Forum";
 $lang['forumkeywords'] = "Mots-clé du forum";
+$lang['forumcontentrating'] = "Classification du contenu du forum";
 $lang['defaultstyle'] = "Style de défaut";
 $lang['defaultemoticons'] = "Binettes de défaut";
 $lang['defaultlanguage'] = "Language de défaut";
@@ -913,6 +927,7 @@ $lang['sendnewuseremailnotifications'] = "Envoyez notification au propriétaire 
 $lang['enableattachments'] = "Activer fichiers joints";
 $lang['attachmentdir'] = "Rep de fichiers joints";
 $lang['userattachmentspace'] = "Espace pour fichiers joints par utilisateur";
+$lang['userattachmentspaceperpost'] = "Espace par message pour fichier joint";
 $lang['allowembeddingofattachments'] = "Permettre l'incorporation de fichiers joints";
 $lang['usealtattachmentmethod'] = "Utiliser méthode alternative pour fichiers joints";
 $lang['allowgueststoaccessattachments'] = "Permettre aux invités d'avoir accès aux fichiers joints";
@@ -921,6 +936,28 @@ $lang['forumstatusmessages'] = "Messages de status du forum";
 $lang['forumclosedmessage'] = "Message Forum fermé";
 $lang['forumrestrictedmessage'] = "Message Forum à accès restreint";
 $lang['forumpasswordprotectedmessage'] = "Message Forum protégé par mot de passe";
+$lang['googleanalytics'] = "Google Analytics";
+$lang['enablegoogleanalytics'] = "Activer Google Analytics";
+$lang['allowforumgoogleanalytics'] = "Permettre Google Analytics sur chaque forum";
+$lang['googleanalyticsaccountid'] = "Identifiant de compte Google Analytics";
+
+$lang['googleadsense'] = "Google AdSense";
+$lang['adsensepublisherid'] = "Identifiant d'éditeur AdSense";
+$lang['adsensemediumadid'] = "Identifiant d'écran publicitaire de moyenne taille (468x60)";
+$lang['adsensesmalladid'] = "Identifiant d'écran publicitaire de petite taille (234x60)";
+$lang['adsenseallusers'] = "Tous les utilisateurs";
+$lang['adsenseguestsonly'] = "Visiteurs seulement";
+$lang['adsensenoone'] = "Personne (désactivé)";
+$lang['adsensedisplayadsforusers'] = "Afficher annonces publicitaires AdSense pour";
+$lang['adsensedisplayadsonpages'] = "Afficher annonces publicitaires AdSense Ads sur";
+$lang['adsenseallpages'] = "Haut de chaque page";
+$lang['adsensetopofmessages'] = "Haut des messages";
+$lang['adsenseafterfirstmessage'] = "Après 1er message";
+$lang['adsenseafterthirdmessage'] = "Après 3e message";
+$lang['adsenseafterfifthmessage'] = "Après 5e message";
+$lang['adsenseaftertenthmessage'] = "Après 10e message";
+$lang['adsenseafterrandommessage'] = "Après un message aléatoire";
+$lang['registertoremoveadverts'] = "Créez un compte pour supprimer ces annonces publicitaires.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -973,6 +1010,12 @@ $lang['forum_settings_help_58'] = "En plus de la simple indexation, Beehive peut
 $lang['forum_settings_help_59'] = "Les plans de site sont automatiquement sauvegardés dans le sous-répertoire plans de site de votre installation Beehive. Si ce sous-répertoire n'existe pas, vous devez le créér et vous assurer qu'il est modifiable par le serveur / processus PHP. Pour permettre aux moteurs de recherche de trouver votre plan de site vous devez ajouter l'adresse URL à votre robots.txt.";
 $lang['forum_settings_help_60'] = "Dépendant de la performance de votre serveur et du nombre de forums et de fils de discussion que contient votre installation Beehive, la génération d'un plan de site peut prendre plusieurs minutes à compléter. Si la performance de votre serveur est lésé, il est recommendé de désactiver la génération du plan de site.";
 $lang['forum_settings_help_61'] = "<b>Envoyer notification par courriel à l'admin global</b> quand activé, transmettra un courriel à tous les propriétaires du forum lorqu'un nouveau compte d'utilisateur est créé.";
+$lang['forum_settings_help_61'] = "<b>Envoyer notification par courriel à l'admin global</b> quand activé, transmettra un courriel à tous les propriétaires du forum lorqu'un nouveau compte d'utilisateur est créé.";
+$lang['forum_settings_help_62'] = "Si vous n'avez pas un compte Google Analytics vous devez vous inscrire en cliquant <a href=\"https://www.google.com/analytics/\" target=\"_blank\">ici</a>.";
+$lang['forum_settings_help_63'] = "Si vous n'avez pas un compte Google AdSense vous devez vous inscrire en cliquant <a href=\"https://www.google.com/adsense/\" target=\"_blank\">ici</a>.";
+$lang['forum_settings_help_64'] = "Si vous désirez activer ou déactiver les annonces publicitaires Google AdSense sur un forum en particulier, vous pouvez le faire en visitant la page des Options de forum de ce forum.";
+$lang['forum_settings_help_65'] = "Pour modifier des détails du compte Google AdSense et autres options, veuillez consulter les Options de forum globales";
+$lang['forum_settings_help_66'] = "Votre forum Beehive supporte 2 tailles d'annonces publicitaires <b>Google AdSense</b> différentes. Indiquez dans les cases ci-dessus l'identifiant d'écran publicitaire des annonces de taille appropriée et Beehive choisirera automatiquement l'annonce correcte pour chaque page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -995,6 +1038,8 @@ $lang['canonlyuploadmaximum'] = "Vous pouvez téléverser un maximum de 10 fichi
 $lang['deleteattachments'] = "Supprimez fichiers joints";
 $lang['deleteattachmentsconfirm'] = "Êtes vous certain de vouloir supprimer les fichiers joints sélectionnés?";
 $lang['deletethumbnailsconfirm'] = "Êtes-vous certain de vouloir supprimer les vignettes de pieces jointes sélectionnées?";
+$lang['failedtodeleteallselectedattachments'] = "Suppression de tous les les fichiers joint sélectionnés non réussie";
+$lang['failedtodeleteallselectedattachmentthumbnails'] = "Suppression des vignettes de fichiers joint sélectionnées non réussi";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -1197,8 +1242,10 @@ $lang['linkfoldernametoolong'] = "Le nom du fichier est trop long. La longueure 
 $lang['loggedinsuccessfully'] = "Ouverture de session réussie.";
 $lang['presscontinuetoresend'] = "Appuyer Continuer pour renvoyer les données du formulaire ou annuler pour renvoyer la page.";
 $lang['usernameorpasswdnotvalid'] = "Le nom d'utilisateur ou le mot de passe que vous avez entré n'est pas valide.";
+$lang['youhavesuccessfullyloggedout'] = "Votre fermeture de session est réussie.";
 $lang['rememberpasswds'] = "Se souvenir des mots de passe";
 $lang['rememberpassword'] = "Se souvenir du mot de passe";
+$lang['logmeinautomatically'] = "Ouvrir ma session automatiquement";
 $lang['enterasa'] = "Entrer comme un %s";
 $lang['donthaveanaccount'] = "Vous n'avez pas de compte? %s";
 $lang['registernow'] = "Enregistrez-vous maintenant";
@@ -1341,6 +1388,7 @@ $lang['messagedeletedbyuser'] = "Message %s.%s supprimé %s par %s";
 $lang['messagedeleted'] = "Message %s.%s a été supprimé";
 $lang['viewinframeset'] = "Visualisez dans l'ensemble de cadres";
 $lang['pressctrlentertoquicklysubmityourpost'] = "Appuyez Ctrl+Entrée pour soumettre votre message rapidement";
+$lang['invalidmsgidornomessageidspecified'] = "Identifiant du message invalide ou non indiquée.";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1374,6 +1422,9 @@ $lang['maximumtenrecipientspermessage'] = "Il y a une limite de 10 destinataires
 $lang['mustspecifyrecipient'] = "Vous devez spécifier aumoins un destinataire.";
 $lang['usernotfound'] = "Utilisateur %s non retrouvé";
 $lang['sendnewpm'] = "Envoyer nouveau MP";
+$lang['saveselectedmessages'] = "Sauvegarder messages sélectionnés";
+$lang['deleteselectedmessages'] = "Supprimer messages sélectionnés";
+$lang['exportselectedmessages'] = "Exporter messages sélectionnés";
 $lang['nosubject'] = "Aucun sujet";
 $lang['norecipients'] = "Aucun destinataire";
 $lang['timesent'] = "Heure d'envoi";
@@ -1417,6 +1468,9 @@ $lang['successfullydeletedselectedmessages'] = "La supression des messages séle
 $lang['successfullyarchivedselectedmessages'] = "L'archivage des messages sélectionnés a réussi";
 $lang['failedtodeleteselectedmessages'] = "La supression des messages sélectionnés a échoué";
 $lang['failedtoarchiveselectedmessages'] = "L'archivage des messages sélectionnés a échoué";
+$lang['deletemessagesconfirmation'] = "Êtes-vous certain de vouloir supprimer tous les messages sélectionnés messages?";
+$lang['youmustselectsomemessages'] = "Vous devez sélectionner des messages à traiter";
+$lang['successfullyrenamedfolder'] = "Dossier renommé avec succès";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1445,7 +1499,10 @@ $lang['changepassword'] = "Changer mot de passe";
 $lang['currentpasswd'] = "Mot de passe actuel";
 $lang['newpasswd'] = "Nouveau mot de passe";
 $lang['confirmpasswd'] = "Confirmer mot de passe";
-$lang['passwdsdonotmatch'] = "Les mots de passe ne correspondent pas.";
+$lang['currentpasswdrequired'] = "Mot de passe courant requis";
+$lang['newpasswdrequired'] = "Nouveau mot de passe requis";
+$lang['confirmpasswordrequired'] = "Confirmation du mot de passe requis";
+$lang['currentpasswddoesnotmatch'] = "Le mot de passe courant n'accord pas avec le mot de passe sauvegardé";
 $lang['nicknamerequired'] = "Pseudonyme requis!";
 $lang['emailaddressrequired'] = "Adresse courriel requis!";
 $lang['logonnotpermitted'] = "Nom d'utilisateur non-autorisé. Choisissez un autre!";
@@ -1692,6 +1749,7 @@ $lang['confirmpassword'] = "Confirmer mot de passe";
 $lang['invalidemailaddressformat'] = "Format d'adresse courriel invalide";
 $lang['moreoptionsavailable'] = "D'autres options de Profile et de Préférences sont disponibles une fois que vous vous êtes enregistré";
 $lang['textcaptchaconfirmation'] = "Confirmation";
+$lang['textcaptchaexplain'] = "Afin d'éviter des enregistrements de compte automatisés, ce forum exige que vous entrez un code de confirmation. Le code est affiché dans l'image à droite. Si vous souffrez d'une déficience visuelle ou ne pouvez pas autrement lire le code, veuillez contacter le  %s.";
 $lang['textcaptchaimgtip'] = "Ceci est une image-captcha. Elle est utilisée pour prévenir l'enregistrement automatique.";
 $lang['textcaptchamissingkey'] = "Un code de confimation est requis.";
 $lang['textcaptchaverificationfailed'] = "Le code de vérification du text captcha est erroné. SVP le réintroduire.";
@@ -1725,6 +1783,7 @@ $lang['ignore_completely_exp'] = "Fils de discussion et messages de et à cet ut
 $lang['display'] = "Afficher";
 $lang['displaysig_exp'] = "Afficher la signature de l'utilisateur sur leurs postes.";
 $lang['hidesig_exp'] = "La signature de l'utilisateur est masquée sur leurs postes.";
+$lang['youcannotchangeuserrelationshipforownaccount'] = "Vous ne pouvez pas changer la relation d'utilisateur pour votre propre compte d'utilisateur";
 $lang['cannotignoremod'] = "Vous ne pouvez pas ignorer cet utilisateur parce qu'il/elle est un modérateur.";
 $lang['previewsignature'] = "Prévisualisez la signature";
 
@@ -1778,9 +1837,12 @@ $lang['clickheretoviewresults'] = "Cliquez ici pour voir les résultats.";
 // Search Popup (search_popup.php) -------------------------------------
 
 $lang['select'] = "Choisir";
+$lang['currentselection'] = "Sélection courante";
+$lang['addtoselection'] = "Ajoutez à la sélection";
 $lang['searchforthread'] = "Chercher pour fils de discussion";
 $lang['mustspecifytypeofsearch'] = "Vous devez spécifier le type de recherche à entreprendre";
 $lang['unkownsearchtypespecified'] = "Type de recherche spécifié inconnu";
+$lang['maximumselectionoftenlimitreached'] = "Limite maximale de 10 sélections atteint";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -2002,7 +2064,7 @@ $lang['averagerelationshipsperuser'] = "Moyenne de relations par utilisateur";
 $lang['numberofusersnotusingwordfilter'] = "Nombre d'utilisateurs qui n'utilisent pas le filtre des mots";
 $lang['averagewordfilterentriesperuser'] = "Moyenne d'entrées dans le filtre des mots par utilisateur";
 
-$lang['mostuserseveronlinedetail'] = "%s on %s";
+$lang['mostuserseveronlinedetail'] = "%s le %s";
 
 // Thread Options (thread_options.php) ---------------------------------
 
@@ -2022,6 +2084,8 @@ $lang['markasunread'] = "Marquer comme non-lu";
 $lang['makethreadsticky'] = "Rendre le fil de discussion collant";
 $lang['threareadstatusupdated'] = "Mise à jour du statut de lecture du fil de discussion réussie";
 $lang['interestupdated'] = "Mise à jour du statut de l'intérêt du fil de discussion réussie";
+$lang['threadwassuccessfullydeleted'] = "Suppression du fils de discussion réussi";
+$lang['threadwassuccessfullyundeleted'] = "Annulation de la suppression du fils de discussion réussi";
 $lang['failedtoupdatethreadreadstatus'] = "Mise à jour du status lu du fil de discussion a échoué";
 $lang['failedtoupdatethreadinterest'] = "Mise à jour du niveau d'intérêt du fil de discussion a échoué";
 $lang['failedtorenamethread'] = "Renommage du fil de discussion a échoué";
@@ -2071,6 +2135,7 @@ $lang['posteditingallowed'] = "Révision de message permis";
 $lang['postdeletionallowed'] = "Suppression de message permis";
 $lang['attachmentsallowed'] = "Fichiers joints permis";
 $lang['htmlpostingallowed'] = "Postage avec HTML permis";
+$lang['usersignatureallowed'] = "Signature de l'utilisateur permi";
 $lang['guestaccessallowed'] = "Accès aux visiteurs permis";
 $lang['postapprovalrequired'] = "Approbation de message requise";
 
@@ -2128,6 +2193,7 @@ $lang['pmexportonefilepermessage'] = "Un fichier pour chaque message";
 $lang['pmexportattachments'] = "Exporter les fichiers joints";
 $lang['pmexportincludestyle'] = "Inclure feuille de style du forum";
 $lang['pmexportwordfilter'] = "Appliquer le filtre des mots aux messages";
+$lang['failedtoexportmessages'] = "Exportation des messages non réussi";
 
 // Thread merge / split options
 

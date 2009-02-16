@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.102 2009-01-17 23:37:46 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.103 2009-02-16 20:15:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,7 +43,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function logon_get_cookies(&$username_array, &$password_array, &$passhash_array, &$auto_logon = false)
+function logon_get_cookies(&$username_array, &$password_array, &$passhash_array)
 {
     // Username array
 
@@ -62,20 +62,12 @@ function logon_get_cookies(&$username_array, &$password_array, &$passhash_array,
     if (!$passhash_array = bh_getcookie('bh_remember_passhash', 'is_array')) {
         $passhash_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_passhash', 'strlen', '')));
     }
-    
-    // Auto Logon cookie
-    
-    $auto_logon = bh_getcookie('bh_auto_logon', 'Y');
 
     // Remove any invalid entries.
 
     $username_array = array_filter($username_array, 'strlen');
     $password_array = array_filter($password_array, 'strlen');
     $passhash_array = array_filter($passhash_array, 'strlen');
-    
-    // Check auto_logon cookie
-    
-    $auto_logon = (in_array($auto_logon, array('Y', 'N'))) ? $auto_logon : 'N';
 }
 
 function logon_update_logon_cookie($old_logon, $new_logon)

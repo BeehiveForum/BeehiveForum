@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.45 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.46 2009-02-27 14:21:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -126,7 +126,7 @@ class lang
 
             }else if (file_exists(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php")) {
             
-                $this->user_pref = $pref_language;
+                $this->user_pref = $langs_array[$key];
                 $this->compat_mode = true;
                 return;
             }

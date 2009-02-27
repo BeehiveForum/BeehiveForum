@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.146 2008-11-03 21:26:35 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.147 2009-02-27 13:35:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -87,13 +87,6 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Light mode check to see if we should bounce to the logon screen.
-
-if (!bh_session_active()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
@@ -122,7 +115,7 @@ if (!forum_check_webtag_available($webtag)) {
 
 // Load language file
 
-$lang = load_language_file();
+$lang = lang::get_instance()->load(__FILE__);
 
 // Check that we have access to this forum
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.135 2008-12-09 18:26:46 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.136 2009-02-27 13:35:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,7 +42,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false, $class = "bhinputtext")
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $id = form_unique_id($name);
 
@@ -119,7 +119,7 @@ function form_input_hidden_array($array)
 
 function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class = "bhtextarea")
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $id = form_unique_id($name);
 
@@ -459,7 +459,7 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 
 function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = "", $class = "bhselect")
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if ($show_blank) {
 
@@ -486,7 +486,7 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
 function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $start_year = 0)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.44 2008-10-30 20:42:53 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.45 2009-02-27 13:35:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -122,7 +122,7 @@ if (!forum_check_webtag_available($webtag)) {
 
 // Load language file
 
-$lang = load_language_file();
+$lang = lang::get_instance()->load(__FILE__);
 
 // Check that we have access to this forum
 
@@ -153,7 +153,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     light_html_draw_top();
-    light_html_error_msg($lang['threadcouldnotbefound']);
+    light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
 }
@@ -161,7 +161,7 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
     light_html_draw_top();
-    light_html_error_msg($lang['foldercouldnotbefound']);
+    light_html_display_error_msg($lang['foldercouldnotbefound']);
     light_html_draw_bottom();
     exit;
 }
@@ -169,7 +169,7 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 if (!$message = messages_get($tid, $pid, 1)) {
 
     light_html_draw_top();
-    light_html_error_msg($lang['postdoesnotexist']);
+    light_html_display_error_msg($lang['postdoesnotexist']);
     light_html_draw_bottom();
     exit;
 }

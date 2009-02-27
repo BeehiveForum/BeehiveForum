@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.370 2009-02-08 16:28:54 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.371 2009-02-27 13:35:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -207,7 +207,7 @@ function forum_check_access_level()
 
 function forum_closed_message()
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     html_draw_top();
 
@@ -237,7 +237,7 @@ function forum_restricted_message()
 {
     $webtag = get_webtag();
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $final_uri = basename(get_request_uri());
 
@@ -339,7 +339,7 @@ function forum_check_password($forum_fid)
         // If we got this far then the password verification failed or
         // the user hasn't seen the password dialog before.
 
-        $lang = load_language_file();
+        $lang = lang::get_instance()->load(__FILE__);
 
         html_draw_top();
 
@@ -912,7 +912,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 {
     // Load the language
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     // If no owner UID specified or UID is 0 change it to current user.
 
@@ -2212,7 +2212,7 @@ function forum_get_permissions($fid, $offset = 0)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($offset)) $offset = 0;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $perms_user_array = array();
 

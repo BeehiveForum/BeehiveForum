@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.14 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.15 2009-02-27 13:35:14 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -130,7 +130,7 @@ function get_available_timezones()
 
 function timezone_id_to_string($timezone_id)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $timezones_array = get_available_timezones();
 

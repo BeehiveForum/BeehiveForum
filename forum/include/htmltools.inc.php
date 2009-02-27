@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.88 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.89 2009-02-27 13:35:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -192,7 +192,7 @@ class TextAreaHTML {
     {
         if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return "";
 
-        $lang = load_language_file();
+        $lang = lang::get_instance()->load(__FILE__);
 
         $webtag = get_webtag();
 
@@ -276,7 +276,7 @@ class TextAreaHTML {
     {
         if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return "";
 
-        $lang = load_language_file();
+        $lang = lang::get_instance()->load(__FILE__);
 
         $webtag = get_webtag();
 
@@ -419,7 +419,7 @@ class TextAreaHTML {
     function compare_original ($ta, $text)
     {
 
-        $lang = load_language_file();
+        $lang = lang::get_instance()->load(__FILE__);
 
         $str = form_radio("co_{$ta}_rb", "correct", $lang['correctedcode'], true, "onclick=\"co_{$ta}_show('correct');\"")."\n";
         $str.= form_radio("co_{$ta}_rb", "submit", $lang['submittedcode'], false, "onclick=\"co_{$ta}_show('submit');\"")."\n";

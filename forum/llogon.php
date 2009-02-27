@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.71 2008-12-14 22:49:35 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.72 2009-02-27 13:35:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -108,7 +108,7 @@ if (!bh_session_user_approved()) {
 
 // Load language file
 
-$lang = load_language_file();
+$lang = lang::get_instance()->load(__FILE__);
 
 // Error messages string
 

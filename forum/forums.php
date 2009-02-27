@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.106 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: forums.php,v 1.107 2009-02-27 13:35:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -94,7 +94,7 @@ $webtag = get_webtag();
 
 // Load Language File
 
-$lang = load_language_file();
+$lang = lang::get_instance()->load(__FILE__);
 
 // Array to hold error messages
 

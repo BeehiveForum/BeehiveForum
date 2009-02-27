@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.216 2009-01-17 23:37:46 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.217 2009-02-27 13:35:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,7 +57,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function light_html_draw_top()
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $arg_array = func_get_args();
 
@@ -169,7 +169,7 @@ function light_html_draw_bottom()
 
 function light_draw_logon_form()
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
     
@@ -201,7 +201,7 @@ function light_draw_messages($msg)
 
     forum_check_webtag_available($webtag);
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     list($tid, $pid) = explode('.', $msg);
 
@@ -384,7 +384,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     forum_check_webtag_available($webtag);
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $error_msg_array = array();
 
@@ -582,7 +582,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     }else if (sizeof($error_msg_array) > 0) {
 
-        light_html_display_error_array($error_msg_array, '100%', 'left');
+        light_html_display_error_array($error_msg_array);
     }
 
     if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
@@ -764,7 +764,7 @@ function light_draw_my_forums()
 {
     $webtag = get_webtag();
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
         $page = $_GET['page'];
@@ -881,7 +881,7 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
 
 function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -917,7 +917,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 {
     $webtag = get_webtag();
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $poll_data = poll_get($tid);
 
@@ -1116,7 +1116,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
 function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
@@ -1382,7 +1382,7 @@ function light_spoiler_enable($message)
 
 function light_message_display_deleted($tid,$pid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     echo sprintf("<p>{$lang['messagewasdeleted']}</p>\n", $tid, $pid);
     echo "<hr />";
@@ -1390,7 +1390,7 @@ function light_message_display_deleted($tid,$pid)
 
 function light_message_display_approval_req($tid, $pid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     echo sprintf("<p>{$lang['messageawaitingapprovalbymoderator']}</p>\n", $tid, $pid);
     echo "<hr />\n";
@@ -1398,7 +1398,7 @@ function light_message_display_approval_req($tid, $pid)
 
 function light_messages_nav_strip($tid,$pid,$length,$ppp)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -1471,7 +1471,7 @@ function light_html_guest_error ()
 {
     $frame_top_target = html_get_top_frame_name();
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['guesterror']);
@@ -1600,7 +1600,7 @@ function light_form_input_password($name, $value = "", $width = 0, $maxlength = 
 
 function light_html_message_type_error()
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannotpostthisthreadtype']);
@@ -1629,7 +1629,7 @@ function light_attachment_make_link($attachment)
 
 function light_threads_draw_discussions_dropdown($mode)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
@@ -1724,7 +1724,7 @@ function light_mode_check_noframes()
 
 function light_edit_refuse()
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     light_html_display_error_msg($lang['nopermissiontoedit']);
 }
@@ -1778,7 +1778,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
 function light_html_display_error_array($error_list_array)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 
@@ -1792,7 +1792,7 @@ function light_html_display_error_array($error_list_array)
 
 function light_html_display_success_msg($string_msg)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_string($string_msg)) return;
 
@@ -1801,7 +1801,7 @@ function light_html_display_success_msg($string_msg)
 
 function light_html_display_warning_msg($string_msg)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_string($string_msg)) return;
 
@@ -1810,11 +1810,171 @@ function light_html_display_warning_msg($string_msg)
 
 function light_html_display_error_msg($string_msg)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_string($string_msg)) return;
 
     echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;$string_msg</h2>\n";
+}
+
+function light_html_user_require_approval()
+{
+    $lang = lang::get_instance()->load(__FILE__);
+
+    light_html_draw_top();
+    light_html_display_error_msg($lang['userapprovalrequiredbeforeaccess']);
+    light_html_draw_bottom();
+}
+
+function light_pm_error_refuse()
+{
+    $lang = lang::get_instance()->load(__FILE__);
+    light_html_display_error_msg($lang['cannotviewpm']);
+}
+
+function light_pm_enabled()
+{
+    $lang = lang::get_instance()->load(__FILE__);
+
+    if (!forum_get_setting('show_pms', 'Y')) {
+
+        light_html_draw_top();
+        light_html_display_error_msg($lang['pmshavebeendisabled']);
+        light_html_draw_bottom();
+        exit;
+    }
+}
+
+function light_pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
+{
+    $lang = lang::get_instance()->load(__FILE__);
+
+    $webtag = get_webtag();
+
+    echo "<p>";
+    
+    if ($folder == PM_FOLDER_INBOX) {
+
+        echo "<b>{$lang['from']}: ";
+        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</b><br />\n";
+
+    }else {
+
+        if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
+
+            $recipient_array = preg_split("/[;|,]/u", trim($pm_message_array['RECIPIENTS']));
+
+            if ($pm_message_array['TO_UID'] > 0) {
+                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
+            }
+
+            echo "<b>{$lang['to']}: ";
+            echo word_filter_add_ob_tags(implode('; ', $recipient_array)), "</b><br />\n";
+
+        }elseif (is_array($pm_message_array['TLOGON'])) {
+
+            $recipient_array = array_unique($pm_message_array['TLOGON']);
+
+            echo "<b>{$lang['to']}: ";
+            echo word_filter_add_ob_tags(implode('; ', $recipient_array)), "</b><br />\n";
+
+        }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
+
+            echo "<b>{$lang['to']}: ";
+            echo word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</b><br />\n";
+
+        }else {
+
+            echo "<b>{$lang['to']}: <i>{$lang['norecipients']}</i></b><br />\n";
+        }
+    }
+
+    // Add emoticons/wikilinks and word filter tags
+
+    $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
+    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
+
+    echo "<b>{$lang['subject']}: ";
+
+    if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
+
+        echo word_filter_add_ob_tags(htmlentities_array($pm_message_array['SUBJECT'])), "</b>\n";
+
+    }else {
+
+        echo "<i>{$lang['nosubject']}</i></b>\n";
+    }
+    
+    echo "</p>\n";
+    
+    echo $pm_message_array['CONTENT'];
+    
+    echo "                      </tr>\n";
+
+    if (isset($pm_message_array['AID'])) {
+
+        $aid = $pm_message_array['AID'];
+
+        $attachments_array = array();
+        $image_attachments_array = array();
+
+        if (get_attachments($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+                echo "<p><b>{$lang['attachments']}:</b><br />\n";
+
+                foreach ($attachments_array as $attachment) {
+
+                    if (($attachment_link = light_attachment_make_link($attachment))) {
+
+                        echo $attachment_link, "<br />\n";
+                    }
+                }
+
+                echo "</p>\n";
+            }
+
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                echo "                              <p><b>{$lang['imageattachments']}:</b><br />\n";
+
+                foreach ($image_attachments_array as $attachment) {
+
+                    if (($attachment_link = light_attachment_make_link($attachment))) {
+
+                        echo $attachment_link, "<br />\n";
+                    }
+                }
+
+                echo "</p>\n";
+            }
+        }
+    }
+
+    if ($preview === false) {
+
+        if ($folder == PM_FOLDER_INBOX) {
+
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+
+        }elseif ($folder == PM_FOLDER_OUTBOX) {
+
+            echo "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+
+        }elseif ($folder == PM_FOLDER_DRAFTS) {
+
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a>";
+
+        }else {
+
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+        }
+    }
+    
+    echo "<hr />";
 }
 
 ?>

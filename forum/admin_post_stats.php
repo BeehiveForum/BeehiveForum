@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.50 2008-10-30 20:42:52 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.51 2009-02-27 13:35:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -101,7 +101,7 @@ if (!forum_check_webtag_available($webtag)) {
 
 // Load language file
 
-$lang = load_language_file();
+$lang = lang::get_instance()->load(__FILE__);
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 

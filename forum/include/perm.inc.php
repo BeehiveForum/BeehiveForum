@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.142 2008-11-16 01:57:40 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.143 2009-02-27 13:35:13 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -336,7 +336,7 @@ function perm_user_get_group_names($uid, &$user_groups_array)
 {
     if (!$db_perm_user_get_group_names = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_numeric($uid)) return false;
 
@@ -1110,7 +1110,7 @@ function perm_group_get_users($gid, $offset = 0)
 {
     if (!$db_perm_group_get_users = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_numeric($gid)) return 0;
     if (!is_numeric($offset)) $offset = 0;
@@ -1230,7 +1230,7 @@ function perm_display_list($perms)
 {
     $perms_array = array();
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if ($perms & USER_PERM_BANNED)           $perms_array[] = 'UB';
     if ($perms & USER_PERM_WORMED)           $perms_array[] = 'UW';

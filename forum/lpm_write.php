@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.225 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: lpm_write.php,v 1.1 2009-02-27 13:35:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,6 +67,7 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "light.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
@@ -82,8 +83,7 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
@@ -102,6 +102,13 @@ if (!bh_session_user_approved()) {
     exit;
 }
 
+// Check we have a webtag
+
+if (!forum_check_webtag_available($webtag)) {
+    $request_uri = rawurlencode(get_request_uri(false));
+    header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
+}
+
 // Load language file
 
 $lang = lang::get_instance()->load(__FILE__);
@@ -114,13 +121,13 @@ $uid = bh_session_get_value('UID');
 
 if (user_is_guest()) {
 
-    html_guest_error();
+    light_html_guest_error();
     exit;
 }
 
 // Check that PM system is enabled
 
-pm_enabled();
+light_pm_enabled();
 
 // Get the user's post page preferences.
 
@@ -210,19 +217,19 @@ if (isset($_POST['cancel'])) {
 
     if (isset($t_reply_mid) && is_numeric($t_reply_mid)  && $t_reply_mid > 0) {
 
-        $uri = "pm.php?webtag=$webtag&mid=$t_reply_mid";
+        $uri = "lpm.php?webtag=$webtag&mid=$t_reply_mid";
 
     }elseif (isset($t_forward_mid) && is_numeric($t_forward_mid)  && $t_forward_mid > 0) {
 
-        $uri = "pm.php?webtag=$webtag&mid=$t_forward_mid";
+        $uri = "lpm.php?webtag=$webtag&mid=$t_forward_mid";
 
     }elseif (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
 
-        $uri = "pm.php?webtag=$webtag&mid=$t_edit_mid";
+        $uri = "lpm.php?webtag=$webtag&mid=$t_edit_mid";
 
     }else {
 
-        $uri = "pm.php?webtag=$webtag";
+        $uri = "lpm.php?webtag=$webtag";
     }
 
     header_redirect($uri);
@@ -419,9 +426,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         }else {
 
-            html_draw_top();
-            pm_error_refuse();
-            html_draw_bottom();
+            light_html_draw_top();
+            light_pm_error_refuse();
+            light_html_draw_bottom();
             exit;
         }
     }
@@ -601,9 +608,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
-        pm_error_refuse();
-        html_draw_bottom();
+        light_html_draw_top();
+        light_pm_error_refuse();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -644,9 +651,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
-        pm_error_refuse();
-        html_draw_bottom();
+        light_html_draw_top();
+        light_pm_error_refuse();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -688,9 +695,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
-        pm_error_refuse();
-        html_draw_bottom();
+        light_html_draw_top();
+        light_pm_error_refuse();
+        light_html_draw_bottom();
         exit;
     }
 }
@@ -764,7 +771,7 @@ if ($valid && isset($_POST['send'])) {
 
     if ($valid) {
 
-        header_redirect("pm.php?webtag=$webtag&message_sent=true");
+        header_redirect("lpm.php?webtag=$webtag&message_sent=true");
         exit;
     }
 
@@ -774,7 +781,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
-            header_redirect("pm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
+            header_redirect("lpm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
             exit;
 
         }else {
@@ -789,7 +796,7 @@ if ($valid && isset($_POST['send'])) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
-            header_redirect("pm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
+            header_redirect("lpm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
             exit;
 
         }else {
@@ -800,34 +807,13 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "tinymce_auto_focus=t_content", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
-
-echo "<h1>{$lang['privatemessages']} &raquo; {$lang['sendnewpm']}</h1>\n";
-
-if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '720', 'left');
-}
-
-echo "<br />\n";
-echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
-echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
+light_html_draw_top("robots=noindex,nofollow");
 
 // preview message
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"720\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['messagepreview']}</td>\n";
-    echo "                </tr>\n";
+    echo "<h1>{$lang['messagepreview']}</h1>\n";
 
     if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
@@ -856,229 +842,47 @@ if ($valid && isset($_POST['preview'])) {
 
     $pm_preview_array['CONTENT'] = $t_content;
 
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true), "</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
+    light_pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true);
+    
+    echo "<br />\n";
 }
 
-echo "              <table width=\"720\" class=\"posthead\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "                    <table class=\"posthead\" width=\"210\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
-echo "                      </tr>\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_write.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
+echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
 
-if (($friends_array = pm_user_get_friends())) {
+echo "<h1>{$lang['sendnewpm']}</h1>\n";
 
-    if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-
-        $to_user = user_get($_GET['uid']);
-
-        if (in_array($to_user['UID'], array_keys($friends_array))) {
-
-            $t_to_uid = $to_user['UID'];
-            $to_radio = 0;
-
-        }else {
-
-            $t_recipient_list = $to_user['LOGON'];
-        }
-    }
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_FRIENDS, $lang['friends'], (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS)), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array, (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_OTHERS, $lang['others'], (isset($to_radio) && $to_radio == POST_RADIO_OTHERS) ? true : (!isset($to_radio))), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
-    echo "                      </tr>\n";
-
-}else {
-
-    if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-
-        $to_user = user_get($_GET['uid']);
-        $t_recipient_list = $to_user['LOGON'];
-    }
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
-    echo "                      </tr>\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    light_html_display_error_array($error_msg_array);
 }
 
-if (!is_array($friends_array) && forum_check_webtag_available($webtag)) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['hint']}</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
-    echo "                      </tr>\n";
-}
-
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2>\n";
-
-echo "                          ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo "                          ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
-echo "                          ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-
-echo "                        </td>\n";
-echo "                      </tr>\n";
-
-if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
-}
-
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">\n";
-    echo "                          <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
-
-    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
-        echo "                            </tr>\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">{$emoticon_preview_html}</td>\n";
-
-    }else {
-
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
-    }
-
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-}
-
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                  <td align=\"left\" width=\"500\" valign=\"top\">\n";
-echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">";
-echo "                         <h2>{$lang['message']}</h2>\n";
-
-$tools = new TextAreaHTML("f_post");
-echo $tools->preload();
-
-$t_content = $post->getTidyContent();
-
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
-if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit('send', $lang['send'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
-} else {
-    $tools->setTinyMCE(false);
-}
-
-echo $tools->textarea("t_content", $t_content, 20, 75, "tabindex=\"1\"", "post_content"), "\n";
-
-echo "                        </td>\n";
-echo "                      </tr>\n";
-
-if ($post->isDiff()) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">\n";
-    echo "                          ", $tools->compare_original("t_content", $post->getOriginalContent()), "\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-}
-
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">\n";
+echo "<p>{$lang['subject']}: ";
+echo light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</p>\n";
+echo "<p>{$lang['to']}: ";
+echo form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_html == true) {
 
-    if (($tools->getTinyMCE())) {
+    $tph_radio = $post->getHTML();
 
-        echo form_input_hidden("t_post_html", "enabled");
+    echo "<p>{$lang['htmlinmessage']}:<br />\n";
+    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED), "<br />\n";
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO), "<br />\n";
+    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED), "<br />\n";
+    echo "</p>";
 
-    } else {
+}else {
 
-        echo "              <h2>{$lang['htmlinmessage']}</h2>\n";
-
-        $tph_radio = $post->getHTML();
-
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
-
-        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-        }
-
-        echo "              <br />";
-    }
-
-} else {
-
-        echo form_input_hidden("t_post_html", "disabled");
+    echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "              <br />\n";
+echo "<p>", light_form_submit("post", $lang['send']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
+echo "</p>";
 
-echo "&nbsp;", form_submit('send', $lang['send'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "&nbsp;", form_submit('save', $lang['save'], 'tabindex="3" onclick="clearFocus()"');
-echo "&nbsp;", form_submit('preview', $lang['preview'], 'tabindex="4" onclick="clearFocus()"');
-echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="closeAttachWin(); clearFocus()"');
-
-if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
-
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", htmlentities_array($aid));
-}
-
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-
-echo $tools->js();
+echo "</form>\n";
 
 if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
@@ -1095,29 +899,10 @@ if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
 if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    echo "              <table class=\"posthead\" width=\"720\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['inreplyto']}</td>\n";
-    echo "                </tr>";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX, true), "</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
+    light_pm_display($pm_data, PM_FOLDER_INBOX, true);
+    echo "<br />\n";
 }
 
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
-
-html_draw_bottom();
+light_html_draw_bottom();
 
 ?>

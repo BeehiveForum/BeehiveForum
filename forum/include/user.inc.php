@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.373 2008-11-21 19:07:25 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.374 2009-02-27 13:35:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -991,7 +991,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $user_array = array();
 
@@ -1090,7 +1090,7 @@ function user_get_friends($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $user_rel = USER_FRIEND;
 
@@ -1142,7 +1142,7 @@ function user_get_relationships($uid, $offset = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
@@ -1244,7 +1244,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $user_search_peers_array = array();
 
@@ -1528,7 +1528,7 @@ function user_prefs_prep_attachments($image_attachments_array)
 {
     $attachments_array_prepared = array('' => '&nbsp;');
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
 

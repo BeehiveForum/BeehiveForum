@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.247 2009-01-30 10:14:36 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.248 2009-02-27 13:35:13 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -186,7 +186,7 @@ function poll_get($tid)
 {
     if (!$db_poll_get = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_numeric($tid)) return false;
 
@@ -350,7 +350,7 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -464,7 +464,7 @@ function poll_get_user_vote($tid)
 
 function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -876,7 +876,7 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
 {
     $html = "";
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if ($user_votes == 0) {
         $user_votes_display = $lang['nousersvoted'];
@@ -1046,7 +1046,7 @@ function poll_preview_form($poll_results, $poll_data)
 
 function poll_preview_graph_horz($poll_results)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $total_votes = array();
     $max_values  = array();
@@ -1134,7 +1134,7 @@ function poll_preview_graph_horz($poll_results)
 
 function poll_preview_graph_vert($poll_results)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $total_votes = array();
     $max_values  = array();
@@ -1243,7 +1243,7 @@ function poll_preview_graph_vert($poll_results)
 
 function poll_horizontal_graph($tid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $total_votes = array();
     $max_values  = array();
@@ -1511,7 +1511,7 @@ function poll_preview_graph_table($poll_results)
 
 function poll_vertical_graph($tid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $total_votes = array();
     $max_values  = array();
@@ -1854,7 +1854,7 @@ function poll_table_graph($tid)
 
 function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $total_votes = array();
     $max_values  = array();
@@ -2040,7 +2040,7 @@ function poll_public_ballot_user_callback($user_data)
 
 function poll_confirm_close($tid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 

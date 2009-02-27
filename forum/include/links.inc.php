@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.94 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.95 2009-02-27 13:35:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,7 +44,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 {
     if (!$db_links_get_in_folder = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $sort_by_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
     $sort_dir_array = array('ASC', 'DESC');
@@ -337,7 +337,7 @@ function links_get_single($lid)
 {
     if (!$db_links_get_single = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_numeric($lid)) return false;
 
@@ -376,7 +376,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
 {
     if (!$db_links_get_in_folder = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $sort_by_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
     $sort_dir_array = array('ASC', 'DESC');
@@ -572,7 +572,7 @@ function links_get_comments($lid)
 {
     if (!$db_links_get_comments = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_numeric($lid))  return false;
 

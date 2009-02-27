@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.199 2008-12-27 12:16:03 decoyduck Exp $ */
+/* $Id: register.php,v 1.200 2009-02-27 13:35:12 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -110,7 +110,7 @@ if (bh_session_user_banned()) {
 
 // Load language file
 
-$lang = load_language_file();
+$lang = lang::get_instance()->load(__FILE__);
 
 // Make sure we have a webtag
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.563 2009-02-16 20:15:14 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.564 2009-02-27 13:35:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -527,7 +527,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -568,7 +568,7 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
     $perm_has_admin_access = bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
@@ -1229,7 +1229,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
 function message_display_deleted($tid, $pid, $message)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -1271,7 +1271,7 @@ function message_display_deleted($tid, $pid, $message)
 
 function message_display_approval_req($tid, $pid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -1319,7 +1319,7 @@ function messages_end_panel()
 
 function messages_nav_strip($tid, $pid, $length, $ppp)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -1418,7 +1418,7 @@ function mess_nav_range($from,$to)
 
 function messages_interest_form($tid,$pid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -1472,7 +1472,7 @@ function message_get_user_array($tid, $pid)
 {
     if (!$db_message_get_user = db_connect()) return false;
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1798,7 +1798,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
 function messages_fontsize_form($tid, $pid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 
@@ -1854,7 +1854,7 @@ function validate_msg($msg)
 
 function messages_forum_stats($tid, $pid)
 {
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
 

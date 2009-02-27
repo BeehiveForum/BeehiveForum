@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.9 2009-01-17 23:37:45 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.10 2009-02-27 13:35:12 decoyduck Exp $ */
 
 /**
 * adsense.inc.php - admin functions
@@ -171,7 +171,7 @@ function adsense_output_html()
 
     $webtag = get_webtag();
 
-    $lang = load_language_file();
+    $lang = lang::get_instance()->load(__FILE__);
 
     if ($adsense_displayed === false) {
 

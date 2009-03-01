@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_write.php,v 1.1 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: lpm_write.php,v 1.2 2009-03-01 13:49:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -100,13 +103,6 @@ if (!bh_session_user_approved()) {
 
     html_user_require_approval();
     exit;
-}
-
-// Check we have a webtag
-
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file

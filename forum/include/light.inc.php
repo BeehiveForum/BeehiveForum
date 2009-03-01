@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.217 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.218 2009-03-01 13:49:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1956,21 +1956,21 @@ function light_pm_display($pm_message_array, $folder, $preview = false, $export_
 
         if ($folder == PM_FOLDER_INBOX) {
 
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a></p>";
 
         }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-            echo "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+            echo "<p><a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a></p>";
 
         }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a>";
+            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a></p>";
 
         }else {
 
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a></p>";
         }
     }
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.267 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.268 2009-03-01 13:49:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -139,7 +139,7 @@ function pm_error_refuse()
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
+function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
 {
     if (!$db_pm_get_inbox = db_connect()) return false;
 
@@ -149,6 +149,8 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
+    
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -168,7 +170,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
+    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
 
@@ -227,7 +229,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
+function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
 {
     if (!$db_pm_get_outbox = db_connect()) return false;
 
@@ -237,6 +239,8 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
+    
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -256,7 +260,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
+    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
 
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
 
@@ -315,7 +319,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
+function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
 {
     if (!$db_pm_get_sent = db_connect()) return false;
 
@@ -325,6 +329,8 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
+    
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -344,7 +350,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
+    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
 
     if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
@@ -403,7 +409,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
+function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
 {
     if (!$db_pm_get_saved_items = db_connect()) return false;
 
@@ -413,6 +419,8 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
+    
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -434,7 +442,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
+    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
 
     if (!$result = db_query($sql, $db_pm_get_saved_items)) return false;
 
@@ -493,7 +501,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
+function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
 {
     if (!$db_pm_get_drafts = db_connect()) return false;
 
@@ -503,6 +511,8 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
+    
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -522,7 +532,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
+    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
 
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
 
@@ -643,7 +653,7 @@ function pm_search_execute($search_string, &$error)
     return false;
 }
 
-function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 0)
+function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 0, $limit = 10)
 {
     if (!$db_pm_fetch_search_results = db_connect()) return false;
 
@@ -653,6 +663,8 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) return false;
+    
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -671,7 +683,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $sql.= "LEFT JOIN USER TUSER ON (PM_SEARCH_RESULTS.TO_UID = TUSER.UID) ";
     $sql.= "WHERE PM_SEARCH_RESULTS.UID = '$uid' AND PM.MID IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 10";
+    $sql.= "LIMIT $offset, $limit";
 
     if (!$result = db_query($sql, $db_pm_fetch_search_results)) return false;
 
@@ -2677,12 +2689,22 @@ function pm_get_folder_names()
 
     $lang = lang::get_instance()->load(__FILE__);
 
-    $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
-                                   PM_FOLDER_SENT    => $lang['pmsentitems'],
-                                   PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
-                                   PM_FOLDER_SAVED   => $lang['pmsaveditems'],
-                                   PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
-                                   PM_SEARCH_RESULTS => $lang['searchresults']);
+    if (defined('BEEHIVEMODE_LIGHT')) {
+
+        $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                                       PM_FOLDER_SENT    => $lang['pmsentitems'],
+                                       PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                                       PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                                       PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
+    }else {
+    
+        $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                                       PM_FOLDER_SENT    => $lang['pmsentitems'],
+                                       PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                                       PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                                       PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
+                                       PM_SEARCH_RESULTS => $lang['searchresults']);
+    }    
 
     $sql = "SELECT FID, TITLE FROM PM_FOLDERS WHERE UID = '$uid'";
 
@@ -2693,7 +2715,7 @@ function pm_get_folder_names()
         while (($folder_name_data = db_fetch_array($result))) {
 
             if (strlen(trim($folder_name_data['TITLE'])) > 0) {
-
+                
                 $pm_folder_names_array[$folder_name_data['FID']] = $folder_name_data['TITLE'];
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.4 2009-03-01 18:05:26 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.5 2009-03-01 20:47:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -202,14 +202,6 @@ if (isset($_GET['folder'])) {
 
 if (isset($mid) && is_numeric($mid) && $mid > 0) {
 
-    if (($current_folder != $message_folder)) {
-
-        light_html_draw_top('pm_popup_disabled');
-        light_html_display_error_msg($lang['messagenotfoundinselectedfolder']);
-        light_html_draw_bottom();
-        exit;
-    }
-
     if (!$pm_message_array = pm_message_get($mid)) {
 
         light_html_draw_top('pm_popup_disabled');
@@ -218,9 +210,15 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
         exit;
     }
     
-    echo "<h1>{$lang['privatemessages']} &raquo; {$pm_folder_names_array[$current_folder]}</h1>\n";
+    echo "<h1>{$lang['privatemessages']} &raquo; {$pm_folder_names_array[$message_folder]}</h1>\n";
     
     if (isset($pm_message_array) && is_array($pm_message_array)) {
+    
+        if (isset($_GET['message_sent'])) {
+            light_html_display_success_msg($lang['msgsentsuccessfully']);
+        }else if (isset($_GET['message_saved'])) {
+            html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
+        }    
     
         $pm_message_array['CONTENT'] = pm_get_content($mid);
     

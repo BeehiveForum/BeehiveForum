@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.268 2009-03-01 13:49:58 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.269 2009-03-01 20:47:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1415,6 +1415,8 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
     $sql.= "VALUES ('$pm_outbox', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 0)";
+    
+    echo "<p>$sql</p>\n";
 
     if (db_query($sql, $db_pm_send_message)) {
 
@@ -1424,6 +1426,8 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
+        
+        echo "<p>$sql</p>\n";
 
         if (!db_query($sql, $db_pm_send_message)) return false;
 
@@ -1440,7 +1444,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
         pm_save_attachment_id($new_mid, $aid);
 
-        return  $new_mid;
+        return $new_mid;
     }
 
     return false;

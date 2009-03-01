@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.218 2009-03-01 13:49:58 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.219 2009-03-01 20:47:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -573,7 +573,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     if (isset($_GET['mark_read_success'])) {
 
-        light_html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
+        light_html_display_success_msg($lang['successfullymarkreadselectedthreads']);
 
     }else if (!$thread_info) {
 
@@ -1830,6 +1830,12 @@ function light_pm_error_refuse()
 {
     $lang = lang::get_instance()->load(__FILE__);
     light_html_display_error_msg($lang['cannotviewpm']);
+}
+
+function light_pm_edit_refuse()
+{
+    $lang = lang::get_instance()->load(__FILE__);
+    light_html_display_error_msg($lang['cannoteditpm']);
 }
 
 function light_pm_enabled()

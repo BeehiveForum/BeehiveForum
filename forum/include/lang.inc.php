@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.46 2009-02-27 14:21:00 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.47 2009-03-01 16:19:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ class lang
 
         if (($pref_language = bh_session_get_value("LANGUAGE"))) {
 
-            if (@is_dir(BH_INCLUDE_PATH. "languages/$pref_language/")) {
+            if (@is_dir(BH_INCLUDE_PATH. "languages/$pref_language")) {
 
                 $this->user_pref = $pref_language;
                 return;
@@ -119,7 +119,7 @@ class lang
 
             if ($langs_array[$key] == "*") $langs_array[$key] = $default_language;
 
-            if (@is_dir(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}/")) {
+            if (@is_dir(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}")) {
 
                 $this->user_pref = $langs_array[$key];
                 return;
@@ -132,9 +132,23 @@ class lang
             }
         }
         
-        // if we're still here, no languages matched. Use the default.
+        // If we're still here, no languages matched, try the default.
         
-        $this->user_pref = $default_language;
+        if (@is_dir(BH_INCLUDE_PATH. "languages/$default_language")) {
+
+            $this->user_pref = $default_language;
+            return;
+
+        }else if (file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
+
+            $this->user_pref = $default_language;
+            $this->compat_mode = true;
+            return;
+        }
+        
+        // If we got this far then we can't continue!
+        
+        trigger_error('Could not load default language file', E_USER_ERROR);
     }
     
     public static function get_instance()

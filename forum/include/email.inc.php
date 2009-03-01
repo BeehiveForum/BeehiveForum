@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.154 2009-01-01 22:43:06 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.155 2009-03-01 16:19:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,7 +83,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
                 // Get the right language for the email
 
-                $lang = email_get_language($tuid);
+                if (!$lang = email_get_language($tuid)) return false;
 
                 // Get the forum reply-to email address
 
@@ -186,7 +186,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
             // Get the right language for the email
 
-            $lang = email_get_language($tuid);
+            if (!$lang = email_get_language($tuid)) return false;
 
             // Get the forum reply-to email address
 
@@ -285,7 +285,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
             // Get the right language for the email
 
-            $lang = email_get_language($tuid);
+            if (!$lang = email_get_language($tuid)) return false;
 
             // Get the forum reply-to email address
 
@@ -371,7 +371,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
                 // Get the right language for the email
 
-                $lang = email_get_language($tuid);
+                if (!$lang = email_get_language($tuid)) return false;
 
                 // Get the forum reply-to email address
 
@@ -439,7 +439,7 @@ function email_send_pw_reminder($logon)
 
             // Get the right language for the email
 
-            $lang = email_get_language($to_user['UID']);
+            if (!$lang = email_get_language($to_user['UID'])) return false;
 
             // Get the forum reply-to email address
 
@@ -498,7 +498,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -553,7 +553,7 @@ function email_send_user_confirmation($tuid)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -613,7 +613,7 @@ function email_send_changed_email_confirmation($tuid)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -673,7 +673,7 @@ function email_send_user_approval_notification($tuid)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -732,7 +732,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -790,7 +790,7 @@ function email_send_user_approved_notification($tuid)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -848,7 +848,7 @@ function email_send_post_approval_notification($tuid)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -905,7 +905,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
         // Get the right language for the email
 
-        $lang = email_get_language($to_user['UID']);
+        if (!$lang = email_get_language($to_user['UID'])) return false;
 
         // Get the forum reply-to email address
 
@@ -954,36 +954,44 @@ function email_get_language($to_uid)
     // Array to hold our language strings
 
     $lang = array();
-
-    // Start out by including the English language file. This will allow
-    // us to still use Beehive even if our language file isn't up to date
-    // correctly.
-
-    // The English language file must exist even if we're not going to be
-    // using it in our forum. If we can't find it we'll bail out here.
-
-    if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
-        trigger_error("<p>Could not load English language file (en.inc.php)</p>", E_USER_ERROR);
-    }
-
-    include(BH_INCLUDE_PATH. "languages/en.inc.php");
+    
+    // Default language file.
 
     $default_language = forum_get_setting('default_language', false, 'en');
 
-     // if the user has expressed a preference for language, use it
-     // if available otherwise use the default language.
+    // if the user has expressed a preference for language, use it
+    // if available otherwise use the default language.   
 
     if (($user_prefs = user_get_prefs($to_uid))) {
+    
+        $pref_language = (isset($user_prefs['LANGUAGE']) && strlen(trim($user_prefs['LANGUAGE'])) > 0) ? $user_prefs['LANGUAGE'] : $default_language;
+        
+        if (@is_dir(BH_INCLUDE_PATH. "languages/$pref_language") && @file_exists(BH_INCLUDE_PATH. "languages/$pref_language/email.inc.php")) {
 
-        if (isset($user_prefs['LANGUAGE']) && @file_exists("include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+            require(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}/email.inc.php");
+            return $lang;
 
-             require("include/languages/{$user_prefs['LANGUAGE']}.inc.php");
+        }else if (@file_exists(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+
+             require(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}.inc.php");
+             return $lang;
+        }
+    
+    }else {
+    
+        if (@is_dir(BH_INCLUDE_PATH. "languages/{$default_language}") && @file_exists(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php")) {
+        
+            require(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php");
+            return $lang;
+
+        }else if (file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
+
+             require(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}.inc.php");
              return $lang;
         }
     }
-
-    require("include/languages/{$default_language}.inc.php");
-    return $lang;
+    
+    return false;
 }
 
 function email_is_unique($email_address, $user_uid = 0)

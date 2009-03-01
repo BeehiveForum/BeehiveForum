@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.2 2009-03-01 16:28:00 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.3 2009-03-01 16:29:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -317,6 +317,8 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     
     echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
 }
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

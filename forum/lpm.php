@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.1 2009-03-01 13:49:58 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.2 2009-03-01 16:28:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -226,7 +226,7 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     
         light_pm_display($pm_message_array, $message_folder);
         
-        echo "<br />\n";
+        echo "<h4><a href=\"lpm.php?webtag=DEFAULT&amp;folder=$current_folder\">{$lang['back']}</a> | <a href=\"llogout.php?webtag=DEFAULT\">{$lang['logout']}</a></h4>\n";
     }
     
 }else {
@@ -314,6 +314,8 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     if (pm_auto_prune_enabled()) {
         echo "<p>{$lang['pmfolderpruningisenabled']}</p>\n";
     }
+    
+    echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
 }
 
 light_html_draw_bottom();

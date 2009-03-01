@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.104 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.105 2009-03-01 11:58:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -324,7 +324,7 @@ function logon_perform_auto()
             if (($uid = user_logon($user_logon, $user_passhash))) {
 
                 bh_session_init($uid);
-                echo "header_redirect(\"index.php?webtag=$webtag&noframes\");\n";
+                header_redirect("index.php?webtag=$webtag&noframes");
                 exit;
             }            
             
@@ -342,7 +342,6 @@ function logon_perform_auto()
                     if (($uid = user_logon($username, $passhash))) {
 
                         bh_session_init($uid);
-
                         header_redirect(get_request_uri(true, false));
                         exit;
                     }

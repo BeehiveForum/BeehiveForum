@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.371 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.372 2009-03-01 11:58:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -651,8 +651,8 @@ function forum_check_global_setting_name($setting_name)
                                          'allow_new_registrations', 'allow_search_spidering', 'allow_username_changes',
                                          'attachments_allow_embed', 'attachments_enabled', 'attachments_max_user_space',
                                          'attachments_max_post_space', 'attachment_allow_guests', 'attachment_dir', 
-                                         'attachment_use_old_method', 'bh_remove_stale_sessions_last_run', 'forum_desc', 
-                                         'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
+                                         'attachment_use_old_method', 'bh_remove_stale_sessions_last_run', 'cache_dir',
+                                         'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
                                          'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
                                          'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
                                          'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run',

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.372 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.373 2009-03-01 11:58:29 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1109,6 +1109,8 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
 
     $webtag = get_webtag();
+    
+    $query_string = "";
 
     forum_check_webtag_available($webtag);
 
@@ -1116,26 +1118,42 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
 
         if ($include_webtag) {
 
-            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&amp;";
-            parse_array($_GET, "&amp;", $request_uri);
+            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag";
+            parse_array($_GET, "&amp;", $query_string);
+            
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "&amp;$query_string";
+            }
 
         }else {
 
-            $request_uri = "{$_SERVER['PHP_SELF']}?";
-            parse_array($_GET, "&amp;", $request_uri);
+            $request_uri = "{$_SERVER['PHP_SELF']}";
+            parse_array($_GET, "&amp;", $query_string);
+            
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "?$query_string";
+            }            
         }
 
     }else {
 
         if ($include_webtag) {
 
-            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&";
-            parse_array($_GET, "&", $request_uri);
+            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag";
+            parse_array($_GET, "&", $query_string);
+            
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "&$query_string";
+            }            
 
         }else {
 
-            $request_uri = "{$_SERVER['PHP_SELF']}?";
-            parse_array($_GET, "&", $request_uri);
+            $request_uri = "{$_SERVER['PHP_SELF']}";
+            parse_array($_GET, "&", $query_string);
+            
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "?$query_string";
+            }            
         }
     }
 

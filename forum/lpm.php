@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.3 2009-03-01 16:29:27 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.4 2009-03-01 18:05:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -277,14 +277,57 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
                     
                     foreach ($pm_messages_array['message_array'] as $message) {
                         
+                        echo "<li>";
+
                         if ($message['TYPE'] == PM_UNREAD) {
-                        
-                            echo "<li><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\" title=\"{$message['SUBJECT']}\"><b>{$message['SUBJECT']}</b></a> ", ($message['TYPE'] == PM_UNREAD) ? "<b>[U]</b> " : "[R] ", format_time($message['CREATED']), "</li>\n";
-                        
+                            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\"><b>{$message['SUBJECT']}</b></a> <b>[U]</b> ";
                         }else {
-                        
-                            echo "<li><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\" title=\"{$message['SUBJECT']}\">{$message['SUBJECT']}</a> ", ($message['TYPE'] == PM_UNREAD) ? "<b>[U]</b> " : "[R] ", format_time($message['CREATED']), "</li>\n";
+                            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a> [R] ";
                         }
+
+                        if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX) {
+
+                            echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), " ";
+                            echo format_time($message['CREATED']);
+
+                        }elseif ($current_folder == PM_FOLDER_SAVED) {
+
+                            echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), " ";
+                            echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), " ";
+                            echo format_time($message['CREATED']);
+
+                        }elseif ($current_folder == PM_FOLDER_DRAFTS) {
+
+                            if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
+
+                                $recipient_array = preg_split("/[;|,]/u", trim($message['RECIPIENTS']));
+
+                                if ($message['TO_UID'] > 0) {
+                                    $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));
+                                }
+
+                                $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
+
+                                echo word_filter_add_ob_tags(implode('; ', $recipient_array)), "&nbsp;";
+
+                            }else if (isset($message['TO_UID']) && $message['TO_UID'] > 0) {
+
+                                echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), " ";
+
+                            }else {
+
+                                echo "<i>{$lang['norecipients']}</i>&nbsp;";
+                            }
+
+                            echo "<i>{$lang['notsent']}</i>";
+
+                        }else {
+
+                            echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), " ";
+                            echo format_time($message['CREATED']);
+                        }                            
+
+                        echo "</li>\n";
                     }
                     
                     echo "</ul>\n";

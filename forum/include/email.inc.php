@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.155 2009-03-01 16:19:07 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.156 2009-03-01 16:32:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -968,12 +968,12 @@ function email_get_language($to_uid)
         
         if (@is_dir(BH_INCLUDE_PATH. "languages/$pref_language") && @file_exists(BH_INCLUDE_PATH. "languages/$pref_language/email.inc.php")) {
 
-            require(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}/email.inc.php");
+            require(BH_INCLUDE_PATH. "languages/{$pref_language}/email.inc.php");
             return $lang;
 
-        }else if (@file_exists(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+        }else if (@file_exists(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php")) {
 
-             require(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}.inc.php");
+             require(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
              return $lang;
         }
     
@@ -986,7 +986,7 @@ function email_get_language($to_uid)
 
         }else if (file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
 
-             require(BH_INCLUDE_PATH. "languages/{$user_prefs['LANGUAGE']}.inc.php");
+             require(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
              return $lang;
         }
     }

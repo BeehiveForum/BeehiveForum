@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.187 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: index.php,v 1.188 2009-03-01 17:45:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -325,11 +325,23 @@ if ($session_active && $logon_failed === false) {
 
             light_draw_thread_list();
 
-            if (user_is_guest()) {
-                echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";
-            }else {
-                echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+            echo "<h4>";
+
+            if (forums_get_available_count() > 1) {
+                echo "<a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | ";
             }
+
+            if (user_is_guest()) {
+            
+                echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a>";
+                
+            }else {
+            
+                echo "<a href=\"lpm.php?webtag=$webtag\">{$lang['pminbox']}</a> | ";            
+                echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a>";
+            }
+
+            echo "</h4>\n";
         }
 
     }else {

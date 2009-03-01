@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.263 2009-02-27 13:35:11 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.264 2009-03-01 14:07:30 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -895,22 +895,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                 if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
-                    if ((check_ip_address($user_alias['IPADDRESS'])) && ($hostname = gethostbyaddr($user_alias['IPADDRESS']))) {
-
-                        $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $user_alias['IPADDRESS']);
-
-                    }else {
-
-                        $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $user_alias['IPADDRESS']);
-                    }
-
                     if (ip_is_banned($user_alias['IPADDRESS'])) {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
                     }else {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>\n";
                     }
 
                 }else if ($user_alias_view == USER_ALIAS_EMAIL) {
@@ -1371,22 +1362,13 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['lastipaddress']}:</td>\n";
 
-        if ((check_ip_address($user['IPADDRESS'])) && ($hostname = gethostbyaddr($user['IPADDRESS']))) {
-
-            $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $user['IPADDRESS']);
-
-        }else {
-
-            $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $lang['unknown']);
-        }
-
         if (ip_is_banned($user['IPADDRESS'])) {
 
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a> ({$lang['banned']})</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a> ({$lang['banned']})</td>\n";
 
         }else if (strlen(trim($user['IPADDRESS'])) > 0) {
 
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a></td>\n";
 
         }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.237 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: search.php,v 1.238 2009-03-02 18:46:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -133,27 +133,27 @@ if (user_is_guest()) {
 }
 
 if (isset($_GET['sort_by'])) {
-    if ($_GET['sort_by'] == "LENGTH") {
-        $sort_by = "LENGTH";
-    } elseif ($_GET['sort_by'] == "FID") {
-        $sort_by = "FID";
-    } elseif ($_GET['sort_by'] == "FROM_UID") {
-        $sort_by = "FROM_UID";
+    if ($_GET['sort_by'] == SEARCH_SORT_NUM_REPLIES) {
+        $sort_by = SEARCH_SORT_NUM_REPLIES;
+    } elseif ($_GET['sort_by'] == SEARCH_SORT_FOLDER_NAME) {
+        $sort_by = SEARCH_SORT_FOLDER_NAME;
+    } elseif ($_GET['sort_by'] == SEARCH_SORT_AUTHOR_NAME) {
+        $sort_by = SEARCH_SORT_AUTHOR_NAME;
     } else {
-        $sort_by = "CREATED";
+        $sort_by = SEARCH_SORT_CREATED;
     }   
 }else {
-    $sort_by = "CREATED";
+    $sort_by = SEARCH_SORT_CREATED;
 }
 
 if (isset($_GET['sort_dir'])) {
-    if ($_GET['sort_dir'] == "DESC") {
-        $sort_dir = "DESC";
+    if ($_GET['sort_dir'] == SEARCH_SORT_DESC) {
+        $sort_dir = SEARCH_SORT_DESC;
     } else {
-        $sort_dir = "ASC";
+        $sort_dir = SEARCH_SORT_ASC;
     }   
 }else {
-    $sort_dir = "ASC";
+    $sort_dir = SEARCH_SORT_DESC;
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
@@ -194,15 +194,15 @@ $search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
 
 // Drop down sort by options
 
-$search_sort_by_array = array('CREATED'  => $lang['lastpostdate'],
-                              'LENGTH'   => $lang['numberofreplies'],
-                              'FID'      => $lang['foldername'],
-                              'FROM_UID' => $lang['authorname']);
+$search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
+                              SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'],
+                              SEARCH_SORT_FOLDER_NAME => $lang['foldername'],
+                              SEARCH_SORT_AUTHOR_NAME => $lang['authorname']);
 
 // Drop down sort dir options
 
-$search_sort_dir_array = array('ASC'  => $lang['ascendingorder'], 
-                               'DESC' => $lang['decendingorder']);
+$search_sort_dir_array = array(SEARCH_SORT_ASC  => $lang['ascendingorder'], 
+                               SEARCH_SORT_DESC => $lang['decendingorder']);
 
 // Get a list of available folders.
 

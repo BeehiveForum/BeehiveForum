@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.219 2009-03-01 20:47:23 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.220 2009-03-02 18:46:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1784,7 +1784,7 @@ function light_html_display_error_array($error_list_array)
 
     if (sizeof($error_list_array) < 1) return;
 
-    echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;{$lang['thefollowingerrorswereencountered']}</h2>\n";
+    echo "<h2>{$lang['thefollowingerrorswereencountered']}</h2>\n";
     echo "<ul>\n";
     echo "  <li>", implode("</li>\n  <li>", $error_list_array), "</li>\n";
     echo "</ul>\n";
@@ -1796,7 +1796,7 @@ function light_html_display_success_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<h2><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" />&nbsp;$string_msg</h2>\n";
+    echo "<h2>$string_msg</h2>\n";
 }
 
 function light_html_display_warning_msg($string_msg)
@@ -1805,7 +1805,7 @@ function light_html_display_warning_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<h2><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" />&nbsp;$string_msg</h2>\n";
+    echo "<h2>$string_msg</h2>\n";
 }
 
 function light_html_display_error_msg($string_msg)
@@ -1814,7 +1814,7 @@ function light_html_display_error_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;$string_msg</h2>\n";
+    echo "<h2>$string_msg</h2>\n";
 }
 
 function light_html_user_require_approval()
@@ -1981,6 +1981,56 @@ function light_pm_display($pm_message_array, $folder, $preview = false, $export_
     }
     
     echo "<hr />";
+}
+
+function light_pm_check_messages()
+{
+    // Load the Language file
+
+    $lang = lang::get_instance()->load(__FILE__);
+
+    // Get the number of messages.
+
+    pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
+
+    // Format the message sent to the client.
+
+    if ($pm_new_count == 1 && $pm_outbox_count == 0) {
+
+        $pm_notification = $lang['youhave1newpm'];
+
+    }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
+
+        $pm_notification = $lang['youhave1newpmand1waiting'];
+
+    }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
+
+        $pm_notification = $lang['youhave1pmwaiting'];
+
+    }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
+
+        $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+
+    }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
+
+        $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
+
+    }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
+
+        $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
+
+    }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
+
+        $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
+
+    }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
+
+        $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+    }
+
+    if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
+        echo "<h2>{$pm_notification}</h2>\n";
+    }
 }
 
 ?>

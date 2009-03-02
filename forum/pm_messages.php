@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.67 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.68 2009-03-02 19:00:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -191,10 +191,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-// Default folder
-
-$current_folder = PM_FOLDER_INBOX;
-
 // Check to see if we're viewing a message and get the folder it is in.
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -219,9 +215,17 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     $message_folder = PM_FOLDER_INBOX;
 }
 
-if (isset($_GET['folder'])) {
+// Default folder
 
-    if ($_GET['folder'] == PM_FOLDER_SENT) {
+$current_folder = $message_folder;
+
+// Check for folder specified in URL query.
+
+if (isset($_GET['folder'])) {
+    
+    if ($_GET['folder'] == PM_FOLDER_INBOX) {
+        $current_folder = PM_FOLDER_INBOX;
+    }else if ($_GET['folder'] == PM_FOLDER_SENT) {
         $current_folder = PM_FOLDER_SENT;
     }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
         $current_folder = PM_FOLDER_OUTBOX;
@@ -235,7 +239,9 @@ if (isset($_GET['folder'])) {
 
 }elseif (isset($_POST['folder'])) {
 
-    if ($_POST['folder'] == PM_FOLDER_SENT) {
+    if ($_POST['folder'] == PM_FOLDER_INBOX) {
+        $current_folder = PM_FOLDER_INBOX;
+    }else if ($_POST['folder'] == PM_FOLDER_SENT) {
         $current_folder = PM_FOLDER_SENT;
     }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
         $current_folder = PM_FOLDER_OUTBOX;
@@ -251,7 +257,7 @@ if (isset($_GET['folder'])) {
 // Check to see if we're displaying a message.
 
 if (isset($mid) && is_numeric($mid) && $mid > 0) {
-
+    
     if (($current_folder != PM_SEARCH_RESULTS) && ($current_folder != $message_folder)) {
 
         html_draw_top('pm_popup_disabled');

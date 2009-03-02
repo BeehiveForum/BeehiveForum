@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.5 2009-03-01 20:47:23 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.6 2009-03-02 19:00:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -169,10 +169,10 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     }
 }
 
-$current_folder = false;
+$current_folder = $message_folder;
 
 if (isset($_GET['folder'])) {
-
+    
     if ($_GET['folder'] == PM_FOLDER_INBOX) {
         $current_folder = PM_FOLDER_INBOX;
     }else if ($_GET['folder'] == PM_FOLDER_SENT) {
@@ -201,6 +201,14 @@ if (isset($_GET['folder'])) {
 }
 
 if (isset($mid) && is_numeric($mid) && $mid > 0) {
+
+    if ($current_folder != $message_folder) {
+
+        light_html_draw_top('pm_popup_disabled');
+        light_html_display_error_msg($lang['messagenotfoundinselectedfolder']);
+        light_html_draw_bottom();
+        exit;
+    }
 
     if (!$pm_message_array = pm_message_get($mid)) {
 

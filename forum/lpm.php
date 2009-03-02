@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.6 2009-03-02 19:00:23 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.7 2009-03-02 20:01:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -150,6 +150,8 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
     $start_from = 0;
 }
 
+
+
 // Check to see if we're viewing a message and get the folder it is in.
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -167,6 +169,11 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     if (!$message_folder = pm_message_get_folder($mid)) {
         $message_folder = PM_FOLDER_INBOX;
     }
+
+}else {
+
+    $mid = 0;
+    $message_folder = PM_FOLDER_INBOX;
 }
 
 $current_folder = $message_folder;

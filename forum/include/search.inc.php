@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.225 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.226 2009-03-02 18:46:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -462,9 +462,14 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     $search_keywords = search_get_keywords();
 
-    $sort_dir_array = array('ASC', 'DESC');
+    $sort_dir_array = array(SEARCH_SORT_ASC => 'ASC', 
+                            SEARCH_SORT_DESC => 'DESC');
 
-    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+    if (in_array($sort_dir, array_keys($sort_dir_array))) {
+        $sort_dir = $sort_dir_array[$sort_dir];
+    }else {
+        $sort_dir = $sort_dir_array[SEARCH_SORT_DESC];
+    }
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
     $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";

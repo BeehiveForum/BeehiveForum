@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.264 2009-03-01 14:07:30 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.265 2009-03-07 08:12:56 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1364,11 +1364,11 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (ip_is_banned($user['IPADDRESS'])) {
 
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a> ({$lang['banned']})</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user['IPADDRESS']}</a> ({$lang['banned']})</td>\n";
 
         }else if (strlen(trim($user['IPADDRESS'])) > 0) {
 
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
 
         }else {
 

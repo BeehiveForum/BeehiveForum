@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.50 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.51 2009-03-08 13:27:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -594,6 +594,8 @@ if (isset($_POST['preview'])) {
 }
 
 echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
+
+light_pm_check_messages();
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);

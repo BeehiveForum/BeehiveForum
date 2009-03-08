@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.45 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.46 2009-03-08 13:27:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -183,6 +183,8 @@ $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], 
 light_html_draw_top("title=$forum_name > $thread_title");
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
+
+light_pm_check_messages();
 
 $first_msg = $message['PID'];
 $message['CONTENT'] = message_get_content($tid, $message['PID']);

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.147 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.148 2009-03-08 13:27:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -562,6 +562,8 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h1>{$lang['messagepreview']}</h1>";
+    
+    light_pm_check_messages();
 
     if ($t_to_uid == 0) {
 
@@ -623,6 +625,9 @@ if (!isset($t_fid)) {
 if ($new_thread) {
 
     echo "<h1>{$lang['createnewthread']}</h1>\n";
+    
+    light_pm_check_messages();
+    
     echo "<p>{$lang['selectfolder']}: ";
     echo light_folder_draw_dropdown($t_fid, "t_fid"), "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
@@ -650,6 +655,9 @@ if ($new_thread) {
     }else {
 
         echo "<h1>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h1>\n";
+        
+        light_pm_check_messages();
+        
         echo form_input_hidden("t_tid", htmlentities_array($reply_to_tid));
         echo form_input_hidden("t_rpid", htmlentities_array($reply_to_pid))."\n";
     }

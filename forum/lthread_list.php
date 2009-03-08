@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.115 2009-03-01 17:45:03 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.116 2009-03-08 13:27:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -300,6 +300,8 @@ echo "</script>\n";
 
 echo "<h1>{$lang['threadlist']}</h1>\n";
 echo "<br />\n";
+
+light_pm_check_messages();
 
 light_draw_thread_list($mode, $folder, $start_from);
 

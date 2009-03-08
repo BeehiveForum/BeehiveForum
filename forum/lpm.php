@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.7 2009-03-02 20:01:08 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.8 2009-03-08 13:27:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -150,8 +150,6 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
     $start_from = 0;
 }
 
-
-
 // Check to see if we're viewing a message and get the folder it is in.
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -207,6 +205,22 @@ if (isset($_GET['folder'])) {
     }
 }
 
+if (isset($_GET['deletemsg']) && is_numeric($_GET['deletemsg'])) {
+    
+    $delete_mid = $_GET['deletemsg'];
+
+    if (pm_delete_message($delete_mid)) {
+
+        header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
+        exit;
+
+    }else {
+
+        $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
+        $valid = false;
+    }    
+}
+
 if (isset($mid) && is_numeric($mid) && $mid > 0) {
 
     if ($current_folder != $message_folder) {
@@ -231,6 +245,8 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     
         if (isset($_GET['message_sent'])) {
             light_html_display_success_msg($lang['msgsentsuccessfully']);
+        }else if (isset($_GET['deleted'])) {
+            light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
         }else if (isset($_GET['message_saved'])) {
             html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
         }    
@@ -245,6 +261,14 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
 }else {
 
     echo "<h1>{$lang['privatemessages']}</h1>\n";
+    
+    if (isset($_GET['message_sent'])) {
+        light_html_display_success_msg($lang['msgsentsuccessfully']);
+    }else if (isset($_GET['deleted'])) {
+        light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
+    }else if (isset($_GET['message_saved'])) {
+        html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
+    }    
 
     $pm_message_count_array = pm_get_folder_message_counts();
 

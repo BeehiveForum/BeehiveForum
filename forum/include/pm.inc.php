@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.269 2009-03-01 20:47:23 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.270 2009-03-08 13:27:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1691,37 +1691,59 @@ function pm_delete_message($mid)
     if (!$db_delete_pm = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
+    
+    // Constants required.
+    
+    $pm_inbox_items = PM_INBOX_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_sent_items = PM_SENT_ITEMS;
+    $pm_saved_out = PM_SAVED_OUT;
+    $pm_saved_in  = PM_SAVED_IN;
+    $pm_draft_items = PM_DRAFT_ITEMS;    
+    
+    // User UID
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    // Get the PM data incase the sendee hasn't got a copy of it
-    // in his Sent Items folder.
+    // Verify the PM is 'owned' by the current user.
 
-    $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
-    $sql.= "FROM PM PM ";
+    $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
+    $sql.= "PAF.FILENAME, AT.AID FROM PM PM ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
-    $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
+    $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid')) ";
+    $sql.= "AND PM.MID = '$mid' GROUP BY PM.MID LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_delete_pm)) return false;
+    
+    if (db_num_rows($result) > 0) {
 
-    $db_delete_pm_row = db_fetch_array($result);
+        $db_delete_pm_row = db_fetch_array($result);
 
-    // If it is the author deleting his Sent Item then
-    // delete the attachment as well.
+        // If it is the author deleting his Sent Item then
+        // delete the attachment as well.
 
-    if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID'])) {
+        if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID'])) {
+            delete_attachment_by_aid($db_delete_pm_row['AID']);
+        }
 
-        delete_attachment_by_aid($db_delete_pm_row['AID']);
+        $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
+
+        if (!$result = db_query($sql, $db_delete_pm)) return false;
+
+        $sql = "DELETE QUICK FROM PM_CONTENT WHERE MID = '$mid'";
+
+        if (!$result = db_query($sql, $db_delete_pm)) return false;
+
+        return true;
     }
-
-    $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
-
-    if (!$result = db_query($sql, $db_delete_pm)) return false;
-
-    $sql = "DELETE QUICK FROM PM_CONTENT WHERE MID = '$mid'";
-
-    if (!$result = db_query($sql, $db_delete_pm)) return false;
-
-    return true;
+    
+    return false;
 }
 
 /**

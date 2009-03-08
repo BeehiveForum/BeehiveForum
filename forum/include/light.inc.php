@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.220 2009-03-02 18:46:16 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.221 2009-03-08 13:27:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -156,7 +156,7 @@ function light_html_draw_top()
 
         adsense_output_html();
         echo "<br />\n";
-    }    
+    }
 }
 
 function light_html_draw_bottom()
@@ -266,10 +266,12 @@ function light_draw_messages($msg)
     $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
     light_html_draw_top("title=$forum_name > $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
-
+    
     $msg_count = count($messages);
 
     light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
+    
+    light_pm_check_messages();    
 
     if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
@@ -1739,21 +1741,54 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     $available_methods = array('get', 'post');
     if (!in_array($method, $available_methods)) $method = 'get';
 
+    $available_alignments = array('left', 'center', 'right');
+    if (!in_array($align, $available_alignments)) $align = 'left';
+
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
-        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+        echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
         if (is_array($var_array)) {
 
-            echo "  ", form_input_hidden_array($var_array), "\n";
+            echo form_input_hidden_array($var_array), "\n";
         }
     }
 
-    echo "<h2>$string_msg</h2>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"message_box\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">$header_text</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">$string_msg</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
 
@@ -1762,14 +1797,19 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
             foreach ($button_array as $button_name => $button_label) {
-                $button_html_array[] = light_form_submit(htmlentities_array($button_name), htmlentities_array($button_label));
+                $button_html_array[] = form_submit(htmlentities_array($button_name), htmlentities_array($button_label));
             }
         }
 
         if (sizeof($button_html_array) > 0) {
-            echo implode("&nbsp;", $button_html_array);
+
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", implode("&nbsp;", $button_html_array), "</td>\n";
+            echo "    </tr>\n";
         }
     }
+
+    echo "  </table>\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
         echo "</form>\n";
@@ -1783,11 +1823,20 @@ function light_html_display_error_array($error_list_array)
     $error_list_array = array_filter($error_list_array, 'is_string');
 
     if (sizeof($error_list_array) < 1) return;
-
-    echo "<h2>{$lang['thefollowingerrorswereencountered']}</h2>\n";
-    echo "<ul>\n";
-    echo "  <li>", implode("</li>\n  <li>", $error_list_array), "</li>\n";
-    echo "</ul>\n";
+    
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"error_msg\">\n";
+    echo "  <tr>\n";
+    echo "    <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "    <td class=\"error_msg_icon\">{$lang['thefollowingerrorswereencountered']}</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>\n";
+    echo "      <ul>\n";
+    echo "        <li>", implode("</li>\n<li>", $error_list_array), "</li>\n";
+    echo "      </ul>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";    
 }
 
 function light_html_display_success_msg($string_msg)
@@ -1796,7 +1845,12 @@ function light_html_display_success_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<h2>$string_msg</h2>\n";
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"success_msg\">\n";
+    echo "  <tr>\n";
+    echo "    <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "    <td valign=\"top\" class=\"success_msg_icon\">$string_msg</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
 
 function light_html_display_warning_msg($string_msg)
@@ -1804,8 +1858,13 @@ function light_html_display_warning_msg($string_msg)
     $lang = lang::get_instance()->load(__FILE__);
 
     if (!is_string($string_msg)) return;
-
-    echo "<h2>$string_msg</h2>\n";
+    
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"warning_msg\">\n";
+    echo "  <tr>\n";
+    echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "    <td valign=\"top\" class=\"warning_msg_icon\">$string_msg</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
 
 function light_html_display_error_msg($string_msg)
@@ -1814,7 +1873,12 @@ function light_html_display_error_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<h2>$string_msg</h2>\n";
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"error_msg\">\n";
+    echo "  <tr>\n";
+    echo "    <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "    <td valign=\"top\" class=\"error_msg_icon\">$string_msg</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
 
 function light_html_user_require_approval()
@@ -1943,7 +2007,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false, $export_
 
             if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                echo "                              <p><b>{$lang['imageattachments']}:</b><br />\n";
+                echo "<p><b>{$lang['imageattachments']}:</b><br />\n";
 
                 foreach ($image_attachments_array as $attachment) {
 
@@ -1963,20 +2027,24 @@ function light_pm_display($pm_message_array, $folder, $preview = false, $export_
         if ($folder == PM_FOLDER_INBOX) {
 
             echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a></p>";
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
 
         }elseif ($folder == PM_FOLDER_OUTBOX) {
 
             echo "<p><a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a></p>";
+            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
 
         }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a></p>";
+            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
 
         }else {
 
-            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a></p>";
+            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>&nbsp;&nbsp;";
+            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
         }
     }
     
@@ -1985,9 +2053,19 @@ function light_pm_display($pm_message_array, $folder, $preview = false, $export_
 
 function light_pm_check_messages()
 {
+    static $pm_checked = false;
+    
+    // Check if we've already displayed the notification once.
+    
+    if ($pm_checked === true) return;
+
     // Load the Language file
 
     $lang = lang::get_instance()->load(__FILE__);
+    
+    // Get the webtag
+    
+    $webtag = get_webtag();
 
     // Get the number of messages.
 
@@ -2027,10 +2105,19 @@ function light_pm_check_messages()
 
         $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
     }
-
+    
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
-        echo "<h2>{$pm_notification}</h2>\n";
+    
+        // Wrap the notification in a hyperlink.
+
+        $pm_notification = sprintf("<a href=\"lpm.php?webtag=$webtag\">%s</a>\n", $pm_notification);    
+        
+        // Display the notification
+        
+        light_html_display_success_msg($pm_notification);
     }
+
+    $pm_checked = true;
 }
 
 ?>

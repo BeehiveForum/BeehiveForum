@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.181 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.182 2009-03-21 18:45:29 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -105,12 +105,12 @@ function admin_prune_log($remove_type, $remove_days)
     if (!is_numeric($remove_type)) return false;
     if (!is_numeric($remove_days)) return false;
 
-    $remove_days_seconds = $remove_days * DAY_IN_SECONDS;
-
     if (!$table_data = get_table_prefix()) return false;
+    
+    $remove_days_datetime = date('Y-m-d 00:00:00', mktime() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}ADMIN_LOG` ";
-    $sql.= "WHERE UNIX_TIMESTAMP(CREATED) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
+    $sql.= "WHERE CREATED < '$remove_days_datetime' ";
     $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
     if (!db_query($sql, $db_admin_clearlog)) return false;
@@ -1012,7 +1012,7 @@ function admin_get_post_approval_queue($offset = 0)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE UNIX_TIMESTAMP(POST.APPROVED) = '0' AND THREAD.FID IN ($fidlist) ";
+    $sql.= "WHERE POST.APPROVED IS NULL AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
@@ -1155,14 +1155,14 @@ function admin_prune_visitor_log($remove_days)
 
     if (!is_numeric($remove_days)) return false;
 
-    $remove_days_seconds = $remove_days * DAY_IN_SECONDS;
-
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
+    
+    $remove_days_datetime = date('Y-m-d 00:00:00', mktime() - ($remove_days * DAY_IN_SECONDS));    
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-    $sql.= "AND UNIX_TIMESTAMP(LAST_LOGON) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
+    $sql.= "AND LAST_LOGON < '$remove_days_datetime'";
 
     if (!db_query($sql, $db_admin_prune_visitor_log)) return false;
 
@@ -1201,8 +1201,7 @@ function admin_get_user_ip_matches($uid)
     // Fetch the user's last 10 IP addresses from the POST table
 
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
-    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
-    $sql.= "AND LENGTH(IPADDRESS) > 0 LIMIT 0, 10";
+    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_admin_get_user_ip_matches)) return false;
 
@@ -1352,7 +1351,7 @@ function admin_get_user_referer_matches($uid)
 
     $sess_uid = bh_session_get_value('UID');
 
-    // Get the user's email address
+    // Get the user's referer
 
     $user_http_referer = user_get_referer($uid);
 
@@ -1360,8 +1359,7 @@ function admin_get_user_referer_matches($uid)
     $sql.= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE (USER.REFERER = '$user_http_referer') ";
-    $sql.= "AND LENGTH(USER.REFERER) > 0 ";
+    $sql.= "WHERE USER.REFERER = '$user_http_referer' ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_admin_get_user_referer_matches)) return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.374 2009-03-15 19:02:21 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.375 2009-03-21 18:45:29 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -107,13 +107,10 @@ function bh_session_check($show_session_fail = true)
 
     if (isset($user_hash) && is_md5($user_hash)) {
 
-        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, ";
-        $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "UNIX_TIMESTAMP(NOW()) AS SERVER_TIME, SESSIONS.FID, ";
-        $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, ";
-        $sql.= "USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
-        $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.REFERER, SESSIONS.FID, ";
+        $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, ";
+        $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS ";
+        $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) WHERE SESSIONS.HASH = '$user_hash' ";
         $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress'";
 
         if (!$result = db_query($sql, $db_bh_session_check)) return false;
@@ -158,11 +155,13 @@ function bh_session_check($show_session_fail = true)
             if (($forum_webtag = forum_get_webtag($user_sess['FID'])) && isset($user_prefs['STYLE'])) {
                 bh_setcookie("bh_{$forum_webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
             }
+            
+            thread_auto_prune_unread_data();
 
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if ((($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid) || defined('BEEHIVE_INSTALL_NOWARN')) {
+            if (((mktime() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid) || defined('BEEHIVE_INSTALL_NOWARN')) {
 
                 // Update the user time stats before we update the session
 
@@ -334,8 +333,7 @@ function bh_guest_session_init($update_visitor_log = true)
         }
 
         $sql = "SELECT HASH, 0 AS UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "UNIX_TIMESTAMP(NOW()) AS SERVER_TIME, FID, IPADDRESS, ";
-        $sql.= "'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, REFERER ";
+        $sql.= "FID, IPADDRESS, 'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, REFERER ";
         $sql.= "FROM SESSIONS WHERE HASH = '$user_hash' ";
 
         if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
@@ -361,7 +359,7 @@ function bh_guest_session_init($update_visitor_log = true)
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if ((($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
+            if (((mktime() - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
 
                 if ($user_sess['FID'] != $forum_fid) {
 
@@ -502,16 +500,17 @@ function bh_remove_stale_sessions()
 
     if (($session_cutoff = forum_get_setting('session_cutoff', false, 86400))) {
 
+        $session_cutoff_datetime = date('Y-m-d H:i:00', mktime() - $session_cutoff);
+        
         $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
-        $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
+        $sql.= "TIME < '$session_cutoff_datetime' ";
 
         if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
         $expired_sessions_array = array();
 
         $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
-        $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
-        $sql.= "AND UID > 0 LIMIT 0, 5";
+        $sql.= "TIME < '$session_cutoff_datetime' AND UID > 0 LIMIT 0, 5";
 
         if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
@@ -526,7 +525,7 @@ function bh_remove_stale_sessions()
             $expired_sessions = implode("', '", $expired_sessions_array);
 
             $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
-            $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
+            $sql.= "AND TIME < '$session_cutoff_datetime' ";
 
             if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
@@ -562,6 +561,8 @@ function bh_update_visitor_log($uid, $forum_fid)
     $http_referer = db_escape_string(bh_session_get_referer());
 
     $ipaddress = db_escape_string($ipaddress);
+    
+    $session_cutoff_datetime = date('Y-m-d H:i:00', mktime() - $session_cutoff);
 
     if ($uid > 0) {
 
@@ -587,7 +588,7 @@ function bh_update_visitor_log($uid, $forum_fid)
 
             $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '0' ";
             $sql.= "AND IPADDRESS = '$ipaddress' AND FORUM = '$forum_fid' ";
-            $sql.= "AND LAST_LOGON > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff)";
+            $sql.= "AND LAST_LOGON > '$session_cutoff_datetime'";
 
             if (!$result = db_query($sql, $db_bh_update_visitor_log)) return false;
 

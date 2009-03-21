@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.157 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.158 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -269,10 +269,12 @@ function thread_set_moved($old_tid, $new_tid)
 
     if (!is_numeric($old_tid)) return false;
     if (!is_numeric($new_tid)) return false;
+    
+    $current_datetime = date('Y-m-d H:i:00', mktime());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` ";
     $sql.= "(TID, NEW_TID, CREATED, TRACK_TYPE) ";
-    $sql.= "VALUES ('$old_tid', '$new_tid', NOW(), 0)";
+    $sql.= "VALUES ('$old_tid', '$new_tid', '$current_datetime', 0)";
 
     if (!db_query($sql, $db_thread_set_moved)) return false;
 
@@ -287,10 +289,12 @@ function thread_set_split($old_tid, $new_tid)
 
     if (!is_numeric($old_tid)) return false;
     if (!is_numeric($new_tid)) return false;
+    
+    $current_datetime = date('Y-m-d H:i:00', mktime());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` ";
     $sql.= "(TID, NEW_TID, CREATED, TRACK_TYPE) ";
-    $sql.= "VALUES ('$old_tid', '$new_tid', NOW(), 1)";
+    $sql.= "VALUES ('$old_tid', '$new_tid', '$current_datetime', 1)";
 
     if (!db_query($sql, $db_thread_set_split)) return false;
 

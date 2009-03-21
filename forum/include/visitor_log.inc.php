@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.43 2009-02-27 13:35:14 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.44 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -169,7 +169,8 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
                                   'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
                                   'DOB'             => $lang['birthday'],
                                   'AGE'             => $lang['age'],
-                                  'TIMEZONE'        => $lang['timezone']);
+                                  'TIMEZONE'        => $lang['timezone'],
+                                  'LOCAL_TIME'      => 'Local Time');
 
     // Add the pre-defined profile options to the top of the list
 
@@ -249,23 +250,32 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Named column NULL filtering
 
-    $column_null_filter_having_array = array('POST_COUNT'      => '(POST_COUNT IS NOT NULL AND LENGTH(POST_COUNT) > 0)',
-                                             'LAST_VISIT'      => '(LAST_VISIT IS NOT NULL AND LENGTH(LAST_VISIT) > 0)',
-                                             'REGISTERED'      => '(REGISTERED IS NOT NULL AND LENGTH(REGISTERED) > 0)',
-                                             'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL AND LENGTH(USER_TIME_BEST) > 0)',
-                                             'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL AND LENGTH(USER_TIME_TOTAL) > 0)',
+    $column_null_filter_having_array = array('POST_COUNT'      => '(POST_COUNT IS NOT NULL)',
+                                             'LAST_VISIT'      => '(LAST_VISIT IS NOT NULL)',
+                                             'REGISTERED'      => '(REGISTERED IS NOT NULL)',
+                                             'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL)',
+                                             'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL)',
                                              'DOB'             => '(DOB IS NOT NULL)',
                                              'AGE'             => '(AGE IS NOT NULL AND AGE > 0)',
-                                             'TIMEZONE'        => '(TIMEZONE IS NOT NULL AND LENGTH(TIMEZONE) > 0)');
+                                             'TIMEZONE'        => '(TIMEZONE IS NOT NULL)',
+                                             'LOCAL_TIME'      => '(LOCAL_TIME IS NOT NULL)');
 
-    // Main query.
+    // Year, Month and Day for Age calculation
+    
+    list($year, $month, $day) = explode('-', date('Y-m-d', mktime()));
+    
+    // Current Date for User's local time
+    
+    $current_datetime = date('Y-m-d H:i:00', mktime());
+    
+    // Main Query
 
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $select_sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
     $select_sql.= "DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
-    $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
-    $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
-    $select_sql.= "TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, ";
+    $select_sql.= "$year - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
+    $select_sql.= "('00-$month-$day' < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
+    $select_sql.= "TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
@@ -425,8 +435,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
             if (is_numeric($column)) {
 
-                $having_query_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
-                $having_visitor_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
+                $having_query_array[] = "(ENTRY_{$column} IS NOT NULL) ";
+                $having_visitor_array[] = "(ENTRY_{$column} IS NOT NULL) ";
 
             }else {
 
@@ -500,7 +510,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
             $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
             $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
-            $sql.= "UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, NULL AS REGISTERED, ";
+            $sql.= "UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, NULL AS REGISTERED, ";
             $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
             $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
             $sql.= "'' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, $profile_item_columns, ";
@@ -515,7 +525,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
             $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
             $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
-            $sql.= "UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, NULL AS REGISTERED, ";
+            $sql.= "UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, NULL AS REGISTERED, ";
             $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
             $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
             $sql.= "'' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
@@ -604,6 +614,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             }
 
             $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
+            
+            if (isset($user_data['LOCAL_TIME']) && is_numeric($user_data['LOCAL_TIME'])) {
+                $user_data['LOCAL_TIME'] = format_time($user_data['LOCAL_TIME']);
+            }else {
+                $user_data['LOCAL_TIME'] = $lang['unknown'];
+            }            
 
             if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
                 $user_data['POST_COUNT'] = 0;
@@ -640,12 +656,11 @@ function visitor_log_clean_up()
     $forum_fid = $table_data['FID'];
 
     // Keep visitor log for 7 days.
-
-    $visitor_cutoff_stamp = DAY_IN_SECONDS * 7;
+    
+    $visitor_cutoff_datetime = date('Y-m-d 00:00:00', mktime() - (DAY_IN_SECONDS * 7));
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-    $sql.= "AND LAST_LOGON < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) ";
-    $sql.= "- $visitor_cutoff_stamp)";
+    $sql.= "AND LAST_LOGON < '$visitor_cutoff_datetime' ";
 
     if (!db_query($sql, $db_visitor_log_clean_up)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.100 2009-02-27 13:35:14 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.101 2009-03-21 18:45:29 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -91,8 +91,10 @@ function user_get_profile($uid)
     $user_groups_array = array();
 
     $user_prefs = user_get_prefs($uid);
+    
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900);
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_cutoff_datetime = date('Y-m-d', mktime() - $active_sess_cutoff);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
@@ -113,7 +115,7 @@ function user_get_profile($uid)
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = USER.UID) ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
-    $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)) ";
+    $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime') ";
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
@@ -320,8 +322,8 @@ function user_get_profile_entries($uid)
     $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid' ";
     $sql.= "AND (USER_PROFILE.PRIVACY = 0 OR USER_PROFILE.UID = '$session_uid' ";
     $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)))) ";
-    $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL AND LENGTH(USER_PROFILE.ENTRY) > 0 ";
-    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
+    $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL ORDER BY PROFILE_SECTION.POSITION, ";
+    $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
     if (!$result = db_query($sql, $db_user_get_profile_entries)) return false;
 

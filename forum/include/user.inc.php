@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.374 2009-02-27 13:35:14 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.375 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,10 +93,12 @@ function user_create($logon, $password, $nickname, $email)
     }
 
     if (!$ipaddress = get_ip_address()) return false;
+    
+    $current_datetime = date('Y-m-d H:i:s', mktime());
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, ";
     $sql.= "REGISTERED, REFERER, IPADDRESS) VALUES ('$logon', ";
-    $sql.= "'$md5pass', '$nickname', '$email', NOW(), ";
+    $sql.= "'$md5pass', '$nickname', '$email', '$current_datetime', ";
     $sql.= "'$http_referer', '$ipaddress')";
 
     if ((db_query($sql, $db_user_create))) {
@@ -119,6 +121,8 @@ function user_update($uid, $logon, $nickname, $email)
     $logon = db_escape_string($logon);
     $nickname = db_escape_string($nickname);
     $email = db_escape_string($email);
+    
+    $current_datetime = date('Y-m-d H:i:s', mktime());
 
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
@@ -147,7 +151,7 @@ function user_update($uid, $logon, $nickname, $email)
             // additional matches (NULL != $logon, etc.)
 
             $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-            $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', NOW())";
+            $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', '$current_datetime')";
 
             if (!db_query($sql, $db_user_update)) return false;
         }
@@ -157,7 +161,7 @@ function user_update($uid, $logon, $nickname, $email)
         // No previous data so we just save what we have.
 
         $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-        $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', NOW())";
+        $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', '$current_datetime')";
 
         if (!db_query($sql, $db_user_update)) return false;
     }
@@ -938,6 +942,8 @@ function user_get_forthcoming_birthdays()
     if (!$table_data = get_table_prefix()) return false;
 
     $uid = bh_session_get_value('UID');
+    
+    list($month, $day) = explode('-', date('m-d', mktime()));
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS.DOB, ";
     $sql.= "DAYOFMONTH(USER_PREFS.DOB) AS BDAY, MONTH(USER_PREFS.DOB) AS BMONTH ";
@@ -948,9 +954,9 @@ function user_get_forthcoming_birthdays()
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY > 1 ";
     $sql.= "OR USER_PREFS_GLOBAL.DOB_DISPLAY > 1) ";
-    $sql.= "AND ((MONTH(USER_PREFS.DOB) = MONTH(NOW()) ";
-    $sql.= "AND DAYOFMONTH(USER_PREFS.DOB) >= DAYOFMONTH(NOW())) ";
-    $sql.= "OR MONTH(USER_PREFS.DOB) > MONTH(NOW())) ";
+    $sql.= "AND ((MONTH(USER_PREFS.DOB) = $month ";
+    $sql.= "AND DAYOFMONTH(USER_PREFS.DOB) >= $day) ";
+    $sql.= "OR MONTH(USER_PREFS.DOB) > $month) ";
     $sql.= "ORDER BY BMONTH ASC, BDAY ASC ";
     $sql.= "LIMIT 0, 5";
 

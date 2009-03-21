@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.372 2009-03-01 11:58:29 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.373 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -814,6 +814,26 @@ function forum_get_unread_cutoff()
 }
 
 /**
+* Get Unread Cutoff Datetime
+*
+* Retrieves the current forum's unread cut-off formatted as MySQL datetime
+* This function different from forum_get_unread_cutoff() as it returns the
+* cutoff date and not the cutoff length.
+*
+* @return mixed - False if unread messages are disabled or integer number of seconds the cut-off is set to.
+* @param void
+*/
+
+function forum_get_unread_cutoff_datetime()
+{
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
+        return date('Y-m-d 00:00:00', mktime() - $unread_cutoff_stamp);
+    }
+    
+    return false;
+}
+
+/**
 * Process Unread Cutoff
 *
 * Processes and validates a forum unread cut-off value saved in a settings array.
@@ -861,6 +881,8 @@ function forum_update_unread_data($unread_cutoff_stamp)
     if (!is_numeric($unread_cutoff_stamp)) return false;
 
     if ($unread_cutoff_stamp !== false) {
+    
+        $unread_cutoff_datetime = date('Y-m-d 00:00:00', mktime() - $unread_cutoff_stamp);
 
         if (($forum_prefix_array = forum_get_all_prefixes())) {
 
@@ -869,7 +891,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
                 $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` USER_THREAD ";
                 $sql.= "USING `{$forum_prefix}USER_THREAD` USER_THREAD LEFT JOIN `{$forum_prefix}THREAD` THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE THREAD.MODIFIED IS NOT NULL ";
-                $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+                $sql.= "AND THREAD.MODIFIED < '$unread_cutoff_datetime' ";
                 $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST = 0)";
 
                 if (!db_query($sql, $db_forum_update_unread_data)) return false;
@@ -2361,7 +2383,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
                 // Unread cut-off stamp.
 
-                $unread_cutoff_stamp = forum_get_unread_cutoff();
+                $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
                 // Get available folders for queries below
 
@@ -2369,12 +2391,12 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 
                 // Get any unread messages
 
-                if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
+                if ($unread_cutoff_datetime !== false) {
 
                     $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
                     $sql.= "FROM `{$forum_data['PREFIX']}THREAD THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
                     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
-                    $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
+                    $sql.= "AND (THREAD.MODIFIED > '$unread_cutoff_datetime') ";
 
                     if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
 

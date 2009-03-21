@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.270 2009-03-08 13:27:13 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.271 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2096,12 +2096,12 @@ function pm_user_prune_folders($uid = false)
         $pm_read = PM_READ;
         $pm_sent_items = PM_SENT_ITEMS;
 
-        $pm_prune_length = intval($user_prefs['PM_AUTO_PRUNE']);
-        $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
+        $pm_prune_length_seconds = (intval($user_prefs['PM_AUTO_PRUNE']) * DAY_IN_SECONDS);
+        $pm_prune_length_datetime = date('Y-m-d 00:00:00', mktime() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE (((TYPE & $pm_read > 0) AND TO_UID = '$uid') ";
         $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
-        $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
+        $sql.= "AND CREATED < '$pm_prune_length_datetime'";
 
         if (!db_query($sql, $db_pm_prune_folders)) return false;
     }
@@ -2129,10 +2129,11 @@ function pm_system_prune_folders()
         $pm_read = PM_READ;
         $pm_sent_items = PM_SENT_ITEMS;
 
-        $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
+        $pm_prune_length_seconds = ($pm_prune_length * DAY_IN_SECONDS);        
+        $pm_prune_length_datetime = date('Y-m-d 00:00:00', mktime() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
-        $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
+        $sql.= "AND CREATED < '$pm_prune_length_datetime'";
 
         if (!db_query($sql, $db_pm_prune_folders)) return false;
 

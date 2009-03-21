@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.19 2008-11-19 19:16:47 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.20 2009-03-21 18:45:29 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -100,7 +100,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
 
         // Moved the UNREAD_PID column into the THREAD table.
         // Make sure the data is up to date - Also fixes the threads that are
@@ -109,8 +109,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, UNREAD_PID) ";
         $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM `{$table_data['PREFIX']}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
+        $sql.= "WHERE POST.CREATED < '$unread_cutoff_datetime' GROUP BY THREAD.TID ";
+        $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
         if (!$result = @db_query($sql, $db_install)) {
 
@@ -222,6 +222,27 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
+    
+    // Change IPADDRESS column in POST so it can be NULL so the IP Address matching of the
+    // user comparison tools can work more efficiently.
+    
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE IPADDRESS IPADDRESS VARCHAR(15) NULL";
+    
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    // Set all empty IPADDRESS records to NULL
+    
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET IPADDRESS = NULL WHERE LENGTH(IPADDRESS) = 0";
+    
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }    
 }
 
 // We got this far, that means we can now update the global forum tables.

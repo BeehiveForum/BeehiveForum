@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.119 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.120 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,17 +58,19 @@ function stats_update($session_count, $recent_post_count)
     $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_update_stats)) return false;
+    
+    $current_datetime = date('Y-m-d H:i:00', mktime());
 
     if (db_num_rows($result) > 0) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}STATS` SET ";
-        $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = '$session_count' ";
+        $sql.= "MOST_USERS_DATE = '$current_datetime', MOST_USERS_COUNT = '$session_count' ";
         $sql.= "WHERE MOST_USERS_COUNT < $session_count";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}STATS` SET ";
-        $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = '$recent_post_count' ";
+        $sql.= "MOST_POSTS_DATE = '$current_datetime', MOST_POSTS_COUNT = '$recent_post_count' ";
         $sql.= "WHERE MOST_POSTS_COUNT < $recent_post_count";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
@@ -77,7 +79,7 @@ function stats_update($session_count, $recent_post_count)
 
         $sql = "INSERT LOW_PRIORITY INTO `{$table_data['PREFIX']}STATS` (MOST_USERS_DATE, ";
         $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
-        $sql.= "VALUES (NOW(), '$session_count', NOW(), '$recent_post_count')";
+        $sql.= "VALUES (NOW(), '$session_count', '$current_datetime', '$recent_post_count')";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
     }
@@ -1066,33 +1068,52 @@ function stats_get_visitor_counts()
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
+    
+    // Year, Month, Week and Day
+    
+    list($year, $month, $week, $day) = explode('-', date('Y-m-w-d', mktime()));
+    
+    // Calculate the datetime for January 1st this year.
+    
+    $year_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, 1, 1, $year));
+    
+    // Calculate the datetime for 1st of the month
+    
+    $month_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, $month, 1, $year));
+    
+    // Calculate the timestamps for start of this week.
+    
+    $week_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, $month, ($day - $week), $year));
+    
+    // Calculate the datetime for start of today.
+    
+    $day_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, $month, $day, $year));
+    
+    // Get visitors for today.
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE DAY(NOW()) = DAY(LAST_LOGON) AND MONTH(NOW()) = MONTH(LAST_LOGON) ";
-    $sql.= "AND YEAR(NOW()) = YEAR(LAST_LOGON) AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= '$day_start_datetime' AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_today) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE WEEK(NOW()) = WEEK(LAST_LOGON) AND YEAR(NOW()) = YEAR(LAST_LOGON) ";
-    $sql.= "AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= '$week_start_datetime' AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_week) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE MONTH(NOW()) = MONTH(LAST_LOGON) AND YEAR(NOW()) = YEAR(LAST_LOGON) ";
-    $sql.= "AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= '$month_start_datetime' AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_month) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE YEAR(NOW()) = YEAR(LAST_LOGON) AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= '$year_start_datetime' AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
@@ -1107,9 +1128,13 @@ function stats_get_visitor_counts()
 function stats_get_average_age()
 {
     if (!$db_stats_get_average_age = db_connect()) return false;
+    
+    // Year, Month and Day
+    
+    list($year, $month, $day) = explode('-', date('Y-m-d', mktime()));    
 
-    $sql = "SELECT AVG(DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(DOB, '%Y') - ";
-    $sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";
+    $sql = "SELECT AVG($year - DATE_FORMAT(DOB, '%Y') - ";
+    $sql.= "('00-$month-$day' < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";
     $sql.= "FROM USER_PREFS WHERE DOB > 0";
 
     if (!$result = db_query($sql, $db_stats_get_average_age)) return false;

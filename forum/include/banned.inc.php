@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.46 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.47 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,10 +116,12 @@ function ban_check($user_sess, $user_is_guest = false)
     $ban_check_where_query = implode(" OR ", $ban_check_where_array);
 
     if (strlen(trim($ban_check_where_query)) > 0 && strlen(trim($ban_check_select_list)) > 0) {
+    
+        $current_datetime = date('Y-m-d 00:00:00', mktime());
 
         $sql = "SELECT ID, BANTYPE, BANDATA, $ban_check_select_list ";
         $sql.= "FROM `{$table_data['PREFIX']}BANNED` WHERE $ban_check_where_query ";
-        $sql.= "AND (EXPIRES > NOW() OR EXPIRES = 0)";
+        $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
 
         if (!$result = db_query($sql, $db_ban_check)) return false;
 
@@ -201,10 +203,12 @@ function ip_is_banned($ipaddress)
     if (!$table_data = get_table_prefix()) return false;
 
     $ban_type_ip = BAN_TYPE_IP;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$ipaddress' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > NOW() OR EXPIRES = 0)";
+    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
     $sql.= "AND BANTYPE = '$ban_type_ip' ";
     $sql.= "LIMIT 0, 1";
 
@@ -222,10 +226,12 @@ function logon_is_banned($logon)
     if (!$table_data = get_table_prefix()) return false;
 
     $ban_type_logon = BAN_TYPE_LOGON;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$logon' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > NOW() OR EXPIRES = 0)";
+    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
     $sql.= "AND BANTYPE = '$ban_type_logon' ";
     $sql.= "LIMIT 0, 1";
 
@@ -243,10 +249,12 @@ function nickname_is_banned($nickname)
     if (!$table_data = get_table_prefix()) return false;
 
     $ban_type_nick = BAN_TYPE_NICK;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$nickname' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > NOW() OR EXPIRES = 0)";
+    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
     $sql.= "AND BANTYPE = '$ban_type_nick' ";
     $sql.= "LIMIT 0, 1";
 
@@ -264,10 +272,12 @@ function email_is_banned($email)
     if (!$table_data = get_table_prefix()) return false;
 
     $ban_type_email = BAN_TYPE_EMAIL;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$email' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > NOW() OR EXPIRES = 0)";
+    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
     $sql.= "AND BANTYPE = '$ban_type_email' ";
     $sql.= "LIMIT 0, 1";
 
@@ -377,10 +387,12 @@ function check_ban_data($ban_type, $ban_data, $ban_expires = 0)
     $ban_data = db_escape_string($ban_data);
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$ban_data' LIKE BANDATA AND BANTYPE = '$ban_type' ";
-    $sql.= "AND (FROM_UNIXTIME('$ban_expires') > NOW() ";
+    $sql.= "AND (FROM_UNIXTIME('$ban_expires') > '$current_datetime' ";
     $sql.= "OR FROM_UNIXTIME('$ban_expires') = 0) LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_referer_is_banned)) return false;
@@ -416,13 +428,15 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.NICKNAME FROM SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = SESSIONS.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE (FROM_UNIXTIME('$ban_expires') > NOW() OR $ban_expires = 0) ";
+    $sql.= "WHERE (FROM_UNIXTIME('$ban_expires') > '$current_datetime' OR $ban_expires = 0) ";
     $sql.= "AND SESSIONS.UID > 0 AND (((SESSIONS.IPADDRESS LIKE '$ban_data' ";
     $sql.= "OR USER.IPADDRESS LIKE '$ban_data') AND '$ban_type' = '$ban_type_ip') ";
     $sql.= "OR ((SESSIONS.REFERER LIKE '$ban_data' OR USER.REFERER LIKE '$ban_data') ";
@@ -453,7 +467,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS WHERE SESSIONS.UID = 0 ";
     $sql.= "AND (('$ban_data' LIKE SESSIONS.IPADDRESS AND '$ban_type' = '$ban_type_ip') ";
     $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND '$ban_type' = '$ban_type_ref')) ";
-    $sql.= "AND ($ban_expires > NOW() OR $ban_expires = 0)";
+    $sql.= "AND ($ban_expires > '$current_datetime' OR $ban_expires = 0)";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;
 
@@ -480,6 +494,8 @@ function user_is_banned($uid)
     $ban_type_ref   = BAN_TYPE_REF;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date('Y-m-d 00:00:00', mktime());
 
     $sql = "SELECT COUNT(BANNED.ID) AS BAN_COUNT FROM `{$table_data['PREFIX']}BANNED` BANNED, ";
     $sql.= "USER USER LEFT JOIN SESSIONS SESSIONS ON (USER.UID = SESSIONS.UID) ";
@@ -490,7 +506,7 @@ function user_is_banned($uid)
     $sql.= "OR (USER.NICKNAME LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_nick') ";
     $sql.= "OR (USER.EMAIL LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_email') ";
     $sql.= "OR (USER.REFERER LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ref')) ";
-    $sql.= "AND (EXPIRES > NOW() OR EXPIRES = 0) AND USER.UID = '$uid'";
+    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0) AND USER.UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_is_banned)) return false;
 

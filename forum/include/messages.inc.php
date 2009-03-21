@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.564 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.565 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1540,22 +1540,24 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     // User UID
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
-
+    
     // Mark as read cut off
 
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
+    $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     // Guest users' can't mark as read!
 
     if (!user_is_guest()) {
 
-        if (($last_read < $length) && ($unread_cutoff_stamp !== false) && ($modified > $unread_cutoff_stamp)) {
+        if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {    
 
             // Get the last PID within the unread-cut-off.
             
+            $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();            
+            
             $sql = "SELECT MAX(POST.PID) AS UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
             $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-            $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "WHERE POST.CREATED < 'unread_cutoff_datetime' ";
             $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID";
             
             if (!$result = db_query($sql, $db_message_update_read)) return false;
@@ -1734,7 +1736,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
@@ -1756,7 +1758,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+    $sql.= "AND THREAD.MODIFIED > '$unread_cutoff_datetime' ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";

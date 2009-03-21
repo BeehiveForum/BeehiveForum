@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.25 2008-11-22 22:19:56 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.26 2009-03-21 18:45:29 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -298,7 +298,7 @@ function sitemap_create_file()
 
                         foreach ($threads_array as $thread_tid => $thread_modified) {
 
-                            $thread_last_modified = date("Y-m-d", $thread_modified);
+                            $thread_last_modified = date('Y-m-d', $thread_modified);
 
                             if ($thread_modified < mktime() - (90 * DAY_IN_SECONDS)) {
 

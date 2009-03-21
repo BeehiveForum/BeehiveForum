@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.226 2009-03-02 18:46:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.227 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -105,17 +105,17 @@ function search_execute($search_arguments, &$error)
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
-            $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT SQL_NO_CACHE ";
+            $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
+            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, ";
             $select_sql.= "THREAD.LENGTH ";
 
         }else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
-            $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT SQL_NO_CACHE ";
+            $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
+            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, ";
             $select_sql.= "THREAD.LENGTH ";
         }
 
@@ -193,9 +193,9 @@ function search_execute($search_arguments, &$error)
 
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
-                $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
-                $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
-                $select_sql.= "THREAD.MODIFIED AS DATE_CREATED, THREAD.LENGTH, ";
+                $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
+                $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
+                $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, THREAD.LENGTH, ";
                 $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
 
@@ -203,9 +203,9 @@ function search_execute($search_arguments, &$error)
 
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
-                $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
-                $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
-                $select_sql.= "POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
+                $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
+                $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
+                $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
                 $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
             }
@@ -767,9 +767,11 @@ function check_search_frequency()
     $search_min_frequency = intval(forum_get_setting('search_min_frequency', false, 30));
 
     if ($search_min_frequency == 0) return true;
+    
+    $current_datetime = date('Y-m-d H:i:00', mktime());
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) FROM `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_check_search_frequency)) return false;

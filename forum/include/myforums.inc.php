@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.97 2008-11-16 01:54:15 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.98 2009-03-21 18:45:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -215,7 +215,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
             // Unread cut-off stamp.
 
-            $unread_cutoff_stamp = forum_get_unread_cutoff();
+            $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
             // Get available folders for queries below
 
@@ -223,12 +223,14 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
             // Get any unread messages
 
-            if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
+            if ($unread_cutoff_datetime !== false) {
+            
+                $current_datetime = date('Y-m-d 00:00:00', mktime());
 
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
                 $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
-                $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
+                $sql.= "AND (THREAD.MODIFIED > '$unread_cutoff_datetime') ";
 
                 if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.221 2009-03-08 13:27:10 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.222 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -940,7 +940,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
         $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
         $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
 
-        if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime())) {
+        if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time())) {
 
             $poll_previous_group = false;
 
@@ -1041,7 +1041,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
         $poll_data['CONTENT'].= "<p>". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</p>\n";
 
-        if (($poll_data['CLOSES'] <= mktime()) && $poll_data['CLOSES'] != 0) {
+        if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
             $poll_data['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
 

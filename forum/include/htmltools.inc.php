@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.90 2009-03-01 11:58:29 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.91 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -128,13 +128,6 @@ echo $tools->js();
 echo '</form>'; */
 
 class TextAreaHTML {
-
-    // Note: PHP/5.0 introduces new public, private and protected
-    // modifiers whilst removing the var modifier. However it only
-    // causes problems if PHP/5.0's new STRICT error reporting
-    // is also enabled, hence we're (for the mean while) going to
-    // stick with PHP/4.x's old var modifiers, because for now
-    // it is going to be more compatible with our 'audience'
 
     private $form;                      // name of the form the textareas will belong to
     private $tas = array();             // array of all the html-enabled textarea's names

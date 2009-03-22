@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.158 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.159 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -270,7 +270,7 @@ function thread_set_moved($old_tid, $new_tid)
     if (!is_numeric($old_tid)) return false;
     if (!is_numeric($new_tid)) return false;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` ";
     $sql.= "(TID, NEW_TID, CREATED, TRACK_TYPE) ";
@@ -290,7 +290,7 @@ function thread_set_split($old_tid, $new_tid)
     if (!is_numeric($old_tid)) return false;
     if (!is_numeric($new_tid)) return false;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` ";
     $sql.= "(TID, NEW_TID, CREATED, TRACK_TYPE) ";

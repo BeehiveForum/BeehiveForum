@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.339 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.340 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -379,7 +379,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     
     // Generate datetime for '$days' days ago.
     
-    $threads_modified_datetime = date('Y-m-d 00:00:00', mktime() - ($days * DAY_IN_SECONDS));
+    $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     // Formulate query.
 
@@ -580,7 +580,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     
     // Generate datetime for yesterday
     
-    $threads_viewed_datetime = date('Y-m-d 00:00:00', mktime() - DAY_IN_SECONDS);
+    $threads_viewed_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - DAY_IN_SECONDS);
 
     // Formulate query
 
@@ -1096,7 +1096,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     
     // Generate datetime for '$days' days ago.
     
-    $threads_modified_datetime = date('Y-m-d 00:00:00', mktime() - ($days * DAY_IN_SECONDS));
+    $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     // Formulate query
 
@@ -1279,7 +1279,7 @@ function threads_get_unread_cutoff()
 {
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
     
-    return (mktime() - $unread_cutoff_stamp);
+    return (time() - $unread_cutoff_stamp);
 }
 
 // Arrange the results of a query into the right order for display
@@ -1453,7 +1453,7 @@ function threads_mark_all_read()
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
     $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, '$current_datetime', USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
@@ -1477,7 +1477,7 @@ function threads_mark_50_read()
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
     $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, '$current_datetime', USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
@@ -1503,7 +1503,7 @@ function threads_mark_folder_read($fid)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
     $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, '$current_datetime', USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";
@@ -1531,7 +1531,7 @@ function threads_mark_read($tid_array)
 
     $tid_list = implode(",", array_keys($tid_array));
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
     $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, '$current_datetime', USER_THREAD.INTEREST FROM `{$table_data['PREFIX']}THREAD` THREAD ";

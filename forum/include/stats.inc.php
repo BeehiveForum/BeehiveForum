@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.120 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.121 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,7 +59,7 @@ function stats_update($session_count, $recent_post_count)
 
     if (!$result = db_query($sql, $db_update_stats)) return false;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     if (db_num_rows($result) > 0) {
 
@@ -1071,23 +1071,23 @@ function stats_get_visitor_counts()
     
     // Year, Month, Week and Day
     
-    list($year, $month, $week, $day) = explode('-', date('Y-m-w-d', mktime()));
+    list($year, $month, $week, $day) = explode('-', date('Y-m-w-d', time()));
     
     // Calculate the datetime for January 1st this year.
     
-    $year_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, 1, 1, $year));
+    $year_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, 1, 1, $year));
     
     // Calculate the datetime for 1st of the month
     
-    $month_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, $month, 1, $year));
+    $month_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, 1, $year));
     
     // Calculate the timestamps for start of this week.
     
-    $week_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, $month, ($day - $week), $year));
+    $week_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, ($day - $week), $year));
     
     // Calculate the datetime for start of today.
     
-    $day_start_datetime = date('Y-m-d 00:00:00', mktime(0, 0, 0, $month, $day, $year));
+    $day_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, $day, $year));
     
     // Get visitors for today.
 
@@ -1131,7 +1131,7 @@ function stats_get_average_age()
     
     // Year, Month and Day
     
-    list($year, $month, $day) = explode('-', date('Y-m-d', mktime()));    
+    list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));    
 
     $sql = "SELECT AVG($year - DATE_FORMAT(DOB, '%Y') - ";
     $sql.= "('00-$month-$day' < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";

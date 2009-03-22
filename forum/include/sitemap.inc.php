@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.26 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.27 2009-03-22 18:48:14 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -262,7 +262,7 @@ function sitemap_create_file()
 
         if ((@$file_modified = filemtime("$sitemap_path/sitemap.xml"))) {
 
-            if ((mktime() - $file_modified) < $sitemap_freq) return false;
+            if ((time() - $file_modified) < $sitemap_freq) return false;
         }
     }
 
@@ -298,17 +298,17 @@ function sitemap_create_file()
 
                         foreach ($threads_array as $thread_tid => $thread_modified) {
 
-                            $thread_last_modified = date('Y-m-d', $thread_modified);
+                            $thread_last_modified = date(MYSQL_DATE, $thread_modified);
 
-                            if ($thread_modified < mktime() - (90 * DAY_IN_SECONDS)) {
+                            if ($thread_modified < time() - (90 * DAY_IN_SECONDS)) {
 
                                 $change_frequency = "yearly";
 
-                            }else if ($thread_modified < mktime() - (30 * DAY_IN_SECONDS)) {
+                            }else if ($thread_modified < time() - (30 * DAY_IN_SECONDS)) {
 
                                 $change_frequency = "monthly";
 
-                            }else if ($thread_modified < mktime() - (4 * DAY_IN_SECONDS)) {
+                            }else if ($thread_modified < time() - (4 * DAY_IN_SECONDS)) {
 
                                 $change_frequency = "weekly";
 
@@ -336,7 +336,7 @@ function sitemap_create_file()
 
                                 // Generate an index entry
 
-                                $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_file_count, date('Y-m-d'));
+                                $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_file_count, date(MYSQL_DATE));
 
                                 // Write that to the index file.
 
@@ -379,7 +379,7 @@ function sitemap_create_file()
 
         // Generate an index entry
 
-        $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_file_count, date('Y-m-d'));
+        $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_file_count, date(MYSQL_DATE));
 
         // Write that to the index file.
 

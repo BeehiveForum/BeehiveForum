@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.125 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.126 2009-03-22 18:48:12 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -39,6 +39,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Set the default timezone
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -299,7 +302,7 @@ if (isset($_POST['preview_signature'])) {
             $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
         }
 
-        $preview_message['CREATED'] = mktime();
+        $preview_message['CREATED'] = time();
 
         echo "  <br />\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

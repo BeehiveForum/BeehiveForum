@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.375 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.376 2009-03-22 18:48:14 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -161,7 +161,7 @@ function bh_session_check($show_session_fail = true)
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if (((mktime() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid) || defined('BEEHIVE_INSTALL_NOWARN')) {
+            if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid) || defined('BEEHIVE_INSTALL_NOWARN')) {
 
                 // Update the user time stats before we update the session
 
@@ -359,7 +359,7 @@ function bh_guest_session_init($update_visitor_log = true)
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if (((mktime() - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
+            if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
 
                 if ($user_sess['FID'] != $forum_fid) {
 
@@ -396,8 +396,8 @@ function bh_guest_session_init($update_visitor_log = true)
             // Session array of default values.
 
             $user_sess = array('UID'         => 0,
-                               'TIME'        => mktime(),
-                               'SERVER_TIME' => mktime(),
+                               'TIME'        => time(),
+                               'SERVER_TIME' => time(),
                                'LOGON'       => 'GUEST',
                                'PASSWD'      => md5('GUEST'),
                                'FID'         => $forum_fid,
@@ -500,7 +500,7 @@ function bh_remove_stale_sessions()
 
     if (($session_cutoff = forum_get_setting('session_cutoff', false, 86400))) {
 
-        $session_cutoff_datetime = date('Y-m-d H:i:00', mktime() - $session_cutoff);
+        $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
         
         $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
         $sql.= "TIME < '$session_cutoff_datetime' ";
@@ -562,7 +562,7 @@ function bh_update_visitor_log($uid, $forum_fid)
 
     $ipaddress = db_escape_string($ipaddress);
     
-    $session_cutoff_datetime = date('Y-m-d H:i:00', mktime() - $session_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
 
     if ($uid > 0) {
 

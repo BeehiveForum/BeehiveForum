@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.136 2008-12-15 07:39:48 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.137 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,11 +53,10 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 
-// Set the error reporting level to report all error messages.
-// If this is changed to include E_STRICT Beehive will probably
-// not work.
+// Set the error reporting level to report all 
+// error messages and PHP5 strict mode.
 
-error_reporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 
 // Debug Backtrace function argument array processor
 
@@ -124,23 +123,13 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         $error_report_email_addr_from = '$error_report_email_addr_from';
     }
 
-    // Bad Coding Practises Alert!!
-    // We're going to ignore any E_STRICT error messages
-    // which are caused by PHP/5.x because otherwise we'd
-    // have to develop two seperate versions of Beehive
-    // one for PHP/4.x and one for PHP/5.x.
-
-    if (($errno & E_STRICT) > 0) return;
-
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
 
-        // Flush the output buffer
+        // Clean the output buffer
 
-        while (@ob_end_clean());
-        ob_start("bh_gzhandler");
-        ob_implicit_flush(0);
+        while (@ob_clean());
 
         // Array to hold the error message strings.
 

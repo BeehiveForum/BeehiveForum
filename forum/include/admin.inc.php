@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.182 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.183 2009-03-22 18:48:14 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -107,7 +107,7 @@ function admin_prune_log($remove_type, $remove_days)
 
     if (!$table_data = get_table_prefix()) return false;
     
-    $remove_days_datetime = date('Y-m-d 00:00:00', mktime() - ($remove_days * DAY_IN_SECONDS));
+    $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}ADMIN_LOG` ";
     $sql.= "WHERE CREATED < '$remove_days_datetime' ";
@@ -1159,7 +1159,7 @@ function admin_prune_visitor_log($remove_days)
 
     $forum_fid = $table_data['FID'];
     
-    $remove_days_datetime = date('Y-m-d 00:00:00', mktime() - ($remove_days * DAY_IN_SECONDS));    
+    $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));    
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
     $sql.= "AND LAST_LOGON < '$remove_days_datetime'";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.248 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.249 2009-03-22 18:48:14 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -501,7 +501,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     if ($in_list) {
 
-        if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (bh_session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime()) && !$is_preview) {
+        if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (bh_session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
             $poll_data['CONTENT'].= "                          <tr>\n";
             $poll_data['CONTENT'].= "                            <td align=\"left\">\n";
@@ -582,7 +582,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         }else {
 
-            if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < mktime())) {
+            if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
 
                 if ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
 
@@ -688,7 +688,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
         $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
         $poll_data['CONTENT'].= "                          </tr>\n";
 
-        if (($poll_data['CLOSES'] <= mktime()) && $poll_data['CLOSES'] != 0) {
+        if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
             $poll_data['CONTENT'].= "                          <tr>\n";
             $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
@@ -894,13 +894,13 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
         $guest_votes_display = sprintf($lang['xguestsvoted'], $guest_votes);
     }
 
-    if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= mktime())) {
+    if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= time())) {
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayclosedpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
             $html.= $lang['nobodyvotedclosedpoll'];
         }
-    }elseif ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > mktime())) {
+    }elseif ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > time())) {
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayopenpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
@@ -2112,7 +2112,7 @@ function poll_close($tid)
 
         if (bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            $timestamp = mktime();
+            $timestamp = time();
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET ";
             $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = '$tid'";
@@ -2139,7 +2139,7 @@ function poll_is_closed($tid)
     if (db_num_rows($result) > 0) {
 
         $poll_data = db_fetch_array($result);
-        if (isset($poll_data['CLOSES']) && $poll_data['CLOSES'] <= mktime() && $poll_data['CLOSES'] != 0) return true;
+        if (isset($poll_data['CLOSES']) && $poll_data['CLOSES'] <= time() && $poll_data['CLOSES'] != 0) return true;
     }
 
     return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.246 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.247 2009-03-22 18:48:11 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -38,6 +38,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Set the default timezone
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -682,7 +685,7 @@ if (mb_strlen($t_sig) >= 65535) {
 if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = $_POST['t_dedupe'];
 }else{
-    $t_dedupe = mktime();
+    $t_dedupe = time();
 }
 
 if ($valid && isset($_POST['post'])) {
@@ -695,19 +698,19 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_close_poll == POLL_CLOSE_ONE_DAY) {
 
-                $t_poll_closes = mktime() + DAY_IN_SECONDS;
+                $t_poll_closes = time() + DAY_IN_SECONDS;
 
             }elseif ($t_close_poll == POLL_CLOSE_THREE_DAYS) {
 
-                $t_poll_closes = mktime() + (DAY_IN_SECONDS * 3);
+                $t_poll_closes = time() + (DAY_IN_SECONDS * 3);
 
             }elseif ($t_close_poll == POLL_CLOSE_SEVEN_DAYS) {
 
-                $t_poll_closes = mktime() + (DAY_IN_SECONDS * 7);
+                $t_poll_closes = time() + (DAY_IN_SECONDS * 7);
 
             }elseif ($t_close_poll == POLL_CLOSE_THIRTY_DAYS) {
 
-                $t_poll_closes = mktime() + (DAY_IN_SECONDS * 30);
+                $t_poll_closes = time() + (DAY_IN_SECONDS * 30);
 
             }elseif ($t_close_poll == POLL_CLOSE_NEVER) {
 

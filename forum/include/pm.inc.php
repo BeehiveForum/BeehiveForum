@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.271 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.272 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2097,7 +2097,7 @@ function pm_user_prune_folders($uid = false)
         $pm_sent_items = PM_SENT_ITEMS;
 
         $pm_prune_length_seconds = (intval($user_prefs['PM_AUTO_PRUNE']) * DAY_IN_SECONDS);
-        $pm_prune_length_datetime = date('Y-m-d 00:00:00', mktime() - $pm_prune_length_seconds);
+        $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE (((TYPE & $pm_read > 0) AND TO_UID = '$uid') ";
         $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
@@ -2130,7 +2130,7 @@ function pm_system_prune_folders()
         $pm_sent_items = PM_SENT_ITEMS;
 
         $pm_prune_length_seconds = ($pm_prune_length * DAY_IN_SECONDS);        
-        $pm_prune_length_datetime = date('Y-m-d 00:00:00', mktime() - $pm_prune_length_seconds);
+        $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
         $sql.= "AND CREATED < '$pm_prune_length_datetime'";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_write.php,v 1.4 2009-03-01 20:47:23 decoyduck Exp $ */
+/* $Id: lpm_write.php,v 1.5 2009-03-22 18:48:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -34,6 +34,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Set the default timezone
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -596,7 +599,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = $_POST['t_dedupe'];
 }else{
-    $t_dedupe = mktime();
+    $t_dedupe = time();
 }
 
 // Send the PM
@@ -680,7 +683,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
 
     $pm_preview_array['SUBJECT'] = $t_subject;
-    $pm_preview_array['CREATED'] = mktime();
+    $pm_preview_array['CREATED'] = time();
     $pm_preview_array['AID'] = $aid;
 
     $pm_preview_array['CONTENT'] = $t_content;

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.375 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: post.php,v 1.376 2009-03-22 18:48:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -33,6 +33,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Set the default timezone
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -360,7 +363,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = $_POST['t_dedupe'];
 }else{
-    $t_dedupe = mktime();
+    $t_dedupe = time();
 }
 
 if (!isset($sig_html)) $sig_html = 0;
@@ -919,7 +922,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    $preview_message['CREATED'] = mktime();
+    $preview_message['CREATED'] = time();
     $preview_message['AID'] = $aid;
 
     echo "                <tr>\n";

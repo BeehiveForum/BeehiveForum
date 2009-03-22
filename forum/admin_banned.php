@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.90 2009-02-27 13:35:11 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.91 2009-03-22 18:48:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -31,6 +31,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Set the default timezone
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -567,7 +570,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
         if ($valid) {
 
-            if (($add_new_ban_expires > 0) && ($add_new_ban_expires < mktime())) {
+            if (($add_new_ban_expires > 0) && ($add_new_ban_expires < time())) {
 
                 html_display_warning_msg($lang['selecteddateisinthepast'], '420', 'center');
 
@@ -740,7 +743,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
         if ($valid) {
 
-            if (($ban_data_array['EXPIRES'] > 0) && ($ban_data_array['EXPIRES'] < mktime())) {
+            if (($ban_data_array['EXPIRES'] > 0) && ($ban_data_array['EXPIRES'] < time())) {
 
                 html_display_warning_msg($lang['selecteddateisinthepast'], '420', 'center');
 
@@ -916,7 +919,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">{$ban_list_entry['BANDATA']}</a></td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_list_array)) ? $ban_types_list_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (($ban_list_entry['EXPIRES'] > 0 && $ban_list_entry['EXPIRES'] > mktime()) ? format_date($ban_list_entry['EXPIRES']) : $lang['never']), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (($ban_list_entry['EXPIRES'] > 0 && $ban_list_entry['EXPIRES'] > time()) ? format_date($ban_list_entry['EXPIRES']) : $lang['never']), "</a></td>\n";
             echo "                 </tr>\n";
         }
     }

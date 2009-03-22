@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.178 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.179 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -694,7 +694,7 @@ function format_age($dob)
 * @param integer $dob - MySQL DATE field.
 */
 
-function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
+function format_birthday($date)
 {
     $lang = lang::get_instance()->load(__FILE__);
 

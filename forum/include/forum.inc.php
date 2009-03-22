@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.373 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.374 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -827,7 +827,7 @@ function forum_get_unread_cutoff()
 function forum_get_unread_cutoff_datetime()
 {
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
-        return date('Y-m-d 00:00:00', mktime() - $unread_cutoff_stamp);
+        return date(MYSQL_DATETIME_MIDNIGHT, time() - $unread_cutoff_stamp);
     }
     
     return false;
@@ -882,7 +882,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
     if ($unread_cutoff_stamp !== false) {
     
-        $unread_cutoff_datetime = date('Y-m-d 00:00:00', mktime() - $unread_cutoff_stamp);
+        $unread_cutoff_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $unread_cutoff_stamp);
 
         if (($forum_prefix_array = forum_get_all_prefixes())) {
 
@@ -2697,11 +2697,11 @@ function forum_check_maintenance()
 
     // If the function hasn't been run in the last 24 hours we should run it.
 
-    if ((mktime() - $forum_maintenance_last_run) > DAY_IN_SECONDS) {
+    if ((time() - $forum_maintenance_last_run) > DAY_IN_SECONDS) {
 
         // Check that the scheduled start time has passed.
 
-        if (mktime() > mktime($maintenance_hour, $maintenance_minute)) {
+        if (time() > mktime($maintenance_hour, $maintenance_minute)) {
 
             // Check the function actually exists before we try and execute it.
 
@@ -2717,7 +2717,7 @@ function forum_check_maintenance()
 
                 // Update the time the function was last set to run
 
-                $new_forum_settings[$forum_maintenance_date_var] = mktime();
+                $new_forum_settings[$forum_maintenance_date_var] = time();
             }
         }
     }

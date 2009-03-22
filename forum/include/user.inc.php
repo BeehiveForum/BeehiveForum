@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.375 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.376 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -94,7 +94,7 @@ function user_create($logon, $password, $nickname, $email)
 
     if (!$ipaddress = get_ip_address()) return false;
     
-    $current_datetime = date('Y-m-d H:i:s', mktime());
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, ";
     $sql.= "REGISTERED, REFERER, IPADDRESS) VALUES ('$logon', ";
@@ -122,7 +122,7 @@ function user_update($uid, $logon, $nickname, $email)
     $nickname = db_escape_string($nickname);
     $email = db_escape_string($email);
     
-    $current_datetime = date('Y-m-d H:i:s', mktime());
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
@@ -943,7 +943,7 @@ function user_get_forthcoming_birthdays()
 
     $uid = bh_session_get_value('UID');
     
-    list($month, $day) = explode('-', date('m-d', mktime()));
+    list($month, $day) = explode('-', date('m-d', time()));
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS.DOB, ";
     $sql.= "DAYOFMONTH(USER_PREFS.DOB) AS BDAY, MONTH(USER_PREFS.DOB) AS BMONTH ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.211 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.212 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -521,7 +521,7 @@ function check_post_frequency()
 
     if ($minimum_post_frequency == 0) return true;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) + $minimum_post_frequency, ";
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_data['PREFIX']}USER_TRACK` ";
@@ -557,13 +557,6 @@ function check_post_frequency()
 }
 
 class MessageText {
-
-    // Note: PHP/5.0 introduces new public, private and protected
-    // modifiers whilst removing the var modifier. However it only
-    // causes problems if PHP/5.0's new STRICT error reporting
-    // is also enabled, hence we're (for the mean while) going to
-    // stick with PHP/4.x's old var modifiers, because for now
-    // it is going to be more compatible with our 'audience'
 
     private $html = "";
     private $text = "";

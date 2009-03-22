@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.227 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.228 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -572,9 +572,9 @@ function search_get_first_result_msg()
 
 function search_date_range($from, $to)
 {
-    $year  = date('Y', mktime());
-    $month = date('n', mktime());
-    $day   = date('j', mktime());
+    $year  = date('Y', time());
+    $month = date('n', time());
+    $day   = date('j', time());
 
     $range = "";
 
@@ -641,7 +641,7 @@ function search_date_range($from, $to)
 
       case SEARCH_TO_NOW:  // Now
 
-        $to_timestamp = mktime();
+        $to_timestamp = time();
         break;
 
       case SEARCH_TO_TODAY:  // Today
@@ -768,7 +768,7 @@ function check_search_frequency()
 
     if ($search_min_frequency == 0) return true;
     
-    $current_datetime = date('Y-m-d H:i:00', mktime());
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_data['PREFIX']}USER_TRACK` ";

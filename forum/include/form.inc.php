@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.136 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.137 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -465,13 +465,13 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
         $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
         $birthday_months = array_merge(array('&nbsp;'), $lang['month']);
-        $birthday_years  = array('&nbsp;') + range_keys(1900, date('Y', mktime()));
+        $birthday_years  = array('&nbsp;') + range_keys(1900, date('Y', time()));
 
     }else {
 
         $birthday_days   = range_keys(1, 31);
         $birthday_months = $lang['month'];
-        $birthday_years  = range_keys(1900, date('Y', mktime()));
+        $birthday_years  = range_keys(1900, date('Y', time()));
     }
 
     $output = form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class). "&nbsp;";
@@ -497,7 +497,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
 
     }else {
 
-        $years = array('&nbsp;') + range_keys(date('Y', mktime()), 2037);
+        $years = array('&nbsp;') + range_keys(date('Y', time()), 2037);
     }
 
     $days   = array_merge(array('&nbsp;'), range(1, 31));

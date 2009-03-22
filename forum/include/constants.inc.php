@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.162 2009-03-02 18:46:16 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.163 2009-03-22 18:48:14 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -122,6 +122,14 @@ define('USER_PERM_PILLORIED', 262144);
 
 define('MYSQL_ERROR_NO_SUCH_TABLE', 1146);
 define('MYSQL_ERROR_WRONG_COLUMN_NAME', 1166);
+
+// MySQL date, time and datetime formatting constants for PHP's date function
+
+define('MYSQL_DATE', 'Y-m-d');
+define('MYSQL_TIME', 'H:i:s');
+define('MYSQL_DATETIME', 'Y-m-d H:i:s');
+define('MYSQL_DATE_HOUR_MIN', 'Y-m-d H:i:00');
+define('MYSQL_DATETIME_MIDNIGHT', 'Y-m-d 00:00:00');
 
 // Constants for relationship system
 

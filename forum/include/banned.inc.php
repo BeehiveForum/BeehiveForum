@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.47 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.48 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -117,7 +117,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
     if (strlen(trim($ban_check_where_query)) > 0 && strlen(trim($ban_check_select_list)) > 0) {
     
-        $current_datetime = date('Y-m-d 00:00:00', mktime());
+        $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
         $sql = "SELECT ID, BANTYPE, BANDATA, $ban_check_select_list ";
         $sql.= "FROM `{$table_data['PREFIX']}BANNED` WHERE $ban_check_where_query ";
@@ -204,7 +204,7 @@ function ip_is_banned($ipaddress)
 
     $ban_type_ip = BAN_TYPE_IP;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$ipaddress' LIKE BANDATA ";
@@ -227,7 +227,7 @@ function logon_is_banned($logon)
 
     $ban_type_logon = BAN_TYPE_LOGON;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$logon' LIKE BANDATA ";
@@ -250,7 +250,7 @@ function nickname_is_banned($nickname)
 
     $ban_type_nick = BAN_TYPE_NICK;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$nickname' LIKE BANDATA ";
@@ -273,7 +273,7 @@ function email_is_banned($email)
 
     $ban_type_email = BAN_TYPE_EMAIL;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$email' LIKE BANDATA ";
@@ -388,7 +388,7 @@ function check_ban_data($ban_type, $ban_data, $ban_expires = 0)
 
     if (!$table_data = get_table_prefix()) return false;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$ban_data' LIKE BANDATA AND BANTYPE = '$ban_type' ";
@@ -429,7 +429,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.NICKNAME FROM SESSIONS ";
@@ -495,7 +495,7 @@ function user_is_banned($uid)
 
     if (!$table_data = get_table_prefix()) return false;
     
-    $current_datetime = date('Y-m-d 00:00:00', mktime());
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT COUNT(BANNED.ID) AS BAN_COUNT FROM `{$table_data['PREFIX']}BANNED` BANNED, ";
     $sql.= "USER USER LEFT JOIN SESSIONS SESSIONS ON (USER.UID = SESSIONS.UID) ";

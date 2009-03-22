@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: zip_lib.inc.php,v 1.7 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: zip_lib.inc.php,v 1.8 2009-03-22 18:48:14 decoyduck Exp $ */
 
 /**
 * zip_lib.inc.php - Zip Creation Class Library
@@ -58,12 +58,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 class zip_file
 {
-    var $datasec      = array();
-    var $ctrl_dir     = array();
-    var $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
-    var $old_offset   = 0;
+    private $datasec      = array();
+    private $ctrl_dir     = array();
+    private $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
+    private $old_offset   = 0;
 
-    function unix2dostime($unixtime = 0)
+    private function unix2dostime($unixtime = 0)
     {
         $timearray = (!is_numeric($unixtime) || $unixtime == 0) ? getdate() : getdate($unixtime);
 
@@ -81,7 +81,7 @@ class zip_file
                 ($timearray['hours'] << 11) | ($timearray['minutes'] << 5) | ($timearray['seconds'] >> 1);
     }
 
-    function add_file($data, $name, $time = 0)
+    public function add_file($data, $name, $time = 0)
     {
         $name = str_replace('\\', '/', $name);
 
@@ -138,7 +138,7 @@ class zip_file
         $this->ctrl_dir[] = $cdrec;
     }
 
-    function output_zip()
+    public function output_zip()
     {
         $data    = implode('', $this -> datasec);
         $ctrldir = implode('', $this -> ctrl_dir);

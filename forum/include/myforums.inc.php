@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.98 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.99 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -225,7 +225,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
             if ($unread_cutoff_datetime !== false) {
             
-                $current_datetime = date('Y-m-d 00:00:00', mktime());
+                $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
                 $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";

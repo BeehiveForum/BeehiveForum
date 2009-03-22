@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.147 2008-12-30 22:25:18 decoyduck Exp $ */
+/* $Id: pm.php,v 1.148 2009-03-22 18:48:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -31,6 +31,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Set the default timezone
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

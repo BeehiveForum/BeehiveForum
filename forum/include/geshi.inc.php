@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.18 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: geshi.inc.php,v 1.19 2009-03-22 18:48:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -49,15 +49,14 @@ if (@file_exists("geshi/geshi.php")) {
 
     class GeSHi {
 
-        var $source;
-        var $target;
+        private $source;
+        private $target;
 
-        var $encoding;
-        var $lang;
+        private $encoding;
+        private $lang;
 
-        // these don't get used but need to be set because of a bug in GeSHi
-        var $error = false;
-        var $strict_mode = false;
+        private $error = false;
+        private $strict_mode = false;
 
         function GeSHi()
         {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.101 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.102 2009-03-22 13:00:25 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -92,7 +92,7 @@ function user_get_profile($uid)
 
     $user_prefs = user_get_prefs($uid);
     
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900);
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date('Y-m-d', mktime() - $active_sess_cutoff);
 

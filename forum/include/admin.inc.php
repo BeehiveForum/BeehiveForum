@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.183 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.184 2009-03-25 18:47:12 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -77,11 +77,13 @@ function admin_add_log_entry($action, $data = "")
     if (is_array($data)) $data = implode("\x00", preg_replace('/[\x00]+/u', '', $data));
 
     $data = db_escape_string($data);
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
-    $sql.= "VALUES (NOW(), '$uid', '$action', '$data')";
+    $sql.= "VALUES ('$current_datetime', '$uid', '$action', '$data')";
 
     if (!db_query($sql, $db_admin_add_log_entry)) return false;
 
@@ -1559,8 +1561,10 @@ function admin_approve_user($uid)
     if (!$db_admin_approve_user = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = NOW() WHERE UID = '$uid'";
+    $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = '$current_datetime' WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_admin_approve_user)) return false;
 
@@ -1592,6 +1596,8 @@ function admin_delete_user($uid, $delete_content = false)
     $pm_saved_out    = PM_SAVED_OUT;
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
     
     // UID of current user
     
@@ -1720,7 +1726,7 @@ function admin_delete_user($uid, $delete_content = false)
                     // Mark posts made by this user as approved so they don't appear in the
                     // approval queue.
 
-                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` SET APPROVED = NOW(), ";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` SET APPROVED = '$current_datetime', ";
                     $sql.= "APPROVED_BY = '$admin_uid' WHERE FROM_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;

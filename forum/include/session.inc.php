@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.376 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.377 2009-03-25 18:47:29 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -99,6 +99,8 @@ function bh_session_check($show_session_fail = true)
     }else {
         $forum_fid = 0;
     }
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what
@@ -172,8 +174,9 @@ function bh_session_check($show_session_fail = true)
 
                 if ($user_sess['FID'] != $forum_fid) {
 
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
-                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
+                    $sql.= "TIME = '$current_datetime', IPADDRESS = '$ipaddress' ";
+                    $sql.= "WHERE HASH = '$user_hash'";
 
                     if (!$result = db_query($sql, $db_bh_session_check)) return false;
 
@@ -183,8 +186,8 @@ function bh_session_check($show_session_fail = true)
 
                 }else {
 
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
-                    $sql.= "WHERE HASH = '$user_hash'";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = '$current_datetime', ";
+                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                     if (!$result = db_query($sql, $db_bh_session_check)) return false;
                 }
@@ -316,6 +319,8 @@ function bh_guest_session_init($update_visitor_log = true)
     // Check to see if we have a session cookie.
 
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (user_guest_enabled()) {
 
@@ -365,8 +370,9 @@ function bh_guest_session_init($update_visitor_log = true)
 
                     $ipaddress = db_escape_string($ipaddress);
 
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
-                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
+                    $sql.= "TIME = '$current_datetime', IPADDRESS = '$ipaddress' ";
+                    $sql.= "WHERE HASH = '$user_hash'";
 
                     if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
@@ -376,8 +382,8 @@ function bh_guest_session_init($update_visitor_log = true)
 
                     $ipaddress = db_escape_string($ipaddress);
 
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
-                    $sql.= "WHERE HASH = '$user_hash'";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = '$current_datetime', ";
+                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                     if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
                 }
@@ -418,7 +424,7 @@ function bh_guest_session_init($update_visitor_log = true)
             // Start a session for the new guest user
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW(), '$http_referer') ";
+            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', '$current_datetime', '$http_referer') ";
             $sql.= "ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
             $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 
@@ -563,12 +569,14 @@ function bh_update_visitor_log($uid, $forum_fid)
     $ipaddress = db_escape_string($ipaddress);
     
     $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if ($uid > 0) {
 
         $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER) ";
-        $sql.= "VALUES ('$forum_fid', '$uid', 1, NOW(), '$ipaddress', '$http_referer') ";
-        $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = NOW(), ";
+        $sql.= "VALUES ('$forum_fid', '$uid', 1, '$current_datetime', '$ipaddress', '$http_referer') ";
+        $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = '$current_datetime', ";
         $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 
         if (db_query($sql, $db_bh_update_visitor_log)) return true;
@@ -578,8 +586,8 @@ function bh_update_visitor_log($uid, $forum_fid)
         if (($search_id = bh_session_is_search_engine()) !== false) {
 
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$ipaddress', '$http_referer', '$search_id') ";
-            $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = NOW(), ";
+            $sql.= "VALUES ('$forum_fid', '$uid', '$current_datetime', '$ipaddress', '$http_referer', '$search_id') ";
+            $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = '$current_datetime', ";
             $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 
             if (db_query($sql, $db_bh_update_visitor_log)) return true;
@@ -595,7 +603,7 @@ function bh_update_visitor_log($uid, $forum_fid)
             if (db_num_rows($result) < 1) {
 
                 $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
-                $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer')";
+                $sql.= "VALUES ('$forum_fid', 0, '$current_datetime', '$ipaddress', '$http_referer')";
 
                 if (db_query($sql, $db_bh_update_visitor_log)) return true;
             }
@@ -676,9 +684,11 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     $http_referer = bh_session_get_referer();
 
-    // Delete any guest sessions this user might have.
-
     $user_hash = md5($ipaddress);
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
+    // Delete any guest sessions this user might have.
 
     $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
@@ -703,7 +713,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         $http_referer = db_escape_string($http_referer);
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', '$ipaddress', NOW(), '$http_referer') ";
+        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', '$ipaddress', '$current_datetime', '$http_referer') ";
         $sql.= "ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
         $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.121 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.122 2009-03-25 18:47:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -79,7 +79,7 @@ function stats_update($session_count, $recent_post_count)
 
         $sql = "INSERT LOW_PRIORITY INTO `{$table_data['PREFIX']}STATS` (MOST_USERS_DATE, ";
         $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
-        $sql.= "VALUES (NOW(), '$session_count', '$current_datetime', '$recent_post_count')";
+        $sql.= "VALUES ('$current_datetime', '$session_count', '$current_datetime', '$recent_post_count')";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
     }

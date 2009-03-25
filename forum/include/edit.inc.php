@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.83 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.84 2009-03-25 18:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,12 +77,15 @@ function post_add_edit_text($tid, $pid)
     if (!is_numeric($pid)) return false;
 
     if (!$db_post_add_edit_text = db_connect()) return false;
-    $edit_uid = bh_session_get_value('UID');
+
+    if (($edit_uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET EDITED = '$current_datetime', ";
+    $sql.= "EDITED_BY = '$edit_uid' WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_add_edit_text)) return false;
 
@@ -99,6 +102,8 @@ function post_delete($tid, $pid)
     if (!$db_post_delete = db_connect()) return false;
 
     if (($approve_uid = bh_session_get_value('UID')) === false) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (thread_is_poll($tid) && $pid == 1) {
 
@@ -118,7 +123,7 @@ function post_delete($tid, $pid)
 
     if (!db_query($sql, $db_post_delete)) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = NOW(), ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = '$current_datetime', ";
     $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_delete)) return false;

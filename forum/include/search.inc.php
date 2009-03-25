@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.228 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.229 2009-03-25 18:47:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -783,7 +783,7 @@ function check_search_frequency()
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-            $sql.= "SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
+            $sql.= "SET LAST_SEARCH = '$current_datetime' WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 
@@ -793,7 +793,7 @@ function check_search_frequency()
     }else{
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
-        $sql.= "(UID, LAST_SEARCH) VALUES ('$uid', NOW())";
+        $sql.= "(UID, LAST_SEARCH) VALUES ('$uid', '$current_datetime')";
 
         if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 

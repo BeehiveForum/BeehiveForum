@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.95 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.96 2009-03-25 18:47:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -174,11 +174,13 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     if (!$db_links_add = db_connect()) return false;
 
     $visible = $visible ? "Y" : "N";
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS` (URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
-    $sql.= "VALUES ('$uri', '$title', '$description', '$fid', '$uid', '$visible', NOW())";
+    $sql.= "VALUES ('$uri', '$title', '$description', '$fid', '$uid', '$visible', '$current_datetime')";
 
     if (!db_query($sql, $db_links_add)) return false;
 
@@ -520,12 +522,14 @@ function links_vote($lid, $vote, $uid)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($vote)) return false;
     if (!is_numeric($uid))  return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_VOTE` (LID, UID, RATING, TSTAMP) ";
-    $sql.= "VALUES ($lid, $uid, $vote, NOW()) ON DUPLICATE KEY UPDATE RATING = VALUES(RATING), ";
-    $sql.= "TSTAMP = NOW()";
+    $sql.= "VALUES ($lid, $uid, $vote, '$current_datetime') ON DUPLICATE KEY UPDATE ";
+    $sql.= "RATING = VALUES(RATING), TSTAMP = '$current_datetime'";
 
     if (!db_query($sql, $db_links_vote)) return false;
 
@@ -557,11 +561,13 @@ function links_add_comment($lid, $uid, $comment)
     if (!is_numeric($uid))  return false;
 
     $comment = db_escape_string($comment);
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_COMMENT` (LID, UID, COMMENT, CREATED) ";
-    $sql.= "VALUES ('$lid', '$uid', '$comment', NOW())";
+    $sql.= "VALUES ('$lid', '$uid', '$comment', '$current_datetime')";
 
     if (!db_query($sql, $db_links_add_comment)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.249 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.250 2009-03-25 18:47:26 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -2157,6 +2157,8 @@ function poll_vote($tid, $vote_array)
     if (!$table_data = get_table_prefix()) return false;
 
     $poll_data = poll_get($tid);
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if ((!poll_get_user_vote($tid)) || ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) || (user_is_guest() && ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) {
 
@@ -2165,7 +2167,7 @@ function poll_vote($tid, $vote_array)
             if (is_numeric($user_vote)) {
 
                 $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES` (TID, UID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ('$tid', '$uid', '$user_vote', NOW())";
+                $sql.= "VALUES ('$tid', '$uid', '$user_vote', '$current_datetime')";
 
                 if (!db_query($sql, $db_poll_vote)) return false;
             }

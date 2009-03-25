@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.565 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.566 2009-03-25 18:47:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1541,6 +1541,8 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
     // Mark as read cut off
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
@@ -1571,17 +1573,18 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             // Update the unread data.
             
             $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT) ";
-            $sql.= "VALUES ('$uid', '$tid', '$pid', NOW()) ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), ";
-            $sql.= "LAST_READ_AT = NOW()";
+            $sql.= "VALUES ('$uid', '$tid', '$pid', '$current_datetime') ON DUPLICATE KEY UPDATE ";
+            $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = '$current_datetime'";
 
             if (!$result = db_query($sql, $db_message_update_read)) return false;
         }
 
         // Mark posts as Viewed
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = NOW() ";
-        $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' ";
-        $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
+        $sql.= "SET VIEWED = '$current_datetime' WHERE TID = '$tid' ";
+        $sql.= "AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' ";
+        $sql.= "AND VIEWED IS NULL";
 
         if (!$result = db_query($sql, $db_message_update_read)) return false;
     }

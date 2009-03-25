@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.72 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.73 2009-03-25 18:47:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -213,7 +213,7 @@ function rss_fetch_feed()
 
         $rss_feed = db_fetch_array($result, DB_RESULT_ASSOC);
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` SET LAST_RUN = NOW() ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` SET LAST_RUN = '$current_datetime' ";
         $sql.= "WHERE RSSID = {$rss_feed['RSSID']} AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
 
         if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;

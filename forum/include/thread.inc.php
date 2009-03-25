@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.159 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.160 2009-03-25 18:47:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -432,11 +432,19 @@ function thread_set_closed($tid, $closed = true)
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($tid)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
+    if ($closed === true) {
 
-    $closed_sql = ($closed === true) ? 'NOW()' : 'NULL';
-
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET CLOSED = $closed_sql WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET CLOSED = '$current_datetime' WHERE TID = '$tid'";
+        
+    }else {
+    
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET CLOSED = NULL WHERE TID = '$tid'";
+    }    
 
     if (!db_query($sql, $db_thread_set_closed)) return false;
 
@@ -450,11 +458,19 @@ function thread_admin_lock($tid, $locked = true)
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($tid)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
+    if ($locked === true) {
 
-    $locked_sql = ($locked === true) ? 'NOW()' : 'NULL';
-
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET ADMIN_LOCK = $locked_sql WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET ADMIN_LOCK = '$current_datetime' WHERE TID = '$tid'";
+    
+    }else {
+    
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET ADMIN_LOCK = NULL WHERE TID = '$tid'";
+    }
 
     if (!db_query($sql, $db_thread_admin_lock)) return false;
 

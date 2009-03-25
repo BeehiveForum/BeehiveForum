@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.272 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.273 2009-03-25 18:47:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1410,11 +1410,14 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     // PM_OUTBOX constant.
 
     $pm_outbox = PM_OUTBOX;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
-    $sql.= "VALUES ('$pm_outbox', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 0)";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
+    $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
+    $sql.= "'$subject_escaped', '', '$current_datetime', 0)";
     
     echo "<p>$sql</p>\n";
 
@@ -1485,8 +1488,9 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED, SMID) ";
-    $sql.= "VALUES ('$pm_sent', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 1, '$sent_item_mid')";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
+    $sql.= "CREATED, NOTIFIED, SMID) VALUES ('$pm_sent', '$to_uid', '$from_uid', ";
+    $sql.= "'$subject_escaped', '', '$current_datetime', 1, '$sent_item_mid')";
 
     if (db_query($sql, $db_pm_add_sent_item)) {
 
@@ -1542,7 +1546,7 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
 
         $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
         $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', '$uid', '$subject', ";
-        $sql.= "'$recipient_list', NOW(), 0)";
+        $sql.= "'$recipient_list', '$current_datetime', 0)";
 
         if (db_query($sql, $db_pm_save_message)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.222 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.223 2009-03-25 18:47:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1063,7 +1063,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                             }else {
 
-                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
+                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
                             }
                         }
                     }
@@ -1075,7 +1075,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
         }else {
 
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
-
+            
                 $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
 
                 $user_poll_votes_display_array = array();
@@ -1092,7 +1092,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                             }else {
 
-                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
+                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
                             }
                         }
                     }

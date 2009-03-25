@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.374 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.375 2009-03-25 18:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -946,6 +946,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
     if (!is_numeric($access)) $access = 0;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     // Generate table prefix
 
@@ -1807,7 +1809,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         $sql = "INSERT INTO `{$forum_table_prefix}THREAD` ";
         $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL)";
+        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', '$current_datetime', '$current_datetime', NULL, 'N', NULL, NULL)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1838,8 +1840,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         $sql = "INSERT INTO `{$forum_table_prefix}POST` ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
-        $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, NOW(), ";
-        $sql.= "0, NOW(), '$owner_uid', NULL, 0, '')";
+        $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES ('$new_tid', 0, '$owner_uid', ";
+        $sql.= "0, NULL, '$current_datetime', 0, '$current_datetime', '$owner_uid', NULL, 0, '')";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -2538,14 +2540,16 @@ function forum_update_last_visit($uid)
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $forum_fid = $table_data['FID'];
 
     if ($uid > 0) {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
-        $sql.= "VALUES ('$uid', '$forum_fid', NOW()) ON DUPLICATE KEY ";
-        $sql.= "UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
+        $sql.= "VALUES ('$uid', '$forum_fid', '$current_datetime') ";
+        $sql.= "ON DUPLICATE KEY UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
 
         if (!db_query($sql, $db_forum_update_last_visit)) return false;
     }

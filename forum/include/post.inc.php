@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.212 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.213 2009-03-25 18:47:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -67,6 +67,8 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
     if (!is_numeric($reply_pid)) return -1;
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return -1;
 
@@ -77,13 +79,13 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}POST` ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
-        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), 0, '$ipaddress')";
+        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, '$current_datetime', 0, '$ipaddress')";
 
     }else {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` ";
-        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) ";
-        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
+        $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
+        $sql.= "$fuid, $tuid, '$current_datetime', '$current_datetime', $fuid, '$ipaddress')";
     }
 
     if (db_query($sql, $db_post_create)) {
@@ -129,9 +131,11 @@ function post_approve($tid, $pid)
     $approve_uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = '$current_datetime', ";
+    $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_approve)) return false;
 
@@ -168,7 +172,12 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     $poll = ($poll == 'Y') ? 'Y' : 'N';
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';
-    $closed = $closed ? "NOW()" : "NULL";
+    
+    if ($closed === true) {
+        $closed = sprintf("'%s'", date(MYSQL_DATETIME, time()));
+    }else {
+        $closed = 'NULL';
+    }
 
     if (!$db_post_create_thread = db_connect()) return false;
 
@@ -176,7 +185,8 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` " ;
     $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, CREATED, MODIFIED, CLOSED) ";
-    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', NOW(), NOW(), $closed)";
+    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', '$current_datetime', ";
+    $sql.= "'$current_datetime', $closed)";
 
     if (!$result = db_query($sql, $db_post_create_thread)) return false;
 
@@ -197,9 +207,12 @@ function post_update_thread_length($tid, $length)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($length)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET LENGTH = '$length', MODIFIED = NOW() WHERE TID = '$tid'";
+    $sql.= "SET LENGTH = '$length', MODIFIED = '$current_datetime' ";
+    $sql.= "WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_post_update_thread_length)) return false;
 
@@ -536,7 +549,7 @@ function check_post_frequency()
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-            $sql.= "SET LAST_POST = NOW() WHERE UID = '$uid'";
+            $sql.= "SET LAST_POST = '$current_datetime' WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 
@@ -546,7 +559,7 @@ function check_post_frequency()
     }else{
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
-        $sql.= "(UID, LAST_POST) VALUES ('$uid', NOW())";
+        $sql.= "(UID, LAST_POST) VALUES ('$uid', '$current_datetime')";
 
         if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 

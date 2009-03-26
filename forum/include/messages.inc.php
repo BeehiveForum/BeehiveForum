@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.567 2009-03-26 09:11:55 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.568 2009-03-26 09:26:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -546,17 +546,16 @@ function messages_check_cache_header()
 
         list($tid) = explode('.', $_GET['msg']);
 
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED, ";
+        $sql = "SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS POST_CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.TSTAMP)) AS POLL_VOTE_MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
-        $sql.= "ON (USER_POLL_VOTES.TID = THREAD.TID) WHERE THREAD.TID = '$tid' ";
-        $sql.= "LIMIT 0, 1";
+        $sql.= "ON (USER_POLL_VOTES.TID = POST.TID) WHERE POST.TID = '$tid'";
 
     }else {
 
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(MODIFIED)) AS THREAD_MODIFIED, ";
-        $sql.= "0 AS POLL_VOTE_MODIFIED FROM `{$table_data['PREFIX']}THREAD` ";
+        $sql = "SELECT UNIX_TIMESTAMP(MAX(MODIFIED)) AS POST_MODIFIED, ";
+        $sql.= "0 AS POLL_VOTE_MODIFIED FROM `{$table_data['PREFIX']}POST` ";
         $sql.= "LIMIT 0, 1";
     }
 
@@ -566,11 +565,11 @@ function messages_check_cache_header()
 
         // Get the two modified dates from the query
         
-        list($thread_modified_date, $user_poll_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+        list($post_created_date, $user_poll_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is higher.
         
-        $local_cache_date = ($thread_modified_date > $user_poll_modified_date) ? $thread_modified_date : $user_poll_modified_date;
+        $local_cache_date = ($post_created_date > $user_poll_modified_date) ? $post_created_date : $user_poll_modified_date;
         
         // Last Modified Header for cache control
 

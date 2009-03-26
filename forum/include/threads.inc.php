@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.343 2009-03-26 14:40:24 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.344 2009-03-26 14:41:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1791,8 +1791,6 @@ function thread_list_check_cache_header()
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 
             $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-            
-            file_put_contents('cache.log', sprintf("%s - %s\r\n", $local_last_modified, $remote_last_modified), FILE_APPEND); 
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 

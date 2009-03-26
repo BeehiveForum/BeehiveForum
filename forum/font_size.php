@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.34 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.35 2009-03-26 22:26:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -134,7 +134,7 @@ $local_etag = md5(sprintf("%s-%s-%s", $sess_hash, $font_size, $uid));
 
 // Check the cache
 
-header_check_etag($local_etag);
+cache_check_etag($local_etag);
 
 // Check the user's font size.
 

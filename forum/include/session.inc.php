@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.377 2009-03-25 18:47:29 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.378 2009-03-26 22:26:31 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -222,7 +222,7 @@ function bh_session_expired()
         header_redirect("llogon.php?webtag=$webtag&final_uri=$final_uri");
     }
 
-    header_no_cache();
+    cache_disable();
 
     html_draw_top('logon.js');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.192 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: logon.php,v 1.193 2009-03-26 22:26:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -106,7 +106,7 @@ if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
 
 // Don't cache this page - fixes problems with Opera.
 
-header_no_cache();
+cache_disable();
 
 // Logon script doesn't redirect if the session isn't created
 

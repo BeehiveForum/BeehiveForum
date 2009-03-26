@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.201 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: register.php,v 1.202 2009-03-26 22:26:29 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -161,7 +161,7 @@ if (isset($_GET['reload_captcha'])) {
 
         // Outputting XML
 
-        header_no_cache();
+        cache_disable();
 
         header('Content-type: text/xml; charset=UTF-8', true);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.77 2009-03-26 09:30:36 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.78 2009-03-26 22:26:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -177,7 +177,7 @@ if (!bh_session_user_approved()) {
 
 // Enable caching on RSS Feed
 
-header_check_cache();
+cache_check_last_modified();
 
 // echo out the rss feed
 

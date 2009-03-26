@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.570 2009-03-26 14:40:23 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.571 2009-03-26 22:26:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -185,7 +185,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    if (($message_content = cache_check("$tid.$pid"))) {
+    if (($message_content = cache_lite_get("$tid.$pid"))) {
         return $message_content;
     }
 
@@ -205,7 +205,7 @@ function message_get_content($tid, $pid)
 
         list($message_content) = db_fetch_array($result, DB_RESULT_NUM);
 
-        cache_save("$tid.$pid", $message_content);
+        cache_lite_save("$tid.$pid", $message_content);
 
         return $message_content;
     }
@@ -523,76 +523,6 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
     }
 
     return preg_replace('/<\/?noemots>|<\/?nowiki>/u', '', $message);
-}
-
-function messages_check_cache_header()
-{
-    if (strstr(php_sapi_name(), 'cgi')) return false;
-
-    if (!$db_messages_check_cache_header = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    if (isset($_GET['markasread'])) return false;
-    if (isset($_GET['setinterest'])) return false;
-    if (isset($_GET['relupdated'])) return false;
-    if (isset($_GET['setstats'])) return false;
-
-    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-        return header_no_cache();
-    }
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-        list($tid) = explode('.', $_GET['msg']);
-
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS POST_CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.TSTAMP)) AS POLL_VOTE_MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
-        $sql.= "ON (USER_POLL_VOTES.TID = POST.TID) WHERE POST.TID = '$tid'";
-
-    }else {
-
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(MODIFIED)) AS POST_MODIFIED, ";
-        $sql.= "0 AS POLL_VOTE_MODIFIED FROM `{$table_data['PREFIX']}POST` ";
-        $sql.= "LIMIT 0, 1";
-    }
-
-    if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        // Get the two modified dates from the query
-        
-        list($post_created_date, $user_poll_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
-        
-        // Work out which one is higher.
-        
-        $local_cache_date = ($post_created_date > $user_poll_modified_date) ? $post_created_date : $user_poll_modified_date;
-        
-        // Last Modified Header for cache control
-
-        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
-
-        header("Expires: $local_cache_expires", true);
-        header("Last-Modified: $local_last_modified", true);
-        header('Cache-Control: private, must-revalidate', true);
-
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-
-            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-
-            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
-
-                header("HTTP/1.1 304 Not Modified");
-                exit;
-            }
-        }
-    }
-
-    return true;
 }
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.120 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: nav.php,v 1.121 2009-03-26 22:26:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -91,7 +91,7 @@ $lang = lang::get_instance()->load(__FILE__);
 
 // Number of forums available
 
-header_no_cache();
+cache_disable();
 
 html_draw_top("class=navpage", "forumlinks.js");
 

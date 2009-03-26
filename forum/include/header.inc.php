@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.45 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.46 2009-03-26 22:26:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,26 +37,6 @@ include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
-
-/**
-* Prevent caching of a page.
-*
-* Prevents caching of a page by sending headers which indicate that the page
-* is always modified.
-*
-* @return void
-* @param void
-*/
-
-function header_no_cache()
-{
-    header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
-    header("Content-Type: text/html; charset=UTF-8");               // Internet Explorer Bug
-    header("Cache-Control: no-store, no-cache, must-revalidate");   // HTTP/1.1
-    header("Cache-Control: post-check=0, pre-check=0", false);
-    header("Pragma: no-cache");
-}
 
 /**
 * Redirect client to another page.
@@ -132,78 +112,6 @@ function header_server_error()
         header("HTTP/1.0 500 Internal Server Error");
         exit;
     }
-}
-
-/**
-* Check cache header.
-*
-* Checks appropriate HTTP headers for cache hits. Prevents client
-* from hitting pages already in cache. Default cache is 5 minutes.
-*
-* @return mixed - void or no return (exit)
-* @param string $seconds - Interval to check for cache (default: 5 minutes)
-*/
-
-function header_check_cache($seconds = 300)
-{
-    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
-
-    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
-
-    if (!is_numeric($seconds)) return false;
-
-    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
-
-    // Generate our last-modified and expires date stamps
-
-    $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
-    $local_cache_expires = gmdate("D, d M Y H:i:s", time()). " GMT";
-
-    // Check to see if the cache header exists.
-
-    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-
-        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-
-        // Check to see if the cache is older than 5 minutes.
-
-        if ((time() - strtotime($remote_last_modified)) < $seconds) {
-
-            header("Expires: $local_cache_expires", true);
-            header("Last-Modified: $remote_last_modified", true);
-            header('Cache-Control: private, must-revalidate', true);
-
-            header("HTTP/1.1 304 Not Modified");
-            exit;
-        }
-    }
-
-    header("Expires: $local_cache_expires", true);
-    header("Last-Modified: $local_last_modified", true);
-    header('Cache-Control: private, must-revalidate', true);
-
-    return true;
-}
-
-function header_check_etag($local_etag)
-{
-    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
-
-    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-    }else {
-        $remote_etag = false;
-    }
-
-    if (strcmp($remote_etag, $local_etag) == "0") {
-
-        header("Etag: \"$local_etag\"", true);
-        header("HTTP/1.1 304 Not Modified");
-        exit;
-    }
-
-    header("Etag: \"$local_etag\"", true);
-    return true;
 }
 
 ?>

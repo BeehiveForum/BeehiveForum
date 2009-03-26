@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.15 2009-01-17 23:37:45 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.16 2009-03-26 22:26:30 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
 *
-* Contains cache related functions.
+* Contains HTTP cache and PEAR CacheLite related functions.
 */
 
 /**
@@ -50,31 +50,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 /**
-* Check for PEAR Cache_Lite Package
-*
-* Check that PEAR Cache_Lite package is available. Uses a work around for file_exists
-* which doesn't allow for an optional argument to check include_path ini setting.
-*
-* @return boolean
-*/
-
-function cache_enabled()
-{
-    $include_path_array = explode(PATH_SEPARATOR, ini_get('include_path'));
-
-    if (forum_get_setting('message_cache_enabled', 'N')) return false;
-
-    foreach ($include_path_array as $include_path_dir) {
-
-        $include_path_dir = rtrim($include_path_dir, '/');
-        if (@file_exists("$include_path_dir/Cache/Lite.php")) return true;
-    }
-
-    return false;
-}
-
-/**
-* Check for cache.
+* Check for PEAR Cache_Lite Cache.
 *
 * Check if a cache is available and return it.
 *
@@ -82,35 +58,42 @@ function cache_enabled()
 * @param integer $cache_id - Cache ID
 */
 
-function cache_check($cache_id)
+function cache_lite_get($cache_id)
 {
     $webtag = get_webtag();
 
     if (!forum_check_webtag_available($webtag)) return false;
 
-    if (cache_enabled()) {
+    if (forum_get_setting('message_cache_enabled', 'Y')) {
+    
+        try {
 
-        include_once('Cache/Lite.php');
+            include_once('Cache/Lite.php');
 
-        if (class_exists('Cache_Lite')) {
+            if (class_exists('Cache_Lite')) {
 
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
+                $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
 
-            $message_cache = new Cache_Lite($cache_options);
+                $message_cache = new Cache_Lite($cache_options);
 
-            if (method_exists($message_cache, 'setLifeTime')) {
+                if (method_exists($message_cache, 'setLifeTime')) {
 
-                $message_cache->setLifeTime(HOUR_IN_SECONDS);
-                $message_cache->clean(false, 'old');
-            }
+                    $message_cache->setLifeTime(HOUR_IN_SECONDS);
+                    $message_cache->clean(false, 'old');
+                }
 
-            if (method_exists($message_cache, 'get')) {
+                if (method_exists($message_cache, 'get')) {
 
-                if (($message_cache_data = $message_cache->get($cache_id, $webtag))) {
+                    if (($message_cache_data = $message_cache->get($cache_id, $webtag))) {
 
-                    return $message_cache_data;
+                        return $message_cache_data;
+                    }
                 }
             }
+        
+        }catch (Exception $e) {
+        
+            return false;
         }
     }
 
@@ -118,40 +101,47 @@ function cache_check($cache_id)
 }
 
 /**
-* Save data to cache.
+* Save data to Cache_Lite Cache.
 *
-* Saved specified data to the cache.
+* Saved specified data to the Cache Lite Cache.
 *
 * @return boolean.
 * @param integer $cache_id - Cache ID
 */
 
-function cache_save($cache_id, $content)
+function cache_lite_save($cache_id, $content)
 {
     $webtag = get_webtag();
 
     if (!forum_check_webtag_available($webtag)) return false;
 
-    if (cache_enabled()) {
+    if (forum_get_setting('message_cache_enabled', 'Y')) {
+    
+        try {
 
-        include_once('Cache/Lite.php');
+            include_once('Cache/Lite.php');
 
-        if (class_exists('Cache_Lite')) {
+            if (class_exists('Cache_Lite')) {
 
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
+                $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
 
-            $message_cache = new Cache_Lite($cache_options);
+                $message_cache = new Cache_Lite($cache_options);
 
-            if (method_exists($message_cache, 'setLifeTime')) {
+                if (method_exists($message_cache, 'setLifeTime')) {
 
-                $message_cache->setLifeTime(WEEK_IN_SECONDS);
-                $message_cache->clean(false, 'old');
+                    $message_cache->setLifeTime(WEEK_IN_SECONDS);
+                    $message_cache->clean(false, 'old');
+                }
+
+                if (method_exists($message_cache, 'save')) {
+
+                    return $message_cache->save($content, $cache_id, $webtag);
+                }
             }
-
-            if (method_exists($message_cache, 'save')) {
-
-                return $message_cache->save($content, $cache_id, $webtag);
-            }
+        
+        }catch (Exception $e) {
+        
+            return false;
         }
     }
 
@@ -159,38 +149,361 @@ function cache_save($cache_id, $content)
 }
 
 /**
-* Remove data from cache.
+* Remove data from Cache_Lite Cache.
 *
-* Remove specified cache_id from cache.
+* Remove specified cache_id from CacheLite Cache.
 *
 * @return boolean.
 * @param integer $cache_id - Cache ID
 */
 
-function cache_remove($cache_id)
+function cache_lite_remove($cache_id)
 {
     $webtag = get_webtag();
 
     if (!forum_check_webtag_available($webtag)) return false;
 
-    if (cache_enabled()) {
+    if (forum_get_setting('message_cache_enabled', 'Y')) {
+    
+        try {
 
-        include_once('Cache/Lite.php');
+            include_once('Cache/Lite.php');
 
-        if (class_exists('Cache_Lite')) {
+            if (class_exists('Cache_Lite')) {
 
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
+                $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
 
-            $message_cache = new Cache_Lite($cache_options);
+                $message_cache = new Cache_Lite($cache_options);
 
-            if (method_exists($message_cache, 'remove')) {
+                if (method_exists($message_cache, 'remove')) {
 
-                return $message_cache->remove($cache_id, $webtag);
+                    return $message_cache->remove($cache_id, $webtag);
+                }
             }
+            
+        }catch (Exception $e) {
+        
+            return false;
         }
     }
 
     return false;
+}
+
+/**
+* Prevent caching of a page.
+*
+* Prevents caching of a page by sending headers which indicate that the page
+* is always modified.
+*
+* @return void
+* @param void
+*/
+
+function cache_disable()
+{
+    header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
+    header("Content-Type: text/html; charset=UTF-8");               // Internet Explorer Bug
+    header("Cache-Control: no-store, no-cache, must-revalidate");   // HTTP/1.1
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");
+}
+
+/**
+* Check cache of thread list
+*
+* Checks MODIFIED and LAST_READ_AT columns of THREAD and USER_THREAD
+* tables to generate last modified HTTP header for caching of the
+* thread list.
+*
+* @return mixed - boolean or no return (exit)
+* @param void
+*/
+
+function cache_check_thread_list()
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!$db_thread_list_check_cache_header = db_connect()) return false;
+    
+    if (!$table_data = get_table_prefix()) return false;
+    
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        return cache_disable();
+    }
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    // Get the thread last modified date and user last read date.
+
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ_AT, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";
+    
+    if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
+
+    if (db_num_rows($result) > 0) {    
+    
+        // Get the two modified dates from the query
+        
+        list($thread_last_read_date, $thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
+       
+        $local_cache_date = ($thread_modified_date > $thread_last_read_date) ? $thread_modified_date : $thread_last_read_date;
+               
+        // Last Modified Header for cache control
+    
+        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+
+        header("Expires: $local_cache_expires", true);
+        header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
+* Check cache of start left pane
+*
+* Checks MODIFIED and LAST_LOGON columns of THREAD and VISITOR_LOG
+* tables to generate last modified HTTP header for caching of
+* start_left.php
+*
+* @return mixed - boolean or no return (exit)
+* @param void
+*/
+
+function cache_check_start_page()
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
+    
+    if (!$table_data = get_table_prefix()) return false;
+    
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        return cache_disable();
+    }
+
+    // Get the thread last modified date and user last read date.
+
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED, ";
+    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
+    $sql.= "FROM DEFAULT_THREAD THREAD";
+    
+    if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
+
+    if (db_num_rows($result) > 0) {    
+    
+        // Get the two modified dates from the query
+        
+        list($thread_modified_date, $last_visitor_date) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
+        
+        $local_cache_date = ($thread_modified_date > $last_visitor_date) ? $thread_modified_date : $last_visitor_date;
+               
+        // Last Modified Header for cache control
+    
+        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+
+        header("Expires: $local_cache_expires", true);
+        header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
+* Check cache of messages pane
+*
+* Checks CREATED and TSTAMP columns of POST and USER_POLL_VOTES
+* tables to generate last modified HTTP header for caching of
+* messages.php
+*
+* @return mixed - boolean or no return (exit)
+* @param void
+*/
+
+function cache_check_messages()
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!$db_messages_check_cache_header = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (isset($_GET['markasread'])) return false;
+    if (isset($_GET['setinterest'])) return false;
+    if (isset($_GET['relupdated'])) return false;
+    if (isset($_GET['setstats'])) return false;
+
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        return cache_disable();
+    }
+
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+        list($tid) = explode('.', $_GET['msg']);
+
+        $sql = "SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS POST_CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.TSTAMP)) AS POLL_VOTE_MODIFIED ";
+        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql.= "ON (USER_POLL_VOTES.TID = POST.TID) WHERE POST.TID = '$tid'";
+
+    }else {
+
+        $sql = "SELECT UNIX_TIMESTAMP(MAX(MODIFIED)) AS POST_MODIFIED, ";
+        $sql.= "0 AS POLL_VOTE_MODIFIED FROM `{$table_data['PREFIX']}POST` ";
+        $sql.= "LIMIT 0, 1";
+    }
+
+    if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        // Get the two modified dates from the query
+        
+        list($post_created_date, $user_poll_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        // Work out which one is higher.
+        
+        $local_cache_date = ($post_created_date > $user_poll_modified_date) ? $post_created_date : $user_poll_modified_date;
+        
+        // Last Modified Header for cache control
+
+        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+
+        header("Expires: $local_cache_expires", true);
+        header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
+* Check cache header.
+*
+* Checks appropriate HTTP headers for cache hits. Prevents client
+* from hitting pages already in cache. Default cache is 5 minutes.
+*
+* @return mixed - void or no return (exit)
+* @param string $seconds - Interval to check for cache (default: 5 minutes)
+*/
+
+function cache_check_last_modified($seconds = 300)
+{
+    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
+
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
+
+    if (!is_numeric($seconds)) return false;
+
+    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+
+    // Generate our last-modified and expires date stamps
+
+    $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
+    $local_cache_expires = gmdate("D, d M Y H:i:s", time()). " GMT";
+
+    // Check to see if the cache header exists.
+
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+        // Check to see if the cache is older than 5 minutes.
+
+        if ((time() - strtotime($remote_last_modified)) < $seconds) {
+
+            header("Expires: $local_cache_expires", true);
+            header("Last-Modified: $remote_last_modified", true);
+            header('Cache-Control: private, must-revalidate', true);
+
+            header("HTTP/1.1 304 Not Modified");
+            exit;
+        }
+    }
+
+    header("Expires: $local_cache_expires", true);
+    header("Last-Modified: $local_last_modified", true);
+    header('Cache-Control: private, must-revalidate', true);
+
+    return true;
+}
+
+/**
+* Check cache etag header.
+*
+* Checks appropriate HTTP etag header for cache hits.
+*
+* @return mixed - void or no return (exit)
+* @param string $local_etag - ETag for comparison
+*/
+
+function cache_check_etag($local_etag)
+{
+    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
+
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+    }else {
+        $remote_etag = false;
+    }
+
+    if (strcmp($remote_etag, $local_etag) == "0") {
+
+        header("Etag: \"$local_etag\"", true);
+        header("HTTP/1.1 304 Not Modified");
+        exit;
+    }
+
+    header("Etag: \"$local_etag\"", true);
+    return true;
 }
 
 ?>

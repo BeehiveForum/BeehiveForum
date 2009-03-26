@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.569 2009-03-26 09:30:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.570 2009-03-26 14:40:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1616,7 +1616,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     // Mark as read cut off
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
-
+    
     // Guest users' can't mark as read!
 
     if (!user_is_guest()) {

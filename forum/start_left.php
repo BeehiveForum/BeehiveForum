@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.172 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.173 2009-03-26 14:40:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -46,6 +46,9 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
+
+// Start left caching
+forum_startpage_check_cache_header();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.375 2009-03-25 18:47:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.376 2009-03-26 14:40:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2751,5 +2751,60 @@ function forum_perform_maintenance($function)
         $function();
     }
 }
+
+function forum_startpage_check_cache_header()
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
+    
+    if (!$table_data = get_table_prefix()) return false;
+    
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        return header_no_cache();
+    }
+
+    // Get the thread last modified date and user last read date.
+
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED, ";
+    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
+    $sql.= "FROM DEFAULT_THREAD THREAD";
+    
+    if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
+
+    if (db_num_rows($result) > 0) {    
+    
+        // Get the two modified dates from the query
+        
+        list($thread_modified_date, $last_visitor_date) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
+        
+        $local_cache_date = ($thread_modified_date > $last_visitor_date) ? $thread_modified_date : $last_visitor_date;
+               
+        // Last Modified Header for cache control
+    
+        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+
+        header("Expires: $local_cache_expires", true);
+        header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
+        }
+    }
+
+    return true;
+}
+
 
 ?>

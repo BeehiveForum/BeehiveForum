@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.js,v 1.24 2008-09-08 20:38:01 decoyduck Exp $ */
+/* $Id: pm.js,v 1.25 2009-03-26 09:12:04 decoyduck Exp $ */
 
 var pm_logon_search = false;
 
@@ -95,8 +95,12 @@ function pm_notification_initialise()
 function pm_notification_check_messages()
 {
     clearTimeout(pm_timeout);
+    
+    var date = new Date();
+    var timestamp = date.getTime();    
+    
     pm_notification.set_handler(pm_notification_handler);
-    pm_notification.get_url('pm.php?webtag=' + webtag + '&check_messages=true');
+    pm_notification.get_url('pm.php?webtag=' + webtag + '&check_messages=true&timestamp=' + timestamp);
 }
 
 function pm_notification_abort()

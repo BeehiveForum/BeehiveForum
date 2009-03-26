@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.342 2009-03-26 09:30:36 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.343 2009-03-26 14:40:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1336,7 +1336,9 @@ function threads_get_unread_cutoff()
 {
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
     
-    return (time() - $unread_cutoff_stamp);
+    list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
+    
+    return (mktime(0, 0, 0, $month, $day, $year) - $unread_cutoff_stamp);
 }
 
 // Arrange the results of a query into the right order for display
@@ -1759,12 +1761,11 @@ function thread_list_check_cache_header()
 
     // Get the thread last modified date and user last read date.
 
-    $sql = "SELECT UNIX_TIMESTAMP(USER_THREAD.LAST_READ_AT) AS LAST_READ_AT, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS THREAD_MODIFIED ";
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ_AT, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";
     
     if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
 
@@ -1775,12 +1776,8 @@ function thread_list_check_cache_header()
         list($thread_last_read_date, $thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
-        
-        if (($thread_modified_date > $thread_last_read_date) && ($thread_last_read_date > 0)) {
-            $local_cache_date = $thread_modified_date;
-        }else {
-            $local_cache_date = $thread_last_read_date;
-        }
+       
+        $local_cache_date = ($thread_modified_date > $thread_last_read_date) ? $thread_modified_date : $thread_last_read_date;
                
         // Last Modified Header for cache control
     
@@ -1794,6 +1791,8 @@ function thread_list_check_cache_header()
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 
             $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+            
+            file_put_contents('cache.log', sprintf("%s - %s\r\n", $local_last_modified, $remote_last_modified), FILE_APPEND); 
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.340 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.341 2009-03-26 09:12:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,7 +112,7 @@ function threads_get_folders()
     return false;
 }
 
-function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_all($uid, $folder = false, $start = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
@@ -127,7 +127,15 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships.
 
@@ -171,7 +179,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     return threads_process_list($result);
 }
 
-function threads_get_started_by_me($uid, $start = 0) // get threads started by user
+function threads_get_started_by_me($uid, $folder = false, $start = 0) // get threads started by user
 {
     if (!$db_threads_get_started_by_me = db_connect()) return array(0, 0);
 
@@ -190,7 +198,15 @@ function threads_get_started_by_me($uid, $start = 0) // get threads started by u
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
@@ -226,7 +242,7 @@ function threads_get_started_by_me($uid, $start = 0) // get threads started by u
     return threads_process_list($result);
 }
 
-function threads_get_unread($uid) // get unread messages for $uid
+function threads_get_unread($uid, $folder = false) // get unread messages for $uid
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -244,7 +260,15 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationship
 
@@ -294,7 +318,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     return threads_process_list($result);
 }
 
-function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores folder interest level)
+function threads_get_unread_to_me($uid, $folder = false) // get unread messages to $uid (ignores folder interest level)
 {
     if (!$db_threads_get_unread_to_me = db_connect()) return array(0, 0);
 
@@ -312,7 +336,15 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -355,7 +387,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     return threads_process_list($result);
 }
 
-function threads_get_by_days($uid, $days = 1) // get threads from the last $days days
+function threads_get_by_days($uid, $folder = false, $days = 1) // get threads from the last $days days
 {
     if (!$db_threads_get_by_days = db_connect()) return array(0, 0);
 
@@ -370,7 +402,15 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships.
 
@@ -419,7 +459,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     return threads_process_list($result);
 }
 
-function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
+function threads_get_by_interest($uid, $folder = false, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
 {
     if (!$db_threads_get_by_interest = db_connect()) return array(0, 0);
 
@@ -438,7 +478,15 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -483,7 +531,7 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
+function threads_get_unread_by_interest($uid, $folder = false, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
 {
     if (!$db_threads_get_unread_by_interest = db_connect()) return array(0, 0);
 
@@ -502,7 +550,15 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -553,7 +609,7 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
     return threads_process_list($result);
 }
 
-function threads_get_recently_viewed($uid) // get messages recently seem by $uid
+function threads_get_recently_viewed($uid, $folder = false) // get messages recently seem by $uid
 {
     if (!$db_threads_get_recently_viewed = db_connect()) return array(0, 0);
 
@@ -571,7 +627,15 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -621,7 +685,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     return threads_process_list($result);
 }
 
-function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start = 0) // get threads started by people of a particular relationship (default friend)
+function threads_get_by_relationship($uid, $folder = false, $relationship = USER_FRIEND, $start = 0) // get threads started by people of a particular relationship (default friend)
 {
     if (!$db_threads_get_by_relationship = db_connect()) return array(0, 0);
 
@@ -641,7 +705,15 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Formulate query
 
@@ -677,7 +749,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
+function threads_get_unread_by_relationship($uid, $folder = false, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -696,7 +768,15 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Check to see if unread messages are disabled.
 
@@ -738,7 +818,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     return threads_process_list($result);
 }
 
-function threads_get_polls($uid, $start = 0)
+function threads_get_polls($uid, $folder = false, $start = 0)
 {
     if (!$db_threads_get_polls = db_connect()) return array(0, 0);
 
@@ -757,7 +837,15 @@ function threads_get_polls($uid, $start = 0)
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -803,7 +891,7 @@ function threads_get_polls($uid, $start = 0)
     return threads_process_list($result);
 }
 
-function threads_get_sticky($uid, $start = 0)
+function threads_get_sticky($uid, $folder = false, $start = 0)
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
@@ -822,7 +910,15 @@ function threads_get_sticky($uid, $start = 0)
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -868,7 +964,7 @@ function threads_get_sticky($uid, $start = 0)
     return threads_process_list($result);
 }
 
-function threads_get_longest_unread($uid) // get unread messages for $uid
+function threads_get_longest_unread($uid, $folder = false) // get unread messages for $uid
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -886,7 +982,15 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 
     // Get the folders the user can see.
 
-    $folders = folder_get_available();
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -937,70 +1041,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     return threads_process_list($result);
 }
 
-function threads_get_folder($uid, $fid, $start = 0)
-{
-    if (!$db_threads_get_folder = db_connect()) return array(0, 0);
-
-    // If there are any problems with the function arguments we bail out.
-
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($fid)) return array(0, 0);
-    if (!is_numeric($start)) return array(0, 0);
-
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-
-    if (!$table_data = get_table_prefix()) return array(0, 0);
-
-    // Get the folders the user can see.
-
-    if (!$folders = folder_get_available_array()) return array(0, 0);
-
-    // Check to make sure the specified folder is available to the user.
-
-    if (!in_array($fid, $folders)) return array(0, 0);
-
-    // Constants for user relationships
-
-    $user_ignored = USER_IGNORED;
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
-    // Formulate query
-
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
-    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
-    $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $sql.= "THREAD_TRACK.TRACK_TYPE FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD_TRACK` THREAD_TRACK ";
-    $sql.= "ON (THREAD_TRACK.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD_STATS` THREAD_STATS ";
-    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_FOLDER` USER_FOLDER ON ";
-    $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($fid) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
-    $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT $start, 50";
-
-    if (!$result = db_query($sql, $db_threads_get_folder)) return array(0, 0);
-
-    return threads_process_list($result);
-}
-
-function threads_get_deleted($uid, $start = 0)
+function threads_get_deleted($uid, $folder = false, $start = 0)
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
@@ -1019,7 +1060,15 @@ function threads_get_deleted($uid, $start = 0)
 
     // Get the folders the user can see.
 
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -1064,7 +1113,7 @@ function threads_get_deleted($uid, $start = 0)
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid
+function threads_get_unread_by_days($uid, $folder = false, $days = 0) // get unread messages for $uid
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -1083,7 +1132,15 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
     // Get the folders the user can see.
 
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (is_numeric($folder) && in_array($folder, $folders_array)) {
+        $folders = $folder;
+    }else {
+        $folders = implode(',', $folders_array);
+    }
 
     // Constants for user relationships
 
@@ -1684,6 +1741,69 @@ function thread_list_draw_top($mode)
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
+}
+
+function thread_list_check_cache_header()
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!$db_thread_list_check_cache_header = db_connect()) return false;
+    
+    if (!$table_data = get_table_prefix()) return false;
+    
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        return header_no_cache();
+    }
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    // Get the thread last modified date and user last read date.
+
+    $sql = "SELECT UNIX_TIMESTAMP(USER_THREAD.LAST_READ_AT) AS LAST_READ_AT, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS THREAD_MODIFIED ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "LIMIT 0, 1";
+    
+    if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
+
+    if (db_num_rows($result) > 0) {    
+    
+        // Get the two modified dates from the query
+        
+        list($thread_last_read_date, $thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
+        
+        if (($thread_modified_date > $thread_last_read_date) && ($thread_last_read_date > 0)) {
+            $local_cache_date = $thread_modified_date;
+        }else {
+            $local_cache_date = $thread_last_read_date;
+        }
+               
+        // Last Modified Header for cache control
+    
+        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+
+        header("Expires: $local_cache_expires", true);
+        header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+            $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
+        }
+    }
+
+    return true;
 }
 
 function threads_have_attachments(&$threads_array, $tid_array)

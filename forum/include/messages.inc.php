@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.568 2009-03-26 09:26:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.569 2009-03-26 09:30:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -582,7 +582,7 @@ function messages_check_cache_header()
 
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 
-            $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 

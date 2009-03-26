@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.76 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.77 2009-03-26 09:30:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -117,9 +117,9 @@ if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
 // Check to see if the user wants a specified list of folders
 // or the default to show all folders.
 
-if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
+if (isset($_GET['fid']) && strlen(trim(stripslashes_array($_GET['fid']))) > 0) {
 
-    $fid = trim(stripslashes($_GET['fid']));
+    $fid = trim(stripslashes_array($_GET['fid']));
 
     if (preg_match("/(([0-9]+),)+,?/u", $fid)) {
 

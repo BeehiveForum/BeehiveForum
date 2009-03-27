@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.16 2009-03-26 22:26:30 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.17 2009-03-27 19:18:56 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -362,10 +362,16 @@ function cache_check_messages()
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
+    
+    // Disable cache on these URL queries.
+    
+    if (isset($_GET['delete_success'])) return false;
+    if (isset($_GET['edit_success'])) return false;
+    if (isset($_GET['font_resize'])) return false;
     if (isset($_GET['markasread'])) return false;
-    if (isset($_GET['setinterest'])) return false;
+    if (isset($_GET['post_approve_success'])) return false;
     if (isset($_GET['relupdated'])) return false;
+    if (isset($_GET['setinterest'])) return false;
     if (isset($_GET['setstats'])) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {

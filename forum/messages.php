@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.296 2009-03-26 22:26:29 decoyduck Exp $ */
+/* $Id: messages.php,v 1.297 2009-03-28 17:42:24 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -50,9 +50,6 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
-
-// Message pane caching
-cache_check_messages();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -119,6 +116,10 @@ if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
+
+// Message pane caching
+
+cache_check_messages();
 
 // Load language file
 

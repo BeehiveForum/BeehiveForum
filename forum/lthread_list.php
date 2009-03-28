@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.117 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.118 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -281,51 +281,9 @@ if (user_is_guest()) {
 
 bh_setcookie("bh_{$webtag}_light_thread_mode", $mode);
 
-// Output XHTML header
 light_html_draw_top();
 
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "function confirmMarkAsRead()\n";
-echo "{\n";
-echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n";
-echo "    var mark_read_confirm = getObjsByName('mark_read_confirm')[0];\n\n";
-echo "    if ((typeof mark_read_type == 'object') && (typeof mark_read_confirm == 'object')) {\n\n";
-echo "        if (window.confirm('", html_js_safe_str($lang['confirmmarkasread']), "')) {\n\n";
-echo "            mark_read_confirm.value = 'Y';\n";
-echo "            return true;\n";
-echo "        }\n";
-echo "    }\n\n";
-echo "    return false;\n";
-echo "}\n\n";
-echo "//-->\n";
-echo "</script>\n";
-
-echo "<h1>{$lang['threadlist']}</h1>\n";
-echo "<br />\n";
-
-light_pm_check_messages();
-
 light_draw_thread_list($mode, $folder, $start_from);
-
-echo "<h4>";
-
-if (forums_get_available_count() > 1) {
-    echo "<a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | ";
-}
-
-if (user_is_guest()) {
-
-    echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a>";
-    
-}else {
-
-    echo "<a href=\"lpm.php?webtag=$webtag\">{$lang['pminbox']}</a> | ";
-    echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a>";
-}
-
-echo "</h4>\n";
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

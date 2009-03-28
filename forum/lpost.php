@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.149 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.150 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -710,8 +710,6 @@ if (!$new_thread && $reply_to_pid > 0) {
         light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $thread_data['FID'], false, false, false, false, false);
     }
 }
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

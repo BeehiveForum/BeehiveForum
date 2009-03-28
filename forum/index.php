@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.190 2009-03-26 22:26:29 decoyduck Exp $ */
+/* $Id: index.php,v 1.191 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -323,28 +323,28 @@ if ($session_active && $logon_failed === false) {
             $msg = $_GET['msg'];
 
             light_draw_messages($msg);
+                      
+        }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+        
+            // Guests can't access PMs
 
+            if (user_is_guest()) {
+
+                light_html_guest_error();
+                exit;
+            }
+
+            // Check that PM system is enabled
+
+            light_pm_enabled();        
+        
+            pm_user_prune_folders();
+
+            light_draw_pm_inbox();
+            
         }else {
 
             light_draw_thread_list();
-
-            echo "<h4>";
-
-            if (forums_get_available_count() > 1) {
-                echo "<a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | ";
-            }
-
-            if (user_is_guest()) {
-            
-                echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a>";
-                
-            }else {
-            
-                echo "<a href=\"lpm.php?webtag=$webtag\">{$lang['pminbox']}</a> | ";            
-                echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a>";
-            }
-
-            echo "</h4>\n";
         }
 
     }else {

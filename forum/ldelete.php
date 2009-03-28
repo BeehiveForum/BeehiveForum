@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.35 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.36 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -314,8 +314,6 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 echo "<p>", light_form_submit("delete", $lang['delete']), "&nbsp;", light_form_submit("cancel", $lang['cancel']), "</p>\n";
 echo "</form>\n";
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

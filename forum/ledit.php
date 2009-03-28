@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.52 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.53 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -639,8 +639,6 @@ echo "<p>", light_form_submit("apply", $lang['apply']), "&nbsp;", light_form_sub
 echo "</p>";
 
 echo "</form>\n";
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

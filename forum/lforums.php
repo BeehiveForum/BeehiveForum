@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.41 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.42 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -96,35 +96,9 @@ if (!bh_session_user_approved()) {
     exit;
 }
 
-// Make sure we have a webtag
-
-$webtag = get_webtag();
-
-// Load Language File
-
-$lang = lang::get_instance()->load(__FILE__);
-
 light_html_draw_top();
 
-echo "<h1>{$lang['myforums']}</h1>\n";
-
-light_pm_check_messages();
-
-echo "<br />\n";
-
-if (isset($_GET['webtag_error'])) {
-    light_html_display_error_msg($lang['invalidforumidorforumnotfound']);
-}
-
 light_draw_my_forums();
-
-if (user_is_guest()) {
-    echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>";
-}else {
-    echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>";
-}
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

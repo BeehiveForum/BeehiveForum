@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.73 2009-03-22 18:48:12 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.74 2009-03-28 14:49:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -133,19 +133,7 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
 light_html_draw_top("robots=noindex,nofollow");
 
-echo "<h1>{$lang['logon']}</h1>\n";
-
-if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
-    light_html_display_success_msg($lang['youhavesuccessfullyloggedout']);
-}else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    light_html_display_error_array($error_msg_array);
-}
-
-echo "<br />\n";
-
 light_draw_logon_form();
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 
 light_html_draw_bottom();
 

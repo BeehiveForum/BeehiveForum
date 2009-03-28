@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.123 2009-03-26 22:26:31 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.124 2009-03-28 18:28:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -226,12 +226,13 @@ function stats_get_active_session_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
+    
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "AND FID = '$forum_fid'";
+    $sql.= "WHERE TIME >= '$session_cutoff_datetime' AND FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_active_session_count)) return false;
 
@@ -247,12 +248,14 @@ function stats_get_active_registered_user_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
+    
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
     $sql = "SELECT COUNT(UID) AS REGISTERED_USER_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "AND FID = '$forum_fid' AND UID > 0";
+    $sql.= "WHERE TIME >= '$session_cutoff_datetime' AND FID = '$forum_fid' ";
+    $sql.= "AND UID > 0";
 
     if (!$result = db_query($sql, $db_stats_get_registered_user_count)) return false;
 
@@ -268,12 +271,14 @@ function stats_get_active_guest_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
+    
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
-
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    
     $sql = "SELECT COUNT(UID) AS GUEST_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "AND FID = '$forum_fid' AND UID = 0";
+    $sql.= "WHERE TIME >= '$session_cutoff_datetime' AND FID = '$forum_fid' ";
+    $sql.= "AND UID = 0";
 
     if (!$result = db_query($sql, $db_stats_get_active_guest_count)) return false;
 
@@ -294,15 +299,17 @@ function stats_get_active_user_list()
     if (!$table_data = get_table_prefix()) return $stats;
 
     $forum_fid = $table_data['FID'];
+    
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
-
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Current active number of guests
 
     $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 ";
-    $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime' ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
@@ -322,7 +329,7 @@ function stats_get_active_user_list()
     $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
-    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '$forum_fid' ";
+    $sql.= "WHERE SESSIONS.TIME >= '$session_cutoff_datetime' AND SESSIONS.FID = '$forum_fid' ";
     $sql.= "AND SESSIONS.UID > 0 GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
@@ -425,10 +432,10 @@ function stats_get_recent_post_count()
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $post_stamp = time() - HOUR_IN_SECONDS;
+    $recent_post_datetime = date(MYSQL_DATETIME, time() - HOUR_IN_SECONDS);
 
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "WHERE CREATED >= FROM_UNIXTIME($post_stamp)";
+    $sql.= "WHERE CREATED >= '$recent_post_datetime'";
 
     if (!$result = db_query($sql, $db_stats_get_recent_post_count)) return false;
 
@@ -574,25 +581,29 @@ function stats_get_newest_user()
     return false;
 }
 
-function stats_get_post_tallys($start_stamp, $end_stamp)
+function stats_get_post_tallys($start_timestamp, $end_timestamp)
 {
     if (!$db_stats_get_post_tallys = db_connect()) return false;
 
     $lang = lang::get_instance()->load(__FILE__);
 
-    if (!is_numeric($start_stamp)) return false;
-    if (!is_numeric($end_stamp)) return false;
+    if (!is_numeric($start_timestamp)) return false;
+    if (!is_numeric($end_timestamp)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $post_tallys = array('user_stats' => array(), 'post_count' => 0);
 
     $uid = bh_session_get_value('UID');
+    
+    $post_start_datetime = date(MYSQL_DATETIME, $start_timestamp);
+
+    $post_end_datetime = date(MYSQL_DATETIME, $start_timestamp);
 
     $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) ";
-    $sql.= "AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
+    $sql.= "WHERE POST.CREATED > '$post_start_datetime' ";
+    $sql.= "AND POST.CREATED < '$post_end_datetime'";
 
     if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
 
@@ -604,8 +615,8 @@ function stats_get_post_tallys($start_stamp, $end_stamp)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE POST.CREATED >= FROM_UNIXTIME($start_stamp) ";
-    $sql.= "AND POST.CREATED <= FROM_UNIXTIME($end_stamp) ";
+    $sql.= "WHERE POST.CREATED > '$post_start_datetime' ";
+    $sql.= "AND POST.CREATED < '$post_end_datetime'";
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 

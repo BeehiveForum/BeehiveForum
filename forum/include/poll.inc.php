@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.250 2009-03-25 18:47:26 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.251 2009-03-28 18:28:20 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -58,12 +58,6 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
 {
     if (!$db_poll_create = db_connect()) return false;
 
-    if (is_numeric($poll_closes)) {
-        $poll_closes = "FROM_UNIXTIME($poll_closes)";
-    }else {
-        $poll_closes = 'NULL';
-    }
-
     if (!is_numeric($tid)) return false;
 
     if (!is_array($poll_options))  return false;
@@ -81,11 +75,25 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
     $poll_question = db_escape_string($poll_question);
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, ";
-    $sql.= "POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) ";
-    $sql.= "VALUES ('$tid', $poll_closes, '$poll_change_vote', '$poll_type', '$poll_show_results', ";
-    $sql.= "'$poll_vote_type', '$poll_option_type', '$poll_question', '$poll_allow_guests')";
+    
+    if (is_numeric($poll_closes) && $poll_closes !== false)) {
+    
+        $poll_closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, $poll_closes);
+    
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, ";
+        $sql.= "POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) ";
+        $sql.= "VALUES ('$tid', '$poll_closes_datetime', '$poll_change_vote', '$poll_type', ";
+        $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_question', ";
+        $sql.= "'$poll_allow_guests')";
+        
+    }else {
+    
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, ";
+        $sql.= "POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) ";
+        $sql.= "VALUES ('$tid', NULL, '$poll_change_vote', '$poll_type', ";
+        $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_question', ";
+        $sql.= "'$poll_allow_guests')";
+    }
 
     if (!db_query($sql, $db_poll_create)) return false;
 
@@ -140,13 +148,15 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
         if (!db_query($sql, $db_poll_edit)) return false;
     }
 
-    if (is_numeric($poll_closes)) {
+    if (is_numeric($poll_closes) && $poll_closes > 0) {
 
+        $poll_closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, $poll_closes);
+        
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET CHANGEVOTE = '$poll_change_vote', ";
         $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$poll_show_results', ";
         $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$poll_option_type', ";
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests', ";
-        $sql.= "CLOSES = FROM_UNIXTIME($poll_closes) WHERE TID = '$tid'";
+        $sql.= "CLOSES = '$poll_closes_datetime' WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_poll_edit)) return false;
 
@@ -2112,10 +2122,10 @@ function poll_close($tid)
 
         if (bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            $timestamp = time();
+            $closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET ";
-            $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = '$tid'";
+            $sql.= "CLOSES = '$closes_datetime' WHERE TID = '$tid'";
 
             if (!db_query($sql, $db_poll_close)) return false;
         }

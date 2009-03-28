@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.18 2009-03-28 17:22:07 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.19 2009-03-28 17:40:30 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -60,7 +60,7 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 * @param void
 */
 
-function cache_lite_error_handler ()
+function cache_lite_error_handler()
 {
     return;
 }
@@ -212,12 +212,12 @@ function cache_lite_remove($cache_id)
 
 function cache_disable()
 {
-    header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
-    header("Content-Type: text/html; charset=UTF-8");               // Internet Explorer Bug
-    header("Cache-Control: no-store, no-cache, must-revalidate");   // HTTP/1.1
-    header("Cache-Control: post-check=0, pre-check=0", false);
-    header("Pragma: no-cache");
+    header("Expires: Mon, 08 Apr 2002 12:00:00 GMT", true);               // Date in the past (Beehive birthday)
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);  // always modified
+    header("Content-Type: text/html; charset=UTF-8", true);               // Internet Explorer Bug
+    header("Cache-Control: no-store, no-cache, must-revalidate", true);   // HTTP/1.1
+    header("Cache-Control: post-check=0, pre-check=0", true);
+    header("Pragma: no-cache", true);
 }
 
 /**

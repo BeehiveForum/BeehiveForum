@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.138 2009-03-26 09:30:36 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.139 2009-03-28 17:40:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -122,14 +122,20 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     }else {
         $error_report_email_addr_from = '$error_report_email_addr_from';
     }
+    
+    // Let's ignore PHP5's strict warnings.
+    
+    if (($errno & E_STRICT) > 0) return;
 
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
 
-        // Clean the output buffer
+        // Disable the HTTP cache.
+        
+        cache_disable();
 
-        // Flush the output buffer
+        // Clean the output buffer
 
         while (@ob_end_clean());
         ob_start("bh_gzhandler");

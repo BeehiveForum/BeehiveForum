@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.19 2009-03-28 17:40:30 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.20 2009-03-28 19:24:31 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -400,9 +400,8 @@ function cache_check_messages()
 
     }else {
 
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(MODIFIED)) AS POST_MODIFIED, ";
-        $sql.= "0 AS POLL_VOTE_MODIFIED FROM `{$table_data['PREFIX']}POST` ";
-        $sql.= "LIMIT 0, 1";
+        $sql = "SELECT UNIX_TIMESTAMP(MAX(CREATED)) AS POST_CREATED, ";
+        $sql.= "0 AS POLL_VOTE_MODIFIED FROM `{$table_data['PREFIX']}POST`";
     }
 
     if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;

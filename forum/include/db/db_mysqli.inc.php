@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.52 2008-08-12 17:22:02 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.53 2009-03-28 18:42:28 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -44,6 +44,8 @@ function db_connect($trigger_error = true)
             if (@mysqli_select_db($connection_id, $db_database)) {
 
                 db_set_utf8_charset($connection_id);
+                
+                db_set_time_zone_utc($connection_id);
 
                 db_enable_compat_mode($connection_id);
 
@@ -62,6 +64,12 @@ function db_connect($trigger_error = true)
 function db_set_utf8_charset($connection_id)
 {
     $sql = "SET NAMES 'utf8'";
+    return db_query($sql, $connection_id);
+}
+
+function db_set_time_zone_utc($connection_id)
+{
+    $sql = "SET SESSION time_zone = '+0:00'";
     return db_query($sql, $connection_id);
 }
 

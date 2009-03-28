@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.119 2009-03-28 16:03:23 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.120 2009-03-28 17:42:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -49,9 +49,6 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
-
-// Check Messages cache
-cache_check_messages();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -125,6 +122,10 @@ if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
+
+// Message pane caching
+
+cache_check_messages();
 
 // Load language file
 

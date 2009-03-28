@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.571 2009-03-26 22:26:30 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.572 2009-03-28 17:22:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -188,7 +188,7 @@ function message_get_content($tid, $pid)
     if (($message_content = cache_lite_get("$tid.$pid"))) {
         return $message_content;
     }
-
+    
     if (!$db_message_get_content = db_connect()) return false;
 
     if (!is_numeric($tid)) return "";

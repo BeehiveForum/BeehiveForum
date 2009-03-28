@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.48 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.49 2009-03-28 18:28:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -313,15 +313,24 @@ function add_ban_data($type, $data, $comment, $expires)
     $data_types_array = array(BAN_TYPE_IP, BAN_TYPE_LOGON, BAN_TYPE_NICK, BAN_TYPE_EMAIL, BAN_TYPE_REF);
 
     if (!in_array($type, $data_types_array)) return false;
-    if (!is_numeric($expires)) return false;
 
     $data = db_escape_string($data);
     $comment = db_escape_string($comment);
-
+    
     if (!$table_data = get_table_prefix()) return false;
+    
+    if (is_numeric($expires) && $expires > 0) {
+        
+        $expires_datetime = date(MYSQL_DATETIME_MIDNIGHT, $expires);
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}BANNED` (BANTYPE, BANDATA, COMMENT, EXPIRES) ";
-    $sql.= "VALUES ('$type', '$data', '$comment', FROM_UNIXTIME('$expires'))";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}BANNED` (BANTYPE, BANDATA, COMMENT, EXPIRES) ";
+        $sql.= "VALUES ('$type', '$data', '$comment', '$expires_datetime')";
+        
+    }else {
+    
+        $sql = "INSERT INTO `{$table_data['PREFIX']}BANNED` (BANTYPE, BANDATA, COMMENT, EXPIRES) ";
+        $sql.= "VALUES ('$type', '$data', '$comment', 0)";
+    }
 
     if (!db_query($sql, $db_add_ban_data)) return false;
 
@@ -360,10 +369,12 @@ function update_ban_data($ban_id, $type, $data, $comment, $expires)
     if (!$table_data = get_table_prefix()) return false;
 
     if (is_numeric($expires) && $expires > 0) {
+    
+        $expires_datetime = date(MYSQL_DATETIME_MIDNIGHT, $expires);
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}BANNED` ";
         $sql.= "SET BANTYPE = '$type', BANDATA = '$data', COMMENT = '$comment', ";
-        $sql.= "EXPIRES = FROM_UNIXTIME('$expires') WHERE ID = '$ban_id'";
+        $sql.= "EXPIRES = '$expires_datetime' WHERE ID = '$ban_id'";
 
     }else {
 
@@ -388,12 +399,12 @@ function check_ban_data($ban_type, $ban_data, $ban_expires = 0)
 
     if (!$table_data = get_table_prefix()) return false;
     
-    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
+    $current_datetime = time();
 
     $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$ban_data' LIKE BANDATA AND BANTYPE = '$ban_type' ";
-    $sql.= "AND (FROM_UNIXTIME('$ban_expires') > '$current_datetime' ";
-    $sql.= "OR FROM_UNIXTIME('$ban_expires') = 0) LIMIT 0, 1";
+    $sql.= "AND ($ban_expires > $current_datetime OR $ban_expires = 0) ";
+    $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_referer_is_banned)) return false;
 
@@ -429,14 +440,14 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     
-    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
+    $current_datetime = time();
 
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.NICKNAME FROM SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = SESSIONS.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE (FROM_UNIXTIME('$ban_expires') > '$current_datetime' OR $ban_expires = 0) ";
+    $sql.= "WHERE ($ban_expires > $current_datetime OR $ban_expires = 0) ";    
     $sql.= "AND SESSIONS.UID > 0 AND (((SESSIONS.IPADDRESS LIKE '$ban_data' ";
     $sql.= "OR USER.IPADDRESS LIKE '$ban_data') AND '$ban_type' = '$ban_type_ip') ";
     $sql.= "OR ((SESSIONS.REFERER LIKE '$ban_data' OR USER.REFERER LIKE '$ban_data') ";

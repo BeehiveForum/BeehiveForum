@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.73 2009-03-25 18:47:29 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.74 2009-03-28 18:28:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -407,12 +407,12 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
     $url = db_escape_string($url);
     $prefix = db_escape_string($prefix);
 
-    $last_run = mktime(0, 0, 0, 6, 27, 2002);
+    $last_run_datetime = date(MYSQL_DATETIME, mktime(0, 0, 0, 6, 27, 2002));
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN) ";
-    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, FROM_UNIXTIME($last_run))";
+    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, '$last_run_datetime')";
 
     if (!db_query($sql, $db_rss_add_feed)) return false;
 

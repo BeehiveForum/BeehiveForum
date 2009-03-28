@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.229 2009-03-25 18:47:29 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.230 2009-03-28 18:28:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -701,8 +701,17 @@ function search_date_range($from, $to)
 
     }
 
-    if (isset($from_timestamp)) $range = "AND POST.CREATED >= FROM_UNIXTIME($from_timestamp) ";
-    if (isset($to_timestamp)) $range.= "AND POST.CREATED <= FROM_UNIXTIME($to_timestamp) ";
+    if (isset($from_timestamp)) {
+    
+        $from_datetime = date(MYSQL_DATETIME, $from_timestamp);    
+        $range = "AND POST.CREATED >= '$from_datetime' ";
+    }     
+        
+    if (isset($to_timestamp)) {
+    
+        $to_datetime = date(MYSQL_DATETIME, $to_timestamp); 
+        $range.= "AND POST.CREATED <= '$to_datetime' ";
+    }
 
     return $range;
 }

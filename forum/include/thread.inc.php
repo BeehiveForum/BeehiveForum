@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.160 2009-03-25 18:47:30 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.161 2009-03-28 18:28:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -414,11 +414,19 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
     if (!is_numeric($tid)) return false;
 
     $sticky_sql = ($sticky === true) ? 'Y' : 'N';
-    $sticky_until_sql = ($sticky_until !== false) ? "FROM_UNIXTIME($sticky_until)" : 'NULL';
+    
+    if (is_numeric($sticky_until) && $sticky_until !== false) {
+    
+        $sticky_until_datetime = date(MYSQL_DATETIME_MIDNIGHT, $sticky_until);
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET STICKY = '$sticky_sql', ";
-    $sql.= "STICKY_UNTIL = $sticky_until_sql ";
-    $sql.= "WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET STICKY = '$sticky_sql', ";
+        $sql.= "STICKY_UNTIL = '$sticky_until_datetime' WHERE TID = '$tid'";
+        
+    }else {
+    
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET STICKY = '$sticky_sql', ";
+        $sql.= "STICKY_UNTIL = NULL WHERE TID = '$tid'";
+    }
 
     if (!db_query($sql, $db_thread_set_sticky)) return false;
 

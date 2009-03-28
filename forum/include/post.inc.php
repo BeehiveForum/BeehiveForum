@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.213 2009-03-25 18:47:29 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.214 2009-03-28 18:28:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -490,36 +490,38 @@ function check_ddkey($ddkey)
     if (!$db_check_ddkey = db_connect()) return false;
 
     if (!is_numeric($ddkey)) return false;
+    
+    $ddkey_datetime = date(MYSQL_DATETIME, $ddkey);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UNIX_TIMESTAMP(DDKEY) FROM ";
-    $sql.= "`{$table_data['PREFIX']}USER_TRACK` WHERE UID = '$uid'";
+    $sql = "SELECT DDKEY FROM `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_check_ddkey)) return false;
 
     if (db_num_rows($result)) {
 
-        list($ddkey_check) = db_fetch_array($result);
+        list($ddkey_datetime_check) = db_fetch_array($result);
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-        $sql.= "SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
+        $sql.= "SET DDKEY = '$ddkey_datetime' WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
 
     }else{
 
-        $ddkey_check = "";
+        $ddkey_datetime_check = '';
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, DDKEY) ";
-        $sql.= "VALUES ('$uid', FROM_UNIXTIME($ddkey))";
+        $sql.= "VALUES ('$uid', '$ddkey_datetime')";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
     }
 
-    return !($ddkey == $ddkey_check);
+    return !($ddkey_datetime == $ddkey_datetime_check);
 }
 
 function check_post_frequency()

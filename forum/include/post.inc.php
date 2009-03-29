@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.214 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.215 2009-03-29 12:11:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -182,6 +182,10 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     if (!$db_post_create_thread = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return -1;
+    
+    // Current datetime
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` " ;
     $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, CREATED, MODIFIED, CLOSED) ";

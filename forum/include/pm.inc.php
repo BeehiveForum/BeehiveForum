@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.273 2009-03-25 18:47:25 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.274 2009-03-29 12:11:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1485,6 +1485,10 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
     // PM_SENT constant.
 
     $pm_sent = PM_SENT;
+    
+    // Current datetime
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     // Insert the main PM Data into the database
 

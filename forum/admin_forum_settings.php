@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.158 2009-03-22 18:48:11 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.159 2009-03-29 12:11:46 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -44,7 +44,7 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 unregister_globals();
 
 // Set the default timezone
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('UTC');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

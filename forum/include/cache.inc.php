@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.20 2009-03-28 19:24:31 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.21 2009-03-30 19:45:48 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -261,9 +261,9 @@ function cache_check_thread_list()
         
         list($thread_last_read_date, $thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
         
-        // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
+        // Work out which one is newer (higher).
        
-        $local_cache_date = ($thread_modified_date > $thread_last_read_date) ? $thread_modified_date : $thread_last_read_date;
+        $local_cache_date = max($thread_last_read_date, $thread_modified_date);
                
         // Last Modified Header for cache control
     
@@ -311,24 +311,29 @@ function cache_check_start_page()
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         return cache_disable();
     }
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Get the thread last modified date and user last read date.
-
-    $sql = "SELECT UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED, ";
-    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
-    $sql.= "FROM DEFAULT_THREAD THREAD";
     
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ_AT, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED, ";
+    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";    
+   
     if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
 
     if (db_num_rows($result) > 0) {    
     
-        // Get the two modified dates from the query
+        // Get the modified dates from the query
+               
+        list($thread_last_read_date, $thread_modified_date, $last_visitor_date) = db_fetch_array($result, DB_RESULT_NUM);
         
-        list($thread_modified_date, $last_visitor_date) = db_fetch_array($result, DB_RESULT_NUM);
+        // Work out which one is newer (higher).
         
-        // Work out which one is newer. If $thread_last_read_date is 0 the thread is unread.
-        
-        $local_cache_date = ($thread_modified_date > $last_visitor_date) ? $thread_modified_date : $last_visitor_date;
+        $local_cache_date = max($thread_last_read_date, $thread_modified_date, $last_visitor_date);
                
         // Last Modified Header for cache control
     
@@ -412,9 +417,9 @@ function cache_check_messages()
         
         list($post_created_date, $user_poll_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
         
-        // Work out which one is higher.
+        // Work out which one is newer (higher).
         
-        $local_cache_date = ($post_created_date > $user_poll_modified_date) ? $post_created_date : $user_poll_modified_date;
+        $local_cache_date = max($post_created_date, $user_poll_modified_date);
         
         // Last Modified Header for cache control
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.11 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.12 2009-03-30 19:45:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -103,10 +103,6 @@ if (!bh_session_user_approved()) {
     html_user_require_approval();
     exit;
 }
-
-// Load language file
-
-$lang = lang::get_instance()->load(__FILE__);
 
 // Get the user's UID
 

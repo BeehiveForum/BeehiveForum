@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.378 2009-03-26 22:26:31 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.379 2009-04-04 11:54:10 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -578,17 +578,21 @@ function bh_update_visitor_log($uid, $forum_fid)
         $sql.= "VALUES ('$forum_fid', '$uid', 1, '$current_datetime', '$ipaddress', '$http_referer') ";
         $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = '$current_datetime', ";
         $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
+        
+        @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
 
         if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }else {
 
         if (($search_id = bh_session_is_search_engine()) !== false) {
-
+           
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
             $sql.= "VALUES ('$forum_fid', '$uid', '$current_datetime', '$ipaddress', '$http_referer', '$search_id') ";
             $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = '$current_datetime', ";
             $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
+            
+            @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
 
             if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
@@ -597,13 +601,17 @@ function bh_update_visitor_log($uid, $forum_fid)
             $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '0' ";
             $sql.= "AND IPADDRESS = '$ipaddress' AND FORUM = '$forum_fid' ";
             $sql.= "AND LAST_LOGON > '$session_cutoff_datetime'";
+            
+            @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
 
             if (!$result = db_query($sql, $db_bh_update_visitor_log)) return false;
 
             if (db_num_rows($result) < 1) {
-
+               
                 $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
                 $sql.= "VALUES ('$forum_fid', 0, '$current_datetime', '$ipaddress', '$http_referer')";
+                
+                @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
 
                 if (db_query($sql, $db_bh_update_visitor_log)) return true;
             }

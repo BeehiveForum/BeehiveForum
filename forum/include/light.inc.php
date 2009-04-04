@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.224 2009-03-28 14:49:20 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.225 2009-04-04 11:54:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -443,9 +443,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
     }else {
         switch ($mode) {
-            case ALL_DISCUSSIONS:
-                list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
-                break;
             case UNREAD_DISCUSSIONS:
                 list($thread_info, $folder_order) = threads_get_unread($uid);
                 break;

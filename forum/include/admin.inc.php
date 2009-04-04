@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.185 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.186 2009-04-04 14:43:24 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -561,7 +561,9 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
     
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
     $user_get_all_array = array();
 

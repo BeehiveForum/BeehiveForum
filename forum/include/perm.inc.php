@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.143 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.144 2009-04-05 14:11:19 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -772,30 +772,35 @@ function perm_remove_user_from_group($uid, $gid)
 */
 function perm_get_user_permissions($uid)
 {
-    if (!$db_perm_get_user_permissions = db_connect()) return false;
-
+    static $user_perm_cache = array();
+    
     if (!is_numeric($uid)) return 0;
+    
+    if (!array_key_exists($uid, $user_perm_cache)) {
+    
+        if (!$db_perm_get_user_permissions = db_connect()) return false;
 
-    if (($table_data = get_table_prefix())) {
-        $forum_fid = $table_data['FID'];
-    }else {
-        $forum_fid = 0;
+        if (($table_data = get_table_prefix())) {
+            $forum_fid = $table_data['FID'];
+        }else {
+            $forum_fid = 0;
+        }
+
+        $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
+        $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
+        $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)";
+
+        if (!$result = db_query($sql, $db_perm_get_user_permissions)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            $user_perm_cache[$uid] = db_fetch_array($result);
+            return $user_perm_cache[$uid];
+        }
     }
-
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)";
-
-    if (!$result = db_query($sql, $db_perm_get_user_permissions)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $permissions_data = db_fetch_array($result);
-        return $permissions_data['STATUS'];
-    }
-
+    
     return 0;
 }
 

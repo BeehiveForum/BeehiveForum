@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.379 2009-04-04 11:54:10 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.380 2009-04-05 14:11:19 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -158,12 +158,10 @@ function bh_session_check($show_session_fail = true)
                 bh_setcookie("bh_{$forum_webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
             }
             
-            thread_auto_prune_unread_data();
-
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid) || defined('BEEHIVE_INSTALL_NOWARN')) {
+            if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid)) {
 
                 // Update the user time stats before we update the session
 

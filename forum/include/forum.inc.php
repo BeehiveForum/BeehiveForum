@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.377 2009-03-26 22:26:30 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.378 2009-04-05 14:11:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,10 +112,6 @@ function get_forum_data()
                 }
             }
         }       
-
-        if (!forums_check_available_dbs($forum_data['DATABASE_NAME'])) {
-            trigger_error('Invalid database name for selected forum webtag. Please check FORUMS table for errors.', E_USER_ERROR);
-        }        
     }
 
     return $forum_data;
@@ -428,8 +424,6 @@ function forum_get_settings()
 
     if (!is_array($forum_settings_array)) {
 
-        $forum_settings_array = array('fid' => $forum_fid);
-
         // Get the named settings from FORUM_SETTINGS table.
 
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
@@ -437,8 +431,10 @@ function forum_get_settings()
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
         if (db_num_rows($result) > 0) {
+        
+            // Preset some of the settings, including GMT offset and DST offset.
 
-            if (!is_array($forum_settings_array)) $forum_settings_array = array();
+            $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);        
 
             while (($forum_data = db_fetch_array($result))) {
 
@@ -448,22 +444,24 @@ function forum_get_settings()
                 }
             }
         }
-
+        
         // Get the forum timezone, GMT offset and DST offset.
+        
+        if (isset($forum_settings_array['forum_timezone'])) {
 
-        $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
-        $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
-        $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
-        $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
-        $sql.= "AND FORUM_SETTINGS.FID = '$forum_fid'";
+            $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
+            $sql.= "WHERE TZID = '{$forum_settings_array['forum_timezone']}'";
 
-        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+            if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+            
+            if (db_num_rows($result) > 0) {
 
-        list($forum_timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
+                list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $forum_settings_array['forum_timezone'] = $forum_timezone;
-        $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
-        $forum_settings_array['forum_dst_offset'] = $dst_offset;
+                $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
+                $forum_settings_array['forum_dst_offset'] = $dst_offset;
+            }
+        }
 
         // Get the WEBTAG, ACCESS_LEVEL and OWNER_UID
 
@@ -488,14 +486,18 @@ function forum_get_global_settings()
     static $forum_global_settings_array = false;
 
     if (!is_array($forum_global_settings_array)) {
+           
+        // Get the named settings from FORUM_SETTINGS table.
 
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
 
         if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
 
         if (db_num_rows($result) > 0) {
+        
+            // Preset some of the settings, including GMT offset and DST offset.
 
-            if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
+            $forum_global_settings_array = array('forum_gmt_offset' => 0, 'forum_dst_offset' => 1);            
 
             while (($forum_data = db_fetch_array($result))) {
 
@@ -507,69 +509,76 @@ function forum_get_global_settings()
         }
 
         // Get the forum timezone, GMT offset and DST offset.
+        
+        if (isset($forum_global_settings_array['forum_timezone'])) {
 
-        $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
-        $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
-        $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
-        $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
-        $sql.= "AND FORUM_SETTINGS.FID = '0'";
+            $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
+            $sql.= "WHERE TZID = '{$forum_global_settings_array['forum_timezone']}'";
 
-        if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
+            if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+            
+            if (db_num_rows($result) > 0) {
 
-        list($forum_timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
+                list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $forum_settings_array['forum_timezone'] = $forum_timezone;
-        $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
-        $forum_settings_array['forum_dst_offset'] = $dst_offset;
+                $forum_global_settings_array['forum_gmt_offset'] = $gmt_offset;
+                $forum_global_settings_array['forum_dst_offset'] = $dst_offset;
+            }
+        }
     }
 
     return $forum_global_settings_array;
 }
 
-function forum_get_settings_by_fid($fid)
+function forum_get_settings_by_fid($forum_fid)
 {
-    if (!$db_forum_get_settings_by_fid = db_connect()) return false;
+    if (!$db_forum_get_settings = db_connect()) return false;
 
-    if (!is_numeric($fid)) return false;
+    static $forum_settings_array = false;
 
-    $forum_settings_array = array('fid' => $fid);
+    if (!is_numeric($forum_fid)) return false;
 
-    $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$fid'";
+    if (!is_array($forum_settings_array)) {
 
-    if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
+        // Get the named settings from FORUM_SETTINGS table.
 
-    list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
-    $forum_settings_array['webtag'] = $webtag;
-    $forum_settings_array['access_level'] = $access_level;
+        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
-    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
+        if (db_num_rows($result) > 0) {
+        
+            // Preset some of the settings, including GMT offset and DST offset.
 
-    if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
+            $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);        
 
-    while (($forum_data = db_fetch_array($result))) {
+            while (($forum_data = db_fetch_array($result))) {
 
-        if (forum_check_setting_name($forum_data['SNAME'])) {
+                if (forum_check_setting_name($forum_data['SNAME'])) {
 
-            $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+                    $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+                }
+            }
+        }
+        
+        // Get the forum timezone, GMT offset and DST offset.
+        
+        if (isset($forum_settings_array['forum_timezone'])) {
+
+            $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
+            $sql.= "WHERE TZID = '{$forum_settings_array['forum_timezone']}'";
+
+            if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+            
+            if (db_num_rows($result) > 0) {
+
+                list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
+
+                $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
+                $forum_settings_array['forum_dst_offset'] = $dst_offset;
+            }
         }
     }
-
-    // Get the forum timezone, GMT offset and DST offset.
-
-    $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
-    $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
-    $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
-    $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
-    $sql.= "AND FORUM_SETTINGS.FID = '$fid'";
-
-    if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
-
-    list($forum_timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $forum_settings_array['forum_timezone'] = $forum_timezone;
-    $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
-    $forum_settings_array['forum_dst_offset'] = $dst_offset;
 
     return $forum_settings_array;
 }
@@ -633,8 +642,8 @@ function forum_check_setting_name($setting_name)
                                   'default_emoticons', 'default_language', 'default_style',
                                   'enable_wiki_integration', 'enable_wiki_quick_links', 'enable_google_analytics',
                                   'force_word_filter', 'forum_desc', 'forum_content_rating',
-                                  'forum_dl_saving', 'forum_email', 'forum_keywords',
-                                  'forum_name', 'forum_links_top_link', 'google_analytics_code',
+                                  'forum_dl_saving', 'forum_email', 'forum_keywords', 'forum_name', 
+                                  'forum_links_top_link', 'forum_timezone', 'google_analytics_code',
                                   'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
                                   'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
                                   'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
@@ -654,7 +663,7 @@ function forum_check_global_setting_name($setting_name)
                                          'attachment_use_old_method', 'bh_remove_stale_sessions_last_run', 'cache_dir',
                                          'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
                                          'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
-                                         'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
+                                         'forum_maintenance_schedule', 'forum_timezone', 'pm_system_prune_folders_last_run',
                                          'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run',
                                          'sitemap_create_file_last_run', 'enable_google_analytics', 'allow_forum_google_analytics',
                                          'google_analytics_code', 'guest_account_enabled', 'guest_show_recent',
@@ -2583,19 +2592,6 @@ function forums_get_available_dbs()
     return false;
 }
 
-function forums_check_available_dbs($database_name)
-{
-    if (!$db_forums_check_available_dbs = db_connect()) return false;
-
-    $database_name = db_escape_string($database_name);
-
-    $sql = "SHOW DATABASES LIKE '$database_name'";
-
-    if (!$result = db_query($sql, $db_forums_check_available_dbs)) return false;
-
-    return (db_num_rows($result) > 0);
-}
-
 function forums_get_available_count()
 {
     if (!$db_forums_get_available_count = db_connect()) return false;
@@ -2709,8 +2705,8 @@ function forum_check_maintenance()
 
             // Check the function actually exists before we try and execute it.
 
-            if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {
-
+            if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {             
+                
                 // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
 
                 ignore_user_abort(true);
@@ -2722,17 +2718,17 @@ function forum_check_maintenance()
                 // Update the time the function was last set to run
 
                 $new_forum_settings[$forum_maintenance_date_var] = time();
+
+                // Update the last run forum_maintenance_function forum setting
+
+                $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
+
+                // Save the settings to the database.
+
+                forum_save_default_settings($new_forum_settings);                
             }
         }
     }
-
-    // Update the last run forum_maintenance_function forum setting
-
-    $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
-
-    // Save the settings to the database.
-
-    forum_save_default_settings($new_forum_settings);
 
     return true;
 }

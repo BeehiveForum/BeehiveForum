@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.346 2009-04-04 11:54:10 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.347 2009-04-05 14:11:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -825,7 +825,7 @@ function threads_get_sticky($uid)
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+    // Formulate query - the join with USER_THREAD is needed because even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";

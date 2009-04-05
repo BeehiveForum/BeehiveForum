@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.92 2009-01-17 23:37:46 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.93 2009-04-05 14:11:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,10 +58,6 @@ function dir_exists($dir)
 
 function check_install()
 {
-    install_check_php_version();
-
-    install_check_mysql_version();
-
     if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
 
         install_remove_files();

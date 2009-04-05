@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.572 2009-03-28 17:22:07 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.573 2009-04-05 14:11:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1137,20 +1137,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
-                    if (ip_is_banned($message['IPADDRESS'])) {
-
-                        echo "                                          <tr>\n";
-                        echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a></td>\n";
-                        echo "                                          </tr>";
-
-                    }else {
-
-                        echo "                                          <tr>\n";
-                        echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
-                        echo "                                          </tr>";
-                    }
+                    echo "                                          <tr>\n";
+                    echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                    echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
+                    echo "                                          </tr>";
 
                 }else {
 
@@ -1416,33 +1406,30 @@ function mess_nav_range($from,$to)
     return $range;
 }
 
-function messages_interest_form($tid,$pid)
+function messages_interest_form($tid, $pid, $interest)
 {
     $lang = lang::get_instance()->load(__FILE__);
 
     $webtag = get_webtag();
+    
+    $interest_levels_array = array(THREAD_IGNORED => $lang['ignore'],
+                                   THREAD_NOINTEREST => $lang['normal'],
+                                   THREAD_INTERESTED => $lang['interested'],
+                                   THREAD_SUBSCRIBED => $lang['subscribed']);
 
-    $interest = thread_get_interest($tid);
-    $chk = array("","","","");
-    $chk[$interest+1] = " checked";
-
-    echo "            <table class=\"posthead\" width=\"100%\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"center\">\n";
-
-    echo "<form accept-charset=\"utf-8\" name=\"rate_interest\" target=\"_self\" action=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
-    echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "{$lang['ratemyinterest']}: \n";
-    echo form_radio_array("setinterest", array(-1 => "{$lang['ignore']} ", 0 => "{$lang['normal']} ", 1 => "{$lang['interested']} ", 2 => "{$lang['subscribe']} "), htmlentities_array($interest));
-    echo form_input_hidden("tid", htmlentities_array($tid));
-    echo form_submit("apply", $lang['apply']);
-    echo "\n";
-    echo "</form>\n";
-
-    echo "                </td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "            <br />\n";
+    echo "<table class=\"posthead\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\">\n";
+    echo "      <form accept-charset=\"utf-8\" name=\"rate_interest\" target=\"_self\" action=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
+    echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "        {$lang['ratemyinterest']}: ", form_radio_array("setinterest", $interest_levels_array, htmlentities_array($interest));
+    echo "        ", form_input_hidden("tid", htmlentities_array($tid));
+    echo "        ", form_submit("apply", $lang['apply']), "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<br />\n";
 }
 
 function message_get_user($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.63 2008-11-03 21:26:38 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.64 2009-04-09 18:53:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -91,11 +91,13 @@ class dictionary {
     {
         if (!$db_dictionary_check_setup = db_connect()) return false;
 
-        $sql = "SELECT WORD FROM DICTIONARY LIMIT 0, 1";
+        $sql = "SELECT COUNT(WORD) FROM DICTIONARY";
 
         if (!$result = db_query($sql, $db_dictionary_check_setup)) return false;
+        
+        list($word_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        return (db_num_rows($result) > 0);
+        return ($word_count > 0);
     }
 
     function get_obj_id()

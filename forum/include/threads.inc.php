@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.347 2009-04-05 14:11:19 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.348 2009-04-09 18:53:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1228,7 +1228,6 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
     if (db_num_rows($result) > 0) {
 
         $threads_get_array = array();
-        $tid_array = array();
 
         while (($thread = db_fetch_array($result))) {
 
@@ -1260,10 +1259,9 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
             }
 
             $threads_get_array[$thread['TID']] = $thread;
-            $tid_array[] = $thread['TID'];
         }
 
-        threads_have_attachments($threads_get_array, $tid_array);
+        threads_have_attachments($threads_get_array);
         return $threads_get_array;
     }
 
@@ -1299,10 +1297,6 @@ function threads_process_list($result)
     // Check that the set of threads returned is not empty
 
     if (db_num_rows($result) > 0) {
-
-        // Record the TIDs as we go for later attachment checking.
-
-        $tid_array = array();
 
         // If the user has clicked on a folder header, we want
         // that folder to be first in the list
@@ -1366,10 +1360,9 @@ function threads_process_list($result)
             if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
 
             $threads_array[$thread['TID']] = $thread;
-            $tid_array[] = $thread['TID'];
         }
 
-        threads_have_attachments($threads_array, $tid_array);
+        threads_have_attachments($threads_array);
     }
 
     // $threads_array is the array with thread information,
@@ -1430,8 +1423,7 @@ function threads_any_unread()
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND THREAD.MODIFIED > '$unread_cutoff_datetime' ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
 
     if (!$result = db_query($sql, $db_threads_any_unread)) return false;
 
@@ -1683,16 +1675,13 @@ function thread_list_draw_top($mode)
     echo "</form>\n";
 }
 
-function threads_have_attachments(&$threads_array, $tid_array)
+function threads_have_attachments(&$threads_array)
 {
-    if (!is_array($tid_array)) return false;
-    if (sizeof($tid_array) < 1) return false;
-
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
-    $tid_list = implode(",", preg_grep("/^[0-9]+$/Du", $tid_array));
+    $tid_list = implode(",", preg_grep("/^[0-9]+$/Du", array_keys($threads_array)));
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 
@@ -1719,14 +1708,15 @@ function thread_has_attachments($tid)
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 
-    $sql = "SELECT PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '$tid' ";
-    $sql.= "LIMIT 0, 1";
+    $sql = "SELECT COUNT(PAF.AID) FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "INNER JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);
+    
+    return ($attachment_count > 0);
 }
 
 function thread_auto_prune_unread_data()

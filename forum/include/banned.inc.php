@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.49 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.50 2009-04-09 18:53:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -206,15 +206,16 @@ function ip_is_banned($ipaddress)
     
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
-    $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$ipaddress' LIKE BANDATA ";
     $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_ip' ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND BANTYPE = '$ban_type_ip'";
 
     if (!$result = db_query($sql, $db_ip_is_banned)) return false;
+    
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return (db_num_rows($result) > 0);
+    return ($ban_count > 0);
 }
 
 function logon_is_banned($logon)
@@ -229,15 +230,16 @@ function logon_is_banned($logon)
     
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
-    $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$logon' LIKE BANDATA ";
     $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_logon' ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND BANTYPE = '$ban_type_logon'";
 
     if (!$result = db_query($sql, $db_logon_is_banned)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($ban_count > 0);
 }
 
 function nickname_is_banned($nickname)
@@ -252,15 +254,16 @@ function nickname_is_banned($nickname)
     
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
-    $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$nickname' LIKE BANDATA ";
     $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_nick' ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND BANTYPE = '$ban_type_nick'";
 
     if (!$result = db_query($sql, $db_nickname_is_banned)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($ban_count > 0);
 }
 
 function email_is_banned($email)
@@ -275,15 +278,16 @@ function email_is_banned($email)
     
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
-    $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$email' LIKE BANDATA ";
     $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_email' ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND BANTYPE = '$ban_type_email'";
 
     if (!$result = db_query($sql, $db_email_is_banned)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($ban_count > 0);
 }
 
 function referer_is_banned($referer)
@@ -295,15 +299,19 @@ function referer_is_banned($referer)
     if (!$table_data = get_table_prefix()) return false;
 
     $ban_type_ref = BAN_TYPE_REF;
+    
+    $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
-    $sql = "SELECT ID FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
     $sql.= "WHERE '$referer' LIKE BANDATA ";
-    $sql.= "AND BANTYPE = '$ban_type_ref' ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
+    $sql.= "AND BANTYPE = '$ban_type_ref'";
 
     if (!$result = db_query($sql, $db_referer_is_banned)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($ban_count > 0);
 }
 
 function add_ban_data($type, $data, $comment, $expires)

@@ -1,6 +1,1239 @@
-Project Beehive Forum Change Log (Generated: Sun, 17 Aug 2008 17:30:48)
+Project Beehive Forum Change Log (Generated: Thu, 09 Apr 2009 19:14:05)
 
 Author: decoyduck
+Date: Thu, 09 Apr 2009 17:54:21
+-----------------------
+Fixed: Removed debugging code from session.inc.php
+
+Date: Thu, 09 Apr 2009 17:53:40
+-----------------------
+Fixed: Referral bans weren't obeying their expiry dates.
+Fixed: Functions user_allow_pm and user_allow_email were always returning
+true
+Fixed: Some queries using SELECT COUNT had LIMIT applied to them
+unnecessarily.
+Fixed: Profile sections and items pages had problems if there were more
+than 10 sections or 10 items per section.
+Changed: Function threads_have_attachments now uses array keys on the main
+thread_data array it is passed instead of requiring a separate array of
+thread IDs.
+Changed: Replaced all SELECT column FROM table LIMIT 0, 1 with SELECT
+COUNT(column)
+
+Date: Tue, 07 Apr 2009 18:17:56
+-----------------------
+Changed: Added caching to discussion.php
+
+Date: Tue, 07 Apr 2009 18:15:51
+-----------------------
+Fixed: Start Left cache was being checked before the session had been
+initialised resulting in query being for Guest user.
+
+Date: Sun, 05 Apr 2009 13:11:19
+-----------------------
+Changed: Made perm_get_user_permissions() function cache the results that
+it fetches from the database.
+Changed: Functions forum_get_settings(), forum_get_global_settings() and
+forum_get_settings_by_fid() now load the timezone without requerying
+FORUM_SETTINGS.
+Changed: Forum maintenance function now only updates FORUM_SETTINGS table
+if the selected function was set to run.
+Changed: Function messages_interest_form() now takes the intetest as it's
+3rd argument instead of querying the USER_THREAD table for it.
+Changed: Removed hardcoded call to thread_auto_prune_unread_data()
+Changed: Removed MySQL and PHP version checks from check_install(). These
+are now only called by the installer.
+
+Date: Sat, 04 Apr 2009 13:43:24
+-----------------------
+Fixed: Undefined variable $session_cutoff_datetime in admin.inc.php
+
+Date: Sat, 04 Apr 2009 10:54:10
+-----------------------
+Fixed: Next 50 discussions link was broken in thread list.
+Changed: Moved back to changing to All Discussions when clicking on a
+folder in the thread list.
+Changed: Navigation Next 50 / Prev 50 discussions from a selected view of
+the thread list now only applies to a selected folder / All Discussions.
+
+Date: Mon, 30 Mar 2009 18:45:48
+-----------------------
+Fixed: Lightmode lpm.php was trying to load a language file when it didn't
+need one.
+Changed: Logic changed on how BH works out which is the latest modified
+date for the thread list, messages and start left.
+
+Date: Sun, 29 Mar 2009 11:11:46
+-----------------------
+Changed: Switched to UTC for the default timezone so PHP doesn't try to
+calculate the DST automatically.
+Fixed: Undefined variable $current_datetime in post.inc.php and
+pm.inc.php.
+
+Date: Sat, 28 Mar 2009 19:24:31
+-----------------------
+Fixed: Query error in Post Cache function
+
+Date: Sat, 28 Mar 2009 18:45:13
+-----------------------
+Changed: Removed 2 second timeout on PM and Stats AJAX requests.
+
+Date: Sat, 28 Mar 2009 18:42:28
+-----------------------
+Added: Ensure MySQL's timezone is set to +0.00 as we do the conversion in
+PHP.
+
+Date: Sat, 28 Mar 2009 18:29:15
+-----------------------
+Fixed: Parse error in poll.inc.php
+
+Date: Sat, 28 Mar 2009 18:28:20
+-----------------------
+Changed: Removed almost all FROM_UNIXTIME as it's unreliable when the
+MYSQL server has a different time set to the Apache process.
+
+Date: Sat, 28 Mar 2009 17:42:24
+-----------------------
+Changed: Message pane caching now occurs after we've checked the user
+session.
+
+Date: Sat, 28 Mar 2009 17:40:30
+-----------------------
+Changed: Readded check for PHP5 strict mode because some of Beehive's
+add-ons aren't so well written.
+Changed: Turn off caching if we encounter an error.
+
+Date: Sat, 28 Mar 2009 17:22:07
+-----------------------
+Changed: Removed Try Catch and replaced with set_error_handler trick the
+same we do for Geshi.
+
+Date: Sat, 28 Mar 2009 16:03:23
+-----------------------
+Changed: Added caching to Lightmode thread list and messages pane.
+
+Date: Sat, 28 Mar 2009 14:49:20
+-----------------------
+Changed: Moved Lightmode copyright notice into light_html_draw_bottom()
+and removed it from each script.
+Changed: Lightmode PM is now in a function named light_draw_pm_inbox() and
+is called by both lpm.php and index.php
+
+Date: Fri, 27 Mar 2009 21:11:43
+-----------------------
+Fixed: Lightmode autologon wasn't checking the correct cookie.
+
+Date: Fri, 27 Mar 2009 19:18:56
+-----------------------
+Changed: Disabled messages cache on edit_success, delete_success,
+font_resize and post_approve_success url queries.
+
+Date: Thu, 26 Mar 2009 22:26:28
+-----------------------
+Changed: Moved all caching functions into cache.inc.php
+Changed: Renamed caching functions so they all begin with "cache"
+Changed: Renamed CacheLite functions so they all begin with "cache_lite"
+Changed: Removed cache_enabled function and replaced it with simple
+forum_get_setting and try catch routine
+
+Date: Thu, 26 Mar 2009 14:41:44
+-----------------------
+Fixed: Removed debugging code from thread cache function.
+
+Date: Thu, 26 Mar 2009 14:40:25
+-----------------------
+Fixed: Unable to mark as read threads that were modified on the same day
+as the cut-off due to cut-off being calculated incorrectly.
+Fixed: Thread List query for getting the thread modified date was fetching
+multiple rows instead of the MAX().
+Changed: Added Caching for start_left.php
+
+Date: Thu, 26 Mar 2009 09:30:36
+-----------------------
+Fixed: Error Handler not outputting to the browser.
+Fixed: Cache functions were using old _stripslashes instead of
+stripslashes_array
+Fixed: threads_rss.php was using stripslashes and not stripslashes_array
+
+Date: Thu, 26 Mar 2009 09:26:00
+-----------------------
+Changed: Message caching now uses POST.CREATED instead of THREAD.MODIFIED
+
+Date: Thu, 26 Mar 2009 09:12:04
+-----------------------
+Changed: Reimplemented caching for previously seen messages and thread
+list.
+Changed: AJAX requests for PM and Stats data no longer caches incorrectly
+on the client side.
+
+Date: Wed, 25 Mar 2009 18:47:12
+-----------------------
+Changed: Removed all uses of NOW() and replaced with PHP generate
+datetime.
+Fixed: Undefined index 0 in Light mode Poll display (possibly
+regression?)
+
+Date: Sun, 22 Mar 2009 18:48:11
+-----------------------
+Changed: mktime() with no arguments is now time()
+Changed: Upped error reporting level to E_ALL | E_STRICT
+Changed: Added date_default_timezone_set('Europe/London') to all main
+scripts.
+Changed: All classes now use public / private instead of var.
+Changed: Moved all MySQL date formatting (Y-m-d, Y-m-d H:i:s, etc.) into
+constants.
+
+Date: Sun, 22 Mar 2009 13:00:25
+-----------------------
+Fixed: Parse error in user_profile.inc.php
+
+Date: Sat, 21 Mar 2009 18:45:29
+-----------------------
+Changed: Changed lots of WHERE clauses to use functions around the data
+instead of the column.
+Changed: Switched lots of NOW() calls to use a PHP pre-formatted date /
+datetime value.
+
+Date: Sun, 15 Mar 2009 19:02:21
+-----------------------
+Changed: Forum maintenance functions are now only called every time the
+user's session is updated
+
+Date: Sun, 08 Mar 2009 13:27:14
+-----------------------
+Fixed: Made deletion of PM's more secure, shouldn't be possible to delete
+other user's PMs now.
+Changed: Light mode success, error and warning messages changed to look
+the same as the full mode.
+Added: Delete a PM from the light mode PM interface.
+Added: New PM Notification added to Light mode.
+
+Date: Sat, 07 Mar 2009 08:12:56
+-----------------------
+Fixed: Undefined variable $user_alias
+
+Date: Mon, 02 Mar 2009 20:01:08
+-----------------------
+Fixed: Undefined variable $message_folder in lpm.php
+
+Date: Mon, 02 Mar 2009 19:00:23
+-----------------------
+Changed: Logic on folder detection in PM system changed so you can't read
+messages while in the wrong folder.
+
+Date: Mon, 02 Mar 2009 18:46:16
+-----------------------
+Fixed: Undefined constant SEARCH_SORT_NUM_REPLIES
+Added: Provisional Light mode PM notification.
+
+Date: Sun, 01 Mar 2009 20:47:23
+-----------------------
+Added: Lightmode PM edit functionality.
+Fixed: Lightmode PM write wasn't actually sending a PM.
+
+Date: Sun, 01 Mar 2009 18:05:26
+-----------------------
+Added: To / From display next to PM subjects in Lightmode Inbox
+
+Date: Sun, 01 Mar 2009 17:45:03
+-----------------------
+Added: Links for Inbox added to bottom of lthread_list.php and index.php
+noframes mode.
+
+Date: Sun, 01 Mar 2009 16:32:11
+-----------------------
+Fixed: Undefined index LANGUAGE in email.inc.php if the user didn't have a
+language pack specified.
+
+Date: Sun, 01 Mar 2009 16:29:27
+-----------------------
+Added: Copyright to bottom of lpm.php and lpm_write.php
+
+Date: Sun, 01 Mar 2009 16:28:00
+-----------------------
+Added: Back links on lpm.php to allow easy navigation back to thread list
+etc.
+
+Date: Sun, 01 Mar 2009 16:19:07
+-----------------------
+Fixed: Missing compatibility check for default language file.
+Fixed: Email notifications were causing an error when using new individual
+file language packs.
+
+Date: Sun, 01 Mar 2009 15:51:23
+-----------------------
+Fixed: font_size.php was loading a language file when it didn't need one.
+
+Date: Sun, 01 Mar 2009 14:07:30
+-----------------------
+Changed: Removed gethostbyaddr calls because they don't always work (user
+has no RDNS value or entry not in DNS)
+
+Date: Sun, 01 Mar 2009 13:49:58
+-----------------------
+Added: Lightmode PM folders / message browsing page (lpm.php) that works
+similar to Lightmode thread list.
+Fixed: Lightmode PM scripts weren't indicating they were missing
+define('BH_MODE_LIGHT');
+
+Date: Sun, 01 Mar 2009 11:58:29
+-----------------------
+Fixed: Stray & on end of URL when no URL query when using
+get_request_uri()
+Fixed: Autologon wasn't working in Light mode due to commented out code.
+Fixed: Global setting cache_dir wasn't in the list of permitted settings.
+
+Date: Fri, 27 Feb 2009 14:21:00
+-----------------------
+Fixed: Incorrect variable in lang class.
+
+Date: Fri, 27 Feb 2009 13:35:11
+-----------------------
+Added: Lightmode PM Write. Rest to follow soon :)
+Added: Support script to generate separate language files for individual
+scripts.
+Added: Zend Code analyser script that uses zendcodeanalyser.exe to find
+mistakes in code.
+Changed: Added functionality to allow Language packs to be split into
+individual files for each requested script to keep the memory usage down.
+
+Date: Mon, 16 Feb 2009 20:15:13
+-----------------------
+Changed: Updated fr-ca language pack
+Changed: Fixed Dictionary preview on IE7 being too wide for the popup
+window.
+Changed: Removed auto_logon from logon_get_cookies() function.
+
+Date: Sun, 08 Feb 2009 16:28:54
+-----------------------
+Fixed: User Forum Last Visit wasn't being updated on initial login due to
+incorrect usage of user_is_guest.
+Fixed: Function href_clean_up_query_keys() wasn't working correctly with
+key / value pairs where value was empty string.
+Changed: Function get_request_uri() functionality changed so it doesn't
+have to trim the additional seperator from the end of the URL.
+Changed: Function bh_update_user_time() now works entirely in SQL without
+any PHP logic.
+
+Date: Wed, 04 Feb 2009 22:15:49
+-----------------------
+Changed: Updated dependencies in lmessages.php and lthread_list.php
+
+Date: Fri, 30 Jan 2009 10:14:37
+-----------------------
+Fixed: Check of $highlight_array would pass even if it contained false,
+causing an error in the foreach loop following it.
+
+Date: Sat, 17 Jan 2009 23:37:47
+-----------------------
+Changed: User cannot delete themselves. Causes problems if they do. Must
+be done by another admin.
+Changed: Removed system_get_tmp_dir and replaced it with sys_get_tmp_dir
+which is handled by compat.inc.php
+Changed: Performed Zend recommended code clean on some scripts.
+Fixed: Undefined variables for Google Adsens causing issues.
+Fixed: Search results could send invalid sort_dir to
+search_fetch_results.
+
+Date: Wed, 07 Jan 2009 20:59:49
+-----------------------
+Fixed: Admin Users list was incorrectly showing users as Active when they
+were idle.
+Changed: Code clean up on logon.inc.php and pm.inc.php
+
+Date: Sun, 04 Jan 2009 18:06:41
+-----------------------
+Fixed: Forum stats not showing most post count correctly
+
+Date: Sat, 03 Jan 2009 21:22:59
+-----------------------
+Fixed: Thread with no posts newer than the unread cutoff were not being
+marked as read correctly when replied to.
+
+Date: Sat, 03 Jan 2009 15:51:08
+-----------------------
+Fixed: Edit attachments popup wasn't validating the AID correctly.
+Fixed: Search wasn't passing the sort_by and sort_dir parameters to the
+search results page.
+Fixed: Search sort_by and sort_dir wasn't being checked correctly.
+
+Date: Thu, 01 Jan 2009 23:03:51
+-----------------------
+Fixed: My Controls version of edit_attachments.php was showing the free
+space even if there was no user limit.
+Fixed: Deleting an attachment from edit_attachments.php redirected you to
+attachments.php on confirmation.
+
+Date: Thu, 01 Jan 2009 22:43:06
+-----------------------
+Changed: mb_send_mail seems to corrupt UTF-8 encoded message body,
+reverted to mail function.
+
+Date: Tue, 30 Dec 2008 22:25:18
+-----------------------
+Added: Page anchor added to top of messages so small vertical screen
+spaces automatically jumped to the message when clicking on a PM's
+subject.
+
+Date: Tue, 30 Dec 2008 22:18:36
+-----------------------
+Fixed: bh_check_languages.php wasn't correctly escaping quotes in strings
+it was displaying.
+Fixed: bh_update_language.php was still using _stripslashes instead of
+stripslashes_array
+Fixed: Incorrect doc block for functions in session.inc.php
+Changed: Updated language packs.
+
+Date: Sat, 27 Dec 2008 12:16:03
+-----------------------
+Fixed: Missing argument 5 to logon_update_cookies() call in register.php
+
+Date: Fri, 26 Dec 2008 12:36:03
+-----------------------
+Added: Option to restrict attachment size per-post if you set the user
+space to unlimited (0).
+
+Date: Mon, 22 Dec 2008 23:19:01
+-----------------------
+Changed: Move the call to forums_check_available_dbs so it's within the if
+statement of the static check.
+
+Date: Fri, 19 Dec 2008 21:44:36
+-----------------------
+Changed: Deleting the only post in a thread displayed an access denied
+error after deleting the post.
+Fixed: Delete / Edit Success message didn't show if redirected to
+discussion.php without msg URL query.
+
+Date: Thu, 18 Dec 2008 17:58:49
+-----------------------
+Fixed: Encoded & in url parameters when performing auto logon
+
+Date: Tue, 16 Dec 2008 19:29:20
+-----------------------
+Updated: bh_check_php_version.php updated to ignore compatibility
+functions.
+
+Date: Mon, 15 Dec 2008 21:18:09
+-----------------------
+Changed: Reinstated compatibility for file_put_contents, sys_get_temp_dir
+and array_combine to allow PHP version 5.0.0 and newer.
+
+Date: Mon, 15 Dec 2008 07:39:48
+-----------------------
+Fixed: Elevated PHP minimum requirements to PHP 5.2.1.
+
+Date: Sun, 14 Dec 2008 22:49:35
+-----------------------
+Fixed: Light mode auto logon would get stuck in a redirect loop.
+Added: Adsense adverts added to Light mode.
+Added: Auto logon added to all light mode main pages (not ledit.php or
+ldelete.php)
+
+Date: Thu, 11 Dec 2008 22:49:19
+-----------------------
+Changed: Updated style sheets with bhlightinput and disabled radio /
+checkbox classes
+
+Date: Wed, 10 Dec 2008 19:23:04
+-----------------------
+Changed: Updated dependencies on scripts
+Changed: Light mode logout now functions the same as BH fullfat mode
+Added: Light mode auto logon added
+
+Date: Tue, 09 Dec 2008 18:37:48
+-----------------------
+Fixed: Logon failed message not showing correctly.
+
+Date: Tue, 09 Dec 2008 18:33:25
+-----------------------
+Fixed: Logout success message always showing.
+
+Date: Tue, 09 Dec 2008 18:26:46
+-----------------------
+Changed: Logon page now has a log me in automatically tickbox
+Changed: Removed bh_logon_failed cookie and change to url query parameter.
+Changed: Removed logout confirmation and added success message on logon
+page.
+
+Date: Sun, 30 Nov 2008 15:51:45
+-----------------------
+Fixed: Undefined variable $emot_array in display_emoticons.php
+
+Date: Sat, 22 Nov 2008 22:19:56
+-----------------------
+Changed: Removed redudant error checking from seach_execute function.
+Changed: index.php will now include message display if msg URL query is
+set.
+Changed: Sitemap now generates URLs to index.php instead of
+lmessages.php.
+
+Date: Fri, 21 Nov 2008 19:07:25
+-----------------------
+Changed: Added max-width to style.css as a test to see if it will help
+with light mode input fields being too wide on narrow screen devices.
+Fixed: More query errors due to backtick addition.
+
+Date: Thu, 20 Nov 2008 18:54:42
+-----------------------
+Fixed: Couple more query errors due to recent back-tick inclusions
+
+Date: Wed, 19 Nov 2008 21:32:29
+-----------------------
+Changed: Added background-color and color to google adsense register note
+class
+
+Date: Wed, 19 Nov 2008 21:30:35
+-----------------------
+Changed: Added background-color and color to google adsense register note
+class
+Changed: Remove large adsense ad as it was took big for 1024x768 (are
+minimum resolution)
+Fixed: Unspecified error in MSIE7 in htmltools.js
+
+Date: Wed, 19 Nov 2008 20:20:56
+-----------------------
+Fixed: Wrong function name in messages.php
+
+Date: Wed, 19 Nov 2008 20:19:53
+-----------------------
+Changed: Removed debugging code from adsense.inc.php
+
+Date: Wed, 19 Nov 2008 20:18:31
+-----------------------
+Fixed: Adsense ads appear for all users even when set to Guests only.
+
+Date: Wed, 19 Nov 2008 19:27:43
+-----------------------
+Fixed: Undefined variable $adsense_display_users
+
+Date: Wed, 19 Nov 2008 19:16:47
+-----------------------
+Fixed: SQL errors caused by mis-match on search replace for back-ticks in
+table names.
+Changed: Installer / Forum creation functions now correctly work across
+multiple tables.
+Changed: Unified the various table prefix variables to always include the
+underscore.
+
+Date: Mon, 17 Nov 2008 21:16:24
+-----------------------
+Changed: Simplified the Google AdSense support and removed the colour
+settings.
+Fixed: Undefined variable $folder_list_array in folder.inc.php.
+
+Date: Sun, 16 Nov 2008 10:47:45
+-----------------------
+Fixed: HTML entities in rss_feed->title were not being decoded.
+Fixed: Function folder_get_available_by_forum() wasn't fetching the
+correct forum's permisions.
+
+Date: Sun, 16 Nov 2008 01:57:40
+-----------------------
+Changed: Implemented ability to allow Beehive to use config-dev.inc.php
+for developers to override the default config.inc.php
+
+Date: Sun, 16 Nov 2008 01:54:15
+-----------------------
+Changed: Reimplementation of Google Adsense functionality (experimental
+unfinished)
+Fixed: Forums spanned across multiple databases couldn't be accessed or
+upgraded correctly if the forum's webtag started with a number.
+Fixed: Broken logic on My Forums page meant forums which had never been
+visited showed as ignored.
+
+Date: Sat, 15 Nov 2008 18:33:42
+-----------------------
+Fixed: PHP code not being passed in code tag callbacks due to wrong quote
+type.
+
+Date: Sat, 15 Nov 2008 15:30:45
+-----------------------
+Fixed: Undefined function htmlentities_array_decode in fixhtml.inc.php and
+rss_feed.inc.php
+
+Date: Fri, 14 Nov 2008 21:45:26
+-----------------------
+Fixed: Opensearch XML output wasn't sending XML Content-Type header
+Changed: Scripts which output XML now use UTF-8 and force header
+replacement.
+
+Date: Fri, 14 Nov 2008 21:43:43
+-----------------------
+Fixed: Opensearch link wasn't available to guests even though the meta tag
+was being included in the HTML head.
+Fixed: Opensearch was including a link to favicon.ico even when the file
+didn't exist.
+Fixed: Opensearch functionality wasn't defaulting to default forum's
+webtag if no webtag present in URL query.
+
+Date: Sun, 09 Nov 2008 20:21:53
+-----------------------
+Fixed: Undefined offset in fixhtml.inc.php with a HTML signature.
+
+Date: Sun, 09 Nov 2008 19:27:39
+-----------------------
+Changed: Rolled back on some changes from 0.7's fixhtml.inc.php into CVS
+and re-applied some of the fixes added since.
+
+Date: Sun, 09 Nov 2008 18:56:35
+-----------------------
+Fixed: CSS not applying in Opera Mini / Mobile due to missing "handheld"
+media type for link tag.
+
+Date: Sat, 08 Nov 2008 13:49:33
+-----------------------
+Changed: Removed load_language_file() call from scripts that didn't need
+it.
+
+Date: Thu, 06 Nov 2008 21:32:23
+-----------------------
+Fixed: Indenting was screwed in Beehive TinyMCE Plugin making code
+unreadable.
+Fixed: tidy_html would break <p> tags quite spectacular with UTF-8 text.
+
+Date: Thu, 06 Nov 2008 18:45:48
+-----------------------
+Fixed: Emoticon box not showing on post and edit page.
+
+Date: Mon, 03 Nov 2008 21:26:34
+-----------------------
+Changed: Boolean checks of mb_strlen > 0 or mb_strlen < 1 etc. changed to
+strlen.
+
+Date: Sun, 02 Nov 2008 20:14:06
+-----------------------
+Fixed: Dictionary wasn't being imported due to incorrect path checking for
+english.dic
+Changed: Installer now remembers settings entered into form if an error
+occurs.
+
+Date: Sun, 02 Nov 2008 00:17:53
+-----------------------
+Fixed: SQL error when accessing My Forums while logged in.
+Fixed: Creating a new forum wasn't creating the EXPIRES column in the
+BANNED table.
+Fixed: Notices were the wrong length on admin_forums.php
+
+Date: Sat, 01 Nov 2008 21:46:56
+-----------------------
+Changed: Global Forum Admin can now change usernames without the setting
+to allow usernames being enabled.
+Changed: Added phpdocumentor comments to all of admin functions.
+
+Date: Sat, 01 Nov 2008 11:35:10
+-----------------------
+Fixed: Double encoded post and signature content when using Light mode.
+
+Date: Sat, 01 Nov 2008 11:25:08
+-----------------------
+Fixed: Incorrect top.php filename being returned by html_get_top_page()
+
+Date: Sat, 01 Nov 2008 00:00:25
+-----------------------
+Fixed: Conflict between per-page style sheets and additional stylesheet
+used by start_main.php.
+Changed: Removed deprecated language strings from the files.
+
+Date: Thu, 30 Oct 2008 20:42:52
+-----------------------
+Changed: Added compat.inc.php as an include to all files that require it.
+
+Date: Sun, 26 Oct 2008 21:03:49
+-----------------------
+Changed: Beehive now uses multibyte functions if available. Falls back to
+normal functions via compat.inc.php
+Changed: Relaxed restrictions on username and password to allow users to
+use non-latin characters.
+
+Date: Sun, 26 Oct 2008 18:15:03
+-----------------------
+Changed: Added more functions to compat.inc.php in preperation for
+multi-byte support in Beehive.
+
+Date: Sun, 26 Oct 2008 16:56:12
+-----------------------
+Fixed: Undefined constant register_globals in server.inc.php
+Changed: Faster array_search_ci function.
+Changed: Function array_search_ci changed to array_isearch.
+
+Date: Sun, 26 Oct 2008 16:46:23
+-----------------------
+Changed: Functionality to remove register_globals updated.
+Changed: Added more functions to compat.inc.php in preperation for
+multi-byte support in Beehive.
+Changed: Renamed _stripslashes and _htmlentities functions to
+stripslashes_array and htmlentities_array
+Changed: Removed _htmlentities_decode as it's no longer required by
+Beehive.
+
+Date: Sat, 25 Oct 2008 17:22:07
+-----------------------
+Fixed: Undefined variables in post.inc.php when creating or editing posts.
+Changed: Removed deprecated language strings and constants.
+
+Date: Thu, 23 Oct 2008 18:20:49
+-----------------------
+Changed: Upgrader now fixes broken threads caused by bug that existed in
+delete user content functionality.
+Changed: Updated x-hacker language file.
+
+Date: Mon, 20 Oct 2008 16:28:11
+-----------------------
+Fixed: popupImage Javascript function wasn't being called correctly.
+Changed: Update stylesheets to match default style.
+
+Date: Sun, 19 Oct 2008 16:07:13
+-----------------------
+Fixed: Missing dependency on post.inc.php in register.php
+Changed: Removed AUTO_INCREMENT reset from upgrade script as it causes
+issues with USER_THREAD table being out of sync.
+
+Date: Sat, 18 Oct 2008 21:24:09
+-----------------------
+Changed: Sync'd code between forum_search and get_my_forums functions.
+
+Date: Sat, 18 Oct 2008 21:17:13
+-----------------------
+Added: Fix for unreadable threads that are caused by deleting user
+account.
+Fixed: Searching for a forum on My Forums incorrectly showed the number of
+unread posts in the results.
+Changed: UNREAD_PID is always updated even if unread posts are disabled.
+
+Date: Sat, 18 Oct 2008 19:30:22
+-----------------------
+Changed: Logic in add_paragraphs changed so it finds and removes erranous
+line breaks appearing before and after <p> and </p> tags.
+Fixed: Forum Rules message is now passed through MessageText instead of
+just fix_html.
+Fixed: Frame target on forums.php would cause Beehive to break out of it's
+parent frameset if it existed.
+Fixed: Dependencies on gd_lib.inc.php hadn't been removed.
+Fixed: Registration cancel link wasn't opening in '_top' but in '_self'
+Fixed: Missing dependency on wordfilter.inc.php in admin_user_groups.php.
+
+Date: Sat, 18 Oct 2008 18:19:50
+-----------------------
+Fixed: Security issue if using Beehive on an SSL connection which allowed
+cookies sent to be used on non-secure connections.
+Fixed: Deleting a user was physically deleting a user's posts from the
+database instead of NULL-ing the content resulting in errors when accesing
+affected threads.
+Changed: Email notification functions changed to always use non-SSL links
+for messages.
+Changed: Sitemap function changed to always generates non-SSL URLs for
+messages.
+Changed: Removed gd_lib.inc.php as it is now redudant given gd_info()
+function availability in PHP > 4.3.0
+Changed: Added "(optional)" text to Thread Sticky and Admin Ban date
+dropdown controls.
+
+Date: Sat, 18 Oct 2008 08:47:34
+-----------------------
+Fixed: Selecting a recent visitor when posting a new thread would select
+the wrong radio button and cause an unknown user error.
+
+Date: Thu, 16 Oct 2008 19:04:59
+-----------------------
+Fixed: Installer support functions were using MySQL 5.x specific
+extensions to SHOW INDEXES query.
+
+Date: Tue, 14 Oct 2008 19:12:38
+-----------------------
+Fixed: Google Adsense settings didn't allow valid colour values.
+
+Date: Sun, 12 Oct 2008 09:37:01
+-----------------------
+Changed: Hide the emoticons box if the user's emoticon pack isn't valid.
+
+Date: Sat, 11 Oct 2008 18:11:35
+-----------------------
+Fixed: Editing a post that was created with Auto Line Breaks HTML mode
+didn't restore the line breaks correctly.
+
+Date: Sat, 11 Oct 2008 16:40:02
+-----------------------
+Fixed: Broken HTML encoding when HTML is set to disabled in post page.
+
+Date: Sun, 05 Oct 2008 18:11:19
+-----------------------
+Fixed: Maximum length of poll question fixed to 64 characters to prevent
+clipping of text in database
+Fixed: Layout of Admin User Groups when group had a long description.
+Changed: Added option for user with access to Forum Tools to disable
+Google Adsense on individual options.
+
+Date: Fri, 03 Oct 2008 17:35:18
+-----------------------
+Added: Bans can now be set to expire on a set date.
+Fixed: Function form_date_dropdowns() was too restrictive on the year if
+you passed the current year as the start year.
+Fixed: Missing argument for afterSecondDayInMonth in timezone.inc.php for
+Santiago / Chile timezone.
+Changed: Call to form_date_dropdowns() in thread_options.php changed to
+use start_date of 2002 so that when editing old threads the sticky isn't
+reapplied
+
+Date: Sun, 28 Sep 2008 16:41:39
+-----------------------
+Fixed: Dictionary incorrectly matching single-quote at end of word as if
+it was an apostrophe
+
+Date: Thu, 25 Sep 2008 20:48:45
+-----------------------
+Added: Support for Google Adsense adverts with various settings and
+options to change how they appear.
+
+Date: Wed, 24 Sep 2008 14:07:58
+-----------------------
+Fixed: Duplicate help text in global forum settings.
+
+Date: Wed, 24 Sep 2008 14:00:17
+-----------------------
+Added: Option to disable Google Analytics at the per-forum level and use
+it at the global forum level only.
+
+Date: Wed, 24 Sep 2008 11:14:35
+-----------------------
+Added: Error messages when FORUMS table contains invalid database name.
+
+Date: Tue, 23 Sep 2008 22:54:05
+-----------------------
+Changed: Removed duplicate calls to get_webtag() in a lot of scripts.
+Fixed: Saved style cookie wasn't being applied to pages if no webtag was
+present in the URL.
+Fixed: Lots of functions were not checking the webtag was valid before
+using it in a path.
+
+Date: Tue, 23 Sep 2008 15:29:33
+-----------------------
+Fixed: Start page wasn't using user style sheet for the right frame.
+
+Date: Tue, 23 Sep 2008 15:25:25
+-----------------------
+Fixed: Functions style_image and html_get_top_page() were not using
+bh_webtag_style cookie like html_draw_top()
+Added: Allowed top banner to be called top.php as well as top.html to
+allow server-side scripting.
+
+Date: Mon, 22 Sep 2008 16:22:09
+-----------------------
+Fixed: wrong arguments to messages_display_top in display.php caused
+thread title to appear as folder title.
+
+Date: Sun, 21 Sep 2008 17:20:30
+-----------------------
+Added: Proprietary allowtransparency attribute is included in frameset and
+frame tags when MSIE is encountered.
+
+Date: Sun, 21 Sep 2008 13:06:34
+-----------------------
+Fixed: Width of warning messages on admin_user_groups being too wide!
+Added: External link icons added to Admin Visitor Log.
+
+Date: Wed, 17 Sep 2008 18:23:30
+-----------------------
+Changed: Build date for RSS feed changed to use a offset from GMT rather
+than always set to UT
+
+Date: Wed, 17 Sep 2008 17:40:00
+-----------------------
+Fixed: Display of resource handles in error handler wasn't working
+correctly.
+
+Date: Wed, 17 Sep 2008 17:37:17
+-----------------------
+Changed: Relaxed restriction on MySQL Database name.
+
+Date: Sun, 14 Sep 2008 15:30:16
+-----------------------
+Fixed: Conflict test wasn't working if remove conflicts option wasn't
+enabled.
+
+Date: Sun, 14 Sep 2008 14:48:13
+-----------------------
+Changed: Moved table conflict management code out of new-install.php and
+into install_check_table_conflicts function.
+Changed: Wrapped creation of PM_FOLDERS table in 0.8.5 upgrade script in
+install_table_exists call.
+
+Date: Sun, 14 Sep 2008 13:56:02
+-----------------------
+Fixed: Local file corruption caused perm.inc.php to be checked in with
+duplicate constants included.
+
+Date: Sun, 14 Sep 2008 10:45:16
+-----------------------
+Fixed: Missing checkbox for Admin Tools from Group Add / Edit pages.
+Fixed: Undefined function when resetting folder perms.
+Added: Permissions key and Group Status column to User Groups page.
+Changed: Permissions key now uses 2 characters per key separated by
+commas.
+
+Date: Sat, 13 Sep 2008 22:41:31
+-----------------------
+Changed: Forum Admin now have ability to change some aspects of a user's
+forum profile but only a global admin can change globally applied
+settings.
+
+Date: Sat, 13 Sep 2008 19:32:58
+-----------------------
+Fixed: Unread Messages not displaying correctly on My Forums page.
+Changed: Reduced the number of queries required to post by one.
+
+Date: Sat, 13 Sep 2008 18:21:03
+-----------------------
+Changed: Moved Post Count into separate section of admin_user.php like the
+other options.
+
+Date: Sat, 13 Sep 2008 16:45:58
+-----------------------
+Changed: Separated the abilities of global and per-forum admin users and
+no longer treat forum tools users as admins.
+
+Date: Sat, 13 Sep 2008 13:10:30
+-----------------------
+Fixed: Going to admin_user_groups_edit.php from admin_user.php and
+clicking cancel took you back to admin_user_groups.php rather than
+admin_user.php
+Fixed: Returning URLs from POST were being rawurldecoded when they didn't
+need to be.
+
+Date: Sat, 13 Sep 2008 12:44:47
+-----------------------
+Fixed: Error occurs if PM_FOLDERS contains erranous values.
+Changed: Removed Export button from PM Folder Rename screen and made the
+Export button in pm_messages work with and without a selection.
+
+Date: Fri, 12 Sep 2008 19:53:30
+-----------------------
+Added: Ability to rename PM Folders. Scope is there to allow custom
+folders to store messages in.
+
+Date: Thu, 11 Sep 2008 21:52:25
+-----------------------
+Added: Inner Joins to GROUPS table on all relevant permissions queries to
+enforce the requirement of a user group with permissions.
+
+Date: Wed, 10 Sep 2008 18:46:33
+-----------------------
+Changed: Moved Javascript output in register.php into it's own separate
+register.js file.
+
+Date: Wed, 10 Sep 2008 17:59:29
+-----------------------
+Fixed: Error in FireFox caused by xmlHttp abort function.
+Changed: Removed deprecated language strings from en.inc.php
+
+Date: Wed, 10 Sep 2008 17:46:44
+-----------------------
+Fixed: Duplicate frame name in start frameset
+
+Date: Wed, 10 Sep 2008 17:38:36
+-----------------------
+Added: Error handler now recognises more variable types to make debugging
+easier.
+Added: Text-captcha class now has a get_private_key function to allow
+fetching of private key if required.
+Fixed: Posting preferences weren't booleans when some functions were
+expecting them to be.
+Changed: Rolled back changes to style sheets because they cause problems
+with FireFox and don't fix the issue with Webkit.
+
+Date: Mon, 08 Sep 2008 20:59:59
+-----------------------
+Fixed: Opera was using addEventListener when it needs to use attachEvent.
+
+Date: Mon, 08 Sep 2008 19:53:20
+-----------------------
+Fixed: Top frame showing scroll bars in some FireFox set ups due to
+missing scrolling and noresize attributes.
+
+Date: Mon, 08 Sep 2008 19:38:01
+-----------------------
+Fixed: Active user display wasn't showing on Safari on Windows
+Fixed: TinyMCE was broken on MSIE.
+Fixed: Javascript error on messages.php due to focus on hidden element.
+
+Date: Sun, 07 Sep 2008 15:35:07
+-----------------------
+Fixed: SQL error due to DUPLICATE KEY being wrong.
+
+Date: Sun, 07 Sep 2008 15:11:22
+-----------------------
+Changed: Beehive no longer looks for .css files in /forums/$webtag/ only
+in forums/webtag/styles/ and forums/$webtag/styles/$userstyle/
+
+Date: Sun, 07 Sep 2008 14:50:23
+-----------------------
+Changed: Removed background-color property from html class in stylesheets
+
+Date: Sun, 07 Sep 2008 14:20:43
+-----------------------
+Changed: Added height: 100% and background-color to style sheets to allow
+background to fill page on Webkit
+
+Date: Sun, 07 Sep 2008 13:58:25
+-----------------------
+Fixed: It was possible to add another user to the selection even though
+the limit of 10 had been reached.
+Fixed: Undefined indexes for language strings in pm_messages.php and
+search_popup.php
+
+Date: Sun, 07 Sep 2008 12:53:16
+-----------------------
+Changed: Changed onreadystatechange to be null when
+xml_http_request.abort() is called.
+
+Date: Sun, 07 Sep 2008 12:41:04
+-----------------------
+Added: New classes added to draw frames. Class names are html_frameset,
+html_frameset_rows, html_frameset_cols and html_frame.
+Fixed: Webkit doesn't like frameborder="0" in frame tag, forced
+frameborder="1" if USER_AGENT contains webkit.
+
+Date: Sat, 06 Sep 2008 20:20:49
+-----------------------
+Changed: Password protection notice changed to use
+html_display_warning_msg.
+Changed: Custom Password protection notice is no longer confined within a
+table.
+
+Date: Sat, 06 Sep 2008 19:13:56
+-----------------------
+Added: Changing Forum Password requires old password be entered.
+Fixed: Minor security flaws in regular expression matches plugged.
+
+Date: Sat, 06 Sep 2008 18:23:30
+-----------------------
+Changed: Made the gaps between buttons consisten across all pages.
+
+Date: Sat, 06 Sep 2008 17:55:11
+-----------------------
+Changed: Removed back button from access denied message on admin_user.php
+
+Date: Sat, 06 Sep 2008 17:38:18
+-----------------------
+Added: Button to enable respective mode when accessing
+admin_forum_set_passwd.php or admin_forum_access.php if not already set.
+Fixed: HTML validation on various admin pages.
+Fixed: Couldn't get access to Admin section if pages were loaded without
+webtag in the URL.
+Changed: FORUM_HIDDEN replaced with FORUM_DISABLED.
+
+Date: Sat, 06 Sep 2008 15:05:55
+-----------------------
+Fixed: Link to PM forum owner when accessing a restricted forum didn't
+work correctly.
+Changed: Renamed function user_get_uid to user_get_by_logon.
+Changed: Search Popup now works differently. Allows update without closing
+the popup when selecting multiple users.
+Changed: Generic warning message about restrict forum changed to use
+html_error_msg.
+
+Date: Fri, 05 Sep 2008 21:32:03
+-----------------------
+Fixed: User folder perms couldn't be changed if the user didn't have any
+existing perms.
+Fixed: User's could still ignore admins if they edited the form with
+Firebug or saved and edited the file before submitting it.
+Changed: Replaced a load of SELECT  num_rows UPDATE else INSERT with
+INSERT ON DUPLICATE KEY queries to prevent collisions.
+Changed: Logic behind bh_update_visitor_log function changed so it logs
+fewer Guest sessions.
+
+Date: Thu, 04 Sep 2008 19:33:47
+-----------------------
+Fixed: Reflow code for resizing images that were too large was sometimes
+resizing table cells with images to gargantuan dimensions.
+Fixed: Editing a post containing HTML resulted in no post content in text
+field.
+Changed: Removed Options block and added submit buttons to handle the
+delete, save and export options.
+
+Date: Wed, 03 Sep 2008 21:31:46
+-----------------------
+Changed: More HTML errors cleaned up
+Changed: Removed awkward "back to" button from pm_messages.php.
+
+Date: Tue, 02 Sep 2008 19:11:52
+-----------------------
+Changed: Fixed some of the more obvious HTML errors in various scripts.
+
+Date: Tue, 02 Sep 2008 16:37:04
+-----------------------
+Fixed: Stats display not working in FireFox 2.x and IE7 due incorrect
+reference to XMLHttpRequest.
+
+Date: Mon, 01 Sep 2008 20:08:07
+-----------------------
+Fixed: Inconsistencies when editing a post created using TinyMCE and
+vice-versa
+
+Date: Mon, 01 Sep 2008 18:53:39
+-----------------------
+Fixed: Oddly broken comparison when checking for HTML in a message when
+trying to edit it a second time.
+
+Date: Mon, 01 Sep 2008 17:03:09
+-----------------------
+Fixed: Functions messages_get_most_recent_unread() was selecting deleted
+threads and causing an error to occur.
+Fixed: Thread List would sometimes think there were unread messages and
+not change the mode back to ALL_DISCUSSIONS.
+
+Date: Sun, 31 Aug 2008 19:40:57
+-----------------------
+Added: Column sorting to My Forums page. Sorting not permitted on Unread
+Messages due to Beehive architecture.
+
+Date: Sun, 31 Aug 2008 15:54:59
+-----------------------
+Fixed: Incorrect use of COALESCE() to calculate unread messages in My
+Forums pages.
+
+Date: Sun, 31 Aug 2008 15:17:57
+-----------------------
+Changed: Moved Search option to top of thread List and removed quick
+search from bottom of thread List.
+
+Date: Sat, 30 Aug 2008 22:26:34
+-----------------------
+Fixed: Ignored folders appearing in amongst the other folders on some BH
+installations.
+
+Date: Thu, 28 Aug 2008 20:28:32
+-----------------------
+Changed: Scripts that call messages_get_most_recent() now check it's
+return value correctly.
+Changed: Removed calls to messages_get_most_recent() from
+admin_post_approve.php, delete.php, ldelete.php.
+Changed: Code clean-up on lmessages.php and messages.php
+Changed: Function messages_get_most_recent() now correctly sets LAST_READ
+to 1 not 0.
+Fixed: Trying to access user_font.php or user_stats.php as a Guest
+prompted you with a login button.
+Fixed: Guests can no longer use font_size.php. It outputs nothing if
+accessed by a guest.
+Fixed: Scripts user_font.php and user_stats.php now require a msg argument
+and will bail out if it is missing.
+
+Date: Mon, 25 Aug 2008 18:20:25
+-----------------------
+Added: Error message display if deleting an attachment or it's thumbnail
+fails.
+
+Date: Mon, 25 Aug 2008 10:54:12
+-----------------------
+Changed: Replaced include_body_tag and frames html_draw_top options with
+single frame_set_html option.
+Fixed: Google Analytics code being include twice in one script.
+
+Date: Mon, 25 Aug 2008 10:17:26
+-----------------------
+Fixed: Undefined _gat error caused by Google Analytics code being blocked
+by Adblockers.
+
+Date: Mon, 25 Aug 2008 09:09:10
+-----------------------
+Added: Google Analytics code support added to Beehive.
+Fixed: Large font on Reply to All, Quick Reply and other links at bottom
+of message pane.
+
+Date: Sun, 24 Aug 2008 15:02:20
+-----------------------
+Changed: Removed style from admin filter drop down.
+
+Date: Sun, 24 Aug 2008 14:53:43
+-----------------------
+Changed: Move the filter dropdown on Admin Users back down to the right of
+the page numbers. Now use CSS to resize it to fit.
+Changed: Script forum_password.php now uses get_webtag() to get the
+webtag.
+
+Date: Sun, 24 Aug 2008 10:06:19
+-----------------------
+Fixed: Additional post in create_poll.php was saving it's content as 0;
+
+Date: Sat, 23 Aug 2008 09:54:34
+-----------------------
+Fixed: Undefined index FROM_UID in thread_options.php. Should be BY_UID.
+
+Date: Fri, 22 Aug 2008 18:07:19
+-----------------------
+Changed: Function forum_check_webtag_available() now has optional by-ref
+argument that can check to see if a webtag wasn't used on the URL.
+Changed: Removed user_main.php and admin_main.php. The two sections now
+load edit_prefs.php and admin_users.php respectively.
+Fixed: Undefined variable tid in messages.php due to missing list($tid,
+$pid) when using message_get_recent().
+
+Date: Thu, 21 Aug 2008 21:28:53
+-----------------------
+Fixed: diff property of MessageText was private when it needed to be
+public
+Fixed: Undefined variable $webtag in edit.php and threads_rss.php
+Fixed: You couldn't logout if there were no available forums.
+
+Date: Thu, 21 Aug 2008 20:39:05
+-----------------------
+Fixed: Light mode broken by recent updates.
+Added: Invalid webtag warning to Light mode.
+
+Date: Thu, 21 Aug 2008 20:09:23
+-----------------------
+Changed: Image to links where a image is surrounded by a anchor now
+separates the image src from the anchor href
+
+Date: Thu, 21 Aug 2008 19:46:12
+-----------------------
+Changed: Restored access to installation when no or invalid webtag or no
+foums set up.
+Added: Ability to hide a forum completely so it's unusable by any
+members.
+
+Date: Thu, 21 Aug 2008 17:00:47
+-----------------------
+Fixed: Delete Cookies link wasn't removing new bh_webtag_style cookie.
+
+Date: Thu, 21 Aug 2008 16:58:47
+-----------------------
+Fixed: Prevented caching of captcha reload XML
+
+Date: Thu, 21 Aug 2008 16:47:31
+-----------------------
+Fixed: Javascript error occurs in FireFox when trying to initialise
+XMLHttp request despite try catch scenario
+Fixed: Error in TinyMCE if you use auto check spelling feature of
+Beehive.
+
+Date: Wed, 20 Aug 2008 18:03:01
+-----------------------
+Changed: Forms now have an accept-encoding attribute. Let's see if that
+will help with the UTF-8...
+Changed: We're now only going to support PHP5 seeing as they have
+discontinued support for PHP4.
+Added: Option to specify the forum rating as a meta tag so you can set
+your forum to be general, 14+, mature or restricted.
+
+Date: Tue, 19 Aug 2008 18:49:09
+-----------------------
+Added: Confirmation prompt when deleting messages.
+Added: Error message when trying to save, export or delete with no PM
+messages selected.
+
+Date: Tue, 19 Aug 2008 17:56:48
+-----------------------
+Fixed: Function href_cleanup_query_keys() no longer appends an equals to
+query keys that have no value.
+
+Date: Mon, 18 Aug 2008 19:32:27
+-----------------------
+Changed: PM Messages now display on separate page to folder contents
+Changed: Exporting messages from PMs now allows you to select messages
+rather than a folder to export.
+
 Date: Sun, 17 Aug 2008 16:29:33
 -----------------------
 Added: New function named bh_getcookie which works allows you to test for
@@ -119,33 +1352,4 @@ Forum and applied it through _htmlentities function.
 Changed: Replaced xml_literal_to_numeric with html_entity_to_decimal in
 rss_feed.inc.php to save some processing time.
 Changed: Function pm_get_subject() tidied up a little bit.
-
-Date: Thu, 07 Aug 2008 14:18:06
------------------------
-Changed: Moved creation of [Clear] entry into a function in
-profile.inc.php.
-Changed: Add a query to make the installer remove deleted posts from the
-approval queue.
-
-Date: Thu, 07 Aug 2008 11:16:35
------------------------
-Changed: Update readme.txt and changelog.txt
-
-Date: Thu, 07 Aug 2008 10:23:20
------------------------
-Changed: [None] change to [Clear] in edit_profile.php
-
-Date: Thu, 07 Aug 2008 10:17:33
------------------------
-Added: [none] option added to Profile dropdown and Radio buttons to allow
-users to clear the entry.
-
-Date: Thu, 07 Aug 2008 08:24:57
------------------------
-Changed: Moved THREADS_BY_FOLDER column to end of WEBTAG_USER_PREFS
-table.
-
-Date: Thu, 07 Aug 2008 08:21:20
------------------------
-Changd: Updated German Language Pack.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.376 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.377 2009-04-09 18:53:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1494,12 +1494,14 @@ function user_is_active($uid)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT UID FROM SESSIONS WHERE UID = '$uid' ";
-    $sql.= "AND FID = '$forum_fid' LIMIT 0, 1";
+    $sql = "SELECT COUNT(*) FROM SESSIONS WHERE UID = '$uid' ";
+    $sql.= "AND FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_user_is_active)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($user_active_count) = db_fetch_array($result, DB_RESULT_NUM);
+    
+    return ($user_active_count > 0);
 }
 
 function user_allow_pm($uid)
@@ -1512,8 +1514,10 @@ function user_allow_pm($uid)
     $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
 
     if (!$result = db_query($sql, $db_user_allow_pm)) return false;
-
-    return (db_num_rows($result) > 0);
+    
+    list($allow_pm_count) = db_fetch_array($result, DB_RESULT_NUM);
+    
+    return ($allow_pm_count > 0);
 }
 
 function user_allow_email($uid)
@@ -1527,7 +1531,9 @@ function user_allow_email($uid)
 
     if (!$result = db_query($sql, $db_user_allow_email)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($allow_email_count) = db_fetch_array($result, DB_RESULT_NUM);
+    
+    return ($allow_email_count > 0);
 }
 
 function user_prefs_prep_attachments($image_attachments_array)

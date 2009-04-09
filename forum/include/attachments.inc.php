@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.168 2009-02-27 13:35:12 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.169 2009-04-09 18:53:40 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -909,7 +909,7 @@ function get_num_attachments($aid)
     $aid = db_escape_string($aid);
 
     $sql = "SELECT COUNT(AID) FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE AID = '$aid' LIMIT 0, 1";
+    $sql.= "WHERE AID = '$aid'";
 
     if (!$result = db_query($sql, $db_get_num_attachments)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.105 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.106 2009-04-09 18:53:42 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -153,13 +153,7 @@ function profile_sections_get_by_page($offset)
 
     $profile_sections_array = array();
 
-    $sql = "SELECT COUNT(PSID) FROM `{$table_data['PREFIX']}PROFILE_SECTION`";
-
-    if (!$result = db_query($sql, $db_profile_sections_get_by_page)) return false;
-
-    list($profile_sections_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PROFILE_SECTION.PSID, PROFILE_SECTION.NAME, ";
     $sql.= "PROFILE_SECTION.POSITION, COUNT(PROFILE_ITEM.PIID) AS ITEM_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}PROFILE_SECTION` PROFILE_SECTION ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}PROFILE_ITEM` PROFILE_ITEM ";
@@ -170,6 +164,14 @@ function profile_sections_get_by_page($offset)
 
     if (!$result = db_query($sql, $db_profile_sections_get_by_page)) return false;
 
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_profile_sections_get_by_page)) return false;
+
+    list($profile_sections_count) = db_fetch_array($result_count, DB_RESULT_NUM);    
+
     if (db_num_rows($result) > 0) {
 
         while (($profile_data = db_fetch_array($result))) {
@@ -179,7 +181,7 @@ function profile_sections_get_by_page($offset)
 
     }else if ($profile_sections_count > 0) {
 
-        $offset = calculate_max_offset($profile_sections_count, 10);
+        $offset = floor(($profile_sections_count - 1) / 10) * 10;
         return profile_sections_get_by_page($offset);
     }
 
@@ -229,19 +231,19 @@ function profile_items_get_by_page($psid, $offset)
 
     $profile_items_array = array();
 
-    $sql = "SELECT COUNT(PIID) FROM `{$table_data['PREFIX']}PROFILE_ITEM` ";
-    $sql.= "WHERE PSID = '$psid'";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PIID, NAME, TYPE, OPTIONS, POSITION ";
+    $sql.= "FROM `{$table_data['PREFIX']}PROFILE_ITEM` WHERE PSID = '$psid' ";
+    $sql.= "ORDER BY POSITION, PIID LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_profile_items_get_by_page)) return false;
+    
+    // Fetch the number of total results
 
-    list($profile_items_count) = db_fetch_array($result, DB_RESULT_NUM);
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    $sql = "SELECT PIID, NAME, TYPE, OPTIONS, POSITION ";
-    $sql.= "FROM `{$table_data['PREFIX']}PROFILE_ITEM` ";
-    $sql.= "WHERE PSID = '$psid' ORDER BY POSITION, PIID ";
-    $sql.= "LIMIT $offset, 10";
+    if (!$result_count = db_query($sql, $db_profile_items_get_by_page)) return false;
 
-    if (!$result = db_query($sql, $db_profile_items_get_by_page)) return false;
+    list($profile_items_count) = db_fetch_array($result_count, DB_RESULT_NUM);    
 
     if (db_num_rows($result) > 0) {
 
@@ -252,7 +254,7 @@ function profile_items_get_by_page($psid, $offset)
 
     }else if ($profile_items_count > 0) {
 
-        $offset = calculate_max_offset($profile_items_count, 10);
+        $offset = floor(($profile_items_count - 1) / 10) * 10;
         return profile_items_get_by_page($psid, $offset);
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.380 2009-04-05 14:11:19 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.381 2009-04-09 18:54:21 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -577,8 +577,6 @@ function bh_update_visitor_log($uid, $forum_fid)
         $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = '$current_datetime', ";
         $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
         
-        @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
-
         if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }else {
@@ -590,8 +588,6 @@ function bh_update_visitor_log($uid, $forum_fid)
             $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = '$current_datetime', ";
             $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
             
-            @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
-
             if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
         }else if (!user_cookies_set() || isset($_POST['guest_logon'])) {
@@ -600,8 +596,6 @@ function bh_update_visitor_log($uid, $forum_fid)
             $sql.= "AND IPADDRESS = '$ipaddress' AND FORUM = '$forum_fid' ";
             $sql.= "AND LAST_LOGON > '$session_cutoff_datetime'";
             
-            @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
-
             if (!$result = db_query($sql, $db_bh_update_visitor_log)) return false;
 
             if (db_num_rows($result) < 1) {
@@ -609,8 +603,6 @@ function bh_update_visitor_log($uid, $forum_fid)
                 $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
                 $sql.= "VALUES ('$forum_fid', 0, '$current_datetime', '$ipaddress', '$http_referer')";
                 
-                @file_put_contents('query.log', sprintf("%s\r\n", $sql), FILE_APPEND);
-
                 if (db_query($sql, $db_bh_update_visitor_log)) return true;
             }
         }

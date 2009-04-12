@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.193 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: index.php,v 1.194 2009-04-12 17:15:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -69,6 +69,10 @@ include_once(BH_INCLUDE_PATH. "light.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+// Embedded light mode in this script.
+
+define('BEEHIVE_LIGHT_INCLUDE', true);
 
 // Don't cache this page - fixes problems with Opera.
 
@@ -129,10 +133,6 @@ if (isset($_GET['other_logon'])) {
 // Check to see if the user is trying to change their password.
 
 $skip_logon_page = false;
-
-// Embedded light mode in this script.
-
-define('BEEHIVE_LIGHT_INCLUDE', 1);
 
 // Check to see if noframes URL query specified
 

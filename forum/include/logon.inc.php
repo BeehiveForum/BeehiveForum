@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.106 2009-03-27 21:11:43 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.107 2009-04-12 17:15:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -314,7 +314,7 @@ function logon_perform_auto()
     
     forum_check_webtag_available($webtag);
     
-    if (defined("BEEHIVEMODE_LIGHT")) {
+    if (defined('BEEHIVEMODE_LIGHT') || defined('BEEHIVE_LIGHT_INCLUDE')) {
     
         if (bh_getcookie("bh_light_auto_logon", "Y") && !bh_session_active()) {
 
@@ -322,7 +322,7 @@ function logon_perform_auto()
             $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');        
 
             if (($uid = user_logon($user_logon, $user_passhash))) {
-
+               
                 bh_session_init($uid);
                 header_redirect("index.php?webtag=$webtag&noframes");
                 exit;

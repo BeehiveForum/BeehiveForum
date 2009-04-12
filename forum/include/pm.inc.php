@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.274 2009-03-29 12:11:58 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.275 2009-04-12 18:29:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1543,6 +1543,8 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
     $content = db_escape_string($content);
 
     $pm_saved_draft = PM_SAVED_DRAFT;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (pm_get_free_space($uid) > 0) {
 

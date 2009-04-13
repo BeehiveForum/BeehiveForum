@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_write.php,v 1.7 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: lpm_write.php,v 1.8 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -284,9 +284,7 @@ if (($page_prefs & POST_AUTO_LINKS) > 0) {
     $links_enabled = false;
 }
 
-if (!isset($t_content)) $t_content = "";
-
-$post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 $t_content = $post->getContent();
 

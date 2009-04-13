@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.573 2009-04-05 14:11:19 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.574 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1541,8 +1541,6 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {    
 
             // Get the last PID within the unread-cut-off.
-            
-            $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();            
             
             $sql = "SELECT MAX(POST.PID) AS UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
             $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";

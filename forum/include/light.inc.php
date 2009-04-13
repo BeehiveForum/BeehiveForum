@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.225 2009-04-04 11:54:10 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.226 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -168,7 +168,7 @@ function light_html_draw_bottom()
     echo "</html>\n";
 }
 
-function light_draw_logon_form()
+function light_draw_logon_form($error_msg_array = array())
 {
     $lang = lang::get_instance()->load(__FILE__);
 
@@ -909,11 +909,6 @@ function light_draw_pm_inbox()
 
             header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
             exit;
-
-        }else {
-
-            $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
-            $valid = false;
         }    
     }
 
@@ -2089,9 +2084,6 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     $available_methods = array('get', 'post');
     if (!in_array($method, $available_methods)) $method = 'get';
 
-    $available_alignments = array('left', 'center', 'right');
-    if (!in_array($align, $available_alignments)) $align = 'left';
-
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
 
@@ -2263,7 +2255,7 @@ function light_pm_enabled()
     }
 }
 
-function light_pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
+function light_pm_display($pm_message_array, $folder, $preview = false)
 {
     $lang = lang::get_instance()->load(__FILE__);
 
@@ -2414,6 +2406,12 @@ function light_pm_check_messages()
     // Get the webtag
     
     $webtag = get_webtag();
+    
+    // Default the variables to return 0 even on error.
+
+    $pm_new_count = 0;
+    $pm_outbox_count = 0;
+    $pm_unread_count = 0;
 
     // Get the number of messages.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_edit.php,v 1.3 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: lpm_edit.php,v 1.4 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -374,7 +374,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "<h1>{$lang['messagepreview']}</h1>\n";
     
-    light_pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true);
+    light_pm_display($pm_message_array, PM_FOLDER_OUTBOX, true);
     
     echo "<br />\n";
 }

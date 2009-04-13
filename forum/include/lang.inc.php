@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.47 2009-03-01 16:19:07 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.48 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -171,6 +171,8 @@ class lang
                 if (!file_exists(BH_INCLUDE_PATH. "languages/{$this->user_pref}.inc.php")) {
                     trigger_error("<p>Could not load language file {$this->user_pref}.inc.php</p>", E_USER_ERROR);
                 }
+                
+                $lang = array();
 
                 include(BH_INCLUDE_PATH. "languages/{$this->user_pref}.inc.php");
                 
@@ -186,6 +188,8 @@ class lang
             if (!file_exists(BH_INCLUDE_PATH. "languages/{$this->user_pref}/$filename")) {
                 trigger_error("<p>Could not load language file for $filename</p>", E_USER_ERROR);
             }
+            
+            $lang = array();
 
             include(BH_INCLUDE_PATH. "languages/{$this->user_pref}/$filename");
             

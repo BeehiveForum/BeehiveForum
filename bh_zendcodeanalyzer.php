@@ -21,11 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_zendcodeanalyzer.php,v 1.1 2009-02-27 13:35:15 decoyduck Exp $ */
+/* $Id: bh_zendcodeanalyzer.php,v 1.2 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // Array of files to exclude from the matches
 
 $exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hacker.inc.php');
+
+// Array of directories to exclude from the matches
+
+$exclude_dirs_array = array('forum/geshi', 'forum/tiny_mce', 'forum/install');
 
 // Load Language File Function
 
@@ -52,7 +56,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
             if ($file_name != "." && $file_name != "..") {
 
-                if (@is_dir("$path/$file_name")) {
+                if (@is_dir("$path/$file_name") && !in_array("$path/$file_name", $GLOBALS['exclude_dirs_array'])) {
 
                     get_file_list($file_list_array, "$path/$file_name", $extension);
 

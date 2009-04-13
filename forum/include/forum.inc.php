@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.378 2009-04-05 14:11:18 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.379 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -515,7 +515,7 @@ function forum_get_global_settings()
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
             $sql.= "WHERE TZID = '{$forum_global_settings_array['forum_timezone']}'";
 
-            if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+            if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
             
             if (db_num_rows($result) > 0) {
 

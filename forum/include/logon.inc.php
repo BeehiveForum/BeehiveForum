@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.107 2009-04-12 17:15:57 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.108 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -332,21 +332,24 @@ function logon_perform_auto()
     }else {
     
         if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
-    
+            
             logon_get_cookies($username_array, $password_array, $passhash_array);
 
             if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
+            
+                if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
 
-                if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+                    if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
 
-                    $username = mb_strtoupper($username_array[0]);
-                    $passhash = $passhash_array[0];
+                        $username = mb_strtoupper($username_array[0]);
+                        $passhash = $passhash_array[0];
 
-                    if (($uid = user_logon($username, $passhash))) {
+                        if (($uid = user_logon($username, $passhash))) {
 
-                        bh_session_init($uid);
-                        header_redirect(get_request_uri(true, false));
-                        exit;
+                            bh_session_init($uid);
+                            header_redirect(get_request_uri(true, false));
+                            exit;
+                        }
                     }
                 }
             }

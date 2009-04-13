@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.82 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.83 2009-04-13 11:54:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -210,10 +210,6 @@ if (isset($_POST['save'])) {
             // Update the password and cookie
 
             if (user_change_password($uid, $t_new_pass, $t_old_pass_hash)) {
-
-                // Retrieve existing cookie data if any
-
-                logon_get_cookies($username_array, $password_array, $passhash_array);
 
                 // Update the password that matches the current logged on user
 

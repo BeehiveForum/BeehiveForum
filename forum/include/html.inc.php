@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.335 2009-04-12 18:29:08 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.336 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -74,7 +74,7 @@ function html_guest_error()
         if (isset($_POST['close_popup'])) {
 
             html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
-            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+            echo "<script type=\"text/javascript\">\n";
             echo "  window.close();\n";
             echo "</script>\n";
 
@@ -904,7 +904,7 @@ function html_draw_top()
 
     // Dynamic Frame names, forum webtag and language string initialisation happens here.
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "<script type=\"text/javascript\">\n";
     echo "<!--\n\n";
     echo "var bh_frame_main = '", html_get_frame_name('main'), "'\n";
     echo "var bh_frame_ftop = '", html_get_frame_name('ftop'), "'\n";
@@ -913,18 +913,16 @@ function html_draw_top()
     echo "var bh_frame_right = '", html_get_frame_name('right'), "'\n";
     echo "var bh_frame_pm_folders = '", html_get_frame_name('pm_folders'), "'\n";
     echo "var bh_frame_pm_messages = '", html_get_frame_name('pm_messages'), "'\n\n";
-    echo "var webtag = '$webtag';\n";
-    echo "var user_uid = ", bh_session_get_value('UID'), ";\n";
-    echo "var lang = new Object();\n\n";
+    echo "var webtag = '", html_js_safe_str($webtag), "'\n";
     echo "//-->\n";
     echo "</script>\n";
 
     if (($modified_time = @filemtime("js/general.js"))) {
-        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
+        echo sprintf("<script type=\"text/javascript\" src=\"js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
     if (($modified_time = @filemtime("js/xml_http.js"))) {
-        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
+        echo sprintf("<script type=\"text/javascript\" src=\"js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
     // Font size (not for Guests)
@@ -939,7 +937,7 @@ function html_draw_top()
 
         if (isset($_GET['font_resize'])) {
 
-            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+            echo "<script type=\"text/javascript\">\n";
             echo "<!--\n\n";
             echo "top.document.body.rows='60,' + ". max($fontsize* 2, 22) ."+ ',*';\n";
             echo "top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.reload();\n";
@@ -982,14 +980,7 @@ function html_draw_top()
 
                     if (($modified_time = @filemtime("js/pm.js"))) {
 
-                        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                        echo "<!--\n\n";
-                        echo "lang['new'] = '", html_js_safe_str($lang['new']), "';\n";
-                        echo "lang['unread'] = '", html_js_safe_str($lang['unread']), "';\n\n";
-                        echo "//-->\n";
-                        echo "</script>\n";
-
-                        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/pm.js?%s\"></script>\n", date('YmdHis', $modified_time));
+                        echo sprintf("<script type=\"text/javascript\" src=\"js/pm.js?%s\"></script>\n", date('YmdHis', $modified_time));
 
                         if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
                         if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
@@ -1011,7 +1002,7 @@ function html_draw_top()
 
                     $image_resized_text = html_js_safe_str($lang['imageresized']);
 
-                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                    echo "<script type=\"text/javascript\">\n";
                     echo "<!--\n\n";
                     echo "document.maxWidth = $resize_width;\n";
                     echo "document.resizeText = '$image_resized_text';\n\n";
@@ -1036,7 +1027,7 @@ function html_draw_top()
 
                     if (($modified_time = @filemtime("js/spoiler.js"))) {
 
-                        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
+                        echo sprintf("<script type=\"text/javascript\" src=\"js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
                         if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
                     }
                 }
@@ -1053,39 +1044,7 @@ function html_draw_top()
 
                 if (($modified_time = @filemtime("js/stats.js"))) {
 
-                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                    echo "<!--\n\n";
-                    echo "lang['numactiveguests'] = '", html_js_safe_str($lang['numactiveguests']), "';\n";
-                    echo "lang['oneactiveguest'] = '", html_js_safe_str($lang['oneactiveguest']), "';\n";
-                    echo "lang['numactivemembers'] = '", html_js_safe_str($lang['numactivemembers']), "';\n";
-                    echo "lang['oneactivemember'] = '", html_js_safe_str($lang['oneactivemember']), "';\n";
-                    echo "lang['numactiveanonymousmembers'] = '", html_js_safe_str($lang['numactiveanonymousmembers']), "';\n";
-                    echo "lang['oneactiveanonymousmember'] = '", html_js_safe_str($lang['oneactiveanonymousmember']), "';\n";
-                    echo "lang['usersactiveinthepasttimeperiod'] = '", html_js_safe_str($lang['usersactiveinthepasttimeperiod']), "';\n";
-                    echo "lang['youinvisible'] = '", html_js_safe_str($lang['youinvisible']), "';\n";
-                    echo "lang['younormal'] = '", html_js_safe_str($lang['younormal']), "';\n";
-                    echo "lang['friend'] = '", html_js_safe_str($lang['friend']), "';\n";
-                    echo "lang['numthreadscreated'] = '", html_js_safe_str($lang['numthreadscreated']), "';\n";
-                    echo "lang['onethreadcreated'] = '", html_js_safe_str($lang['onethreadcreated']), "';\n";
-                    echo "lang['numpostscreated'] = '", html_js_safe_str($lang['numpostscreated']), "';\n";
-                    echo "lang['onepostcreated'] = '", html_js_safe_str($lang['onepostcreated']), "';\n";
-                    echo "lang['ourmembershavemadeatotalofnumthreadsandnumposts'] = '", html_js_safe_str($lang['ourmembershavemadeatotalofnumthreadsandnumposts']), "';\n";
-                    echo "lang['longestthreadisthreadnamewithnumposts'] = '", html_js_safe_str($lang['longestthreadisthreadnamewithnumposts']), "';\n";
-                    echo "lang['therehavebeenxpostsmadeinthelastsixtyminutes'] = '", html_js_safe_str($lang['therehavebeenxpostsmadeinthelastsixtyminutes']), "';\n";
-                    echo "lang['therehasbeenonepostmadeinthelastsxityminutes'] = '", html_js_safe_str($lang['therehasbeenonepostmadeinthelastsxityminutes']), "';\n";
-                    echo "lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'] = '", html_js_safe_str($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts']), "';\n";
-                    echo "lang['wehavenumregisteredmembersandthenewestmemberismembername'] = '", html_js_safe_str($lang['wehavenumregisteredmembersandthenewestmemberismembername']), "';\n";
-                    echo "lang['wehavenumregisteredmember'] = '", html_js_safe_str($lang['wehavenumregisteredmember']), "';\n";
-                    echo "lang['wehaveoneregisteredmember'] = '", html_js_safe_str($lang['wehaveoneregisteredmember']), "';\n";
-                    echo "lang['mostuserseveronlinewasnumondate'] = '", html_js_safe_str($lang['mostuserseveronlinewasnumondate']), "';\n";
-                    echo "lang['viewcompletelist'] = '", html_js_safe_str($lang['viewcompletelist']), "';\n\n";
-                    echo "var user_anon_disabled = ", USER_ANON_DISABLED, ";\n";
-                    echo "var user_friend = ", USER_FRIEND, ";\n";
-                    echo "var active_sess_cutoff = '", html_js_safe_str(format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false)), "';\n";
-                    echo "//-->\n";
-                    echo "</script>\n";
-
-                    echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/stats.js?%s\"></script>\n", date('YmdHis', $modified_time));
+                    echo sprintf("<script type=\"text/javascript\" src=\"js/stats.js?%s\"></script>\n", date('YmdHis', $modified_time));
 
                     if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
                     if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
@@ -1109,14 +1068,14 @@ function html_draw_top()
             }else {
 
                 if (($modified_time = @filemtime("js/{$func_args}"))) {
-                    echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
+                    echo sprintf("<script type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
                 }
             }
 
         }else if (@is_dir("$forum_path/js/") && @file_exists("$forum_path/js/$func_args")) {
 
             if (($modified_time = @filemtime("js/{$func_args}"))) {
-                echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
+                echo sprintf("<script type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
             }
         }
     }
@@ -1125,7 +1084,7 @@ function html_draw_top()
 
         $top_html = html_get_top_page();
 
-        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "<script type=\"text/javascript\">\n";
         echo "<!--\n\n";
         echo "if (top.document.body.rows) {\n\n";
         echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";

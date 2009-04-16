@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.574 2009-04-13 11:54:49 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.575 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1872,8 +1872,8 @@ function messages_forum_stats($tid, $pid)
 
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td colspan=\"2\" align=\"center\">\n";
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\" id=\"forum_stats\">\n";
+            echo "                  <td colspan=\"2\" align=\"center\" id=\"forum_stats\">\n";
+            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";

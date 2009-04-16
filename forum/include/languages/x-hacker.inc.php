@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.302 2008-12-30 22:18:36 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.303 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // British English language file
 
@@ -1962,7 +1962,7 @@ $lang['lightblue'] = "l19h+ blUe";
 $lang['forumstats'] = "f0Rum 5T4T5";
 $lang['userstats'] = "u\$er ST4t\$";
 
-$lang['usersactiveinthepasttimeperiod'] = "%s ac+1v3 IN +HE p4\$t %s. %s";
+$lang['usersactiveinthepasttimeperiod'] = "%s ac+1v3 IN +HE p4\$t %s.";
 
 $lang['numactiveguests'] = "<b>%s</b> 9uE\$+s";
 $lang['oneactiveguest'] = "<b>1</b> Gu3S+";
@@ -1982,7 +1982,7 @@ $lang['viewcompletelist'] = "viEw cOMPLe+3 Li5+";
 $lang['ourmembershavemadeatotalofnumthreadsandnumposts'] = "our M3m83R\$ H4VE m@D3 4 +Ot4l OPh %s 4Nd %s.";
 $lang['longestthreadisthreadnamewithnumposts'] = "lonG3st +HRe4d Is <b>%s</b> wITH %s.";
 $lang['therehavebeenxpostsmadeinthelastsixtyminutes'] = "tHER3 H4v3 b3eN <b>%s</b> p05+S M@D3 1N +h3 L4ST 60 m1nU+E5.";
-$lang['therehasbeenonepostmadeinthelastsxityminutes'] = "thEr3 H@s b3eN <b>1</b> p0ST M@D3 1N tHE l4\$+ 60 MinU+35.";
+$lang['therehasbeenonepostmadeinthelastsixtyminutes'] = "thEr3 H@s b3eN <b>1</b> p0ST M@D3 1N tHE l4\$+ 60 MinU+35.";
 $lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'] = "mosT po5+5 EvER m@d3 in @ 51N9L3 60 miNutE P3r1OD 1\$ <b>%s</b> 0n %s.";
 $lang['wehavenumregisteredmembersandthenewestmemberismembername'] = "wE H4vE <b>%s</b> R391S+3reD mEMb3r5 4nD T3H nEWeST mEMB3r IS <b>%s</b>.";
 $lang['wehavenumregisteredmember'] = "w3 H@ve %s REg15tErED M3M8eRS.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.124 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.125 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -89,13 +89,21 @@ function stats_update($session_count, $recent_post_count)
 
 function stats_output_xml()
 {
-    // Outputting XML
-
-    header('Content-type: text/xml; charset=UTF-8', true);
-
     // Check HTTP cache headers
 
     cache_check_last_modified();
+    
+    // Load Language file
+    
+    $lang = lang::get_instance()->load(__FILE__);
+    
+    // Get webtag
+    
+    $webtag = get_webtag();
+    
+    // Current active user UID
+    
+    $uid = bh_session_get_value('UID');
 
     // Number of active users
 
@@ -108,114 +116,288 @@ function stats_output_xml()
     // Update the stats records.
 
     stats_update($session_count, $recent_post_count);
+    
+    // User Profile link is used by Active users and Newest user stats
+    
+    $user_profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\" onclick=\"return openProfile(%s, '$webtag')\">%s</a>";
+    
+    // Search Engine Bot link
+    
+    $search_engine_bot_link = "<a href=\"%s\" target=\"_blank\"><span class=\"user_stats_normal\">%s</span></a>";
 
-    // Output the XML document.
-
-    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<stats>\n";
-    echo "  <users>\n";
-
-    if (($user_count = user_count())) {
-        echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($user_count, 0, ",", ",")));
-    }
-
+    // Output the HTML.
+    
     if (($user_stats = stats_get_active_user_list())) {
 
-        echo "    <active>\n";
-        echo "      <guests>", html_entity_to_decimal($user_stats['GUESTS']), "</guests>\n";
-        echo "      <visible>", html_entity_to_decimal($user_stats['NUSERS']), "</visible>\n";
-        echo "      <anonymous>", html_entity_to_decimal($user_stats['AUSERS']), "</anonymous>\n";
+        $active_user_list_array = array();
+        
+        echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        echo "  <tr>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "    <td>&nbsp;</td>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td>&nbsp;</td>\n";
+        echo "    <td>";
+        
+        if ($user_stats['GUESTS'] <> 1) {
+            $active_user_list_array[] = sprintf($lang['numactiveguests'], $user_stats['GUESTS']);
+        }else {
+            $active_user_list_array[] = $lang['oneactiveguest'];
+        }
+        
+        if ($user_stats['NUSERS'] <> 1) {
+            $active_user_list_array[] = sprintf($lang['numactivemembers'], $user_stats['NUSERS']);
+        }else {
+            $active_user_list_array[] = $lang['oneactivemember'];
+        }
+        
+        if ($user_stats['AUSERS'] <> 1) {
+            $active_user_list_array[] = sprintf($lang['numactiveanonymousmembers'], $user_stats['AUSERS']);
+        }else {
+            $active_user_list_array[] = $lang['oneactiveanonymousmember'];
+        }
+        
+        $active_user_list = implode(", ", $active_user_list_array);
+        
+        $active_user_time = format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false);
+        
+        echo sprintf($lang['usersactiveinthepasttimeperiod'], $active_user_list, $active_user_time);
 
-        if (isset($user_stats['USERS']) && sizeof($user_stats['USERS']) > 0) {
+        echo " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]\n";
+        echo "    </td>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "  </tr>\n";
 
-            echo "    <list>\n";
+        if (sizeof($user_stats['USERS']) > 0) {
 
-            foreach ($user_stats['USERS'] as $active_user) {
+            $active_users_array = array();
 
-                $active_user['DISPLAY'] = htmlentities_array(format_user_name($active_user['LOGON'], $active_user['NICKNAME']));
+            foreach ($user_stats['USERS'] as $user) {
+            
+                if (isset($user['SID']) && !is_null($user['SID'])) {
 
-                echo "      <user>\n";
-                echo "        <uid>", html_entity_to_decimal($active_user['UID']), "</uid>\n";
-                echo "        <display>", word_filter_add_ob_tags(html_entity_to_decimal($active_user['DISPLAY'])), "</display>\n";
-                echo "        <relationship>", html_entity_to_decimal($active_user['RELATIONSHIP']), "</relationship>\n";
-                echo "        <anonymous>", html_entity_to_decimal($active_user['ANON_LOGON']), "</anonymous>\n";
-                echo "      </user>\n";
+                    $active_user_display = word_filter_add_ob_tags(htmlentities_array($user['NAME']));
+                    $active_user_display = sprintf($search_engine_bot_link, $user['URL'], $active_user_display);
+                    
+                    $active_users_array[] = $active_user_display;
+
+                }else {
+
+                    $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])));
+
+                    if ($user['UID'] == $uid) {
+
+                        if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
+
+                            $active_user_display = sprintf("<span class=\"user_stats_curuser\" title=\"%s\">%s</span>", $lang['youinvisible'], $active_user_display);
+
+                        }else {
+
+                            $active_user_display = sprintf("<span class=\"user_stats_curuser\" title=\"%s\">%s</span>", $lang['younormal'], $active_user_display);
+                        }
+
+                    }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
+
+                        $active_user_display = sprintf("<span class=\"user_stats_friend\" title=\"%s\">%s</span>", $lang['friend'], $active_user_display);
+
+                    }else {
+
+                        $active_user_display = sprintf("<span class=\"user_stats_normal\">%s</span>", $active_user_display);
+                    }
+                    
+                    $active_users_array[] = sprintf($user_profile_link, $user['UID'], $user['UID'], $active_user_display);
+                }
             }
 
-            echo "    </list>\n";
+            echo "  <tr>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "    <td>&nbsp;</td>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>";
+            echo "    <td>&nbsp;</td>\n";
+            echo "    <td class=\"activeusers\">\n";
+            echo "      ", implode(", ", $active_users_array), "\n";
+            echo "    </td>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "  </tr>\n";
         }
 
-        echo "    </active>\n";
+        echo "  <tr>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "    <td>&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+    }
+    
+    $thread_count = stats_get_thread_count();
+    
+    $post_count = stats_get_post_count();
+
+    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "    <td>";
+    
+    if ($thread_count <> 1) {
+        $num_threads_display = sprintf($lang['numthreadscreated'], number_format($thread_count, 0, ".", ","));
+    }else {
+        $num_threads_display = $lang['onethreadcreated'];
+    }     
+
+    if ($post_count <> 1) {
+        $num_posts_display = sprintf($lang['numpostscreated'], number_format($post_count, 0, ".", ","));
+    }else {
+        $num_posts_display = $lang['onepostcreated'];
+    }     
+    
+    echo sprintf($lang['ourmembershavemadeatotalofnumthreadsandnumposts'], $num_threads_display, $num_posts_display), '<br />';
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+
+    if (($longest_thread = stats_get_longest_thread())) {
+
+        echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        echo "  <tr>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "    <td>";
+        
+        $longest_thread_title = word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
+        
+        $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
+        $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], $longest_thread['LENGTH']) : $lang['onepostcreated'];
+        
+        echo sprintf($lang['longestthreadisthreadnamewithnumposts'], $longest_thread_link, $longest_thread_post_count);
+        
+        echo "    </td>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
     }
 
-    if (($newest_user = stats_get_newest_user())) {
+    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "    <td>";
+    
+    if ($recent_post_count <> 1) {
+        
+        $recent_post_count = number_format($recent_post_count, 0, ",", ",");        
+        echo sprintf($lang['therehavebeenxpostsmadeinthelastsixtyminutes'], $recent_post_count);
+        
+    }else {
+    
+        echo $lang['therehasbeenonepostmadeinthelastsixtyminutes'];
+    }
 
-        $newest_user['DISPLAY'] = htmlentities_array(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']));
+    echo "    </td>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 
-        echo "    <newest>\n";
-        echo "      <uid>", html_entity_to_decimal($newest_user['UID']), "</uid>\n";
-        echo "      <display>", word_filter_add_ob_tags(html_entity_to_decimal($newest_user['DISPLAY'])), "</display>\n";
-        echo "    </newest>\n";
+    if (($most_posts = stats_get_most_posts())) {
+
+        if (($most_posts['MOST_POSTS_COUNT'] > 0) && ($most_posts['MOST_POSTS_DATE'] > 0)) {
+
+            echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "  <tr>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "    <td>";
+            
+            $post_stats_record_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
+            
+            echo sprintf($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
+            
+            echo "    </td>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
+        }
+    }
+    
+    if (($user_count = user_count())) {
+
+        echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        echo "  <tr>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "    <td>&nbsp;</td>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "    <td>";
+        
+        if ($user_count <> 1) {
+        
+            if (($newest_member = stats_get_newest_user())) {
+
+                $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']));
+                $user_newest_profile_link = sprintf($user_profile_link, $newest_member['UID'], $newest_member['UID'], $user_newest_display);
+
+                echo sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);
+
+            }else {
+            
+                echo sprintf($lang['wehavenumregisteredmember'], $user_count);
+                
+            }
+            
+        }else {
+        
+            echo $lang['wehaveoneregisteredmember'];
+        }
+
+        echo "    </td>\n";
+        echo "    <td width=\"35\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
     }
 
     if (($most_users = stats_get_most_users())) {
 
-        $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
-        $most_users_date =  format_time($most_users['MOST_USERS_DATE'], 1);
+        if (($most_users['MOST_USERS_COUNT'] > 0) && ($most_users['MOST_USERS_DATE'] > 0)) {
 
-        echo "    <record>\n";
-        echo "      <count>", html_entity_to_decimal($most_users_count), "</count>\n";
-        echo "      <date>", html_entity_to_decimal($most_users_date), "</date>\n";
-        echo "    </record>\n";
+            echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "  <tr>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "    <td>";
+            
+            $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
+            $most_users_date = format_time($most_users['MOST_USERS_DATE'], 1);
+            
+            echo sprintf($lang['mostuserseveronlinewasnumondate'], $most_users_count, $most_users_date);
+            
+            echo "    </td>\n";
+            echo "    <td width=\"35\">&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
+        }
     }
 
-    echo "  </users>\n";
-    echo "  <threads>\n";
-
-    if (($thread_count = stats_get_thread_count())) {
-        echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($thread_count, 0, ",", ",")));
-    }
-
-    if (($longest_thread = stats_get_longest_thread())) {
-
-        $longest_thread_title = htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']));
-        $longest_thread_post_count = number_format($longest_thread['LENGTH'], 0, ",", ",");
-
-        echo "    <longest>\n";
-        echo "      <tid>", html_entity_to_decimal($longest_thread['TID']), "</tid>\n";
-        echo "      <title>", word_filter_add_ob_tags(html_entity_to_decimal($longest_thread_title)), "</title>\n";
-        echo "      <length>", html_entity_to_decimal($longest_thread_post_count), "</length>\n";
-        echo "    </longest>\n";
-    }
-
-    echo "  </threads>\n";
-    echo "  <posts>\n";
-
-    if (($post_count = stats_get_post_count())) {
-        echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($post_count, 0, ",", ",")));
-    }
-
-    $recent_post_count = number_format($recent_post_count, 0, ",", ",");
-
-    echo "    <recent>\n";
-    echo sprintf("    <count>%s</count>\n", number_format($recent_post_count, 0, ",", ","));
-
-    if (($most_posts = stats_get_most_posts())) {
-
-        $most_posts_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
-        $most_posts_count = number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ",");
-
-        echo "      <record>\n";
-        echo "        <count>", html_entity_to_decimal($most_posts_count), "</count>\n";
-        echo "        <date>", html_entity_to_decimal($most_posts_date), "</date>\n";
-        echo "      </record>\n";
-    }
-
-    echo "    </recent>\n";
-    echo "  </posts>\n";
-    echo "</stats>\n";
-
-
+    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td width=\"35\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";    
     exit;
 }
 
@@ -321,7 +503,8 @@ function stats_get_active_user_list()
     $sql = "SELECT SESSIONS.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
     $sql.= "USER_PREFS.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
-    $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, USER_PEER2.PEER_NICKNAME ";
+    $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, USER_PEER2.PEER_NICKNAME, ";
+    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.NAME ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
@@ -329,8 +512,10 @@ function stats_get_active_user_list()
     $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= '$session_cutoff_datetime' AND SESSIONS.FID = '$forum_fid' ";
-    $sql.= "AND SESSIONS.UID > 0 GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
+    $sql.= "AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
+    $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
 

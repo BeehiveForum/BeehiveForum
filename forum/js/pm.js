@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.js,v 1.26 2009-03-28 18:45:13 decoyduck Exp $ */
+/* $Id: pm.js,v 1.27 2009-04-16 18:35:34 decoyduck Exp $ */
 
 var pm_logon_search = false;
 
@@ -115,21 +115,13 @@ function pm_notification_handler()
     var response_xml = pm_notification.get_response_xml();
     var pm_message_count_obj = getObjById('pm_message_count');
 
-    if (typeof(pm_message_count_obj) == 'object' && pm_message_count_obj.getElementsByTagName) {
+    if (typeof(pm_message_count_obj) == 'object' || typeof(pm_message_count_obj) == 'function') {
 
-        var pm_unread_element = response_xml.getElementsByTagName('unread')[0];
-        var pm_new_element = response_xml.getElementsByTagName('new')[0];
+        var pm_message_count_text = response_xml.getElementsByTagName('text')[0];
+        
+        if (typeof(pm_message_count_text) == 'object' || typeof(pm_message_count_text) == 'function') {
 
-        if (typeof(pm_unread_element) == 'object' && typeof(pm_new_element) == 'object') {
-
-            var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;
-            var pm_new_count = pm_new_element.childNodes[0].nodeValue;
-
-            if (pm_new_count > 0) {
-               pm_message_count_obj.innerHTML = '[' + pm_new_count + ' ' + lang['new'] + ']';
-            }else if (pm_unread_count > 0) {
-               pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' ' + lang['unread'] + ']';
-            }
+            pm_message_count_obj.innerHTML = pm_message_count_text.childNodes[0].nodeValue;
         }
     }
 
@@ -147,5 +139,6 @@ function pm_notification_handler()
             }
         }
     }
+    
     return true;
 }

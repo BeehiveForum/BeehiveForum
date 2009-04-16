@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.139 2009-03-28 17:40:30 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.140 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -122,6 +122,10 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     }else {
         $error_report_email_addr_from = '$error_report_email_addr_from';
     }
+    
+    // The requested script's filename
+    
+    $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));    
     
     // Let's ignore PHP5's strict warnings.
     
@@ -369,6 +373,20 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
 
                 install_missing_files();
+            }
+        }
+        
+        // If Ajax request force display of Lightmode error messages.
+        
+        if (in_array($script_filename, array('pm.php', 'user_stats.php'))) {
+            
+            if (isset($_GET['check_messages']) || isset($_GET['get_stats'])) {
+
+                if (defined('BEEHIVE_INSTALL_NOWARN') || defined('BEEHIVEMODE_INSTALL')) {
+                    echo implode("\n", $error_msg_array);
+                }
+
+                exit;
             }
         }
 

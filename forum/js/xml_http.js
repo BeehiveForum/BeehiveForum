@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: xml_http.js,v 1.11 2008-09-10 18:59:29 decoyduck Exp $ */
+/* $Id: xml_http.js,v 1.12 2009-04-16 18:35:34 decoyduck Exp $ */
 
 function xml_http_request()
 {
@@ -60,6 +60,18 @@ function xml_http_request()
             return false;
         }
     }
+    
+    xml_http_request.prototype.get_response_text = function()
+    {
+        try {
+            
+            return this._request.responseText;
+
+        }catch (e) {
+
+            return false;
+        }
+    }    
 
     xml_http_request.prototype.close = function()
     {
@@ -100,12 +112,15 @@ function xml_http_request()
     xml_http_request.prototype._xml_http_request = function()
     {
         if (window.XMLHttpRequest) {
+            
             try {
                 return new XMLHttpRequest();
-	    }catch(e) {
-	        return false;
-	    }
-	}else {
+            }catch(e) {
+                return false;
+            }
+        
+        }else {
+            
             try {
                 return new ActiveXObject("Msxml2.XMLHTTP");
             }catch (e) {
@@ -113,7 +128,7 @@ function xml_http_request()
                     return new ActiveXObject("Microsoft.XMLHTTP");
                 }catch (e) {
                     return false;
-		}
+                }
             }
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.275 2009-04-12 18:29:08 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.276 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2035,9 +2035,12 @@ function pm_check_messages()
     }
 
     echo "<inbox>\n";
-    echo "  <new>$pm_new_count</new>\n";
-    echo "  <outbox>$pm_outbox_count</outbox>\n";
-    echo "  <unread>$pm_unread_count</unread>\n";
+    
+    if ($pm_new_count > 0) {
+        echo "  <text><![CDATA[", html_js_safe_str("[$pm_new_count {$lang['new']}]"), "]]></text>\n";
+    }else if ($pm_unread_count > 0) {
+        echo "  <text><![CDATA[", html_js_safe_str("[$pm_unread_count {$lang['unread']}]"), "]]></text>\n";
+    }
 
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
         echo "  <notification><![CDATA[", html_js_safe_str(wordwrap($pm_notification, 65, "\n")), "]]></notification>\n";

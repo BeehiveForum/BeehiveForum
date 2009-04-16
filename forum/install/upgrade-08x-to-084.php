@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.20 2009-03-21 18:45:29 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.21 2009-04-16 18:35:34 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -319,6 +319,19 @@ if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
+}
+
+if (!install_column_exists($db_database, "SESSIONS", "SID")) {
+
+    // Add the SID to the SESSIONS table so we can show Bots on active user list.
+
+    $sql = "ALTER TABLE SESSIONS ADD SID MEDIUMINT(8) DEFAULT NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 if (!install_table_exists($db_database, 'PM_FOLDERS')) {

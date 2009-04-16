@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.188 2008-12-26 12:36:03 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.189 2009-04-16 18:35:34 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -819,6 +819,7 @@ $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '', ";
 $sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
+$sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (HASH), ";
 $sql.= "  KEY REFERER (REFERER), ";
 $sql.= "  KEY UID (UID)";

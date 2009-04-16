@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.130 2009-02-16 20:15:13 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.131 2009-04-16 18:35:34 decoyduck Exp $ */
 
 // British English language file
 
@@ -1962,7 +1962,7 @@ $lang['lightblue'] = "Bleu pâle";
 $lang['forumstats'] = "Statistiques du forum";
 $lang['userstats'] = "Statistiques des utilisateurs";
 
-$lang['usersactiveinthepasttimeperiod'] = "%s actifs durant les dernières %s. %s";
+$lang['usersactiveinthepasttimeperiod'] = "%s actifs durant les dernières %s.";
 
 $lang['numactiveguests'] = "<b>%s</b> invités";
 $lang['oneactiveguest'] = "<b>1</b> invité";
@@ -1982,7 +1982,7 @@ $lang['viewcompletelist'] = "Voir liste complète";
 $lang['ourmembershavemadeatotalofnumthreadsandnumposts'] = "Nos membres ont posté un total de %s et %s.";
 $lang['longestthreadisthreadnamewithnumposts'] = "Le fil de discussion le plus long est <b>%s</b> avec %s.";
 $lang['therehavebeenxpostsmadeinthelastsixtyminutes'] = "Il y a eu <b>%s</b> messages postés durant les dernières 60 minutes.";
-$lang['therehasbeenonepostmadeinthelastsxityminutes'] = "Il y a eu <b>1</b> message posté durant les dernières 60 minutes.";
+$lang['therehasbeenonepostmadeinthelastsixtyminutes'] = "Il y a eu <b>1</b> message posté durant les dernières 60 minutes.";
 $lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'] = "Le plus grand nombre de messages postés dans une seule période de 60 minutes était <b>%s</b> le %s.";
 $lang['wehavenumregisteredmembersandthenewestmemberismembername'] = "Nous avons <b>%s</b> membres enregistrés et le plus récent est <b>%s</b>.";
 $lang['wehavenumregisteredmember'] = "Nous avons %s membres enregistrés.";

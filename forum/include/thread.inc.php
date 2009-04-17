@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.161 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.162 2009-04-17 20:37:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -545,6 +545,8 @@ function thread_delete($tid, $delete_type)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($delete_type)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if ($delete_type == THREAD_DELETE_PERMENANT) {
 
@@ -566,7 +568,8 @@ function thread_delete($tid, $delete_type)
 
     }else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y' WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
+        $sql.= "MODIFIED = '$current_datetime' WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_thread_delete)) return false;
     }
@@ -583,9 +586,11 @@ function thread_undelete($tid)
     if (!is_numeric($tid)) return false;
 
     if (!thread_can_be_undeleted($tid)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET DELETED = 'N' WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'N', ";
+    $sql.= "MODIFIED = '$current_datetime' WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_undelete)) return false;
 

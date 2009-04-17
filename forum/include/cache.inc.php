@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.22 2009-04-13 11:54:49 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.23 2009-04-17 20:37:30 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -249,8 +249,12 @@ function cache_check_thread_list()
 
     // Get the thread last modified date and user last read date.
 
-    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ_AT, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED ";
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.STICKY_UNTIL)) AS STICKY_UNTIL, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";
@@ -261,11 +265,11 @@ function cache_check_thread_list()
     
         // Get the two modified dates from the query
         
-        list($thread_last_read_date, $thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+        list($last_read, $created, $modified, $closed, $sticky_until, $admin_lock) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is newer (higher).
        
-        $local_cache_date = max($thread_last_read_date, $thread_modified_date);
+        $local_cache_date = max($last_read, $created, $modified, $closed, $sticky_until, $admin_lock);
                
         // Last Modified Header for cache control
     
@@ -320,8 +324,12 @@ function cache_check_start_page()
 
     // Get the thread last modified date and user last read date.
     
-    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ_AT, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS THREAD_MODIFIED, ";
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.STICKY_UNTIL)) AS STICKY_UNTIL, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK, ";
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
@@ -333,11 +341,11 @@ function cache_check_start_page()
     
         // Get the modified dates from the query
                
-        list($thread_last_read_date, $thread_modified_date, $last_visitor_date) = db_fetch_array($result, DB_RESULT_NUM);
+        list($last_read, $created, $modified, $closed, $sticky_until, $last_logon) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is newer (higher).
         
-        $local_cache_date = max($thread_last_read_date, $thread_modified_date, $last_visitor_date);
+        $local_cache_date = max($last_read, $created, $modified, $closed, $sticky_until, $last_logon);
                
         // Last Modified Header for cache control
     
@@ -403,8 +411,11 @@ function cache_check_messages()
 
         list($tid) = explode('.', $_GET['msg']);
 
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS POST_CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.TSTAMP)) AS POLL_VOTE_MODIFIED ";
+        $sql = "SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(POST.VIEWED)) AS VIEWED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.TSTAMP)) AS POLL_VOTE ";
         $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
         $sql.= "ON (USER_POLL_VOTES.TID = POST.TID) WHERE POST.TID = '$tid'";
@@ -421,11 +432,11 @@ function cache_check_messages()
 
         // Get the two modified dates from the query
         
-        list($post_created_date, $user_poll_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+        list($created, $viewed, $approved, $edited, $poll_vote) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is newer (higher).
         
-        $local_cache_date = max($post_created_date, $user_poll_modified_date);
+        $local_cache_date = max($created, $viewed, $approved, $edited, $poll_vote);
         
         // Last Modified Header for cache control
 

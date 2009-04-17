@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.186 2009-04-04 14:43:24 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.187 2009-04-17 20:37:30 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1713,8 +1713,8 @@ function admin_delete_user($uid, $delete_content = false)
                     // Delete threads started by the user where
                     // the thread only contains a single post.
 
-                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y' ";
-                    $sql.= "WHERE BY_UID = '$uid' AND LENGTH = 1";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y', ";
+                    $sql.= "MODIFIED = '$current_datetime' WHERE BY_UID = '$uid' AND LENGTH = 1";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 

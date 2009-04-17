@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.336 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.337 2009-04-17 17:34:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1492,7 +1492,7 @@ function bh_remove_all_cookies()
     bh_setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_remember_passhash", "", time() - YEAR_IN_SECONDS);
 
-    // Remove the light mode saved logon cookies.
+    // Remove the legacy light mode saved logon cookies.
 
     bh_setcookie("bh_light_remember_username", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);

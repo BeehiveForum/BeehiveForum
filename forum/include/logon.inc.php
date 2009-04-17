@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.108 2009-04-13 11:54:49 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.109 2009-04-17 17:34:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -139,86 +139,59 @@ function logon_update_cookies($logon, $password, $passhash, $save_password, $aut
 
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
-    // Light mode uses different cookies to the main site.
-    // It also doesn't support multiple saved logons for
-    // compatibility reasons so we simply overwrite the
-    // existing saved details with the new ones.
+    // Search for the specified logon in the existing cookies
+    // and remove it if it's found.
 
-    if (defined('BEEHIVEMODE_LIGHT')) {
+    if (($key = array_isearch($logon, $username_array)) !== false) {
 
-        if ($save_password === true) {
+        unset($username_array[$key]);
+        unset($password_array[$key]);
+        unset($passhash_array[$key]);
+    }
 
-            bh_setcookie("bh_light_remember_username", $logon, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_light_remember_password", $password, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_light_remember_passhash", $passhash, time() + YEAR_IN_SECONDS);
-            
-            if ($auto_logon === true) {
-                bh_setcookie("bh_light_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
-            }
+    // Add the new logon to the top of the list.
 
-        }else {
+    array_unshift($username_array, $logon);
 
-            bh_setcookie("bh_light_remember_username", $logon, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
-        }
+    // Check to see if we're saving the password
+
+    if ($save_password === true) {
+
+        array_unshift($password_array, $password);
+        array_unshift($passhash_array, $passhash);
+
+        // Set the auto logon cookie if required.
+
+        if ($auto_logon === true) {
+            bh_setcookie("bh_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
+        }            
 
     }else {
 
-        // Search for the specified logon in the existing cookies
-        // and remove it if it's found.
-
-        if (($key = array_isearch($logon, $username_array)) !== false) {
-
-            unset($username_array[$key]);
-            unset($password_array[$key]);
-            unset($passhash_array[$key]);
-        }
-
-        // Add the new logon to the top of the list.
-
-        array_unshift($username_array, $logon);
-
-        // Check to see if we're saving the password
-
-        if ($save_password === true) {
-
-            array_unshift($password_array, $password);
-            array_unshift($passhash_array, $passhash);
-            
-            // Set the auto logon cookie if required.
-
-            if ($auto_logon === true) {
-                bh_setcookie("bh_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
-            }            
-
-        }else {
-
-            array_unshift($password_array, "");
-            array_unshift($passhash_array, "");
-        }
-
-        // Remove old format cookies
-
-        while (list($key) = each($username_array)) {
-
-            bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
-        }
-
-        // New format cookies for 0.8 for better compatibility with more browsers.
-
-        $username_cookie = implode(",", $username_array);
-        $password_cookie = implode(",", $password_array);
-        $passhash_cookie = implode(",", $passhash_array);
-
-        // Set the cookies.
-
-        bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
+        array_unshift($password_array, "");
+        array_unshift($passhash_array, "");
     }
+
+    // Remove old format cookies
+
+    while (list($key) = each($username_array)) {
+
+        bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
+    }
+
+    // New format cookies for 0.8 for better compatibility with more browsers.
+
+    $username_cookie = implode(",", $username_array);
+    $password_cookie = implode(",", $password_array);
+    $passhash_cookie = implode(",", $passhash_array);
+
+    // Set the cookies.
+
+    bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
 }
 
 function logon_perform()
@@ -314,42 +287,24 @@ function logon_perform_auto()
     
     forum_check_webtag_available($webtag);
     
-    if (defined('BEEHIVEMODE_LIGHT') || defined('BEEHIVE_LIGHT_INCLUDE')) {
-    
-        if (bh_getcookie("bh_light_auto_logon", "Y") && !bh_session_active()) {
+    if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
 
-            $user_logon = bh_getcookie('bh_light_remember_username', 'strlen', '');
-            $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');        
+        logon_get_cookies($username_array, $password_array, $passhash_array);
 
-            if (($uid = user_logon($user_logon, $user_passhash))) {
-               
-                bh_session_init($uid);
-                header_redirect("index.php?webtag=$webtag&noframes");
-                exit;
-            }            
-        }
+        if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
 
-    }else {
-    
-        if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_active()) {
-            
-            logon_get_cookies($username_array, $password_array, $passhash_array);
+            if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
 
-            if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
-            
-                if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
+                if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
 
-                    if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+                    $username = mb_strtoupper($username_array[0]);
+                    $passhash = $passhash_array[0];
 
-                        $username = mb_strtoupper($username_array[0]);
-                        $passhash = $passhash_array[0];
+                    if (($uid = user_logon($username, $passhash))) {
 
-                        if (($uid = user_logon($username, $passhash))) {
-
-                            bh_session_init($uid);
-                            header_redirect(get_request_uri(true, false));
-                            exit;
-                        }
+                        bh_session_init($uid);
+                        header_redirect(get_request_uri(true, false));
+                        exit;
                     }
                 }
             }

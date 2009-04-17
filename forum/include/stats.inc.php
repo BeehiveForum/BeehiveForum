@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.125 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.126 2009-04-17 20:59:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -176,10 +176,10 @@ function stats_output_xml()
 
             foreach ($user_stats['USERS'] as $user) {
             
-                if (isset($user['SID']) && !is_null($user['SID'])) {
+                if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
 
-                    $active_user_display = word_filter_add_ob_tags(htmlentities_array($user['NAME']));
-                    $active_user_display = sprintf($search_engine_bot_link, $user['URL'], $active_user_display);
+                    $active_user_display = word_filter_add_ob_tags(htmlentities_array($user['BOT_NAME']));
+                    $active_user_display = sprintf($search_engine_bot_link, $user['BOT_URL'], $active_user_display);
                     
                     $active_users_array[] = $active_user_display;
 
@@ -490,7 +490,7 @@ function stats_get_active_user_list()
 
     // Current active number of guests
 
-    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 ";
+    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
     $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime' ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
@@ -500,11 +500,10 @@ function stats_get_active_user_list()
 
     // Curent active users
 
-    $sql = "SELECT SESSIONS.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
-    $sql.= "USER_PREFS.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
-    $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, USER_PEER2.PEER_NICKNAME, ";
-    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.NAME ";
+    $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS.ANON_LOGON, ";
+    $sql.= "USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, ";
+    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL AS BOT_URL, SEARCH_ENGINE_BOTS.NAME AS BOT_NAME ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
@@ -515,7 +514,7 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= '$session_cutoff_datetime' AND SESSIONS.FID = '$forum_fid' ";
     $sql.= "AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
-    $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
+    $sql.= "ORDER BY USER.NICKNAME";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
 
@@ -556,13 +555,20 @@ function stats_get_active_user_list()
 
             unset($user_data);
 
-        }elseif ($anon_logon == USER_ANON_DISABLED || $user_data['UID'] == $uid || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
+        }elseif (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
 
-            $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
-                                                       'LOGON'        => $user_data['LOGON'],
-                                                       'NICKNAME'     => $user_data['NICKNAME'],
-                                                       'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
-                                                       'ANON_LOGON'   => $anon_logon);
+            if (isset($user_data['SID']) && !is_null($user_data['SID'])) {
+            
+                $stats['USERS'][$user_data['SID']] = array('BOT_NAME' => $user_data['BOT_NAME'],
+                                                           'BOT_URL'  => $user_data['BOT_URL']);
+            }else {
+            
+                $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
+                                                           'LOGON'        => $user_data['LOGON'],
+                                                           'NICKNAME'     => $user_data['NICKNAME'],
+                                                           'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
+                                                           'ANON_LOGON'   => $anon_logon);
+            }
         }
     }
 

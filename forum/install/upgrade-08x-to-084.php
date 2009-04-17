@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.21 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.22 2009-04-17 20:37:30 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -39,6 +39,10 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 // Stop script timing out
 
 @set_time_limit(0);
+
+// Current datetime
+
+$current_datetime = date(MYSQL_DATETIME, time());
 
 // Get list of forums.
 
@@ -88,16 +92,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             $valid = false;
             return;
         }
-    }
-
-    // Update existing deleted threads
-
-    $sql = "UPDATE `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y' WHERE LENGTH = 0";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
     }
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
@@ -200,7 +194,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 
     $sql = "UPDATE `{$table_data['PREFIX']}POST` POST, `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
-    $sql.= "SET POST.APPROVED = NOW(), POST.APPROVED_BY = POST.FROM_UID ";
+    $sql.= "SET POST.APPROVED = '$current_datetime', POST.APPROVED_BY = POST.FROM_UID ";
     $sql.= "WHERE POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID ";
     $sql.= "AND POST_CONTENT.CONTENT IS NULL ";
 
@@ -209,6 +203,17 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
+
+    // Update existing deleted threads
+
+    $sql = "UPDATE `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
+    $sql.= "MODIFIED = '$current_datetime' WHERE LENGTH = 0";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }    
 
     if (!install_column_exists($db_database, "{$table_data['WEBTAG']}_BANNED", "EXPIRES")) {
 

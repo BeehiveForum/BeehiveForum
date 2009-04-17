@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.127 2009-04-17 21:07:36 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.128 2009-04-17 21:17:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -147,14 +147,14 @@ function stats_output_xml()
             $active_user_list_array[] = $lang['oneactiveguest'];
         }
         
-        if ($user_stats['NUSERS'] <> 1) {
-            $active_user_list_array[] = sprintf($lang['numactivemembers'], $user_stats['NUSERS']);
+        if (sizeof($user_stats['USERS']) <> 1) {
+            $active_user_list_array[] = sprintf($lang['numactivemembers'], sizeof($user_stats['USERS']));
         }else {
             $active_user_list_array[] = $lang['oneactivemember'];
         }
         
-        if ($user_stats['AUSERS'] <> 1) {
-            $active_user_list_array[] = sprintf($lang['numactiveanonymousmembers'], $user_stats['AUSERS']);
+        if ($user_stats['ANON_USERS'] <> 1) {
+            $active_user_list_array[] = sprintf($lang['numactiveanonymousmembers'], $user_stats['ANON_USERS']);
         }else {
             $active_user_list_array[] = $lang['oneactiveanonymousmember'];
         }
@@ -475,8 +475,7 @@ function stats_get_active_user_list()
 
     $lang = lang::get_instance()->load(__FILE__);
 
-    $stats = array('GUESTS' => 0, 'NUSERS' => 0,
-                   'AUSERS' => 0, 'USERS'  => array());
+    $stats = array('GUESTS' => 0, 'ANON_USERS' => 0, 'USERS' => array());
 
     if (!$table_data = get_table_prefix()) return $stats;
 
@@ -546,12 +545,6 @@ function stats_get_active_user_list()
         if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
-        if ($anon_logon > USER_ANON_DISABLED) {
-            $stats['AUSERS']++;
-        }else {
-            $stats['NUSERS']++;
-        }
-
         if (($user_data['USER_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) > 0) {
 
             unset($user_data);
@@ -570,11 +563,12 @@ function stats_get_active_user_list()
                                                            'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
                                                            'ANON_LOGON'   => $anon_logon);
             }
+        
+        }else {
+        
+            $stats['ANON_USERS']++;
         }
     }
-
-    $stats['USER_COUNT'] = sizeof($stats['USERS']) + $stats['AUSERS'];
-    $stats['USER_COUNT']+= $stats['NUSERS'] + $stats['GUESTS'];
 
     return $stats;
 }

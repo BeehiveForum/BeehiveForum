@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.126 2009-04-17 20:59:48 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.127 2009-04-17 21:07:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -503,7 +503,8 @@ function stats_get_active_user_list()
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS.ANON_LOGON, ";
     $sql.= "USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, ";
-    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL AS BOT_URL, SEARCH_ENGINE_BOTS.NAME AS BOT_NAME ";
+    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL AS BOT_URL, SEARCH_ENGINE_BOTS.NAME AS BOT_NAME, ";
+    $sql.= "COALESCE(USER_PEER2.PEER_NICKNAME, USER.NICKNAME, SEARCH_ENGINE_BOTS.NAME) AS SORT_COLUMN ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
@@ -514,7 +515,7 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= '$session_cutoff_datetime' AND SESSIONS.FID = '$forum_fid' ";
     $sql.= "AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
-    $sql.= "ORDER BY USER.NICKNAME";
+    $sql.= "ORDER BY SORT_COLUMN";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
 

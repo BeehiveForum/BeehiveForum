@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.109 2009-04-17 17:34:16 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.110 2009-04-23 19:02:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -475,10 +475,31 @@ function logon_draw_form($logon_options)
             echo "                        <td align=\"left\" width=\"90\">{$lang['username']}:</td>\n";
             echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? htmlentities_array($password_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? htmlentities_array($passhash_array[0]) : "")), "</td>\n";
-            echo "                      </tr>\n";
+            
+            if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
+            
+                if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+            
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
+                    echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? htmlentities_array($password_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? htmlentities_array($passhash_array[0]) : "")), "</td>\n";
+                    echo "                      </tr>\n";
+                
+                }else {
+                
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
+                    echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", ""), "</td>\n";
+                    echo "                      </tr>\n";
+                }
+            
+            }else {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
+                echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", ""), "</td>\n";
+                echo "                      </tr>\n";
+            }
         }
     }
 

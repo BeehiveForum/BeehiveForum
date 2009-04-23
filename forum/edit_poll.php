@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.178 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.179 2009-04-23 19:02:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -891,6 +891,7 @@ if (isset($t_post_html) && $t_post_html == 'Y') {
 }
 
 $answer_groups = range(0, $answer_count);
+
 unset($answer_groups[0]);
 
 for ($i = 0; $i < $answer_count; $i++) {
@@ -906,11 +907,13 @@ for ($i = 0; $i < $answer_count; $i++) {
 
         if (isset($poll_results['OPTION_NAME'][$i])) {
 
-            $parsed_poll_option_name = new MessageTextParse($poll_results['OPTION_NAME'][$i], false);
+            $parsed_text = new MessageTextParse($poll_results['OPTION_NAME'][$i], false);
+            
+            $t_post_html = $parsed_text->getMessageHTML();
 
-            $t_answer_text = $parsed_poll_option_name->getMessage(); $t_post_html = $parsed_poll_option_name->getMessageHTML();
+            $t_answer = new MessageText($allow_html ? $t_post_html : false, $parsed_text->getMessage(), false, false);
 
-            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer_text, 40, 255), "</td>\n";
+            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer->getTidyContent(), 40, 255), "</td>\n";
 
         }else {
 

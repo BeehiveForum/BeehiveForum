@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.228 2009-04-17 20:37:30 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.229 2009-04-23 19:02:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -188,29 +188,29 @@ function light_draw_logon_form($error_msg_array = array())
     
     logon_get_cookies($username_array, $password_array, $passhash_array);
     
-    if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
-        $user_logon = $username_array[0];
-    }else {
-        $user_logon = '';
-    }
-    
-    if (isset($password_array[0]) && strlen(trim($password_array[0])) > 0) {
-        $user_password = $password_array[0];
-    }else {
-        $user_password = '';
-    }
-    
-    if (isset($passhash_array[0]) && strlen(trim($passhash_array[0])) > 0) {
-        $user_passhash = $passhash_array[0];
-    }else {
-        $user_passhash = '';
-    }    
-    
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", htmlentities_array(stripslashes_array($user_logon)), 20, 15, "autocomplete=\"off\""). "</p>\n";
-    echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array(stripslashes_array($user_password)), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", htmlentities_array(stripslashes_array($user_passhash))), "</p>\n";
-    echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($password_array[0]) && strlen($password_array[0]) > 0 && isset($passhash_array[0]) && strlen($passhash_array[0]) > 0), "autocomplete=\"off\""), "</p>\n";
+    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, "autocomplete=\"off\""). "</p>\n";
+    
+    if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
+
+        if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+        
+            echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</p>\n";
+            echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], true, "autocomplete=\"off\""), "</p>\n";
+        
+        }else {
+        
+            echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</p>\n";
+            echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], false, "autocomplete=\"off\""), "</p>\n";
+        }
+        
+    }else {
+    
+        echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</p>\n";
+        echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], false, "autocomplete=\"off\""), "</p>\n";
+    }
+    
     echo "  <p>", light_form_checkbox("auto_logon", "Y", $lang['logmeinautomatically'], false, "autocomplete=\"off\""), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";

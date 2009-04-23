@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.370 2009-04-04 11:54:10 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.371 2009-04-23 19:10:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -485,7 +485,7 @@ if (bh_session_get_value('UID') > 0) {
 
         if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
 
-            if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
+            if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($selected_folder) && $selected_folder == $fid)) {
                 array_push($folder_order, $fid);
             }else {
                 array_push($ignored_folders, $fid);

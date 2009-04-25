@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.45 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.46 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -660,7 +660,7 @@ function visitor_log_clean_up()
     $visitor_cutoff_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - (DAY_IN_SECONDS * 7));
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-    $sql.= "AND LAST_LOGON < '$visitor_cutoff_datetime' ";
+    $sql.= "AND LAST_LOGON < CAST('$visitor_cutoff_datetime' AS DATETIME)";
 
     if (!db_query($sql, $db_visitor_log_clean_up)) return false;
 

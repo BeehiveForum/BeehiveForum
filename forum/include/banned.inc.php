@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.50 2009-04-09 18:53:42 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.51 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -121,7 +121,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
         $sql = "SELECT ID, BANTYPE, BANDATA, $ban_check_select_list ";
         $sql.= "FROM `{$table_data['PREFIX']}BANNED` WHERE $ban_check_where_query ";
-        $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
+        $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
         if (!$result = db_query($sql, $db_ban_check)) return false;
 
@@ -207,9 +207,8 @@ function ip_is_banned($ipaddress)
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
-    $sql.= "WHERE '$ipaddress' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_ip'";
+    $sql.= "WHERE '$ipaddress' LIKE BANDATA  AND BANTYPE = '$ban_type_ip' ";
+    $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
     if (!$result = db_query($sql, $db_ip_is_banned)) return false;
     
@@ -231,9 +230,8 @@ function logon_is_banned($logon)
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
-    $sql.= "WHERE '$logon' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_logon'";
+    $sql.= "WHERE '$logon' LIKE BANDATA AND BANTYPE = '$ban_type_logon' ";
+    $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
     if (!$result = db_query($sql, $db_logon_is_banned)) return false;
 
@@ -255,9 +253,8 @@ function nickname_is_banned($nickname)
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
-    $sql.= "WHERE '$nickname' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_nick'";
+    $sql.= "WHERE '$nickname' LIKE BANDATA AND BANTYPE = '$ban_type_nick' ";
+    $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
     if (!$result = db_query($sql, $db_nickname_is_banned)) return false;
 
@@ -279,9 +276,8 @@ function email_is_banned($email)
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
-    $sql.= "WHERE '$email' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_email'";
+    $sql.= "WHERE '$email' LIKE BANDATA AND BANTYPE = '$ban_type_email' ";
+    $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
     if (!$result = db_query($sql, $db_email_is_banned)) return false;
 
@@ -303,9 +299,8 @@ function referer_is_banned($referer)
     $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
     $sql = "SELECT COUNT(ID) FROM `{$table_data['PREFIX']}BANNED` ";
-    $sql.= "WHERE '$referer' LIKE BANDATA ";
-    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0)";
-    $sql.= "AND BANTYPE = '$ban_type_ref'";
+    $sql.= "WHERE '$referer' LIKE BANDATA AND BANTYPE = '$ban_type_ref' ";
+    $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
     if (!$result = db_query($sql, $db_referer_is_banned)) return false;
 
@@ -332,7 +327,7 @@ function add_ban_data($type, $data, $comment, $expires)
         $expires_datetime = date(MYSQL_DATETIME_MIDNIGHT, $expires);
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}BANNED` (BANTYPE, BANDATA, COMMENT, EXPIRES) ";
-        $sql.= "VALUES ('$type', '$data', '$comment', '$expires_datetime')";
+        $sql.= "VALUES ('$type', '$data', '$comment', CAST('$expires_datetime' AS DATETIME))";
         
     }else {
     
@@ -382,7 +377,8 @@ function update_ban_data($ban_id, $type, $data, $comment, $expires)
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}BANNED` ";
         $sql.= "SET BANTYPE = '$type', BANDATA = '$data', COMMENT = '$comment', ";
-        $sql.= "EXPIRES = '$expires_datetime' WHERE ID = '$ban_id'";
+        $sql.= "EXPIRES = CAST('$expires_datetime' AS DATETIME) ";
+        $sql.= "WHERE ID = '$ban_id'";
 
     }else {
 
@@ -486,7 +482,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS WHERE SESSIONS.UID = 0 ";
     $sql.= "AND (('$ban_data' LIKE SESSIONS.IPADDRESS AND '$ban_type' = '$ban_type_ip') ";
     $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND '$ban_type' = '$ban_type_ref')) ";
-    $sql.= "AND ($ban_expires > '$current_datetime' OR $ban_expires = 0)";
+    $sql.= "AND ($ban_expires > CAST('$current_datetime' AS DATETIME) OR $ban_expires = 0)";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;
 
@@ -525,7 +521,8 @@ function user_is_banned($uid)
     $sql.= "OR (USER.NICKNAME LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_nick') ";
     $sql.= "OR (USER.EMAIL LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_email') ";
     $sql.= "OR (USER.REFERER LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ref')) ";
-    $sql.= "AND (EXPIRES > '$current_datetime' OR EXPIRES = 0) AND USER.UID = '$uid'";
+    $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0) ";
+    $sql.= "AND USER.UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_is_banned)) return false;
 

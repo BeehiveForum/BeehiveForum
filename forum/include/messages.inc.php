@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.576 2009-04-23 19:02:34 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.577 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1558,18 +1558,16 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             // Update the unread data.
             
             $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT) ";
-            $sql.= "VALUES ('$uid', '$tid', '$pid', '$current_datetime') ON DUPLICATE KEY UPDATE ";
-            $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = '$current_datetime'";
+            $sql.= "VALUES ('$uid', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
+            $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = CAST('$current_datetime' AS DATETIME)";
 
             if (!$result = db_query($sql, $db_message_update_read)) return false;
         }
 
         // Mark posts as Viewed
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
-        $sql.= "SET VIEWED = '$current_datetime' WHERE TID = '$tid' ";
-        $sql.= "AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' ";
-        $sql.= "AND VIEWED IS NULL";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
         if (!$result = db_query($sql, $db_message_update_read)) return false;
     }
@@ -1746,7 +1744,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql.= "AND THREAD.MODIFIED > '$unread_cutoff_datetime' ";
+    $sql.= "AND THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";

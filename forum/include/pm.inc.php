@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.276 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.277 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1417,7 +1417,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
     $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
-    $sql.= "'$subject_escaped', '', '$current_datetime', 0)";
+    $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), 0)";
     
     echo "<p>$sql</p>\n";
 
@@ -1494,7 +1494,8 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
 
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
     $sql.= "CREATED, NOTIFIED, SMID) VALUES ('$pm_sent', '$to_uid', '$from_uid', ";
-    $sql.= "'$subject_escaped', '', '$current_datetime', 1, '$sent_item_mid')";
+    $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "1, '$sent_item_mid')";
 
     if (db_query($sql, $db_pm_add_sent_item)) {
 
@@ -1552,7 +1553,7 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
 
         $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
         $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', '$uid', '$subject', ";
-        $sql.= "'$recipient_list', '$current_datetime', 0)";
+        $sql.= "'$recipient_list', CAST('$current_datetime' AS DATETIME), 0)";
 
         if (db_query($sql, $db_pm_save_message)) {
 
@@ -2114,7 +2115,7 @@ function pm_user_prune_folders($uid = false)
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE (((TYPE & $pm_read > 0) AND TO_UID = '$uid') ";
         $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
-        $sql.= "AND CREATED < '$pm_prune_length_datetime'";
+        $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
         if (!db_query($sql, $db_pm_prune_folders)) return false;
     }
@@ -2146,7 +2147,7 @@ function pm_system_prune_folders()
         $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
-        $sql.= "AND CREATED < '$pm_prune_length_datetime'";
+        $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
         if (!db_query($sql, $db_pm_prune_folders)) return false;
 

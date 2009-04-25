@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.74 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.75 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -203,8 +203,9 @@ function rss_fetch_feed()
     $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.LAST_RUN ";
     $sql.= "FROM `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS ";
     $sql.= "LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
-    $sql.= "WHERE '$current_datetime' >= DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL ";
-    $sql.= "RSS_FEEDS.FREQUENCY MINUTE) AND RSS_FEEDS.FREQUENCY > 0 ";
+    $sql.= "WHERE CAST('$current_datetime' AS DATETIME) >= ";
+    $sql.= "DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL RSS_FEEDS.FREQUENCY MINUTE) ";
+    $sql.= "AND RSS_FEEDS.FREQUENCY > 0 ";
     $sql.= "AND USER.UID IS NOT NULL LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
@@ -213,8 +214,10 @@ function rss_fetch_feed()
 
         $rss_feed = db_fetch_array($result, DB_RESULT_ASSOC);
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` SET LAST_RUN = '$current_datetime' ";
-        $sql.= "WHERE RSSID = {$rss_feed['RSSID']} AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` ";
+        $sql.= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE RSSID = {$rss_feed['RSSID']} ";
+        $sql.= "AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
 
         if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
 
@@ -412,7 +415,7 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN) ";
-    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, '$last_run_datetime')";
+    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME))";
 
     if (!db_query($sql, $db_rss_add_feed)) return false;
 

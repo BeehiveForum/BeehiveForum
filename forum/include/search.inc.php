@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.230 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.231 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -704,13 +704,13 @@ function search_date_range($from, $to)
     if (isset($from_timestamp)) {
     
         $from_datetime = date(MYSQL_DATETIME, $from_timestamp);    
-        $range = "AND POST.CREATED >= '$from_datetime' ";
+        $range = "AND POST.CREATED >= CAST('$from_datetime' AS DATETIME) ";
     }     
         
     if (isset($to_timestamp)) {
     
         $to_datetime = date(MYSQL_DATETIME, $to_timestamp); 
-        $range.= "AND POST.CREATED <= '$to_datetime' ";
+        $range.= "AND POST.CREATED <= CAST('$to_datetime' AS DATETIME) ";
     }
 
     return $range;
@@ -792,7 +792,8 @@ function check_search_frequency()
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-            $sql.= "SET LAST_SEARCH = '$current_datetime' WHERE UID = '$uid'";
+            $sql.= "SET LAST_SEARCH = CAST('$current_datetime' AS DATETIME) ";
+            $sql.= "WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 
@@ -801,8 +802,8 @@ function check_search_frequency()
 
     }else{
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
-        $sql.= "(UID, LAST_SEARCH) VALUES ('$uid', '$current_datetime')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, LAST_SEARCH) ";
+        $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
         if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 

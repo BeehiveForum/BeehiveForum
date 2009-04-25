@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.215 2009-03-29 12:11:58 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.216 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,15 +77,14 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` ";
-        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
-        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, '$current_datetime', 0, '$ipaddress')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
+        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, CAST('$current_datetime' AS DATETIME), 0, '$ipaddress')";
 
     }else {
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
         $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
-        $sql.= "$fuid, $tuid, '$current_datetime', '$current_datetime', $fuid, '$ipaddress')";
+        $sql.= "$fuid, $tuid, '$current_datetime', CAST('$current_datetime' AS DATETIME), $fuid, '$ipaddress')";
     }
 
     if (db_query($sql, $db_post_create)) {
@@ -134,8 +133,10 @@ function post_approve($tid, $pid)
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = '$current_datetime', ";
-    $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
+    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' ";
+    $sql.= "AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_approve)) return false;
 
@@ -187,10 +188,9 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` " ;
-    $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, CREATED, MODIFIED, CLOSED) ";
-    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', '$current_datetime', ";
-    $sql.= "'$current_datetime', $closed)";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
+    $sql.= "STICKY, CREATED, MODIFIED, CLOSED) VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', ";
+    $sql.= "CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), $closed)";
 
     if (!$result = db_query($sql, $db_post_create_thread)) return false;
 
@@ -214,9 +214,8 @@ function post_update_thread_length($tid, $length)
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET LENGTH = '$length', MODIFIED = '$current_datetime' ";
-    $sql.= "WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET LENGTH = '$length', ";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_post_update_thread_length)) return false;
 
@@ -225,7 +224,7 @@ function post_update_thread_length($tid, $length)
         $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, UNREAD_PID) ";
         $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "WHERE POST.CREATED < '$unread_cutoff_datetime' ";
+        $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
         $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
         $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
@@ -511,7 +510,7 @@ function check_ddkey($ddkey)
         list($ddkey_datetime_check) = db_fetch_array($result);
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-        $sql.= "SET DDKEY = '$ddkey_datetime' WHERE UID = '$uid'";
+        $sql.= "SET DDKEY = CAST('$ddkey_datetime' AS DATETIME) WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
 
@@ -520,7 +519,7 @@ function check_ddkey($ddkey)
         $ddkey_datetime_check = '';
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, DDKEY) ";
-        $sql.= "VALUES ('$uid', '$ddkey_datetime')";
+        $sql.= "VALUES ('$uid', CAST('$ddkey_datetime' AS DATETIME))";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
     }
@@ -555,7 +554,8 @@ function check_post_frequency()
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-            $sql.= "SET LAST_POST = '$current_datetime' WHERE UID = '$uid'";
+            $sql.= "SET LAST_POST = CAST('$current_datetime' AS DATETIME) ";
+            $sql.= "WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 
@@ -564,8 +564,8 @@ function check_post_frequency()
 
     }else{
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` ";
-        $sql.= "(UID, LAST_POST) VALUES ('$uid', '$current_datetime')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, LAST_POST) ";
+        $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
         if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 

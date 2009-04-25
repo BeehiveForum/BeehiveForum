@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.22 2009-04-17 20:37:30 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.23 2009-04-25 09:45:34 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -103,7 +103,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, UNREAD_PID) ";
         $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM `{$table_data['PREFIX']}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "WHERE POST.CREATED < '$unread_cutoff_datetime' GROUP BY THREAD.TID ";
+        $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) GROUP BY THREAD.TID ";
         $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
         if (!$result = @db_query($sql, $db_install)) {
@@ -194,7 +194,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 
     $sql = "UPDATE `{$table_data['PREFIX']}POST` POST, `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
-    $sql.= "SET POST.APPROVED = '$current_datetime', POST.APPROVED_BY = POST.FROM_UID ";
+    $sql.= "SET POST.APPROVED = CAST('$current_datetime' AS DATETIME), POST.APPROVED_BY = POST.FROM_UID ";
     $sql.= "WHERE POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID ";
     $sql.= "AND POST_CONTENT.CONTENT IS NULL ";
 
@@ -207,7 +207,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     // Update existing deleted threads
 
     $sql = "UPDATE `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
-    $sql.= "MODIFIED = '$current_datetime' WHERE LENGTH = 0";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE LENGTH = 0";
 
     if (!$result = @db_query($sql, $db_install)) {
 

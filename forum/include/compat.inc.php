@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: compat.inc.php,v 1.6 2009-01-17 23:37:45 decoyduck Exp $ */
+/* $Id: compat.inc.php,v 1.7 2009-04-25 09:45:34 decoyduck Exp $ */
 
 /**
 * compat.inc.php - Compatibility functions
@@ -313,8 +313,8 @@ if (!function_exists('sys_get_temp_dir')) {
     function sys_get_temp_dir()
     {
         if (!empty($_ENV['TMP'])) return realpath($_ENV['TMP']);
-        if (!empty($_ENV['TMPDIR'])) return realpath( $_ENV['TMPDIR']);
-        if (!empty($_ENV['TEMP'])) return realpath( $_ENV['TEMP']);
+        if (!empty($_ENV['TMPDIR'])) return realpath($_ENV['TMPDIR']);
+        if (!empty($_ENV['TEMP'])) return realpath($_ENV['TEMP']);
      
         $temp_file = tempnam(uniqid(rand(), true), '');
       
@@ -337,7 +337,6 @@ if (!function_exists('sys_get_temp_dir')) {
 * @param string $file - Path to the file where to write the data. 
 * @param string $data - The data to write
 * @param integer $flags - Set flags to FILE_APPEND to append the content to the file.
-
 */
 
 if (!function_exists('file_put_contents')) {
@@ -371,8 +370,6 @@ if (!function_exists('file_put_contents')) {
 * @return mixed - Returns the combined array, FALSE if the number of elements for each array isn't equal or if the arrays are empty. 
 * @param array $input_array_1 - Array of keys to be used.
 * @param array $input_array_2 - Array of values to be used.
-* @param integer $flags - Set flags to FILE_APPEND to append the content to the file.
-
 */
 
 if (!function_exists('array_combine')) {

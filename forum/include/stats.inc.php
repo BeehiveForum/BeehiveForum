@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.128 2009-04-17 21:17:43 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.129 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -64,22 +64,23 @@ function stats_update($session_count, $recent_post_count)
     if (db_num_rows($result) > 0) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}STATS` SET ";
-        $sql.= "MOST_USERS_DATE = '$current_datetime', MOST_USERS_COUNT = '$session_count' ";
-        $sql.= "WHERE MOST_USERS_COUNT < $session_count";
+        $sql.= "MOST_USERS_DATE = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "MOST_USERS_COUNT = '$session_count' WHERE MOST_USERS_COUNT < $session_count";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}STATS` SET ";
-        $sql.= "MOST_POSTS_DATE = '$current_datetime', MOST_POSTS_COUNT = '$recent_post_count' ";
-        $sql.= "WHERE MOST_POSTS_COUNT < $recent_post_count";
+        $sql.= "MOST_POSTS_DATE = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "MOST_POSTS_COUNT = '$recent_post_count' WHERE MOST_POSTS_COUNT < $recent_post_count";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
 
     }else {
 
-        $sql = "INSERT LOW_PRIORITY INTO `{$table_data['PREFIX']}STATS` (MOST_USERS_DATE, ";
-        $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
-        $sql.= "VALUES ('$current_datetime', '$session_count', '$current_datetime', '$recent_post_count')";
+        $sql = "INSERT LOW_PRIORITY INTO `{$table_data['PREFIX']}STATS` ";
+        $sql.= "(MOST_USERS_DATE, MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
+        $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '$session_count', ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), '$recent_post_count')";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
     }
@@ -414,7 +415,8 @@ function stats_get_active_session_count()
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= '$session_cutoff_datetime' AND FID = '$forum_fid'";
+    $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_active_session_count)) return false;
 
@@ -436,8 +438,8 @@ function stats_get_active_registered_user_count()
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
     $sql = "SELECT COUNT(UID) AS REGISTERED_USER_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= '$session_cutoff_datetime' AND FID = '$forum_fid' ";
-    $sql.= "AND UID > 0";
+    $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND FID = '$forum_fid' AND UID > 0";
 
     if (!$result = db_query($sql, $db_stats_get_registered_user_count)) return false;
 
@@ -459,8 +461,8 @@ function stats_get_active_guest_count()
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
     
     $sql = "SELECT COUNT(UID) AS GUEST_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= '$session_cutoff_datetime' AND FID = '$forum_fid' ";
-    $sql.= "AND UID = 0";
+    $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND FID = '$forum_fid' AND UID = 0";
 
     if (!$result = db_query($sql, $db_stats_get_active_guest_count)) return false;
 
@@ -490,7 +492,7 @@ function stats_get_active_user_list()
     // Current active number of guests
 
     $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
-    $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime' ";
+    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
@@ -512,8 +514,8 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
-    $sql.= "WHERE SESSIONS.TIME >= '$session_cutoff_datetime' AND SESSIONS.FID = '$forum_fid' ";
-    $sql.= "AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
+    $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
     $sql.= "ORDER BY SORT_COLUMN";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
@@ -621,7 +623,7 @@ function stats_get_recent_post_count()
     $recent_post_datetime = date(MYSQL_DATETIME, time() - HOUR_IN_SECONDS);
 
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "WHERE CREATED >= '$recent_post_datetime'";
+    $sql.= "WHERE CREATED >= CAST('$recent_post_datetime' AS DATETIME)";
 
     if (!$result = db_query($sql, $db_stats_get_recent_post_count)) return false;
 
@@ -788,8 +790,8 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
 
     $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "WHERE POST.CREATED > '$post_start_datetime' ";
-    $sql.= "AND POST.CREATED < '$post_end_datetime'";
+    $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
+    $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME)";
 
     if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
 
@@ -801,8 +803,8 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE POST.CREATED > '$post_start_datetime' ";
-    $sql.= "AND POST.CREATED < '$post_end_datetime'";
+    $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
+    $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME) ";
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -1289,28 +1291,32 @@ function stats_get_visitor_counts()
     // Get visitors for today.
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE LAST_LOGON >= '$day_start_datetime' AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= CAST('$day_start_datetime' AS DATETIME) ";
+    $sql.= "AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_today) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE LAST_LOGON >= '$week_start_datetime' AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= CAST('$week_start_datetime' AS DATETIME) ";
+    $sql.= "AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_week) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE LAST_LOGON >= '$month_start_datetime' AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= CAST('$month_start_datetime' AS DATETIME) ";
+    $sql.= "AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_month) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
-    $sql.= "WHERE LAST_LOGON >= '$year_start_datetime' AND FORUM = '$forum_fid'";
+    $sql.= "WHERE LAST_LOGON >= CAST('$year_start_datetime' AS DATETIME) ";
+    $sql.= "AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
@@ -1331,7 +1337,7 @@ function stats_get_average_age()
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));    
 
     $sql = "SELECT AVG($year - DATE_FORMAT(DOB, '%Y') - ";
-    $sql.= "('00-$month-$day' < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";
+    $sql.= "(CAST('00-$month-$day' AS DATE) < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";
     $sql.= "FROM USER_PREFS WHERE DOB > 0";
 
     if (!$result = db_query($sql, $db_stats_get_average_age)) return false;

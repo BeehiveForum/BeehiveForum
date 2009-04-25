@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.187 2009-04-17 20:37:30 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.188 2009-04-25 09:45:34 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -83,7 +83,7 @@ function admin_add_log_entry($action, $data = "")
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
-    $sql.= "VALUES ('$current_datetime', '$uid', '$action', '$data')";
+    $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '$uid', '$action', '$data')";
 
     if (!db_query($sql, $db_admin_add_log_entry)) return false;
 
@@ -112,7 +112,7 @@ function admin_prune_log($remove_type, $remove_days)
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}ADMIN_LOG` ";
-    $sql.= "WHERE CREATED < '$remove_days_datetime' ";
+    $sql.= "WHERE CREATED < CAST('$remove_days_datetime' AS DATETIME) ";
     $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
     if (!db_query($sql, $db_admin_clearlog)) return false;
@@ -489,7 +489,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
-    $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime') ";
+    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
@@ -605,7 +605,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sql.= "SESSIONS.HASH, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
-    $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime') ";
+    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
@@ -1168,7 +1168,7 @@ function admin_prune_visitor_log($remove_days)
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));    
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-    $sql.= "AND LAST_LOGON < '$remove_days_datetime'";
+    $sql.= "AND LAST_LOGON < CAST('$remove_days_datetime' AS DATETIME)";
 
     if (!db_query($sql, $db_admin_prune_visitor_log)) return false;
 
@@ -1568,7 +1568,8 @@ function admin_approve_user($uid)
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = '$current_datetime' WHERE UID = '$uid'";
+    $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = CAST('$current_datetime' AS DATETIME) ";
+    $sql.= "WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_admin_approve_user)) return false;
 
@@ -1714,7 +1715,8 @@ function admin_delete_user($uid, $delete_content = false)
                     // the thread only contains a single post.
 
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y', ";
-                    $sql.= "MODIFIED = '$current_datetime' WHERE BY_UID = '$uid' AND LENGTH = 1";
+                    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid' ";
+                    $sql.= "AND LENGTH = 1";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
@@ -1730,7 +1732,8 @@ function admin_delete_user($uid, $delete_content = false)
                     // Mark posts made by this user as approved so they don't appear in the
                     // approval queue.
 
-                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` SET APPROVED = '$current_datetime', ";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` ";
+                    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
                     $sql.= "APPROVED_BY = '$admin_uid' WHERE FROM_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;

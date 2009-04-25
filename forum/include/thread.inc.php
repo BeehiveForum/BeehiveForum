@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.162 2009-04-17 20:37:30 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.163 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -272,9 +272,8 @@ function thread_set_moved($old_tid, $new_tid)
     
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` ";
-    $sql.= "(TID, NEW_TID, CREATED, TRACK_TYPE) ";
-    $sql.= "VALUES ('$old_tid', '$new_tid', '$current_datetime', 0)";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` (TID, NEW_TID, CREATED, TRACK_TYPE) ";
+    $sql.= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 0)";
 
     if (!db_query($sql, $db_thread_set_moved)) return false;
 
@@ -292,9 +291,8 @@ function thread_set_split($old_tid, $new_tid)
     
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` ";
-    $sql.= "(TID, NEW_TID, CREATED, TRACK_TYPE) ";
-    $sql.= "VALUES ('$old_tid', '$new_tid', '$current_datetime', 1)";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_TRACK` (TID, NEW_TID, CREATED, TRACK_TYPE) ";
+    $sql.= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 1)";
 
     if (!db_query($sql, $db_thread_set_split)) return false;
 
@@ -420,7 +418,7 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
         $sticky_until_datetime = date(MYSQL_DATETIME_MIDNIGHT, $sticky_until);
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET STICKY = '$sticky_sql', ";
-        $sql.= "STICKY_UNTIL = '$sticky_until_datetime' WHERE TID = '$tid'";
+        $sql.= "STICKY_UNTIL = CAST('$sticky_until_datetime' AS DATETIME) WHERE TID = '$tid'";
         
     }else {
     
@@ -446,7 +444,7 @@ function thread_set_closed($tid, $closed = true)
     if ($closed === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "SET CLOSED = '$current_datetime' WHERE TID = '$tid'";
+        $sql.= "SET CLOSED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
         
     }else {
     
@@ -472,7 +470,7 @@ function thread_admin_lock($tid, $locked = true)
     if ($locked === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "SET ADMIN_LOCK = '$current_datetime' WHERE TID = '$tid'";
+        $sql.= "SET ADMIN_LOCK = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
     
     }else {
     
@@ -569,7 +567,7 @@ function thread_delete($tid, $delete_type)
     }else {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
-        $sql.= "MODIFIED = '$current_datetime' WHERE TID = '$tid'";
+        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_thread_delete)) return false;
     }
@@ -590,7 +588,7 @@ function thread_undelete($tid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'N', ";
-    $sql.= "MODIFIED = '$current_datetime' WHERE TID = '$tid'";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_undelete)) return false;
 

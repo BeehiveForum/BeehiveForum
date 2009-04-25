@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.158 2009-03-28 18:28:20 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.159 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -166,7 +166,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_THREAD.UID) ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_THREAD.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_THREAD.TID = '$tid' ";
-    $sql.= "AND USER_FORUM.LAST_VISIT > '$modified_datetime' ";
+    $sql.= "AND USER_FORUM.LAST_VISIT > CAST('$modified_datetime' AS DATETIME) ";
     $sql.= "AND USER_THREAD.UID NOT IN ($tuid, $fuid, $exclude_user_list) ";
     $sql.= "AND USER_THREAD.INTEREST = 2";
 
@@ -272,7 +272,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_FOLDER.UID) ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_FOLDER.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_FOLDER.FID = '$fid' ";
-    $sql.= "AND USER_FORUM.LAST_VISIT > '$modified_datetime' ";
+    $sql.= "AND USER_FORUM.LAST_VISIT > CAST('$modified_datetime' AS DATETIME) ";
     $sql.= "AND USER_FOLDER.INTEREST = 1 AND USER_FOLDER.UID NOT IN ($exclude_user_list)";
 
     if (!$result = db_query($sql, $db_email_send_folder_subscription)) return false;

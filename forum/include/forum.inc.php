@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.379 2009-04-13 11:54:49 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.380 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -900,7 +900,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
                 $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` USER_THREAD ";
                 $sql.= "USING `{$forum_prefix}USER_THREAD` USER_THREAD LEFT JOIN `{$forum_prefix}THREAD` THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE THREAD.MODIFIED IS NOT NULL ";
-                $sql.= "AND THREAD.MODIFIED < '$unread_cutoff_datetime' ";
+                $sql.= "AND THREAD.MODIFIED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
                 $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST = 0)";
 
                 if (!db_query($sql, $db_forum_update_unread_data)) return false;
@@ -1816,9 +1816,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Create 'Welcome' Thread
 
-        $sql = "INSERT INTO `{$forum_table_prefix}THREAD` ";
-        $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', '$current_datetime', '$current_datetime', NULL, 'N', NULL, NULL)";
+        $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
+        $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), NULL, 'N', NULL, NULL)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1847,10 +1848,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         // Create the first post in the thread. Make it appear to be from
         // the Owner UID.
 
-        $sql = "INSERT INTO `{$forum_table_prefix}POST` ";
-        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
-        $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES ('$new_tid', 0, '$owner_uid', ";
-        $sql.= "0, NULL, '$current_datetime', 0, '$current_datetime', '$owner_uid', NULL, 0, '')";
+        $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, ";
+        $sql.= "VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+        $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '')";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -2407,7 +2408,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                     $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
                     $sql.= "FROM `{$forum_data['PREFIX']}THREAD THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
                     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
-                    $sql.= "AND (THREAD.MODIFIED > '$unread_cutoff_datetime') ";
+                    $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
                     if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
 
@@ -2557,7 +2558,7 @@ function forum_update_last_visit($uid)
     if ($uid > 0) {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
-        $sql.= "VALUES ('$uid', '$forum_fid', '$current_datetime') ";
+        $sql.= "VALUES ('$uid', '$forum_fid', CAST('$current_datetime' AS DATETIME)) ";
         $sql.= "ON DUPLICATE KEY UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
 
         if (!db_query($sql, $db_forum_update_last_visit)) return false;

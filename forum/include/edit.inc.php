@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.86 2009-04-17 20:37:30 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.87 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -84,7 +84,8 @@ function post_add_edit_text($tid, $pid)
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET EDITED = '$current_datetime', ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
+    $sql.= "SET EDITED = CAST('$current_datetime' AS DATETIME), ";
     $sql.= "EDITED_BY = '$edit_uid' WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_add_edit_text)) return false;
@@ -114,7 +115,7 @@ function post_delete($tid, $pid)
     }
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
-    $sql.= "MODIFIED = '$current_datetime' WHERE TID = '$tid' AND LENGTH = 1";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid' AND LENGTH = 1";
 
     if (!db_query($sql, $db_post_delete)) return false;
 
@@ -123,8 +124,10 @@ function post_delete($tid, $pid)
 
     if (!db_query($sql, $db_post_delete)) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = '$current_datetime', ";
-    $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
+    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' ";
+    $sql.= "AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_delete)) return false;
 

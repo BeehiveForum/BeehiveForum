@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.378 2009-04-17 17:34:16 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.379 2009-04-25 09:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -96,9 +96,8 @@ function user_create($logon, $password, $nickname, $email)
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, ";
-    $sql.= "REGISTERED, REFERER, IPADDRESS) VALUES ('$logon', ";
-    $sql.= "'$md5pass', '$nickname', '$email', '$current_datetime', ";
+    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, REFERER, IPADDRESS) ";
+    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email', CAST('$current_datetime' AS DATETIME), ";
     $sql.= "'$http_referer', '$ipaddress')";
 
     if ((db_query($sql, $db_user_create))) {
@@ -151,7 +150,7 @@ function user_update($uid, $logon, $nickname, $email)
             // additional matches (NULL != $logon, etc.)
 
             $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-            $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', '$current_datetime')";
+            $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
 
             if (!db_query($sql, $db_user_update)) return false;
         }
@@ -161,7 +160,7 @@ function user_update($uid, $logon, $nickname, $email)
         // No previous data so we just save what we have.
 
         $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-        $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', '$current_datetime')";
+        $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
 
         if (!db_query($sql, $db_user_update)) return false;
     }

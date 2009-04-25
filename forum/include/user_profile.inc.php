@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.103 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.104 2009-04-25 09:45:34 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -94,7 +94,7 @@ function user_get_profile($uid)
     
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    $session_cutoff_datetime = date(MYSQL_DATE, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
@@ -115,7 +115,7 @@ function user_get_profile($uid)
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = USER.UID) ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
-    $sql.= "AND SESSIONS.TIME >= '$session_cutoff_datetime') ";
+    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 

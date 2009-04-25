@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.350 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.351 2009-04-25 09:47:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1304,10 +1304,6 @@ function threads_process_list($result, $sql)
     
         $threads_array = array();
         
-        if (bh_session_get_value('UID') == 19) {
-            file_put_contents('threads_sql.log', sprintf("%s\n\n", $sql), FILE_APPEND);
-        }
-
         while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
                     
             if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
@@ -1352,10 +1348,6 @@ function threads_process_list($result, $sql)
 
             $threads_array[$thread['TID']] = $thread;
         }
-        
-        if (bh_session_get_value('UID') == 19) {
-            file_put_contents('threads_sql.log', print_r($threads_array, true), FILE_APPEND);
-        }        
 
         threads_have_attachments($threads_array);
         return array($threads_array, $folder_order);

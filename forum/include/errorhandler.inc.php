@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.140 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.141 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,6 +44,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 
 // Other include files we need.
 
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");

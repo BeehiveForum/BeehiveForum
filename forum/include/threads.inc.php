@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.351 2009-04-25 09:47:05 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.352 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -168,7 +168,7 @@ function threads_get_all($uid, $start_from = 0) // get "all" threads (i.e. most 
 
     if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_started_by_me($uid) // get threads started by user
@@ -222,7 +222,7 @@ function threads_get_started_by_me($uid) // get threads started by user
 
     if (!$result = db_query($sql, $db_threads_get_started_by_me)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_unread($uid) // get unread messages for $uid
@@ -290,7 +290,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores folder interest level)
@@ -351,7 +351,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
     if (!$result = db_query($sql, $db_threads_get_unread_to_me)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_by_days($uid, $days = 1) // get threads from the last $days days
@@ -415,7 +415,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
 
     if (!$result = db_query($sql, $db_threads_get_by_days)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
@@ -479,7 +479,7 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
 
     if (!$result = db_query($sql, $db_threads_get_by_interest)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
@@ -549,7 +549,7 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
 
     if (!$result = db_query($sql, $db_threads_get_unread_by_interest)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_recently_viewed($uid) // get messages recently seem by $uid
@@ -617,7 +617,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     if (!$result = db_query($sql, $db_threads_get_recently_viewed)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_by_relationship($uid, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
@@ -672,7 +672,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND) // get t
 
     if (!$result = db_query($sql, $db_threads_get_by_relationship)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
@@ -733,7 +733,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
 
     if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_polls($uid)
@@ -797,7 +797,7 @@ function threads_get_polls($uid)
 
     if (!$result = db_query($sql, $db_threads_get_polls)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_sticky($uid)
@@ -861,7 +861,7 @@ function threads_get_sticky($uid)
 
     if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_longest_unread($uid) // get unread messages for $uid
@@ -930,7 +930,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 
     if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_folder($uid, $fid, $start = 0)
@@ -993,7 +993,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     if (!$result = db_query($sql, $db_threads_get_folder)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_deleted($uid)
@@ -1056,7 +1056,7 @@ function threads_get_deleted($uid)
 
     if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid
@@ -1130,7 +1130,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
     if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
 
-    return threads_process_list($result, $sql);
+    return threads_process_list($result);
 }
 
 function threads_get_most_recent($limit = 10, $folder_list_array = array(), $creation_order = false)
@@ -1284,7 +1284,7 @@ function threads_get_unread_cutoff()
 
 // Arrange the results of a query into the right order for display
 
-function threads_process_list($result, $sql)
+function threads_process_list($result)
 {
     // Language file
 

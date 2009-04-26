@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.130 2009-04-07 19:17:56 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.131 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -58,6 +58,7 @@ $forum_settings = forum_get_settings();
 
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");

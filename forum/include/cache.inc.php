@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.25 2009-04-17 20:43:59 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.26 2009-04-26 13:01:11 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -46,8 +46,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 /**
 * Cache_Lite Error Handler.

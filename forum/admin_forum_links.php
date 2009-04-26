@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.73 2009-03-29 12:11:46 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.74 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -364,7 +364,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinktitle']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : ""), 40, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : ""), 40, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinklocation']}:</td>\n";
@@ -451,7 +451,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinktitle']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : (isset($forum_link['TITLE']) ? htmlentities_array($forum_link['TITLE']) : "")), 40, 32), form_input_hidden('t_old_title', htmlentities_array($forum_link['TITLE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : (isset($forum_link['TITLE']) ? htmlentities_array($forum_link['TITLE']) : "")), 40, 64), form_input_hidden('t_old_title', htmlentities_array($forum_link['TITLE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['forumlinklocation']}:</td>\n";
@@ -613,7 +613,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['toplinkcaption']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? htmlentities_array(stripslashes_array($_POST['t_top_link_title'])) : htmlentities_array(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), 40, 32), form_input_hidden('t_old_top_link_title', htmlentities_array(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? htmlentities_array(stripslashes_array($_POST['t_top_link_title'])) : htmlentities_array(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), 40, 64), form_input_hidden('t_old_top_link_title', htmlentities_array(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

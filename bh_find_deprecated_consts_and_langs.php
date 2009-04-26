@@ -21,13 +21,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.9 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.10 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
+
+// Load Language File Function
+
+function load_language_file($filename)
+{
+    $lang = array();
+
+    include("./forum/include/languages/$filename");
+
+    return $lang;
+}
 
 function get_files(&$files_array, $path, $ignore_files_array = array())
 {

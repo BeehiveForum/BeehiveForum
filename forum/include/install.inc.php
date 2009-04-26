@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.93 2009-04-05 14:11:19 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.94 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -310,7 +310,7 @@ function install_check_mysql_version()
 
 function install_check_php_version()
 {
-    if (version_compare(phpversion(), "5.0.0", "<")) {
+    if (version_compare(phpversion(), "5.1.0", "<")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -338,7 +338,7 @@ function install_check_php_version()
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">PHP Version 5.0.0 or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
+        echo "                        <td align=\"left\">PHP Version 5.1.0 or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

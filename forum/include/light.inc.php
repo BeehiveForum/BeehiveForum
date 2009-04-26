@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.229 2009-04-23 19:02:34 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.230 2009-04-26 13:01:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,9 +44,11 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
@@ -184,7 +186,11 @@ function light_draw_logon_form($error_msg_array = array())
         light_html_display_success_msg($lang['youhavesuccessfullyloggedout']);
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         light_html_display_error_array($error_msg_array);
-    } 
+    }
+    
+    $username_array = array();
+    $password_array = array();
+    $passhash_array = array();
     
     logon_get_cookies($username_array, $password_array, $passhash_array);
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.372 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.373 2009-04-28 20:58:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -33,7 +33,7 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 unregister_globals();
 
 // Set the default timezone
-date_default_timezone_set('UTC');
+date_default_timezone_set('Europe/London');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -265,7 +265,7 @@ if (user_is_guest()) {
                     $valid = false;
                 }
 
-            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_FOLDER && is_numeric($folder)) {
+            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
 
                 if (threads_mark_folder_read($folder)) {
 
@@ -314,10 +314,13 @@ echo "</script>\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
-if (is_numeric($folder) && $folder > 0) {
+if (isset($folder) && is_numeric($folder) && $folder > 0) {
     list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 }else {
     switch ($mode) {
+        case ALL_DISCUSSIONS:
+            list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
+            break;
         case UNREAD_DISCUSSIONS:
             list($thread_info, $folder_order) = threads_get_unread($uid);
             break;
@@ -441,7 +444,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if (isset($thread_info[$selected_tid])) {
             unset($thread_info[$selected_tid]);
-        }else {
+        }else if (sizeof($thread_info) == 50) {
             array_pop($thread_info);
         }
 
@@ -636,12 +639,12 @@ foreach ($folder_order as $folder_number) {
                     echo "              <tr>\n";
                     echo "                <td align=\"left\" class=\"threads_left_right_bottom\" colspan=\"2\">\n";
 
-                    foreach ($thread_info as $thread) {
+                    foreach ($thread_info as $key => $thread) {
 
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {
-
+                        
                             echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                             echo "                    <tr>\n";
                             echo "                      <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
@@ -752,7 +755,8 @@ foreach ($folder_order as $folder_number) {
                             echo "                      <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
                             echo "                    </tr>\n";
                             echo "                  </table>\n";
-
+                            
+                            unset($thread_info[$key]);
                         }
                     }
 

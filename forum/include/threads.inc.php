@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.352 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.353 2009-04-29 17:08:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1508,7 +1508,7 @@ function threads_mark_read($tid_array)
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime') AS DATETIME, USER_THREAD.INTEREST ";
+    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.TID IN ($tid_list) ";
     $sql.= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";

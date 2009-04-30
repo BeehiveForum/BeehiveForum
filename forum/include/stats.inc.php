@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.130 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.131 2009-04-30 21:03:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -167,7 +167,7 @@ function stats_output_xml()
         
         echo sprintf($lang['usersactiveinthepasttimeperiod'], $active_user_list, $active_user_time);
 
-        echo " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]\n";
+        echo " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"", html_get_frame_name('main'), "\">{$lang['viewcompletelist']}</a> ]\n";
         echo "    </td>\n";
         echo "    <td width=\"35\">&nbsp;</td>\n";
         echo "  </tr>\n";

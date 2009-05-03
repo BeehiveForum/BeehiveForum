@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.131 2009-04-30 21:03:37 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.132 2009-05-03 16:40:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -143,14 +143,17 @@ function stats_output_xml()
         echo "    <td>&nbsp;</td>\n";
         echo "    <td>";
         
-        if ($user_stats['GUESTS'] <> 1) {
-            $active_user_list_array[] = sprintf($lang['numactiveguests'], $user_stats['GUESTS']);
-        }else {
-            $active_user_list_array[] = $lang['oneactiveguest'];
+        if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
+        
+            if ($user_stats['GUESTS'] <> 1) {
+                $active_user_list_array[] = sprintf($lang['numactiveguests'], $user_stats['GUESTS']);
+            }else {
+                $active_user_list_array[] = $lang['oneactiveguest'];
+            }
         }
         
-        if (sizeof($user_stats['USERS']) <> 1) {
-            $active_user_list_array[] = sprintf($lang['numactivemembers'], sizeof($user_stats['USERS']));
+        if ($user_stats['USER_COUNT'] <> 1) {
+            $active_user_list_array[] = sprintf($lang['numactivemembers'], $user_stats['USER_COUNT']);
         }else {
             $active_user_list_array[] = $lang['oneactivemember'];
         }
@@ -474,11 +477,12 @@ function stats_get_active_guest_count()
 
 function stats_get_active_user_list()
 {
-    if (!$db_stats_get_active_user_list = db_connect()) return false;
+    $stats = array('ANON_USERS' => 0, 'BOTS' => 0, 'GUESTS' => 0,
+                   'USER_COUNT' => 0, 'USERS' => array());
+
+    if (!$db_stats_get_active_user_list = db_connect()) return $stats;
 
     $lang = lang::get_instance()->load(__FILE__);
-
-    $stats = array('GUESTS' => 0, 'ANON_USERS' => 0, 'USERS' => array());
 
     if (!$table_data = get_table_prefix()) return $stats;
 
@@ -488,7 +492,7 @@ function stats_get_active_user_list()
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
     
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) return $stats;
 
     // Current active number of guests
 
@@ -496,7 +500,7 @@ function stats_get_active_user_list()
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
+    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
 
     list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -519,7 +523,7 @@ function stats_get_active_user_list()
     $sql.= "AND SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
     $sql.= "ORDER BY SORT_COLUMN";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
+    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
 
     while (($user_data = db_fetch_array($result))) {
 
@@ -556,10 +560,14 @@ function stats_get_active_user_list()
 
             if (isset($user_data['SID']) && !is_null($user_data['SID'])) {
             
+                $stats['BOTS']++;
+                
                 $stats['USERS'][$user_data['SID']] = array('BOT_NAME' => $user_data['BOT_NAME'],
                                                            'BOT_URL'  => $user_data['BOT_URL']);
             }else {
             
+                $stats['USER_COUNT']++;
+                
                 $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
                                                            'LOGON'        => $user_data['LOGON'],
                                                            'NICKNAME'     => $user_data['NICKNAME'],

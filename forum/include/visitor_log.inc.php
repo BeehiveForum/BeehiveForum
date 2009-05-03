@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.46 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.47 2009-05-03 16:40:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,7 +53,7 @@ function visitor_log_get_recent()
 
     $uid = bh_session_get_value('UID');
 
-    if (forum_get_setting('guest_show_recent', 'Y')) {
+    if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
         $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
         $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";

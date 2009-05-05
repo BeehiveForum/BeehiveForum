@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.156 2009-03-29 12:11:47 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.157 2009-05-05 18:55:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,8 +116,6 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               CHANGE_USER_STATUS => $lang['userstatuschanges'],
                               CHANGE_FORUM_ACCESS => $lang['forumaccesschanges'],
                               DELETE_ALL_USER_POSTS => $lang['usermasspostdeletion'],
-                              BANNED_IPADDRESS => $lang['ipaddressbanadditions'],
-                              UNBANNED_IPADDRESS => $lang['ipaddressbandeletions'],
                               EDIT_THREAD_OPTIONS => $lang['threadtitleedits'],
                               MOVED_THREADS => $lang['massthreadmoves'],
                               CREATE_FOLDER => $lang['foldercreations'],
@@ -153,7 +151,6 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               ADD_USER_TO_GROUP => $lang['usergroupuseraddition'],
                               REMOVE_USER_FROM_GROUP => $lang['usergroupuserremoval'],
                               CHANGE_USER_PASSWD => $lang['userpasswordchange'],
-                              UPDATE_USER_GROUP => $lang['usergroupchanges'],
                               ADD_BANNED_IP => $lang['ipaddressbanadditions'],
                               REMOVE_BANNED_IP => $lang['ipaddressbandeletions'],
                               ADD_BANNED_LOGON => $lang['logonbanadditions'],
@@ -174,7 +171,6 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               ADD_FORUM_LINKS => $lang['forumlinkadditions'],
                               DELETE_FORUM_LINKS => $lang['forumlinkdeletions'],
                               EDIT_TOP_LINK_CAPTION => $lang['forumlinktopcaptionchanges'],
-                              EDIT_FOLDER => $lang['folderedits'],
                               DELETE_USER => $lang['userdeletions'],
                               DELETE_USER_DATA => $lang['userdatadeletions'],
                               UPDATE_USER_GROUP => $lang['usergroupchanges'],
@@ -797,6 +793,21 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
             case USER_FOLDER_PERMS_CHANGED:
 
                 $action_text = sprintf($lang['modifiedfolderpermsforuser'], $entry_array[0]);
+                break;
+                
+            case DELETE_USER:
+            
+                $action_text = sprintf($lang['deleteduseraccount'], $entry_array[0]);
+                break;
+            
+            case DELETE_USER_DATA:
+            
+                $index_link = "<a href=\"index.php?webtag=$webtag&amp;final_uri=%s\" target=\"_blank\">%s</a>";
+
+                $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[0]);
+                $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[1]);
+            
+                $action_text = sprintf($lang['deletedalluserdataforaccount'], $admin_user_link);
                 break;
 
             default:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.188 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.189 2009-05-05 18:55:23 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1835,6 +1835,10 @@ function admin_delete_user($uid, $delete_content = false)
         $sql = "DELETE QUICK FROM USER WHERE UID = '$uid'";
 
         if (!db_query($sql, $db_admin_delete_user)) return false;
+        
+        // Add a log entry to show what we've done.
+        
+        admin_add_log_entry(DELETE_USER, $user_logon);
 
         return true;
     }

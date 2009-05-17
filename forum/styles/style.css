@@ -728,7 +728,7 @@ a {
     margin-left: 1px;
     margin-right: 1px;
     width: 100%;
-    height: 200px;
+    height: 165px;
     font-size: 10pt;
 }
 
@@ -871,9 +871,10 @@ a {
 }
 
 .dictionary_pretty_content {
-    height: 200px;
+    height: 152px;
     overflow: auto;
-    width: 385px;
+    padding: 5px;
+    width: 350px;
 }
 
 .dictionary_word_display {

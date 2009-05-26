@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.374 2009-05-05 18:55:23 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.375 2009-05-26 18:20:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -538,7 +538,7 @@ if (($start_from > 0 && $mode == ALL_DISCUSSIONS && !is_numeric($folder))) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\" title=\"{$lang['showprev50threads']}\">{$lang['prev50threads']}</a></td>\n";
+    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\" title=\"{$lang['showprev50threads']}\">{$lang['prev50threads']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -565,7 +565,7 @@ foreach ($folder_order as $folder_number) {
         echo "    <td align=\"left\" colspan=\"2\">\n";
         echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "        <tr>\n";
-        echo "          <td align=\"left\" class=\"foldername\">\n";
+        echo "          <td align=\"left\" valign=\"top\" class=\"foldername\">\n";
 
         if ($folder_info[$folder_number]['INTEREST'] == FOLDER_SUBSCRIBED) {
             echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openFolderOptions($folder_number, '$webtag')\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>\n";
@@ -647,7 +647,7 @@ foreach ($folder_order as $folder_number) {
                         
                             echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                             echo "                    <tr>\n";
-                            echo "                      <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
+                            echo "                      <td align=\"center\" valign=\"top\" nowrap=\"nowrap\" width=\"20\">";
                             echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"", html_get_frame_name('right'), "\">";
 
                             if ($thread['LAST_READ'] == 0) {
@@ -884,7 +884,7 @@ if ($mode == ALL_DISCUSSIONS && !is_numeric($folder)) {
             echo "  <td colspan=\"2\">&nbsp;</td>\n";
             echo "</tr>\n";
             echo "<tr>\n";
-            echo "  <td align=\"left\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next']} $more_threads {$lang['threads']}\" title=\"{$lang['next']} $more_threads {$lang['threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">", sprintf($lang['nextxthreads'], $more_threads), "</td>\n";
+            echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next']} $more_threads {$lang['threads']}\" title=\"{$lang['next']} $more_threads {$lang['threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">", sprintf($lang['nextxthreads'], $more_threads), "</td>\n";
             echo "</tr>\n";
 
         }elseif ($more_threads > 50)  {
@@ -893,7 +893,7 @@ if ($mode == ALL_DISCUSSIONS && !is_numeric($folder)) {
             echo "  <td colspan=\"2\">&nbsp;</td>\n";
             echo "</tr>\n";
             echo "<tr>\n";
-            echo "  <td align=\"left\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next50threads']}\" title=\"{$lang['next50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\" title=\"{$lang['shownext50threads']}\">{$lang['next50threads']}</a></td>\n";
+            echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next50threads']}\" title=\"{$lang['next50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\" title=\"{$lang['shownext50threads']}\">{$lang['next50threads']}</a></td>\n";
             echo "</tr>\n";
         }
     }

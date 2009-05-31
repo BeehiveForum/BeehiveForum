@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.19 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: geshi.inc.php,v 1.20 2009-05-31 18:58:20 boughtonp Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -81,7 +81,7 @@ if (@file_exists("geshi/geshi.php")) {
 
         function set_language($lang)
         {
-            $this->$lang = $lang;
+            $this->lang = $lang;
         }
 
         function parse_code()

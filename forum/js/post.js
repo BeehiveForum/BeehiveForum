@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.54 2008-10-18 09:47:34 decoyduck Exp $ */
+/* $Id: post.js,v 1.55 2009-06-01 20:51:01 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -179,23 +179,23 @@ function toggleQuickReply(tid, message_id)
 
     if (typeof(quick_reply_container) == 'object' && typeof(quick_reply_position) == 'object') {
 
-    if (quick_reply_container.parentNode.id != quick_reply_position.id) {
-        
+        if (quick_reply_container.parentNode.id != quick_reply_position.id) {
+
             quick_reply_position.appendChild(quick_reply_container);
 
-        showQuickReply(tid, message_id);
-        
-    }else {
-    
-        if (quick_reply_container.className == 'quick_reply_container_closed') {
-    
             showQuickReply(tid, message_id);
-        
+
         }else {
-     
-            hideQuickReply();
+
+            if (quick_reply_container.className == 'quick_reply_container_closed') {
+
+                showQuickReply(tid, message_id);
+
+            }else {
+
+                hideQuickReply();
+            }
         }
-    }
     }
 }
 
@@ -221,22 +221,22 @@ function showQuickReply(tid, message_id)
 
                     quick_reply_header.innerHTML = '#' + parseInt(tid) + '.' + parseInt(message_id);
 
-            }else {
+                }else {
 
-                quick_reply_header.innerHTML = '';
-        }
-        }
-            
+                    quick_reply_header.innerHTML = '';
+                }
+            }
+
             quick_reply_container.className = 'quick_reply_container_opened';
 
             quick_reply_pid.value = message_id;
 
-        quick_reply_content.value = '';
-            
-        quick_reply_content.focus();
+            quick_reply_content.value = '';
+
+            quick_reply_content.focus();
 
             quick_reply_post_button.scrollIntoView(false);
-    }
+        }
     }
 }
 
@@ -246,28 +246,28 @@ function hideQuickReply()
 
     if (typeof(quick_reply_container) == 'object' || typeof(quick_reply_container) == 'function') {
 
-    if (quick_reply_container.className == 'quick_reply_container_opened') {
+        if (quick_reply_container.className == 'quick_reply_container_opened') {
 
-       quick_reply_container.className = 'quick_reply_container_closed';
-    }
+           quick_reply_container.className = 'quick_reply_container_closed';
+        }
     }
 }
 
 function checkKeyPress(evt)
 {
     var key = (evt.which || evt.keyCode);
-  
-    if ((evt.ctrlKey) && ((key & 13) == 13)) {
-
+    
+    if (evt.ctrlKey && (key == 13 || key == 10)) {
+    
         var quick_reply_post_button = getObjsByName('post')[0];
 
         if (typeof(quick_reply_post_button) == 'object' || typeof(quick_reply_post_button) == 'function') {
 
-        if (validateQuickReply()) {
-        
-            quick_reply_post_button.click();
-        }
-    }   
+            if (validateQuickReply()) {
+
+                quick_reply_post_button.click();
+            }
+        }   
     }
 }
 
@@ -287,7 +287,7 @@ function registerQuickReplyHotKey()
     var quick_reply_content = getObjsByName('t_content')[0];
 
     if (document.attachEvent) {
-        quick_reply_content.attachEvent('onkeypress',function(evt) { checkKeyPress(evt) });
+        quick_reply_content.attachEvent('onkeypress', function(evt) { checkKeyPress(evt) });
     }else {
         quick_reply_content.addEventListener('keypress', checkKeyPress, true);
     }

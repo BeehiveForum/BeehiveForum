@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.300 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: messages.php,v 1.301 2009-06-01 20:51:01 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -539,11 +539,11 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">\n";
-echo "                    <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "                  <td align=\"left\">\n";
+echo "                    <table cellspacing=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['quickreply']}</td>\n";
-echo "                        <td align=\"right\"><span id=\"quick_reply_header\"></span>&nbsp;</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\">{$lang['quickreply']}</td>\n";
+echo "                        <td align=\"right\" class=\"subhead\"><span id=\"quick_reply_header\"></span>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

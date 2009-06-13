@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.130 2009-03-29 12:11:49 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.131 2009-06-13 20:39:08 boughtonp Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -881,11 +881,17 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['sticky']}:</td>\n";
 
+            $sticky_year_min = date("Y");
+
             if ($thread_data['STICKY_UNTIL'] && $thread_data['STICKY'] == "Y") {
 
                 $sticky_year  = date("Y", $thread_data['STICKY_UNTIL']);
                 $sticky_month = date("n", $thread_data['STICKY_UNTIL']);
                 $sticky_day   = date("j", $thread_data['STICKY_UNTIL']);
+
+                if ( $sticky_year < $sticky_year_min ) {
+                	$sticky_year_min = $sticky_year;
+                }
 
             }else {
 
@@ -894,7 +900,7 @@ if ($thread_data['DELETED'] == 'N') {
                 $sticky_day   = 0;
             }
 
-            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_", 2002), "&nbsp;<span class=\"small_optional_text\">{$lang['optionalbrackets']}</span></td>\n";
+            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_", $sticky_year_min), "&nbsp;<span class=\"small_optional_text\">{$lang['optionalbrackets']}</span></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";

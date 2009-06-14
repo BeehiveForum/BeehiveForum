@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.163 2009-04-09 18:53:42 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.164 2009-06-14 16:39:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -259,7 +259,8 @@ function folder_move_threads($from, $to)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET FID = '$to' WHERE FID = '$from'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET FID = '$to', ";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE FID = '$from'";
 
     if (!$result = db_query($sql, $db_folder_move_threads)) return false;
 

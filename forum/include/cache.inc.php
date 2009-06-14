@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.26 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.27 2009-06-14 16:39:51 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -256,7 +256,6 @@ function cache_check_thread_list()
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.STICKY_UNTIL)) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
@@ -331,7 +330,6 @@ function cache_check_start_page()
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.STICKY_UNTIL)) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK, ";
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.27 2009-06-14 16:39:51 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.28 2009-06-14 16:43:04 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -267,11 +267,11 @@ function cache_check_thread_list()
     
         // Get the two modified dates from the query
         
-        list($last_read, $created, $modified, $closed, $sticky_until, $admin_lock) = db_fetch_array($result, DB_RESULT_NUM);
+        list($last_read, $created, $modified, $closed, $admin_lock) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is newer (higher).
        
-        $local_cache_date = max($last_read, $created, $modified, $closed, $sticky_until, $admin_lock);
+        $local_cache_date = max($last_read, $created, $modified, $closed, $admin_lock);
                
         // Last Modified Header for cache control
     
@@ -342,11 +342,11 @@ function cache_check_start_page()
     
         // Get the modified dates from the query
                
-        list($last_read, $created, $modified, $closed, $sticky_until, $last_logon) = db_fetch_array($result, DB_RESULT_NUM);
+        list($last_read, $created, $modified, $closed, $last_logon) = db_fetch_array($result, DB_RESULT_NUM);
         
         // Work out which one is newer (higher).
         
-        $local_cache_date = max($last_read, $created, $modified, $closed, $sticky_until, $last_logon);
+        $local_cache_date = max($last_read, $created, $modified, $closed, $last_logon);
                
         // Last Modified Header for cache control
     

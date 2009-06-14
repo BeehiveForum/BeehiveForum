@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.163 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.164 2009-06-14 16:39:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -252,9 +252,12 @@ function thread_set_length($tid, $length)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($length)) return false;
+    
+    $current_datetime = date(MYSQL_DATE, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET LENGTH = '$length' WHERE TID = '$tid'";
+    $sql.= "SET LENGTH = '$length', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_get_length)) return false;
 
@@ -332,34 +335,17 @@ function thread_set_interest($tid, $interest)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;
 
-    $thread_interest_array = array(THREAD_IGNORED, THREAD_NOINTEREST,
-                                   THREAD_INTERESTED, THREAD_SUBSCRIBED);
+    $thread_interest_array = array(THREAD_IGNORED, THREAD_NOINTEREST, THREAD_INTERESTED, THREAD_SUBSCRIBED);
 
     if (!in_array($interest, $thread_interest_array)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(TID) FROM `{$table_data['PREFIX']}USER_THREAD` ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, INTEREST) ";
+    $sql.= "VALUES ('$uid', '$tid', '$interest') ON DUPLICATE KEY ";
+    $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!$result = db_query($sql, $db_thread_set_interest)) return false;
-
-    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($thread_count > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
-        $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid'";
-
-        if (!$result = db_query($sql, $db_thread_set_interest)) return false;
-
-    }else {
-
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, INTEREST) ";
-        $sql.= "VALUES ('$uid', '$tid', '$interest')";
-
-        if (!$result = db_query($sql, $db_thread_set_interest)) return false;
-    }
 
     return true;
 }
@@ -376,29 +362,14 @@ function thread_set_high_interest($tid)
     if (!is_numeric($tid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $thread_interested = THREAD_INTERESTED;
 
-    $sql = "SELECT COUNT(TID) FROM `{$table_data['PREFIX']}USER_THREAD` ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, INTEREST) ";
+    $sql.= "VALUES ('$uid', '$tid', '$thread_interested') ON DUPLICATE KEY ";
+    $sql.= "SET INTEREST = VALUES(INTEREST)";
 
     if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
-
-    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($thread_count > 0) {
-
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
-        $sql.= "SET INTEREST = 1 WHERE UID = '$uid' AND TID = '$tid' ";
-        $sql.= "AND (INTEREST = 0 OR INTEREST IS NULL)";
-
-        if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
-
-    }else {
-
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, INTEREST) ";
-        $sql.= "VALUES ('$uid', '$tid', 1)";
-
-        if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
-    }
 
     return $result;
 }
@@ -413,16 +384,20 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 
     $sticky_sql = ($sticky === true) ? 'Y' : 'N';
     
+    $current_datetime = date(MYSQL_DATE, time());
+    
     if (is_numeric($sticky_until) && $sticky_until !== false) {
     
         $sticky_until_datetime = date(MYSQL_DATETIME_MIDNIGHT, $sticky_until);
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET STICKY = '$sticky_sql', ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "STICKY_UNTIL = CAST('$sticky_until_datetime' AS DATETIME) WHERE TID = '$tid'";
         
     }else {
     
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET STICKY = '$sticky_sql', ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "STICKY_UNTIL = NULL WHERE TID = '$tid'";
     }
 
@@ -444,12 +419,15 @@ function thread_set_closed($tid, $closed = true)
     if ($closed === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "SET CLOSED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql.= "SET CLOSED = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE TID = '$tid'";
         
     }else {
     
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "SET CLOSED = NULL WHERE TID = '$tid'";
+        $sql.= "SET CLOSED = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE TID = '$tid'";
     }    
 
     if (!db_query($sql, $db_thread_set_closed)) return false;
@@ -470,12 +448,15 @@ function thread_admin_lock($tid, $locked = true)
     if ($locked === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "SET ADMIN_LOCK = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql.= "SET ADMIN_LOCK = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE TID = '$tid'";
     
     }else {
     
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "SET ADMIN_LOCK = NULL WHERE TID = '$tid'";
+        $sql.= "SET ADMIN_LOCK = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE TID = '$tid'";
     }
 
     if (!db_query($sql, $db_thread_admin_lock)) return false;
@@ -492,7 +473,9 @@ function thread_change_folder($tid, $new_fid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($new_fid)) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET FID = '$new_fid' WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+    $sql.= "SET FID = '$new_fid', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $sql.= "WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_set_closed)) return false;
 
@@ -509,7 +492,9 @@ function thread_change_title($tid, $new_title)
 
     $new_title = db_escape_string($new_title);
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET TITLE = '$new_title' WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+    $sql.= "SET TITLE = '$new_title', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $sql.= "WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_change_title)) return false;
 
@@ -566,8 +551,9 @@ function thread_delete($tid, $delete_type)
 
     }else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
-        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "SET DELETED = 'Y', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql.= "WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_thread_delete)) return false;
     }

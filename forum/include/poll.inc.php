@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.253 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.254 2009-06-14 16:39:53 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -137,8 +137,11 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
     if (!forum_get_setting('poll_allow_guests', false)) $poll_allow_guests = POLL_GUEST_DENIED;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date(MYSQL_DATE, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET TITLE = '$thread_title' WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET TITLE = '$thread_title', ";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_poll_edit)) return false;
 

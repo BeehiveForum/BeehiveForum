@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.189 2009-05-05 18:55:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.190 2009-06-14 16:39:51 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1706,8 +1706,8 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Delete Polls created by user
 
-                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` ";
-                    $sql.= "SET POLL_FLAG = 'N' WHERE BY_UID = '$uid'";
+                    $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET POLL_FLAG = 'N', ";
+                    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 

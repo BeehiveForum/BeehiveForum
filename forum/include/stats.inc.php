@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.132 2009-05-03 16:40:44 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.133 2009-06-14 16:39:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -595,13 +595,9 @@ function stats_get_thread_count()
 
     if (!$result = db_query($sql, $db_stats_get_thread_count)) return false;
 
-    if (db_num_rows($result) > 0) {
-
-        list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-        return $thread_count;
-    }
-
-    return 0;
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    
+    return $thread_count;
 }
 
 function stats_get_post_count()
@@ -614,13 +610,9 @@ function stats_get_post_count()
 
     if (!$result = db_query($sql, $db_stats_get_post_count)) return false;
 
-    if (db_num_rows($result) > 0) {
+    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
-        return $post_count;
-    }
-
-    return 0;
+    return $post_count;
 }
 
 function stats_get_recent_post_count()
@@ -636,13 +628,9 @@ function stats_get_recent_post_count()
 
     if (!$result = db_query($sql, $db_stats_get_recent_post_count)) return false;
 
-    if (db_num_rows($result) > 0) {
+    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
-        return $post_count;
-    }
-
-    return 0;
+    return $post_count;
 }
 
 function stats_get_longest_thread()

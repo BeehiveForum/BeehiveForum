@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.164 2009-06-14 16:39:53 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.165 2009-06-14 18:40:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -367,7 +367,7 @@ function thread_set_high_interest($tid)
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, INTEREST) ";
     $sql.= "VALUES ('$uid', '$tid', '$thread_interested') ON DUPLICATE KEY ";
-    $sql.= "SET INTEREST = VALUES(INTEREST)";
+    $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
 

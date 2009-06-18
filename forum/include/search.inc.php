@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.231 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.232 2009-06-18 18:43:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -196,7 +196,7 @@ function search_execute($search_arguments, &$error)
                 $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
                 $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
                 $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, THREAD.LENGTH, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
 
             }else {
@@ -206,7 +206,7 @@ function search_execute($search_arguments, &$error)
                 $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
                 $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
                 $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
             }
 
@@ -286,7 +286,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // Split the search string into boolean parts and clean out
     // the empty array values.
 
-    $keyword_match = '([\+|-]?[\w\']+)|([\+|-]?["][^"]+["])';
+    $keyword_match = '([\+|-]?[\p{L}\']+)|([\+|-]?["][^"]+["])';
 
     $keywords_array = preg_split("/$keyword_match/u", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
     $keywords_array = preg_grep("/^ {0,}$/Du", $keywords_array, PREG_GREP_INVERT);
@@ -314,14 +314,14 @@ function search_strip_keywords($search_string, $strip_valid = false)
 
     if ($strip_valid === true) {
 
-        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
+        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\p{L}\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
         $keywords_array_swords = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/Diu', $mysql_fulltext_stopwords), $keywords_array);
 
         $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
 
     }else {
 
-        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\p{L}\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/Diu', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
     }
 
@@ -356,7 +356,7 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
 
     if ($remove_non_matches === true) {
 
-        $boolean_non_match = sprintf('/^-["]?([\w\s\']){%d,%d}["]?$/Du', $min_length, $max_length);
+        $boolean_non_match = sprintf('/^-["]?([\p{L}\s\']){%d,%d}["]?$/Du', $min_length, $max_length);
 
         $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
         $keywords_array = preg_replace('/["|\+|\x00]+/u', '', $keywords_array);
@@ -485,6 +485,11 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     switch($sort_by) {
 
+        case SEARCH_SORT_RELEVANCE:
+        
+            $sql.= "ORDER BY SEARCH_RESULTS.RELEVANCE $sort_dir LIMIT $offset, 20";
+            break;            
+        
         case SEARCH_SORT_NUM_REPLIES:
 
             $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sort_dir LIMIT $offset, 20";

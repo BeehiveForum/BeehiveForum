@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.89 2009-02-27 13:35:13 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.90 2009-06-18 18:43:14 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -431,7 +431,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
 
             $style_matches = array();
 
-            preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/iu', $style_contents, $style_matches);
+            preg_match_all('/\.e_([\p{L}_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/iu', $style_contents, $style_matches);
 
             for ($i = 0; $i < sizeof($style_matches[1]); $i++) {
 

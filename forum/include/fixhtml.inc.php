@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.155 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.156 2009-06-18 18:43:14 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1325,7 +1325,7 @@ function add_paragraphs($html, $br_only = true)
 
             $tag = array();
 
-            preg_match("/^<(\w+)(\b[^<>]*)>/iu", $html_a[$i], $tag);
+            preg_match("/^<(\p{L}+)(\b[^<>]*)>/iu", $html_a[$i], $tag);
 
             if (isset($tag[1]) && isset($tags_nest[$tag[1]])) {
 
@@ -1505,7 +1505,7 @@ function add_paragraphs($html, $br_only = true)
 
             if (isset($html_a[$i]) && isset($html_a[$i + 1])) {
 
-                if (preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i + 1], $tag) > 0) {
+                if (preg_match('/^<(\p{L}+)(\b[^<>]*)>/iu', $html_a[$i + 1], $tag) > 0) {
 
                     if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
@@ -1569,7 +1569,7 @@ function make_links($html)
     $html = ' '. $html;
 
     // URL:
-    $html = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu", "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|\()(\p{L}+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu", "$1<a href=\"$2\">$2</a>", $html);
     $html = preg_replace("/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu", "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:

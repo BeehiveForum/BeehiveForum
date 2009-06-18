@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.240 2009-03-29 12:11:49 decoyduck Exp $ */
+/* $Id: search.php,v 1.241 2009-06-18 18:43:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -200,7 +200,8 @@ $search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
 $search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
                               SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'],
                               SEARCH_SORT_FOLDER_NAME => $lang['foldername'],
-                              SEARCH_SORT_AUTHOR_NAME => $lang['authorname']);
+                              SEARCH_SORT_AUTHOR_NAME => $lang['authorname'],
+                              SEARCH_SORT_RELEVANCE   => $lang['relevancy']);
 
 // Drop down sort dir options
 

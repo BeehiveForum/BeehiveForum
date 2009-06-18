@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.189 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.190 2009-06-18 20:34:06 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -369,7 +369,7 @@ $sql.= "  KEY BY_UID (BY_UID), ";
 $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
 $sql.= "  KEY LENGTH (LENGTH), ";
 $sql.= "  KEY MODIFIED (MODIFIED), ";
-$sql.= "  KEY TITLE (TITLE), ";
+$sql.= "  FULLTEXT KEY TITLE (TITLE), ";
 $sql.= "  KEY FID (FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 

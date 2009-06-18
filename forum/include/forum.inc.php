@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.381 2009-06-14 16:39:52 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.382 2009-06-18 20:34:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1441,25 +1441,27 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
-        $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
-        $sql.= "  CREATED DATETIME DEFAULT NULL,";
-        $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
-        $sql.= "  CLOSED DATETIME DEFAULT NULL,";
-        $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
-        $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
-        $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  TITLE VARCHAR(64) DEFAULT NULL, ";
+        $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL, ";
+        $sql.= "  CREATED DATETIME DEFAULT NULL, ";
+        $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
+        $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
+        $sql.= "  STICKY CHAR(1) DEFAULT NULL, ";
+        $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
+        $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
         $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
-        $sql.= "  PRIMARY KEY  (TID),";
-        $sql.= "  KEY BY_UID (BY_UID),";
+        $sql.= "  PRIMARY KEY (TID), ";
+        $sql.= "  KEY BY_UID (BY_UID), ";
         $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
         $sql.= "  KEY LENGTH (LENGTH), ";
-        $sql.= "  KEY TITLE (TITLE)";
+        $sql.= "  KEY MODIFIED (MODIFIED), ";
+        $sql.= "  FULLTEXT KEY TITLE (TITLE), ";
+        $sql.= "  KEY FID (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -2137,7 +2139,7 @@ function forum_delete_tables($webtag, $database_name)
                              'USER_THREAD',   'VISITOR_LOG',     'WORD_FILTER');
 
         foreach ($table_array as $table_name) {
-
+            
             $sql = "DROP TABLE IF EXISTS `{$forum_table_prefix}{$table_name}`";
 
             if (!db_query($sql, $db_forum_delete_tables)) return false;

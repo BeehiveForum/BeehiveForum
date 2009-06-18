@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.94 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.95 2009-06-18 20:34:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -384,7 +384,7 @@ function install_get_webtags()
 
 function install_format_table_prefix($database_name, $webtag)
 {
-    return sprintf('`%s`.`%s_', $database_name, $webtag);
+    return sprintf('%s`.`%s_', $database_name, $webtag);
 }
 
 function install_table_exists($database_name, $table_name)

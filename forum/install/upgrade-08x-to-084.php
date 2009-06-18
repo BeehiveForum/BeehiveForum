@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.23 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.24 2009-06-18 20:34:06 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -243,6 +243,26 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
     $sql = "UPDATE `{$table_data['PREFIX']}POST` SET IPADDRESS = NULL WHERE LENGTH(IPADDRESS) = 0";
     
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    // Remove any existing indexes on THREAD.TITLE
+
+    if (install_index_exists($db_database, "{$table_data['WEBTAG']}_THREAD", "TITLE")) {
+
+        // Remove the index on TITLE before we add the FULLTEXT key
+
+        $sql = "ALTER IGNORE TABLE `{$table_data['PREFIX']}THREAD` DROP INDEX TITLE";
+        $result = @db_query($sql, $db_install);
+    }
+
+    // Add the FULLTEXT key to TITLE.
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD FULLTEXT(TITLE)";
+
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;

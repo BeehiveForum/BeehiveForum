@@ -724,11 +724,10 @@ a {
     border-bottom: 1px solid buttonhighlight;
     border-right: 1px solid buttonhighlight;
     background-color: #FFFFFF;
-    margin-left: 1px;
-    margin-right: 1px;
     width: 100%;
-    height: 165px;
+    height: 85px;
     font-size: 10pt;
+    padding: 0px;
 }
 
 .activeusers {

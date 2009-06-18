@@ -146,7 +146,7 @@
         openSpellCheck : function() {
             var ed = this.editor, p = ed.dom.getPos(ed.dom.getParent(ed.selection.getNode(), '*'));
             if (ed.getContent().length > 0) {
-                window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + this.editor.id, 'spellcheck','width=730, height=400, resizable=yes, scrollbars=yes');
+                window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + this.editor.id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
             }
         },
 

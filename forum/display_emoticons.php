@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.75 2009-03-29 12:11:48 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.76 2009-06-18 18:43:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -215,7 +215,7 @@ if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")))
 
     $emots_array = array();
 
-    preg_match_all('/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/iu', $style_content, $style_matches);
+    preg_match_all('/\.e_([\p{L}_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/iu', $style_content, $style_matches);
 
     for ($i = 0; $i < count($style_matches[1]); $i++) {
 

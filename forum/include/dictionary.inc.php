@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.64 2009-04-09 18:53:42 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.65 2009-06-18 18:43:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -78,9 +78,9 @@ class dictionary {
 
     function prepare_content($content)
     {
-        $word_match = '([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\w+\-\w+)|(\w+\'+\w+)|';
+        $word_match = '([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\p{L}+\-\p{L}+)|(\p{L}+\'+\p{L}+)|';
         $word_match.= '([\s+\.!\?,\[\]()\-+\'"=;&#0215;\$%\^&\*\/:{}]+)|';
-        $word_match.= '(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '(\p{L}+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
         $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
         $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
@@ -223,7 +223,7 @@ class dictionary {
         $current_word = $this->get_current_word();
 
         $word_match = '([0-9]+)|(<[^>]+>)|(&[^;]+;)|';
-        $word_match.= '(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '(\p{L}+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
         $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
         $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 

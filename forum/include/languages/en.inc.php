@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.608 2009-05-05 18:55:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.609 2009-06-18 18:43:15 decoyduck Exp $ */
 
 // British English language file
 
@@ -1824,6 +1824,7 @@ $lang['lastpostdate'] = "Last post date";
 $lang['numberofreplies'] = "Number of replies";
 $lang['foldername'] = "Folder name";
 $lang['authorname'] = "Author name";
+$lang['relevancy'] = "Relevancy";
 $lang['decendingorder'] = "Newest first";
 $lang['ascendingorder'] = "Oldest first";
 $lang['keywords'] = "Keywords";

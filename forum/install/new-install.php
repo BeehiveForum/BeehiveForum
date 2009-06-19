@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.190 2009-06-18 20:34:06 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.191 2009-06-19 19:05:06 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -1254,7 +1254,7 @@ $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'htt
                     'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
                     'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
                     'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
-                    'msnbot'           => array('NAME' => 'MSN Search', 'URL' => 'http://search.msn.com/'),
+                    'msnbot'           => array('NAME' => 'Bing', 'URL' => 'http://www.bing.com/'),
                     'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
                     'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
                     'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));

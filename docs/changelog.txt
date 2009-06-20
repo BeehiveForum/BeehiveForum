@@ -1,6 +1,190 @@
-Project Beehive Forum Change Log (Generated: Thu, 09 Apr 2009 19:14:05)
+Project Beehive Forum Change Log (Generated: Sat, 20 Jun 2009 11:52:04)
 
 Author: decoyduck
+Date: Fri, 19 Jun 2009 18:05:06
+-----------------------
+Changed: MSN Search is now Bing.
+
+Date: Thu, 18 Jun 2009 19:34:05
+-----------------------
+Changed: Installer now creates FULLTEXT index on THREAD.TITLE
+
+Date: Thu, 18 Jun 2009 19:10:55
+-----------------------
+Changed: Dictionary layout was awfully complicated. Simplified it and made
+the layout more akin to MS Office
+
+Date: Thu, 18 Jun 2009 17:43:14
+-----------------------
+Changed: \w changed to \p{L} in all relevant preg matches to allow for
+word-like chars in unicode strings
+Added: Search thread titles and sort by relevancy.
+
+Date: Sun, 14 Jun 2009 17:40:32
+-----------------------
+Fixed: SQL error in thread_set_high_interest()
+
+Date: Sun, 14 Jun 2009 15:43:04
+-----------------------
+Fixed: Undefined offset 5 in cache.inc.php
+
+Date: Sun, 14 Jun 2009 15:39:51
+-----------------------
+Changed: Any modifications to THREAD table now update the MODIFIED column
+at the same time.
+Changed: Removed STICKY_UNTIL from cache check queries.
+
+Author: boughtonp
+Date: Sat, 13 Jun 2009 19:39:08
+-----------------------
+Fixed: Set sticky year dropdown to start at earliest of current year or
+current value year, instead of 2002.
+
+Author: decoyduck
+Date: Mon, 01 Jun 2009 19:51:01
+-----------------------
+Fixed: IE8 Ctrl+Enter not working in Quick Reply Field.
+Fixed: Font-size of Quick Reply header in FireFox.
+
+Author: boughtonp
+Date: Sun, 31 May 2009 17:58:20
+-----------------------
+Fixed: Removed stray dollar causing HTML entity problems.
+
+Author: decoyduck
+Date: Tue, 26 May 2009 17:20:13
+-----------------------
+Fixed: IE8 vertical-align in thread_list.php
+
+Date: Sun, 17 May 2009 18:06:45
+-----------------------
+Changed: Dictionary is now layed out horizontally to work better with
+smaller screen sizes.
+
+Date: Tue, 05 May 2009 17:55:23
+-----------------------
+Fixed: Added missing entries in admin_viewlog.php for User account
+deletion and user account data deletion.
+Changed: Made thread_list.php use array_slice to ensure the array is
+always max 50 items large.
+
+Date: Sun, 03 May 2009 15:40:44
+-----------------------
+Changed: Guest are hidden from Stats / visitor display if Guest account is
+disabled and show guests is disabled.
+Changed: Bots are no longer treated as Registered Users in Stats display.
+
+Date: Thu, 30 Apr 2009 20:03:37
+-----------------------
+Fixed: Stats display "View complete list" link opening in a new window /
+tab
+
+Date: Wed, 29 Apr 2009 16:08:29
+-----------------------
+Fixed: SQL error in threads_mark_read() functions.
+
+Date: Tue, 28 Apr 2009 19:58:53
+-----------------------
+Fixed: Thread list was dropping a thread whenever it had a ?msg URL query
+even if the thread count was less than 50.
+
+Date: Sun, 26 Apr 2009 12:01:11
+-----------------------
+Changed: Updated dependencies in all scripts.
+Changed: Code cleanup using zendcodeanalyzer.
+Changed: Removed second argument to threads_process_list function.
+
+Date: Sat, 25 Apr 2009 08:47:05
+-----------------------
+Changed: Removed debugging code from threads.inc.php
+
+Date: Sat, 25 Apr 2009 08:45:34
+-----------------------
+Changed: Possible work around for a MySQL bug involving date comparisons.
+
+Date: Thu, 23 Apr 2009 18:10:21
+-----------------------
+Fixed: Subscribed folders not appearing at the top of the thread list.
+
+Date: Thu, 23 Apr 2009 18:02:34
+-----------------------
+Fixed: HTML entities weren't being encoded on edit_poll.php when poll
+answers contain HTML.
+Fixed: Incorrect comparison in get_attachment.php
+Fixed: Center aligned stats display in MSIE
+Changed: Made the Lightmode logon form retrieve and use the cookies the
+same as the full fat mode.
+
+Date: Fri, 17 Apr 2009 20:17:43
+-----------------------
+Changed: Anonymous users are no longer included in with the normal users
+in the active user counts
+Changed: If an anonymous user has you as a friend they are no longer
+counted as an Anonymous user.
+
+Date: Fri, 17 Apr 2009 20:07:36
+-----------------------
+Fixed: Sort ordering on Stats display so Bots aren't always listed first.
+
+Date: Fri, 17 Apr 2009 19:59:48
+-----------------------
+Fixed: Stats display not working correctly with Bots showing as Unknown
+Users and being counted in the Guests.
+
+Date: Fri, 17 Apr 2009 19:43:59
+-----------------------
+Fixed: Undefined index 4 in cache.inc.php
+
+Date: Fri, 17 Apr 2009 19:37:30
+-----------------------
+Fixed: Undefined variable $other_logon on Light mode logon page
+Changed: Improved the scope of the cache functions to look at more data to
+generate the cache date.
+Changed: Deleting or undeleting a soft-deleted thread now updates the
+MODIFIED column of the THREAD table.
+
+Date: Fri, 17 Apr 2009 18:20:27
+-----------------------
+Changed: Unread cutoff is now where THREAD.MODIFIED < cut_off and display
+is where THREAD.MODIFIED >= cut_off
+
+Date: Fri, 17 Apr 2009 16:34:16
+-----------------------
+Changed: Lightmode now uses the same cookies as the full fat Beehive.
+Fixed: Auto logon not working correctly in full fat Beehive.
+
+Date: Thu, 16 Apr 2009 17:35:34
+-----------------------
+Fixed: Incorrect language key for stats in all language files.
+Added: Search Engine Bots now display on the Active users list at the
+bottom of the stats display.
+Changed: Ajax response data for the PM notification and stats changed to
+reduce the amount of client side processing required.
+
+Date: Tue, 14 Apr 2009 19:28:22
+-----------------------
+Changed: Added exclude_dir_array to bh_zendcodeanalyzer.php and populated
+it with Geshi, TinyMCE, BH installer and language directories.
+
+Date: Mon, 13 Apr 2009 10:54:49
+-----------------------
+Changed: Code cleanup through zendcodeanalyzer
+
+Date: Sun, 12 Apr 2009 17:29:08
+-----------------------
+Fixed: Undefined variable $current_datetime in pm.inc.php
+Fixed: Function html_get_top_page() didn't allow for a top.php in the main
+styles directory.
+
+Date: Sun, 12 Apr 2009 16:15:57
+-----------------------
+Fixed: Lightmode autologon wasn't functioning correctly because it was
+testing for a constant that hadn't been defined.
+
+Date: Sat, 11 Apr 2009 20:58:03
+-----------------------
+Fixed: Undefined index WEBTAG in guest mode My Forums display.
+
 Date: Thu, 09 Apr 2009 17:54:21
 -----------------------
 Fixed: Removed debugging code from session.inc.php

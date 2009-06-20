@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.165 2009-06-14 18:40:32 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.166 2009-06-20 19:28:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -491,6 +491,8 @@ function thread_change_title($tid, $new_title)
     if (!is_numeric($tid)) return false;
 
     $new_title = db_escape_string($new_title);
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
     $sql.= "SET TITLE = '$new_title', MODIFIED = CAST('$current_datetime' AS DATETIME) ";

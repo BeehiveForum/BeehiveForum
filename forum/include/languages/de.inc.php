@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.102 2009-06-18 18:43:15 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.103 2009-06-21 14:25:55 decoyduck Exp $ */
 
 // British English language file
 
@@ -404,8 +404,6 @@ $lang['unknownuseraccount'] = "Unbekanntes Benutzerkonto";
 $lang['unknownfolder'] = "Unbekannter Ordner";
 $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Letztes IP-address";
-$lang['hostname'] = "Hostname";
-$lang['unknownhostname'] = "Unbekannter Hostname";
 $lang['logged'] = "Gespeichert";
 $lang['notlogged'] = "Nicht gelogged";
 $lang['addwordfilter'] = "Wortfilter hinzufuegen";
@@ -797,7 +795,6 @@ $lang['threadmerges'] = "Eintragszusammenfuegungen";
 $lang['forumlinkadditions'] = "Forum Link Anfuegungen";
 $lang['forumlinkdeletions'] = "Forum Link Loeschungen";
 $lang['forumlinktopcaptionchanges'] = "Forum Link Haupttitel-Aenderungen";
-$lang['folderedits'] = "Ordner Anzeigen";
 $lang['userdeletions'] = "Benutzer-Loeschungen";
 $lang['userdatadeletions'] = "Benutzerdaten-Loeschungen";
 $lang['usergroupchanges'] = "Benutzergruppen-Aenderung";
@@ -2116,7 +2113,6 @@ $lang['initialisingdotdotdot'] = "Initialisierung...";
 $lang['spellcheckcomplete'] = "Rechtschreibpruefung abgeschlossen. Erneute Pruefung mit 'Neustart'.";
 $lang['spellcheck'] = "Rechtschreibpruefung";
 $lang['noformobj'] = "Kein Formularobjekt definiert fuer Zurueck-Text";
-$lang['bodytext'] = "Inhaltstext";
 $lang['ignore'] = "Ignorieren";
 $lang['ignoreall'] = "Alles ignorieren";
 $lang['change'] = "Wechsel";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.47 2009-05-03 16:40:44 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.48 2009-06-21 14:25:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,6 +40,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function visitor_log_get_recent()
 {

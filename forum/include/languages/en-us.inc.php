@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.86 2009-06-18 18:43:15 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.87 2009-06-21 14:25:55 decoyduck Exp $ */
 
 // British English language file
 
@@ -404,8 +404,6 @@ $lang['unknownuseraccount'] = "Unknown user account";
 $lang['unknownfolder'] = "Unknown folder";
 $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Last IP Address";
-$lang['hostname'] = "Hostname";
-$lang['unknownhostname'] = "Unknown Hostname";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
 $lang['addwordfilter'] = "Add word filter";
@@ -797,7 +795,6 @@ $lang['threadmerges'] = "Thread Merges";
 $lang['forumlinkadditions'] = "Forum Link Additions";
 $lang['forumlinkdeletions'] = "Forum Link Deletions";
 $lang['forumlinktopcaptionchanges'] = "Forum Link Top Caption Changes";
-$lang['folderedits'] = "Folder Edits";
 $lang['userdeletions'] = "User Deletions";
 $lang['userdatadeletions'] = "User Data Deletions";
 $lang['usergroupchanges'] = "User Group Changes";
@@ -2116,7 +2113,6 @@ $lang['initialisingdotdotdot'] = "Initialising...";
 $lang['spellcheckcomplete'] = "Spell check is complete. To restart spell check click restart button below.";
 $lang['spellcheck'] = "Spell Check";
 $lang['noformobj'] = "No form object specified for return text";
-$lang['bodytext'] = "Body Text";
 $lang['ignore'] = "Ignore";
 $lang['ignoreall'] = "Ignore All";
 $lang['change'] = "Change";

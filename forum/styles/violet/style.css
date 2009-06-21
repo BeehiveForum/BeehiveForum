@@ -918,6 +918,10 @@ a {
     width: 480px;
 }
 
+.post_folder_dropdown {
+    width: 190px;
+}
+
 .to_uid_dropdown {
     width: 190px;
 }

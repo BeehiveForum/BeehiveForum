@@ -72,12 +72,17 @@ You need web hosting which provides:
 
   - PHP 5.0.0 or above
   - MySQL 4.1.16 or above
+  - PCRE 6.6 compiled with --enable-utf8 --enable-unicode-properties
 
 1.1.1 Requirements Notes
 ========================
 
 - Beehive Forum requires PHP 5.0 as a minimum, but we recommend installing
   the latest PHP 5.2.x release where possible.
+  
+- PCRE runtime compiled with --enable-utf8 --enable-unicode-properties is
+  requried. PCRE support is OS dependent, please check with your host 
+  for PCRE requirements.
 
 - MySQL 4.1.16 or newer is required by Beehive Forum. As with PHP we recommend
   installing the latest release of MySQL 5 if possible.

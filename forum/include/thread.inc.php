@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.166 2009-06-20 19:28:23 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.167 2009-06-21 16:18:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -345,7 +345,7 @@ function thread_set_interest($tid, $interest)
     $sql.= "VALUES ('$uid', '$tid', '$interest') ON DUPLICATE KEY ";
     $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
-    if (!$result = db_query($sql, $db_thread_set_interest)) return false;
+    if (!db_query($sql, $db_thread_set_interest)) return false;
 
     return true;
 }
@@ -472,6 +472,8 @@ function thread_change_folder($tid, $new_fid)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($new_fid)) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
     $sql.= "SET FID = '$new_fid', MODIFIED = CAST('$current_datetime' AS DATETIME) ";

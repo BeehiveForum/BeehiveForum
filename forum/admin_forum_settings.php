@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.159 2009-03-29 12:11:46 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.160 2009-06-21 16:59:25 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -713,7 +713,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 
 }else {
 
-    $forum_rules->setTinyMCE(false);
+    $closed_message->setTinyMCE(false);
 }
 
 echo "                      <tr>\n";

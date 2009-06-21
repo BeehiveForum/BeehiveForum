@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.304 2009-06-18 18:43:15 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.305 2009-06-21 14:25:55 decoyduck Exp $ */
 
 // British English language file
 
@@ -404,8 +404,6 @@ $lang['unknownuseraccount'] = "unkN0wN uS3r 4CcoUnt";
 $lang['unknownfolder'] = "uNkn0WN f0lDEr";
 $lang['ip'] = "ip";
 $lang['lastipaddress'] = "l@5+ IP 4ddrE\$\$";
-$lang['hostname'] = "h0\$+n4mE";
-$lang['unknownhostname'] = "uNkN0WN H05+n4m3";
 $lang['logged'] = "l0gg3d";
 $lang['notlogged'] = "n0+ L09g3d";
 $lang['addwordfilter'] = "aDD W0rD filT3R";
@@ -797,7 +795,6 @@ $lang['threadmerges'] = "tHr3@d MErGe\$";
 $lang['forumlinkadditions'] = "f0rUM l1nk 4DdI+i0ns";
 $lang['forumlinkdeletions'] = "fORUm LinK dElET1oNS";
 $lang['forumlinktopcaptionchanges'] = "f0rUM l1nK +0p C@p+ION ch@ng3s";
-$lang['folderedits'] = "folD3r 3Di+5";
 $lang['userdeletions'] = "u\$eR d3le+10NS";
 $lang['userdatadeletions'] = "uSER DA+@ D3l3+I0nS";
 $lang['usergroupchanges'] = "useR gROup cH4nGes";
@@ -2116,7 +2113,6 @@ $lang['initialisingdotdotdot'] = "iN1+14LISINg...";
 $lang['spellcheckcomplete'] = "sPELL CH3Ck 15 coMPL3T3. TO RE\$+4RT \$pEll cH3ck cL1Ck RE\$+@R+ But+on bEL0W.";
 $lang['spellcheck'] = "sP3LL cH3CK";
 $lang['noformobj'] = "n0 PHOrM 08J3C+ \$pEC1F1Ed Ph0r R3+urN t3x+";
-$lang['bodytext'] = "bODY +3XT";
 $lang['ignore'] = "iGN0re";
 $lang['ignoreall'] = "i9nOr3 4Ll";
 $lang['change'] = "ch4N93";

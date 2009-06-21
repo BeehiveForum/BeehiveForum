@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.132 2009-06-18 18:43:15 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.133 2009-06-21 14:25:55 decoyduck Exp $ */
 
 // British English language file
 
@@ -404,8 +404,6 @@ $lang['unknownuseraccount'] = "Compte d'utilisateur inconnu";
 $lang['unknownfolder'] = "Dossier inconnu";
 $lang['ip'] = "adresse IP";
 $lang['lastipaddress'] = "Dernière adresse IP";
-$lang['hostname'] = "Adresse internet";
-$lang['unknownhostname'] = "Adresse internet inconnue";
 $lang['logged'] = "Journalisé";
 $lang['notlogged'] = "Non journalisé";
 $lang['addwordfilter'] = "Ajouter filtre de mots";
@@ -797,7 +795,6 @@ $lang['threadmerges'] = "Fusionnements de fils de discussions";
 $lang['forumlinkadditions'] = "Ajouts de hyperliens du forum";
 $lang['forumlinkdeletions'] = "Supression de hyperliens du forum";
 $lang['forumlinktopcaptionchanges'] = "Modifications du titre de départ des liens du forum";
-$lang['folderedits'] = "Modifications des dossiers";
 $lang['userdeletions'] = "Suppressions d'utilisateurs";
 $lang['userdatadeletions'] = "Suppressions de données d'utilisateur";
 $lang['usergroupchanges'] = "Modifications au group d'utilisateurs";
@@ -2116,7 +2113,6 @@ $lang['initialisingdotdotdot'] = "Initialisation...";
 $lang['spellcheckcomplete'] = "Vérification de l'orthographe complétée. Pour relancer la vérification cliquer le bouton de redémarrage ci-dessous.";
 $lang['spellcheck'] = "Vérification d'orthographe";
 $lang['noformobj'] = "Aucun objet de forme indiqué pour texte de retour";
-$lang['bodytext'] = "Corps de texte";
 $lang['ignore'] = "Ignorer";
 $lang['ignoreall'] = "Ignorer tout";
 $lang['change'] = "Changer";

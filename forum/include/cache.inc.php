@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.28 2009-06-14 16:43:04 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.29 2009-06-24 17:47:18 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -242,6 +242,8 @@ function cache_check_thread_list()
     
     if (!$table_data = get_table_prefix()) return false;
     
+    if (!cache_check_logon_hash()) return false;
+    
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         
         cache_disable();
@@ -249,7 +251,7 @@ function cache_check_thread_list()
     }
     
     if (($uid = bh_session_get_value('UID')) === false) return false;
-
+    
     // Get the thread last modified date and user last read date.
 
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
@@ -259,7 +261,15 @@ function cache_check_thread_list()
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";    
+    
+    // If we're looking at a specific folder add it's ID to the query.
+    
+    if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+        
+        $folder = db_escape_string($_GET['folder']);
+        $sql.= "WHERE THREAD.FID = '$folder'";
+    }
     
     if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
 
@@ -315,6 +325,8 @@ function cache_check_start_page()
     if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
     
     if (!$table_data = get_table_prefix()) return false;
+    
+    if (!cache_check_logon_hash()) return false;
     
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         
@@ -391,6 +403,8 @@ function cache_check_messages()
 
     if (!$table_data = get_table_prefix()) return false;
     
+    if (!cache_check_logon_hash()) return false;
+    
     // Disable cache on these URL queries.
     
     if (isset($_GET['delete_success'])) return false;
@@ -463,6 +477,28 @@ function cache_check_messages()
 
     return true;
 }
+
+/**
+* Check cache cookie
+*
+* Checks cache cookie (hash of the LOGON) so we can cache pages
+* on a per-user account basis.
+*
+* @return mixed - boolean or no return (exit)
+* @param void
+*/
+
+function cache_check_logon_hash()
+{
+    $logon_hash_check = md5(bh_session_get_value('LOGON'));
+    
+    if (($logon_hash = bh_getcookie('bh_cache_hash', 'strlen', ''))) {
+        if ($logon_hash === $logon_hash_check) return true;
+    }
+    
+    bh_setcookie('bh_cache_hash', $logon_hash_check);
+    return false;
+}    
 
 /**
 * Check cache header.

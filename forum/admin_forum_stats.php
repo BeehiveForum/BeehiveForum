@@ -23,7 +23,10 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.23 2009-03-29 12:11:47 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.24 2009-06-26 17:14:19 decoyduck Exp $ */
+
+// Set the default timezone
+date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -33,9 +36,6 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
-
-// Set the default timezone
-date_default_timezone_set('UTC');
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

@@ -1,5 +1,45 @@
 Beehive Forum Release Notes
 
+What's new in 0.9 (Released 4th July 2009)
+=================
+
+- Notes
+
+        - Beehive Forum 0.9 introduces news client-side HTML
+          caching of the page output for the most frequently
+          visited pages on your forum including thread list,
+          message pane and the start pages. If you encounter 
+          problems with stale content showing on the pages
+          you can disable this option by modifying the
+          $http_cache_enabled setting and changing it to false.
+          
+        - Beehive Forum 0.9 requires PHP 5.1.0 and PCRE 6.6
+          compiled with --enable-utf8 --enable-unicode-properties.
+
+- Changes from 0.8.4
+
+        - Added: UTF-8 support improved. Should be fully compatible
+                 with other PHP applications now.
+
+        - Added: Google Analytics code support added to Beehive.
+        
+        - Added: Support for Google Adsense adverts with various
+                 settings and options to change how they appear.
+
+        - Added: Option to specify the forum rating as a meta tag
+                 so you can set your forum to be general, 14+,
+                 mature or restricted.
+
+        - Added: Bans can now be set to expire on a set date.    
+                 
+        - Fixed: Deleting a user was physically deleting a user's
+                 posts from the database instead of NULL-ing the
+                 content resulting in errors when accesing affected
+                 threads.                 
+
+- For comprehensive list of changes please see the change log.
+
+
 What's new in 0.8.4 (Released 07th August 2008)
 ===================
 

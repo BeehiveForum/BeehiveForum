@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.385 2009-06-26 17:14:22 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.386 2009-07-04 13:58:37 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -583,22 +583,10 @@ function bh_update_visitor_log($uid, $forum_fid, $line)
     
     $current_datetime = date(MYSQL_DATETIME, time());
     
-    $debug = "script = {$_SERVER['PHP_SELF']}\n";
-    $debug.= "line = $line\n";
-    $debug.= "backtrace = ". print_r(debug_backtrace(), true). "\n\n";
-    $debug.= "session_cutoff = $session_cutoff\n";
-    $debug.= "http_referer = $http_referer\n";
-    $debug.= "ipaddress = $ipaddress\n";
-    $debug.= "session_cutoff_datetime = $session_cutoff_datetime\n";
-    $debug.= "current_datetime = $current_datetime\n";
-    $debug.= "date_default_timezone_get() = ". date_default_timezone_get();
-    
-    $debug = db_escape_string($debug);
-
     if ($uid > 0) {
 
-        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER, DEBUG) ";
-        $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer', '$debug') ";
+        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER) ";
+        $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer') ";
         $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
         
@@ -608,8 +596,8 @@ function bh_update_visitor_log($uid, $forum_fid, $line)
 
         if (($search_id = bh_session_is_search_engine()) !== false) {
            
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER, SID, DEBUG) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer', '$search_id', '$debug') ";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+            $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer', '$search_id') ";
             $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
             $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
             
@@ -617,8 +605,8 @@ function bh_update_visitor_log($uid, $forum_fid, $line)
 
         }else if (!user_cookies_set() || isset($_POST['guest_logon'])) {
         
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, DEBUG) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer', '$debug')";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
+            $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer')";
 
             if (db_query($sql, $db_bh_update_visitor_log)) return true;        
         }

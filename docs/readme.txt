@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.8.4 / 25th July 2008
+Version 0.9 / 4th July 2009
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -70,7 +70,7 @@ in release.txt.
 
 You need web hosting which provides:
 
-  - PHP 5.0.0 or above
+  - PHP 5.1.0 or above
   - MySQL 4.1.16 or above
   - PCRE 6.6 compiled with --enable-utf8 --enable-unicode-properties
 

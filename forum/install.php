@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.112 2009-07-05 14:05:38 decoyduck Exp $ */
+/* $Id: install.php,v 1.113 2009-07-05 15:54:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -253,7 +253,7 @@ if (isset($_POST['install_method'])) {
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if (@file_put_contents('install/config.inc.php', $config_file)) {
+                        if (@file_put_contents('include/config.inc.php', $config_file)) {
                             $config_saved = true;
                         }
 

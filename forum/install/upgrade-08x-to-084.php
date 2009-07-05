@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.24 2009-06-18 20:34:06 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.25 2009-07-05 13:49:22 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -68,7 +68,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    if (!install_column_exists($db_database, "{$table_data['WEBTAG']}_THREAD", "DELETED")) {
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "DELETED")) {
 
         // Better support for deleted threads.
 
@@ -81,7 +81,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    if (!install_column_exists($db_database, "{$table_data['WEBTAG']}_THREAD", "UNREAD_PID")) {
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "UNREAD_PID")) {
 
         // Better support for unread cut-off.
 
@@ -151,7 +151,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    if (!install_column_exists($db_database, "{$table_data['WEBTAG']}_USER_PREFS", "REPLY_QUICK")) {
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "REPLY_QUICK")) {
 
         // Add field for reply_quick
 
@@ -164,7 +164,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    if (!install_column_exists($db_database, "{$table_data['WEBTAG']}_USER_PREFS", "THREADS_BY_FOLDER")) {
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "THREADS_BY_FOLDER")) {
 
         // New User preference for thread list folder order
 
@@ -215,7 +215,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }    
 
-    if (!install_column_exists($db_database, "{$table_data['WEBTAG']}_BANNED", "EXPIRES")) {
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_BANNED", "EXPIRES")) {
 
         // New User preference for thread list folder order
 
@@ -251,7 +251,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
     // Remove any existing indexes on THREAD.TITLE
 
-    if (install_index_exists($db_database, "{$table_data['WEBTAG']}_THREAD", "TITLE")) {
+    if (install_index_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "TITLE")) {
 
         // Remove the index on TITLE before we add the FULLTEXT key
 

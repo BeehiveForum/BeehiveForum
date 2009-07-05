@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.95 2009-06-18 20:34:06 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.96 2009-07-05 13:49:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -364,7 +364,8 @@ function install_get_webtags()
 {
     if (!$db_install_get_webtags = db_connect()) return false;
 
-    $sql = "SELECT FID, WEBTAG, CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX FROM FORUMS";
+    $sql = "SELECT FID, CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
+    $sql.= "DATABASE_NAME, WEBTAG FROM FORUMS";
 
     if (!$result = db_query($sql, $db_install_get_webtags)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.29 2009-06-24 17:47:18 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.30 2009-07-05 16:20:14 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -244,6 +244,8 @@ function cache_check_thread_list()
     
     if (!cache_check_logon_hash()) return false;
     
+    if (!cache_check_enabled()) return false;
+    
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         
         cache_disable();
@@ -328,6 +330,8 @@ function cache_check_start_page()
     
     if (!cache_check_logon_hash()) return false;
     
+    if (!cache_check_enabled()) return false;
+    
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         
         cache_disable();
@@ -404,6 +408,8 @@ function cache_check_messages()
     if (!$table_data = get_table_prefix()) return false;
     
     if (!cache_check_logon_hash()) return false;
+    
+    if (!cache_check_enabled()) return false;
     
     // Disable cache on these URL queries.
     
@@ -499,6 +505,27 @@ function cache_check_logon_hash()
     bh_setcookie('bh_cache_hash', $logon_hash_check);
     return false;
 }    
+
+/**
+* Check cache config var
+*
+* Checks the cache config var in config.inc.php to see if the cache
+* has been forcefully disaled.
+*
+* @return mixed
+* @param void
+*/
+
+function cache_check_enabled()
+{
+    $http_cache_enabled = (isset($GLOBALS['http_cache_enabled'])) ? $GLOBALS['http_cache_enabled'] : false;
+
+    if (isset($http_cache_enabled) && $http_cache_enabled === false) {
+        return false;
+    }
+    
+    return true;
+}
 
 /**
 * Check cache header.

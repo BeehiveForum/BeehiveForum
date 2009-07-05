@@ -1,6 +1,20 @@
-Project Beehive Forum Change Log (Generated: Sat, 04 Jul 2009 13:44:34)
+Project Beehive Forum Change Log (Generated: Sun, 05 Jul 2009 16:23:16)
 
 Author: decoyduck
+Date: Sun, 05 Jul 2009 15:20:14
+-----------------------
+Added: Option to disable the HTTP cache for all users to config.inc.php
+
+Date: Sun, 05 Jul 2009 14:54:41
+-----------------------
+Fixed: Installer wasn't saving config.inc.php in the correct location.
+
+Date: Sun, 05 Jul 2009 12:49:22
+-----------------------
+Fixed: Missing DATABASE_NAME from install_get_webtags() function.
+Fixed: Upgrade script was broken if your had two or more forums spanned
+across multiple databases.
+
 Date: Fri, 26 Jun 2009 16:14:19
 -----------------------
 Changed: Moved date_default_timezone_set() to be top of every main
@@ -556,7 +570,7 @@ be done by another admin.
 Changed: Removed system_get_tmp_dir and replaced it with sys_get_tmp_dir
 which is handled by compat.inc.php
 Changed: Performed Zend recommended code clean on some scripts.
-Fixed: Undefined variables for Google Adsense causing issues.
+Fixed: Undefined variables for Google Adsens causing issues.
 Fixed: Search results could send invalid sort_dir to
 search_fetch_results.
 
@@ -1577,33 +1591,4 @@ Forum and applied it through _htmlentities function.
 Changed: Replaced xml_literal_to_numeric with html_entity_to_decimal in
 rss_feed.inc.php to save some processing time.
 Changed: Function pm_get_subject() tidied up a little bit.
-
-Date: Thu, 07 Aug 2008 14:18:06
------------------------
-Changed: Moved creation of [Clear] entry into a function in
-profile.inc.php.
-Changed: Add a query to make the installer remove deleted posts from the
-approval queue.
-
-Date: Thu, 07 Aug 2008 11:16:35
------------------------
-Changed: Update readme.txt and changelog.txt
-
-Date: Thu, 07 Aug 2008 10:23:20
------------------------
-Changed: [None] change to [Clear] in edit_profile.php
-
-Date: Thu, 07 Aug 2008 10:17:33
------------------------
-Added: [none] option added to Profile dropdown and Radio buttons to allow
-users to clear the entry.
-
-Date: Thu, 07 Aug 2008 08:24:57
------------------------
-Changed: Moved THREADS_BY_FOLDER column to end of WEBTAG_USER_PREFS
-table.
-
-Date: Thu, 07 Aug 2008 08:21:20
------------------------
-Changd: Updated German Language Pack.
 

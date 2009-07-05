@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.133 2009-06-21 14:25:55 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.134 2009-07-05 16:09:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -728,6 +728,9 @@ $lang['modifiedpermsforuser'] = "Modifié perms pour utilisateur '%s'";
 $lang['modifiedfolderpermsforuser'] = "Modifié perms de dossier pour utilisateur '%s'";
 
 $lang['userpermfoldermoderate'] = "Modérateur de dossier";
+
+$lang['deleteduseraccount'] = "Deleted user account '%s'";
+$lang['deletedalluserdataforaccount'] = "Deleted all user data for account '%s'";
 
 $lang['adminlogempty'] = "Fiche journalier admin est vide";
 

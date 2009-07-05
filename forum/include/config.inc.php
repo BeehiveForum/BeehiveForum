@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.152 2008-09-17 18:38:25 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.153 2009-07-05 16:20:14 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -170,6 +170,19 @@ $frame_top_target = "_top";
 //       it is running from the same domain as it's parent page
 //       otherwise browsers may refuse the session cookies required
 //       by Beehive and your users will not be able to login.
+
+// ---------------------------------------------------------------------
+
+// HTML client-side cache ----------------------------------------------
+
+$http_cache_enabled = true;
+
+// This option enables HTTP client-side caching of the thread list,
+// messages and start pages. If you encounter issues with stale pages
+// showing you can disable the cache by changing this value. Please
+// note that the HTTP client-side caching is designed to help reduce
+// bandwidth usage caused by repeated visits to the same page, and that
+// disabling it may increase your forum's bandwidth usage.
 
 // ---------------------------------------------------------------------
 

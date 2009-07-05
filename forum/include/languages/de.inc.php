@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.103 2009-06-21 14:25:55 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.104 2009-07-05 16:09:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -728,6 +728,9 @@ $lang['modifiedpermsforuser'] = "Rechte fuer Benutzer '%s' geaendert";
 $lang['modifiedfolderpermsforuser'] = "Geaenderte Ordnerberechtigungen fuer Benutzer '%s'";
 
 $lang['userpermfoldermoderate'] = "Ordner-Moderator";
+
+$lang['deleteduseraccount'] = "Deleted user account '%s'";
+$lang['deletedalluserdataforaccount'] = "Deleted all user data for account '%s'";
 
 $lang['adminlogempty'] = "Admin Log ist leer";
 

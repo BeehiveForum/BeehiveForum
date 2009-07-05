@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 0.9 (Released 4th July 2009)
+What's new in 0.9 (Released 5th July 2009)
 =================
 
 - Notes

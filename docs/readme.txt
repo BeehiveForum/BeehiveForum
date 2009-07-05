@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.9 / 4th July 2009
+Version 0.9 / 5th July 2009
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -77,7 +77,7 @@ You need web hosting which provides:
 1.1.1 Requirements Notes
 ========================
 
-- Beehive Forum requires PHP 5.0 as a minimum, but we recommend installing
+- Beehive Forum requires PHP 5.1.0 as a minimum, but we recommend installing
   the latest PHP 5.2.x release where possible.
   
 - PCRE runtime compiled with --enable-utf8 --enable-unicode-properties is

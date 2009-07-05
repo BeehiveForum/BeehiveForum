@@ -705,12 +705,11 @@ Development' folder.
 
 We've also added a wiki to help us document Beehive. Check it out here:
 
-http://www.beehiveforum.net/wiki/
+http://wiki.manicgeek.com/Beehive_Forum_Help_Wiki
 
-Want to contribute to the Wiki? To do so you will need to register a user
-account on the test forum. Once you have your account you can login using
-the same logon and password and start contributing.
+You can also follow us on Facebook, by visiting:
 
+http://www.facebook.com/pages/Project-Beehive-Forum/100468551205
 
 3.3 Beehive Forums in foreign languages
 ======================================
@@ -748,15 +747,7 @@ X-Hacker
 3.3.3 Incomplete / Partial Translations
 =======================================
 
-Current incomplete translations also available include:
-
-English (US)
-
-These translations can be obtained from the Beehive Forum Project CVS Repository.
-For instructions on accessing the CVS Reporistory please see:
-
-http://sourceforge.net/cvs/?group_id=50772
-
+None currently
 
 4 Credits
 =========

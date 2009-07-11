@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.134 2009-07-05 16:09:43 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.135 2009-07-11 19:34:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -627,7 +627,7 @@ $lang['addselectedusers'] = "Ajouter usagers sélectionnés";
 $lang['removeselectedusers'] = "Enlever usagers sélectionnés";
 $lang['addnew'] = "Ajouter nouveau";
 $lang['deleteselected'] = "Supprimer sélectionné";
-$lang['forumrulesmessage'] = "<p><b>Règles du forum</b></p><p>\nL'enregistrement à %1\$s est gratuit! Nous insistons, cependant, que vous vous conformez aux règles et politiques expliqués ci-dessous. Si vous acceptez les termes, veuillez cocher la boîte 'J'accepte' et cliquez le bouton 'Enregistrez' ci-dessous. Si vous désirez annuler votre enregistrement, cliquez %2\$s pour retourner à l'index des forums.</p><p>\nQuoique les administrateurs et modérateurs de %1\$s feront de leur possible afin qu'aucun message importun soit publié dans ce forum, il est impossible d'examiner tous les messages. Tous les messages expriment les vues et opinions de leur auteur, et ni les propriétaires de %1\$s, ni le Forum Project Beehive et ses groupes affiliés seront tenus responsables pour le contenu d'aucun message.</p><p>\nEn indiquant votre accord avec ces règles, vous acceptez de ne pas publier un message obcène, vulgaire, de nature sexuel, haineux, menaçant ou autrement illégale.</p><p>Les propriétaires de %1\$s se réservent le droit de suprimer, modifier, déplacer ou fermer tout fil de discussion pour n'importe quel raison.</p>";
+$lang['forumrulesmessage'] = "<p><b>Règles du forum</b></p><p>L'enregistrement à %1\$s est gratuit! Nous insistons, cependant, que vous vous conformez aux règles et politiques expliqués ci-dessous. Si vous acceptez les termes, veuillez cocher la boîte 'J'accepte' et cliquez le bouton 'Enregistrez' ci-dessous. Si vous désirez annuler votre enregistrement, cliquez %2\$s pour retourner à l'index des forums.</p><p>Quoique les administrateurs et modérateurs de %1\$s feront de leur possible afin qu'aucun message importun soit publié dans ce forum, il est impossible d'examiner tous les messages. Tous les messages expriment les vues et opinions de leur auteur, et ni les propriétaires de %1\$s, ni le Forum Project Beehive et ses groupes affiliés seront tenus responsables pour le contenu d'aucun message.</p><p>En indiquant votre accord avec ces règles, vous acceptez de ne pas publier un message obcène, vulgaire, de nature sexuel, haineux, menaçant ou autrement illégale.</p><p>Les propriétaires de %1\$s se réservent le droit de suprimer, modifier, déplacer ou fermer tout fil de discussion pour n'importe quel raison.</p>";
 $lang['cancellinktext'] = "ici";
 $lang['failedtoupdateforumsettings'] = "La mise à jour des options du forum a échoué. Veuillez essayer de nouveau plus tard.";
 $lang['moreadminoptions'] = "Options admin additionnelles";

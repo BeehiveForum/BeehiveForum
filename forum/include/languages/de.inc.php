@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.104 2009-07-05 16:09:43 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.105 2009-07-11 19:34:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -627,7 +627,7 @@ $lang['addselectedusers'] = "Ausgewaehlte Benutzer hinzufuegen";
 $lang['removeselectedusers'] = "Ausgewaehlte Benutzer loeschen";
 $lang['addnew'] = "Neu hinzufuegen";
 $lang['deleteselected'] = "Auswahl loeschen";
-$lang['forumrulesmessage'] = "<p><b>Foren-Regeln</b></p><p>\nRegistrierung zu %1\$s frei! Wir bestehen auf Einhaltung der Regeln und Verfahren dieses Forums. Wenn Sie mit den Bedingungen einverstanden sind, bitte das 'Ich bin einverstanden'-Feld aktivieren und auf 'Registrieren' klicken. Wenn Sie die Registirerung abbrechen moechten, klicken Sie %2\$s um zum Forum zurueckzukehren.</p><p>\nAuch werden die Administratoren und Moderatoren des %1\$s versuchen alle unerwuenschten/anstoessigen Nachrichten zu entfernen, leider ist es uns unmÃ¶glich alle Eintraege in diesem Forum zu pruefen. Alle Nachrichten sind dem jeweiligen Autor zuzuschreiben und nicht den Betreibern des %1\$s, kein Projekt des Beehive Forum und seiner Ableger ist rechtlich belangbar fuer die Inhalte der Nachrichten/Eintraege.</p><p>\nMit dem Akzeptieren dieser Regeln garantieren Sie, dass Sie keinerlei Nachrichten posten die abstoessig, vulgaer, sex-orientiert, hassend, drohend oder in sonstiger Weise gegen geltendes Recht verstossen.</p><p>Die Betreiber des %1\$s behalten sich das Recht vor jegliche Eintraege zu loeschen, aendern, verschieben oder zu sperren, gleich aus welchem Grund.</p>";
+$lang['forumrulesmessage'] = "<p><b>Foren-Regeln</b></p><p>Registrierung zu %1\$s frei! Wir bestehen auf Einhaltung der Regeln und Verfahren dieses Forums. Wenn Sie mit den Bedingungen einverstanden sind, bitte das 'Ich bin einverstanden'-Feld aktivieren und auf 'Registrieren' klicken. Wenn Sie die Registirerung abbrechen moechten, klicken Sie %2\$s um zum Forum zurueckzukehren.</p><p>Auch werden die Administratoren und Moderatoren des %1\$s versuchen alle unerwuenschten/anstoessigen Nachrichten zu entfernen, leider ist es uns unmÃ¶glich alle Eintraege in diesem Forum zu pruefen. Alle Nachrichten sind dem jeweiligen Autor zuzuschreiben und nicht den Betreibern des %1\$s, kein Projekt des Beehive Forum und seiner Ableger ist rechtlich belangbar fuer die Inhalte der Nachrichten/Eintraege.</p><p>Mit dem Akzeptieren dieser Regeln garantieren Sie, dass Sie keinerlei Nachrichten posten die abstoessig, vulgaer, sex-orientiert, hassend, drohend oder in sonstiger Weise gegen geltendes Recht verstossen.</p><p>Die Betreiber des %1\$s behalten sich das Recht vor jegliche Eintraege zu loeschen, aendern, verschieben oder zu sperren, gleich aus welchem Grund.</p>";
 $lang['cancellinktext'] = "hier";
 $lang['failedtoupdateforumsettings'] = "Fehler beim Aendern der Foren-Einstellungen. Bitte spaeter nochmal probieren.";
 $lang['moreadminoptions'] = "Weitere Admin-Optionen";

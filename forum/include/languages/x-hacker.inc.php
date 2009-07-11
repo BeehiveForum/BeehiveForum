@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.306 2009-07-05 16:09:43 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.307 2009-07-11 19:34:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -627,7 +627,7 @@ $lang['addselectedusers'] = "adD s3Lec+3D U\$3rS";
 $lang['removeselectedusers'] = "rEm0Ve 5El3CT3D u\$3rS";
 $lang['addnew'] = "aDD NeW";
 $lang['deleteselected'] = "d3l3tE 53Lec+3d";
-$lang['forumrulesmessage'] = "<p><b>foRUM rUL3S</b></p><p>\nR391S+R4+10n +0 %1\$s IS pHr3e! W3 D0 INS15+ TH4+ J00 @81d3 8Y +He RUL3S 4ND p0L1c13s DET@1LeD B3LOW. iPh J00 @9r3e t0 +Eh TeRm\$, PLE453 CH3cK T3h '1 49ree' cH3CkBOX @nd preS\$ +EH 'R3g1S+3R' 8u++oN bELow. IPh j00 w0uLd l1K3 +O C4NCEL tHe r3g15tr@t1oN, CLick %2\$s T0 r3+URn T0 Th3 PhOrUm\$ IndeX.</p><p>\n@L+hoUGh +EH 4DmInISTR4T0R5 4ND mOD3R4TORS OPh %1\$S w1lL @++3MPt +o KE3P @lL objecT1On@8L3 Me5S4GEs 0Ff +H1S f0RuM, 1T 15 1mPo\$5ibL3 PHoR U5 +o r3VI3w @Ll me\$S4Ge\$. 4LL mESs4g3s expRES\$ THE V13w\$ Of T3H 4UTHOr, @nd nEI+H3r +EH 0WNEr\$ 0f %1\$\$, NOR pROj3C+ beEH1v3 F0RUM 4ND 1T5 4FF1LI4TEs W1lL 83 h3ld R3Sp0N\$1BLE pHoR +H3 C0n+3n+ OPH 4nY meS\$@GE.</p><p>\nBY 49r33Ing +0 +HeS3 rUlEs, J00 W4Rr@N+ +H4+ J00 WiLL Not Po5+ 4nY MEs\$a9ES th4t 4R3 O8\$C3N3, VUL9AR, s3xu4LLy-OR1eN+4teD, H4TEPhuL, tHREA+eNIN9, 0r OTheRW1\$3 In v10l@ti0N 0F 4nY L4WS.</p><p>tHe 0wN3R\$ of %1\$\$ RE53RV3 +3H riGHt t0 R3M0Ve, 3dI+, M0VE oR CL0\$E @Ny +Hr34d phOR 4nY R34\$0n.</p>";
+$lang['forumrulesmessage'] = "<p><b>foRUM rUL3S</b></p><p>R391S+R4+10n +0 %1\$s IS pHr3e! W3 D0 INS15+ TH4+ J00 @81d3 8Y +He RUL3S 4ND p0L1c13s DET@1LeD B3LOW. iPh J00 @9r3e t0 +Eh TeRm\$, PLE453 CH3cK T3h '1 49ree' cH3CkBOX @nd preS\$ +EH 'R3g1S+3R' 8u++oN bELow. IPh j00 w0uLd l1K3 +O C4NCEL tHe r3g15tr@t1oN, CLick %2\$s T0 r3+URn T0 Th3 PhOrUm\$ IndeX.</p><p>@L+hoUGh +EH 4DmInISTR4T0R5 4ND mOD3R4TORS OPh %1\$S w1lL @++3MPt +o KE3P @lL objecT1On@8L3 Me5S4GEs 0Ff +H1S f0RuM, 1T 15 1mPo\$5ibL3 PHoR U5 +o r3VI3w @Ll me\$S4Ge\$. 4LL mESs4g3s expRES\$ THE V13w\$ Of T3H 4UTHOr, @nd nEI+H3r +EH 0WNEr\$ 0f %1\$\$, NOR pROj3C+ beEH1v3 F0RUM 4ND 1T5 4FF1LI4TEs W1lL 83 h3ld R3Sp0N\$1BLE pHoR +H3 C0n+3n+ OPH 4nY meS\$@GE.</p><p>BY 49r33Ing +0 +HeS3 rUlEs, J00 W4Rr@N+ +H4+ J00 WiLL Not Po5+ 4nY MEs\$a9ES th4t 4R3 O8\$C3N3, VUL9AR, s3xu4LLy-OR1eN+4teD, H4TEPhuL, tHREA+eNIN9, 0r OTheRW1\$3 In v10l@ti0N 0F 4nY L4WS.</p><p>tHe 0wN3R\$ of %1\$\$ RE53RV3 +3H riGHt t0 R3M0Ve, 3dI+, M0VE oR CL0\$E @Ny +Hr34d phOR 4nY R34\$0n.</p>";
 $lang['cancellinktext'] = "hER3";
 $lang['failedtoupdateforumsettings'] = "f41L3d T0 UPDATE FOrUm S3T+ING\$. Ple@53 TRy 4Gain L4tER.";
 $lang['moreadminoptions'] = "mOr3 @dM1N 0p+10NS";

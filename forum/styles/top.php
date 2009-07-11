@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: top.php,v 1.1 2009-07-11 19:16:48 decoyduck Exp $ */
+/* $Id: top.php,v 1.2 2009-07-11 19:18:09 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -104,12 +104,8 @@ $forum_title = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" valign=\"middle\">\n";
-echo "      <span class=\"forum_title\"><a href=\"index.php?webtag=$webtag\" target=\"$top_frame_name\">$forum_title</a></span>\n";
-echo "    </td>\n";
-echo "    <td align=\"right\" valign=\"middle\">\n";
-echo "      <span class=\"hof_banner\"><a href=\"http://www.hanginoutforums.com/\"><img src=\"hof_banner.png\" border=\"0\" height=\"60\" width=\"400\" alt=\"\" /></a></span>\n";
-echo "    </td>\n";
+echo "    <td align=\"left\" valign=\"middle\"><a href=\"http://www.beehiveforum.net/\" target=\"_blank\"><img src=\"../images/beehive_logo.png\" border=\"0\" alt=\"Beehive Logo\" /></a></td>\n";
+echo "    <td align=\"right\" valign=\"middle\"><a href=\"http://sourceforge.net\" target=\"_top\"><img src=\"http://sourceforge.net/sflogo.php?group_id=50772&amp;type=2\" width=\"125\" height=\"37\" border=\"0\" alt=\"SourceForge.net Logo\" /></a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

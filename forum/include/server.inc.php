@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.44 2009-01-17 23:37:47 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.45 2009-07-11 19:16:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -109,21 +109,6 @@ function server_get_cpu_load()
     }
 
     return false;
-}
-
-/**
-* Fetch the current timestamp
-*
-* Fetches the current timestamp as a float.
-*
-* @return float
-* @param void
-*/
-
-function microtime_float()
-{
-   list($usec, $sec) = explode(" ", microtime());
-   return ((float)$usec + (float)$sec);
 }
 
 /**

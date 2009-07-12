@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.159 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.160 2009-07-12 12:33:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -47,7 +47,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_address_valid($email)
 {
-    return mb_ereg('^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$', $email);
+    return preg_match('/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/u', $email) > 0;
 }
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)

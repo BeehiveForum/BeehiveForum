@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.41 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.42 2009-07-12 12:33:38 decoyduck Exp $ */
 
 /**
 * ip.inc.php - IP Address related functions
@@ -64,32 +64,32 @@ function get_ip_address()
     $matches = array();
 
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
             return $matches[0];
         }
     }elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-        if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_X_FORWARDED'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_X_FORWARDED'], $matches)) {
             return $matches[0];
         }
     }elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-        if (mb_ereg('"^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_FORWARDED_FOR'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_FORWARDED_FOR'], $matches)) {
             return $matches[0];
         }
     }elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-        if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_FORWARDED'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_FORWARDED'], $matches)) {
             return $matches[0];
         }
     }elseif (isset($_SERVER['HTTP_X_COMING_FROM'])) {
-        if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_X_COMING_FROM'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_X_COMING_FROM'], $matches)) {
             return $matches[0];
         }
     }elseif (isset($_SERVER['HTTP_COMING_FROM'])) {
-        if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_COMING_FROM'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_COMING_FROM'], $matches)) {
             return $matches[0];
         }
     }elseif (isset($_SERVER['HTTP_VIA'])) {
         if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['HTTP_CLIENT_IP'], $matches)) {
+            if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_CLIENT_IP'], $matches)) {
                 if (strstr($_SERVER['HTTP_VIA'], "-R")) {
                     return join('.', array_reverse(explode('.', $matches[0])));
                 }else {
@@ -103,7 +103,7 @@ function get_ip_address()
     // Resort to using the REMOTE_ADDR variable.
 
     if (isset($_SERVER['REMOTE_ADDR'])) {
-        if (mb_ereg('^([0-9]{1,3}\.){3,3}[0-9]{1,3}', $_SERVER['REMOTE_ADDR'], $matches)) {
+        if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['REMOTE_ADDR'], $matches)) {
             return $matches[0];
         }
     }

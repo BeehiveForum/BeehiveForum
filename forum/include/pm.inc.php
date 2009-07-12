@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.277 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.278 2009-07-12 09:59:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1419,8 +1419,6 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
     $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), 0)";
     
-    echo "<p>$sql</p>\n";
-
     if (db_query($sql, $db_pm_send_message)) {
 
         $new_mid = db_insert_id($db_pm_send_message);
@@ -1430,8 +1428,6 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
         
-        echo "<p>$sql</p>\n";
-
         if (!db_query($sql, $db_pm_send_message)) return false;
 
         // Check to see if we should be adding a 'Sent Item'

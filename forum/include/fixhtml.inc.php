@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.157 2009-07-11 19:34:41 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.158 2009-07-12 17:00:31 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1425,7 +1425,7 @@ function add_paragraphs($html, $br_only = true)
             $html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/iu", "$1\n\n$2", $html_a[$i]);
             $html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/iu", "</p>\n\n$3", $html_a[$i]);
 
-            $tmp = mb_split("\n", $html_a[$i]);
+            $tmp = explode("\n", $html_a[$i]);
 
             if (count($tmp) > 1) {
 

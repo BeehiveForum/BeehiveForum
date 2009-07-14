@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.113 2009-07-05 15:54:41 decoyduck Exp $ */
+/* $Id: install.php,v 1.114 2009-07-14 20:21:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -320,64 +320,67 @@ if (isset($_POST['install_method'])) {
 
                     }else {
 
-                        echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"install.php\">\n";
-                        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-                        echo "    <tr>\n";
-                        echo "      <td align=\"left\" width=\"500\">\n";
-                        echo "        <table class=\"box\" width=\"100%\">\n";
-                        echo "          <tr>\n";
-                        echo "            <td align=\"left\" class=\"posthead\">\n";
-                        echo "              <table class=\"posthead\" width=\"100%\">\n";
-                        echo "                <tr>\n";
-                        echo "                  <td align=\"left\" class=\"subhead\">Database Setup Complete</td>\n";
-                        echo "                </tr>\n";
-                        echo "                <tr>\n";
-                        echo "                  <td align=\"center\" colspan=\"2\">\n";
-                        echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\">Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
-                        echo "                      </tr>\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        echo "                      </tr>\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete both the install folder and install.php. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
-                        echo "                      </tr>\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        echo "                      </tr>\n";
-                        echo "                    </table>\n";
-                        echo "                  </td>\n";
-                        echo "                </tr>\n";
-                        echo "              </table>\n";
-                        echo "            </td>\n";
-                        echo "          </tr>\n";
-                        echo "        </table>\n";
-                        echo "      </td>\n";
-                        echo "    </tr>\n";
-                        echo "    <tr>\n";
-                        echo "      <td align=\"left\">&nbsp;</td>\n";
-                        echo "    </tr>\n";
-                        echo "    <tr>\n";
-                        echo "      <td align=\"center\">\n";
-                        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-                        echo "          <tr>\n";
-                        echo "            <td width=\"55%\" align=\"right\">\n";
+                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+                        echo "  <tr>\n";
+                        echo "    <td align=\"left\" width=\"500\">\n";
+                        echo "      <table class=\"box\" width=\"100%\">\n";
+                        echo "        <tr>\n";
+                        echo "          <td align=\"left\" class=\"posthead\">\n";
+                        echo "            <table class=\"posthead\" width=\"100%\">\n";
+                        echo "              <tr>\n";
+                        echo "                <td align=\"left\" class=\"subhead\">Database Setup Complete</td>\n";
+                        echo "              </tr>\n";
+                        echo "              <tr>\n";
+                        echo "                <td align=\"center\" colspan=\"2\">\n";
+                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+                        echo "                    <tr>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
+                        echo "                    </tr>\n";
+                        echo "                    <tr>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+                        echo "                    </tr>\n";
+                        echo "                    <tr>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete both the install folder and install.php. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
+                        echo "                    </tr>\n";
+                        echo "                    <tr>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+                        echo "                    </tr>\n";
+                        echo "                  </table>\n";
+                        echo "                </td>\n";
+                        echo "              </tr>\n";
+                        echo "            </table>\n";
+                        echo "          </td>\n";
+                        echo "        </tr>\n";
+                        echo "      </table>\n";
+                        echo "    </td>\n";
+                        echo "  </tr>\n";
+                        echo "  <tr>\n";
+                        echo "    <td align=\"left\">&nbsp;</td>\n";
+                        echo "  </tr>\n";
+                        echo "  <tr>\n";
+                        echo "    <td align=\"center\">\n";
+                        echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+                        echo "        <tr>\n";
+                        echo "          <td width=\"55%\" align=\"right\">\n";
+                        echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"install.php\">\n";
                         echo "              <input type=\"hidden\" name=\"db_server\" value=\"$db_server\">\n";
                         echo "              <input type=\"hidden\" name=\"db_username\" value=\"$db_username\">\n";
                         echo "              <input type=\"hidden\" name=\"db_password\" value=\"$db_password\">\n";
                         echo "              <input type=\"hidden\" name=\"db_database\" value=\"$db_database\">\n";
                         echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
-                        echo "            </td>\n";
-                        echo "            <td align=\"left\" width=\"45%\">\n";
+                        echo "            </form>\n";
+                        echo "          </td>\n";
+                        echo "          <td align=\"left\" width=\"45%\">\n";
+                        echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
                         echo "              <input type=\"submit\" name=\"finish_install\" value=\"Continue\" class=\"button\" />\n";
-                        echo "            </td>\n";
-                        echo "          </tr>\n";
-                        echo "        </table>\n";
-                        echo "      </td>\n";
-                        echo "    </tr>\n";
-                        echo "  </table>\n";
-                        echo "</form>\n";
+                        echo "            </form>\n";
+                        echo "          </td>\n";
+                        echo "        </tr>\n";
+                        echo "      </table>\n";
+                        echo "    </td>\n";
+                        echo "  </tr>\n";
+                        echo "</table>\n";
+                        
                     }
 
                     echo "</div>\n";

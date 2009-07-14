@@ -25,6 +25,7 @@ Version 0.1 / 8th December 2002
    6.2 Unknown or missing table errors
    6.3 Blank page errors
    6.4 Error: Strict Standards: var: Deprecated on PHP/5.x
+   6.5 Email notifications on Windows.
 
 1. About Beehive
 ================
@@ -191,3 +192,9 @@ if the level is increased to include E_STRICT, a new reporting level which
 is designed to notify on less than recommended coding practices, the above error
 will occur when using your BeehiveForum. At the moment the only work around
 for this is to disable / step down the error reporting to E_ALL or below.
+
+6.5 Email Notifications on Windows
+==================================
+
+Please see readme.txt section 1.2.12 for information on setting up PHP to send
+email on Windows platforms.

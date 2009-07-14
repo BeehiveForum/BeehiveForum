@@ -1,5 +1,30 @@
 Beehive Forum Release Notes
 
+What's new in 0.9.1 (Released 15th July 2009)
+===================
+
+- Notes
+
+        - Beehive Forum 0.9.1 is intended to fix bugs found since
+          the release of Beehive Forum 0.9. There are no new 
+          features in this version.
+  
+- Changes from 0.9
+
+        - Fixed: Admin Forums not setting forum name if the forum
+                 already had a name saved.
+                 
+        - Fixed: Debugging output of SQL query left in pm.inc.php
+                 is visible on IIS servers.
+
+        - Fixed: Error during install if no FILE permission on MySQL
+                 account.
+                 
+        - Fixed: Forum doesn't work if GeSHi is not installed.
+        
+- For comprehensive list of changes please see the change log.        
+  
+
 What's new in 0.9 (Released 5th July 2009)
 =================
 

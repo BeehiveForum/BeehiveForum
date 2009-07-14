@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.9 / 5th July 2009
+Version 0.9.1 / 15th July 2009
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -13,6 +13,7 @@ in release.txt.
 1.    Installation
   1.1    Requirements
   1.1.1  Requirements Notes
+  1.1.2  PHP 5.3.0 Support
   1.2    Instructions
     1.2.1    Archive Extraction
     1.2.2    Database setup
@@ -23,8 +24,9 @@ in release.txt.
     1.2.7    Creating your config.inc.php
     1.2.8    First use
     1.2.9    Adminning
-    1.2.10    What to do if it doesn't work
+    1.2.10   What to do if it doesn't work
     1.2.11   Add your forum to our list
+    1.2.11   Email notifications
   1.3    Customising your Beehive Forum
     1.3.1    Style sheet
     1.3.2    Images
@@ -78,8 +80,9 @@ You need web hosting which provides:
 ========================
 
 - Beehive Forum requires PHP 5.1.0 as a minimum, but we recommend installing
-  the latest PHP 5.2.x release where possible.
-  
+  the latest PHP 5.2.x release where possible. For notes regarding PHP 5.3.0
+  please see "PHP 5.3.0 Support" below.
+   
 - PCRE runtime compiled with --enable-utf8 --enable-unicode-properties is
   requried. PCRE support is OS dependent, please check with your host 
   for PCRE requirements.
@@ -97,6 +100,15 @@ You need web hosting which provides:
   of the dictionary during installation but Beehive Forum. Once installation
   has completed you may restore the default permissions without suffering
   any reduced functionality.
+  
+1.1.2 PHP 5.3.0 Support
+=======================
+
+As of Beehive Forum 0.9.1, functions depreciated in PHP 5.3.0 have been removed
+from or replaced in the code. However, no extensive testing has otherwise been 
+performed. If you are using PHP 5.3.0 and encounter problems with using 
+Beehive Forum 0.9.1 please contact us.
+
 
 1.2 Instructions
 ================
@@ -299,6 +311,24 @@ going to http://beehiveforum.net/forums.php
 It could be a bit of publicity for your site, and it helps us to be able to say
 "Look, all these people are using it!", but if you don't want to, you don't have
 to.
+
+1.2.12 Enabling email notifications on Windows platforms
+========================================================
+
+Beehive Forum uses PHP's built-in mail function to send email notifications
+to users. By default, on Windows platforms PHP is set up to send mail via
+localhost only. If you are not running a mail server on localhost you will
+need to edit php.ini and change the SMTP setting in the [mail function]
+section. Additionally you may also need to change the sendmail_from setting
+if your ISP / host requires emails to be sent from a specific address.
+
+Please note that if your mail server requires SMTP authentication, or POP
+before SMTP (sometimes called SMTP after POP), Beehive Forum will not be able 
+to send emails as PHP does not natively support any forms of SMTP 
+authentication.
+
+More information on configuring the mail function can be found in the PHP
+manual here: http://ww.php.net/manual/en/book.mail.php
 
 
 1.3 Customising your Beehive Forum

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.382 2009-06-18 20:34:05 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.383 2009-07-14 20:21:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1992,17 +1992,18 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
     $forum_name = db_escape_string($forum_name);
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
+        
         $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access_level', ";
         $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
 
         if (!db_query($sql, $db_forum_update)) return false;
 
         $sql = "INSERT IGNORE INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-        $sql.= "VALUES ('$fid', 'forum_name', '$forum_name')";
+        $sql.= "VALUES ('$fid', 'forum_name', '$forum_name') ";
+        $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
         if (!db_query($sql, $db_forum_update)) return false;
-
+        
         return true;
     }
 

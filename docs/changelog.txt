@@ -1,6 +1,10 @@
-Project Beehive Forum Change Log (Generated: Tue, 14 Jul 2009 20:25:59)
+Project Beehive Forum Change Log (Generated: Wed, 15 Jul 2009 11:46:03)
 
 Author: decoyduck
+Date: Tue, 14 Jul 2009 19:53:58
+-----------------------
+Changed: Updated documentation for pending 0.9.1 release.
+
 Date: Tue, 14 Jul 2009 19:21:44
 -----------------------
 Fixed: Admin Forums not setting forum name if the forum already had a name

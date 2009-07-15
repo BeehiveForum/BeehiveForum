@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.230 2009-04-26 13:01:11 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.231 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,7 +59,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function light_html_draw_top()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $arg_array = func_get_args();
 
@@ -172,7 +172,7 @@ function light_html_draw_bottom()
 
 function light_draw_logon_form($error_msg_array = array())
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $webtag = get_webtag();
     
@@ -230,7 +230,7 @@ function light_draw_messages($msg)
 
     forum_check_webtag_available($webtag);
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     list($tid, $pid) = explode('.', $msg);
 
@@ -421,7 +421,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     forum_check_webtag_available($webtag);
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $error_msg_array = array();
 
@@ -835,7 +835,7 @@ function light_draw_pm_inbox()
 {
     $webtag = get_webtag();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     
     // Get custom folder names array.
 
@@ -1114,7 +1114,7 @@ function light_draw_my_forums()
 {
     $webtag = get_webtag();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
         $page = $_GET['page'];
@@ -1246,7 +1246,7 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
 
 function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -1282,7 +1282,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 {
     $webtag = get_webtag();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $poll_data = poll_get($tid);
 
@@ -1481,7 +1481,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
 function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
@@ -1747,7 +1747,7 @@ function light_spoiler_enable($message)
 
 function light_message_display_deleted($tid,$pid)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     echo sprintf("<p>{$lang['messagewasdeleted']}</p>\n", $tid, $pid);
     echo "<hr />";
@@ -1755,7 +1755,7 @@ function light_message_display_deleted($tid,$pid)
 
 function light_message_display_approval_req($tid, $pid)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     echo sprintf("<p>{$lang['messageawaitingapprovalbymoderator']}</p>\n", $tid, $pid);
     echo "<hr />\n";
@@ -1763,7 +1763,7 @@ function light_message_display_approval_req($tid, $pid)
 
 function light_messages_nav_strip($tid,$pid,$length,$ppp)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -1836,7 +1836,7 @@ function light_html_guest_error ()
 {
     $frame_top_target = html_get_top_frame_name();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['guesterror']);
@@ -1965,7 +1965,7 @@ function light_form_input_password($name, $value = "", $width = 0, $maxlength = 
 
 function light_html_message_type_error()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannotpostthisthreadtype']);
@@ -1994,7 +1994,7 @@ function light_attachment_make_link($attachment)
 
 function light_threads_draw_discussions_dropdown($mode)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
@@ -2089,7 +2089,7 @@ function light_mode_check_noframes()
 
 function light_edit_refuse()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     light_html_display_error_msg($lang['nopermissiontoedit']);
 }
@@ -2178,7 +2178,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
 function light_html_display_error_array($error_list_array)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 
@@ -2201,7 +2201,7 @@ function light_html_display_error_array($error_list_array)
 
 function light_html_display_success_msg($string_msg)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_string($string_msg)) return;
 
@@ -2215,7 +2215,7 @@ function light_html_display_success_msg($string_msg)
 
 function light_html_display_warning_msg($string_msg)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_string($string_msg)) return;
     
@@ -2229,7 +2229,7 @@ function light_html_display_warning_msg($string_msg)
 
 function light_html_display_error_msg($string_msg)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_string($string_msg)) return;
 
@@ -2243,7 +2243,7 @@ function light_html_display_error_msg($string_msg)
 
 function light_html_user_require_approval()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     light_html_draw_top();
     light_html_display_error_msg($lang['userapprovalrequiredbeforeaccess']);
@@ -2252,19 +2252,19 @@ function light_html_user_require_approval()
 
 function light_pm_error_refuse()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     light_html_display_error_msg($lang['cannotviewpm']);
 }
 
 function light_pm_edit_refuse()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     light_html_display_error_msg($lang['cannoteditpm']);
 }
 
 function light_pm_enabled()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!forum_get_setting('show_pms', 'Y')) {
 
@@ -2277,7 +2277,7 @@ function light_pm_enabled()
 
 function light_pm_display($pm_message_array, $folder, $preview = false)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -2421,7 +2421,7 @@ function light_pm_check_messages()
 
     // Load the Language file
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     
     // Get the webtag
     

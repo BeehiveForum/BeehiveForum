@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.46 2009-03-26 22:26:30 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.47 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,7 +53,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function header_redirect($uri, $reason = false)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     // Microsoft-IIS bug prevents redirect at same time as setting cookies.
 

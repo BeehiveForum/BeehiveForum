@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.104 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.105 2009-07-15 11:37:27 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -74,7 +74,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
 function user_get_profile($uid)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!$db_user_get_profile = db_connect()) return false;
 
@@ -256,7 +256,7 @@ function user_get_profile($uid)
 
 function user_format_local_time(&$user_prefs_array)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (isset($user_prefs_array['TIMEZONE']) && is_numeric($user_prefs_array['TIMEZONE'])) {
         $timezone_id = $user_prefs_array['TIMEZONE'];

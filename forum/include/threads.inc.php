@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.353 2009-04-29 17:08:29 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.354 2009-07-15 11:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1139,7 +1139,7 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
     // Language file
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     // If there are any problems with the function arguments we bail out.
 
@@ -1288,7 +1288,7 @@ function threads_process_list($result)
 {
     // Language file
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     // Unread cutoff
 
@@ -1551,7 +1551,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
 function thread_list_draw_top($mode)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 

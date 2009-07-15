@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.44 2009-06-26 17:14:20 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.45 2009-07-15 11:37:24 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -111,7 +111,7 @@ if (!forum_check_webtag_available($webtag)) {
 
 // Load language file
 
-$lang = lang::get_instance()->load(__FILE__);
+$lang = load_language_file();
 
 // Check that we have access to this forum
 

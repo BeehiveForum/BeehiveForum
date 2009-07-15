@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.167 2009-06-21 16:18:30 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.168 2009-07-15 11:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function thread_get($tid, $inc_deleted = false)
 {
     if (!$db_thread_get = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $fidlist = folder_get_available();
 
@@ -797,7 +797,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
 function thread_merge_error($error_code, &$error_str)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     switch ($error_code) {
 
@@ -1121,7 +1121,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
 function thread_split_error($error_code, &$error_str)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     switch ($error_code) {
 

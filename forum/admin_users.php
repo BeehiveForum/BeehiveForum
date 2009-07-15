@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.192 2009-06-26 17:14:19 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.193 2009-07-15 11:37:24 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -94,7 +94,7 @@ if (bh_session_user_banned()) {
 
 // Load language file
 
-$lang = lang::get_instance()->load(__FILE__);
+$lang = load_language_file();
 
 // Array to hold error messages
 

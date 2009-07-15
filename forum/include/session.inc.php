@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.387 2009-07-06 20:45:57 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.388 2009-07-15 11:37:27 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -213,7 +213,7 @@ function bh_session_expired()
 {
     $webtag = get_webtag();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (defined("BEEHIVEMODE_LIGHT")) {
 

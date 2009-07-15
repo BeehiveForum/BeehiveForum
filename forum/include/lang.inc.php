@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.48 2009-04-13 11:54:49 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.49 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -36,64 +36,55 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
-}
-
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-class lang
+function load_language_file()
 {
-    private static $instance;
-    
-    private $user_pref;
-    
-    private $lang_cache;
-    
-    private $compat_mode = false;
-  
-    private function __construct()
-    {
-        // Default language file.
-        
+    static $lang = false;
+
+    if (!is_array($lang)) {
+
+        // start out by including the English language file. This will allow
+        // us to still use Beehive even if our language file isn't up to date
+        // correctly.
+
+        // The English language file must exist even if we're not going to be
+        // using it in our forum. If we can't find it we'll bail out here.
+
+        if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
+            trigger_error("<p>Could not load English language file (en.inc.php)</p>", E_USER_ERROR);
+        }
+
+        include(BH_INCLUDE_PATH. "languages/en.inc.php");
+
         $default_language = forum_get_setting('default_language', false, 'en');
-               
-        // Initialise the file cache
-        
-        $this->lang_cache = array();
-        
-        // Set the user's preferred language
+
+         // if the user has expressed a preference for language,
+         // ignore what the browser wants and use that if available
 
         if (($pref_language = bh_session_get_value("LANGUAGE"))) {
 
-            if (@is_dir(BH_INCLUDE_PATH. "languages/$pref_language")) {
+            if (@file_exists("include/languages/{$pref_language}.inc.php")) {
 
-                $this->user_pref = $pref_language;
-                return;
-            
-            }else if (file_exists(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php")) {
-            
-                $this->user_pref = $pref_language;
-                $this->compat_mode = true;
-                return;
+                include(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
+                return $lang;
             }
         }
-        
-        // if the browser doesn't send an Accept-Language header, give up and use the default language.
+
+         // if the browser doesn't send an Accept-Language header, give up.
 
         if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-        
-            $this->user_pref = $default_language;
-            return;
+
+            include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
+            return $lang;
         }
 
-        // Split the provided Accept-Language string into individual languages
+        // split the provided Accept-Language string into individual languages
 
-        $langs_array = preg_split('/\s*,\s*/u', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        $langs_array = preg_split('/\s*,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
-        // Work out what the 'q' values associated with each language are
+         // work out what the q values associated with each language are
 
         foreach ($langs_array as $key => $value) {
 
@@ -109,100 +100,36 @@ class lang
             }
         }
 
-        // Sort the array in descending order of q value
+        // sort the array in descending order of q value
 
         arsort($qvalue);
 
-        // Go through the array and use the first language installed that matches
+        // go through the array and use the first language installed that matches
+        // if we've got to the stage where the user will accept any language,
+        // default to what is specified in config.inc.php
 
         foreach ($qvalue as $key => $value) {
 
             if ($langs_array[$key] == "*") $langs_array[$key] = $default_language;
 
-            if (@is_dir(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}")) {
+            if (@file_exists("include/languages/{$langs_array[$key]}.inc.php")) {
 
-                $this->user_pref = $langs_array[$key];
-                return;
-
-            }else if (file_exists(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php")) {
-            
-                $this->user_pref = $langs_array[$key];
-                $this->compat_mode = true;
-                return;
+                include(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php");
+                return $lang;
             }
         }
-        
-        // If we're still here, no languages matched, try the default.
-        
-        if (@is_dir(BH_INCLUDE_PATH. "languages/$default_language")) {
 
-            $this->user_pref = $default_language;
-            return;
-
-        }else if (file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
-
-            $this->user_pref = $default_language;
-            $this->compat_mode = true;
-            return;
-        }
-        
-        // If we got this far then we can't continue!
-        
-        trigger_error('Could not load default language file', E_USER_ERROR);
+        // if we're still here, no languages matched. Use the default specified in config.inc.php
+        include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
+        return $lang;
     }
-    
-    public static function get_instance()
-    {
-        if (!is_object(self::$instance)) {
-            
-            $class = __CLASS__;
-            self::$instance = new $class();
-        }
-        
-        return self::$instance;
-    }
-    
-    public function load($filename)
-    {
-        if ($this->compat_mode === true) {
-        
-            if (sizeof($this->lang_cache) < 1) {
-            
-                if (!file_exists(BH_INCLUDE_PATH. "languages/{$this->user_pref}.inc.php")) {
-                    trigger_error("<p>Could not load language file {$this->user_pref}.inc.php</p>", E_USER_ERROR);
-                }
-                
-                $lang = array();
 
-                include(BH_INCLUDE_PATH. "languages/{$this->user_pref}.inc.php");
-                
-                $this->lang_cache = $lang;
-            }
-            
-            return $this->lang_cache;
-            
-        }else if (!array_key_exists($filename, $this->lang_cache)) {
-        
-            $filename = basename($filename);
-
-            if (!file_exists(BH_INCLUDE_PATH. "languages/{$this->user_pref}/$filename")) {
-                trigger_error("<p>Could not load language file for $filename</p>", E_USER_ERROR);
-            }
-            
-            $lang = array();
-
-            include(BH_INCLUDE_PATH. "languages/{$this->user_pref}/$filename");
-            
-            $this->lang_cache[$filename] = $lang;
-        }
-        
-        return $this->lang_cache[$filename];
-    }
-}   
+    return $lang;
+}
 
 function lang_get_available($inc_browser_negotiation = true)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $available_langs = ($inc_browser_negotiation) ? array('' => $lang['browsernegotiation']) : array();
 
@@ -210,9 +137,9 @@ function lang_get_available($inc_browser_negotiation = true)
 
         while (($file = readdir($dir))) {
 
-            if (($pos = mb_strpos($file, '.inc.php')) !== false) {
+            if (($pos = strpos($file, '.inc.php')) !== false) {
 
-                $lang_name = mb_substr($file, 0, $pos);
+                $lang_name = substr($file, 0, $pos);
                 $available_langs[$lang_name] = $lang_name;
             }
         }

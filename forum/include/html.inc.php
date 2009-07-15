@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.338 2009-07-11 19:16:48 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.339 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,7 +60,7 @@ function html_guest_error()
 {
     $frame_top_target = html_get_top_frame_name();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $final_uri = basename(get_request_uri());
 
@@ -102,7 +102,7 @@ function html_guest_error()
 
 function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
-     $lang = lang::get_instance()->load(__FILE__);
+     $lang = load_language_file();
      html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target, $align);
 }
 
@@ -195,7 +195,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
 function html_display_error_array($error_list_array, $width = '600', $align = 'center')
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
@@ -225,7 +225,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 
 function html_display_success_msg($string_msg, $width = '600', $align = 'center')
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
@@ -246,7 +246,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
 
 function html_display_error_msg($string_msg, $width = '600', $align = 'center')
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
@@ -267,7 +267,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
 
 function html_display_warning_msg($string_msg, $width = '600', $align = 'center')
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
@@ -306,7 +306,7 @@ function html_user_banned()
 
 function html_user_require_approval()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     html_draw_top("robots=noindex,nofollow");
     html_error_msg($lang['userapprovalrequiredbeforeaccess']);
@@ -315,7 +315,7 @@ function html_user_require_approval()
 
 function html_email_confirmation_error()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return;
 
@@ -328,7 +328,7 @@ function html_email_confirmation_error()
 
 function html_message_type_error()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     html_draw_top();
     html_error_msg($lang['cannotpostthisthreadtype']);
@@ -727,7 +727,7 @@ function html_get_top_frame_name()
 
 function html_draw_top()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $onload_array = array();
     $onunload_array = array();
@@ -1563,7 +1563,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
 
 function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $page_count   = ceil($total_rows / $rows_per_page);
     $current_page = ceil($offset / $rows_per_page) + 1;

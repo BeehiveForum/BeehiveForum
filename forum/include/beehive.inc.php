@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.54 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.55 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,7 +38,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function draw_beehive_bar()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     echo "<div align=\"center\">\n";
     echo "<table width=\"98%\">\n";

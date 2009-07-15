@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.190 2009-06-14 16:39:51 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.191 2009-07-15 11:37:26 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -135,7 +135,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 {
     if (!$db_admin_get_log_entries = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('CREATED', 'UID', 'ACTION');
     $sort_dir_array = array('ASC', 'DESC');
@@ -1069,7 +1069,7 @@ function admin_get_visitor_log($offset)
 
     $users_get_recent_array = array();
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
@@ -1189,7 +1189,7 @@ function admin_get_user_ip_matches($uid)
 {
     if (!$db_admin_get_user_ip_matches = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1282,7 +1282,7 @@ function admin_get_user_email_matches($uid)
 {
     if (!$db_admin_get_user_email_matches = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1343,7 +1343,7 @@ function admin_get_user_referer_matches($uid)
 {
     if (!$db_admin_get_user_referer_matches = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1404,7 +1404,7 @@ function admin_get_user_passwd_matches($uid)
 {
     if (!$db_admin_get_user_passwd_matches = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1465,7 +1465,7 @@ function admin_get_user_history($uid)
 {
     if (!$db_admin_get_user_history = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 

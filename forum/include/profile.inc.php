@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.106 2009-04-09 18:53:42 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.107 2009-07-15 11:37:27 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -781,7 +781,7 @@ function profile_get_item($piid)
 
 function profile_item_add_clear_entry(&$profile_item_options_array, $type)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $valid_item_types_aray = array(PROFILE_ITEM_RADIO, PROFILE_ITEM_DROPDOWN);
 

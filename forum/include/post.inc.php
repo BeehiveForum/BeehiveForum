@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.216 2009-04-25 09:45:34 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.217 2009-07-15 11:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -236,7 +236,7 @@ function post_update_thread_length($tid, $length)
 
 function post_draw_to_dropdown($default_uid, $show_all = true)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $html = "<select name=\"t_to_uid\">";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
@@ -310,7 +310,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_recent($default_uid, $new_thread)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($new_thread ? 0 : 1).")\">";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
@@ -381,7 +381,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
 
 function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false, $custom_html = "")
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" $custom_html>";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;

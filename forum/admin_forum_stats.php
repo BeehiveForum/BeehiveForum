@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.24 2009-06-26 17:14:19 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.25 2009-07-15 11:37:24 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -106,7 +106,7 @@ if (!forum_check_webtag_available($webtag)) {
 
 // Load language file
 
-$lang = lang::get_instance()->load(__FILE__);
+$lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 

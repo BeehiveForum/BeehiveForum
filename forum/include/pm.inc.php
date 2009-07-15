@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.278 2009-07-12 09:59:21 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.279 2009-07-15 11:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,7 +60,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function pm_enabled()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!forum_get_setting('show_pms', 'Y')) {
 
@@ -110,7 +110,7 @@ function pm_mark_as_read($mid)
 
 function pm_edit_refuse()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     html_error_msg($lang['cannoteditpm'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => PM_FOLDER_OUTBOX));
 }
 
@@ -126,7 +126,7 @@ function pm_edit_refuse()
 
 function pm_error_refuse()
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     html_error_msg($lang['cannotviewpm'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => PM_FOLDER_INBOX));
 }
 
@@ -143,7 +143,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
 {
     if (!$db_pm_get_inbox = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('PM.SUBJECT', 'PM.FROM_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -233,7 +233,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 {
     if (!$db_pm_get_outbox = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -323,7 +323,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
 {
     if (!$db_pm_get_sent = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -413,7 +413,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 {
     if (!$db_pm_get_saved_items = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('PM.SUBJECT', 'PM.FROM_UID', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -505,7 +505,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 {
     if (!$db_pm_get_drafts = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -657,7 +657,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 {
     if (!$db_pm_fetch_search_results = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $sort_by_array  = array('PM.SUBJECT', 'TYPE', 'PM.FROM_UID', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -895,7 +895,7 @@ function pm_user_get_friends()
 {
     if (!$db_pm_user_get_friends = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1078,7 +1078,7 @@ function pm_get_content($mid)
 
 function pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -1986,7 +1986,7 @@ function pm_check_messages()
 
     // Load the Language file
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     // Get the number of messages.
 
@@ -2286,7 +2286,7 @@ function pm_export_folder($folder)
 
 function pm_export_html_top($mid)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $html = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $html.= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -2724,7 +2724,7 @@ function pm_get_folder_names()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (defined('BEEHIVEMODE_LIGHT')) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.134 2009-06-21 14:25:55 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.135 2009-07-15 11:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -98,7 +98,7 @@ function stats_output_xml()
     
     // Load Language file
     
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     
     // Get webtag
     
@@ -483,7 +483,7 @@ function stats_get_active_user_list()
 
     if (!$db_stats_get_active_user_list = db_connect()) return $stats;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!$table_data = get_table_prefix()) return $stats;
 
@@ -731,7 +731,7 @@ function stats_get_newest_user()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
@@ -771,7 +771,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
 {
     if (!$db_stats_get_post_tallys = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!is_numeric($start_timestamp)) return false;
     if (!is_numeric($end_timestamp)) return false;

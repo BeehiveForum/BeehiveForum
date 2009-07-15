@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.48 2009-06-21 14:25:55 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.49 2009-07-15 11:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ function visitor_log_get_recent()
 
     $forum_fid = $table_data['FID'];
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
@@ -157,7 +157,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 {
     if (!$db_visitor_log_get_profile_items = db_connect()) return false;
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -239,7 +239,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Load the language file.
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     // Get the current session's UID.
 

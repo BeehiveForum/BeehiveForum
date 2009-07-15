@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.88 2009-06-14 16:39:51 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.89 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -138,7 +138,7 @@ function post_delete($tid, $pid)
 
 function edit_refuse($tid, $pid)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
     html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
 }
 

@@ -41,6 +41,14 @@
                 <li>Beehive doesn't do x. Can you make it do that?</li>
             </ol>
             </li>
+            <li>Trouble Shooting
+            <ol>
+                <li>Database connectivity problems or permission denied errors</li>
+                <li>Unknown or missing table errors</li>
+                <li>Blank page errors</li>
+                <li>Error: Strict Standards: var: Deprecated on PHP/5.x</li>
+                <li>Email notifications on Windows.</li>
+            </ol>
         </ol>
         <hr />
         <h2>1. About Beehive</h2>
@@ -139,5 +147,40 @@
 
                  <p>Of course, since Beehive is open source, you could always implement whatever
                  feature you want yourself. We'd love you to submit patches.</p>
+        <hr />
+        <h2>6. Troubleshooting</h2>
+
+            <h3>6.1 Database connectivity problems or permission denied errors</h3>
+                <p>If you are experiencing connectivity problems or permission denied errors, check
+                that you have edited the config.inc.php so that the database details match those
+                provided by your hosting provider. Be sure to double check the username and
+                password. If they are incorrect your Beehive Forum will fail to function.</p>
+
+            <h3>6.2 Unknown or missing table errors</h3>
+                <p>In the case of unknown or missing table errors, be sure that you have correctly
+                and successfully imported the schema.sql file in the docs folder of the Beehive
+                Forum Distribution. If you experience errors during the import, check that your
+                version of MySQL is recent enough (see readme.txt for requirements)</p>
+
+            <h3>6.3 Blank page errors</h3>
+                <p>Blank pages can be caused by enabling the gzip compression support in your
+                Beehive Forum's config.inc.php. Problems arise when the server already has gzip
+                compression for PHP scripts enabled or a 3rd party compression library such as
+                mod_gzip is installed. Before reporting this as a bug, try disabling the gzip
+                compression in config.inc.php of your Beehive Forum by changing the
+                $gzip_compress_output variable to False.</p>
+
+            <h3>6.4 Error: Strict Standards: var: Deprecated on PHP/5.x</h3>
+                <p>With PHP/5.0 the var modifier for variables within classes has been deprecated,
+                hence the error message. Under normal circumstances this wouldn't be a problem
+                as the error reporting level is by default set the same as PHP/4.x. However
+                if the level is increased to include E_STRICT, a new reporting level which
+                is designed to notify on less than recommended coding practices, the above error
+                will occur when using your BeehiveForum. At the moment the only work around
+                for this is to disable / step down the error reporting to E_ALL or below.</p>
+
+            <h3>6.5 Email Notifications on Windows</h3>
+                <p>Please see readme.txt section 1.2.12 for information on setting up PHP to send
+                email on Windows platforms.</p>
     </body>
 </html>

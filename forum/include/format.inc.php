@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.179 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.180 2009-07-15 11:37:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,7 +116,7 @@ function format_time($time, $verbose = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
@@ -198,7 +198,7 @@ function format_time($time, $verbose = false)
 
 function format_date($time)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
@@ -262,7 +262,7 @@ function format_date($time)
 
 function format_time_display($seconds, $abbrv_units = true)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $periods_array = array ('year'   => 31556926, 'month'  => 2629743,
                             'week'   => 604800,   'day'    => 86400,
@@ -696,7 +696,7 @@ function format_age($dob)
 
 function format_birthday($date)
 {
-    $lang = lang::get_instance()->load(__FILE__);
+    $lang = load_language_file();
 
     $matches_array = array();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.165 2009-06-21 16:18:30 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.166 2009-07-16 12:06:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -237,7 +237,7 @@ function folder_update($fid, $folder_data)
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}FOLDER` SET TITLE = '{$folder_data['TITLE']}', ";
     $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
-    $sql.= "POSITION = '`{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}'` WHERE FID = '$fid'";
+    $sql.= "POSITION = '{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}' WHERE FID = '$fid'";
 
     if (!db_query($sql, $db_folder_update)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.192 2009-07-09 18:34:58 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.193 2009-07-26 14:32:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -466,7 +466,7 @@ $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0', ";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2', ";
-$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0', ";
 $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N', ";

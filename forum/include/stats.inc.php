@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.135 2009-07-15 11:37:27 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.136 2009-07-26 14:32:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -783,14 +783,13 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $uid = bh_session_get_value('UID');
     
     $post_start_datetime = date(MYSQL_DATETIME, $start_timestamp);
-
-    $post_end_datetime = date(MYSQL_DATETIME, $start_timestamp);
+    $post_end_datetime = date(MYSQL_DATETIME, $end_timestamp);
 
     $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
     $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME)";
-
+    
     if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
 
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);

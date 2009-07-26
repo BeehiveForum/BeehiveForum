@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.380 2009-07-15 11:37:27 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.381 2009-07-26 14:32:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -726,117 +726,84 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     // Check to see we have some preferences to set globally.
 
     if (sizeof($global_prefs_array) > 0) {
+        
+        // Concat the column names together, escaping them and enclosing them in backticks.
+        
+        $column_names = implode("`, `", array_map('db_escape_string', array_keys($global_prefs_array)));
+        
+        // Concat the values together, escaping them and enclosing them in quotes.
+        
+        $column_insert_values = implode("', '", array_map('db_escape_string', array_values($global_prefs_array)));
+        
+        // Concat the column names together, pass them through user_update_prefs_helper
+        // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
+        
+        $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($global_prefs_array)));
+        
+        // Construct the query and run it.
+        
+        $sql = "INSERT INTO USER_PREFS (`UID`, `$column_names`) VALUES('$uid', '$column_insert_values') ";
+        $sql.= "ON DUPLICATE KEY UPDATE $column_update_values ";
+        
+        if (!db_query($sql, $db_user_update_prefs)) return false;
+        
+        // If a pref is set globally, we need to remove it from all the 
+        // per-forum USER_PREFS tables. We use array_intersect to find
+        // out which columns we need to update.
 
-        $sql = "SELECT UID FROM USER_PREFS WHERE UID = '$uid'";
+        $update_prefs_array = array_intersect($forum_pref_names, array_keys($global_prefs_array)); 
+        
+        // Only proceed if we have something to process.
 
-        if (!$result_global = db_query($sql, $db_user_update_prefs)) return false;
-
-        if (db_num_rows($result_global) > 0) {
-
-            $update_prefs_array = array();
-
-            foreach ($global_prefs_array as $pref_name => $pref_setting) {
-                 $update_prefs_array[] = sprintf("%s = '%s'", $pref_name, db_escape_string($pref_setting));
-            }
-
-            if (sizeof($update_prefs_array) > 0) {
-
-                $update_prefs_sql = implode(", ", $update_prefs_array);
-
-                $sql = "UPDATE LOW_PRIORITY USER_PREFS SET $update_prefs_sql WHERE UID = '$uid'";
-
-                if (!db_query($sql, $db_user_update_prefs)) return false;
-            }
-
-        }else {
-
-            $update_prefs_array = array();
-
-            foreach ($global_prefs_array as $pref_name => $pref_setting) {
-                 $update_prefs_array[$pref_name] = db_escape_string($pref_setting);
-            }
-
-            if (sizeof($update_prefs_array) > 0) {
-
-                $update_prefs_columns_sql = implode(", ", array_keys($update_prefs_array));
-                $update_prefs_values_sql  = implode("', '", array_values($update_prefs_array));
-
-                $sql = "INSERT INTO USER_PREFS (UID, $update_prefs_columns_sql) VALUES ('$uid', '$update_prefs_values_sql') ";
-
-                if (!db_query($sql, $db_user_update_prefs)) return false;
-            }
-        }
-
-        // If a pref is set globally, we need to remove it from all the [webtag]_USER_PREFS tables too.
-        // MySQL doesn't mind if a record for this user doesn't exist in a particular table.
-
-        $update_prefs_array = array();
-
-        foreach ($global_prefs_array as $pref_name => $pref_setting) {
-            if (in_array($pref_name, $forum_pref_names)) {
-                $update_prefs_array[] = "$pref_name = ''";
-            }
-        }
-
-        if (sizeof($update_prefs_array) > 0) {
-
-            $update_prefs_sql  = implode(", ", $update_prefs_array);
-
+        if (sizeof($update_prefs_array) > 0) {        
+        
             if (!$forum_prefix_array = forum_get_all_prefixes()) return false;
 
             foreach ($forum_prefix_array as $forum_prefix) {
+
+                $update_prefs_sql = implode(", ", array_map('user_update_prefs_callback2', $update_prefs_array));
 
                 $sql = "UPDATE LOW_PRIORITY `{$forum_prefix}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
 
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
-        }
+        }    
     }
 
     if ((sizeof($forum_prefs_array) > 0) && ($table_data = get_table_prefix())) {
-
-        $sql = "SELECT UID FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
-
-        if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
-
-        if (db_num_rows($result_forum) > 0) {
-
-            $update_prefs_array = array();
-
-            foreach ($forum_prefs_array as $pref_name => $pref_setting) {
-                 $update_prefs_array[] = sprintf("%s = '%s'", $pref_name, db_escape_string($pref_setting));
-            }
-
-            if (sizeof($update_prefs_array) > 0) {
-
-                $update_prefs_sql = implode(", ", $update_prefs_array);
-
-                $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
-
-                if (!db_query($sql, $db_user_update_prefs)) return false;
-            }
-
-        }else {
-
-            $update_prefs_array = array();
-
-            foreach ($forum_prefs_array as $pref_name => $pref_setting) {
-                 $update_prefs_array[$pref_name] = db_escape_string($pref_setting);
-            }
-
-            if (sizeof($update_prefs_array) > 0) {
-
-                $update_prefs_columns_sql = implode(", ", array_keys($update_prefs_array));
-                $update_prefs_values_sql  = implode("', '", array_values($update_prefs_array));
-
-                $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PREFS` (UID, $update_prefs_columns_sql) VALUES ('$uid', '$update_prefs_values_sql') ";
-
-                if (!db_query($sql, $db_user_update_prefs)) return false;
-            }
-        }
+        
+        // Concat the column names together, escaping them and enclosing them in backticks.
+        
+        $column_names = implode("`, `", array_map('db_escape_string', array_keys($forum_prefs_array)));
+        
+        // Concat the values together, escaping them and enclosing them in quotes.
+        
+        $column_insert_values = implode("', '", array_map('db_escape_string', array_values($forum_prefs_array)));
+        
+        // Concat the column names together, pass them through user_update_prefs_helper
+        // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
+        
+        $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($forum_prefs_array)));
+        
+        // Construct the query and run it.
+        
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PREFS` (`UID`, `$column_names`) ";
+        $sql.= "VALUES('$uid', '$column_insert_values')ON DUPLICATE KEY UPDATE $column_update_values ";
+        
+        if (!db_query($sql, $db_user_update_prefs)) return false;
     }
 
     return true;
+}
+
+function user_update_prefs_callback($column)
+{
+    return sprintf('%1$s = VALUES(%1$s)', $column);
+}
+
+function user_update_prefs_callback2($column)
+{
+    return sprintf("%s = ''", $column);
 }
 
 function user_check_pref($name, $value)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-09.php,v 1.1 2009-07-05 14:04:26 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-09.php,v 1.2 2009-07-26 14:32:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -176,7 +176,17 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
+    
+    // ANON_LOGON column had wrong default value in < 0.9.2
+    
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE `ANON_LOGON` `ANON_LOGON` CHAR(1) NOT NULL DEFAULT '0'";
 
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
     // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, FID, BY_UID, TITLE, LENGTH, ";

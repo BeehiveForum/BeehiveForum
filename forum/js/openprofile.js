@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.22 2008-09-08 21:59:59 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.23 2009-07-26 14:32:59 decoyduck Exp $ */
 
 var edit_attachments = false;
 var email_window = false;
@@ -55,6 +55,8 @@ function findUserPosts(logon, webtag)
         document.location.href = 'user_profile.php?webtag=' + webtag + '+&close_window';
         return false;
     }
+    
+    return true;
 }
 
 function findUserThreads(logon, webtag)
@@ -65,6 +67,8 @@ function findUserThreads(logon, webtag)
         document.location.href = 'user_profile.php?webtag=' + webtag + '&close_window';
         return false;
     }
+    
+    return true;
 }
 
 function openEmailWindow(uid, webtag)

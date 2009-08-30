@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.388 2009-07-15 11:37:27 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.389 2009-08-30 20:17:49 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -426,8 +426,8 @@ function bh_guest_session_init()
 
                 $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
                 $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-                $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), ";
-                $sql.= "TIME = VALUES(TIME), IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
+                $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
+                $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
 
                 if (!db_query($sql, $db_bh_guest_session_init)) return false;
             
@@ -599,7 +599,7 @@ function bh_update_visitor_log($uid, $forum_fid, $line)
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
             $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer', '$search_id') ";
             $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
+            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
             
             if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
@@ -718,8 +718,8 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
             $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), ";
-            $sql.= "TIME = VALUES(TIME), IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
+            $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
+            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
 
             if (!db_query($sql, $db_bh_session_init)) return false;
         

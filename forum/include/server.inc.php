@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.45 2009-07-11 19:16:48 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.46 2009-09-02 19:10:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -324,11 +324,14 @@ function unregister_globals()
 
         foreach ($super_globals_array as $super_global) {
 
-            foreach ($GLOBALS[$super_global] as $global_key => $global_var) {
+            if (isset($GLOBALS[$super_global]) && is_array($GLOBALS[$super_global])) {
+            
+                foreach ($GLOBALS[$super_global] as $global_key => $global_var) {
 
-                if ($global_var === $GLOBALS[$global_key]) {
+                    if ($global_var === $GLOBALS[$global_key]) {
 
-                    unset($GLOBALS[$global_key]);
+                        unset($GLOBALS[$global_key]);
+                    }
                 }
             }
         }

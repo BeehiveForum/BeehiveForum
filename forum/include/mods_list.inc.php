@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.inc.php,v 1.16 2008-10-30 20:42:56 decoyduck Exp $ */
+/* $Id: mods_list.inc.php,v 1.17 2009-09-04 22:01:45 decoyduck Exp $ */
 
 /**
 * Fucntions related to generating the folder moderators lists
@@ -28,7 +28,7 @@ USA
 
 // We shouldn't be accessing this file directly.
 
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
     header("Location: ../index.php");

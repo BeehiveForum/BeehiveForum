@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.158 2009-07-12 17:00:31 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.159 2009-09-04 22:01:45 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -43,7 +43,7 @@ USA
 
 // We shouldn't be accessing this file directly.
 
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
     header("Location: ../index.php");

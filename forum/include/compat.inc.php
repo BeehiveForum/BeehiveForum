@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: compat.inc.php,v 1.8 2009-07-12 12:33:37 decoyduck Exp $ */
+/* $Id: compat.inc.php,v 1.9 2009-09-04 22:01:44 decoyduck Exp $ */
 
 /**
 * compat.inc.php - Compatibility functions
@@ -31,7 +31,7 @@ USA
 
 // We shouldn't be accessing this file directly.
 
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
     header("Location: ../index.php");

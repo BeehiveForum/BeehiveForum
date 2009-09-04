@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.27 2009-03-22 18:48:14 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.28 2009-09-04 22:01:45 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -35,7 +35,7 @@ USA
 
 // We shouldn't be accessing this file directly.
 
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
     header("Location: ../index.php");
@@ -161,7 +161,7 @@ function sitemap_get_dir()
 
     // Disable sitemap for get_attachment.php as that can cause problems.
 
-    if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) return false;
+    if (strstr($_SERVER['SCRIPT_NAME'], 'get_attachment.php')) return false;
 
     // Check to make sure the $sitemap_path exists and is writable.
 

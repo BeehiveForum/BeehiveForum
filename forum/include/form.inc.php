@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.138 2009-07-15 11:37:26 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.139 2009-09-04 22:01:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
     header("Location: ../index.php");

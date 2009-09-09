@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.49 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.50 2009-09-09 14:39:38 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -72,11 +72,19 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 $webtag = get_webtag();
 
+// Get the real path to the forum
+
+$forum_path = preg_replace('/\/get_attachment\.php\/[A-Fa-f0-9]{32}/iu', "", html_get_forum_uri());
+
+// Get the attachment hash
+
+$hash = get_attachment_query_hash($redirect_error);
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+    $request_uri = "get_attachment.php%3Fwebtag%3D$webtag%26hash%3D$hash";
+    header_redirect("$forum_path/logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -143,48 +151,6 @@ if (!$attachment_dir = attachments_check_dir()) {
 // by fooling the browser into thinking it is downloading the
 // file directly however this doesn't work with all webservers
 // hence the option to disable it.
-
-$redirect_error_message = false;
-
-if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
-
-    $hash = $_GET['hash'];
-
-    if (user_is_guest() && !forum_get_setting('attachment_allow_guests', 'Y')) {
-
-        html_guest_error();
-        exit;
-    }
-
-}else {
-
-    if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
-
-        $attachment_data = array();
-
-        if (preg_match('/\/get_attachment\.php\/([A-Fa-f0-9]{32})\/(.*)$/Du', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
-
-            if (isset($attachment_data[1]) && is_md5($attachment_data[1])) {
-
-                $hash = $attachment_data[1];
-                $redirect_error_message = true;
-            }
-        }
-
-    }else {
-
-        $attachment_data = array();
-
-        if (preg_match('/\/([A-Fa-f0-9]{32})\/(.*)$/Du', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
-
-            if (isset($attachment_data[1]) && is_md5($attachment_data[1])) {
-
-                $hash = $attachment_data[1];
-                $redirect_error_message = true;
-            }
-        }
-    }
-}
 
 if (isset($hash) && is_md5($hash)) {
 
@@ -267,13 +233,17 @@ if (isset($hash) && is_md5($hash)) {
     }
 }
 
-if ($redirect_error_message) {
+if ($redirect_error) {
 
-    $forum_path = preg_replace('/\/get_attachment\.php\/[A-Fa-f0-9]{32}/iu', "", html_get_forum_uri());
-    $redirect_uri = "$forum_path/get_attachment.php?webtag=$webtag&hash=$hash";
-    header_redirect($redirect_uri);
+    header_redirect("$forum_path/get_attachment.php?webtag=$webtag&hash=$hash");
+    exit;
 
-}else {
+} else if (user_is_guest() && !forum_get_setting('attachment_allow_guests', 'Y')) {
+
+    html_guest_error();
+    exit;
+
+} else {
 
     html_draw_top();
     html_error_msg($lang['attachmentproblem']);

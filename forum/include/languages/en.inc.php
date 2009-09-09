@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.612 2009-07-26 14:32:58 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.613 2009-09-09 23:43:35 decoyduck Exp $ */
 
 // British English language file
 
@@ -550,6 +550,8 @@ $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
+$lang['showsearchenginebotsinvisitors'] = "Show Search Engine Bots in Visitor Log";
+$lang['showsearchenginebotsinactiveusers'] = "Show Search Engine Bots in Active Users";
 $lang['sitemapenabled'] = "Enable Sitemap";
 $lang['sitemapupdatefrequency'] = "Sitemap Update Frequency";
 $lang['sitemappathnotwritable'] = "Sitemap directory must be writable by the web server / PHP process!";

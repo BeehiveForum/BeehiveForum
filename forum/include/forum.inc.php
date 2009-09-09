@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.385 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.386 2009-09-09 23:43:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -605,6 +605,10 @@ function forum_save_settings($forum_settings_array)
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!db_query($sql, $db_forum_save_settings)) return false;
+        
+        }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
+
+            trigger_error("Unknown forum setting name '$setting_name'", E_USER_ERROR);
         }
     }
 
@@ -629,7 +633,11 @@ function forum_save_default_settings($forum_settings_array)
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!db_query($sql, $db_forum_save_default_settings)) return false;
-        }
+        
+        }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
+
+            trigger_error("Unknown default forum setting name '$setting_name'", E_USER_ERROR);
+        }            
     }
 
     return true;
@@ -647,7 +655,8 @@ function forum_check_setting_name($setting_name)
                                   'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
                                   'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
                                   'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
-                                  'restricted_message', 'show_links', 'show_stats',
+                                  'restricted_message', 'searchbots_show_active', 'searchbots_show_recent',
+                                  'send_new_user_email', 'session_cutoff', 'show_links', 'show_stats', 
                                   'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
@@ -671,9 +680,9 @@ function forum_check_global_setting_name($setting_name)
                                          'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
                                          'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune',
                                          'pm_max_user_messages', 'require_email_confirmation', 'require_unique_email',
-                                         'require_user_approval', 'search_min_frequency', 'send_new_user_email',
-                                         'session_cutoff', 'sitemap_enabled', 'sitemap_freq', 'showpopuponnewpm',
-                                         'show_pms', 'text_captcha_enabled');
+                                         'require_user_approval', 'search_min_frequency', 'searchbots_show_active', 
+                                         'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled', 
+                                         'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.137 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.138 2009-09-09 23:43:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -561,10 +561,18 @@ function stats_get_active_user_list()
 
             if (isset($user_data['SID']) && !is_null($user_data['SID'])) {
             
-                $stats['BOTS']++;
+                if (forum_get_setting('searchbots_show_active', 'Y')) {
                 
-                $stats['USERS'][$user_data['SID']] = array('BOT_NAME' => $user_data['BOT_NAME'],
-                                                           'BOT_URL'  => $user_data['BOT_URL']);
+                    $stats['BOTS']++;
+
+                    $stats['USERS'][$user_data['SID']] = array('BOT_NAME' => $user_data['BOT_NAME'],
+                                                               'BOT_URL'  => $user_data['BOT_URL']);
+                
+                }else {
+
+                   $stats['GUESTS']++;
+                }
+
             }else {
             
                 $stats['USER_COUNT']++;

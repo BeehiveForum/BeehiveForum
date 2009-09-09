@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.162 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.163 2009-09-09 23:43:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -409,6 +409,18 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['allow_search_spidering'] = "Y";
     }else {
         $new_forum_settings['allow_search_spidering'] = "N";
+    }
+
+    if (isset($_POST['searchbots_show_recent']) && $_POST['searchbots_show_recent'] == "Y") {
+        $new_forum_settings['searchbots_show_recent'] = "Y";
+    }else {
+        $new_forum_settings['searchbots_show_recent'] = "N";
+    }
+
+    if (isset($_POST['searchbots_show_active']) && $_POST['searchbots_show_active'] == "Y") {
+        $new_forum_settings['searchbots_show_active'] = "Y";
+    }else {
+        $new_forum_settings['searchbots_show_active'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
@@ -1105,8 +1117,16 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['allowsearchenginespidering']}:</td>\n";
+echo "                        <td align=\"left\" width=\"300\">{$lang['allowsearchenginespidering']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("allow_search_spidering", "Y", $lang['yes'], (isset($forum_settings['allow_search_spidering']) && $forum_settings['allow_search_spidering'] == "Y")), "&nbsp;", form_radio("allow_search_spidering", "N", $lang['no'], (isset($forum_settings['allow_search_spidering']) && $forum_settings['allow_search_spidering'] == "N") || !isset($forum_settings['allow_search_spidering'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"300\">{$lang['showsearchenginebotsinvisitors']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("searchbots_show_recent", "Y", $lang['yes'], (isset($forum_settings['searchbots_show_recent']) && $forum_settings['searchbots_show_recent'] == 'Y')), "&nbsp;", form_radio("searchbots_show_recent", "N", $lang['no'], (isset($forum_settings['searchbots_show_recent']) && $forum_settings['searchbots_show_recent'] == 'N') || !isset($forum_settings['searchbots_show_recent'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['showsearchenginebotsinactiveusers']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("searchbots_show_active", "Y", $lang['yes'], (isset($forum_settings['searchbots_show_active']) && $forum_settings['searchbots_show_active'] == 'Y')), "&nbsp;", form_radio("searchbots_show_active", "N", $lang['no'], (isset($forum_settings['searchbots_show_active']) && $forum_settings['searchbots_show_active'] == 'N') || !isset($forum_settings['searchbots_show_active'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

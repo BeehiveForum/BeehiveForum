@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.145 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.146 2009-09-09 23:43:34 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -387,6 +387,18 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['allow_search_spidering'] = "Y";
     }else {
         $new_forum_settings['allow_search_spidering'] = "N";
+    }
+
+    if (isset($_POST['searchbots_show_recent']) && $_POST['searchbots_show_recent'] == "Y") {
+        $new_forum_settings['searchbots_show_recent'] = "Y";
+    }else {
+        $new_forum_settings['searchbots_show_recent'] = "N";
+    }
+
+    if (isset($_POST['searchbots_show_active']) && $_POST['searchbots_show_active'] == "Y") {
+        $new_forum_settings['searchbots_show_active'] = "Y";
+    }else {
+        $new_forum_settings['searchbots_show_active'] = "N";
     }
 
     if (isset($_POST['sitemap_enabled']) && $_POST['sitemap_enabled'] == "Y") {
@@ -1193,15 +1205,23 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">{$lang['allowsearchenginespidering']}:</td>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['allowsearchenginespidering']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("allow_search_spidering", "Y", $lang['yes'], (isset($forum_global_settings['allow_search_spidering']) && $forum_global_settings['allow_search_spidering'] == 'Y')), "&nbsp;", form_radio("allow_search_spidering", "N", $lang['no'], (isset($forum_global_settings['allow_search_spidering']) && $forum_global_settings['allow_search_spidering'] == 'N') || !isset($forum_global_settings['allow_search_spidering'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">{$lang['sitemapenabled']}:</td>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['showsearchenginebotsinvisitors']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("searchbots_show_recent", "Y", $lang['yes'], (isset($forum_global_settings['searchbots_show_recent']) && $forum_global_settings['searchbots_show_recent'] == 'Y')), "&nbsp;", form_radio("searchbots_show_recent", "N", $lang['no'], (isset($forum_global_settings['searchbots_show_recent']) && $forum_global_settings['searchbots_show_recent'] == 'N') || !isset($forum_global_settings['searchbots_show_recent'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['showsearchenginebotsinactiveusers']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("searchbots_show_active", "Y", $lang['yes'], (isset($forum_global_settings['searchbots_show_active']) && $forum_global_settings['searchbots_show_active'] == 'Y')), "&nbsp;", form_radio("searchbots_show_active", "N", $lang['no'], (isset($forum_global_settings['searchbots_show_active']) && $forum_global_settings['searchbots_show_active'] == 'N') || !isset($forum_global_settings['searchbots_show_active'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['sitemapenabled']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("sitemap_enabled", "Y", $lang['yes'], (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == 'Y')), "&nbsp;", form_radio("sitemap_enabled", "N", $lang['no'], (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == 'N') || !isset($forum_global_settings['sitemap_enabled'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">{$lang['sitemapupdatefrequency']}:</td>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['sitemapupdatefrequency']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("sitemap_freq", $sitemap_freq_periods, (isset($forum_global_settings['sitemap_freq']) && in_array($forum_global_settings['sitemap_freq'], array_keys($sitemap_freq_periods))) ? $forum_global_settings['sitemap_freq'] : DAY_IN_SECONDS), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

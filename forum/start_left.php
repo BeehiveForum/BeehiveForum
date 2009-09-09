@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.179 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.180 2009-09-09 23:43:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -357,7 +357,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
             echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         }
 
-        if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID'])) {
+        if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID']) && forum_get_setting('searchbots_show_recent', 'Y')) {
 
             echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($recent_visitor['NAME'])), "</a></td>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.78 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.79 2009-09-09 14:39:38 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -121,7 +121,7 @@ $error_msg_array = array();
 
 if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
-    if (logon_perform(true)) {
+    if (logon_perform()) {
 
         header_redirect("lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
 

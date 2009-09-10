@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.81 2009-06-26 17:14:20 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.82 2009-09-10 14:58:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -174,6 +174,12 @@ if (!bh_session_user_approved()) {
 
     html_user_require_approval();
     exit;
+}
+
+// Check that Guests are allowed
+
+if (user_is_guest() && !user_guest_enabled()) {
+    html_guest_error();
 }
 
 // Enable caching on RSS Feed

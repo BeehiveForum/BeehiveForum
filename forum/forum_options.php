@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.153 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.154 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -309,6 +309,12 @@ if (isset($_POST['save'])) {
         $user_prefs['REPLY_QUICK'] = 'Y';
     }else {
         $user_prefs['REPLY_QUICK'] = 'N';
+    }
+
+    if (isset($_POST['thread_last_page']) && ($_POST['thread_last_page'] == "Y")) {
+        $user_prefs['THREAD_LAST_PAGE'] = 'Y';
+    }else {
+        $user_prefs['THREAD_LAST_PAGE'] = 'N';
     }
 
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
@@ -603,7 +609,7 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"13\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"14\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("threads_by_folder", "Y", $lang['sortthreadlistbyfolders'], (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
@@ -652,6 +658,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("reply_quick", "Y", $lang['postdefaultquick'], (isset($user_prefs['REPLY_QUICK']) && $user_prefs['REPLY_QUICK'] == "Y")), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("reply_quick_global", "Y", '', (isset($user_prefs['REPLY_QUICK_GLOBAL']) ? $user_prefs['REPLY_QUICK_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("reply_quick_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("thread_last_page", "Y", $lang['threadlinksgotolastpage'], (isset($user_prefs['THREAD_LAST_PAGE']) && $user_prefs['THREAD_LAST_PAGE'] == "Y")), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("thread_last_page_global", "Y", '', (isset($user_prefs['thread_last_page_global']) ? $user_prefs['thread_last_page_global'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("thread_last_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

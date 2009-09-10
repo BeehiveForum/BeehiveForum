@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.194 2009-09-04 22:01:48 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.195 2009-09-10 11:49:10 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'new-install.php') {
 
@@ -170,6 +170,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_FOLDERS` (";
 $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1', ";
 $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '', ";
@@ -480,6 +481,7 @@ $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -943,6 +945,7 @@ $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY DOB (DOB), ";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";

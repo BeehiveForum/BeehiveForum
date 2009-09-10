@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.377 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.378 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -171,6 +171,18 @@ if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
     $mode = $_GET['mode'];
 }else if (isset($_POST['mode']) && is_numeric($_POST['mode'])) {
     $mode = $_POST['mode'];
+}
+
+// Number of posts per page
+
+if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
+
+    if ($posts_per_page < 10) $posts_per_page = 10;
+    if ($posts_per_page > 30) $posts_per_page = 30;
+
+}else {
+
+    $posts_per_page = 20;
 }
 
 // Check that required variables are set
@@ -659,13 +671,13 @@ foreach ($folder_order as $folder_number) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                                 }else {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -688,13 +700,13 @@ foreach ($folder_order as $folder_number) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                                 }else {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                                 }
 
                                 $latest_post = $thread['LAST_READ'] + 1;
@@ -714,7 +726,7 @@ foreach ($folder_order as $folder_number) {
                                 if ($thread['LENGTH'] > 1) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                                 }else {
 

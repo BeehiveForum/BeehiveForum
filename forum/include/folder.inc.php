@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.167 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.168 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -179,8 +179,8 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 
     list($new_pos) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}FOLDER` (TITLE, DESCRIPTION, PREFIX, ALLOWED_TYPES, POSITION) ";
-    $sql.= "VALUES ('$title', '$description', '$prefix', '$allowed_types', '$new_pos')";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}FOLDER` (TITLE, DESCRIPTION, CREATED, PREFIX, ALLOWED_TYPES, POSITION) ";
+    $sql.= "VALUES ('$title', '$description', NOW(), '$prefix', '$allowed_types', '$new_pos')";
 
     if (!$result = db_query($sql, $db_folder_create)) return false;
 
@@ -236,7 +236,7 @@ function folder_update($fid, $folder_data)
     if (!isset($folder_data['ALLOWED_TYPES']) || !is_numeric($folder_data['ALLOWED_TYPES'])) $folder_data['ALLOWED_TYPES'] = 3;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}FOLDER` SET TITLE = '{$folder_data['TITLE']}', ";
-    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
+    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', MODIFIED = NOW(), ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
     $sql.= "POSITION = '{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}' WHERE FID = '$fid'";
 
     if (!db_query($sql, $db_folder_update)) return false;

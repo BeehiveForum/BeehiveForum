@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.169 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.170 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1413,6 +1413,12 @@ function thread_format_prefix($prefix, $thread_title)
     }
 
     return $thread_title;
+}
+
+function thread_get_last_page_pid($length, $posts_per_page)
+{
+    $last_page_pid = $length - ($length % $posts_per_page);
+    return ($last_page_pid > 1) ? $last_page_pid : 1;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.180 2009-09-09 23:43:35 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.181 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -126,6 +126,18 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
+// Number of posts per page
+
+if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
+
+    if ($posts_per_page < 10) $posts_per_page = 10;
+    if ($posts_per_page > 30) $posts_per_page = 30;
+
+}else {
+
+    $posts_per_page = 20;
+}
+
 html_draw_top("openprofile.js", "poll.js");
 
 echo "  <h1>{$lang['start']}</h1>\n";
@@ -171,13 +183,13 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                 }else {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                 }
 
                 $latest_post = 1;
@@ -190,13 +202,13 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                 }else {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                 }
 
                 $latest_post = $thread['LAST_READ'] + 1;

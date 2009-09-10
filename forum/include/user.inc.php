@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.382 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.383 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -597,7 +597,8 @@ function user_get_prefs($uid)
     $sql.= "USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, ";
     $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
     $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.ENABLE_WIKI_WORDS, ";
-    $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.USE_OVERFLOW_RESIZE FROM USER_PREFS ";
+    $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.USE_OVERFLOW_RESIZE, ";
+    $sql.= "USER_PREFS.THREAD_LAST_PAGE FROM USER_PREFS ";
     $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
     $sql.= "WHERE UID = '$uid'";
 
@@ -616,7 +617,8 @@ function user_get_prefs($uid)
         $sql.= "START_PAGE, LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, ";
         $sql.= "USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ";
         $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, ENABLE_WIKI_WORDS, USE_OVERFLOW_RESIZE, ";
-        $sql.= "REPLY_QUICK FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
+        $sql.= "REPLY_QUICK, THREAD_LAST_PAGE FROM `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
@@ -685,7 +687,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'ALLOW_PM',
                                'POST_PAGE', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
                                'USE_MOVER_SPOILER', 'USE_LIGHT_MODE_SPOILER',
-                               'USE_OVERFLOW_RESIZE', 'REPLY_QUICK');
+                               'USE_OVERFLOW_RESIZE', 'REPLY_QUICK', 'THREAD_LAST_PAGE');
 
     // names of preferences that can be set on a per-forum basis
 
@@ -697,7 +699,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
                                'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM',
                                'SHOW_THUMBS', 'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
-                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 'REPLY_QUICK');
+                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 
+                               'REPLY_QUICK', 'THREAD_LAST_PAGE');
 
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
@@ -820,7 +823,7 @@ function user_check_pref($name, $value)
         return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/Du", $value);
     } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
         return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/iu', $value) || $value == "");
-    } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK" || $name == "THREADS_BY_FOLDER") {
+    } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK" || $name == "THREADS_BY_FOLDER" || $name == "THREAD_LAST_PAGE") {
         return ($value == "Y" || $value == "N") ? true : false;
     } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
         return (is_md5($value) || $value == "");

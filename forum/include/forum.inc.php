@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.386 2009-09-09 23:43:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.387 2009-09-10 11:49:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1043,6 +1043,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         $sql = "CREATE TABLE `{$forum_table_prefix}FOLDER` (";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
         $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
         $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
         $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL,";
@@ -1609,6 +1610,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT 'Y', ";
         $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
         $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 

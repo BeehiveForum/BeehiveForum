@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.82 2009-09-10 14:58:07 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.83 2009-09-10 16:59:58 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -115,30 +115,13 @@ if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
     $limit = 20;
 }
 
-// Check to see if the user wants a specified list of folders
-// or the default to show all folders.
+// Feed title is just the forum name by default
 
-if (isset($_GET['fid']) && strlen(trim(stripslashes_array($_GET['fid']))) > 0) {
+$feed_title = $forum_name;
 
-    $fid = trim(stripslashes_array($_GET['fid']));
+// Default to showing all available folders
 
-    if (preg_match("/(([0-9]+),)+,?/u", $fid)) {
-
-        $folder_list_array = preg_grep("/^[0-9]+$/Du", explode(",", $fid));
-
-    }elseif (is_numeric($_GET['fid'])) {
-
-        $folder_list_array = array($_GET['fid']);
-
-    }else {
-
-        $folder_list_array = array();
-    }
-
-}else {
-
-    $folder_list_array = array();
-}
+$fid = false;
 
 // Check to see if the user wants threads ordered by created
 // or modified date. Modified date bumps a thread to the top
@@ -182,9 +165,33 @@ if (user_is_guest() && !user_guest_enabled()) {
     html_guest_error();
 }
 
+
+// Check to see if the user wants a specified list of folders
+// or the default to show all folders.
+
+if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+
+    if (($available_folders_array = folder_get_available_array())) {
+
+        if (in_array($_GET['fid'], $available_folders_array)) {
+
+            $fid = trim(stripslashes_array($_GET['fid']));
+            $feed_title.= sprintf(' - %s', htmlentities_array(folder_get_title($fid)));
+
+        } else {
+
+            $fid = false;
+        }
+    }
+}
+
 // Enable caching on RSS Feed
 
 cache_check_last_modified();
+
+// Language file
+
+$lang = load_language_file();
 
 // echo out the rss feed
 
@@ -193,7 +200,7 @@ header('Content-type: text/xml; charset=UTF-8');
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 echo "<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
 echo "<channel>\n";
-echo "<title>{$forum_name}</title>\n";
+echo "<title>{$feed_title} - {$lang['rssfeed']}</title>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
 echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";
@@ -201,7 +208,7 @@ echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 
-if (($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort_created == 'Y')))) {
+if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y')))) {
 
     foreach ($threads_array as $thread) {
 

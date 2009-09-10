@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.114 2009-07-14 20:21:44 decoyduck Exp $ */
+/* $Id: install.php,v 1.115 2009-09-10 11:49:10 decoyduck Exp $ */
+
+// Set the default timezone
+date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");

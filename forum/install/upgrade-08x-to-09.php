@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-09.php,v 1.3 2009-09-04 22:01:48 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-09.php,v 1.4 2009-09-10 11:49:10 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade-08x-to-083.php') {
 
@@ -66,6 +66,38 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
         $valid = false;
         return;
+    }
+
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "CREATED")) {
+
+        // Created and Modified dates for folders to aid thread list caching.
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD `CREATED` DATETIME NULL DEFAULT NULL AFTER `DESCRIPTION`";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD `MODIFIED` DATETIME NULL DEFAULT NULL AFTER `CREATED`";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        // Set the created date to current datetime.
+
+        $sql = "UPDATE `{$table_data['PREFIX']}FOLDER` SET CREATED = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME)";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "DELETED")) {
@@ -176,7 +208,20 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
-    
+
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "THREAD_LAST_PAGE")) {
+
+        // Add field for thread_last_page
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N'";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
     // ANON_LOGON column had wrong default value in < 0.9.2
     
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE `ANON_LOGON` `ANON_LOGON` CHAR(1) NOT NULL DEFAULT '0'";
@@ -298,6 +343,19 @@ if (!install_column_exists($db_database, "USER_PREFS", "REPLY_QUICK")) {
     // Add field for reply_quick
 
     $sql = "ALTER TABLE USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+if (!install_column_exists($db_database, "USER_PREFS", "THREAD_LAST_PAGE")) {
+
+    // Add field for thread_last_page
+
+    $sql = "ALTER TABLE USER_PREFS ADD THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N'";
 
     if (!$result = @db_query($sql, $db_install)) {
 

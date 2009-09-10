@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.355 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.356 2009-09-10 16:59:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1133,7 +1133,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     return threads_process_list($result);
 }
 
-function threads_get_most_recent($limit = 10, $folder_list_array = array(), $creation_order = false)
+function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
 {
     if (!$db_threads_get_recent = db_connect()) return false;
 
@@ -1153,22 +1153,15 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
     if (!$available_folders_array = folder_get_available_array()) return false;
 
-    // If we have an array of folders we should only
-    // use the ones the user can see.
+    // If we have aa folder specified we should only use the ones the user can see.
 
-    if (is_array($folder_list_array) && sizeof($folder_list_array) > 0) {
-
-        $available_folders_preg = implode("$|^", array_map('preg_quote_callback', $available_folders_array));
-        $folder_list_array = preg_grep("/^$available_folders_preg$/Du", $folder_list_array);
+    if (is_numeric($fid) && in_array($fid, $available_folders_array)) {
+        $available_folders_array = array($fid);
     }
 
     // Convert the array into a comma-separated list.
 
-    if (is_array($folder_list_array) && sizeof($folder_list_array) > 0) {
-        $folders = implode(',', $folder_list_array);
-    }else {
-        $folders = implode(',', $available_folders_array);
-    }
+    $folders = implode(',', $available_folders_array);
 
     // Do we want to sort by thread created or thread modified?
 

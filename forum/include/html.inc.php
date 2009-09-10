@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.340 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.341 2009-09-10 14:52:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -872,7 +872,15 @@ function html_draw_top()
     }
 
     if (basename($_SERVER['PHP_SELF']) == "index.php") {
-        echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"$forum_path/threads_rss.php?webtag=$webtag\" />\n";
+        
+        printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s/threads_rss.php?webtag=%s\" />\n", htmlentities_array($title), htmlentities_array($lang['rssfeed']), $forum_path, $webtag);
+        
+        if (($folders_array = folder_get_available_details())) {
+            
+            foreach ($folders_array as $folder) {
+                printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s/threads_rss.php?webtag=%s&amp;fid=%s\" />\n", htmlentities_array($title), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $forum_path, $webtag, $folder['FID']);
+            }
+        }
     }
 
     if (@file_exists("forums/$webtag/favicon.ico")) {

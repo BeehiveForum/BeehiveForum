@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.168 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.169 2009-09-10 14:52:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -506,6 +506,48 @@ function folder_get($fid)
         $folder_array['THREAD_COUNT'] = folder_get_thread_count($fid);
 
         return $folder_array;
+    }
+
+    return false;
+}
+
+function folder_get_available_details()
+{
+    if (!($fid_list = folder_get_available())) {
+        return false;
+    }
+
+    if (!$db_folder_get = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
+    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, USER_FOLDER.INTEREST ";
+    $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_FOLDER` USER_FOLDER ";
+    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "WHERE FOLDER.FID IN ($fid_list) GROUP BY FOLDER.FID, FOLDER.TITLE ";
+
+    if (!$result = db_query($sql, $db_folder_get)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        $folders_array = array();
+        
+        while (($folder_data = db_fetch_array($result))) {
+            $folders_array[$folder_data['FID']] = $folder_data;
+        }
+
+        return $folders_array;
     }
 
     return false;

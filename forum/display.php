@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.114 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: display.php,v 1.115 2009-09-10 21:02:31 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -173,7 +173,7 @@ $folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
 
 $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "folder_options.js", "basetarget=_blank");
+html_draw_top("title=$forum_name &raquo; $thread_title", "openprofile.js", "post.js", "poll.js", "folder_options.js", "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 

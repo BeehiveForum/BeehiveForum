@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.51 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.52 2009-09-10 21:02:31 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -183,7 +183,7 @@ $folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
 
 $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-light_html_draw_top("title=$forum_name > $thread_title");
+light_html_draw_top("title=$forum_name &raquo; $thread_title");
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.106 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.107 2009-09-10 21:02:31 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -61,13 +61,23 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $entry = db_escape_string($entry);
+    if (strlen(trim($entry)) > 0) {
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PROFILE` (UID, PIID, ENTRY, PRIVACY) ";
-    $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
-    $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
+        $entry = db_escape_string($entry);
 
-    if (!db_query($sql, $db_user_profile_update)) return false;
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PROFILE` (UID, PIID, ENTRY, PRIVACY) ";
+        $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
+        $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
+
+        if (!db_query($sql, $db_user_profile_update)) return false;
+
+    }else {
+
+        $sql = "DELETE FROM `{$table_data['PREFIX']}USER_PROFILE` ";
+        $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
+
+        if (!db_query($sql, $db_user_profile_update)) return false;
+    }
 
     return true;
 }
@@ -331,18 +341,21 @@ function user_get_profile_entries($uid)
 
         while (($user_profile_data = db_fetch_array($result))) {
 
-            if (($user_profile_data['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_data['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+            if (strlen(trim($user_profile_data['ENTRY'])) > 0) {
+            
+                if (($user_profile_data['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_data['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-                $profile_item_options_array = explode("\n", $user_profile_data['OPTIONS']);
+                    $profile_item_options_array = explode("\n", $user_profile_data['OPTIONS']);
 
-                if (isset($profile_item_options_array[$user_profile_data['ENTRY']])) {
+                    if (isset($profile_item_options_array[$user_profile_data['ENTRY']])) {
+
+                        $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
+                    }
+
+                }else {
 
                     $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
                 }
-
-            }else {
-
-                $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
             }
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.158 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.159 2009-09-10 21:02:31 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -182,7 +182,11 @@ $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 $title = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])));
 
-html_draw_top("title=$title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
+// Forum name
+
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+html_draw_top("title=$forum_name &raquo; $title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";

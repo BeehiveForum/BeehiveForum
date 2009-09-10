@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.232 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.233 2009-09-10 21:02:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -294,7 +294,7 @@ function light_draw_messages($msg)
 
     $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-    light_html_draw_top("title=$forum_name > $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
+    light_html_draw_top("title=$forum_name &raquo; $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
     
     $msg_count = count($messages);
 

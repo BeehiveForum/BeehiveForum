@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.106 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: email.php,v 1.107 2009-09-10 21:02:31 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -107,6 +107,10 @@ if (!forum_check_webtag_available($webtag)) {
 // Load language file
 
 $lang = load_language_file();
+
+// Forum name
+
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 // Check that we have access to this forum
 
@@ -200,14 +204,14 @@ if (isset($_POST['send'])) {
 
         if (email_send_message_to_user($to_uid, $uid, $subject, $message)) {
 
-            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
+            html_draw_top("title=$forum_name &raquo; {$lang['emailresult']}", 'pm_popup_disabled');
             html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
+            html_draw_top("title=$forum_name &raquo; {$lang['emailresult']}", 'pm_popup_disabled');
             html_error_msg($lang['mailsystemfailure'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
@@ -217,7 +221,7 @@ if (isset($_POST['send'])) {
 
 $title = sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME'])));
 
-html_draw_top("title=$title", 'pm_popup_disabled');
+html_draw_top("title=$forum_name &raquo; $title", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_email\" action=\"email.php\" method=\"post\">\n";

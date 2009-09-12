@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.67 2009-09-04 22:01:44 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.68 2009-09-12 13:30:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,21 +56,19 @@ class dictionary {
     private $word_suggestion_count;
     private $word_suggestion_result;
 
-    function dictionary($content, $ignored_words_array, $current_word, $obj_id, $offset_match)
+    function initialise($content, $ignored_words_array, $current_word, $obj_id, $offset_match)
     {
-
-        $this->ignored_words_array = array();
-        $this->suggestions_array = array();
-
         $this->prepare_content($content);
 
         $this->ignored_words_array = is_array($ignored_words_array) ? $ignored_words_array : array();
+        $this->suggestions_array = array();
 
         $this->current_word = $current_word;
         $this->obj_id = $obj_id;
 
-        $this->check_complete = false;
         $this->offset_match = $offset_match;
+
+        $this->check_complete = false;
 
         $this->word_suggestion_count = 0;
         $this->word_suggestion_result = 0;

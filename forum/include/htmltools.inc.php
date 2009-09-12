@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.95 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.96 2009-09-12 13:30:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -34,6 +34,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "dictionary.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -191,7 +192,13 @@ class TextAreaHTML {
 
         $this->tbs = $this->tbs + 1;
 
-        $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
+        $dictionary = new dictionary();
+
+        if ($dictionary->is_installed()) {
+            $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
+        }else {
+            $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_no_dict.png');\">\n";
+        }
 
         $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
         $str.= $this->bh_tb_img($lang['italic'], "add_tag('i');");
@@ -211,7 +218,11 @@ class TextAreaHTML {
         $str.= $this->bh_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);");
         $str.= $this->bh_tb_img($lang['image'], "add_image();");
         $str.= $this->bh_tb_img($lang['hyperlink'], "add_link();");
-        $str.= $this->bh_tb_img($lang['spellcheck'], "openSpellCheck('$webtag');");
+
+        if ($dictionary->is_installed()) {
+            $str.= $this->bh_tb_img($lang['spellcheck'], "openSpellCheck('$webtag');");
+        }
+
         $str.= $this->bh_tb_img($lang['noemoticons'], "add_tag('noemots', null, null, true);");
 
         if ($emoticons == true) {

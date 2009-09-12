@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.72 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.73 2009-09-12 22:21:11 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -296,8 +296,16 @@ if (isset($_POST['pm_delete_messages'])) {
 
             if (pm_delete_messages($process_messages)) {
 
-                header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&deleted=true#message");
-                exit;
+                if (in_array($mid, $process_messages)) {
+
+                    header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&deleted=true#message");
+                    exit;
+
+                }else {
+
+                    header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&deleted=true#message");
+                    exit;
+                }
 
             }else {
 

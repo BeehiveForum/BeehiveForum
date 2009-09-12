@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.64 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.65 2009-09-12 13:30:18 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -196,9 +196,11 @@ if (isset($_POST['restart'])) {
     $t_ignored_words = array();
 }
 
-// Intialise the dictionary
+// New instance of the dictionary
 
-$dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
+$dictionary = new dictionary();
+
+// Check it's installed
 
 if (!$dictionary->is_installed()) {
 
@@ -207,6 +209,10 @@ if (!$dictionary->is_installed()) {
     html_draw_bottom();
     exit;
 }
+
+// Initialise it
+
+$dictionary->initialise($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
 
 // Close the window
 

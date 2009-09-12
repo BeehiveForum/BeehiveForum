@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.181 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.182 2009-09-12 13:30:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -810,7 +810,6 @@ function preg_quote_callback($str)
 * @param integer $num - Number of elements to insert into array
 * @param integer $range_min - Starting range for random numbers
 * @param integer $range_max - Ending range for random numbers
-
 */
 
 function rand_array($start_index, $num, $range_min, $range_max)
@@ -822,6 +821,33 @@ function rand_array($start_index, $num, $range_min, $range_max)
     array_walk($array_rand, create_function('&$item', $mt_rand_call));
 
     return $array_rand;
+}
+
+/**
+* Implode array keys and values
+*
+* Implode an associative array with separator between key and value
+* and glue between each array entry.
+*
+* @return string
+* @param array $array
+* @param string $separator - The key value separator. Default is ': '
+* @param string $glue - The array entry separator. Default is ', '
+*/
+
+function implode_assoc($array, $separator = ': ', $glue = ', ')
+{
+    if (!is_array($array)) return false;
+    if (!is_string($separator)) return false;
+    if (!is_string($glue)) return false;
+    
+    $result_array = array();
+    
+    foreach ($array as $key => $value) {
+        $result_array[] = $key. $separator. $value;
+    }
+
+    return implode($glue, $result_array);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.391 2009-09-09 14:39:38 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.392 2009-10-03 19:43:17 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -92,6 +92,8 @@ function bh_session_check($show_session_fail = true)
     // Check to see if we have a session cookie.
 
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5');
+
+    $ipaddress = db_escape_string($ipaddress);
 
     // Check for a webtag and get the forum FID.
 
@@ -168,27 +170,21 @@ function bh_session_check($show_session_fail = true)
 
                 bh_update_user_time($user_sess['UID']);
 
-                // If the user has changed forums we should update SESSIONS.FID
-                // and call bh_update_visitor_log and forum_update_last_visit()
+                // Update the session time and forum FID.
+
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
+                $sql.= "TIME = CAST('$current_datetime' AS DATETIME) ";
+                $sql.= "WHERE HASH = '$user_hash' AND IPADDRESS = '$ipaddress'";
+
+                if (!$result = db_query($sql, $db_bh_session_check)) return false;
+
+                // If the user has changed forums we should call bh_update_visitor_log 
+                // and forum_update_last_visit()
 
                 if ($user_sess['FID'] != $forum_fid) {
 
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
-                    $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
-                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
-
-                    if (!$result = db_query($sql, $db_bh_session_check)) return false;
-
-                    bh_update_visitor_log($user_sess['UID'], $forum_fid, __LINE__);
-
+                    bh_update_visitor_log($user_sess['UID'], $forum_fid);
                     forum_update_last_visit($user_sess['UID']);
-
-                }else {
-
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = CAST('$current_datetime' AS DATETIME), ";
-                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
-
-                    if (!$result = db_query($sql, $db_bh_session_check)) return false;
                 }
                 
                 // Forum self-preservation
@@ -318,6 +314,8 @@ function bh_guest_session_init()
     // Check to see if we have a session cookie.
 
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
+
+    $ipaddress = db_escape_string($ipaddress);
     
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -338,7 +336,7 @@ function bh_guest_session_init()
 
         $sql = "SELECT HASH, 0 AS UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
         $sql.= "FID, IPADDRESS, 'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, REFERER ";
-        $sql.= "FROM SESSIONS WHERE HASH = '$user_hash' ";
+        $sql.= "FROM SESSIONS WHERE HASH = '$user_hash' AND IPADDRESS = '$ipaddress'";
 
         if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
@@ -367,22 +365,18 @@ function bh_guest_session_init()
 
                 if ($user_sess['FID'] != $forum_fid) {
 
-                    $ipaddress = db_escape_string($ipaddress);
-
                     $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
-                    $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
-                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+                    $sql.= "TIME = CAST('$current_datetime' AS DATETIME) ";
+                    $sql.= "WHERE HASH = '$user_hash' AND IPADDRESS = '$ipaddress'";
 
                     if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
-                    bh_update_visitor_log(0, $forum_fid, __LINE__);
+                    bh_update_visitor_log(0, $forum_fid);
 
                 }else {
 
-                    $ipaddress = db_escape_string($ipaddress);
-
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = CAST('$current_datetime' AS DATETIME), ";
-                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = CAST('$current_datetime' AS DATETIME) ";
+                    $sql.= "WHERE HASH = '$user_hash' AND IPADDRESS = '$ipaddress'";
 
                     if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
                 }
@@ -443,7 +437,7 @@ function bh_guest_session_init()
 
             // Update visitor log.
 
-            bh_update_visitor_log(0, $forum_fid, __LINE__);
+            bh_update_visitor_log(0, $forum_fid);
         }
 
         // Check to see if the user's credentials match the
@@ -563,13 +557,12 @@ function bh_remove_stale_sessions()
 * @param integer $uid - UID of the user account we're updating the visitor log for.
 */
 
-function bh_update_visitor_log($uid, $forum_fid, $line)
+function bh_update_visitor_log($uid, $forum_fid)
 {
     if (!$db_bh_update_visitor_log = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($forum_fid)) return false;
-    if (!is_numeric($line)) $line = 0;
 
     if (!$ipaddress = get_ip_address()) return false;
 
@@ -689,10 +682,13 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     $user_hash = md5($ipaddress);
     
     $current_datetime = date(MYSQL_DATETIME, time());
+
+    $ipaddress = db_escape_string($ipaddress);
     
     // Delete any guest sessions this user might have.
 
-    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
+    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash' ";
+    $sql.= "AND IPADDRESS = '$ipaddress'";
 
     if (!db_query($sql, $db_bh_session_init)) return false;
 
@@ -711,7 +707,6 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
         $user_hash = md5(uniqid(mt_rand()));
 
-        $ipaddress = db_escape_string($ipaddress);
         $http_referer = db_escape_string($http_referer);
         
         if (($uid == 0) && ($search_id = bh_session_is_search_engine()) !== false) {
@@ -738,7 +733,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
         bh_update_user_time($uid);
 
-        bh_update_visitor_log($uid, $forum_fid, __LINE__);
+        bh_update_visitor_log($uid, $forum_fid);
 
         forum_update_last_visit($uid);
     }
@@ -796,6 +791,8 @@ function bh_session_end($remove_cookies = true)
 
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
 
+    $ipaddress = db_escape_string($ipaddress);
+
     if (isset($user_hash) && is_md5($user_hash)) {
 
         // If the user isn't a guest we should update how long
@@ -809,7 +806,8 @@ function bh_session_end($remove_cookies = true)
 
         // Remove the user session.
 
-        $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
+        $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash' ";
+        $sql.= "AND IPADDRESS = '$ipaddress'";
 
         if (!db_query($sql, $db_bh_session_end)) return false;
     }

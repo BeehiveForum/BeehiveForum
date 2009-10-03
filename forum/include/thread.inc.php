@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.171 2009-09-10 16:44:10 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.172 2009-10-03 19:43:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -255,8 +255,7 @@ function thread_set_length($tid, $length)
     
     $current_datetime = date(MYSQL_DATE, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` ";
-    $sql.= "SET LENGTH = '$length', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET LENGTH = '$length', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_get_length)) return false;

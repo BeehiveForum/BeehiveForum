@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.387 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.388 2009-10-03 19:43:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1042,14 +1042,15 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}FOLDER` (";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
-        $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL,";
-        $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
-        $sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (FID)";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql.= "  TITLE VARCHAR(32) DEFAULT NULL, ";
+        $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL, ";
+        $sql.= "  CREATED datetime default NULL, ";
+        $sql.= "  MODIFIED datetime default NULL, ";
+        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
+        $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL, ";
+        $sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0', ";
+        $sql.= "  PRIMARY KEY (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1752,8 +1753,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Create General Folder
 
-        $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-        $sql.= "VALUES ('General', NULL, NULL, 0)";
+        $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION) ";
+        $sql.= "VALUES ('General', NOW(), NOW(), 3, 1)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.304 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: messages.php,v 1.305 2009-10-04 11:13:41 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -269,7 +269,7 @@ html_draw_top("onunload=clearFocus()", "title=$forum_name &raquo; $thread_title"
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
-echo "top.document.title = \"", html_js_safe_str($forum_name), " » ", html_js_safe_str($thread_title), "\";\n";
+echo "top.document.title = \"", html_js_safe_str($forum_name), " » ", html_js_safe_str(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE'])), "\";\n";
 echo "function initialisePostQuoting()\n";
 echo "{\n";
 echo "    var form_obj = getObjsByName('quote_list')[0];\n\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.579 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.580 2009-10-10 14:52:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1540,12 +1540,14 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {    
 
+            $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
             // Get the last PID within the unread-cut-off.
             
-            $sql = "SELECT MAX(POST.PID) AS UNREAD_PID FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-            $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-            $sql.= "WHERE POST.CREATED < 'unread_cutoff_datetime' ";
-            $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID";
+            $sql = "SELECT COALESCE(MAX(POST.PID), 0) AS UNREAD_PID ";
+            $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
+            $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
+            $sql.= "AND POST.TID = '$tid'";
             
             if (!$result = db_query($sql, $db_message_update_read)) return false;
             

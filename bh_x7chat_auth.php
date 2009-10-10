@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x7chat_auth.php,v 1.1 2009-07-11 19:16:48 decoyduck Exp $ */
+/* $Id: bh_x7chat_auth.php,v 1.2 2009-10-10 13:18:30 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -50,6 +50,7 @@ $forum_settings = forum_get_settings();
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // X7Chat Username Cookie

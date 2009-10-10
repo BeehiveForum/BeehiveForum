@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.379 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: post.php,v 1.380 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -506,7 +506,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($_GET['quote_list']) && strlen(trim($_GET['quote_list'])) > 0) {
 
-        $quote_list = preg_grep('/[0-9]+/u', explode(',', $_GET['quote_list']));
+        $quote_list = array_filter(explode(',', $_GET['quote_list']), 'is_numeric');
 
         sort($quote_list);
 

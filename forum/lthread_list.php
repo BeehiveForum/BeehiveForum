@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.123 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.124 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -216,7 +216,7 @@ if (user_is_guest()) {
 
                     $mark_read_threads = trim(stripslashes_array($_POST['mark_read_threads']));
 
-                    $mark_read_threads_array = preg_grep("/^[0-9]+$/Du", explode(',', $mark_read_threads));
+                    $mark_read_threads_array = array_filter(explode(',', $mark_read_threads), 'is_numeric');
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 

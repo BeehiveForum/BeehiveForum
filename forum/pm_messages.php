@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.73 2009-09-12 22:21:11 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.74 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -285,7 +285,7 @@ if (isset($_POST['pm_delete_messages'])) {
     $valid = true;
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
-        $process_messages = preg_grep("/[0-9]+/u", $_POST['process']);
+        $process_messages = array_filter($_POST['process'], 'is_numeric');
     }else {
         $process_messages = array();
     }
@@ -332,7 +332,7 @@ if (isset($_POST['pm_delete_messages'])) {
     $valid = true;
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
-        $process_messages = preg_grep("/[0-9]+/u", $_POST['process']);
+        $process_messages = array_filter($_POST['process'], 'is_numeric');
     }else {
         $process_messages = array();
     }
@@ -359,7 +359,7 @@ if (isset($_POST['pm_delete_messages'])) {
     $valid = true;
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
-        $process_messages = preg_grep("/[0-9]+/u", $_POST['process']);
+        $process_messages = array_filter($_POST['process'], 'is_numeric');
     }else {
         $process_messages = array();
     }

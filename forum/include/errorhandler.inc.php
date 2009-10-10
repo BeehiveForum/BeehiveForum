@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.142 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.143 2009-10-10 13:12:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -96,9 +96,18 @@ function bh_error_handler_process_args($func_args_array)
     return implode(", ", $arguments_array);
 }
 
-// Beehive Error Handler Function
+// Beehive Error Handler to Exception Wrapper.
 
-function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
+function bh_error_handler($code, $message, $file = '', $line = 0)
+{
+    if (error_reporting()) {
+        throw new ErrorException($message, 0, $code, $file, $line);
+    }
+}
+
+// Beehive Exception Handler Function
+
+function bh_exception_handler($exception)
 {
     if (isset($GLOBALS['show_friendly_errors']) && $GLOBALS['show_friendly_errors'] == true) {
         $show_friendly_errors = true;
@@ -121,7 +130,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_from']))) > 0) {
         $error_report_email_addr_from = trim(stripslashes_array($GLOBALS['error_report_email_addr_from']));
     }else {
-        $error_report_email_addr_from = '$error_report_email_addr_from';
+        $error_report_email_addr_from = '';
     }
     
     // The requested script's filename
@@ -130,7 +139,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     
     // Let's ignore PHP5's strict warnings.
     
-    if (($errno & E_STRICT) > 0) return;
+    //if (($exception->code & E_STRICT) > 0) return;
 
     // Now we can carry on with any other errors.
 
@@ -156,52 +165,31 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Generate the error message itself.
 
-        switch ($errno) {
-
-            case E_USER_ERROR:
-
-                $error_msg_array[] = "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>";
-                break;
-
-            case E_USER_WARNING:
-
-                $error_msg_array[] = "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>";
-                break;
-
-            case E_USER_NOTICE:
-
-                $error_msg_array[] = "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>";
-                break;
-
-            default:
-
-                $error_msg_array[] = "<p><b>Unknown error</b> [$errno] $errstr</p>";
-                break;
-        }
+        $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $exception->getMessage());
 
         // Add the file and line number to the error message array
 
-        if (strlen(trim(basename($errfile))) > 0) {
+        if (strlen(trim(basename($exception->getFile()))) > 0) {
 
-            $error_msg_array[] = "<p><b>Error Message:</b></p>";
-            $error_msg_array[] = sprintf("<p>Error in line $errline of file %s</p>", basename($errfile));
+            $error_msg_array[] = '<p><b>Error Message:</b></p>';
+            $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $exception->getLine(), basename($exception->getFile()));
         }
 
         // Separator
 
-        $error_msg_array[] = "<hr />\n";
+        $error_msg_array[] = '<hr />';
 
         // Debug backtrace data.
 
-        if (($debug_backtrace_array = debug_backtrace())) {
+        if (($exception_backtrace = $exception->getTrace())) {
 
-            $debug_backtrace_array = array_reverse($debug_backtrace_array);
+            $exception_backtrace = array_reverse($exception_backtrace);
 
             $debug_backtrace_processed = false;
 
-            $error_msg_array[] = "<p><b>Backtrace Result:</b></p>";
+            $error_msg_array[] = '<p><b>Backtrace Result:</b></p>';
 
-            foreach ($debug_backtrace_array as $debug_backtrace) {
+            foreach ($exception_backtrace as $debug_backtrace) {
 
                 if (!isset($debug_backtrace['function'])) $debug_backtrace['function'] = 'PHP_CORE_FUNCTION';
 
@@ -213,37 +201,37 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
                         if (sizeof($debug_backtrace['args']) > 0) {
 
-                            $debug_backtrace_file_line = sprintf("%s:%s", htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
-                            $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", htmlentities_array($debug_backtrace['function']), htmlentities_array(bh_error_handler_process_args($debug_backtrace['args'])));
+                            $debug_backtrace_file_line = sprintf('%s:%s', htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
+                            $debug_backtrace_func_args = sprintf('%s(<i>%s</i>)', htmlentities_array($debug_backtrace['function']), htmlentities_array(bh_error_handler_process_args($debug_backtrace['args'])));
 
-                            $error_msg_array[] = sprintf("<p>%s:%s</p>", $debug_backtrace_file_line, $debug_backtrace_func_args);
+                            $error_msg_array[] = sprintf('<p>%s:%s</p>', $debug_backtrace_file_line, $debug_backtrace_func_args);
 
                         }else {
 
-                            $debug_backtrace_file_line = sprintf("%s:%s", htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
-                            $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", htmlentities_array($debug_backtrace['function']));
+                            $debug_backtrace_file_line = sprintf('%s:%s', htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
+                            $debug_backtrace_func_args = sprintf('%s(<i>void</i>)', htmlentities_array($debug_backtrace['function']));
 
-                            $error_msg_array[] = sprintf("<p>%s:%s</p>", $debug_backtrace_file_line, $debug_backtrace_func_args);
+                            $error_msg_array[] = sprintf('<p>%s:%s</p>', $debug_backtrace_file_line, $debug_backtrace_func_args);
                         }
                     }
                 }
             }
 
             if ($debug_backtrace_processed == false) {
-                $error_msg_array[] = "<p><i>(none)</i></p>";
+                $error_msg_array[] = '<p><i>(none)</i></p>';
             }
         }
 
         // Get the Beehive Forum Version
 
         if (defined('BEEHIVE_VERSION')) {
-           $version_strings[] = sprintf("Beehive Forum %s", BEEHIVE_VERSION);
+           $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
         }
 
         // Get PHP Version
 
         if (($php_version = phpversion())) {
-            $version_strings[] = "on PHP/$php_version";
+            $version_strings[] = sprintf('on PHP/%s', $php_version);
         }
 
         // Get PHP OS (WINNT, Linux, etc)
@@ -260,20 +248,20 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get MySQL version if available.
 
-        $mysql_version = "MySQL Version Unknown";
+        $mysql_version = '';
 
         if (function_exists('db_fetch_mysql_version') && db_fetch_mysql_version($mysql_version)) {
-            $version_strings[] = "MySQL/$mysql_version";
+            $version_strings[] = sprintf('MySQL/%s', $mysql_version);
         }else {
-            $version_strings[] = "MySQL Version Unknown";
+            $version_strings[] = sprintf('MySQL Version Unknown');
         }
 
         // Format the version info into a string.
 
         if (isset($version_strings) && sizeof($version_strings) > 0) {
 
-            $error_msg_array[] = "<p><b>Version Strings:</b></p>";
-            $error_msg_array[] = sprintf("<p>%s</p>", implode(", ", $version_strings));
+            $error_msg_array[] = '<p><b>Version Strings:</b></p>';
+            $error_msg_array[] = sprintf('<p>%s</p>', implode(', ', $version_strings));
         }
 
         // Verbose Error Data.
@@ -282,7 +270,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             // HTTP Request that caused the error
 
-            $error_msg_array[] = "<p><b>HTTP Request:</b></p>";
+            $error_msg_array[] = '<p><b>HTTP Request:</b></p>';
 
             // The requested file name.
 
@@ -292,44 +280,44 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             if (isset($_GET) && sizeof($_GET) > 0) {
 
-                $error_msg_array[] = "<p><b>\$_GET:</b></p>";
+                $error_msg_array[] = '<p><b>$_GET:</b></p>';
 
                 $get_vars = htmlentities(print_r($_GET, true));
 
-                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $get_vars);
+                $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
             }
 
             // Output any Post Data
 
             if (isset($_POST) && sizeof($_POST) > 0) {
 
-                $error_msg_array[] = "<p><b>\$_POST:</b></p>";
+                $error_msg_array[] = '<p><b>$_POST:</b></p>';
 
                 $post_vars = htmlentities(print_r($_POST, true));
 
-                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $post_vars);
+                $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
             }
 
             // Output environment variables.
 
             if (isset($_ENV) && sizeof($_ENV) > 0) {
 
-                $error_msg_array[] = "<p><b>\$_ENV:</b></p>";
+                $error_msg_array[] = '<p><b>$_ENV:</b></p>';
 
                 $environment_vars = htmlentities(print_r($_ENV, true));
 
-                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $environment_vars);
+                $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
             }
 
             // Output Server variables.
 
             if (isset($_SERVER) && sizeof($_SERVER) > 0) {
 
-                $error_msg_array[] = "<p><b>\$_SERVER:</b></p>";
+                $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
 
                 $server_vars = htmlentities(print_r($_SERVER, true));
 
-                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $server_vars);
+                $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
             }
         }
 
@@ -359,7 +347,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check for an installation error.
 
-        if (($errno == MYSQL_ERROR_NO_SUCH_TABLE) || ($errno == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
+        if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
             if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_incomplete')) {
 
@@ -369,7 +357,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check for file include errors
 
-        if ((preg_match('/include|include_once/u', $errstr) > 0)) {
+        if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
 
             if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
 
@@ -395,8 +383,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         if ((isset($show_friendly_errors) && $show_friendly_errors === false) || defined("BEEHIVEMODE_LIGHT")) {
 
-            echo "<p>An error has occured. Please wait a few moments before trying again.</p>\n";
-            echo "<p>Details of the error have been saved to the default error log.</p>\n";
+            echo '<p>An error has occured. Please wait a few moments before trying again.</p>';
+            echo '<p>Details of the error have been saved to the default error log.</p>';
 
             if (defined('BEEHIVE_INSTALL_NOWARN') || defined('BEEHIVEMODE_INSTALL')) {
                 echo implode("\n", $error_msg_array);
@@ -582,6 +570,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     }
 }
 
-set_error_handler("bh_error_handler");
+set_error_handler('bh_error_handler');
+
+set_exception_handler('bh_exception_handler');
 
 ?>

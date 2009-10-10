@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.356 2009-09-10 16:59:58 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.357 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1520,7 +1520,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $tid_list = implode(",", preg_grep("/^[0-9]+$/Du", $tid_array));
+    $tid_list = implode(",", array_filter($tid_array, 'is_numeric'));
 
     if (!$db_threads_get_modified = db_connect()) return false;
 
@@ -1660,7 +1660,7 @@ function threads_have_attachments(&$threads_array)
 
     $forum_fid = $table_data['FID'];
 
-    $tid_list = implode(",", preg_grep("/^[0-9]+$/Du", array_keys($threads_array)));
+    $tid_list = implode(",", array_filter($threads_array, 'is_numeric'));
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 

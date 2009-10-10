@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.234 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.235 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -289,7 +289,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
     $keyword_match = '([\+|-]?[\p{L}\']+)|([\+|-]?["][^"]+["])';
 
     $keywords_array = preg_split("/$keyword_match/u", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
-    $keywords_array = preg_grep("/^ {0,}$/Du", $keywords_array, PREG_GREP_INVERT);
+    $keywords_array = array_filter(array_map('trim', $keywords_array), 'strlen');
 
     // Get the min and max word lengths that MySQL supports
 

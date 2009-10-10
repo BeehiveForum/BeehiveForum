@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.280 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.281 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1766,7 +1766,7 @@ function pm_delete_messages($mid_array)
 {
     if (!is_array($mid_array)) return false;
 
-    $mid_array = preg_grep("/[0-9]+/u", $mid_array);
+    $mid_array = array_filter($mid_array, 'is_numeric');
 
     if (sizeof($mid_array) < 1) return false;
 
@@ -1831,7 +1831,7 @@ function pm_archive_messages($mid_array)
 {
     if (!is_array($mid_array)) return false;
 
-    $mid_array = preg_grep("/[0-9]+/u", $mid_array);
+    $mid_array = array_filter($mid_array, 'is_numeric');
 
     if (sizeof($mid_array) < 1) return false;
 
@@ -1926,7 +1926,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
         // Convert the array keys into a comma separated list.
 
-        $mid_list = implode(',', preg_grep('/^[0-9]+$/Du', array_keys($pm_messages_array)));
+        $mid_list = implode(',', array_filter(array_keys($pm_messages_array), 'is_numeric'));
 
         // Mark the selected messages as unread / received and make the
         // sent items visible to the sender.
@@ -2192,7 +2192,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
     if (!is_array($mid_array)) return false;
     if (sizeof($mid_array) < 1) return false;
 
-    $mid_list = implode(",", preg_grep("/^[0-9]+$/Du", $mid_array));
+    $mid_list = implode(",", array_filter($mid_array, 'is_numeric'));
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 

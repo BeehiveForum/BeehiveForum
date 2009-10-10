@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.378 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.379 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -238,7 +238,7 @@ if (user_is_guest()) {
 
                     $mark_read_threads = trim(stripslashes_array($_POST['mark_read_threads']));
 
-                    $mark_read_threads_array = preg_grep("/^[0-9]+$/Du", explode(',', $mark_read_threads));
+                    $mark_read_threads_array = array_filter(explode(',', $mark_read_threads), 'is_numeric');
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 
@@ -942,7 +942,7 @@ if (!user_is_guest()) {
         $labels[] = $lang['visiblediscussions'];
         $selected_option = THREAD_MARK_READ_VISIBLE;
 
-        $visible_threads = implode(',', preg_grep("/^[0-9]+$/Du", $visible_threads_array));
+        $visible_threads = implode(',', array_filter($visible_threads_array, 'is_numeric'));
         echo "        ", form_input_hidden("mark_read_threads", htmlentities_array($visible_threads)), "\n";
     }
 

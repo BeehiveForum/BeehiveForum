@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.169 2009-09-10 14:52:10 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.170 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -274,13 +274,13 @@ function folder_get_available()
     if (user_is_guest()) {
 
         if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
-            return implode(',', preg_grep('/[0-9]+/u', $folder_list));
+            return implode(',', array_filter($folder_list, 'is_numeric'));
         }
 
     }else {
 
         if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ))) {
-            return implode(',', preg_grep('/[0-9]+/u', $folder_list));
+            return implode(',', array_filter($folder_list, 'is_numeric'));
         }
     }
 
@@ -322,13 +322,13 @@ function folder_get_available_array()
     if (user_is_guest()) {
 
         if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
-            return preg_grep('/[0-9]+/u', $folder_list);
+            return array_filter($folder_list, 'is_numeric');
         }
 
     }else {
 
         if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ))) {
-            return preg_grep('/[0-9]+/u', $folder_list);
+            return array_filter($folder_list, 'is_numeric');
         }
     }
 
@@ -340,13 +340,13 @@ function folder_get_available_array_by_forum($forum_fid)
     if (user_is_guest()) {
 
         if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
-            return preg_grep('/[0-9]+/u', $folder_list);
+            return array_filter($folder_list, 'is_numeric');
         }
 
     }else {
 
         if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
-            return preg_grep('/[0-9]+/u', $folder_list);
+            return array_filter($folder_list, 'is_numeric');
         }
     }
 
@@ -443,7 +443,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $fid_list = implode(",", preg_grep("/^[0-9]+$/Du", $fid_array));
+    $fid_list = implode(",", array_filter($fid_array, 'is_numeric'));
 
     if (!$db_folder_get_thread_count = db_connect()) return false;
 

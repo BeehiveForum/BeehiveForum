@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.233 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.234 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -798,7 +798,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $labels[] = $lang['visiblediscussions'];
             $selected_option = THREAD_MARK_READ_VISIBLE;
 
-            $visible_threads = implode(',', preg_grep("/^[0-9]+$/Du", $visible_threads_array));
+            $visible_threads = implode(',', array_filter($visible_threads_array, 'is_numeric'));
             echo "        ", form_input_hidden("mark_read_threads", htmlentities_array($visible_threads)), "\n";
         }
 

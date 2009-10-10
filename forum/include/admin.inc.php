@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.192 2009-09-04 22:01:44 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.193 2009-10-10 16:31:23 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -731,7 +731,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
     if (is_array($hash_array)) {
 
-        $hash_list = implode("', '", preg_grep("/^[A-Fa-f0-9]{32}$/Du", $hash_array));
+        $hash_list = implode("', '", array_filter($hash_array, 'is_md5'));
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.172 2009-09-09 14:39:38 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.173 2009-10-10 16:31:23 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -164,7 +164,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/Du", $hash_array);
+    $hash_array = array_filter($hash_array, 'is_md5');
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
@@ -312,7 +312,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/Du", $hash_array);
+    $hash_array = array_filter($hash_array, 'is_md5');
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 

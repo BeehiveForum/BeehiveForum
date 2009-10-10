@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.50 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.51 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -501,7 +501,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
         $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
 
-        $profile_entry_array = preg_grep("/[0-9]+/u", $profile_entry_array);
+        $profile_entry_array = array_filter($profile_entry_array, 'is_numeric');
 
         if (sizeof($profile_entry_array) > 0) {
 

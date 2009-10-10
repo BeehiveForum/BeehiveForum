@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.193 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.194 2009-10-10 16:31:23 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -225,7 +225,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                 if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
-                    $kick_users = preg_grep("/^[0-9]+$/Du", array_keys($_POST['user_update']));
+                    $kick_users = array_filter(array_keys($_POST['user_update']), 'is_numeric');
 
                     $kick_user_success_array = array();
 
@@ -261,7 +261,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                 if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
-                    $approve_users = preg_grep("/^[0-9]+$/Du", array_keys($_POST['user_update']));
+                    $approve_users = array_filter(array_keys($_POST['user_update']), 'is_numeric');
 
                     $approved_user_success_array = array();
 

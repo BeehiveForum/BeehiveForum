@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.250 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.251 2009-10-13 21:19:55 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -168,6 +168,8 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 $uid = bh_session_get_value('UID');
 
+// Assume everything is A-OK!
+
 $valid = true;
 
 if (isset($_POST['t_post_emots'])) {
@@ -232,9 +234,9 @@ if (isset($_POST['t_message_html'])) {
 
     $t_message_html = $_POST['t_message_html'];
 
-    if ($t_message_html == "enabled_auto") {
-        $post_html = POST_HTML_DISABLED;
-    }else if ($t_message_html == "enabled") {
+    if ($t_post_html == "enabled_auto") {
+        $post_html = POST_HTML_AUTO;
+    }else if ($t_post_html == "enabled") {
         $post_html = POST_HTML_ENABLED;
     }else {
         $post_html = POST_HTML_DISABLED;
@@ -243,7 +245,7 @@ if (isset($_POST['t_message_html'])) {
 }else {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_DISABLED;
+        $post_html = POST_HTML_AUTO;
     }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
         $post_html = POST_HTML_ENABLED;
     }else {
@@ -662,8 +664,8 @@ if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
 if (!isset($t_message_text)) $t_message_text = "";
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($allow_html ? $post_html : false, $t_message_text, $emots_enabled, $links_enabled);
-$sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false);
+$post = new MessageText($post_html, $t_message_text, $emots_enabled, $links_enabled);
+$sig = new MessageText($sig_html, $t_sig, true, false);
 
 $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();
@@ -1244,11 +1246,11 @@ $tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
-if ($allow_html == true && $tool_type != 0) {
+if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", $tools->toolbar(), "</td>\n";
@@ -1275,59 +1277,66 @@ if ($allow_html == true) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
-    } else {
+    }else {
 
-        echo "            <h2>{$lang['htmlinmessage']}</h2>\n";
+        echo "                          <h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 
-        echo form_radio("t_message_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_message_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_message_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
 
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-                echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
+
+            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
         }
-        echo "            <br />";
     }
-} else {
-        echo form_input_hidden("t_message_html", "disabled");
-}
 
-if ($allow_sig == true) {
+}else {
 
-        echo "            <br />\n";
-        echo "            <table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-        echo "              <tr>\n";
-        echo "                <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
-
-        $t_sig = $sig->getTidyContent();
-
-        if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-
-            echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
-            echo "              </tr>\n";
-            echo "              <tr>\n";
-            echo "                <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
-
-            if ($sig->isDiff() && !$fetched_sig) {
-
-                echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-            }
-
-        }else {
-
-            echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), form_input_hidden("t_sig", $t_sig), "&nbsp;</td>\n";
-        }
-
-        echo "              </tr>\n";
-        echo "            </table>\n";
-        echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
-
+    echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo "                        </td>\n";
 echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">\n";
+
+if ($allow_sig == true) {
+
+    echo "                          <table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
+
+    $t_sig = $sig->getTidyContent();
+
+    if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
+        echo "                            </tr>\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
+
+        if ($sig->isDiff() && !$fetched_sig) {
+
+            echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+        }
+
+    }else {
+
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), form_input_hidden("t_sig", $t_sig), "&nbsp;</td>\n";
+    }
+
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
+}
+
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";

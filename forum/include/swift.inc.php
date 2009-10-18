@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: swift.inc.php,v 1.1 2009-10-10 13:18:30 decoyduck Exp $ */
+/* $Id: swift.inc.php,v 1.2 2009-10-18 20:02:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,15 +42,19 @@ abstract class Swift_TransportFactory
 {
     public static function get()
     {
-        if (($smtp_server = forum_get_global_setting('smtp_server'))) {
+        $mail_function = forum_get_global_setting('mail_function', false, 'mail');
+
+        if (($mail_function == 'smtp') && ($smtp_server = forum_get_global_setting('smtp_server'))) {
             
             $smtp_port = forum_get_global_setting('smtp_port', false, '25');
             return Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
-        
-        } else {
-
-            return Swift_MailTransportSingleton::getInstance();
         }
+
+        if (($mail_function == 'sendmail') && ($sendmail_path = forum_get_global_setting('sendmail_path'))) {
+            return Swift_SendmailTransportSingleton::getInstance($sendmail_path);
+        }
+
+        return Swift_MailTransportSingleton::getInstance();
     }
 }
 
@@ -102,6 +106,28 @@ class Swift_MailTransportSingleton
         return true;
     }
 }
+
+// Swift Mailer SendMail Transport Singleton wrapper
+
+class Swift_SendmailTransportSingleton
+{
+    private static $instance;
+
+    private function __construct() { }
+    
+    public static function getInstance($sendmail_path)
+    {
+        if (!self::check_mail_vars()) return false;
+        
+        if (is_null(self::$instance)) {
+            self::$instance = Swift_SendmailTransport::newInstance(sendmail_path);
+        }
+
+        return self::$instance;
+    }
+}
+
+// Beehive Forum SwiftMessage wrapper.
 
 class Swift_MessageBeehive extends Swift_Message
 {

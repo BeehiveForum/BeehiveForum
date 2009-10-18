@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.138 2009-09-09 23:43:35 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.139 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1117,9 +1117,9 @@ function stats_get_most_popular_forum_style()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT STYLE, COUNT(*) AS USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` GROUP BY STYLE ";
-    $sql.= "UNION SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE ";
-    $sql.= "ORDER BY USER_COUNT DESC LIMIT 0,1";
+    $sql = "SELECT USER_PREFS.STYLE, USERS.USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ";
+    $sql.= "INNER JOIN (SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE LIMIT 1) AS USERS ";
+    $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)"; 
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return false;
 
@@ -1143,9 +1143,9 @@ function stats_get_most_popular_emoticon_pack()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` GROUP BY EMOTICONS ";
-    $sql.= "UNION SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS ";
-    $sql.= "ORDER BY USER_COUNT DESC LIMIT 0, 1";
+    $sql = "SELECT USER_PREFS.EMOTICONS, USERS.USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ";
+    $sql.= "INNER JOIN (SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
+    $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)"; 
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
 
@@ -1169,9 +1169,9 @@ function stats_get_most_popular_language()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` GROUP BY LANGUAGE ";
-    $sql.= "UNION SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY LANGUAGE ";
-    $sql.= "ORDER BY USER_COUNT DESC LIMIT 0, 1";
+    $sql = "SELECT USER_PREFS.LANGUAGE, USERS.USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ";
+    $sql.= "INNER JOIN (SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
+    $sql.= "ON (USERS.LANGUAGE = USER_PREFS.LANGUAGE)"; 
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return false;
 

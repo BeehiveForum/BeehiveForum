@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.151 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: delete.php,v 1.152 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -151,7 +151,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -165,7 +165,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -173,7 +173,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['nomessagespecifiedfordel']);
     html_draw_bottom();
     exit;
@@ -193,7 +193,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannotdeletepostsinthisfolder']);
     html_draw_bottom();
     exit;
@@ -201,7 +201,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$thread_data = thread_get($tid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -215,7 +215,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             edit_refuse($tid, $pid);
             html_draw_bottom();
             exit;
@@ -223,7 +223,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             edit_refuse($tid, $pid);
             html_draw_bottom();
             exit;
@@ -231,7 +231,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             edit_refuse($tid, $pid);
             html_draw_bottom();
             exit;
@@ -239,7 +239,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
@@ -273,7 +273,7 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-html_draw_top("openprofile.js", "post.js", "poll.js", "resize_width=720", "basetarget=_blank");
+html_draw_top("title={$lang['deletemessage']}", "openprofile.js", "post.js", "poll.js", "resize_width=720", "basetarget=_blank");
 
 echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
 

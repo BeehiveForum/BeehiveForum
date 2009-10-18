@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm.php,v 1.13 2009-06-26 17:14:20 decoyduck Exp $ */
+/* $Id: lpm.php,v 1.14 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -126,7 +126,7 @@ pm_user_prune_folders();
 
 // Draw the header.
 
-light_html_draw_top();
+light_html_draw_top("title={$lang['pminbox']}");
 
 light_draw_pm_inbox();
 

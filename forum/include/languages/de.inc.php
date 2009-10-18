@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.105 2009-07-11 19:34:41 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.106 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -1490,7 +1490,7 @@ $lang['userexp_9'] = "<b>Relationships</b> lets you manage your relationship wit
 $lang['userexp_10'] = "<b>Eintragsbeschreibung</b> verwaltet die Eintragsbeschreibungen.";
 $lang['userdetails'] = "Benutzerdetails";
 $lang['userprofile'] = "Benutzer-Profil";
-$lang['emailandprivacy'] = "Email &amp; Privat";
+$lang['emailandprivacy'] = "Email & Privat";
 $lang['editsignature'] = "Signatur editieren";
 $lang['norelationshipssetup'] = "Sie haben noch keine Benutzerbeziehungen erstellt. Fuegen Sie einen neuen Benutzer hinzu wie folgt.";
 $lang['editwordfilter'] = "Wortfilter editieren";

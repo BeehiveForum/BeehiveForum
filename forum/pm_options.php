@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_options.php,v 1.24 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: pm_options.php,v 1.25 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -226,7 +226,7 @@ $user_prefs = user_get_prefs($uid);
 
 // Start output here
 
-html_draw_top("emoticons.js");
+html_draw_top("title={$lang['privatemessageoptions']}", "emoticons.js");
 
 echo "<h1>{$lang['privatemessageoptions']}</h1>\n";
 

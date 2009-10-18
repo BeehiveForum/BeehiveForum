@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.229 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.230 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -422,7 +422,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             pm_error_refuse();
             html_draw_bottom();
             exit;
@@ -604,7 +604,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -647,7 +647,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -691,7 +691,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -803,7 +803,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "tinymce_auto_focus=t_content", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("title={$lang['privatemessages']} » {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "tinymce_auto_focus=t_content", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['sendnewpm']}</h1>\n";
 

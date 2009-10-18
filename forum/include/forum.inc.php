@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.389 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.390 2009-10-18 17:51:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -205,7 +205,7 @@ function forum_closed_message()
 {
     $lang = load_language_file();
 
-    html_draw_top();
+    html_draw_top("title={$lang['closed']}");
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
@@ -251,7 +251,7 @@ function forum_restricted_message()
 
     if (($restricted_message = forum_get_setting('restricted_message', false))) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['restricted']}");
         html_display_error_msg(fix_html($restricted_message), '600', 'center');
         html_draw_bottom();
 
@@ -265,7 +265,7 @@ function forum_restricted_message()
 
             $apply_for_access_text = sprintf($lang['toapplyforaccessplease'], $forum_owner_pm_link);
 
-            html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+            html_draw_top("title={$lang['restricted']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
             html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), $apply_for_access_text));
 
             if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -277,7 +277,7 @@ function forum_restricted_message()
 
         }else {
 
-            html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+            html_draw_top("title={$lang['restricted']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
             html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), ''));
             html_draw_bottom();
         }
@@ -337,7 +337,7 @@ function forum_check_password($forum_fid)
 
         $lang = load_language_file();
 
-        html_draw_top();
+        html_draw_top("title={$lang['passwdprotectedforum']}");
 
         echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
 

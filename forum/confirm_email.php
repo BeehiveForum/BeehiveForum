@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.32 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.33 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -92,13 +92,13 @@ if (isset($_GET['resend']) && isset($uid)) {
 
     if (email_send_user_confirmation($uid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['emailconfirmation']}");
         html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationsent']);
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['emailconfirmationfailedtosend']);
     html_draw_bottom();
     exit;
@@ -106,7 +106,7 @@ if (isset($_GET['resend']) && isset($uid)) {
 
 if (!isset($uid) || !isset($key)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
@@ -118,13 +118,13 @@ if (($user = user_get_by_password($uid, $key))) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['emailconfirmation']}");
         html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationcomplete'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
         html_draw_bottom();
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationfailed'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
         html_draw_bottom();
     }
@@ -133,7 +133,7 @@ if (($user = user_get_by_password($uid, $key))) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;

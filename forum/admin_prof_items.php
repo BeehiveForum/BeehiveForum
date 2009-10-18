@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.143 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.144 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -105,7 +105,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -140,7 +140,7 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['noprofilesectionspecified'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
@@ -446,9 +446,9 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['addnewitem']}");
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -529,7 +529,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidprofileitemid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
@@ -537,15 +537,15 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (!$profile_item = profile_get_item($piid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidprofileitemid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['edititem']} » ". word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])));
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -622,11 +622,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['viewitems']}");
 
     $profile_items = profile_items_get_by_page($psid, $start);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

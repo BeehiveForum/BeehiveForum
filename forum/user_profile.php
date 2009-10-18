@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.159 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.160 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -143,7 +143,7 @@ if (isset($_GET['close_window'])) {
 
     if (!$logon = user_get_logon($uid)) {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['unknownuser']}", 'pm_popup_disabled');
         html_error_msg($lang['unknownuser']);
         html_draw_bottom();
         exit;
@@ -160,7 +160,7 @@ if (isset($_GET['close_window'])) {
 
 if (!isset($uid)) {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['nouserspecified']}", 'pm_popup_disabled');
     html_error_msg($lang['nouserspecified']);
     html_draw_bottom();
     exit;
@@ -180,13 +180,9 @@ $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 // Popup title.
 
-$title = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])));
+$page_title = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])));
 
-// Forum name
-
-$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-
-html_draw_top("title=$forum_name &raquo; $title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
+html_draw_top("title=$page_title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_write.php,v 1.10 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: lpm_write.php,v 1.11 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -326,7 +326,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         }else {
 
-            light_html_draw_top();
+            light_html_draw_top("title={$lang['error']}");
             light_pm_error_refuse();
             light_html_draw_bottom();
             exit;
@@ -490,7 +490,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['error']}");
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -533,7 +533,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['error']}");
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -569,7 +569,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['error']}");
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -662,7 +662,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top("robots=noindex,nofollow");
+light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow");
 
 // preview message
 

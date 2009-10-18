@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.49 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.50 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -160,7 +160,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
     }else {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close' => $lang['close']));
         html_draw_bottom();
         exit;
@@ -180,7 +180,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
     }else {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close' => $lang['close']));
         html_draw_bottom();
         exit;
@@ -188,7 +188,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
 }else {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['mustspecifytypeofsearch'], 'search_popup.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
@@ -206,7 +206,7 @@ if (isset($_POST['obj_name']) && strlen(trim(stripslashes_array($_POST['obj_name
 
 }else {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['noformobj'], 'search_popup.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
@@ -341,7 +341,7 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
     }
 }
 
-html_draw_top('openprofile.js', 'pm_popup_disabled');
+html_draw_top("title={$lang['search']}", 'openprofile.js', 'pm_popup_disabled');
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";

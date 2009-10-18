@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.68 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.69 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -89,7 +89,7 @@ if (isset($_POST['request'])) {
 
         if (email_send_pw_reminder($logon)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['passwdresetemailsent']}");
             html_display_msg($lang['passwdresetemailsent'], $lang['passwdresetexp'], 'logon.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
             html_draw_bottom();
             exit;
@@ -105,7 +105,7 @@ if (isset($_POST['request'])) {
     }
 }
 
-html_draw_top();
+html_draw_top("title={$lang['forgotpasswd']}");
 
 echo "<h1>{$lang['forgotpasswd']}</h1>";
 

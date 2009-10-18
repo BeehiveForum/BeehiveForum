@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.129 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.130 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -175,7 +175,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     if (!$user_peer = user_get($peer_uid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['invalidusername']}");
         html_error_msg($lang['invalidusername']);
         html_draw_bottom();
         exit;
@@ -187,7 +187,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     if (!$user_peer = user_get($peer_uid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['invalidusername']}");
         html_error_msg($lang['invalidusername']);
         html_draw_bottom();
         exit;
@@ -195,7 +195,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['nouserspecified']}");
     html_error_msg($lang['nouserspecified']);
     html_draw_bottom();
     exit;
@@ -205,7 +205,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 if ($peer_uid == bh_session_get_value('UID')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['youcannotchangeuserrelationshipforownaccount']);
     html_draw_bottom();
     exit;
@@ -262,12 +262,15 @@ if (isset($_POST['reset_nickname'])) {
     user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname);
 }
 
-html_draw_top("openprofile.js");
+$peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
+
+html_draw_top("title={$lang['userrelationship']} » $peer_user_display", "openprofile.js");
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
+
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']))), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

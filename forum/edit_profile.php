@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.110 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.111 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -145,7 +145,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
@@ -160,7 +160,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
@@ -184,7 +184,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -261,15 +261,18 @@ if (isset($_POST['save'])) {
 
 if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
-    html_draw_top();
-
     if ($admin_edit === true) {
 
         $user = user_get($uid);
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editprofile']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+
+        html_draw_top("title={$lang['admin']} » {$lang['editprofile']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))));
+
+        echo "<h1>{$lang['admin']} &raquo; {$lang['editprofile']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
     }else {
 
+        html_draw_top("title={$lang['mycontrols']} » {$lang['editprofile']}");
+        
         echo "<h1>{$lang['editprofile']}</h1>\n";
     }
 
@@ -431,7 +434,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['profilesnotsetup']);
     html_draw_bottom();
 }

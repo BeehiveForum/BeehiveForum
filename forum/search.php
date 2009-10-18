@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.243 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: search.php,v 1.244 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -222,7 +222,7 @@ if (isset($_GET['show_stop_words'])) {
 
     $highlight_keywords_array = array();
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={{$lang['mysqlstopwordlist']}", 'pm_popup_disabled');
 
     if (isset($_GET['close'])) {
 

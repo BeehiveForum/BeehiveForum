@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.115 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: display.php,v 1.116 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -137,7 +137,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top("robots=noindex,nofollow");
+    html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     html_error_msg($lang['invalidmsgidornomessageidspecified']);
     html_draw_bottom();
     exit;
@@ -145,7 +145,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -153,7 +153,7 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -161,19 +161,15 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['postdoesnotexist']);
     html_draw_bottom();
     exit;
 }
 
-$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
-
-$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
-
-html_draw_top("title=$forum_name &raquo; $thread_title", "openprofile.js", "post.js", "poll.js", "folder_options.js", "basetarget=_blank");
+html_draw_top("title=$thread_title", "openprofile.js", "post.js", "poll.js", "folder_options.js", "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
@@ -189,7 +185,7 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_title, $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 

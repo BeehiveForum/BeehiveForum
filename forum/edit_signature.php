@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.130 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.131 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -139,7 +139,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
@@ -154,7 +154,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
@@ -178,7 +178,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -263,15 +263,17 @@ if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML'])) {
 
 // Start Output Here
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
-
 if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    html_draw_top("title={$lang['admin']} » {$lang['manageuser']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
+    
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
+
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editsignature']}", "basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
 
     echo "<h1>{$lang['editsignature']}</h1>\n";
 }

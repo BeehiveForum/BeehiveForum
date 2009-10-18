@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.84 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.85 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -151,7 +151,7 @@ if (isset($_POST['save'])) {
 
         if (user_change_password($uid, $pw, $key)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['passwdchanged']}");
             html_display_msg($lang['passwdchanged'], $lang['passedchangedexp'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
             html_draw_bottom();
             exit;
@@ -176,7 +176,7 @@ if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
@@ -184,13 +184,13 @@ if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($
 
 if (!$user = user_get_by_password($uid, $key)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
 }
 
-html_draw_top();
+html_draw_top("title={$lang['changepassword']}");
 
 echo "<h1>{$lang['changepassword']}</h1>";
 

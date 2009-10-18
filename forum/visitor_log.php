@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.142 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.143 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -323,9 +323,9 @@ if (isset($_POST['clear_search'])) {
     $user_search = "";
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("title={$lang['visitorlog']}", "openprofile.js");
 
-echo "<h1>{$lang['userprofile']}</h1>\n";
+echo "<h1>{$lang['visitorlog']}</h1>\n";
 
 $user_profile_array = visitor_log_browse_items($user_search, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y', $hide_guests == 'Y');
 

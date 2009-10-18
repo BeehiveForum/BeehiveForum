@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.269 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.270 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -115,7 +115,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -131,7 +131,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['nouserspecified'], 'admin_users.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
@@ -180,7 +180,7 @@ $error_msg_array = array();
 
 if (!$user = admin_user_get($uid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['unknownuseraccount'], 'admin_users.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
@@ -193,6 +193,10 @@ $user['POST_COUNT'] = user_get_post_count($uid);
 // Get the user's permissions.
 
 $user_perms = perm_get_forum_user_permissions($uid);
+
+// Page title
+
+$page_title = "{$lang['admin']} » {$lang['manageuser']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME'])));
 
 // Do updates
 
@@ -279,7 +283,7 @@ if (isset($_POST['action_submit'])) {
 
         if (user_reset_post_count($uid)) {
 
-            html_draw_top();
+            html_draw_top("title=$page_title");
             html_display_msg($lang['postcount'], $lang['successfullyresetpostcount'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -298,7 +302,7 @@ if (isset($_POST['action_submit'])) {
 
             if (user_update_post_count($uid, $user_post_count)) {
 
-                html_draw_top();
+                html_draw_top("title=$page_title");
                 html_display_msg($lang['postcount'], $lang['successfullyupdatedpostcount'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
                 html_draw_bottom();
                 exit;
@@ -315,7 +319,7 @@ if (isset($_POST['action_submit'])) {
 
     if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -325,14 +329,14 @@ if (isset($_POST['action_submit'])) {
 
         if (admin_clear_user_history($uid)) {
 
-            html_draw_top();
+            html_draw_top("title=$page_title");
             html_display_msg($lang['userhistory'], $lang['successfullycleareduserhistory'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['failedtoclearuserhistory'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -343,7 +347,7 @@ if (isset($_POST['action_submit'])) {
 
     if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -359,14 +363,14 @@ if (isset($_POST['action_submit'])) {
 
                 email_send_new_pw_notification($uid, $fuid, $t_new_password);
 
-                html_draw_top();
+                html_draw_top("title=$page_title");
                 html_display_msg($lang['changepassword'], $lang['successfullychangedpassword'], 'admin_user.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
                 html_draw_bottom();
                 exit;
             }
         }
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['failedtochangepasswd'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -376,7 +380,7 @@ if (isset($_POST['action_submit'])) {
 
     if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -386,14 +390,14 @@ if (isset($_POST['action_submit'])) {
 
     if (admin_delete_user($uid, $delete_content)) {
 
-        html_draw_top();
+        html_draw_top("title=$page_title");
         html_display_msg($lang['deleteuser'], $lang['usersuccessfullydeleted'], 'admin_users.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
         html_draw_bottom();
         exit;
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['failedtodeleteuser'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -407,14 +411,14 @@ if (isset($_POST['action_submit'])) {
 
             admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
 
-            html_draw_top();
+            html_draw_top("title=$page_title");
             html_display_msg($lang['deleteposts'], $lang['postssuccessfullydeleted'], 'admin_user.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['failedtodeleteusersposts'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -587,19 +591,15 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
             html_draw_bottom();
             exit;
         }
 
-        html_draw_top('admin.js');
+        html_draw_top("title=$page_title", 'admin.js');
 
-        if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }
+        echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
         html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
 
@@ -653,15 +653,11 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'view_history') {
 
-        html_draw_top('admin.js');
+        html_draw_top("title=$page_title", 'admin.js');
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }
+        echo "<h1>$page_title</h1>\n";
 
         if (is_array($user_history_array) && sizeof($user_history_array) < 1) {
             html_display_warning_msg($lang['nohistory'], '600', 'center');
@@ -806,7 +802,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'user_aliases') {
 
-        html_draw_top('admin.js');
+        html_draw_top("title=$page_title", 'admin.js');
 
         $user_alias_view = USER_ALIAS_IPADDRESS;
 
@@ -843,11 +839,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }
+        echo "<h1>$page_title</h1>\n";
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
             html_display_warning_msg($lang['searchreturnednoresults'], '700', 'center');
@@ -1019,20 +1011,15 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
             html_draw_bottom();
             exit;
         }
 
-        html_draw_top('admin.js');
+        html_draw_top("title=$page_title", 'admin.js');
 
-        if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }
-
+        echo "<h1>$page_title</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1086,14 +1073,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'delete_posts') {
 
-        html_draw_top('admin.js');
+        html_draw_top("title=$page_title", 'admin.js');
 
-        if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }
-
+        echo "<h1>$page_title</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1144,14 +1126,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'post_count') {
 
-        html_draw_top('admin.js');
+        html_draw_top("title=$page_title", 'admin.js');
 
-        if (forum_check_webtag_available($webtag)) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-        }
-
+        echo "<h1>$page_title</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1203,13 +1180,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
     }
 }
 
-html_draw_top('admin.js', 'openprofile.js');
+html_draw_top("title=$page_title", 'admin.js', 'openprofile.js');
 
-if (forum_check_webtag_available($webtag)) {
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-}else {
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
-}
+echo "<h1>$page_title</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

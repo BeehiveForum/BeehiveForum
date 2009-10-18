@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.307 2009-07-11 19:34:41 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.308 2009-10-18 17:51:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -1490,7 +1490,7 @@ $lang['userexp_9'] = "<b>w0rd PHILTER</b> lEts J00 ED1T Y0UR p3Rs0nAL W0rD PhiLT
 $lang['userexp_10'] = "<b>thrE@D 5UBSCRIpTi0NS</b> @LL0wS j00 +o M4N493 YouR THRE4D 5UbSCRIP+I0Ns.";
 $lang['userdetails'] = "u\$eR Det41L\$";
 $lang['userprofile'] = "u\$eR pR0F1L3";
-$lang['emailandprivacy'] = "eM@1L &amp; PR1V4cY";
+$lang['emailandprivacy'] = "eM@1L & PR1V4cY";
 $lang['editsignature'] = "eDIt S1GN4TURe";
 $lang['norelationshipssetup'] = "j00 h4VE N0 User REL@TI0nSH1P5 \$e+ uP. 4DD 4 N3w U\$3R 8Y SE@rCHin9 beL0W.";
 $lang['editwordfilter'] = "edI+ Word fIl+3r";

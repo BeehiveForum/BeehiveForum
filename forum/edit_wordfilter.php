@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.104 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.105 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -327,7 +327,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}");
 
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
@@ -415,7 +415,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['mustspecifyfilterid'], 'edit_wordfilter.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
@@ -423,13 +423,13 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (!$word_filter_array = user_get_word_filter($filter_id)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidfilterid'], 'edit_wordfilter.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top();
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}");
 
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
@@ -503,7 +503,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}");
 
     $word_filter_array = user_get_word_filter_list($start);
 

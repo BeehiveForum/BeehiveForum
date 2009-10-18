@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.39 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.40 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -150,7 +150,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -164,7 +164,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -172,7 +172,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 }else {
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessagespecifiedfordel']);
     light_html_draw_bottom();
     exit;
@@ -199,7 +199,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannotdeletepostsinthisfolder']);
     light_html_draw_bottom();
     exit;
@@ -207,7 +207,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -219,7 +219,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -227,7 +227,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -235,7 +235,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -243,7 +243,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
 }else {
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg(sprintf($lang['messagewasnotfound'], $msg));
     light_html_draw_bottom();
     exit;
@@ -268,7 +268,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-light_html_draw_top("robots=noindex,nofollow");
+light_html_draw_top("title={$lang['deletemessage']} {$tid}.{$pid}", "robots=noindex,nofollow");
 
 echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_options.php,v 1.17 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: folder_options.php,v 1.18 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -145,7 +145,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -155,7 +155,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 if (!$folder_data = folder_get($fid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -169,7 +169,7 @@ $uid = bh_session_get_value('UID');
 
 if (!folder_is_accessible($fid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -217,7 +217,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("basetarget=_blank", "folder_options.js");
+html_draw_top("title={$lang['folderoptions']} » ". word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "basetarget=_blank", "folder_options.js");
 
 echo "<h1>{$lang['folderoptions']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 

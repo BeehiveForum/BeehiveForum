@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.159 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.160 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -104,7 +104,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -256,11 +256,11 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top();
+html_draw_top("title={$lang['admin']} » {$lang['adminaccesslog']}");
 
 $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['adminaccesslog']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['adminaccesslog']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

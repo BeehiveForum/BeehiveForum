@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.74 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.75 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -263,7 +263,7 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     
     if (($current_folder != PM_SEARCH_RESULTS) && ($current_folder != $message_folder)) {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['messagenotfoundinselectedfolder']);
         html_draw_bottom();
         exit;
@@ -271,7 +271,7 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
 
     if (!$pm_message_array = pm_message_get($mid)) {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['messagehasbeendeleted']);
         html_draw_bottom();
         exit;
@@ -315,7 +315,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['deletemessage']}");
             html_display_msg($lang['delete'], $lang['deletemessagesconfirmation'], "pm_messages.php", 'post', array('pm_option_submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_delete_messages' => $lang['delete'], 'pm_delete_confirm' => 'Y'), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -427,7 +427,7 @@ if (isset($_POST['search'])) {
                     $error_msg.= "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
                     $error_msg.= "<p><ul><li>". implode("</li>\n        <li>", $keywords_error_array['keywords']). "</li></ul></p>\n";
 
-                    html_draw_top('pm_popup_disabled');
+                    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
                     html_error_msg($error_msg);
                     html_draw_bottom();
                     exit;
@@ -436,7 +436,7 @@ if (isset($_POST['search'])) {
 
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
 
-                    html_draw_top('pm_popup_disabled');
+                    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
                     html_error_msg(sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link));
                     html_draw_bottom();
                     exit;
@@ -444,7 +444,7 @@ if (isset($_POST['search'])) {
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                html_draw_top('pm_popup_disabled');
+                html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
                 html_error_msg(sprintf($lang['searchfrequencyerror'], $search_frequency));
                 html_draw_bottom();
                 exit;
@@ -456,7 +456,7 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders();
 
-html_draw_top("basetarget=_blank", "openprofile.js", "search.js", "pm.js", 'pm_popup_disabled');
+html_draw_top("title={$lang['privatemessages']} » {$pm_folder_names_array[$current_folder]}", "basetarget=_blank", "openprofile.js", "search.js", "pm.js", 'pm_popup_disabled');
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;

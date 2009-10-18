@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.25 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.26 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -110,7 +110,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -122,9 +122,9 @@ $user_count = user_count();
 
 // And off we go ...
 
-html_draw_top('openprofile.js');
+html_draw_top("title={$lang['admin']} » {$lang['forumstats']}", 'openprofile.js');
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumstats']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['forumstats']}</h1>\n";
 
 echo "  <br />\n";
 echo "  <div align=\"center\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.194 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.195 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -104,7 +104,7 @@ $error_msg_array = array();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -202,16 +202,9 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = ADMIN_USER_FILTER_NONE;
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("title={$lang['admin']} » {$lang['manageusers']}", 'openprofile.js');
 
-if (($table_data = get_table_prefix())) {
-
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']}</h1>\n";
-
-}else {
-
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
-}
+echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 

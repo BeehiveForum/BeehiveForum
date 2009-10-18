@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.138 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.139 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -103,7 +103,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -189,12 +189,12 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                html_draw_top();
+                html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}");
 
                 $forum_path = dirname($_SERVER['PHP_SELF']);
                 $forum_path.= "/forums/$webtag/styles/$stylename";
 
-                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
+                echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_make_style.php\">\n";
@@ -264,9 +264,9 @@ if (isset($_POST['save'])) {
 
 // Start Here
 
-html_draw_top();
+html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}");
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.164 2009-10-16 07:19:44 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.165 2009-10-18 19:53:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -208,6 +208,10 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     $webtag = get_webtag();
 
+    // Initialise the Swift Decorator replacements array
+
+    $replacements = array();
+
     // Only send the email to people who logged after the thread was modified.
     
     $last_visit_datetime = date(MYSQL_DATETIME, $modified);
@@ -223,70 +227,67 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     if (!$result = db_query($sql, $db_email_send_thread_subscription)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) < 1) return false;
 
-        while (($to_user = db_fetch_array($result))) {
+    while (($to_user = db_fetch_array($result))) {
 
-            // Get the relationship between the to and from user
-            
-            $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
+        // Get the relationship between the to and from user
 
-            // If the recipient is ignoring the sender don't send them an email.
+        $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
-            if ($user_rel & USER_IGNORED_COMPLETELY) continue;
+        // If the recipient is ignoring the sender don't send them an email.
 
-            // Validate the email address before we continue.
+        if ($user_rel & USER_IGNORED_COMPLETELY) continue;
 
-            if (!email_address_valid($to_user['EMAIL'])) continue;
+        // Validate the email address before we continue.
 
-            // Get the right language for the email
+        if (!email_address_valid($to_user['EMAIL'])) continue;
 
-            if (!$lang = email_get_language($tuid)) return false;
+        // Get the right language for the email
 
-            // Get the forum reply-to email address
+        if (!$lang = email_get_language($tuid)) continue;
 
-            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+        // Get the forum reply-to email address
 
-            // Get the required variables (forum name, subject, recipient, etc.) and
-            // pass them all through the recipient's word filter.
+        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
-            $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-            $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $tuid);
-            $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-            $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-            $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+        // Get the required variables (forum name, subject, recipient, etc.) and
+        // pass them all through the recipient's word filter.
 
-            // Generate link to the forum itself
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+        $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $tuid);
+        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
 
-            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
+        // Generate link to the forum itself
 
-            // Generate the message link.
+        $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
-            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
+        // Generate the message link.
 
-            // Generate the message body.
+        $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
-            $message_body = wordwrap(sprintf($lang['threadsubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+        // Generate the message body.
 
-            // Add the recipient
-            
-            $message->setTo($to_user['EMAIL'], $recipient);
+        $message_body = wordwrap(sprintf($lang['threadsubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
-            // Set the subject
-            
-            $message->setSubject($subject);
+        // Add the recipient
 
-            // Set the message body
+        $message->addTo($to_user['EMAIL'], $recipient);
 
-            $message->setBody($message_body);
+        // Set the subject
 
-            // Send the email
+        $message->setSubject($subject);
 
-            $mailer->send($message);
-        }
+        // Set the message body
+
+        $message->setBody($message_body);
+
+        // Send the email
+
+        $mailer->send($message);
     }
-
-    return true;
 }
 
 function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modified, &$exclude_user_array)
@@ -362,62 +363,59 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
     if (!$result = db_query($sql, $db_email_send_folder_subscription)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) < 1) return false;
 
-        while (($to_user = db_fetch_array($result))) {
+    while (($to_user = db_fetch_array($result))) {
 
-            // Validate the email address before we continue.
+        // Validate the email address before we continue.
 
-            if (!email_address_valid($to_user['EMAIL'])) continue;
+        if (!email_address_valid($to_user['EMAIL'])) continue;
 
-            // Get the right language for the email
+        // Get the right language for the email
 
-            if (!$lang = email_get_language($tuid)) continue;
+        if (!$lang = email_get_language($tuid)) continue;
 
-            // Get the forum reply-to email address
+        // Get the forum reply-to email address
 
-            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
-            // Get the required variables (forum name, subject, recipient, etc.) and
-            // pass them all through the recipient's word filter.
+        // Get the required variables (forum name, subject, recipient, etc.) and
+        // pass them all through the recipient's word filter.
 
-            $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-            $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $tuid);
-            $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-            $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-            $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+        $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $tuid);
+        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
 
-            // Generate link to the forum itself
+        // Generate link to the forum itself
 
-            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid", false);
+        $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid", false);
 
-            // Generate the message link.
+        // Generate the message link.
 
-            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
+        $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid", false);
 
-            // Generate the message body.
+        // Generate the message body.
 
-            $message_body = wordwrap(sprintf($lang['foldersubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+        $message_body = wordwrap(sprintf($lang['foldersubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
-            // Add the recipient
-            
-            $message->setTo($to_user['EMAIL'], $recipient);
+        // Add the recipient
 
-            // Set the subject
-            
-            $message->setSubject($subject);
+        $message->setTo($to_user['EMAIL'], $recipient);
 
-            // Set the message body
+        // Set the subject
 
-            $message->setBody($message_body);
+        $message->setSubject($subject);
 
-            // Send the email
+        // Set the message body
 
-            $mailer->send($message);
-        }
+        $message->setBody($message_body);
+
+        // Send the email
+
+        $mailer->send($message);
     }
-
-    return true;
 }
 
 function email_send_pm_notification($tuid, $mid, $fuid)
@@ -800,292 +798,354 @@ function email_send_changed_email_confirmation($tuid)
 
 function email_send_user_approval_notification($tuid)
 {
-    if (!check_mail_variables()) return false;
+    // Validate function arguments
 
     if (!is_numeric($tuid)) return false;
 
+    // Get the to user details
+
+    if (!($to_user = user_get($tuid))) return false;
+    
+    // Get the Swift Mailer Transport
+    
+    if (!($transport = Swift_TransportFactory::get())) return false;
+
+    //Create the Mailer using the returned Transport
+
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    // Create a new message
+
+    $message = Swift_MessageBeehive::newInstance();
+
+    // Get Forum Webtag
+
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    // Validate the email address before we continue.
 
-        // Validate the email address before we continue.
+    if (!email_address_valid($to_user['EMAIL'])) return false;
 
-        if (!email_address_valid($to_user['EMAIL'])) return false;
+    // Get the right language for the email
 
-        // Get the right language for the email
+    if (!$lang = email_get_language($to_user['UID'])) return false;
 
-        if (!$lang = email_get_language($to_user['UID'])) return false;
+    // Get the forum reply-to email address
 
-        // Get the forum reply-to email address
+    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
-        // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+    $subject    = word_filter_apply(sprintf($lang['newuserapprovalsubject'], $forum_name), $tuid);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
 
-        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $subject    = word_filter_apply(sprintf($lang['newuserapprovalsubject'], $forum_name), $tuid);
-        $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    // Generate the confirmation link.
 
-        // Generate the confirmation link.
+    $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
+    $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_users_link", false);
 
-        $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
-        $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_users_link", false);
+    // Generate the message body.
 
-        // Generate the message body.
+    $message_body = wordwrap(sprintf($lang['newuserapprovalemail'], $recipient, $forum_name, $admin_users_link));
 
-        $message = wordwrap(sprintf($lang['newuserapprovalemail'], $recipient, $forum_name, $admin_users_link));
+    // Add the recipient
 
-        // Email Headers (inc. PHP version and Beehive version)
+    $message->setTo($to_user['EMAIL'], $recipient);
+    
+    // Set the subject
 
-        $header = "Return-path: $forum_email\n";
-        $header.= "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\n";
-        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+    $message->setSubject($subject);
 
-        // SF.net Bug #1040563:
-        // -------------------
-        // RFC2822 compliancy requires that the RCPT TO portion of the
-        // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+    // Set the message body
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
-    }
+    $message->setBody($message_body);
 
-    return false;
+    // Send the email
+
+    return $mailer->send($message) > 0;
 }
 
 function email_send_new_user_notification($tuid, $new_user_uid)
 {
-    if (!check_mail_variables()) return false;
+    // Validate function arguments
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($new_user_uid)) return false;
 
+    // Get the to user details
+
+    if (!($to_user = user_get($tuid))) return false;
+    
+    // Get the Swift Mailer Transport
+    
+    if (!($transport = Swift_TransportFactory::get())) return false;
+
+    //Create the Mailer using the returned Transport
+
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    // Create a new message
+
+    $message = Swift_MessageBeehive::newInstance();
+
+    // Get Forum Webtag
+
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    // Validate the email address before we continue.
 
-        // Validate the email address before we continue.
+    if (!email_address_valid($to_user['EMAIL'])) return false;
 
-        if (!email_address_valid($to_user['EMAIL'])) return false;
+    // Get the right language for the email
 
-        // Get the right language for the email
+    if (!$lang = email_get_language($to_user['UID'])) return false;
 
-        if (!$lang = email_get_language($to_user['UID'])) return false;
+    // Get the forum reply-to email address
 
-        // Get the forum reply-to email address
+    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
-        // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+    $subject    = word_filter_apply(sprintf($lang['newuserregistrationsubject'], $forum_name), $tuid);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
 
-        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $subject    = word_filter_apply(sprintf($lang['newuserregistrationsubject'], $forum_name), $tuid);
-        $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    // Generate the confirmation link.
 
-        // Generate the confirmation link.
+    $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
+    $admin_user_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_user_link", false);
 
-        $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
-        $admin_user_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_user_link", false);
+    // Generate the message body.
 
-        // Generate the message body.
+    $message_body = wordwrap(sprintf($lang['newuserregistrationemail'], $recipient, $forum_name, $admin_user_link));
 
-        $message = wordwrap(sprintf($lang['newuserregistrationemail'], $recipient, $forum_name, $admin_user_link));
+    // Add the recipient
 
-        // Email Headers (inc. PHP version and Beehive version)
+    $message->setTo($to_user['EMAIL'], $recipient);
+    
+    // Set the subject
 
-        $header = "Return-path: $forum_email\n";
-        $header.= "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\n";
-        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+    $message->setSubject($subject);
 
-        // SF.net Bug #1040563:
-        // -------------------
-        // RFC2822 compliancy requires that the RCPT TO portion of the
-        // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+    // Set the message body
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
-    }
+    $message->setBody($message_body);
 
-    return false;
+    // Send the email
+
+    return $mailer->send($message) > 0;
 }
 
 function email_send_user_approved_notification($tuid)
 {
-    if (!check_mail_variables()) return false;
+    // Validate function arguments
 
     if (!is_numeric($tuid)) return false;
 
+    // Get the to user details
+
+    if (!($to_user = user_get($tuid))) return false;
+    
+    // Get the Swift Mailer Transport
+    
+    if (!($transport = Swift_TransportFactory::get())) return false;
+
+    //Create the Mailer using the returned Transport
+
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    // Create a new message
+
+    $message = Swift_MessageBeehive::newInstance();
+
+    // Get Forum Webtag
+
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    // Validate the email address before we continue.
 
-        // Validate the email address before we continue.
+    if (!email_address_valid($to_user['EMAIL'])) return false;
 
-        if (!email_address_valid($to_user['EMAIL'])) return false;
+    // Get the right language for the email
 
-        // Get the right language for the email
+    if (!$lang = email_get_language($to_user['UID'])) return false;
 
-        if (!$lang = email_get_language($to_user['UID'])) return false;
+    // Get the forum reply-to email address
 
-        // Get the forum reply-to email address
+    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    $forum_noreply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-        $forum_noreply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+    // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
-        // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+    $subject    = word_filter_apply(sprintf($lang['useraccountapprovedsubject'], $forum_name), $tuid);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
 
-        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $subject    = word_filter_apply(sprintf($lang['useraccountapprovedsubject'], $forum_name), $tuid);
-        $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    // Generate the confirmation link.
 
-        // Generate the confirmation link.
+    $forum_link = html_get_forum_uri("/index.php?webtag=$webtag", false);
 
-        $forum_link = html_get_forum_uri("/index.php?webtag=$webtag", false);
+    // Generate the message body.
 
-        // Generate the message body.
+    $message_body = wordwrap(sprintf($lang['useraccountapprovedemail'], $recipient, $forum_name, $forum_link, $forum_name, $forum_email));
 
-        $message = wordwrap(sprintf($lang['useraccountapprovedemail'], $recipient, $forum_name, $forum_link, $forum_name, $forum_email));
+    // Add the recipient
 
-        // Email Headers (inc. PHP version and Beehive version)
+    $message->setTo($to_user['EMAIL'], $recipient);
+    
+    // Set the subject
 
-        $header = "Return-path: $forum_noreply_email\n";
-        $header.= "From: \"$forum_name\" <$forum_noreply_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_noreply_email>\n";
-        $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\n";
-        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+    $message->setSubject($subject);
 
-        // SF.net Bug #1040563:
-        // -------------------
-        // RFC2822 compliancy requires that the RCPT TO portion of the
-        // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+    // Set the message body
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
-    }
+    $message->setBody($message_body);
 
-    return false;
+    // Send the email
+
+    return $mailer->send($message) > 0;
 }
 
 function email_send_post_approval_notification($tuid)
 {
-    if (!check_mail_variables()) return false;
+    // Validate function arguments
 
     if (!is_numeric($tuid)) return false;
 
+    // Get the to user details
+
+    if (!($to_user = user_get($tuid))) return false;
+    
+    // Get the Swift Mailer Transport
+    
+    if (!($transport = Swift_TransportFactory::get())) return false;
+
+    //Create the Mailer using the returned Transport
+
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    // Create a new message
+
+    $message = Swift_MessageBeehive::newInstance();
+
+    // Get Forum Webtag
+
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    // Validate the email address before we continue.
 
-        // Validate the email address before we continue.
+    if (!email_address_valid($to_user['EMAIL'])) return false;
 
-        if (!email_address_valid($to_user['EMAIL'])) return false;
+    // Get the right language for the email
 
-        // Get the right language for the email
+    if (!$lang = email_get_language($to_user['UID'])) return false;
 
-        if (!$lang = email_get_language($to_user['UID'])) return false;
+    // Get the forum reply-to email address
 
-        // Get the forum reply-to email address
+    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
-        // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+    $subject    = word_filter_apply(sprintf($lang['newpostapprovalsubject'], $forum_name), $tuid);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
 
-        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $subject    = word_filter_apply(sprintf($lang['newpostapprovalsubject'], $forum_name), $tuid);
-        $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    // Generate the confirmation link.
 
-        // Generate the confirmation link.
+    $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
+    $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_post_approval_link", false);
 
-        $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
-        $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_post_approval_link", false);
+    // Generate the message body.
 
-        // Generate the message body.
+    $message_body = wordwrap(sprintf($lang['newpostapprovalemail'], $recipient, $forum_name, $admin_post_approval_link));
 
-        $message = wordwrap(sprintf($lang['newpostapprovalemail'], $recipient, $forum_name, $admin_post_approval_link));
+    // Add the recipient
 
-        // Email Headers (inc. PHP version and Beehive version)
+    $message->setTo($to_user['EMAIL'], $recipient);
+    
+    // Set the subject
 
-        $header = "Return-path: $forum_email\n";
-        $header.= "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\n";
-        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+    $message->setSubject($subject);
 
-        // SF.net Bug #1040563:
-        // -------------------
-        // RFC2822 compliancy requires that the RCPT TO portion of the
-        // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+    // Set the message body
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
-    }
+    $message->setBody($message_body);
 
-    return false;
+    // Send the email
+
+    return $mailer->send($message) > 0;
 }
 
 function email_send_message_to_user($tuid, $fuid, $subject, $message)
 {
-    if (!check_mail_variables()) return false;
+    // Validate function arguments
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
+    // Get the to user details
 
-        // Validate the email address before we continue.
+    if (!($to_user = user_get($fuid))) return false;
+    
+    // Get the to user details
 
-        if (!email_address_valid($to_user['EMAIL'])) return false;
+    if (!($from_user = user_get($tuid))) return false;
 
-        // Get the right language for the email
+    // Get the Swift Mailer Transport
+    
+    if (!($transport = Swift_TransportFactory::get())) return false;
 
-        if (!$lang = email_get_language($to_user['UID'])) return false;
+    //Create the Mailer using the returned Transport
 
-        // Get the forum reply-to email address
+    $mailer = Swift_Mailer::newInstance($transport);
 
-        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+    // Create a new message
 
-        // Get the forum name, subject, recipient, author, thread title and generate
-        // the messages link. Pass all of them through the recipient's word filter.
+    $message = Swift_MessageBeehive::newInstance();
 
-        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-        $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+    // Validate the email address before we continue.
 
-        // Word filter the message to be sent.
+    if (!email_address_valid($to_user['EMAIL'])) return false;
 
-        $message = word_filter_apply($message, $tuid);
+    // Get the right language for the email
 
-        // Add the Sent By footer to the message.
+    if (!$lang = email_get_language($to_user['UID'])) return false;
 
-        $message.= wordwrap(sprintf("\n\n{$lang['msgsentfromby']}", $recipient, $sent_from, $forum_name));
+    // Get the forum reply-to email address
 
-        // Email Headers (inc. PHP version and Beehive version)
+    $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
-        $header = "Return-path: $forum_email\n";
-        $header.= "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\n";
-        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+    // Get the forum name, subject, recipient, author, thread title and generate
+    // the messages link. Pass all of them through the recipient's word filter.
 
-        // SF.net Bug #1040563:
-        // -------------------
-        // RFC2822 compliancy requires that the RCPT TO portion of the
-        // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
-    }
+    // Word filter the message to be sent.
 
-    return false;
+    $message_body= word_filter_apply($message, $tuid);
+
+    // Add the Sent By footer to the message.
+
+    $message_body.= wordwrap(sprintf("\n\n{$lang['msgsentfromby']}", $recipient, $sent_from, $forum_name));
+
+    // Add the recipient
+
+    $message->setTo($to_user['EMAIL'], $recipient);
+    
+    // Set the subject
+
+    $message->setSubject($subject);
+
+    // Set the message body
+
+    $message->setBody($message_body);
+
+    // Send the email
+
+    return $mailer->send($message) > 0;
 }
 
 // fetches the correct language file for the UID ($to_uid) who the email is being sent to

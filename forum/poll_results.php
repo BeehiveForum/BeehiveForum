@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.52 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.53 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -146,7 +146,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
     if (!$t_fid = thread_get_folder($tid, 1)) {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -154,7 +154,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
 }else {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['mustspecifypolltoview'], 'poll_results.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
@@ -162,7 +162,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -170,7 +170,7 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
 
 if (!$poll_data = poll_get($tid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -198,18 +198,14 @@ if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
 
 $poll_user_count = 0;
 
-$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
-
-$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
-
-html_draw_top("title=$forum_name &raquo; $thread_title &raquo; {$poll_data['QUESTION']}", "openprofile.js", "folder_options.js", 'pm_popup_disabled');
+html_draw_top("title=$thread_title » {$poll_data['QUESTION']}", "openprofile.js", "folder_options.js", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_title, $thread_title, THREAD_NOINTEREST, FOLDER_NOINTEREST, false, false, false, false, false), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_title, THREAD_NOINTEREST, FOLDER_NOINTEREST, false, false, false, false, false), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";

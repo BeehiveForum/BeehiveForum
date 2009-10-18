@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.38 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.39 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -176,7 +176,7 @@ if (isset($_GET['manage_folder'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={{$lang['error']}");
         html_display_error_msg($lang['invalidfolderid']);
         html_draw_bottom();
         exit;
@@ -190,7 +190,7 @@ if (isset($_GET['manage_folder'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={{$lang['error']}");
         html_display_error_msg($lang['invalidfolderid']);
         html_draw_bottom();
         exit;
@@ -239,7 +239,7 @@ $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
 
-html_draw_top("basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
+html_draw_top("title={{$lang['privatemessages']}", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 

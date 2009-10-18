@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.77 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.78 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -114,7 +114,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -158,7 +158,7 @@ if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['suppliedgidisnotausergroup'], 'admin_user_groups.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
@@ -232,19 +232,19 @@ if (isset($_POST['remove'])) {
     }
 }
 
-html_draw_top('openprofile.js');
-
 if (!$group = perm_get_group($gid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['suppliedgidisnotausergroup'], 'admin_user_groups.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
 
+html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$group['GROUP_NAME']} » {$lang['addremoveusers']}", 'openprofile.js');
+
 $group_users_array = perm_group_get_users($gid, $start_main);
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusergroups']} &raquo; {$group['GROUP_NAME']} &raquo; {$lang['addremoveusers']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['manageusergroups']} &raquo; {$group['GROUP_NAME']} &raquo; {$lang['addremoveusers']}</h1>\n";
 
 if (isset($_GET['added'])) {
 

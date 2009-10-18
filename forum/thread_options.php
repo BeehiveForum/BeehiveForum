@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.133 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.134 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -147,7 +147,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['threadcouldnotbefound']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -157,7 +157,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (!$fid = thread_get_folder($tid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['threadcouldnotbefound']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -171,7 +171,7 @@ $uid = bh_session_get_value('UID');
 
 if (!$thread_data = thread_get($tid, true)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['threadcouldnotbefound']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -528,7 +528,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['deletethread']}");
                     html_display_msg($lang['deletethread'], $lang['threadwassuccessfullydeleted'], 'discussion.php', 'get', array('continue' => $lang['continue']), false, html_get_frame_name('main'), 'center');
                     html_draw_bottom();
                     exit;
@@ -551,7 +551,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(UNDELETE_THREAD, array($tid, $thread_data['TITLE']));
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['undeletethread']}");
                     html_display_msg($lang['undeletethread'], $lang['threadwassuccessfullyundeleted'], 'thread_options.php', 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -574,7 +574,9 @@ if (isset($_POST['save'])) {
 
 if ($thread_data['DELETED'] == 'N') {
 
-    html_draw_top("basetarget=_blank", "thread_options.js");
+    $thread_title_display = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
+    
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", "thread_options.js");
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -1040,7 +1042,7 @@ if ($thread_data['DELETED'] == 'N') {
 
 }else if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-    html_draw_top("basetarget=_blank", "thread_options.js");
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", "thread_options.js");
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -1106,7 +1108,7 @@ if ($thread_data['DELETED'] == 'N') {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannoteditpostsinthisfolder']);
     html_draw_bottom();
     exit;

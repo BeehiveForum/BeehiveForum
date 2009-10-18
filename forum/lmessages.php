@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.124 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.125 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -156,7 +156,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessages']);
     light_html_draw_bottom();
     exit;
@@ -173,7 +173,7 @@ if (isset($_POST['pollsubmit'])) {
 
     }else {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['mustselectpolloption']);
         light_html_draw_bottom();
         exit;

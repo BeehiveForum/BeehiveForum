@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.52 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.53 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -147,7 +147,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['invalidmsgidornomessageidspecified']);
     light_html_draw_bottom();
     exit;
@@ -155,7 +155,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    light_html_draw_top();
+    light_html_draw_top("title={$lang['error']}");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -163,7 +163,7 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    light_html_draw_top();
+    light_html_draw_top("title={$lang['error']}");
     light_html_display_error_msg($lang['foldercouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -171,19 +171,15 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    light_html_draw_top();
+    light_html_draw_top("title={$lang['error']}");
     light_html_display_error_msg($lang['postdoesnotexist']);
     light_html_draw_bottom();
     exit;
 }
 
-$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
-
-$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
-
-light_html_draw_top("title=$forum_name &raquo; $thread_title");
+light_html_draw_top("title=$thread_title");
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 

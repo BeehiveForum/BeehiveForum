@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.55 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.56 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -108,7 +108,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -200,9 +200,9 @@ if (isset($_POST['update'])) {
     $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
 }
 
-html_draw_top();
+html_draw_top("title={$lang['admin']} » ". sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)));
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

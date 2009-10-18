@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.380 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: post.php,v 1.381 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -484,7 +484,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['threadcouldnotbefound']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -498,7 +498,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['cannotcreatepostinfolder']}");
         html_error_msg($lang['cannotcreatepostinfolder']);
         html_draw_bottom();
         exit;
@@ -556,7 +556,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['threadcouldnotbefound']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -570,7 +570,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['cannotcreatepostinfolder']}");
         html_error_msg($lang['cannotcreatepostinfolder']);
         html_draw_bottom();
         exit;
@@ -697,7 +697,7 @@ if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['postdoesnotexist']}");
         html_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
@@ -705,7 +705,7 @@ if (!$new_thread) {
 
     if (!$thread_data = thread_get($reply_to_tid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['threadcouldnotbefound']}");
         html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
         html_draw_bottom();
         exit;
@@ -715,7 +715,7 @@ if (!$new_thread) {
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['messagehasbeendeleted']}");
         html_error_msg($lang['messagehasbeendeleted'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
         html_draw_bottom();
         exit;
@@ -751,7 +751,7 @@ if ($valid && isset($_POST['post'])) {
 
                 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['threadisclosedforposting']}");
                     html_error_msg($lang['threadisclosedforposting'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => "$t_tid.$t_rpid"));
                     html_draw_bottom();
                     exit;
@@ -850,7 +850,7 @@ if (!isset($t_fid)) {
 
 if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannotcreatenewthreads']);
     html_draw_bottom();
     exit;
@@ -858,13 +858,13 @@ if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", ""
 
 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['threadisclosedforposting']}");
     html_error_msg($lang['threadisclosedforposting']);
     html_draw_bottom();
     exit;
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "post.js", "attachments.js", "poll.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
+html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "post.js", "attachments.js", "poll.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 

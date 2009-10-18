@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_edit.php,v 1.6 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: lpm_edit.php,v 1.7 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -147,7 +147,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 }else {
 
-    light_html_draw_top('pm_popup_disabled');
+    light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     light_html_display_error_msg($lang['nomessagespecifiedforedit']);
     light_html_draw_bottom();
     exit;
@@ -263,7 +263,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['error']}");
         light_pm_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -288,7 +288,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['error']}");
         light_pm_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -338,7 +338,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
-            light_html_draw_top('pm_popup_disabled');
+            light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
             light_pm_edit_refuse();
             light_html_draw_bottom();
             exit;
@@ -361,14 +361,14 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['error']}");
         light_pm_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
 }
 
-light_html_draw_top();
+light_html_draw_top("title={$lang['editpm']}");
 
 if ($valid && isset($_POST['preview'])) {
 

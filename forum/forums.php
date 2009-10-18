@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.111 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: forums.php,v 1.112 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -109,7 +109,7 @@ $frame_top_target = html_get_top_frame_name();
 
 // Top of the page.
 
-html_draw_top("basetarget=$frame_top_target");
+html_draw_top("title={$lang['myforums']}", "basetarget=$frame_top_target");
 
 // Types of available forums.
 

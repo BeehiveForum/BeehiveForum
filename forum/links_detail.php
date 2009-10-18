@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.121 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.122 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -118,7 +118,7 @@ if (!forum_check_access_level()) {
 
 if (!forum_get_setting('show_links', 'Y')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['maynotaccessthissection']);
     html_draw_bottom();
     exit;
@@ -134,7 +134,7 @@ if (isset($_POST['lid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['mustprovidelinkID']);
     html_draw_bottom();
     exit;
@@ -284,7 +284,7 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
 
 if (!$link = links_get_single($lid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['invalidlinkID']);
     html_draw_bottom();
     exit;
@@ -292,9 +292,11 @@ if (!$link = links_get_single($lid)) {
 
 $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
-html_draw_top('openprofile.js');
+$links_folder_path = links_display_folder_path($link['FID'], $folders, true, true, "links.php?webtag=$webtag");
 
-echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
+html_draw_top("title={$lang['links']} » $links_folder_path", 'openprofile.js');
+
+echo "<h1>{$lang['links']} &raquo; $links_folder_path &raquo; <a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

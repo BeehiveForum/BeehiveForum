@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.146 2009-09-09 23:43:34 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.147 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -107,7 +107,7 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -499,9 +499,9 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
             if (($unread_cutoff_stamp > 0) && ($previous_unread_cutoff_stamp !== false) && ($unread_cutoff_stamp != $previous_unread_cutoff_stamp)) {
 
-                html_draw_top();
+                html_draw_top("title={$lang['admin']} » {$lang['globalforumsettings']}");
 
-                echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
+                echo "<h1></h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
@@ -587,7 +587,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
 // Start Output Here
 
-html_draw_top("onunload=clearFocus()", "admin.js", "emoticons.js", "htmltools.js");
+html_draw_top("title={$lang['admin']} » {$lang['globalforumsettings']}", "onunload=clearFocus()", "admin.js", "emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
 

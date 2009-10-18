@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.128 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.129 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -104,7 +104,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -314,9 +314,9 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['addwordfilter']}");
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '450', 'center');
@@ -399,7 +399,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['mustspecifyfilterid'], 'admin_wordfilter.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
@@ -407,15 +407,15 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (!$word_filter_array = admin_get_word_filter($filter_id)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidfilterid'], 'admin_wordfilter.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['editwordfilter']}");
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '450', 'center');
@@ -489,11 +489,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']}");
 
     $word_filter_array = admin_get_word_filter_list($start);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

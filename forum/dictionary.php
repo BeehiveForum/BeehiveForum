@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.65 2009-09-12 13:30:18 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.66 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -133,7 +133,7 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 
 }else {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['noformobj']);
     html_draw_bottom();
     exit;
@@ -150,7 +150,7 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
 
-    html_draw_top('dictionary.js', "onload=initialiseDictionary('$obj_id')", 'pm_popup_disabled');
+    html_draw_top("title={$lang['dictionary']}", 'dictionary.js', "onload=initialiseDictionary('$obj_id')", 'pm_popup_disabled');
 
     echo "<h1>{$lang['dictionary']}</h1>\n";
     echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
@@ -204,7 +204,7 @@ $dictionary = new dictionary();
 
 if (!$dictionary->is_installed()) {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['dictionarynotinstalled']);
     html_draw_bottom();
     exit;
@@ -306,7 +306,7 @@ if (isset($_POST['ignoreall'])) {
     $dictionary->find_next_word();
 }
 
-html_draw_top('dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled');
+html_draw_top("title={$lang['dictionary']}", 'dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled');
 
 echo "<h1>{$lang['dictionary']}</h1>\n";
 

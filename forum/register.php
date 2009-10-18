@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.207 2009-10-10 15:55:24 decoyduck Exp $ */
+/* $Id: register.php,v 1.208 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -124,7 +124,7 @@ $webtag = get_webtag();
 
 if (forum_get_setting('allow_new_registrations', 'N')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['userregistration']}");
     html_error_msg($lang['newuserregistrationsarenotpermitted']);
     html_draw_bottom();
     exit;
@@ -534,14 +534,14 @@ if (isset($_POST['register'])) {
 
                     perm_user_apply_email_confirmation($new_uid);
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['userregistration']}");
                     html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
                     exit;
 
                 }else {
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['userregistration']}");
                     html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmfailed'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
                     exit;
@@ -549,7 +549,7 @@ if (isset($_POST['register'])) {
 
             }else {
 
-                html_draw_top();
+                html_draw_top("title={$lang['userregistration']}");
                 html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreated'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
                 html_draw_bottom();
                 exit;
@@ -563,7 +563,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top('emoticons.js', 'register.js', "basetarget=$frame_top_target");
+html_draw_top("title={$lang['userregistration']}", 'emoticons.js', 'register.js', "basetarget=$frame_top_target");
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 

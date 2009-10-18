@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.581 2009-10-10 21:34:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.582 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -543,8 +543,8 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     if ($frame_links) {
 
-        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title), "</a> ";
-        echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title), "</a>";
+        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags(htmlentities_array($folder_title)), "</a> ";
+        echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
 
     }else {
 

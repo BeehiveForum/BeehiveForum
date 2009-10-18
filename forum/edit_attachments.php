@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.145 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.146 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -128,7 +128,7 @@ if (!forum_check_access_level()) {
 
 if (forum_get_setting('attachments_enabled', 'N')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -138,7 +138,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 
 if (!$attachment_dir = attachments_check_dir()) {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -187,7 +187,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
     if (!$t_fid = get_folder_fid($aid)) {
         
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['aidnotspecified']);
         html_draw_bottom();
         exit;
@@ -199,7 +199,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
     if (!$t_fid = get_folder_fid($aid)) {
 
-        html_draw_top('pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['aidnotspecified']);
         html_draw_bottom();
         exit;
@@ -217,7 +217,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
 if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -306,11 +306,14 @@ if (isset($_POST['delete_confirm'])) {
 
         if (get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
 
-            html_draw_top('pm_popup_disabled');
-
             if (isset($_POST['delete_thumbs'])) {
+                
+                html_draw_top("title={$lang['deletethumbnails']}", 'pm_popup_disabled');
                 echo "<h1>{$lang['deletethumbnails']}</h1>\n";
+
             }else {
+
+                html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled');
                 echo "<h1>{$lang['deleteattachments']}</h1>\n";
             }
 
@@ -431,7 +434,7 @@ if (isset($_POST['delete_confirm'])) {
     exit;
 }
 
-html_draw_top('attachments.js', 'post.js', 'pm_popup_disabled');
+html_draw_top("title={$lang['attachments']}", 'attachments.js', 'post.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 

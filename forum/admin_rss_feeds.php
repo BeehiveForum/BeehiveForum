@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.72 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.73 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -108,7 +108,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -446,9 +446,9 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
-    html_draw_top('admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['addnewfeed']}", 'admin.js');
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -561,7 +561,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
@@ -569,15 +569,15 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (!$rss_feed = rss_get_feed($feed_id)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top('admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['editfeed']} » ". word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), 'admin.js');
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -681,11 +681,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 }else {
 
-    html_draw_top('admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']}", 'admin.js');
 
     $rss_feeds = rss_get_feeds($start);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']}</h1>\n";
+    echo "<h1></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.305 2009-10-04 11:13:41 decoyduck Exp $ */
+/* $Id: messages.php,v 1.306 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -151,7 +151,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['invalidmsgidornomessageidspecified']);
     html_draw_bottom();
     exit;
@@ -175,7 +175,7 @@ if (isset($_POST['pollsubmit'])) {
 
             }else {
 
-                html_draw_top();
+                html_draw_top("title={$lang['error']}");
                 html_error_msg($lang['mustvoteforallgroups'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
                 html_draw_bottom();
                 exit;
@@ -183,7 +183,7 @@ if (isset($_POST['pollsubmit'])) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['mustselectpolloption'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
             html_draw_bottom();
             exit;
@@ -202,7 +202,7 @@ if (isset($_POST['pollsubmit'])) {
 
         }else {
 
-            html_draw_top("openprofile.js", "poll.js");
+            html_draw_top("title={$lang['error']}", "openprofile.js", "poll.js");
             poll_confirm_close($tid);
             html_draw_bottom();
             exit;
@@ -233,7 +233,7 @@ if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
 
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -243,7 +243,7 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -253,23 +253,18 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['postdoesnotexist']);
     html_draw_bottom();
     exit;
 }
 
-$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-$folder_title = htmlentities_array($thread_data['FOLDER_TITLE']);
-
-$thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
-
-html_draw_top("onunload=clearFocus()", "title=$forum_name &raquo; $thread_title", "openprofile.js", "post.js", "poll.js", "htmltools.js", "folder_options.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
+html_draw_top("onunload=clearFocus()", "title=$thread_title", "openprofile.js", "post.js", "poll.js", "htmltools.js", "folder_options.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
-echo "top.document.title = \"", html_js_safe_str($forum_name), " » ", html_js_safe_str(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE'])), "\";\n";
 echo "function initialisePostQuoting()\n";
 echo "{\n";
 echo "    var form_obj = getObjsByName('quote_list')[0];\n\n";
@@ -360,7 +355,7 @@ if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
         $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
     }
 
-    $thread_parts = preg_split('/([<|>])/u', $thread_title, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $thread_parts = preg_split('/([<|>])/u', htmlentities_array($thread_title), -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($i = 0; $i < sizeof($thread_parts); $i++) {
 
@@ -376,7 +371,7 @@ if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_title, $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y')), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y')), "</td>\n";
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 

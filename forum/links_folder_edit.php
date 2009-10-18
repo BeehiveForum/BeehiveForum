@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_folder_edit.php,v 1.21 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: links_folder_edit.php,v 1.22 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -117,7 +117,7 @@ if (!forum_check_access_level()) {
 
 if (!forum_get_setting('show_links', 'Y')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['maynotaccessthissection']);
     html_draw_bottom();
     exit;
@@ -179,7 +179,7 @@ if (isset($_POST['update'])) {
 
     if (!in_array($fid, array_keys($folders))) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['mustspecifyvalidfolder']);
         html_draw_bottom();
         exit;
@@ -187,13 +187,13 @@ if (isset($_POST['update'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['mustspecifyfolder']);
     html_draw_bottom();
     exit;
 }
 
-html_draw_top();
+html_draw_top("title={$lang['links']} » {$lang['editfolder']}");
 
 echo "<h1>{$lang['links']} &raquo; {$lang['editfolder']}</h1>\n";
 echo "<p>{$lang['editingfolder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";

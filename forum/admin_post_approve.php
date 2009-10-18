@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.83 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.84 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -158,7 +158,7 @@ if (isset($_POST['msg'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -172,7 +172,7 @@ if (isset($_POST['msg'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -187,7 +187,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -195,7 +195,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -203,7 +203,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -211,7 +211,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!$thread_data = thread_get($tid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -221,7 +221,7 @@ if (isset($msg) && validate_msg($msg)) {
 
         if (!isset($preview_message['APPROVED']) || $preview_message['APPROVED'] > 0) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['postdoesnotrequireapproval'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -242,7 +242,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 }else {
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['approvepost']}");
                     html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -270,7 +270,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 }else {
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['deleteposts']}");
                     html_display_msg($lang['deleteposts'], sprintf($lang['successfullydeletedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -282,9 +282,9 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("post.js", "poll.js", "resize_width=720", "openprofile.js");
+        html_draw_top("title={$lang['admin']} » {$lang['approvepost']}", "post.js", "poll.js", "resize_width=720", "openprofile.js");
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; {$lang['approvepost']}</h1>\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
@@ -362,7 +362,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['postdoesnotexist'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -372,17 +372,19 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp']);
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top('openprofile.js');
+    $page_title = "{$lang['admin']} &raquo; ". forum_get_setting('forum_name', false, 'A Beehive Forum'). " &raquo; {$lang['postapprovalqueue']}";
+    
+    html_draw_top("title=page_title", 'openprofile.js');
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>page_title</h1>\n";
 
     if (sizeof($post_approval_array['post_array']) < 1) {
         html_display_warning_msg($lang['nopostsawaitingapproval'], '720', 'center');

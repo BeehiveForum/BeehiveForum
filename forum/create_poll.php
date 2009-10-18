@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.251 2009-10-13 21:19:55 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.252 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -143,7 +143,7 @@ $error_msg_array = array();
 
 if (forum_get_setting('allow_polls', 'N')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['pollshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -772,15 +772,15 @@ if (!isset($t_fid)) {
 
 if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown")) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannotcreatenewthreads']);
     html_draw_bottom();
     exit;
 }
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "poll.js");
+html_draw_top("title={$lang['createpoll']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "poll.js");
 
-echo "<h1>{$lang['postmessage']}</h1>\n";
+echo "<h1>{$lang['createpoll']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '785', 'left');

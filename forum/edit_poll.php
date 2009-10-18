@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.181 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.182 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -124,7 +124,7 @@ if (!forum_check_access_level()) {
 
 if (forum_get_setting('allow_polls', 'N')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['pollshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -138,7 +138,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -152,7 +152,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -160,7 +160,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['nomessagespecifiedforedit']);
     html_draw_bottom();
     exit;
@@ -181,7 +181,7 @@ if (!thread_is_poll($tid) && $pid == 1) {
 
 if (!$fid = thread_get_folder($tid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -229,7 +229,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannoteditpostsinthisfolder']);
     html_draw_bottom();
     exit;
@@ -237,7 +237,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -489,7 +489,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-html_draw_top("basetarget=_blank", "resize_width=785", "openprofile.js", "post.js", "poll.js");
+html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "openprofile.js", "post.js", "poll.js");
 
 if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
@@ -767,7 +767,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     }
 }
 
-echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
+echo sprintf("<h1>{$lang['editpoll']}</h1>\n", $edit_msg);
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '785', 'left');

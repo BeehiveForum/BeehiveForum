@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.76 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.77 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -109,7 +109,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -335,9 +335,9 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
 
 if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['addnewforumlink']}");
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumlinks']} &raquo; {$lang['addnewforumlink']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['forumlinks']} &raquo; {$lang['addnewforumlink']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -407,7 +407,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidlinkidorlinknotfound'], 'admin_forum_links.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
@@ -415,15 +415,15 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     if (!$forum_link = forum_links_get_link($lid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidlinkidorlinknotfound'], 'admin_forum_links.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['editlink']} » ". word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])));
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -484,11 +484,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['editforumlinks']}");
 
     $forum_links_array = forum_links_get_links_by_page($start);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editforumlinks']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['editforumlinks']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.343 2009-09-10 16:44:10 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.344 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -73,7 +73,7 @@ function html_guest_error()
 
         if (isset($_POST['close_popup'])) {
 
-            html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+            html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
             echo "<script type=\"text/javascript\">\n";
             echo "  window.close();\n";
             echo "</script>\n";
@@ -82,19 +82,19 @@ function html_guest_error()
             exit;
         }
 
-        html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+        html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
         html_error_msg($lang['guesterror'], $final_uri, 'post', array('close_popup' => $lang['close']));
         html_draw_bottom();
 
     }else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
 
-        html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+        html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
         html_error_msg($lang['guesterror']);
         html_draw_bottom();
 
     }else {
 
-        html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+        html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
         html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $frame_top_target);
         html_draw_bottom();
     }
@@ -308,7 +308,7 @@ function html_user_require_approval()
 {
     $lang = load_language_file();
 
-    html_draw_top("robots=noindex,nofollow");
+    html_draw_top("title={$lang['approvalrequired']}", "robots=noindex,nofollow");
     html_error_msg($lang['userapprovalrequiredbeforeaccess']);
     html_draw_bottom();
 }
@@ -321,7 +321,7 @@ function html_email_confirmation_error()
 
     $user_array = user_get($uid);
 
-    html_draw_top("robots=noindex,nofollow");
+    html_draw_top("title={$lang['emailconfirmationrequired']}", "robots=noindex,nofollow");
     html_error_msg($lang['emailconfirmationrequiredbeforepost'], 'confirm_email.php', 'get', array('resend' => $lang['resendconfirmation']), array('uid' => $user_array['UID'], 'resend' => 'Y'));
     html_draw_bottom();
 }
@@ -330,7 +330,7 @@ function html_message_type_error()
 {
     $lang = load_language_file();
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannotpostthisthreadtype']);
     html_draw_bottom();
 }
@@ -750,7 +750,10 @@ function html_draw_top()
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
     $frame_set_html = false;
+
     $pm_popup_disabled = false;
 
     $func_matches = array();
@@ -833,7 +836,6 @@ function html_draw_top()
         }
     }
 
-    if (strlen(trim($title)) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     if (strlen(trim($body_class)) < 1) $body_class = false;
     if (strlen(trim($base_target)) < 1) $base_target = false;
 
@@ -853,7 +855,13 @@ function html_draw_top()
 
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
-    echo "<title>$title</title>\n";
+
+    if (strlen(trim($title)) > 0) {
+        echo "<title>", htmlentities($forum_name), " &raquo; ", htmlentities_array($title), "</title>\n";
+    }else {
+        echo "<title>", htmlentities($forum_name), "</title>\n";
+    }
+
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
@@ -924,6 +932,11 @@ function html_draw_top()
     echo "var bh_frame_pm_folders = '", html_get_frame_name('pm_folders'), "'\n";
     echo "var bh_frame_pm_messages = '", html_get_frame_name('pm_messages'), "'\n\n";
     echo "var webtag = '", html_js_safe_str($webtag), "'\n";
+
+    if (strlen(trim($title)) > 0) {
+        echo "top.document.title = \"", html_js_safe_str($forum_name), " » ", html_js_safe_str($title), "\";\n";
+    }
+
     echo "//-->\n";
     echo "</script>\n";
 

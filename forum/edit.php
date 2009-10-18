@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.274 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit.php,v 1.275 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -142,7 +142,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -156,7 +156,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -164,7 +164,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['nomessagespecifiedforedit'], 'discussion.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
@@ -190,7 +190,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannoteditpostsinthisfolder']);
     html_draw_bottom();
     exit;
@@ -198,7 +198,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
@@ -391,7 +391,7 @@ if (isset($_POST['preview'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_display_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
@@ -461,7 +461,7 @@ if (isset($_POST['preview'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_display_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
@@ -503,7 +503,7 @@ if (isset($_POST['preview'])) {
 
     if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
         html_draw_bottom();
         exit;
@@ -511,7 +511,7 @@ if (isset($_POST['preview'])) {
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
         html_draw_bottom();
         exit;
@@ -553,7 +553,7 @@ if (isset($_POST['preview'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_display_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
@@ -595,7 +595,7 @@ if (isset($_POST['preview'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_display_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
@@ -609,7 +609,7 @@ if (isset($_POST['preview'])) {
 
             if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                html_draw_top();
+                html_draw_top("title={$lang['error']}");
                 html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
                 html_draw_bottom();
                 exit;
@@ -617,7 +617,7 @@ if (isset($_POST['preview'])) {
 
             if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                html_draw_top();
+                html_draw_top("title={$lang['error']}");
                 html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
                 html_draw_bottom();
                 exit;
@@ -652,7 +652,7 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
             html_draw_bottom();
             exit;
@@ -660,14 +660,14 @@ if (isset($_POST['preview'])) {
 
     }else{
 
-       html_draw_top();
+       html_draw_top("title={$lang['error']}");
        html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
        html_draw_bottom();
        exit;
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
+html_draw_top("title={$lang['editmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
 
 echo "<h1>", sprintf($lang['editmessage'], $edit_msg), "</h1>\n";
 

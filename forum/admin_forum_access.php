@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.83 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.84 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -107,7 +107,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -115,7 +115,7 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('ac
 
 if (!$forum_fid = forum_get_setting('fid')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -156,7 +156,7 @@ if (isset($_POST['enable'])) {
 
 if (!forum_get_setting('access_level', 1, false)) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['forumisnotsettorestrictedmode'], 'admin_forum_access.php', 'post', array('enable' => $lang['enable'], 'back' => $lang['back']), array('ret' => $ret), false, 'center');
     html_draw_bottom();
     exit;
@@ -263,11 +263,11 @@ if (isset($_POST['add'])) {
     }
 }
 
-html_draw_top();
+html_draw_top("title={$lang['admin']} » {$lang['manageforumpermissions']}");
 
 $user_permissions_array = forum_get_permissions($forum_fid, $start_main);
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageforumpermissions']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['manageforumpermissions']}</h1>\n";
 
 if (isset($_GET['added'])) {
 

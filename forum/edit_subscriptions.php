@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.49 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.50 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -231,7 +231,7 @@ if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
 
 // Start output here
 
-html_draw_top('edit_subscriptions.js');
+html_draw_top("title={$lang['mycontrols']} » {$lang['threadsubscriptions']}", 'edit_subscriptions.js');
 
 echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
 

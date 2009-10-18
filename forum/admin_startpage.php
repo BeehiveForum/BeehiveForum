@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.121 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.122 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -106,7 +106,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -153,7 +153,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg(sprintf($lang['startpageerror'], $forum_path), 'admin_startpage.php', 'post', array('download' => $lang['download'], 'back' => $lang['back']), array('t_content' => $t_content), false, 'center');
         html_draw_bottom();
         exit;
@@ -165,7 +165,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] > 0) {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
             html_draw_bottom();
             exit;
@@ -184,7 +184,7 @@ if (isset($_POST['save'])) {
 
                 }else {
 
-                    html_draw_top();
+                    html_draw_top("title={$lang['error']}");
                     html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
                     html_draw_bottom();
                     exit;
@@ -206,9 +206,9 @@ if (isset($_POST['save'])) {
     exit;
 }
 
-html_draw_top("onunload=clearFocus()", "dictionary.js", "htmltools.js");
+html_draw_top("title={$lang['admin']} » {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editstartpage']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['editstartpage']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

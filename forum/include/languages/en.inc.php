@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.614 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.615 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -1492,7 +1492,7 @@ $lang['userexp_9'] = "<b>Word Filter</b> lets you edit your personal word filter
 $lang['userexp_10'] = "<b>Thread Subscriptions</b> allows you to manage your thread subscriptions.";
 $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
-$lang['emailandprivacy'] = "Email &amp; Privacy";
+$lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['norelationshipssetup'] = "You have no user relationships set up. Add a new user by searching below.";
 $lang['editwordfilter'] = "Edit Word Filter";

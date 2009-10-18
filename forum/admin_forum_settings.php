@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.163 2009-09-09 23:43:35 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.164 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -124,7 +124,7 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -452,9 +452,9 @@ if (isset($_POST['changepermissions'])) {
 
 // Start Output Here
 
-html_draw_top("onunload=clearFocus()", "emoticons.js", "htmltools.js");
+html_draw_top("title={$lang['admin']} » {$lang['forumsettings']}", "onunload=clearFocus()", "emoticons.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

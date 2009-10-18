@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.154 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.155 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -488,7 +488,7 @@ $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
 // Start output here
 
-html_draw_top("emoticons.js");
+html_draw_top("title={$lang['mycontrols']} » {$lang['forumoptions']}", "emoticons.js");
 
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 

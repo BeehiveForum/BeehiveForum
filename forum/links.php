@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.126 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: links.php,v 1.127 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -119,7 +119,7 @@ if (!forum_check_access_level()) {
 
 if (!forum_get_setting('show_links', 'Y')) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['maynotaccessthissection']);
     html_draw_bottom();
     exit;
@@ -211,7 +211,7 @@ $start = floor($page - 1) * 20;
 
 if ($start < 0) $start = 0;
 
-html_draw_top();
+html_draw_top("title={$lang['links']}");
 
 echo "<h1>{$lang['links']}</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.281 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.282 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -64,7 +64,7 @@ function pm_enabled()
 
     if (!forum_get_setting('show_pms', 'Y')) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['pminbox']}");
         html_error_msg($lang['pmshavebeendisabled']);
         html_draw_bottom();
         exit;

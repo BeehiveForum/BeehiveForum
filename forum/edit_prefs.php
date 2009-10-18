@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.117 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.118 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -140,7 +140,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
@@ -155,7 +155,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
@@ -179,7 +179,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -538,14 +538,14 @@ if (isset($_POST['save'])) {
 
                             perm_user_apply_email_confirmation($uid);
 
-                            html_draw_top();
+                            html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']} » {$lang['emailaddresschanged']}");
                             html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
                             html_draw_bottom();
                             exit;
 
                         }else {
 
-                            html_draw_top();
+                            html_draw_top("title={$lang['error']}");
                             html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailfailure'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
                             html_draw_bottom();
                             exit;
@@ -641,15 +641,18 @@ $image_attachments_array = user_prefs_prep_attachments($image_attachments_array)
 
 // Start Output Here
 
-html_draw_top('attachments.js');
-
 if ($admin_edit === true) {
 
     $user = user_get($uid);
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+
+    html_draw_top("title={$lang['admin']} » {$lang['userdetails']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), 'attachments.js');
+    
+    echo "<h1>{$lang['admin']} &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
+    html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']}");
+    
     echo "<h1>{$lang['userdetails']}</h1>\n";
 }
 

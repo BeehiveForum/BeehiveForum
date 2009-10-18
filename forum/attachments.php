@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.174 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.175 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -112,7 +112,7 @@ if (!forum_check_access_level()) {
 
 if (forum_get_setting('attachments_enabled', 'N')) {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -122,7 +122,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 
 if (!$attachment_dir = attachments_check_dir()) {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -140,7 +140,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
 }else {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['aidnotspecified']);
     html_draw_bottom();
     exit;
@@ -293,7 +293,7 @@ if (isset($_POST['upload'])) {
 
         if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
-            html_draw_top('pm_popup_disabled');
+            html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled');
 
             echo "<h1>{$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
@@ -390,7 +390,7 @@ if (isset($_POST['upload'])) {
 }
 
 
-html_draw_top('attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled');
+html_draw_top("title={$lang['attachments']}", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled');
 
 $javascript_upload_link = "<img src=\"%1\$s\" border=\"0\" alt=\"%2\$s\" title=\"%2\$s\" />";
 $javascript_upload_link.= "<a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">%3\$s</a>";

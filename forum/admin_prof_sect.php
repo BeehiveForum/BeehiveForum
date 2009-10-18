@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.127 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.128 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -244,9 +244,9 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » {$lang['addnewprofilesection']}");
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -312,23 +312,23 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     }else {
 
-        html_draw_top();
-        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_draw_top("title={$lang['error']}");
+        html_error_msg($lang['invalidprofilesectionid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
     if (!$profile_section = profile_get_section($psid)) {
 
-        html_draw_top();
-        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_draw_top("title={$lang['error']}");
+        html_error_msg($lang['invalidprofilesectionid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])));
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -384,11 +384,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']}");
 
     $profile_sections = profile_sections_get_by_page($start);
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']}</h1>\n";
+    echo "<h1>$page_title</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

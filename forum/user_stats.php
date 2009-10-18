@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.72 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.73 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -155,14 +155,14 @@ if (isset($_GET['get_stats'])) {
 
         }else {
 
-            html_draw_top();
+            html_draw_top("title={$lang['error']}");
             html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
             html_draw_bottom();
         }
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidmsgidornomessageidspecified']);
         html_draw_bottom();
     }

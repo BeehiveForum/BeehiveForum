@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.106 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.107 2009-10-18 17:51:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -99,7 +99,7 @@ $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 
-    html_draw_top();
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -154,7 +154,7 @@ if (isset($_POST['delete'])) {
             }
         }
 
-        html_draw_top();
+        html_draw_top("title={$lang['admin']} » {$lang['manageforums']}");
 
         echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
         echo "<br />\n";
@@ -454,7 +454,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top('admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['addforum']}", 'admin.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['addforum']}</h1>\n";
 
@@ -557,7 +557,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidforumidorforumnotfound'], 'admin_forums.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
@@ -565,13 +565,13 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if (!$forum_data = forum_get($fid)) {
 
-        html_draw_top();
+        html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidforumidorforumnotfound'], 'admin_forums.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top('admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['editforum']} » {$forum_data['WEBTAG']}", 'admin.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
 
@@ -673,7 +673,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']}");
 
     $forums_array = admin_get_forum_list($start);
 

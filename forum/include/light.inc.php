@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.234 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.235 2009-10-18 17:51:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -232,6 +232,8 @@ function light_draw_messages($msg)
 
     $lang = load_language_file();
 
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
     list($tid, $pid) = explode('.', $msg);
 
     if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
@@ -246,7 +248,7 @@ function light_draw_messages($msg)
 
     if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['threadcouldnotbefound']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -254,15 +256,15 @@ function light_draw_messages($msg)
 
     if (!$folder_data = folder_get($thread_data['FID'])) {
 
-        html_draw_top();
-        html_error_msg($lang['foldercouldnotbefound']);
-        html_draw_bottom();
+        light_html_draw_top("title={$lang['foldercouldnotbefound']}", "robots=noindex,nofollow");
+        light_html_display_error_msg($lang['foldercouldnotbefound']);
+        light_html_draw_bottom();
         exit;
     }
 
     if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['postdoesnotexist']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -288,13 +290,9 @@ function light_draw_messages($msg)
 
     $prev_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page";
 
-    // Forum name, folder title and thread title.
+    $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-    $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
-
-    $thread_title = htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
-
-    light_html_draw_top("title=$forum_name &raquo; $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
+    light_html_draw_top("title=$thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
     
     $msg_count = count($messages);
 
@@ -532,7 +530,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     if (!$folder_info = threads_get_folders()) {
 
-        light_html_draw_top("robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['couldnotretrievefolderinformation']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['couldnotretrievefolderinformation']);
         light_html_draw_bottom();
         exit;
@@ -936,7 +934,7 @@ function light_draw_pm_inbox()
 
         if ($current_folder != $message_folder) {
 
-            light_html_draw_top('pm_popup_disabled');
+            light_html_draw_top("title={$lang['pminbox']}", 'pm_popup_disabled');
             light_html_display_error_msg($lang['messagenotfoundinselectedfolder']);
             light_html_draw_bottom();
             exit;
@@ -944,7 +942,7 @@ function light_draw_pm_inbox()
 
         if (!$pm_message_array = pm_message_get($mid)) {
 
-            light_html_draw_top('pm_popup_disabled');
+            light_html_draw_top("title={$lang['pminbox']}", 'pm_popup_disabled');
             light_html_display_error_msg($lang['messagehasbeendeleted']);
             light_html_draw_bottom();
             exit;
@@ -1250,7 +1248,7 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
 
     $webtag = get_webtag();
 
-    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags($thread_title), "</a>";
+    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
@@ -1838,7 +1836,7 @@ function light_html_guest_error ()
 
     $lang = load_language_file();
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['guesterror']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['guesterror']);
 
     echo "<br />\n";
@@ -1967,7 +1965,7 @@ function light_html_message_type_error()
 {
     $lang = load_language_file();
 
-    light_html_draw_top("robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['cannotpostthisthreadtype']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannotpostthisthreadtype']);
     light_html_draw_bottom();
 }
@@ -2245,7 +2243,7 @@ function light_html_user_require_approval()
 {
     $lang = load_language_file();
 
-    light_html_draw_top();
+    light_html_draw_top("title={$lang['approvalrequired']}");
     light_html_display_error_msg($lang['userapprovalrequiredbeforeaccess']);
     light_html_draw_bottom();
 }
@@ -2268,7 +2266,7 @@ function light_pm_enabled()
 
     if (!forum_get_setting('show_pms', 'Y')) {
 
-        light_html_draw_top();
+        light_html_draw_top("title={$lang['pminbox']}");
         light_html_display_error_msg($lang['pmshavebeendisabled']);
         light_html_draw_bottom();
         exit;

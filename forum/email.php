@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.107 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: email.php,v 1.108 2009-10-18 17:51:07 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -142,7 +142,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 }else {
 
-    html_draw_top('pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['nouserspecifiedforemail']);
     html_draw_bottom();
     exit;
@@ -204,14 +204,14 @@ if (isset($_POST['send'])) {
 
         if (email_send_message_to_user($to_uid, $uid, $subject, $message)) {
 
-            html_draw_top("title=$forum_name &raquo; {$lang['emailresult']}", 'pm_popup_disabled');
+            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
             html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top("title=$forum_name &raquo; {$lang['emailresult']}", 'pm_popup_disabled');
+            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
             html_error_msg($lang['mailsystemfailure'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
@@ -219,9 +219,9 @@ if (isset($_POST['send'])) {
     }
 }
 
-$title = sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME'])));
+html_draw_top("title=". sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled');
 
-html_draw_top("title=$forum_name &raquo; $title", 'pm_popup_disabled');
+echo "<h1>", sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</h1>\n";
 
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_email\" action=\"email.php\" method=\"post\">\n";

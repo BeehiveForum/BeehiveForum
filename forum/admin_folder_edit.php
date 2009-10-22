@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.84 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.85 2009-10-22 20:36:05 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -276,7 +276,13 @@ if (isset($_POST['save'])) {
     }
 }
 
-$folder_data = folder_get($fid);
+if (($folder_data = folder_get($fid))) {
+
+    html_draw_top("title={$lang['error']}");
+    html_error_msg($lang['invalidfolderid'], 'admin_folders.php', 'get', array('back' => $lang['back']), array('page' => $page));
+    html_draw_bottom();
+    exit;
+}
 
 if (isset($_POST['delete'])) {
 
@@ -307,9 +313,9 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
                             FOLDER_ALLOW_POLL_THREAD   => $lang['pollthreadsonly'],
                             FOLDER_ALLOW_ALL_THREAD    => $lang['both']);
 
-html_draw_top("{$lang['admin']} » {$lang['forumlinks']} » {$lang['editlink']} » ". word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])));
+html_draw_top("{$lang['admin']} » {$lang['managefolders']} » {$lang['editfolder']} » ". word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])));
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['managefolders']} &raquo; {$lang['editfolder']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'center');

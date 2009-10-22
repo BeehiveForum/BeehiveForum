@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.128 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.129 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -388,7 +388,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     $profile_sections = profile_sections_get_by_page($start);
 
-    echo "<h1>$page_title</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

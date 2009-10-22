@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.394 2009-10-22 10:18:41 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.395 2009-10-22 20:36:06 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -565,13 +565,9 @@ function bh_update_visitor_log($uid, $forum_fid)
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
-
     $http_referer = db_escape_string(bh_session_get_referer());
 
     $ipaddress = db_escape_string($ipaddress);
-    
-    $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
     
     $current_datetime = date(MYSQL_DATETIME, time());
     

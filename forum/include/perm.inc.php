@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.147 2009-09-08 10:44:33 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.148 2009-10-22 10:18:41 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -69,7 +69,7 @@ function perm_is_moderator($uid, $folder_fid = 0)
     if ($folder_fid > 0) {
 
         $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-        $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+        $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
         $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
         $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0, $folder_fid) ";
         $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
@@ -78,7 +78,7 @@ function perm_is_moderator($uid, $folder_fid = 0)
     }else {
 
         $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-        $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+        $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
         $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
         $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
         $sql.= "ORDER BY GROUP_PERMS.PERM DESC";
@@ -104,7 +104,7 @@ function perm_has_admin_access($uid)
     }
 
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
@@ -124,7 +124,7 @@ function perm_has_global_admin_access($uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0) ";
@@ -144,7 +144,7 @@ function perm_has_forumtools_access($uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0) ";
@@ -170,7 +170,7 @@ function perm_is_links_moderator($uid)
     }
 
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
@@ -686,7 +686,7 @@ function perm_group_get_folders($gid)
         $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
         $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
         $sql.= "AND GROUP_PERMS.GID = '$gid' AND GROUP_PERMS.FORUM = '$forum_fid') ";
-        $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+        $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
         $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
         $sql.= "AND FOLDER_PERMS.FORUM = '$forum_fid') ";
         $sql.= "GROUP BY FOLDER.FID ORDER BY FOLDER.FID";
@@ -789,7 +789,7 @@ function perm_get_user_permissions($uid)
     }
 
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)";
@@ -1127,7 +1127,7 @@ function perm_group_get_users($gid, $offset = 0)
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS GROUP_USERS.UID, ";
         $sql.= "USER.LOGON, USER.NICKNAME FROM GROUP_USERS ";
-        $sql.= "INNER JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+        $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
         $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
         $sql.= "WHERE GROUP_USERS.GID = '$gid' ";
         $sql.= "LIMIT $offset, 20";

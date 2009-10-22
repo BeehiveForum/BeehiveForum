@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.12 2009-09-04 22:01:44 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.13 2009-10-22 20:36:06 decoyduck Exp $ */
 
 /**
 * adsense.inc.php - admin functions
@@ -128,7 +128,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
     $admin_area_files_array = get_available_admin_files();
     $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', $admin_area_files_array));
 
-    if (preg_match("/^nav\.php|^logon\.php|^logout\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
+    if (preg_match("/^nav\\.php|^logon\\.php|^logout\\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
 
     if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)) return true;
 
@@ -160,7 +160,7 @@ function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 {
     $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
 
-    if (preg_match("/^pm_folder\.php|^start_left\.php|^thread_list\.php|^user_menu\.php/u", basename($_SERVER['PHP_SELF'])) > 0) {
+    if (preg_match("/^pm_folder\\.php|^start_left\\.php|^thread_list\\.php|^user_menu\\.php/u", basename($_SERVER['PHP_SELF'])) > 0) {
         $ad_type = 'small'; $ad_width = 234; $ad_height = 60;
     }
 }

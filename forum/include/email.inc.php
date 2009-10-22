@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.166 2009-10-22 10:18:41 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.167 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -208,10 +208,6 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     $webtag = get_webtag();
 
-    // Initialise the Swift Decorator replacements array
-
-    $replacements = array();
-
     // Only send the email to people who logged after the thread was modified.
     
     $last_visit_datetime = date(MYSQL_DATETIME, $modified);
@@ -246,10 +242,6 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
         // Get the right language for the email
 
         if (!$lang = email_get_language($tuid)) continue;
-
-        // Get the forum reply-to email address
-
-        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
@@ -288,6 +280,8 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
         $mailer->send($message);
     }
+
+    return true;
 }
 
 function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modified, &$exclude_user_array)
@@ -375,10 +369,6 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
         if (!$lang = email_get_language($tuid)) continue;
 
-        // Get the forum reply-to email address
-
-        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
-
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
 
@@ -416,6 +406,8 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
         $mailer->send($message);
     }
+
+    return true;
 }
 
 function email_send_pm_notification($tuid, $mid, $fuid)
@@ -477,10 +469,6 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     // Get the right language for the email
 
     if (!$lang = email_get_language($tuid)) return false;
-
-    // Get the forum reply-to email address
-
-    $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
@@ -617,10 +605,6 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     $message = Swift_MessageBeehive::newInstance();
 
-    // Get Forum Webtag
-
-    $webtag = get_webtag();
-
     // Validate the email address before we continue.
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
@@ -691,6 +675,10 @@ function email_send_user_confirmation($tuid)
     // Get the right language for the email
 
     if (!$lang = email_get_language($to_user['UID'])) return false;
+
+    // Get the forum reply-to email address
+
+    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
@@ -830,10 +818,6 @@ function email_send_user_approval_notification($tuid)
 
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
-    // Get the forum reply-to email address
-
-    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
@@ -900,10 +884,6 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     // Get the right language for the email
 
     if (!$lang = email_get_language($to_user['UID'])) return false;
-
-    // Get the forum reply-to email address
-
-    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
@@ -974,7 +954,6 @@ function email_send_user_approved_notification($tuid)
     // Get the forum reply-to email address
 
     $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-    $forum_noreply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
@@ -1041,10 +1020,6 @@ function email_send_post_approval_notification($tuid)
 
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
-    // Get the forum reply-to email address
-
-    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
@@ -1077,7 +1052,7 @@ function email_send_post_approval_notification($tuid)
     return $mailer->send($message) > 0;
 }
 
-function email_send_message_to_user($tuid, $fuid, $subject, $message)
+function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
 {
     // Validate function arguments
 
@@ -1112,10 +1087,6 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
-    // Get the forum reply-to email address
-
-    $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
-
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
 
@@ -1125,7 +1096,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
     // Word filter the message to be sent.
 
-    $message_body= word_filter_apply($message, $tuid);
+    $message_body = word_filter_apply($message_body, $tuid);
 
     // Add the Sent By footer to the message.
 

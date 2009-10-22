@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.50 2009-09-09 14:39:38 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.51 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -76,9 +76,13 @@ $webtag = get_webtag();
 
 $forum_path = preg_replace('/\/get_attachment\.php\/[A-Fa-f0-9]{32}/iu', "", html_get_forum_uri());
 
+// Default to no redirect
+
+$redirect = false;
+
 // Get the attachment hash
 
-$hash = get_attachment_query_hash($redirect_error);
+$hash = get_attachment_query_hash($redirect);
 
 // Check we're logged in correctly
 
@@ -233,7 +237,7 @@ if (isset($hash) && is_md5($hash)) {
     }
 }
 
-if ($redirect_error) {
+if ($redirect) {
 
     header_redirect("$forum_path/get_attachment.php?webtag=$webtag&hash=$hash");
     exit;

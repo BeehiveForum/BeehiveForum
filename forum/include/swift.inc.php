@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: swift.inc.php,v 1.2 2009-10-18 20:02:23 decoyduck Exp $ */
+/* $Id: swift.inc.php,v 1.3 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -120,7 +120,7 @@ class Swift_SendmailTransportSingleton
         if (!self::check_mail_vars()) return false;
         
         if (is_null(self::$instance)) {
-            self::$instance = Swift_SendmailTransport::newInstance(sendmail_path);
+            self::$instance = Swift_SendmailTransport::newInstance($sendmail_path);
         }
 
         return self::$instance;

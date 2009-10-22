@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.252 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.253 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -234,9 +234,9 @@ if (isset($_POST['t_message_html'])) {
 
     $t_message_html = $_POST['t_message_html'];
 
-    if ($t_post_html == "enabled_auto") {
+    if ($t_message_html == "enabled_auto") {
         $post_html = POST_HTML_AUTO;
-    }else if ($t_post_html == "enabled") {
+    }else if ($t_message_html == "enabled") {
         $post_html = POST_HTML_ENABLED;
     }else {
         $post_html = POST_HTML_DISABLED;

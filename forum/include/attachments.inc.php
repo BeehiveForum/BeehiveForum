@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.173 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.174 2009-10-22 20:36:06 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -119,8 +119,10 @@ function attachments_check_dir()
 * @param boolean $redirect - By reference redirect hint
 */
 
-function get_attachment_query_hash(&$redirect = false)
+function get_attachment_query_hash(&$redirect)
 {
+    $attachment_data = array();
+    
     if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
         return $_GET['hash'];

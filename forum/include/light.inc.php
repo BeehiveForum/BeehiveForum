@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.235 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.236 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -231,8 +231,6 @@ function light_draw_messages($msg)
     forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
-
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     list($tid, $pid) = explode('.', $msg);
 

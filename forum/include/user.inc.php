@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.383 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.384 2009-10-22 20:36:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -801,7 +801,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
 function user_update_prefs_callback($column)
 {
-    return sprintf('%1$s = VALUES(%1$s)', $column);
+    return sprintf('%s = VALUES(%s)', $column, $column);
 }
 
 function user_update_prefs_callback2($column)

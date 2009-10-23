@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.236 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.237 2009-10-23 11:33:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -282,7 +282,7 @@ function light_draw_messages($msg)
 
     $last_page_href  = "lmessages.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}";
 
-    $parent_href = "lthread_list.php?webtag=DEFAULT&amp;folder={$folder_data['FID']}";
+    $parent_href = "lthread_list.php?webtag=$webtag&amp;folder={$folder_data['FID']}";
 
     $next_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$next_page";
 
@@ -962,7 +962,7 @@ function light_draw_pm_inbox()
 
             light_pm_display($pm_message_array, $message_folder);
 
-            echo "<h4><a href=\"lpm.php?webtag=DEFAULT&amp;folder=$current_folder\">{$lang['back']}</a> | <a href=\"llogout.php?webtag=DEFAULT\">{$lang['logout']}</a></h4>\n";
+            echo "<h4><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\">{$lang['back']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
         }
 
     }else {

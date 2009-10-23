@@ -19,14 +19,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.js,v 1.1 2008-09-10 19:46:33 decoyduck Exp $ */
+/* $Id: register.js,v 1.2 2009-10-23 11:33:21 decoyduck Exp $ */
 
 var captcha_data = new xml_http_request();
 
 function captcha_reload()
 {
     captcha_data.set_handler(captcha_reload_handler);
-    captcha_data.get_url('register.php?webtag=DEFAULT&reload_captcha=true');
+    captcha_data.get_url('register.php?webtag=' + webtag + '&reload_captcha=true');
 }
 
 function captcha_reload_abort()

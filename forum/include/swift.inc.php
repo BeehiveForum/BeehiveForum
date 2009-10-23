@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: swift.inc.php,v 1.4 2009-10-23 19:55:27 decoyduck Exp $ */
+/* $Id: swift.inc.php,v 1.5 2009-10-23 20:00:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -167,6 +167,10 @@ class Swift_MessageBeehive extends Swift_Message
         // Get the forum email address
         
         $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+
+        // Mail function we're using.
+        
+        $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
         
         // Get the Swift Headers set
 
@@ -183,6 +187,10 @@ class Swift_MessageBeehive extends Swift_Message
         // Add header to identify Swift version
 
         $headers->addTextHeader('X-Swift-Mailer', 'Swift Mailer '. Swift::VERSION);
+
+        // Add header to identify mail function
+
+        $headers->addTextHeader('X-Swift-Transport', $mail_function);
 
         // Set the Message From Header
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.168 2009-10-23 11:33:21 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.169 2009-10-23 11:34:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -637,12 +637,6 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     $message->setBody($message_body);
 
-    echo '<pre>';
-    print_r($transport);
-    print_r($mailer);
-    print_r($message);
-    echo '</pre>';
-
     // Send the email
 
     return $mailer->send($message) > 0;
@@ -1119,12 +1113,6 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
     // Set the message body
 
     $message->setBody($message_body);
-
-    echo '<pre>';
-    print_r($transport);
-    print_r($mailer);
-    print_r($message);
-    echo '</pre>';
 
     // Send the email
 

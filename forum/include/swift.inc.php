@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: swift.inc.php,v 1.3 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: swift.inc.php,v 1.4 2009-10-23 19:55:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,15 +42,26 @@ abstract class Swift_TransportFactory
 {
     public static function get()
     {
-        $mail_function = forum_get_global_setting('mail_function', false, 'mail');
+        $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
 
-        if (($mail_function == 'smtp') && ($smtp_server = forum_get_global_setting('smtp_server'))) {
+        if (($mail_function == MAIL_FUNCTION_SMTP) && ($smtp_server = forum_get_global_setting('smtp_server'))) {
             
             $smtp_port = forum_get_global_setting('smtp_port', false, '25');
-            return Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
+            
+            $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
+            
+            if (($smtp_username = forum_get_global_setting('smtp_username', 'strlen', ''))) {
+                $transport->setUsername($smtp_username);
+            }
+
+            if (($smtp_password = forum_get_global_setting('smtp_password', 'strlen', ''))) {
+                $transport->setPassword($smtp_password);
+            }
+
+            return $transport;
         }
 
-        if (($mail_function == 'sendmail') && ($sendmail_path = forum_get_global_setting('sendmail_path'))) {
+        if (($mail_function == MAIL_FUNCTION_SENDMAIL) && ($sendmail_path = forum_get_global_setting('sendmail_path'))) {
             return Swift_SendmailTransportSingleton::getInstance($sendmail_path);
         }
 

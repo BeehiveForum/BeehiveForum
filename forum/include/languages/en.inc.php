@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.615 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.616 2009-10-23 19:55:27 decoyduck Exp $ */
 
 // British English language file
 
@@ -633,6 +633,15 @@ $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>Registration to %1\$s 
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 $lang['moreadminoptions'] = "More Admin Options";
+$lang['mailfunction'] = "Mail function";
+$lang['smtpserveraddr'] = "SMTP Server Address";
+$lang['smtpserverport'] = "SMTP Server Port";
+$lang['smtpserverusername'] = "SMTP Server Username";
+$lang['smtpserverpassword'] = "SMTP Server Password";
+$lang['sendmailpath'] = "Sendmail path";
+$lang['phpmailfunction'] = "Use PHP mail function";
+$lang['smtpmailserver'] = "Use SMTP Server";
+$lang['sendmail'] = "Use Sendmail";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -1018,6 +1027,8 @@ $lang['forum_settings_help_63'] = "If you do not have a Google AdSense Account y
 $lang['forum_settings_help_64'] = "If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page.";
 $lang['forum_settings_help_65'] = "To change Google AdSense account details and other settings please see Global Forum Settings";
 $lang['forum_settings_help_66'] = "Your Beehive Forum supports 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
+$lang['forum_settings_help_67'] = "Select the <b>Mail function</b> suitable for your server. By default your Beehive Forum will use PHP's built-in mail function. If this doesn't work or you prefer to use another method to send emails from your server you can select it here.";
+$lang['forum_settings_help_68'] = "<b>Important:</b> If you are unsure what settings to use for sending email please consult your hosting provider's documentation.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

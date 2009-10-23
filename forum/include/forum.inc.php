@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.391 2009-10-18 20:02:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.392 2009-10-23 19:55:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -748,55 +748,67 @@ function forum_get_table_prefix($fid)
     return false;
 }
 
-function forum_get_setting($setting_name, $value = false, $default = false)
+function forum_get_setting($setting_name, $callback = false, $default = false)
 {
     $forum_settings = (isset($GLOBALS['forum_settings'])) ? $GLOBALS['forum_settings'] : false;
     $forum_global_settings = (isset($GLOBALS['forum_global_settings'])) ? $GLOBALS['forum_global_settings'] : false;
 
     if (is_array($forum_settings) && isset($forum_settings[$setting_name])) {
 
-        if ($value !== false) {
+        if ($callback !== false) {
 
-            return mb_strtoupper($forum_settings[$setting_name]) == mb_strtoupper($value);
+            if (function_exists($callback) && is_callable($callback)) {
 
-        }else {
+                return ($callback($forum_settings[$setting_name])) ? $forum_settings[$setting_name] : $default;
 
-            return $forum_settings[$setting_name];
+            }else if (is_string($callback)) {
+
+                return mb_strtoupper($forum_settings[$setting_name]) == mb_strtoupper($callback);
+            }
         }
+
+        return $forum_settings[$setting_name];
     }
 
     if (is_array($forum_global_settings) && isset($forum_global_settings[$setting_name])) {
 
-        if ($value !== false) {
+        if ($callback !== false) {
 
-            return mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($value);
+            if (function_exists($callback) && is_callable($callback)) {
 
-        }else {
+                return ($callback($forum_global_settings[$setting_name])) ? $forum_global_settings[$setting_name] : $default;
 
-            return $forum_global_settings[$setting_name];
+            }else if (is_string($callback)) {
+
+                return mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($callback);
+            }
         }
+
+        return $forum_global_settings[$setting_name];
     }
 
     return $default;
 }
 
-function forum_get_global_setting($setting_name, $value = false, $default = false)
+function forum_get_global_setting($setting_name, $callback = false, $default = false)
 {
     $forum_global_settings = (isset($GLOBALS['forum_global_settings'])) ? $GLOBALS['forum_global_settings'] : false;
 
     if (is_array($forum_global_settings) && isset($forum_global_settings[$setting_name])) {
 
-        if ($value !== false) {
+        if ($callback !== false) {
 
-            if (mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($value)) {
+            if (function_exists($callback) && is_callable($callback)) {
 
-                return true;
+                return ($callback($forum_global_settings[$setting_name])) ? $forum_global_settings[$setting_name] : $default;
+
+            }else if (is_string($callback)) {
+
+                return mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($callback);
             }
-
-        }else {
-
-            return $forum_global_settings[$setting_name];
         }
+
+        return $forum_global_settings[$setting_name];
     }
 
     return $default;

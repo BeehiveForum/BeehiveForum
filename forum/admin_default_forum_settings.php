@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.147 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.148 2009-10-23 19:55:27 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -160,6 +160,10 @@ $adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adse
                                  ADSENSE_DISPLAY_AFTER_TENTH_MSG  => $lang['adsenseaftertenthmessage'],
                                  ADSENSE_DISPLAY_AFTER_RANDOM_MSG => $lang['adsenseafterrandommessage']);
 
+$mail_functions_array = array(MAIL_FUNCTION_PHP      => $lang['phpmailfunction'],
+                              MAIL_FUNCTION_SMTP     => $lang['smtpmailserver'],
+                              MAIL_FUNCTION_SENDMAIL => $lang['sendmail']);
+
 // Submit code.
 
 if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
@@ -175,18 +179,6 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $valid = false;
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
-        $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
-    }else {
-        $new_forum_settings['forum_email'] = "admin@abeehiveforum.net";
-    }
-
-    if (isset($_POST['forum_noreply_email']) && strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
-        $new_forum_settings['forum_noreply_email'] = trim(stripslashes_array($_POST['forum_noreply_email']));
-    }else {
-        $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
-    }
-
     if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
         $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
     }else {
@@ -197,6 +189,54 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
     }else {
         $new_forum_settings['forum_keywords'] = "";
+    }
+
+    if (isset($_POST['mail_function']) && in_array($_POST['mail_function'], array_keys($mail_functions_array))) {
+        $new_forum_settings['mail_function'] = $_POST['mail_function'];
+    }else {
+        $new_forum_settings['mail_function'] = forum_get_setting('mail_function', false, YEAR_IN_SECONDS);
+    }
+
+    if (isset($_POST['smtp_server']) && strlen(trim(stripslashes_array($_POST['smtp_server']))) > 0) {
+        $new_forum_settings['smtp_server'] = trim(stripslashes_array($_POST['smtp_server']));
+    }else {
+        $new_forum_settings['smtp_server'] = '';
+    }
+
+    if (isset($_POST['smtp_port']) && is_numeric($_POST['smtp_port']) && $_POST['smtp_port'] > 0 && $_POST['smtp_port'] <= 65535) {
+        $new_forum_settings['smtp_port'] = $_POST['smtp_port'];
+    }else {
+        $new_forum_settings['smtp_port'] = '';
+    }
+
+    if (isset($_POST['smtp_username']) && strlen(trim(stripslashes_array($_POST['smtp_username']))) > 0) {
+        $new_forum_settings['smtp_username'] = trim(stripslashes_array($_POST['smtp_username']));
+    }else {
+        $new_forum_settings['smtp_username'] = '';
+    }
+
+    if (isset($_POST['smtp_password']) && strlen(trim(stripslashes_array($_POST['smtp_password']))) > 0) {
+        $new_forum_settings['smtp_password'] = trim(stripslashes_array($_POST['smtp_password']));
+    }else {
+        $new_forum_settings['smtp_password'] = '';
+    }
+
+    if (isset($_POST['sendmail_path']) && strlen(trim(stripslashes_array($_POST['sendmail_path']))) > 0) {
+        $new_forum_settings['sendmail_path'] = trim(stripslashes_array($_POST['sendmail_path']));
+    }else {
+        $new_forum_settings['sendmail_path'] = '';
+    }
+
+    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
+        $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
+    }else {
+        $new_forum_settings['forum_email'] = "admin@abeehiveforum.net";
+    }
+
+    if (isset($_POST['forum_noreply_email']) && strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
+        $new_forum_settings['forum_noreply_email'] = trim(stripslashes_array($_POST['forum_noreply_email']));
+    }else {
+        $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
     }
 
     if (isset($_POST['messages_unread_cutoff']) && in_array($_POST['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) {
@@ -626,14 +666,6 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['forumname
 echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_global_settings['forum_name']) ? htmlentities_array($forum_global_settings['forum_name']) : 'A Beehive Forum'), 42, 255), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? htmlentities_array($forum_global_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['forumnoreplyemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? htmlentities_array($forum_global_settings['forum_noreply_email']) : 'noreply@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($forum_global_settings['forum_desc']) ? htmlentities_array($forum_global_settings['forum_desc']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
@@ -644,8 +676,84 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['emailsettings']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['mailfunction']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("mail_function", htmlentities_array($mail_functions_array), (isset($forum_global_settings['mail_function']) ? htmlentities_array($forum_global_settings['mail_function']) : 0), "onchange=\"changeMailFunction(this);\""), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\" id=\"smtp_settings\" style=\"display: ", ($forum_global_settings['mail_function'] == MAIL_FUNCTION_SMTP) ? 'block' : 'none', "\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['smtpserveraddr']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("smtp_server", (isset($forum_global_settings['smtp_server']) ? htmlentities_array($forum_global_settings['smtp_server']) : 'localhost'), 32), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['smtpserverport']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("smtp_port", (isset($forum_global_settings['smtp_port']) ? htmlentities_array($forum_global_settings['smtp_port']) : '25'), 7, 5), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['smtpserverusername']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("smtp_username", (isset($forum_global_settings['smtp_username']) ? htmlentities_array($forum_global_settings['smtp_username']) : ''), 25), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['smtpserverpassword']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_password("smtp_password", (isset($forum_global_settings['smtp_password']) ? htmlentities_array($forum_global_settings['smtp_password']) : ''), 25), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\" id=\"sendmail_settings\" style=\"display: ", ($forum_global_settings['mail_function'] == MAIL_FUNCTION_SENDMAIL) ? 'block' : 'none', "\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['sendmailpath']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("sendmail_path", (isset($forum_global_settings['sendmail_path']) ? htmlentities_array($forum_global_settings['sendmail_path']) : ''), 42), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? htmlentities_array($forum_global_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumnoreplyemail']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? htmlentities_array($forum_global_settings['forum_noreply_email']) : 'noreply@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_67']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_68']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_56']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_57']}</p>\n";
 echo "                        </td>\n";

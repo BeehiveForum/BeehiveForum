@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.js,v 1.19 2008-09-25 21:48:45 decoyduck Exp $ */
+/* $Id: admin.js,v 1.20 2009-10-23 19:55:27 decoyduck Exp $ */
 
 var search_logon = false;
 
@@ -63,5 +63,35 @@ function changeColourSwatch(source_obj_id, button_obj_id)
     if ((typeof source_obj == 'object') && (typeof button_obj == 'object')) {
 
         button_obj.style.backgroundColor = source_obj.value;
+    }
+}
+
+function changeMailFunction(select)
+{
+    if (typeof select == 'object') {
+
+        var smtp_settings =  getObjById('smtp_settings');
+        var sendmail_settings = getObjById('sendmail_settings');
+
+        switch (select.value) {
+
+            case "0":
+
+                smtp_settings.style.display = 'none';
+                sendmail_settings.style.display = 'none';
+                break;
+
+            case "1":
+
+                smtp_settings.style.display = 'block';
+                sendmail_settings.style.display = 'none';
+                break;
+
+            case "2":
+
+                smtp_settings.style.display = 'none';
+                sendmail_settings.style.display = 'block';
+                break;
+        }
     }
 }

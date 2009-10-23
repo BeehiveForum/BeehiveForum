@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.96 2009-09-12 13:30:18 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.97 2009-10-23 21:04:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -51,7 +51,7 @@ function TinyMCE($tinymce_auto_focus)
     if (($modified_time = @filemtime("tiny_mce/tiny_mce.js"))) {
 
         $str = "<!-- tinyMCE -->\n";
-        $str.= sprintf("<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js?%s\"></script>\n", date('YmdHis', $modified_time));
+        $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
         $str.= "<script type=\"text/javascript\">\n";
         $str.= "<!--\n";
         $str.= "    tinyMCE.init({\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.344 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.345 2009-10-23 21:04:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -412,32 +412,20 @@ function html_get_style_sheet()
             $user_style = basename($user_style);
 
             if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
-
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
-                }
+                return "$forum_path/forums/$webtag/styles/$user_style/$script_filename.css";
             }
 
             if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
-
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
-                }
+                return "$forum_path/forums/$webtag/styles/$user_style/style.css";
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/$script_filename.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$script_filename.css"))) {
-                return sprintf("$forum_path/forums/$webtag/styles/$script_filename.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/forums/$webtag/styles/$script_filename.css";
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/style.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/style.css"))) {
-                return sprintf("$forum_path/forums/$webtag/styles/style.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/forums/$webtag/styles/style.css";
         }
     }
 
@@ -450,32 +438,20 @@ function html_get_style_sheet()
         $user_style = basename($user_style);
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
-                return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/styles/$user_style/$script_filename.css";
         }
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
-                return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/styles/$user_style/style.css";
         }
     }
 
     if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/$script_filename.css")) {
-
-        if (($modified_time = @filemtime("$forum_path/styles/$script_filename.css"))) {
-            return sprintf("$forum_path/styles/$script_filename.css?%s", date('YmdHis', $modified_time));
-        }
+        return "$forum_path/styles/$script_filename.css";
     }
 
     if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/style.css")) {
-
-        if (($modified_time = @filemtime("$forum_path/styles/style.css"))) {
-            return sprintf("$forum_path/styles/style.css?%s", date('YmdHis', $modified_time));
-        }
+        return "$forum_path/styles/style.css";
     }
 
     return false;
@@ -496,10 +472,7 @@ function html_get_emoticon_style_sheet()
         if ($user_emots !== false) {
 
             if (@is_dir("$forum_path/forums/$webtag/emoticons/$user_emots") && file_exists("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
-
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/emoticons/$user_emots/style.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
-                }
+                return "$forum_path/forums/$webtag/emoticons/$user_emots/style.css";
             }
         }
     }
@@ -511,10 +484,7 @@ function html_get_emoticon_style_sheet()
     if ($user_emots !== false) {
 
         if (@is_dir("$forum_path/emoticons/$user_emots") && file_exists("$forum_path/emoticons/$user_emots/style.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/emoticons/$user_emots/style.css"))) {
-                return sprintf("$forum_path/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/emoticons/$user_emots/style.css";
         }
     }
 
@@ -538,18 +508,12 @@ function html_get_start_page_style_sheet()
             $user_style = basename($user_style);
 
             if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css")) {
-
-                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css"))) {
-                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css?%s", date('YmdHis', $modified_time));
-                }
+                return "$forum_path/forums/$webtag/styles/$user_style/start_main_additional.css";
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/start_main_additional.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/start_main_additional.css"))) {
-                return sprintf("$forum_path/forums/$webtag/styles/start_main_additional.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/forums/$webtag/styles/start_main_additional.css";
         }
     }
 
@@ -562,18 +526,12 @@ function html_get_start_page_style_sheet()
         $user_style = basename($user_style);
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/start_main_additional.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/start_main_additional.css"))) {
-                return sprintf("$forum_path/styles/$user_style/start_main_additional.css?%s", date('YmdHis', $modified_time));
-            }
+            return "$forum_path/styles/$user_style/start_main_additional.css";
         }
     }
 
     if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/start_main_additional.css")) {
-
-        if (($modified_time = @filemtime("$forum_path/styles/start_main_additional.css"))) {
-            return sprintf("$forum_path/styles/start_main_additional.css?%s", date('YmdHis', $modified_time));
-        }
+        return "$forum_path/styles/start_main_additional.css";
     }
 
     return false;
@@ -940,13 +898,8 @@ function html_draw_top()
     echo "//-->\n";
     echo "</script>\n";
 
-    if (($modified_time = @filemtime("js/general.js"))) {
-        echo sprintf("<script type=\"text/javascript\" src=\"js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
-    }
-
-    if (($modified_time = @filemtime("js/xml_http.js"))) {
-        echo sprintf("<script type=\"text/javascript\" src=\"js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
-    }
+    echo "<script type=\"text/javascript\" src=\"js/general.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"js/xml_http.js\"></script>\n";
 
     // Font size (not for Guests)
 
@@ -1001,13 +954,10 @@ function html_draw_top()
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
 
-                    if (($modified_time = @filemtime("js/pm.js"))) {
+                    echo "<script type=\"text/javascript\" src=\"js/pm.js\"></script>\n";
 
-                        echo sprintf("<script type=\"text/javascript\" src=\"js/pm.js?%s\"></script>\n", date('YmdHis', $modified_time));
-
-                        if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
-                        if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
-                    }
+                    if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
+                    if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
                 }
             }
 
@@ -1048,11 +998,8 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    if (($modified_time = @filemtime("js/spoiler.js"))) {
-
-                        echo sprintf("<script type=\"text/javascript\" src=\"js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
-                        if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
-                    }
+                    echo "<script type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
+                    if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
                 }
             }
         }
@@ -1065,13 +1012,10 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                if (($modified_time = @filemtime("js/stats.js"))) {
+                echo "<script type=\"text/javascript\" src=\"js/stats.js\"></script>\n";
 
-                    echo sprintf("<script type=\"text/javascript\" src=\"js/stats.js?%s\"></script>\n", date('YmdHis', $modified_time));
-
-                    if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
-                    if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
-                }
+                if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
+                if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
             }
         }
     }
@@ -1090,16 +1034,12 @@ function html_draw_top()
 
             }else {
 
-                if (($modified_time = @filemtime("js/{$func_args}"))) {
-                    echo sprintf("<script type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
-                }
+                echo "<script type=\"text/javascript\" src=\"$forum_path/js/{$func_args}\"></script>\n";
             }
 
         }else if (@is_dir("$forum_path/js/") && @file_exists("$forum_path/js/$func_args")) {
 
-            if (($modified_time = @filemtime("js/{$func_args}"))) {
-                echo sprintf("<script type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
-            }
+            echo "<script type=\"text/javascript\" src=\"$forum_path/js/{$func_args}\"></script>\n";
         }
     }
 

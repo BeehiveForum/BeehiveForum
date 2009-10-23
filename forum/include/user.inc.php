@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.384 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.385 2009-10-23 11:33:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -276,6 +276,8 @@ function user_change_password($user_uid, $password, $old_passhash = false)
     }elseif (is_md5($old_passhash)) {
 
         $old_passhash = db_escape_string($old_passhash);
+
+        if ($old_passhash === $passhash) return true;
 
         $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
         $sql.= "WHERE UID = '$user_uid' AND PASSWD = '$old_passhash'";

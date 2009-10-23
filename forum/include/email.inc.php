@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.167 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.168 2009-10-23 11:33:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -637,6 +637,12 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     $message->setBody($message_body);
 
+    echo '<pre>';
+    print_r($transport);
+    print_r($mailer);
+    print_r($message);
+    echo '</pre>';
+
     // Send the email
 
     return $mailer->send($message) > 0;
@@ -827,7 +833,7 @@ function email_send_user_approval_notification($tuid)
     // Generate the confirmation link.
 
     $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
-    $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_users_link", false);
+    $admin_users_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$admin_users_link", false);
 
     // Generate the message body.
 
@@ -894,7 +900,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     // Generate the confirmation link.
 
     $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
-    $admin_user_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_user_link", false);
+    $admin_user_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$admin_user_link", false);
 
     // Generate the message body.
 
@@ -1029,7 +1035,7 @@ function email_send_post_approval_notification($tuid)
     // Generate the confirmation link.
 
     $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
-    $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_post_approval_link", false);
+    $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$admin_post_approval_link", false);
 
     // Generate the message body.
 
@@ -1061,11 +1067,11 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
 
     // Get the to user details
 
-    if (!($to_user = user_get($fuid))) return false;
+    if (!($to_user = user_get($tuid))) return false;
     
     // Get the to user details
 
-    if (!($from_user = user_get($tuid))) return false;
+    if (!($from_user = user_get($fuid))) return false;
 
     // Get the Swift Mailer Transport
     
@@ -1100,7 +1106,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
 
     // Add the Sent By footer to the message.
 
-    $message_body.= wordwrap(sprintf("\n\n{$lang['msgsentfromby']}", $recipient, $sent_from, $forum_name));
+    $message_body.= wordwrap(sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from));
 
     // Add the recipient
 
@@ -1113,6 +1119,12 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
     // Set the message body
 
     $message->setBody($message_body);
+
+    echo '<pre>';
+    print_r($transport);
+    print_r($mailer);
+    print_r($message);
+    echo '</pre>';
 
     // Send the email
 

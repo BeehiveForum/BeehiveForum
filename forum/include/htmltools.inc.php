@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.97 2009-10-23 21:04:36 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.98 2009-10-24 13:41:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,71 +46,63 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function TinyMCE($tinymce_auto_focus)
 {
-    $webtag = get_webtag();
+    $str = "<!-- tinyMCE -->\n";
+    $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
+    $str.= "<script type=\"text/javascript\">\n";
+    $str.= "<!--\n";
+    $str.= "    tinyMCE.init({\n";
+    $str.= "        // General options\n";
+    $str.= "        mode : \"textareas\",\n";
+    $str.= "        editor_selector : /(post_content|edit_signature_content|admin_startpage_textarea)/,\n";
+    $str.= "        theme : \"advanced\",\n";
+    $str.= "        force_br_newlines : true,\n";
+    $str.= "        forced_root_block : '',\n";
+    $str.= "        inline_styles : false,\n";
+    $str.= "        auto_focus : '$tinymce_auto_focus',\n";
+    $str.= "        plugins : \"safari,table,inlinepopups,paste,beehive\",\n\n";
+    $str.= "        // Theme options\n";
+    $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
+    $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,code,removeformat,|,visualaid,|,tablecontrols\",\n";
+    $str.= "        theme_advanced_buttons3 : \"forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,bhquote,bhcode,bhspoiler,bhnoemots,bhspellcheck\",\n";
+    $str.= "        extended_valid_elements : \"b,marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
+    $str.= "        invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\",\n";
+    $str.= "        theme_advanced_toolbar_location : \"top\",\n";
+    $str.= "        theme_advanced_toolbar_align : \"left\",\n";
+    $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\"\n";
+    $str.= "    });\n\n";
+    $str.= "    var auto_check_spell_started = false;\n\n";
+    $str.= "    function clearFocus(){ return; };\n\n";
+    $str.= "    function autoCheckSpell()\n";
+    $str.= "    {\n";
+    $str.= "        var form_obj;\n\n";
+    $str.= "        if (document.getElementsByName) {\n";
+    $str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
+    $str.= "        }else if (document.all) {\n";
+    $str.= "            form_obj = document.all.t_check_spelling;\n";
+    $str.= "        }else if (document.layer) {\n";
+    $str.= "            form_obj = document.t_check_spelling;\n";
+    $str.= "        }else {\n";
+    $str.= "            return true;\n";
+    $str.= "        }\n\n";
+    $str.= "        if (tinyMCE.activeEditor.getContent().length == 0) return true;\n\n";
+    $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
+    $str.= "            auto_check_spell_started = true;\n";
+    $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.activeEditor.id, 'spellcheck','width=550, height=480, scrollbars=1');\n";
+    $str.= "            return false;\n";
+    $str.= "        }\n";
+    $str.= "    }\n\n";
+    $str.= "    function add_text(text)\n";
+    $str.= "    {\n";
+    $str.= "        if (tinyMCE.activeEditor.getContent().length < 1) {\n\n";
+    $str.= "            tinyMCE.activeEditor.setContent('');\n";
+    $str.= "        }\n\n";
+    $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
+    $str.= "    }\n";
+    $str.= "//-->\n";
+    $str.= "</script>\n";
+    $str.= "<!-- /tinyMCE -->\n";
 
-    if (($modified_time = @filemtime("tiny_mce/tiny_mce.js"))) {
-
-        $str = "<!-- tinyMCE -->\n";
-        $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
-        $str.= "<script type=\"text/javascript\">\n";
-        $str.= "<!--\n";
-        $str.= "    tinyMCE.init({\n";
-        $str.= "        // General options\n";
-        $str.= "        mode : \"textareas\",\n";
-        $str.= "        editor_selector : /(post_content|edit_signature_content|admin_startpage_textarea)/,\n";
-        $str.= "        theme : \"advanced\",\n";
-        $str.= "        force_br_newlines : true,\n";
-        $str.= "        forced_root_block : '',\n";
-        $str.= "        inline_styles : false,\n";
-        $str.= "        auto_focus : '$tinymce_auto_focus',\n";
-        $str.= "        plugins : \"safari,table,inlinepopups,paste,beehive\",\n\n";
-        $str.= "        // Theme options\n";
-        $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
-        $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,code,removeformat,|,visualaid,|,tablecontrols\",\n";
-        $str.= "        theme_advanced_buttons3 : \"forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,bhquote,bhcode,bhspoiler,bhnoemots,bhspellcheck\",\n";
-        $str.= "        extended_valid_elements : \"b,marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
-        $str.= "        invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\",\n";
-        $str.= "        theme_advanced_toolbar_location : \"top\",\n";
-        $str.= "        theme_advanced_toolbar_align : \"left\",\n";
-        $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\"\n";
-        $str.= "    });\n";
-        $str.= "    var webtag = \"$webtag\";\n";
-        $str.= "    var auto_check_spell_started = false;\n\n";
-        $str.= "    function clearFocus(){return;};\n\n";
-        $str.= "    function autoCheckSpell()\n";
-        $str.= "    {\n";
-        $str.= "        var form_obj;\n\n";
-        $str.= "        if (document.getElementsByName) {\n";
-        $str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
-        $str.= "        }else if (document.all) {\n";
-        $str.= "            form_obj = document.all.t_check_spelling;\n";
-        $str.= "        }else if (document.layer) {\n";
-        $str.= "            form_obj = document.t_check_spelling;\n";
-        $str.= "        }else {\n";
-        $str.= "            return true;\n";
-        $str.= "        }\n\n";
-        $str.= "        if (tinyMCE.activeEditor.getContent().length == 0) return true;\n\n";
-        $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
-        $str.= "            auto_check_spell_started = true;\n";
-        $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.activeEditor.id, 'spellcheck','width=550, height=480, scrollbars=1');\n";
-        $str.= "            return false;\n";
-        $str.= "        }\n";
-        $str.= "    }\n\n";
-        $str.= "    function add_text(text)\n";
-        $str.= "    {\n";
-        $str.= "        if (tinyMCE.activeEditor.getContent().length < 1) {\n\n";
-        $str.= "            tinyMCE.activeEditor.setContent('');\n";
-        $str.= "        }\n\n";
-        $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
-        $str.= "    }\n";
-        $str.= "//-->\n";
-        $str.= "</script>\n";
-        $str.= "<!-- /tinyMCE -->\n";
-
-        return $str;
-    }
-
-    return '';
+    return $str;
 }
 
 // WARNING: Remember to declare onUnload="clearFocus()" in your <body> tag

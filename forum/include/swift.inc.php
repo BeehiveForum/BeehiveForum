@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: swift.inc.php,v 1.5 2009-10-23 20:00:55 decoyduck Exp $ */
+/* $Id: swift.inc.php,v 1.6 2009-10-24 19:21:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -31,6 +31,9 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Location: ../index.php");
     exit;
 }
+
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 
 // Include Swift Mailer
 

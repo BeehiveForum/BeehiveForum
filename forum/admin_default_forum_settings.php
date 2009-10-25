@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.148 2009-10-23 19:55:27 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.149 2009-10-25 12:58:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -708,7 +708,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\" id=\"smtp_settings\" style=\"display: ", ($forum_global_settings['mail_function'] == MAIL_FUNCTION_SMTP) ? 'block' : 'none', "\">\n";
+echo "                  <td align=\"center\" id=\"smtp_settings\" style=\"display: ", (isset($forum_global_settings['mail_function']) && $forum_global_settings['mail_function'] == MAIL_FUNCTION_SMTP) ? 'block' : 'none', "\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['smtpserveraddr']}:</td>\n";
@@ -730,7 +730,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\" id=\"sendmail_settings\" style=\"display: ", ($forum_global_settings['mail_function'] == MAIL_FUNCTION_SENDMAIL) ? 'block' : 'none', "\">\n";
+echo "                  <td align=\"center\" id=\"sendmail_settings\" style=\"display: ", isset($forum_global_settings['mail_function']) && ($forum_global_settings['mail_function'] == MAIL_FUNCTION_SENDMAIL) ? 'block' : 'none', "\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['sendmailpath']}:</td>\n";

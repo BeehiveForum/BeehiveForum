@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.253 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.254 2009-10-25 17:31:05 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -538,7 +538,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-}elseif (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
+}elseif (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
     if (isset($_POST['t_message_text']) && strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
         $t_message_text = trim(stripslashes_array($_POST['t_message_text']));
@@ -548,11 +548,11 @@ if (isset($_POST['cancel'])) {
         $t_sig = trim(stripslashes_array($_POST['t_sig']));
     }
 
-    if (isset($_POST['emots_toggle_x'])) {
+    if (isset($_POST['emots_toggle'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    }elseif (isset($_POST['sig_toggle_x'])) {
+    }elseif (isset($_POST['sig_toggle'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }

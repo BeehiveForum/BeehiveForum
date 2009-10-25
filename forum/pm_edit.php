@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.145 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.146 2009-10-25 17:31:05 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -330,7 +330,7 @@ if ($valid && isset($_POST['preview'])) {
         exit;
     }
 
-} else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+} else if (isset($_POST['emots_toggle'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
         $t_subject = trim(stripslashes_array($_POST['t_subject']));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.237 2009-10-23 11:33:21 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.238 2009-10-25 14:55:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -363,7 +363,7 @@ function light_draw_messages($msg)
 
                 if ($message['PID'] == 1) {
 
-                    light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false);
+                    light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], $thread_data['CLOSED'], false, false);
                     $last_pid = $message['PID'];
 
                 }else {
@@ -1274,7 +1274,7 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
     return $html;
 }
 
-function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_preview = false)
+function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $limit_text = true, $is_preview = false)
 {
     $webtag = get_webtag();
 
@@ -1293,19 +1293,38 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $poll_data['CONTENT'] = "<h2>". thread_get_title($tid). "</h2>\n";
 
-    if ($in_list) {
+    $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
+    $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
+    $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
 
-        $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
-        $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
-        $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
+    if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time())) {
 
-        if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time())) {
+        $poll_previous_group = false;
 
-            $poll_previous_group = false;
+        for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
+
+            if ($poll_previous_group === false) $poll_previous_group = $poll_results['GROUP_ID'][$i];
+
+            if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
+
+                if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
+
+                    $poll_data['CONTENT'].= "<br />\n";
+                    $poll_group_count++;
+                }
+
+                $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", htmlentities_array($poll_results['OPTION_ID'][$i]), '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
+                $poll_previous_group = $poll_results['GROUP_ID'][$i];
+            }
+        }
+
+    }else {
+
+        if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS) {
 
             for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
-                if ($poll_previous_group === false) $poll_previous_group = $poll_results['GROUP_ID'][$i];
+                if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
                 if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
@@ -1315,74 +1334,33 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                         $poll_group_count++;
                     }
 
-                    $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", htmlentities_array($poll_results['OPTION_ID'][$i]), '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
+                    $poll_data['CONTENT'] .= $poll_results['OPTION_NAME'][$i] . ": " . $poll_results['VOTES'][$i] . " votes <br />\n";
                     $poll_previous_group = $poll_results['GROUP_ID'][$i];
                 }
             }
 
         }else {
 
-            if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS) {
+            for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
-                for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
+                if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-                    if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
+                if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
-                    if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
+                    if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
 
-                        if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-
-                            $poll_data['CONTENT'].= "<br />\n";
-                            $poll_group_count++;
-                        }
-
-                        $poll_data['CONTENT'] .= $poll_results['OPTION_NAME'][$i] . ": " . $poll_results['VOTES'][$i] . " votes <br />\n";
-                        $poll_previous_group = $poll_results['GROUP_ID'][$i];
+                        $poll_data['CONTENT'].= "<br />\n";
+                        $poll_group_count++;
                     }
+
+                    $poll_data['CONTENT'].= $poll_results['OPTION_NAME'][$i]. "<br />\n";
+                    $poll_previous_group = $poll_results['GROUP_ID'][$i];
                 }
-
-            }else {
-
-                for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
-
-                    if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
-
-                    if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
-
-                        if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-
-                            $poll_data['CONTENT'].= "<br />\n";
-                            $poll_group_count++;
-                        }
-
-                        $poll_data['CONTENT'].= $poll_results['OPTION_NAME'][$i]. "<br />\n";
-                        $poll_previous_group = $poll_results['GROUP_ID'][$i];
-                    }
-                }
-            }
-        }
-
-    }else {
-
-        for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
-
-            if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
-
-            if (!empty($poll_results['OPTION_NAME'][$i])) {
-
-                if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-
-                    $poll_data['CONTENT'].= "<br />\n";
-                    $poll_group_count++;
-                }
-
-                $poll_data['CONTENT'].= $poll_results['OPTION_NAME'][$i]. "<br />\n";
-                $poll_previous_group = $poll_results['GROUP_ID'][$i];
             }
         }
     }
 
-    if ($in_list) {
+    if (!$is_preview) {
 
         $group_array = array();
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.154 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.155 2009-10-25 14:55:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -703,7 +703,7 @@ if (!$new_thread && $reply_to_pid > 0) {
 
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-        light_poll_display($reply_to_tid, $thread_data['LENGTH'], $thread_data['FID'], false, false, false, false);
+        light_poll_display($reply_to_tid, $thread_data['LENGTH'], $thread_data['FID'], $thread_data['CLOSED'], false, true);
 
     }else {
 

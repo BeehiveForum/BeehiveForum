@@ -512,6 +512,19 @@ a {
     cursor: pointer
 }
 
+.button_image {
+    background: transparent;
+    padding: 0px;
+    border: none;
+    width: auto;
+    overflow: visible;
+}
+
+.button_image span {
+    display: block;
+    margin: 0px;
+}
+
 .smallbutton {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 8pt;

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.382 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: post.php,v 1.383 2009-10-25 17:31:05 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -405,7 +405,7 @@ if (isset($_POST['more'])) {
     }
 }
 
-if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
+if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
     if (isset($_POST['t_newthread'])) {
 
@@ -438,11 +438,11 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
         $t_sig = trim(stripslashes_array($_POST['t_sig']));
     }
 
-    if (isset($_POST['emots_toggle_x'])) {
+    if (isset($_POST['emots_toggle'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    }elseif (isset($_POST['sig_toggle_x'])) {
+    }elseif (isset($_POST['sig_toggle'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }

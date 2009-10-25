@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.139 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.140 2009-10-25 11:08:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -357,39 +357,34 @@ function form_radio_array($name, $options_array, $checked = false, $custom_html 
 
 // Creates a form submit button
 
-function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
+function form_submit($name = "submit", $value = "Submit", $custom_html = "", $class = "button")
 {
     $id = form_unique_id($name);
 
-    $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\"";
-
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $custom_html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />";
-    return $html;
+    $html = '<button type="submit" name="%s" id="%s" class="%s"%s"><span>%s</span></button>';
+    
+    return sprintf($html, $name, $id, $class, $custom_html, $value);
 }
 
 // Creates a form submit button using an image
 
-function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false, $class = false)
+function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = "", $class = "")
 {
     $id = form_unique_id($name);
 
-    $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" ";
-    $html.= "type=\"image\" src=\"". style_image($image). "\"";
-
-    if (strlen(trim($class)) > 0) {
-        $html.= sprintf(" class=\"%s\"", trim($class));
-    }
-
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $custom_html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />";
-    return $html;
+    $image = sprintf('<img src="%s" />', style_image($image));
+
+    $html = '<button type="submit" name="%s" id="%s" class="%s"%s><span>%s</span></button>';
+
+    return sprintf($html, $name, $id, $class, $custom_html, $image);
 }
 
 // Creates a form reset button
@@ -398,14 +393,15 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 {
     $id = form_unique_id($name);
 
-    $html = "<input type=\"reset\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\"";
-
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $custom_html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />";
-    return $html;
+    $image = sprintf('<img src="%s" />', style_image($image));
+
+    $html = '<button type="reset" name="%s" id="%s" class="%s"%s><span>%s</span></button>';
+
+    return sprintf($html, $name, $id, $class, $custom_html, $image);
 }
 
 // Creates a button with custom HTML, for onclick methods, etc.

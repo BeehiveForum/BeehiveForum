@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.53 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.54 2009-10-25 14:55:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -192,7 +192,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
 
     if ($message['PID'] == 1) {
 
-        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], false, false);
+        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], $thread_data['CLOSED'], false, false);
         $last_pid = $message['PID'];
 
     }else {

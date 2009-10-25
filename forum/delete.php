@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.152 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: delete.php,v 1.153 2009-10-25 14:55:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -317,7 +317,7 @@ echo "                  <td align=\"left\">\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, true, true);
+    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true);
 
 }else {
 

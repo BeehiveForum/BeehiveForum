@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.381 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: post.php,v 1.382 2009-10-25 14:55:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -1215,7 +1215,7 @@ if (!$new_thread && $reply_to_pid > 0) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\">\n";
 
-        poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, $show_sigs, true);
+        poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true);
 
         echo "                  </td>\n";
         echo "                </tr>\n";

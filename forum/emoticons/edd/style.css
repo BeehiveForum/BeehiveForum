@@ -1,0 +1,428 @@
+.e_smile { /* :) :-) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/smile.png");
+    background-repeat: no-repeat;
+}
+.e_smile span {
+	display: none;
+}
+
+.e_wink { /* ;) ;-) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/wink.png");
+    background-repeat: no-repeat;
+}
+.e_wink span {
+	display: none;
+}
+
+.e_sad { /* :( :-( */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/sad.png");
+    background-repeat: no-repeat;
+}
+.e_sad span {
+	display: none;
+}
+
+.e_cry { /* :'( :'-( */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cry.png");
+    background-repeat: no-repeat;
+}
+.e_cry span {
+	display: none;
+}
+
+.e_tongue { /* :P :-P */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/tongue.png");
+    background-repeat: no-repeat;
+}
+.e_tongue span {
+	display: none;
+}
+
+.e_grin { /* :D :-D */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/grin.png");
+    background-repeat: no-repeat;
+}
+.e_grin span {
+	display: none;
+}
+
+.e_confused { /* :S :-S */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/whut.png");
+    background-repeat: no-repeat;
+}
+.e_confused span {
+	display: none;
+}
+
+.e_plain { /* :| :-| */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/notamused.png");
+    background-repeat: no-repeat;
+}
+.e_plain span {
+	display: none;
+}
+
+.e_unsure { /* :/ :-/ */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/shack.png");
+    background-repeat: no-repeat;
+}
+.e_unsure span {
+	display: none;
+}
+
+.e_shock { /* :O :-O */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/shock.png");
+    background-repeat: no-repeat;
+}
+.e_shock span {
+	display: none;
+}
+
+.e_angry { /* :@ :-@ */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/angry.png");
+    background-repeat: no-repeat;
+}
+.e_angry span {
+	display: none;
+}
+
+.e_happy { /* ^.^ */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/happy.png");
+    background-repeat: no-repeat;
+}
+.e_happy span {
+	display: none;
+}
+
+.e_shades { /* B-) B) 8-) 8) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cool.png");
+    background-repeat: no-repeat;
+}
+.e_shades span {
+	display: none;
+}
+
+.e_smile_big_nose { /* :o) :O) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/smile_big_nose.png");
+    background-repeat: no-repeat;
+}
+.e_smile_big_nose span {
+	display: none;
+}
+
+.e_beer { /* (beer) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/beer.png");
+    background-repeat: no-repeat;
+}
+.e_beer span {
+	display: none;
+}
+
+.e_boy { /* (boy) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/boy.png");
+    background-repeat: no-repeat;
+}
+.e_boy span {
+	display: none;
+}
+
+.e_brokenheart { /* (heartbroke) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/brokenheart.png");
+    background-repeat: no-repeat;
+}
+.e_brokenheart span {
+	display: none;
+}
+
+.e_cat { /* (cat) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cat.png");
+    background-repeat: no-repeat;
+}
+.e_cat span {
+	display: none;
+}
+
+.e_envelope { /* (envelope) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/mail.png");
+    background-repeat: no-repeat;
+}
+.e_envelope span {
+	display: none;
+}
+
+.e_fail { /* (fail) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cry.png");
+    background-repeat: no-repeat;
+}
+.e_fail span {
+	display: none;
+}
+
+.e_flower { /* (flower) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/flower.png");
+    background-repeat: no-repeat;
+}
+.e_flower span {
+	display: none;
+}
+
+.e_girl { /* (girl) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/girl.png");
+    background-repeat: no-repeat;
+}
+.e_girl span {
+	display: none;
+}
+
+.e_heartbeat { /* (heart) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/heart.png");
+    background-repeat: no-repeat;
+}
+.e_heartbeat span {
+	display: none;
+}
+
+.e_kiss { /* (kiss) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/kiss.png");
+    background-repeat: no-repeat;
+}
+.e_kiss span {
+	display: none;
+}
+
+.e_lightbulb { /* (lightbulb) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/bulb.png");
+    background-repeat: no-repeat;
+}
+.e_lightbulb span {
+	display: none;
+}
+
+.e_musicnote { /* (music) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/note.png");
+    background-repeat: no-repeat;
+}
+.e_musicnote span {
+	display: none;
+}
+
+.e_star { /* (star) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/star.png");
+    background-repeat: no-repeat;
+}
+.e_star span {
+	display: none;
+}
+
+.e_tea { /* (tea) (coffee)*/
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/coffee.png");
+    background-repeat: no-repeat;
+}
+.e_tea span {
+	display: none;
+}
+
+.e_crying { /* :(( :-(( */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cry.png");
+    background-repeat: no-repeat;
+}
+.e_crying span {
+	display: none;
+}
+
+.e_eek { /* 8-O :o :-o*/
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/shock.png");
+    background-repeat: no-repeat;
+}
+.e_eek span {
+	display: none;
+}
+
+.e_horror { /* :& */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/horror.png");
+    background-repeat: no-repeat;
+}
+.e_horror span {
+	display: none;
+}
+
+.e_jesus { /* (jesus) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/jesus.png");
+    background-repeat: no-repeat;
+}
+.e_jesus span {
+	display: none;
+}
+
+.e_goth { /* (goth) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/goth.png");
+    background-repeat: no-repeat;
+}
+.e_goth span {
+	display: none;
+}
+
+.e_phone { /* (phone) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/phone.png");
+    background-repeat: no-repeat;
+}
+.e_phone span {
+	display: none;
+}
+
+.e_sleepyhead { /* I) I-) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/sleep.png");
+    background-repeat: no-repeat;
+}
+.e_sleepyhead span {
+	display: none;
+}
+
+.e_thumbsup { /* (yes) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/thumbup.png");
+    background-repeat: no-repeat;
+}
+.e_thumbsup span {
+	display: none;
+}
+
+.e_thumbsdown { /* (no) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/thumbdown.png");
+    background-repeat: no-repeat;
+}
+.e_thumbsdown span {
+	display: none;
+}
+
+.e_smile_dead { /* (smile_dead) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/xsmile.png");
+    background-repeat: no-repeat;
+}
+.e_smile_dead span {
+	display: none;
+}
+
+.e_grin_dead { /* I) I-) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/xd.png");
+    background-repeat: no-repeat;
+}
+.e_grin_dead span {
+	display: none;
+}

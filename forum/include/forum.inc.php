@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.392 2009-10-23 19:55:27 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.393 2009-10-28 19:56:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1802,7 +1802,21 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         // Add some default forum links
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
-        $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
+        $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
+
+        if (!$result = @db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return false;
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
+        $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 

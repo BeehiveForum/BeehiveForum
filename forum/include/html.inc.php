@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.347 2009-10-24 19:21:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.348 2009-10-28 19:56:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -621,11 +621,13 @@ function html_get_top_frame_name()
 
 function html_include_javascript($script)
 {
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
+    
     $path_parts = pathinfo($script);
 
-    $minified_script = sprintf('%s.min.%s', $path_parts['basename'], $path_parts['extension']);
+    $minified_script = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
 
-    if (file_exists("js/$minified_script")) {
+    if (file_exists("$forum_path/js/$minified_script")) {
         echo "<script type=\"text/javascript\" src=\"js/$minified_script\"></script>\n";
     } else {
         echo "<script type=\"text/javascript\" src=\"js/$script\"></script>\n";
@@ -634,11 +636,13 @@ function html_include_javascript($script)
 
 function html_include_css($script, $media = 'screen')
 {
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
+    
     $path_parts = pathinfo($script);
 
-    $minified_script = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['basename'], $path_parts['extension']);
+    $minified_script = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
 
-    if (file_exists($minified_script)) {
+    if (file_exists("$forum_path/$minified_script")) {
         echo "<link rel=\"stylesheet\" href=\"$minified_script\" type=\"text/css\" media=\"$media\" />\n";
     } else {
         echo "<link rel=\"stylesheet\" href=\"$script\" type=\"text/css\" media=\"$media\" />\n";

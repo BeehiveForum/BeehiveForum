@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.196 2009-10-03 19:43:17 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.197 2009-10-28 19:56:52 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'new-install.php') {
 
@@ -989,7 +989,16 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
-$sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
+$sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
+$sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
 
 if (!$result = @db_query($sql, $db_install)) {
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.50 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.51 2009-11-03 18:38:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -216,12 +216,11 @@ if (isset($_POST['obj_name']) && strlen(trim(stripslashes_array($_POST['obj_name
 
 if (isset($_POST['selection']) && is_array($_POST['selection'])) {
 
-    $selection_array = $_POST['selection'];
+    $selection_array = array_unique($_POST['selection']);
 
 }else if (isset($_GET['selection']) && strlen(trim(stripslashes_array($_GET['selection']))) > 0) {
 
-    $selection_array = preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selection'])));
-
+    $selection_array = array_unique(preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selection']))));
 
     if ($allow_multi === false) {
         $search_query = trim(stripslashes_array($_GET['selection']));
@@ -234,7 +233,7 @@ if (isset($_POST['selection']) && is_array($_POST['selection'])) {
 
 // Limit the selection to maximum of 10
 
-$selection_array = array_splice(array_unique($selection_array), 0, 10);
+$selection_array = array_splice($selection_array, 0, 10);
 
 // Add any search results to selection
 

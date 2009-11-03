@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.348 2009-10-28 19:56:52 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.349 2009-11-03 18:38:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -956,10 +956,6 @@ function html_draw_top()
             echo "top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n\n";
             echo "//-->\n";
             echo "</script>\n";
-        }
-
-        if (isset($_GET['disable_pm_popup'])) {
-            $pm_popup_disabled = true;
         }
     }
 

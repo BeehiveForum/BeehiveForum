@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.51 2009-11-03 18:38:25 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.52 2009-11-07 21:39:38 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -275,7 +275,7 @@ if (isset($_POST['clear'])) {
 // Selection for page links and for return to parent
 
 if (isset($selection_array) && is_array($selection_array) && sizeof($selection_array) > 0) {
-    $selection = implode(';', array_splice(array_unique($selection_array), 0, 10));
+    $selection = implode(';', array_splice($selection_array, 0, 10));
 }else {
     $selection = "";
 }
@@ -541,7 +541,7 @@ if ($type == SEARCH_POPUP_TYPE_USER) {
     echo "                        <td align=\"left\" width=\"100\">{$lang['threadtitle']}:</td>\n";
 }
 
-echo "                        <td class=\"posthead\" align=\"left\">", form_input_text('search_query', (isset($search_query) ? htmlentities_array($search_query) : ''), 40, 64), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">", form_input_text('search_query', (isset($search_query) ? htmlentities_array($search_query) : ''), 40, 64), form_submit('search', $lang['search'], 'style="display: none"'), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

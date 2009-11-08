@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.53 2009-03-28 18:42:28 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.54 2009-11-08 14:10:06 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -77,9 +77,7 @@ function db_enable_compat_mode($connection_id)
 {
     $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
 
-    $mysql_version = 0;
-
-    if (db_fetch_mysql_version($mysql_version)) {
+    if (($mysql_version = db_fetch_mysql_version())) {
 
         if ($mysql_version >= 40100) {
 
@@ -211,11 +209,16 @@ function db_errno($connection_id = false)
     return 0;
 }
 
-function db_fetch_mysql_version(&$mysql_version)
+function db_fetch_mysql_version()
 {
-    if (($db_fetch_mysql_version = db_connect(false))) {
+    static $mysql_version = false;
+
+    if (!$mysql_version) {
+    
+        if (!($db_fetch_mysql_version = db_connect(false))) return false;
 
         $sql = "SELECT VERSION() AS version";
+
         $result = db_query($sql, $db_fetch_mysql_version);
 
         if (!$version_data = db_fetch_array($result)) {
@@ -241,11 +244,9 @@ function db_fetch_mysql_version(&$mysql_version)
         }
 
         $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
-
-        return true;
     }
 
-    return false;
+    return $mysql_version;
 }
 
 function db_escape_string($str)

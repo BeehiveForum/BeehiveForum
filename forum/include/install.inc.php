@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.97 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.98 2009-11-08 14:10:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -253,9 +253,7 @@ function install_missing_files()
 
 function install_check_mysql_version()
 {
-    $mysql_version = 0;
-
-    if (db_fetch_mysql_version($mysql_version)) {
+    if (($mysql_version = db_fetch_mysql_version())) {
 
         if ($mysql_version < 40116) {
 

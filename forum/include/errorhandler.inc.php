@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.143 2009-10-10 13:12:56 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.144 2009-11-08 14:10:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -250,7 +250,7 @@ function bh_exception_handler($exception)
 
         $mysql_version = '';
 
-        if (function_exists('db_fetch_mysql_version') && db_fetch_mysql_version($mysql_version)) {
+        if (function_exists('db_fetch_mysql_version') && ($mysql_version = db_fetch_mysql_version())) {
             $version_strings[] = sprintf('MySQL/%s', $mysql_version);
         }else {
             $version_strings[] = sprintf('MySQL Version Unknown');

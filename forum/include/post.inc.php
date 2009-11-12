@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.218 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.219 2009-11-12 21:32:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -166,23 +166,21 @@ function post_save_attachment_id($tid, $pid, $aid)
 
 function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $closed = false)
 {
-    if (!is_numeric($fid)) return -1;
-    if (!is_numeric($uid)) return -1;
+    if (!is_numeric($fid)) return false;
+    
+    if (!is_numeric($uid)) return false;
 
     $title = db_escape_string($title);
 
     $poll = ($poll == 'Y') ? 'Y' : 'N';
+
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';
     
-    if ($closed === true) {
-        $closed = sprintf("'%s'", date(MYSQL_DATETIME, time()));
-    }else {
-        $closed = 'NULL';
-    }
+    $closed = ($closed === true) ? sprintf("'%s'", date(MYSQL_DATETIME, time())) : 'NULL';
 
     if (!$db_post_create_thread = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return -1;
+    if (!$table_data = get_table_prefix()) return false;
     
     // Current datetime
     
@@ -194,13 +192,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     if (!$result = db_query($sql, $db_post_create_thread)) return false;
 
-    if ($result) {
-        $new_tid = db_insert_id($db_post_create_thread);
-    }else {
-        $new_tid = -1;
-    }
-
-    return $new_tid;
+    return db_insert_id($db_post_create_thread);
 }
 
 function post_update_thread_length($tid, $length)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.254 2009-10-25 17:31:05 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.255 2009-11-12 21:32:45 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -726,6 +726,7 @@ if ($valid && isset($_POST['post'])) {
             // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
             $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, 'Y', 'N');
+            
             $t_pid = post_create($t_fid, $t_tid, 0, $uid, 0, '');
 
             // Ensure that Tablular polls have

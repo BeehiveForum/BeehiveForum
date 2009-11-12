@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.168 2009-10-23 19:55:27 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.169 2009-11-12 21:32:46 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -465,18 +465,20 @@ define('THREAD_SPLIT_FOLLOWING', 1);
 define('THREAD_TYPE_SPLIT', 1);
 define('THREAD_TYPE_MERGE', 0);
 
-define('THREAD_MERGE_INVALID_ARGS', 1);
-define('THREAD_MERGE_FORUM_ERROR', 2);
-define('THREAD_MERGE_POLL_ERROR', 3);
-define('THREAD_MERGE_THREAD_ERROR', 4);
-define('THREAD_MERGE_POST_ERROR', 5);
+define('THREAD_MERGE_FORUM_ERROR', 1);
+define('THREAD_MERGE_FOLDER_ERROR', 2);
+define('THREAD_MERGE_THREAD_ERROR', 3);
+define('THREAD_MERGE_POLL_ERROR', 4);
+define('THREAD_MERGE_PERMS_ERROR', 5);
 define('THREAD_MERGE_CREATE_ERROR', 6);
+define('THREAD_MERGE_QUERY_ERROR', 7);
 
 define('THREAD_SPLIT_INVALID_ARGS', 1);
 define('THREAD_SPLIT_FORUM_ERROR', 2);
 define('THREAD_SPLIT_THREAD_ERROR', 3);
 define('THREAD_SPLIT_POST_ERROR', 4);
 define('THREAD_SPLIT_CREATE_ERROR', 5);
+define('THREAD_SPLIT_QUERY_ERROR', 6);
 
 // Thread Delete constants
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.134 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.135 2009-11-12 21:32:45 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -446,25 +446,19 @@ if (isset($_POST['save'])) {
                         $merge_thread = $_POST['merge_thread'];
                         $merge_type   = $_POST['merge_type'];
 
-                        if (validate_msg($merge_thread)) list($merge_thread) = explode('.', $merge_thread);
+                        if (validate_msg($merge_thread)) {
+                            list($merge_thread) = explode('.', $merge_thread);
+                        }
+                        
+                        if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
 
-                        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $merge_thread)) {
+                            post_add_edit_text($tid, 1);
 
-                            if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
-
-                                post_add_edit_text($tid, 1);
-
-                                admin_add_log_entry(THREAD_MERGE, $merge_result);
-
-                            }else {
-
-                                $error_msg_array[] = $error_str;
-                                $valid = false;
-                            }
+                            admin_add_log_entry(THREAD_MERGE, $merge_result);
 
                         }else {
 
-                            $error_msg_array[] = $lang['nopermissiontomergethreads'];
+                            $error_msg_array[] = $error_str;
                             $valid = false;
                         }
                     }
@@ -613,7 +607,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("markasread", htmlentities_array($thread_data['LAST_READ']), 5), " {$lang['postsoutof']} {$thread_data['LENGTH']}</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('markasread', range(0, $thread_data['LENGTH']), ($thread_data['LAST_READ'] > $thread_data['LENGTH'] ? $thread_data['LENGTH'] : $thread_data['LAST_READ'])), " {$lang['postsoutof']} {$thread_data['LENGTH']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";

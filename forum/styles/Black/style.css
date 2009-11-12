@@ -1111,9 +1111,12 @@ a {
 }
 
 .search_button {
-    height: 100%;
     background-color: #FFFFFF;
     border: none;
+    cursor: pointer;
+    height: 100%;
+    margin: 0;
+    padding: 0;
     vertical-align: top;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.582 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.583 2009-11-12 21:32:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1587,15 +1587,15 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
 function messages_set_read($tid, $pid, $uid, $modified)
 {
-    if (!$db_message_set_read = db_connect()) return false;
+    if (!$db_message_set_read = db_connect()) return 1;
 
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
-    if (!is_numeric($uid)) return false;
+    if (!is_numeric($tid)) return 2;
+    if (!is_numeric($pid)) return 3;
+    if (!is_numeric($uid)) return 4;
 
     // Check for existing entry in USER_THREAD
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return 5;
 
     // Mark as read cut off
 
@@ -1611,7 +1611,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-            if (!db_query($sql, $db_message_set_read)) return false;
+            if (!db_query($sql, $db_message_set_read)) return 6;
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
@@ -1619,7 +1619,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
-                if (!db_query($sql, $db_message_set_read)) return false;
+                if (!db_query($sql, $db_message_set_read)) return 7;
             }
         }
     }
@@ -1629,9 +1629,9 @@ function messages_set_read($tid, $pid, $uid, $modified)
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    if (!db_query($sql, $db_message_set_read)) return false;
+    if (!db_query($sql, $db_message_set_read)) return 8;
 
-    return true;
+    return 9;
 }
 
 function messages_get_most_recent($uid, $fid = false)

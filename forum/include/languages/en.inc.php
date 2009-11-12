@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.616 2009-10-23 19:55:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.617 2009-11-12 21:32:46 decoyduck Exp $ */
 
 // British English language file
 
@@ -2241,6 +2241,8 @@ $lang['couldnotretrievepostdatasplit'] = "Could not retrieve post data from sour
 $lang['failedtocreatenewthreadformerge'] = "Failed to create new thread for merge";
 $lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for split";
 $lang['nopermissiontomergethreads'] = "You are not permitted to merge the selected threads";
+$lang['failedtoexecutethreadmergequery'] = "Failed to execute thread merge query";
+$lang['failedtoexecutethreadsplitquery'] = "Failed to execute thread split query";
 
 // Thread subscriptions
 

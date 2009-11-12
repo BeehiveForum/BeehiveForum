@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.172 2009-10-03 19:43:17 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.173 2009-11-12 21:32:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -64,26 +64,27 @@ function thread_get_title($tid)
     return "The Unknown Thread";
 }
 
-function thread_get($tid, $inc_deleted = false)
+function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 {
-    if (!$db_thread_get = db_connect()) return false;
+    if (!$db_thread_get = db_connect()) return 1;
 
     $lang = load_language_file();
 
     $fidlist = folder_get_available();
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return 2;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) return 3;
 
-    if (!is_numeric($tid)) return false;
+    if (!is_numeric($tid)) return 4;
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
-    $sql.= "THREAD.BY_UID, THREAD.CLOSED, THREAD.ADMIN_LOCK, FOLDER.PREFIX, ";
+    $sql.= "THREAD.BY_UID, UNIX_TIMESTAMP(THREAD.CLOSED) AS CLOSED, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.ADMIN_LOCK) AS ADMIN_LOCK, FOLDER.PREFIX, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.UID, USER.LOGON, ";
@@ -96,14 +97,14 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.TID = '$tid' AND THREAD.LENGTH > 0 ";
-    $sql.= "AND THREAD.FID IN ($fidlist) ";
-
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE THREAD.TID = '$tid' AND THREAD.FID IN ($fidlist) ";
+    
     if ($inc_deleted === false) $sql.= "AND THREAD.DELETED = 'N' ";
+    
+    if ($inc_empty === false)  $sql.= "AND THREAD.LENGTH > 0 ";
 
-    if (!$result = db_query($sql, $db_thread_get)) return false;
+    if (!$result = db_query($sql, $db_thread_get)) return 5;
 
     if (db_num_rows($result) > 0) {
 
@@ -154,7 +155,7 @@ function thread_get($tid, $inc_deleted = false)
         return $thread_data;
     }
 
-    return false;
+    return 6;
 }
 
 function thread_get_by_uid($tid)
@@ -587,211 +588,231 @@ function thread_undelete($tid)
 function thread_merge($tida, $tidb, $merge_type, &$error_str)
 {
     if (!$db_thread_merge = db_connect()) return false;
-
-    $tida_closed = true;
-    $tidb_closed = true;
-
-    if (!is_numeric($tida)) {
-        return thread_merge_error(THREAD_MERGE_INVALID_ARGS, $error_str);
-    }
-
-    if (!is_numeric($tidb)) {
-        return thread_merge_error(THREAD_MERGE_INVALID_ARGS, $error_str);
-    }
-
-    if (!is_numeric($merge_type)) {
-        return thread_merge_error(THREAD_MERGE_INVALID_ARGS, $error_str);
-    }
-
+    
+    // Get Forum Data
+    
     if (!$table_data = get_table_prefix()) {
         return thread_merge_error(THREAD_MERGE_FORUM_ERROR, $error_str);
     }
-
-    if (thread_is_poll($tida) || thread_is_poll($tidb)) {
-        return thread_merge_error(THREAD_MERGE_POLL_ERROR, $error_str);
-    }
+    
+    // Get Thread A data
 
     if (!$threada = thread_get($tida)) {
         return thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
     }
+    
+    // Get Thread B data
 
     if (!$threadb = thread_get($tidb)) {
         return thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
     }
-
-    $forum_fid = $table_data['FID'];
-
-    if (isset($threada['TITLE']) && isset($threadb['TITLE'])) {
-
-        $tida_closed = thread_set_closed($tida, true);
-        $tidb_closed = thread_set_closed($tidb, true);
-
-        $post_data_array = array();
-        $new_tid = -1;
-
-        switch ($merge_type) {
-
-            case THREAD_MERGE_BY_CREATED:
-
-                $post_data_array = thread_merge_get_by_created($tida, $tidb);
-                break;
-
-            case THREAD_MERGE_START:
-
-                $post_data_array = thread_merge_get($tidb, $tida);
-                break;
-
-            case THREAD_MERGE_END:
-
-                $post_data_array = thread_merge_get($tida, $tidb);
-                break;
-        }
-
-        if (is_array($post_data_array) && sizeof($post_data_array) > 0) {
-
-            $required_post_keys_array = array('TID', 'REPLY_TO_PID', 'FROM_UID', 'TO_UID', 'CREATED');
-
-            foreach ($post_data_array as $post_data) {
-
-                if (!is_array($post_data)) {
-
-                    thread_merge_error(THREAD_MERGE_POST_ERROR, $error_str);
-
-                    if ($tida_closed) thread_set_closed($tida, false);
-                    if ($tidb_closed) thread_set_closed($tidb, false);
-
-                    return false;
-                }
-
-                foreach ($required_post_keys_array as $required_post_key) {
-
-                    if (!in_array($required_post_key, array_keys($post_data))) {
-
-                        thread_merge_error(THREAD_MERGE_POST_ERROR, $error_str);
-
-                        if ($tida_closed) thread_set_closed($tida, false);
-                        if ($tidb_closed) thread_set_closed($tidb, false);
-
-                        return false;
-                    }
-                }
-            }
-
-            if (($new_thread = thread_get($post_data_array[1]['TID']))) {
-
-                $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
-
-                if (!is_array($new_thread)) {
-
-                    thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
-
-                    if ($tidb_closed) thread_set_closed($tidb, false);
-                    if ($tidb_closed) thread_set_closed($tidb, false);
-
-                    return false;
-                }
-
-                foreach ($required_thread_keys_array as $required_thread_key) {
-
-                    if (!in_array($required_thread_key, array_keys($new_thread))) {
-
-                        thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
-
-                        if ($tida_closed) thread_set_closed($tida, false);
-                        if ($tidb_closed) thread_set_closed($tidb, false);
-
-                        return false;
-                    }
-                }
-
-                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], $new_thread['TITLE'], 'N', 'N', true);
-
-                if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
-
-                    foreach ($post_data_array as $post_data) {
-
-                        if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
-                        if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
-                        if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
-                        if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
-                        if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
-
-                        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-                        $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-                        $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
-                        $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
-                        $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
-                        $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
-                        $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
-
-                        if (db_query($sql, $db_thread_merge)) {
-
-                            $new_pid = db_insert_id($db_thread_merge);
-
-                            $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
-                            $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM `{$table_data['PREFIX']}POST_CONTENT` ";
-                            $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
-
-                            if (!db_query($sql, $db_thread_merge)) return false;
-
-                            $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
-                            $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
-
-                            if (!db_query($sql, $db_thread_merge)) return false;
-
-                            $aid = md5(uniqid(mt_rand()));
-
-                            $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-                            $sql.= "VALUES ('$forum_fid', '$new_tid', '$new_pid', '$aid')";
-
-                            if (!db_query($sql, $db_thread_merge)) return false;
-
-                            $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_FILES SET AID = '$aid' WHERE AID = '{$post_data['AID']}'";
-
-                            if (!db_query($sql, $db_thread_merge)) return false;
-                        }
-                    }
-
-                    thread_set_moved($tida, $new_tid);
-                    thread_set_moved($tidb, $new_tid);
-
-                    thread_set_length($new_tid, sizeof($post_data_array));
-                    thread_set_closed($new_tid, false);
-
-                    return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $thread_new['TITLE']);
-
-                }else {
-
-                    thread_merge_error(THREAD_MERGE_CREATE_ERROR, $error_str);
-
-                    if ($tida_closed) thread_set_closed($tida, false);
-                    if ($tidb_closed) thread_set_closed($tidb, false);
-
-                    return false;
-                }
-
-            }else {
-
-                thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
-
-                if ($tida_closed) thread_set_closed($tida, false);
-                if ($tidb_closed) thread_set_closed($tidb, false);
-
-                return false;
-            }
-
-        }else {
-
-            thread_merge_error(THREAD_MERGE_POST_ERROR, $error_str);
-
-            if ($tida_closed) thread_set_closed($tida, false);
-            if ($tidb_closed) thread_set_closed($tidb, false);
-
-            return false;
-        }
+    
+    // Check the threads aren't polls.
+    
+    if (($threada['POLL_FLAG'] == 'Y') || ($threadb['POLL_FLAG'] == 'Y')) {
+        return thread_merge_error(THREAD_MERGE_POLL_ERROR, $error_str);
     }
+    
+    // Check thread A permissions
+    
+    if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
+        return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
+    }
+    
+    // Check thread B permissions
 
-    return thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
+    if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
+        return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
+    }
+    
+    // Close thread A
+    
+    thread_set_closed($tida, true);
+    
+    // Close thread B
+    
+    thread_set_closed($tidb, true);
+    
+    // Create new thread
+    
+    if (!($new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], $threada['TITLE'], 'N', 'N', true))) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_MERGE_CREATE_ERROR, $error_str);
+    }
+    
+    // Construct query to correctly sort the posts in the new thread.
+    
+    switch ($merge_type) {
+
+        case THREAD_MERGE_BY_CREATED:
+
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
+            $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
+            $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
+            $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY CREATED";
+            break;
+
+        case THREAD_MERGE_START:
+
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
+            $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) (SELECT '$new_tid', ";
+            $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
+            $sql.= "WHERE TID = '$tidb' ORDER BY CREATED) UNION (SELECT TID, REPLY_TO_PID, ";
+            $sql.= "FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, EDITED, ";
+            $sql.= "EDITED_BY, IPADDRESS, TID, PID FROM  `{$table_data['PREFIX']}POST` ";
+            $sql.= "WHERE TID = '$tida' ORDER BY CREATED)";
+            break;
+
+        case THREAD_MERGE_END:
+
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
+            $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) (SELECT '$new_tid', ";
+            $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
+            $sql.= "WHERE TID = '$tida' ORDER BY CREATED) UNION (SELECT TID, REPLY_TO_PID, ";
+            $sql.= "FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, EDITED, ";
+            $sql.= "EDITED_BY, IPADDRESS, TID, PID FROM  `{$table_data['PREFIX']}POST` ";
+            $sql.= "WHERE TID = '$tidb' ORDER BY CREATED)";
+            break;
+    }
+    
+    // Execute the query to copy the posts.
+    
+    if (!db_query($sql, $db_thread_merge)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);        
+    }
+    
+    // Copy the post contents to the new thread
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
+    $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_data['PREFIX']}POST` POST ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
+    $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
+    $sql.= "WHERE POST.TID = '$new_tid'";
+    
+    if (!db_query($sql, $db_thread_merge)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);        
+    }
+    
+    // Update the REPLY_TO_PIDs in the new thread
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, PID, REPLY_TO_PID) ";
+    $sql.= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` TARGET_POST ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POST` SOURCE_POST ";
+    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql.= "WHERE TARGET_POST.TID = '$new_tid' ";
+    $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
+    
+    if (!db_query($sql, $db_thread_merge)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);        
+    }
+    
+    // Link the attachments to the new thread.
+    
+    $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+    $sql.= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
+    $sql.= "SOURCE_POST_ATTACHMENT_IDS.AID ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` TARGET_POST ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POST` SOURCE_POST ";
+    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql.= "INNER JOIN POST_ATTACHMENT_IDS SOURCE_POST_ATTACHMENT_IDS ";
+    $sql.= "ON (SOURCE_POST_ATTACHMENT_IDS.TID = SOURCE_POST.TID ";
+    $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
+    $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);        
+    }     
+    
+    // Now we unset the MOVED_TID and MOVED_PIDs for the new thread
+    // so the posts appear in the new thread.
+    
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET MOVED_TID = NULL, ";
+    $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
+    
+    if (!db_query($sql, $db_thread_merge)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);        
+    }    
+    
+    // Update the new thread length
+    
+    thread_set_length($new_tid, $threada['LENGTH'] + $threadb['LENGTH']);
+    
+    // Set the original threads as moved
+    
+    thread_set_moved($tida, $new_tid);
+
+    thread_set_moved($tidb, $new_tid);
+    
+    // Unlock the threads if they weren't originally locked.
+    
+    thread_set_closed($tida, ($threada['CLOSED'] > 0));
+    
+    thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+    
+    // Update the new thread so it's closed if either 
+    // of it's source threads were closed.
+    
+    thread_set_closed($new_tid, ($threada['CLOSED'] > 0) | ($threadb['CLOSED'] > 0));
+    
+    // Return the admin log data.
+    
+    return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
 }
 
 function thread_merge_error($error_code, &$error_str)
@@ -800,34 +821,39 @@ function thread_merge_error($error_code, &$error_str)
 
     switch ($error_code) {
 
-        case THREAD_MERGE_INVALID_ARGS:
-
-            $error_str = $lang['invalidfunctionarguments'];
-            break;
-
         case THREAD_MERGE_FORUM_ERROR:
 
             $error_str = $lang['couldnotretrieveforumdata'];
             break;
-
-        case THREAD_MERGE_POLL_ERROR:
-
-            $error_str = $lang['cannotmergepolls'];
+            
+        case THREAD_MERGE_FOLDER_ERROR:
+        
+            $error_str = $lang['invalidfolderid'];
             break;
 
         case THREAD_MERGE_THREAD_ERROR:
 
             $error_str = $lang['couldnotretrievethreaddatamerge'];
             break;
+            
+        case THREAD_MERGE_POLL_ERROR:
 
-        case THREAD_MERGE_POST_ERROR:
+            $error_str = $lang['cannotmergepolls'];
+            break;
 
-            $error_str = $lang['couldnotretrievepostdatamerge'];
+        case THREAD_MERGE_PERMS_ERROR:
+
+            $error_str = $lang['nopermissiontomergethreads'];
             break;
 
         case THREAD_MERGE_CREATE_ERROR:
 
             $error_str = $lang['failedtocreatenewthreadformerge'];
+            break;
+            
+        case THREAD_MERGE_QUERY_ERROR:
+        
+            $error_str = $lang['failedtoexecutethreadmergequery'];
             break;
 
         default:
@@ -839,140 +865,21 @@ function thread_merge_error($error_code, &$error_str)
     return false;
 }
 
-function thread_merge_get_by_created($dest_tid, $source_tid)
-{
-    if (!is_numeric($dest_tid)) return false;
-    if (!is_numeric($source_tid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    if (!$db_thread_merge_get_by_created = db_connect()) return false;
-
-    $post_data_array = array();
-
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
-    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
-    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
-    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
-    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
-    $sql.= "WHERE POST.TID IN ($dest_tid, $source_tid) ";
-    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
-    $sql.= "ORDER BY POST.CREATED";
-
-    if (!$result = db_query($sql, $db_thread_merge_get_by_created)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $dest_pid_array   = array();
-        $source_pid_array = array();
-
-        $new_post_pid = 0;
-
-        while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
-
-            $new_post_pid++;
-
-            if ($post_data['TID'] == $source_tid) {
-
-                $source_pid_array[$post_data['PID']] = $new_post_pid;
-
-                $post_data_array[$new_post_pid] = $post_data;
-
-                if ($post_data['REPLY_TO_PID'] > 0) {
-                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $source_pid_array[$post_data['REPLY_TO_PID']];
-                }
-
-            }else {
-
-                $dest_pid_array[$post_data['PID']] = $new_post_pid;
-
-                $post_data_array[$new_post_pid] = $post_data;
-
-                if ($post_data['REPLY_TO_PID'] > 0) {
-                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
-                }
-            }
-        }
-    }
-
-    return (sizeof($post_data_array) > 0) ? $post_data_array : false;
-}
-
-function thread_merge_get($tida, $tidb)
-{
-    if (!is_numeric($tida)) return false;
-    if (!is_numeric($tidb)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    if (!$db_thread_merge_get_by_created = db_connect()) return false;
-
-    $post_data_array = array();
-
-    if (($threaddata = thread_get($tida))) {
-
-        $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
-        $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
-        $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
-        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
-        $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
-        $sql.= "WHERE POST.TID IN ($tida, $tidb) AND POST.MOVED_TID IS NULL ";
-        $sql.= "AND POST.MOVED_PID IS NULL ORDER BY POST.CREATED";
-
-        if (!$result = db_query($sql, $db_thread_merge_get_by_created)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $tida_post_array = array();
-            $tidb_post_array = array();
-
-            $new_post_pid = 0;
-
-            while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
-
-                $new_post_pid++;
-
-                if ($post_data['TID'] == $tida) {
-
-                    $tida_post_array[$new_post_pid] = $post_data;
-
-                }else {
-
-                    $tidb_post_array[$new_post_pid] = $post_data;
-
-                    if ($tidb_post_array[$new_post_pid]['REPLY_TO_PID'] > 0) {
-                        $tidb_post_array[$new_post_pid]['REPLY_TO_PID'] += ($threaddata['LENGTH'] - 1);
-                    }
-                }
-            }
-
-            if (sizeof($tida_post_array) > 0 && sizeof($tidb_post_array) > 0) {
-
-                $post_data_array = $tida_post_array + $tidb_post_array;
-            }
-        }
-    }
-
-    return (sizeof($post_data_array) > 0) ? $post_data_array : false;
-}
-
 function thread_split($tid, $spid, $split_type, &$error_str)
 {
     if (!$db_thread_split = db_connect()) return false;
 
-    $tid_closed = true;
-
-    if (!is_numeric($tid)) {
-        return thread_split_error(THREAD_SPLIT_INVALID_ARGS, $error_str);
+    if (!$table_data = get_table_prefix()) {
+        return thread_split_error(THREAD_SPLIT_FORUM_ERROR, $error_str);
     }
+    
+    if (!($thread_data = thread_get($tid))) {
+        return thread_split_error(THREAD_SPLIT_THREAD_ERROR, $error_str);
+    }
+    
+    $forum_fid = $table_data['FID'];
 
-    if (!is_numeric($spid) || $spid < 2) {
+    if (!is_numeric($spid) || ($spid < 2) || ($spid > $thread_data['LENGTH'])) {
         return thread_split_error(THREAD_SPLIT_INVALID_ARGS, $error_str);
     }
 
@@ -980,142 +887,197 @@ function thread_split($tid, $spid, $split_type, &$error_str)
         return thread_split_error(THREAD_SPLIT_INVALID_ARGS, $error_str);
     }
 
-    if (!$table_data = get_table_prefix()) {
-        return thread_split_error(THREAD_SPLIT_FORUM_ERROR, $error_str);
+    thread_set_closed($tid, true);
+    
+    $pid_array = array();
+
+    switch ($split_type) {
+
+        case THREAD_SPLIT_REPLIES:
+
+            $pid_array = thread_split_get_replies($tid, $spid, $pid_array);
+            break;
+
+        case THREAD_SPLIT_FOLLOWING:
+
+            $pid_array = thread_split_get_following($tid, $spid, $pid_array);
+            break;
     }
 
-    $forum_fid = $table_data['FID'];
-
-    if (($thread_data = thread_get($tid))) {
-
-        $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
-
-        if (!is_array($thread_data)) {
-            return thread_split_error(THREAD_SPLIT_THREAD_ERROR, $error_str);
-        }
-
-        foreach ($required_thread_keys_array as $required_thread_key) {
-            if (!in_array($required_thread_key, array_keys($thread_data))) {
-                return thread_split_error(THREAD_SPLIT_THREAD_ERROR, $error_str);
-            }
-        }
-
-        $tid_closed = thread_set_closed($tid, true);
-
-        $post_data_array = array();
-        $new_tid = -1;
-
-        switch ($split_type) {
-
-            case THREAD_SPLIT_REPLIES:
-
-                $post_data_array = thread_split_get_replies($tid, $spid);
-                break;
-
-            case THREAD_SPLIT_FOLLOWING:
-
-                $post_data_array = thread_split_get_following($tid, $spid);
-                break;
-        }
-
-        if (is_array($post_data_array) && sizeof($post_data_array) > 0) {
-
-            $required_post_keys_array = array('TID', 'REPLY_TO_PID', 'FROM_UID', 'TO_UID', 'CREATED');
-
-            foreach ($post_data_array as $post_data) {
-
-                if (!is_array($post_data)) {
-
-                    thread_split_error(THREAD_SPLIT_POST_ERROR, $error_str);
-                    if ($tid_closed) thread_set_closed($tid, false);
-                    return false;
-                }
-
-                foreach ($required_post_keys_array as $required_post_key) {
-
-                    if (!in_array($required_post_key, array_keys($post_data))) {
-
-                        thread_split_error(THREAD_SPLIT_POST_ERROR, $error_str);
-                        if ($tid_closed) thread_set_closed($tid, false);
-                        return false;
-                    }
-                }
-            }
-
-            $new_tid = post_create_thread($thread_data['FID'], $post_data_array[1]['FROM_UID'], $thread_data['TITLE'], 'N', 'N', true);
-
-            if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
-
-                foreach ($post_data_array as $post_data) {
-
-                    if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
-                    if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
-                    if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
-                    if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
-                    if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
-
-                    $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-                    $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-                    $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
-                    $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
-                    $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
-                    $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
-                    $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
-
-                    if (db_query($sql, $db_thread_split)) {
-
-                        $new_pid = db_insert_id($db_thread_split);
-
-                        $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
-                        $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM `{$table_data['PREFIX']}POST_CONTENT` ";
-                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
-
-                        if (!db_query($sql, $db_thread_split)) return false;
-
-                        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
-                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
-
-                        if (!db_query($sql, $db_thread_split)) return false;
-
-                        $aid = md5(uniqid(mt_rand()));
-
-                        $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-                        $sql.= "VALUES ('$forum_fid', '$new_tid', '$new_pid', '$aid')";
-
-                        if (!db_query($sql, $db_thread_split)) return false;
-
-                        $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_FILES SET AID = '$aid' WHERE AID = '{$post_data['AID']}'";
-
-                        if (!db_query($sql, $db_thread_split)) return false;
-                    }
-                }
-
-                thread_set_split($tid, $new_tid);
-
-                thread_set_length($new_tid, sizeof($post_data_array));
-
-                thread_set_closed($tid, false);
-                thread_set_closed($new_tid, false);
-
-                return array($tid, $spid, $new_tid, $thread_new['TITLE']);
-
-            }else {
-
-                thread_split_error(THREAD_SPLIT_CREATE_ERROR, $error_str);
-                if ($tid_closed) thread_set_closed($tid, false);
-                return false;
-            }
-
-        }else {
-
-            thread_split_error(THREAD_SPLIT_POST_ERROR, $error_str);
-            if ($tid_closed) thread_set_closed($tid, false);
-            return false;
-        }
-
+    if (!is_array($pid_array) || sizeof($pid_array) < 1) {
+        
+        thread_split_error(THREAD_SPLIT_POST_ERROR, $error_str);
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+        return false;            
     }
 
-    return thread_split_error(THREAD_SPLIT_THREAD_ERROR, $error_str);
+    if (!($new_tid = post_create_thread($thread_data['FID'], $thread_data['BY_UID'], $thread_data['TITLE'], 'N', 'N', true))) {
+        
+        thread_split_error(THREAD_SPLIT_CREATE_ERROR, $error_str);
+        if ($tid_closed) thread_set_closed($tid, false);
+        return false;
+    } 
+    
+    if (!($thread_new = thread_get($new_tid, true, true))) {
+        
+        thread_split_error(THREAD_SPLIT_CREATE_ERROR, $error_str);
+        if ($tid_closed) thread_set_closed($tid, false);
+        return false;
+    }
+    
+    $pid_list = implode(',', $pid_array);                
+
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
+    $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+    $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
+    $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
+    $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
+    $sql.= "WHERE TID = $tid AND PID IN ($pid_list) ORDER BY CREATED";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }
+    
+    // Copy the post contents to the new thread
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
+    $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_data['PREFIX']}POST` POST ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
+    $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
+    $sql.= "WHERE POST.TID = '$new_tid'";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }
+    
+    // Update the REPLY_TO_PIDs in the new thread
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, PID, REPLY_TO_PID) ";
+    $sql.= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` TARGET_POST ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POST` SOURCE_POST ";
+    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql.= "WHERE TARGET_POST.TID = '$new_tid' AND TARGET_POST.PID > 1 ";
+    $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }
+    
+    // Remove the first post in the thread's REPLY_TO_PID
+    
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` POST SET REPLY_TO_PID = NULL ";
+    $sql.= "WHERE POST.TID = '$new_tid' AND POST.PID = 1";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }    
+    
+    // Update the old thread's post MOVED_TID and MOVED_PID
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, PID, MOVED_TID, MOVED_PID) ";
+    $sql.= "SELECT $tid, MOVED_PID, $new_tid, PID FROM `{$table_data['PREFIX']}POST` POST ";
+    $sql.= "WHERE POST.TID = $new_tid ON DUPLICATE KEY UPDATE MOVED_TID = VALUES(MOVED_TID), ";
+    $sql.= "MOVED_PID = VALUES(MOVED_PID)";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }
+    
+    // Link the attachments to the new thread.
+    
+    $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+    $sql.= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
+    $sql.= "SOURCE_POST_ATTACHMENT_IDS.AID ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` TARGET_POST ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POST` SOURCE_POST ";
+    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql.= "INNER JOIN POST_ATTACHMENT_IDS SOURCE_POST_ATTACHMENT_IDS ";
+    $sql.= "ON (SOURCE_POST_ATTACHMENT_IDS.TID = SOURCE_POST.TID ";
+    $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
+    $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }       
+        
+    // Now we unset the MOVED_TID and MOVED_PIDs for the new thread
+    // so the posts appear in the new thread.
+    
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET MOVED_TID = NULL, ";
+    $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
+    
+    if (!db_query($sql, $db_thread_split)) {
+
+        // Unlock the threads if they weren't originally locked.
+        
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        
+        // Return error message.
+        
+        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);        
+    }       
+
+    thread_set_split($tid, $new_tid);
+
+    thread_set_length($new_tid, sizeof($pid_array));
+
+    thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+
+    thread_set_closed($new_tid, ($thread_data['CLOSED'] > 0));
+
+    return array($tid, $spid, $new_tid, $thread_new['TITLE']);
 }
 
 function thread_split_error($error_code, &$error_str)
@@ -1148,6 +1110,11 @@ function thread_split_error($error_code, &$error_str)
 
             $error_str = $lang['failedtocreatenewthreadforsplit'];
             break;
+            
+        case THREAD_SPLIT_QUERY_ERROR:
+        
+            $error_str = $lang['failedtoexecutethreadmergequery'];
+            break;
 
         default:
 
@@ -1161,121 +1128,20 @@ function thread_split_error($error_code, &$error_str)
 function thread_split_get_replies($tid, $pid)
 {
     if (!is_numeric($tid)) return false;
+
     if (!is_numeric($pid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_fid = $table_data['FID'];
-
-    if (!$db_thread_split_get = db_connect()) return false;
-
-    $post_data_array = array();
-    $dest_pid_array  = array();
-
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
-    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
-    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
-    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
-    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid' ";
-    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
-
-    if (!$result = db_query($sql, $db_thread_split_get)) return false;
-
-    if (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
-
-        $new_post_pid = 1;
-
-        $dest_pid_array[$post_data['PID']] = $new_post_pid;
-
-        $post_data_array[$new_post_pid] = $post_data;
-        $post_data_array[$new_post_pid]['REPLY_TO_PID'] = 0;
-
-        thread_split_recursive($tid, $pid, $post_data_array, $dest_pid_array, $new_post_pid);
-    }
-
-    return (sizeof($post_data_array) > 0) ? $post_data_array : false;
-}
-
-function thread_split_get_following($tid, $spid)
-{
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($spid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    if (!$db_thread_split_get_following = db_connect()) return false;
-
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
-    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
-    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
-    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
-    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.PID >= '$spid' ";
-    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
-    $sql.= "ORDER BY POST.PID";
-
-    if (!$result = db_query($sql, $db_thread_split_get_following)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $dest_pid_array  = array();
-        $post_data_array = array();
-
-        $new_post_pid = 0;
-
-        while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
-
-            $new_post_pid++;
-
-            $dest_pid_array[$post_data['PID']] = $new_post_pid;
-
-            $post_data_array[$new_post_pid] = $post_data;
-
-            if ($post_data['REPLY_TO_PID'] > 0) {
-
-                if ($post_data['REPLY_TO_PID'] < $spid) {
-                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = 0;
-                }else {
-                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
-                }
-            }
-        }
-
-        return $post_data_array;
-    }
-
-    return false;
-}
-
-function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array, &$new_post_pid)
-{
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($spid)) return false;
-
-    if (!is_array($post_data_array)) $post_data_array = array();
-    if (!is_array($dest_pid_array)) $dest_pid_array = array();
-
-    if (!is_numeric($new_post_pid)) $new_post_pid = 0;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
     if (!$db_thread_split_recursive = db_connect()) return false;
 
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
-    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
-    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
+    $sql = "SELECT POST.PID, POST.REPLY_TO_PID ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
-    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.REPLY_TO_PID = '$spid' ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
     $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
+    $sql.= "ORDER BY POST.CREATED";
+    
+    $pid_array = array($pid);
 
     if (!$result = db_query($sql, $db_thread_split_recursive)) return false;
 
@@ -1283,24 +1149,45 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
 
         while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
-            $new_post_pid++;
-
-            $dest_pid_array[$post_data['PID']] = $new_post_pid;
-            $post_data_array[$new_post_pid] = $post_data;
-
-            if ($post_data['REPLY_TO_PID'] > 0) {
-
-                if ($post_data['REPLY_TO_PID'] < $spid) {
-                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = 0;
-                }else {
-                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
-                }
-            }
-
-            thread_split_recursive($tid, $post_data['PID'], $post_data_array, $dest_pid_array, $new_post_pid);
+            if (in_array($post_data['REPLY_TO_PID'], $pid_array)) {
+                
+                $pid_array[] = $post_data['PID'];
+            }            
         }
 
-        return true;
+        return $pid_array;
+    }
+
+    return false;
+}
+
+function thread_split_get_following($tid, $pid)
+{
+    if (!is_numeric($tid)) return false;
+
+    if (!is_numeric($pid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!$db_thread_split_recursive = db_connect()) return false;
+
+    $sql = "SELECT POST.PID, POST.REPLY_TO_PID ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
+    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
+    $sql.= "ORDER BY POST.CREATED";
+    
+    $pid_array = array();
+
+    if (!$result = db_query($sql, $db_thread_split_recursive)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+            $pid_array[] = $post_data['PID'];
+        }
+
+        return $pid_array;
     }
 
     return false;

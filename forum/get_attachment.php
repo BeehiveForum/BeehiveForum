@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.51 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.52 2009-11-15 20:58:39 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -145,6 +145,10 @@ if (!$attachment_dir = attachments_check_dir()) {
     exit;
 }
 
+// Get the array of allowed attachment mime-types
+
+$attachment_mime_types = attachment_get_mime_types();
+
 // Check to see which method we are using to fetch the attachment.
 // The old method is to simply refer to the hash in the URL query
 // i.e. get_attachment.php?hash=[MD5Hash] which although fine
@@ -175,63 +179,68 @@ if (isset($hash) && is_md5($hash)) {
                 attachment_inc_dload_count($hash);
                 $filepath = "{$attachment_dir}/{$attachment_details['hash']}";
             }
+            
+            // Check the mimetype is allowed.
+            
+            if (sizeof($attachment_mime_types) == 0 || in_array($filetype, $attachment_mime_types)) {
 
-            // Use the filename quite a few times, so assign it to a variable to save some time.
+                // Use the filename quite a few times, so assign it to a variable to save some time.
 
-            $filename = rawurldecode(basename($attachment_details['filename']));
+                $filename = rawurldecode(basename($attachment_details['filename']));
 
-            if (@file_exists($filepath)) {
+                if (@file_exists($filepath)) {
 
-                // Filesize for Content-Length header.
+                    // Filesize for Content-Length header.
 
-                $length = filesize($filepath);
+                    $length = filesize($filepath);
 
-                // Are we viewing or downloading the attachment?
+                    // Are we viewing or downloading the attachment?
 
-                if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
-                    header("Content-Type: application/x-ms-download", true);
-                }else {
-                    header("Content-Type: ". $attachment_details['mimetype'], true);
-                }
-
-                // Only do the cache control if we're not running
-                // in PHP CGI Mode. We need to do this check as
-                // we need to modify the HTTP Response header
-                // which is not permitted under PHP CGI Mode.
-
-                if (preg_match('/cgi/u', php_sapi_name()) < 1) {
-
-                    // Etag Header for cache control
-                    $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
-
-                    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-                        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                    if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
+                        header("Content-Type: application/x-ms-download", true);
                     }else {
-                        $remote_etag = false;
+                        header("Content-Type: ". $attachment_details['mimetype'], true);
                     }
 
-                    // Last Modified Header for cache control
-                    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
+                    // Only do the cache control if we're not running
+                    // in PHP CGI Mode. We need to do this check as
+                    // we need to modify the HTTP Response header
+                    // which is not permitted under PHP CGI Mode.
 
-                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-                        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-                    }else {
-                        $remote_last_modified = false;
+                    if (preg_match('/cgi/u', php_sapi_name()) < 1) {
+
+                        // Etag Header for cache control
+                        $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+
+                        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+                            $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                        }else {
+                            $remote_etag = false;
+                        }
+
+                        // Last Modified Header for cache control
+                        $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
+
+                        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+                            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+                        }else {
+                            $remote_last_modified = false;
+                        }
+
+                        if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
+                            header("HTTP/1.1 304 Not Modified");
+                            exit;
+                        }
+
+                        header("Last-Modified: $local_last_modified", true);
+                        header("Etag: \"$local_etag\"", true);
                     }
 
-                    if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-                        header("HTTP/1.1 304 Not Modified");
-                        exit;
-                    }
-
-                    header("Last-Modified: $local_last_modified", true);
-                    header("Etag: \"$local_etag\"", true);
+                    header("Content-Length: $length", true);
+                    header("Content-disposition: inline; filename=\"$filename\"", true);
+                    readfile($filepath);
+                    exit;
                 }
-
-                header("Content-Length: $length", true);
-                header("Content-disposition: inline; filename=\"$filename\"", true);
-                readfile($filepath);
-                exit;
             }
         }
     }

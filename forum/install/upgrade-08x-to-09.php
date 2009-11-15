@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-09.php,v 1.4 2009-09-10 11:49:10 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-09.php,v 1.5 2009-11-15 20:41:39 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade-08x-to-083.php') {
 
@@ -323,6 +323,46 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }    
+    
+    // Update USER_PREFS table to allow NULLS
+    
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ";
+    $sql.= "CHANGE `HOMEPAGE_URL` `HOMEPAGE_URL` VARCHAR(255) DEFAULT '' NULL, ";
+    $sql.= "CHANGE `PIC_URL` `PIC_URL` VARCHAR(255) DEFAULT '' NULL, ";
+    $sql.= "CHANGE `EMAIL_NOTIFY` `EMAIL_NOTIFY` CHAR(1) DEFAULT 'Y' NULL, ";
+    $sql.= "CHANGE `MARK_AS_OF_INT` `MARK_AS_OF_INT` CHAR(1) DEFAULT 'Y' NULL, ";
+    $sql.= "CHANGE `POSTS_PER_PAGE` `POSTS_PER_PAGE` VARCHAR(3) DEFAULT '20' NULL, ";
+    $sql.= "CHANGE `FONT_SIZE` `FONT_SIZE` VARCHAR(2) DEFAULT '10' NULL, ";
+    $sql.= "CHANGE `STYLE` `STYLE` VARCHAR(255) DEFAULT '' NULL, ";
+    $sql.= "CHANGE `EMOTICONS` `EMOTICONS` VARCHAR(255) DEFAULT '' NULL, ";     
+    $sql.= "CHANGE `VIEW_SIGS` `VIEW_SIGS` CHAR(1) DEFAULT 'Y' NULL, ";     
+    $sql.= "CHANGE `START_PAGE` `START_PAGE` VARCHAR(3) DEFAULT '0' NULL, ";     
+    $sql.= "CHANGE `LANGUAGE` `LANGUAGE` VARCHAR(32) DEFAULT '' NULL, ";     
+    $sql.= "CHANGE `DOB_DISPLAY` `DOB_DISPLAY` CHAR(1) DEFAULT '2' NULL, ";     
+    $sql.= "CHANGE `ANON_LOGON` `ANON_LOGON` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `SHOW_STATS` `SHOW_STATS` CHAR(1) DEFAULT 'Y' NULL, ";     
+    $sql.= "CHANGE `IMAGES_TO_LINKS` `IMAGES_TO_LINKS` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `USE_WORD_FILTER` `USE_WORD_FILTER` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `USE_ADMIN_FILTER` `USE_ADMIN_FILTER` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `ALLOW_EMAIL` `ALLOW_EMAIL` CHAR(1) DEFAULT 'Y' NULL, ";     
+    $sql.= "CHANGE `ALLOW_PM` `ALLOW_PM` CHAR(1) DEFAULT 'Y' NULL, ";     
+    $sql.= "CHANGE `SHOW_THUMBS` `SHOW_THUMBS` VARCHAR(2) DEFAULT '2' NULL, ";     
+    $sql.= "CHANGE `ENABLE_WIKI_WORDS` `ENABLE_WIKI_WORDS` CHAR(1) DEFAULT 'Y' NULL, ";     
+    $sql.= "CHANGE `USE_MOVER_SPOILER` `USE_MOVER_SPOILER` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `USE_LIGHT_MODE_SPOILER` `USE_LIGHT_MODE_SPOILER` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `USE_OVERFLOW_RESIZE` `USE_OVERFLOW_RESIZE` CHAR(1) DEFAULT 'Y' NULL, ";     
+    $sql.= "CHANGE `PIC_AID` `PIC_AID` VARCHAR(32) DEFAULT '' NULL, ";     
+    $sql.= "CHANGE `AVATAR_URL` `AVATAR_URL` VARCHAR(255) DEFAULT '' NULL, ";     
+    $sql.= "CHANGE `AVATAR_AID` `AVATAR_AID` VARCHAR(32) DEFAULT '' NULL, ";     
+    $sql.= "CHANGE `REPLY_QUICK` `REPLY_QUICK` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `THREADS_BY_FOLDER` `THREADS_BY_FOLDER` CHAR(1) DEFAULT 'N' NULL, ";     
+    $sql.= "CHANGE `THREAD_LAST_PAGE` `THREAD_LAST_PAGE` CHAR(1) DEFAULT 'N' NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }            
 }
 
 // We got this far, that means we can now update the global forum tables.

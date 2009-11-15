@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.149 2009-10-25 12:58:15 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.150 2009-11-15 20:58:39 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -497,6 +497,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
         $error_msg_array[] = $lang['attachmentdirblank'];
         $valid = false;
+    }
+
+    if (isset($_POST['attachment_mime_types']) && strlen(trim(stripslashes_array($_POST['attachment_mime_types']))) > 0) {
+        $new_forum_settings['attachment_mime_types'] = trim(stripslashes_array($_POST['attachment_mime_types']));
+    }else {
+        $new_forum_settings['attachment_mime_types'] = "";
     }
 
     if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
@@ -1448,6 +1454,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['attachmentdir']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("attachment_dir", (isset($forum_global_settings['attachment_dir'])) ? htmlentities_array($forum_global_settings['attachment_dir']) : "attachments", 35, 255), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['allowedattachmentmimetypes']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachment_mime_types", (isset($forum_global_settings['attachment_mime_types'])) ? htmlentities_array($forum_global_settings['attachment_mime_types']) : '', 35), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['userattachmentspace']}:</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.617 2009-11-12 21:32:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.618 2009-11-15 20:58:39 decoyduck Exp $ */
 
 // British English language file
 
@@ -942,6 +942,7 @@ $lang['userattachmentspaceperpost'] = "Attachment space per post";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['allowgueststoaccessattachments'] = "Allow Guests to access attachments";
+$lang['allowedattachmentmimetypes'] = "Allowed Attachment mime-types";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
 $lang['forumstatusmessages'] = "Forum Status Messages";
 $lang['forumclosedmessage'] = "Forum Closed Message";
@@ -1038,6 +1039,7 @@ $lang['uploadnewattachment'] = "Upload New Attachment";
 $lang['waitdotdot'] = "wait..";
 $lang['successfullyuploaded'] = "Successfully Uploaded: %s";
 $lang['failedtoupload'] = "Failed to upload: %s. Check free attachment space!";
+$lang['mimetypenotallowed'] = "Failed to upload: %s. File type is not allowed!";
 $lang['complete'] = "Complete";
 $lang['uploadattachment'] = "Upload a file for attachment to the message";
 $lang['enterfilenamestoupload'] = "Enter filename(s) to upload";

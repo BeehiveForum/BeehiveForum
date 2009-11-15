@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.175 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.176 2009-11-15 20:58:39 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -166,6 +166,10 @@ $max_attachment_space = get_max_attachment_space();
 
 $users_free_space = get_free_attachment_space($uid, $aid);
 
+// Get the array of allowed attachment mime-types
+
+$attachment_mime_types = attachment_get_mime_types();
+
 // Accumlative attachment file size.
 
 $total_attachment_size = 0;
@@ -176,10 +180,11 @@ if (mb_substr($attachment_dir, -1) == '/') {
     $attachment_dir = mb_substr($attachment_dir, 0, -1);
 }
 
-// Arrays to hold successfully / failed uploaded filenames.
+// Arrays to hold successfully / failed / not allowed filenames
 
 $upload_success = array();
 $upload_failure = array();
+$upload_not_allowed = array();
 
 // Array to hold error messages
 
@@ -197,7 +202,7 @@ if (isset($_POST['upload'])) {
 
                 $filename = trim(stripslashes_array($_FILES['userfile']['name'][$i]));
 
-                if (isset($_FILES['userfile']['error'][$i]) && $_FILES['userfile']['error'][$i] > 0) {
+                if (isset($_FILES['userfile']['error'][$i]) && $_FILES['userfile']['error'][$i] != UPLOAD_ERR_OK) {
 
                     $upload_failure[] = $filename;
 
@@ -206,8 +211,17 @@ if (isset($_POST['upload'])) {
                     $filesize = $_FILES['userfile']['size'][$i];
                     $tempfile = $_FILES['userfile']['tmp_name'][$i];
                     $filetype = $_FILES['userfile']['type'][$i];
+                    
+                    if (sizeof($attachment_mime_types) > 0 && !in_array($filetype, $attachment_mime_types)) {
+                        
+                        $upload_not_allowed[] = $filename;
 
-                    if (($max_attachment_space > 0) && ($users_free_space < $filesize)) {
+                        if (@file_exists($tempfile)) {
+
+                            unlink($tempfile);
+                        }
+                        
+                    }else if (($max_attachment_space > 0) && ($users_free_space < $filesize)) {
 
                         $upload_failure[] = $filename;
 
@@ -440,6 +454,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
         html_display_error_msg(sprintf($lang['failedtoupload'], htmlentities_array(implode(", ", $upload_failure))), '600', 'left');
+    }
+    
+    if (isset($upload_not_allowed) && is_array($upload_not_allowed) && sizeof($upload_not_allowed) > 0) {
+        html_display_error_msg(sprintf($lang['mimetypenotallowed'], htmlentities_array(implode(", ", $upload_not_allowed))), '600', 'left');
     }
 }
 

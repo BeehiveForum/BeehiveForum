@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.379 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.380 2009-11-15 20:41:39 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -433,10 +433,10 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (($thread = thread_get($selected_tid))) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
-
+        
         // Check the folder display order / user is a guest.
-
-        if ((bh_session_get_value('THREADS_BY_FOLDER') == 'N') || user_is_guest()) {
+        
+        if ((bh_session_get_value('THREADS_BY_FOLDER') != 'Y') || user_is_guest()) {
 
             // Remove the folder from the list of folders.
 

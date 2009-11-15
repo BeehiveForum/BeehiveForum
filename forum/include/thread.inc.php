@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.173 2009-11-12 21:32:46 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.174 2009-11-15 20:41:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,17 +66,17 @@ function thread_get_title($tid)
 
 function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 {
-    if (!$db_thread_get = db_connect()) return 1;
+    if (!$db_thread_get = db_connect()) return false;
 
     $lang = load_language_file();
 
     $fidlist = folder_get_available();
 
-    if (!$table_data = get_table_prefix()) return 2;
+    if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return 3;
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!is_numeric($tid)) return 4;
+    if (!is_numeric($tid)) return false;
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
@@ -104,7 +104,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
     
     if ($inc_empty === false)  $sql.= "AND THREAD.LENGTH > 0 ";
 
-    if (!$result = db_query($sql, $db_thread_get)) return 5;
+    if (!$result = db_query($sql, $db_thread_get)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -155,7 +155,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
         return $thread_data;
     }
 
-    return 6;
+    return false;
 }
 
 function thread_get_by_uid($tid)

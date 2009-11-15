@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.386 2009-11-08 14:10:07 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.387 2009-11-15 20:41:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -732,7 +732,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $update_prefs_sql = implode(", ", array_map('user_update_prefs_callback2', $update_prefs_array));
 
                 $sql = "UPDATE LOW_PRIORITY `{$forum_prefix}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
-
+                
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
         }    
@@ -760,7 +760,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         
         if (!db_query($sql, $db_user_update_prefs)) return false;
     }
-
+    
     return true;
 }
 
@@ -771,7 +771,7 @@ function user_update_prefs_callback($column)
 
 function user_update_prefs_callback2($column)
 {
-    return sprintf("%s = ''", $column);
+    return sprintf("%s = NULL", $column);
 }
 
 function user_check_pref($name, $value)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.387 2009-11-15 20:41:39 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.388 2009-11-16 19:37:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -568,54 +568,91 @@ function user_get_last_ip_address($uid)
 
 function user_get_prefs($uid)
 {
+    // See user_update_prefs() below for an explanation of the prefs system.
+
     if (!$db_user_get_prefs = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
-    $sql = "SELECT GLOBAL_USER_PREFS.FIRSTNAME, GLOBAL_USER_PREFS.LASTNAME, GLOBAL_USER_PREFS.DOB, ";
-    $sql.= "GLOBAL_USER_PREFS.TIMEZONE, GLOBAL_USER_PREFS.DL_SAVING, TIMEZONES.GMT_OFFSET, ";
-    $sql.= "TIMEZONES.DST_OFFSET, GLOBAL_USER_PREFS.PM_NOTIFY, GLOBAL_USER_PREFS.PM_NOTIFY_EMAIL, ";
-    $sql.= "GLOBAL_USER_PREFS.PM_SAVE_SENT_ITEM, GLOBAL_USER_PREFS.PM_INCLUDE_REPLY, ";
-    $sql.= "GLOBAL_USER_PREFS.PM_AUTO_PRUNE, GLOBAL_USER_PREFS.PM_EXPORT_TYPE, ";
-    $sql.= "GLOBAL_USER_PREFS.PM_EXPORT_FILE, GLOBAL_USER_PREFS.PM_EXPORT_ATTACHMENTS, ";
-    $sql.= "GLOBAL_USER_PREFS.PM_EXPORT_STYLE, GLOBAL_USER_PREFS.PM_EXPORT_WORDFILTER, ";
-    $sql.= "USER_PREFS.STYLE, USER_PREFS.EMOTICONS, GLOBAL_USER_PREFS.POST_PAGE, ";
-    $sql.= "COALESCE(USER_PREFS.HOMEPAGE_URL, GLOBAL_USER_PREFS.HOMEPAGE_URL) AS HOMEPAGE_URL, ";
-    $sql.= "COALESCE(USER_PREFS.PIC_URL, GLOBAL_USER_PREFS.PIC_URL) AS PIC_URL, ";
-    $sql.= "COALESCE(USER_PREFS.PIC_AID, GLOBAL_USER_PREFS.PIC_AID) AS PIC_AID, ";
-    $sql.= "COALESCE(USER_PREFS.AVATAR_URL, GLOBAL_USER_PREFS.AVATAR_URL) AS AVATAR_URL, ";
-    $sql.= "COALESCE(USER_PREFS.AVATAR_AID, GLOBAL_USER_PREFS.AVATAR_AID) AS AVATAR_AID, ";
-    $sql.= "COALESCE(USER_PREFS.EMAIL_NOTIFY, GLOBAL_USER_PREFS.EMAIL_NOTIFY) AS EMAIL_NOTIFY, ";
-    $sql.= "COALESCE(USER_PREFS.MARK_AS_OF_INT, GLOBAL_USER_PREFS.MARK_AS_OF_INT) AS MARK_AS_OF_INT, ";
-    $sql.= "COALESCE(USER_PREFS.THREADS_BY_FOLDER, GLOBAL_USER_PREFS.THREADS_BY_FOLDER) AS THREADS_BY_FOLDER, ";
-    $sql.= "COALESCE(USER_PREFS.POSTS_PER_PAGE, GLOBAL_USER_PREFS.POSTS_PER_PAGE) AS POSTS_PER_PAGE, ";
-    $sql.= "COALESCE(USER_PREFS.FONT_SIZE, GLOBAL_USER_PREFS.FONT_SIZE) AS FONT_SIZE, ";
-    $sql.= "COALESCE(USER_PREFS.VIEW_SIGS, GLOBAL_USER_PREFS.VIEW_SIGS) AS VIEW_SIGS, ";
-    $sql.= "COALESCE(USER_PREFS.START_PAGE, GLOBAL_USER_PREFS.START_PAGE) AS START_PAGE, ";
-    $sql.= "COALESCE(USER_PREFS.LANGUAGE, GLOBAL_USER_PREFS.LANGUAGE) AS LANGUAGE, ";
-    $sql.= "COALESCE(USER_PREFS.DOB_DISPLAY, GLOBAL_USER_PREFS.DOB_DISPLAY) AS DOB_DISPLAY, ";
-    $sql.= "COALESCE(USER_PREFS.ANON_LOGON, GLOBAL_USER_PREFS.ANON_LOGON) AS ANON_LOGON, ";
-    $sql.= "COALESCE(USER_PREFS.SHOW_STATS, GLOBAL_USER_PREFS.SHOW_STATS) AS SHOW_STATS, ";
-    $sql.= "COALESCE(USER_PREFS.IMAGES_TO_LINKS, GLOBAL_USER_PREFS.IMAGES_TO_LINKS) AS IMAGES_TO_LINKS, ";
-    $sql.= "COALESCE(USER_PREFS.USE_WORD_FILTER, GLOBAL_USER_PREFS.USE_WORD_FILTER) AS USE_WORD_FILTER, ";
-    $sql.= "COALESCE(USER_PREFS.USE_ADMIN_FILTER, GLOBAL_USER_PREFS.USE_ADMIN_FILTER) AS USE_ADMIN_FILTER, ";
-    $sql.= "COALESCE(USER_PREFS.ALLOW_EMAIL, GLOBAL_USER_PREFS.ALLOW_EMAIL) AS ALLOW_EMAIL, ";
-    $sql.= "COALESCE(USER_PREFS.ALLOW_PM, GLOBAL_USER_PREFS.ALLOW_PM) AS ALLOW_PM, ";
-    $sql.= "COALESCE(USER_PREFS.SHOW_THUMBS, GLOBAL_USER_PREFS.SHOW_THUMBS) AS SHOW_THUMBS, ";
-    $sql.= "COALESCE(USER_PREFS.USE_MOVER_SPOILER, GLOBAL_USER_PREFS.USE_MOVER_SPOILER) AS USE_MOVER_SPOILER, ";
-    $sql.= "COALESCE(USER_PREFS.USE_LIGHT_MODE_SPOILER, GLOBAL_USER_PREFS.USE_LIGHT_MODE_SPOILER) AS USE_LIGHT_MODE_SPOILER, ";
-    $sql.= "COALESCE(USER_PREFS.ENABLE_WIKI_WORDS, GLOBAL_USER_PREFS.ENABLE_WIKI_WORDS) AS ENABLE_WIKI_WORDS, ";
-    $sql.= "COALESCE(USER_PREFS.REPLY_QUICK, GLOBAL_USER_PREFS.REPLY_QUICK) AS REPLY_QUICK, ";
-    $sql.= "COALESCE(USER_PREFS.USE_OVERFLOW_RESIZE, GLOBAL_USER_PREFS.USE_OVERFLOW_RESIZE) AS USE_OVERFLOW_RESIZE, ";
-    $sql.= "COALESCE(USER_PREFS.THREAD_LAST_PAGE, GLOBAL_USER_PREFS.THREAD_LAST_PAGE) AS THREAD_LAST_PAGE ";
-    $sql.= "FROM USER_PREFS AS GLOBAL_USER_PREFS ";
-    $sql.= "LEFT JOIN `beehiveforum`.`DEFAULT_USER_PREFS` USER_PREFS ON (USER_PREFS.UID = GLOBAL_USER_PREFS.UID) ";
-    $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = GLOBAL_USER_PREFS.TIMEZONE) ";
-    $sql.= "WHERE USER_PREFS.UID = '$uid'";
+    // Arrays to hold the user preferences.
 
-    if (!($result = db_query($sql, $db_user_get_prefs))) return false;
+    $global_prefs_array = array();
+    $forum_prefs_array  = array();
 
-    return db_fetch_array($result, DB_RESULT_ASSOC);
+    // 2. The user's global prefs, in USER_PREFS:
+
+    $sql = "SELECT USER_PREFS.FIRSTNAME, USER_PREFS.LASTNAME, USER_PREFS.DOB, ";
+    $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.PIC_AID, ";
+    $sql.= "USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, USER_PREFS.EMAIL_NOTIFY, ";
+    $sql.= "USER_PREFS.TIMEZONE, TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET, ";
+    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.THREADS_BY_FOLDER, ";
+    $sql.= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.FONT_SIZE, USER_PREFS.VIEW_SIGS, ";
+    $sql.= "USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, ";
+    $sql.= "USER_PREFS.PM_NOTIFY_EMAIL, USER_PREFS.PM_SAVE_SENT_ITEM, ";
+    $sql.= "USER_PREFS.PM_INCLUDE_REPLY, USER_PREFS.PM_AUTO_PRUNE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_TYPE, USER_PREFS.PM_EXPORT_FILE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_ATTACHMENTS, USER_PREFS.PM_EXPORT_STYLE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, ";
+    $sql.= "USER_PREFS.ANON_LOGON, USER_PREFS.SHOW_STATS, ";
+    $sql.= "USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
+    $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, ";
+    $sql.= "USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, ";
+    $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
+    $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.ENABLE_WIKI_WORDS, ";
+    $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.USE_OVERFLOW_RESIZE, ";
+    $sql.= "USER_PREFS.THREAD_LAST_PAGE FROM USER_PREFS ";
+    $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
+    $sql.= "WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_user_get_prefs)) return false;
+
+    if (db_num_rows($result) > 0) {
+        $global_prefs_array = db_fetch_array($result, DB_RESULT_ASSOC);
+    }
+
+    // 3. The user's per-forum prefs, in GLOBAL USER_PREFS (not all prefs are set here e.g. name):
+
+    if (($table_data = get_table_prefix())) {
+
+        $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
+        $sql.= "MARK_AS_OF_INT, THREADS_BY_FOLDER, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, ";
+        $sql.= "START_PAGE, LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, ";
+        $sql.= "USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ";
+        $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, ENABLE_WIKI_WORDS, USE_OVERFLOW_RESIZE, ";
+        $sql.= "REPLY_QUICK, THREAD_LAST_PAGE FROM `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "WHERE UID = '$uid'";
+
+        if (!$result = db_query($sql, $db_user_get_prefs)) return false;
+
+        if (db_num_rows($result) > 0) {
+            $forum_prefs_array = db_fetch_array($result, DB_RESULT_ASSOC);
+        }
+    }
+
+    // Prune empty values from the arrays (to stop them overwriting valid values)
+    // using strlen() as a callback function.
+
+    $global_prefs_array = array_filter($global_prefs_array, "strlen");
+    $forum_prefs_array = array_filter($forum_prefs_array, "strlen");
+
+    // Get the array keys.
+
+    $global_prefs_array_keys = array_keys($global_prefs_array);
+    $forum_prefs_array_keys = array_keys($forum_prefs_array);
+
+    // Add keys to indicate whether the preference is set globally or not
+
+    foreach ($forum_prefs_array_keys as $key) {
+        $forum_prefs_array[$key. '_GLOBAL'] = false;
+    }
+
+    foreach ($global_prefs_array_keys as $key) {
+        $global_prefs_array[$key. '_GLOBAL'] = true;
+    }
+
+    // Merge them all together, with forum prefs overriding global prefs
+
+    return array_merge($global_prefs_array, $forum_prefs_array);
 }
 
 function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)
@@ -732,7 +769,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $update_prefs_sql = implode(", ", array_map('user_update_prefs_callback2', $update_prefs_array));
 
                 $sql = "UPDATE LOW_PRIORITY `{$forum_prefix}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
-                
+
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
         }    
@@ -760,7 +797,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         
         if (!db_query($sql, $db_user_update_prefs)) return false;
     }
-    
+
     return true;
 }
 
@@ -771,7 +808,7 @@ function user_update_prefs_callback($column)
 
 function user_update_prefs_callback2($column)
 {
-    return sprintf("%s = NULL", $column);
+    return sprintf("%s = ''", $column);
 }
 
 function user_check_pref($name, $value)

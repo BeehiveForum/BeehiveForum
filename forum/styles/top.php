@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: top.php,v 1.2 2009-07-11 19:18:09 decoyduck Exp $ */
+/* $Id: top.php,v 1.3 2009-11-17 21:13:34 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -100,7 +100,7 @@ html_draw_top('class=top_banner');
 
 $top_frame_name = html_get_top_frame_name();
 
-$forum_title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "  <tr>\n";

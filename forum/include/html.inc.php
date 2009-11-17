@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.349 2009-11-03 18:38:25 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.350 2009-11-17 21:13:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -386,10 +386,10 @@ function html_get_top_page()
             return "$forum_path/styles/$user_style/top.html";
         }
     }
-    
+
     if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/top.php")) {
         return "$forum_path/styles/top.php";
-    }    
+    }
 
     return "$forum_path/styles/top.html";
 }
@@ -622,7 +622,7 @@ function html_get_top_frame_name()
 function html_include_javascript($script)
 {
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
-    
+
     $path_parts = pathinfo($script);
 
     $minified_script = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
@@ -637,7 +637,7 @@ function html_include_javascript($script)
 function html_include_css($script, $media = 'screen')
 {
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
-    
+
     $path_parts = pathinfo($script);
 
     $minified_script = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
@@ -741,6 +741,8 @@ function html_draw_top()
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
+    $uid = bh_session_get_value('UID');
+
     $frame_set_html = false;
 
     $pm_popup_disabled = false;
@@ -780,7 +782,7 @@ function html_draw_top()
         }
 
         if (preg_match('/^stylesheet=(([^:]+):([^$]+))?$/Diu', $func_args, $func_matches) > 0) {
-            
+
             if (isset($func_matches[1]) && isset($func_matches[2])) {
                 $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => $func_matches[2]);
             }
@@ -877,11 +879,11 @@ function html_draw_top()
     }
 
     if ((basename($_SERVER['PHP_SELF']) == "index.php") && bh_session_active()) {
-        
+
         printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s/threads_rss.php?webtag=%s\" />\n", htmlentities_array($title), htmlentities_array($lang['rssfeed']), $forum_path, $webtag);
-        
+
         if (($folders_array = folder_get_available_details())) {
-            
+
             foreach ($folders_array as $folder) {
                 printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s/threads_rss.php?webtag=%s&amp;fid=%s\" />\n", htmlentities_array($title), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $forum_path, $webtag, $folder['FID']);
             }
@@ -928,7 +930,7 @@ function html_draw_top()
     echo "var webtag = '", html_js_safe_str($webtag), "'\n";
 
     if (strlen(trim($title)) > 0) {
-        echo "top.document.title = \"", html_js_safe_str($forum_name), " » ", html_js_safe_str($title), "\";\n";
+        echo "top.document.title = \"", html_js_safe_str(word_filter_apply($forum_name, $uid)), " » ",  html_js_safe_str(word_filter_apply($title, $uid)), "\";\n";
     }
 
     echo "//-->\n";
@@ -1323,9 +1325,9 @@ function html_output_adsense_settings()
         if (strlen(trim($adsense_publisher_id)) > 0) {
 
             // Default banner size and type
-            
+
             $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
-            
+
             // Get banner size and type
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
@@ -1418,7 +1420,7 @@ function bh_setcookie($name, $value, $expires = 0)
 
             $cookie_domain = $cookie_domain_array['host'];
             $cookie_path = $cookie_domain_array['path'];
-            
+
             return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $cookie_secure);
         }
     }
@@ -1510,7 +1512,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri_query_array = array();
 
         parse_str($uri_array['query'], $uri_query_array);
-        
+
         unset($uri_array['query']);
 
         $uri_query_keys = array();
@@ -1538,7 +1540,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
                 }
             }
         }
-        
+
         if (sizeof($new_uri_query_array) > 0) {
             $uri_array['query'] = implode($seperator, $new_uri_query_array);
         }

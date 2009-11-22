@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-09.php,v 1.6 2009-11-16 19:37:27 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-09.php,v 1.7 2009-11-22 22:56:47 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade-08x-to-083.php') {
 
@@ -304,19 +304,37 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    // Remove any existing indexes on THREAD.TITLE
+    // Remove any existing indexes on THREAD
 
-    if (install_index_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "TITLE")) {
+    if (!install_remove_indexes($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD")) {
 
-        // Remove the index on TITLE before we add the FULLTEXT key
-
-        $sql = "ALTER IGNORE TABLE `{$table_data['PREFIX']}THREAD` DROP INDEX TITLE";
-        $result = @db_query($sql, $db_install);
+        $valid = false;
+        return;
     }
 
     // Add the FULLTEXT key to TITLE.
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD FULLTEXT(TITLE)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add index for thread sorting
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD INDEX `MODIFIED` (`MODIFIED`, `FID`, `LENGTH`, `DELETED`)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add index for sticky thread sorting
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD INDEX `STICKY` (`STICKY`, `MODIFIED`, `FID`, `LENGTH`, `DELETED`)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

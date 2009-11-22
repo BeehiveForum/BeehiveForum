@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.394 2009-11-15 20:58:39 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.395 2009-11-22 22:56:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -111,7 +111,7 @@ function get_forum_data()
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
                 }
             }
-        }       
+        }
     }
 
     return $forum_data;
@@ -431,10 +431,10 @@ function forum_get_settings()
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
         if (db_num_rows($result) > 0) {
-        
+
             // Preset some of the settings, including GMT offset and DST offset.
 
-            $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);        
+            $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);
 
             while (($forum_data = db_fetch_array($result))) {
 
@@ -444,16 +444,16 @@ function forum_get_settings()
                 }
             }
         }
-        
+
         // Get the forum timezone, GMT offset and DST offset.
-        
+
         if (isset($forum_settings_array['forum_timezone'])) {
 
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
             $sql.= "WHERE TZID = '{$forum_settings_array['forum_timezone']}'";
 
             if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-            
+
             if (db_num_rows($result) > 0) {
 
                 list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
@@ -486,7 +486,7 @@ function forum_get_global_settings()
     static $forum_global_settings_array = false;
 
     if (!is_array($forum_global_settings_array)) {
-           
+
         // Get the named settings from FORUM_SETTINGS table.
 
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
@@ -494,10 +494,10 @@ function forum_get_global_settings()
         if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
 
         if (db_num_rows($result) > 0) {
-        
+
             // Preset some of the settings, including GMT offset and DST offset.
 
-            $forum_global_settings_array = array('forum_gmt_offset' => 0, 'forum_dst_offset' => 1);            
+            $forum_global_settings_array = array('forum_gmt_offset' => 0, 'forum_dst_offset' => 1);
 
             while (($forum_data = db_fetch_array($result))) {
 
@@ -509,14 +509,14 @@ function forum_get_global_settings()
         }
 
         // Get the forum timezone, GMT offset and DST offset.
-        
+
         if (isset($forum_global_settings_array['forum_timezone'])) {
 
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
             $sql.= "WHERE TZID = '{$forum_global_settings_array['forum_timezone']}'";
 
             if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
-            
+
             if (db_num_rows($result) > 0) {
 
                 list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
@@ -547,10 +547,10 @@ function forum_get_settings_by_fid($forum_fid)
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
         if (db_num_rows($result) > 0) {
-        
+
             // Preset some of the settings, including GMT offset and DST offset.
 
-            $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);        
+            $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);
 
             while (($forum_data = db_fetch_array($result))) {
 
@@ -560,16 +560,16 @@ function forum_get_settings_by_fid($forum_fid)
                 }
             }
         }
-        
+
         // Get the forum timezone, GMT offset and DST offset.
-        
+
         if (isset($forum_settings_array['forum_timezone'])) {
 
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
             $sql.= "WHERE TZID = '{$forum_settings_array['forum_timezone']}'";
 
             if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-            
+
             if (db_num_rows($result) > 0) {
 
                 list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
@@ -605,7 +605,7 @@ function forum_save_settings($forum_settings_array)
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!db_query($sql, $db_forum_save_settings)) return false;
-        
+
         }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
             trigger_error("Unknown forum setting name '$setting_name'", E_USER_ERROR);
@@ -633,11 +633,11 @@ function forum_save_default_settings($forum_settings_array)
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!db_query($sql, $db_forum_save_default_settings)) return false;
-        
+
         }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
             trigger_error("Unknown default forum setting name '$setting_name'", E_USER_ERROR);
-        }            
+        }
     }
 
     return true;
@@ -650,13 +650,13 @@ function forum_check_setting_name($setting_name)
                                   'default_emoticons', 'default_language', 'default_style',
                                   'enable_wiki_integration', 'enable_wiki_quick_links', 'enable_google_analytics',
                                   'force_word_filter', 'forum_desc', 'forum_content_rating',
-                                  'forum_dl_saving', 'forum_email', 'forum_keywords', 'forum_name', 
+                                  'forum_dl_saving', 'forum_email', 'forum_keywords', 'forum_name',
                                   'forum_links_top_link', 'forum_timezone', 'google_analytics_code',
                                   'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
                                   'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
                                   'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
                                   'restricted_message', 'searchbots_show_active', 'searchbots_show_recent',
-                                  'send_new_user_email', 'session_cutoff', 'show_links', 'show_stats', 
+                                  'send_new_user_email', 'session_cutoff', 'show_links', 'show_stats',
                                   'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
@@ -669,7 +669,7 @@ function forum_check_global_setting_name($setting_name)
                                          'allow_new_registrations', 'allow_search_spidering', 'allow_username_changes',
                                          'attachments_allow_embed', 'attachments_enabled', 'attachments_max_user_space',
                                          'attachments_max_post_space', 'attachment_allow_guests', 'attachment_dir',
-                                         'attachment_mime_types', 'attachment_use_old_method', 'bh_remove_stale_sessions_last_run', 
+                                         'attachment_mime_types', 'attachment_use_old_method', 'bh_remove_stale_sessions_last_run',
                                          'cache_dir', 'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
                                          'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
                                          'forum_maintenance_schedule', 'forum_timezone', 'pm_system_prune_folders_last_run',
@@ -680,10 +680,10 @@ function forum_check_global_setting_name($setting_name)
                                          'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
                                          'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune',
                                          'pm_max_user_messages', 'require_email_confirmation', 'require_unique_email',
-                                         'require_user_approval', 'search_min_frequency', 'searchbots_show_active', 
-                                         'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled', 
+                                         'require_user_approval', 'search_min_frequency', 'searchbots_show_active',
+                                         'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled',
-                                         'mail_function', 'sendmail_path', 'smtp_server', 'smtp_port', 'smtp_username', 
+                                         'mail_function', 'sendmail_path', 'smtp_server', 'smtp_port', 'smtp_username',
                                          'smtp_password');
 
     return in_array($setting_name, $valid_global_forum_settings);
@@ -861,7 +861,7 @@ function forum_get_unread_cutoff_datetime()
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
         return date(MYSQL_DATETIME_MIDNIGHT, time() - $unread_cutoff_stamp);
     }
-    
+
     return false;
 }
 
@@ -913,7 +913,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
     if (!is_numeric($unread_cutoff_stamp)) return false;
 
     if ($unread_cutoff_stamp !== false) {
-    
+
         $unread_cutoff_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $unread_cutoff_stamp);
 
         if (($forum_prefix_array = forum_get_all_prefixes())) {
@@ -978,7 +978,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
     if (!is_numeric($access)) $access = 0;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Generate table prefix
@@ -1482,11 +1482,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
         $sql.= "  PRIMARY KEY (TID), ";
         $sql.= "  KEY BY_UID (BY_UID), ";
-        $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
-        $sql.= "  KEY LENGTH (LENGTH), ";
-        $sql.= "  KEY MODIFIED (MODIFIED), ";
+        $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
+        $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
         $sql.= "  FULLTEXT KEY TITLE (TITLE), ";
-        $sql.= "  KEY FID (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -2032,7 +2030,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
     $forum_name = db_escape_string($forum_name);
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-        
+
         $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access_level', ";
         $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
 
@@ -2043,7 +2041,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
         $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
         if (!db_query($sql, $db_forum_update)) return false;
-        
+
         return true;
     }
 
@@ -2180,7 +2178,7 @@ function forum_delete_tables($webtag, $database_name)
                              'USER_THREAD',   'VISITOR_LOG',     'WORD_FILTER');
 
         foreach ($table_array as $table_name) {
-            
+
             $sql = "DROP TABLE IF EXISTS `{$forum_table_prefix}{$table_name}`";
 
             if (!db_query($sql, $db_forum_delete_tables)) return false;
@@ -2593,7 +2591,7 @@ function forum_update_last_visit($uid)
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $forum_fid = $table_data['FID'];
@@ -2745,8 +2743,8 @@ function forum_check_maintenance()
 
             // Check the function actually exists before we try and execute it.
 
-            if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {             
-                
+            if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {
+
                 // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
 
                 ignore_user_abort(true);
@@ -2765,7 +2763,7 @@ function forum_check_maintenance()
 
                 // Save the settings to the database.
 
-                forum_save_default_settings($new_forum_settings);                
+                forum_save_default_settings($new_forum_settings);
             }
         }
     }

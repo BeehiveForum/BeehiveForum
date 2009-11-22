@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.98 2009-11-08 14:10:07 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.99 2009-11-22 22:56:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -405,7 +405,7 @@ function install_column_exists($database_name, $table_name, $column_name)
 
     $column_name = db_escape_string($column_name);
 
-    $sql = "SHOW COLUMNS FROM `{$database_name}`.`{$table_name}` LIKE '$column_name'";
+    $sql = "SHOW COLUMNS FROM `$database_name`.`$table_name` LIKE '$column_name'";
 
     if (!$result = db_query($sql, $db_install_column_exists)) return false;
 
@@ -416,7 +416,7 @@ function install_index_exists($database_name, $table_name, $index_name)
 {
     if (!$db_install_index_exists = db_connect()) return false;
 
-    $sql = "SHOW INDEXES FROM `{$database_name}`.`$table_name`";
+    $sql = "SHOW INDEXES FROM `$database_name`.`$table_name`";
 
     if (!$result = db_query($sql, $db_install_index_exists)) return false;
 
@@ -473,7 +473,7 @@ function install_check_table_conflicts($database_name, $webtag, $forum_tables = 
 
             if (install_table_exists($database_name, $check_forum_table)) {
 
-                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($check_forum_table))) {
+                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($database_name, $check_forum_table))) {
 
                     $conflicting_tables_array[] = "'$check_forum_table'";
                 }
@@ -487,7 +487,7 @@ function install_check_table_conflicts($database_name, $webtag, $forum_tables = 
 
             if (install_table_exists($database_name, $check_global_table)) {
 
-                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($check_global_table))) {
+                if ($remove_conflicts === false || ($remove_conflicts === true && !install_remove_table($database_name, $check_global_table))) {
 
                     $conflicting_tables_array[] = "'{$check_global_table}'";
                 }
@@ -498,32 +498,32 @@ function install_check_table_conflicts($database_name, $webtag, $forum_tables = 
     return (sizeof($conflicting_tables_array) > 0) ? $conflicting_tables_array : false;
 }
 
-function install_remove_table($table_name)
+function install_remove_table($database_name, $table_name)
 {
     if (!$db_install_remove_table = db_connect()) return false;
 
-    $sql = "DROP TABLE IF EXISTS `$table_name`";
+    $sql = "DROP TABLE IF EXISTS `$database_name`.`$table_name`";
 
     if (!db_query($sql, $db_install_remove_table)) return false;
 
     return true;
 }
 
-function install_remove_indexes($table_name)
+function install_remove_indexes($database_name, $table_name)
 {
     if (!$db_install_remove_indexes = db_connect()) return false;
 
     $table_name = db_escape_string($table_name);
 
-    $sql = "SHOW INDEX FROM `$table_name`";
-    
+    $sql = "SHOW INDEX FROM `$database_name`.`$table_name`";
+
     if (!$result = db_query($sql, $db_install_remove_indexes)) return false;
 
     while ((list(,,$key_name) = db_fetch_array($result, DB_RESULT_NUM))) {
 
         if (preg_match("/^PRIMARY$/", mb_strtoupper($key_name)) < 1) {
 
-            $sql = "ALTER IGNORE TABLE `$table_name` DROP INDEX `$key_name`";
+            $sql = "ALTER IGNORE TABLE `$database_name`.`$table_name` DROP INDEX `$key_name`";
             @db_query($sql, $db_install_remove_indexes);
         }
     }

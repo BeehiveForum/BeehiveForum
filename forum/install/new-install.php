@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.198 2009-11-16 19:37:27 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.199 2009-11-22 22:56:47 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'new-install.php') {
 
@@ -369,11 +369,9 @@ $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
 $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (TID), ";
 $sql.= "  KEY BY_UID (BY_UID), ";
-$sql.= "  KEY STICKY (STICKY, MODIFIED), ";
-$sql.= "  KEY LENGTH (LENGTH), ";
-$sql.= "  KEY MODIFIED (MODIFIED), ";
+$sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
+$sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
 $sql.= "  FULLTEXT KEY TITLE (TITLE), ";
-$sql.= "  KEY FID (FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {

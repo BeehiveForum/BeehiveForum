@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.350 2009-11-17 21:13:34 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.351 2009-11-24 21:04:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -920,6 +920,12 @@ function html_draw_top()
 
     echo "<script type=\"text/javascript\">\n";
     echo "<!--\n\n";
+    echo "var bh_frame_index = '", html_get_frame_name('index'), "'\n";
+    echo "var bh_frame_admin = '", html_get_frame_name('admin'), "'\n";
+    echo "var bh_frame_start = '", html_get_frame_name('start'), "'\n";
+    echo "var bh_frame_discussion = '", html_get_frame_name('discussion'), "'\n";
+    echo "var bh_frame_user = '", html_get_frame_name('user'), "'\n";
+    echo "var bh_frame_pm = '", html_get_frame_name('pm'), "'\n";
     echo "var bh_frame_main = '", html_get_frame_name('main'), "'\n";
     echo "var bh_frame_ftop = '", html_get_frame_name('ftop'), "'\n";
     echo "var bh_frame_fnav = '", html_get_frame_name('fnav'), "'\n";
@@ -1175,12 +1181,15 @@ class html_frameset_rows extends html_frameset
 {
     private $rows = '';
 
+    private $name = '';
     private $framespacing = 0;
     private $frameborder = 0;
     private $allowtransparency = '';
 
-    public function html_frameset_rows($rows, $framespacing = 0, $frameborder = 0)
+    public function html_frameset_rows($name, $rows, $framespacing = 0, $frameborder = 0)
     {
+        $this->name = $name;
+
         if (preg_match('/^[0-9,\*%]+$/D', $rows)) {
             $this->rows = $rows;
         }
@@ -1195,7 +1204,7 @@ class html_frameset_rows extends html_frameset
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
+        echo sprintf("<frameset name=\"%s\" rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->name, $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
         $frames_array = parent::get_frames();
 
@@ -1211,12 +1220,15 @@ class html_frameset_cols extends html_frameset
 {
     private $cols = '';
 
+    private $name = '';
     private $framespacing = 0;
     private $frameborder = 0;
     private $allowtransparency = '';
 
-    public function html_frameset_cols($cols, $framespacing = 4, $frameborder = 4)
+    public function html_frameset_cols($name, $cols, $framespacing = 4, $frameborder = 4)
     {
+        $this->name = $name;
+
         if (preg_match('/^[0-9,\*%]+$/D', $cols)) {
             $this->cols = $cols;
         }
@@ -1231,7 +1243,7 @@ class html_frameset_cols extends html_frameset
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
+        echo sprintf("<frameset name=\"%s\" cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->name, $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
         $frames_array = parent::get_frames();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.152 2009-06-26 17:14:20 decoyduck Exp $ */
+/* $Id: pm.php,v 1.153 2009-11-24 21:04:19 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -129,7 +129,7 @@ $available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
 
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('280,*');
+$frameset = new html_frameset_cols(html_get_frame_name('pm_frameset'), '280,*');
 
 // If we're viewing a message we need to know the folder it is in.
 

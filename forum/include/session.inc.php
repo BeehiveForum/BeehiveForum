@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.396 2009-11-22 10:19:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.397 2009-11-24 21:04:19 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -369,7 +369,7 @@ function bh_guest_session_init()
                 $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
-                if (!$result = db_query($sql, $db_bh_session_check)) return false;
+                if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
                 // If the user has changed forums we should call bh_update_visitor_log
                 // and forum_update_last_visit()

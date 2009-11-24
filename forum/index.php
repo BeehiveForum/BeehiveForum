@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.197 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: index.php,v 1.198 2009-11-24 21:04:19 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -202,7 +202,7 @@ html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
 if ($skip_logon_page === true) {
 
-    $frameset = new html_frameset_rows("60,$navsize,*");
+    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,$navsize,*");
 
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
@@ -278,7 +278,7 @@ if ($skip_logon_page === true) {
         }
     }
 
-    $frameset = new html_frameset_rows("60,$navsize,*");
+    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,$navsize,*");
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
@@ -306,7 +306,7 @@ if ($skip_logon_page === true) {
         $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
     }
 
-    $frameset = new html_frameset_rows("60,*");
+    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,*");
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 }
@@ -325,9 +325,9 @@ if ($session_active && $logon_failed === false) {
             $msg = $_GET['msg'];
 
             light_draw_messages($msg);
-                      
+
         }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-        
+
             // Guests can't access PMs
 
             if (user_is_guest()) {
@@ -338,14 +338,14 @@ if ($session_active && $logon_failed === false) {
 
             // Check that PM system is enabled
 
-            light_pm_enabled();        
-        
+            light_pm_enabled();
+
             pm_user_prune_folders();
 
             light_draw_pm_inbox();
-            
+
         }else {
-           
+
             light_draw_thread_list();
         }
 

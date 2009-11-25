@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.235 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.236 2009-11-25 20:41:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -51,10 +51,37 @@ function search_execute($search_arguments, &$error)
 
     $forum_fid = $table_data['FID'];
 
-    // Ensure the bare minimum of variables are set
+    // Ensure the date_from argument is set
 
-    if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) $search_arguments['date_from'] = SEARCH_FROM_ONE_MONTH_AGO;
-    if (!isset($search_arguments['date_to']) || !is_numeric($search_arguments['date_to'])) $search_arguments['date_to'] = SEARCH_TO_TODAY;
+    if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) {
+         $search_arguments['date_from'] = SEARCH_FROM_ONE_MONTH_AGO;
+    }
+
+    // Ensure the date_to argument is set.
+
+    if (!isset($search_arguments['date_to']) || !is_numeric($search_arguments['date_to'])) {
+         $search_arguments['date_to'] = SEARCH_TO_TODAY;
+    }
+
+    // Ensure the sort_by argument is set.
+
+    if (!isset($search_arguments['sort_by']) || !is_numeric($search_arguments['sort_by'])) {
+        $search_arguments['sort_by'] = SEARCH_SORT_CREATED;
+    }
+
+    // Ensure the sort_dir argument is set.
+
+    if (!isset($search_arguments['sort_dir']) || !is_numeric($search_arguments['sort_dir'])) {
+        $search_arguments['sort_dir'] = SEARCH_SORT_DESC;
+    }
+
+    // Check the sort_dir is valid
+
+    if (!in_array($search_arguments['sort_dir'], array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
+        $search_arguments['sort_dir'] = SEARCH_SORT_ASC;
+    }
+
+    // Database connection.
 
     if (!$db_search_execute = db_connect()) return false;
 
@@ -105,19 +132,23 @@ function search_execute($search_arguments, &$error)
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT SQL_NO_CACHE ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
             $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
             $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, ";
-            $select_sql.= "THREAD.LENGTH ";
+            $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
 
         }else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT SQL_NO_CACHE ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
             $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
             $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, ";
-            $select_sql.= "THREAD.LENGTH ";
+            $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
         }
+
+        // Save the sort by and sort dir.
+
+        search_save_arguments($search_arguments['sort_by'], $search_arguments['sort_dir']);
 
         // FROM query uses POST table if we're not using keyword searches.
 
@@ -187,7 +218,7 @@ function search_execute($search_arguments, &$error)
 
             $search_string = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
-            search_save_keywords($search_keywords_array['keywords']);
+            search_save_arguments($search_arguments['sort_by'], $search_arguments['sort_dir'], $search_keywords_array['keywords']);
 
             if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
@@ -235,6 +266,40 @@ function search_execute($search_arguments, &$error)
         $group_sql = "";
     }
 
+    // Get the correct sort dir
+
+    $sort_dir = ($search_arguments['sort_dir'] == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
+
+    // Construct the order by clause.
+
+    switch($search_arguments['sort_by']) {
+
+        case SEARCH_SORT_RELEVANCE:
+
+            $order_sql = "ORDER BY RELEVANCE $sort_dir";
+            break;
+
+        case SEARCH_SORT_NUM_REPLIES:
+
+            $order_sql = "ORDER BY THREAD.LENGTH $sort_dir";
+            break;
+
+        case SEARCH_SORT_FOLDER_NAME:
+
+            $order_sql = "ORDER BY THREAD.FID $sort_dir";
+            break;
+
+        case SEARCH_SORT_AUTHOR_NAME:
+
+            $order_sql = "ORDER BY POST.FROM_UID $sort_dir";
+            break;
+
+        default:
+
+            $order_sql = "ORDER BY POST.CREATED $sort_dir";
+            break;
+    }
+
     // Set a limit of 1000 results.
 
     $limit_sql = "LIMIT 0, 1000";
@@ -243,7 +308,7 @@ function search_execute($search_arguments, &$error)
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
     $sql.= "$where_sql $peer_where_sql $group_sql $having_sql ";
-    $sql.= "$limit_sql";
+    $sql.= "$order_sql $limit_sql";
 
     // If the user has performed a search within the last x minutes bail out
 
@@ -399,25 +464,29 @@ function search_get_word_lengths(&$min_length, &$max_length)
     return false;
 }
 
-function search_save_keywords($keywords_array)
+function search_save_arguments($sort_by, $sort_dir, $keywords_array = array())
 {
-    if (!$db_search_save_keywords = db_connect()) return false;
+    if (!$db_search_save_arguments = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!is_array($keywords_array)) return false;
+    if (!is_array($keywords_array)) $keywords_array = array();
 
     $keywords_array = search_strip_special_chars($keywords_array);
 
     $keywords = db_escape_string(implode("\x00", $keywords_array));
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
-    $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";
-    $sql.= "WHERE UID = '$uid'";
+    $sort_by = db_escape_string($sort_by);
 
-    if (!db_query($sql, $db_search_save_keywords)) return false;
+    $sort_dir = db_escape_string($sort_dir);
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords', LAST_SEARCH_SORT_BY = '$sort_by', ";
+    $sql.= "LAST_SEARCH_SORT_DIR = '$sort_dir' WHERE UID = '$uid'";
+
+    if (!db_query($sql, $db_search_save_arguments)) return false;
 
     return true;
 }
@@ -430,8 +499,7 @@ function search_get_keywords()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT LAST_SEARCH_KEYWORDS FROM ";
-    $sql.= "`{$table_data['PREFIX']}USER_TRACK` ";
+    $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_search_get_keywords)) return false;
@@ -439,12 +507,37 @@ function search_get_keywords()
     if (db_num_rows($result) > 0) {
 
         list($keywords_string) = db_fetch_array($result, DB_RESULT_NUM);
-        $keywords_array = explode("\x00", $keywords_string);
+
+        $keywords_array = array_filter(explode("\x00", $keywords_string), 'strlen');
 
         if (is_array($keywords_array) && sizeof($keywords_array) > 0) {
 
             return $keywords_array;
         }
+    }
+
+    return false;
+}
+
+function search_get_sort(&$sort_by, &$sort_dir)
+{
+    if (!$db_search_get_sort = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT LAST_SEARCH_SORT_BY, LAST_SEARCH_SORT_DIR ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql.= "WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_search_get_sort)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        list($sort_by, $sort_dir) = db_fetch_array($result, DB_RESULT_NUM);
+
+        return true;
     }
 
     return false;
@@ -462,14 +555,11 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     $search_keywords = search_get_keywords();
 
-    $sort_dir_array = array(SEARCH_SORT_ASC => 'ASC', 
-                            SEARCH_SORT_DESC => 'DESC');
-
-    if (in_array($sort_dir, array_keys($sort_dir_array))) {
-        $sort_dir = $sort_dir_array[$sort_dir];
-    }else {
-        $sort_dir = $sort_dir_array[SEARCH_SORT_DESC];
+    if (!in_array($sort_dir, array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
+        $sort_dir = SEARCH_SORT_ASC;
     }
+
+    $sort_dir = ($sort_dir == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
     $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
@@ -486,10 +576,10 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
     switch($sort_by) {
 
         case SEARCH_SORT_RELEVANCE:
-        
+
             $sql.= "ORDER BY SEARCH_RESULTS.RELEVANCE $sort_dir LIMIT $offset, 20";
-            break;            
-        
+            break;
+
         case SEARCH_SORT_NUM_REPLIES:
 
             $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sort_dir LIMIT $offset, 20";
@@ -502,7 +592,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
         case SEARCH_SORT_AUTHOR_NAME:
 
-            $sql.= "ORDER BY FROM_UID $sort_dir LIMIT $offset, 20";
+            $sql.= "ORDER BY SEARCH_RESULTS.FROM_UID $sort_dir LIMIT $offset, 20";
             break;
 
         default:
@@ -510,7 +600,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
             $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sort_dir LIMIT $offset, 20";
             break;
     }
-    
+
     if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
     // Fetch the number of total results
@@ -559,10 +649,43 @@ function search_get_first_result_msg()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT SEARCH_RESULTS.TID, SEARCH_RESULTS.PID FROM SEARCH_RESULTS ";
-    $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
-    $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC ";
-    $sql.= "LIMIT 0, 1";
+    search_get_sort($sort_by, $sort_dir);
+
+    $sql = "SELECT TID, PID FROM SEARCH_RESULTS WHERE UID = '$uid' ";
+
+    if (!in_array($sort_dir, array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
+        $sort_dir = SEARCH_SORT_ASC;
+    }
+
+    $sort_dir = ($sort_dir == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
+
+    switch($sort_by) {
+
+        case SEARCH_SORT_RELEVANCE:
+
+            $sql.= "ORDER BY RELEVANCE $sort_dir LIMIT 1";
+            break;
+
+        case SEARCH_SORT_NUM_REPLIES:
+
+            $sql.= "ORDER BY LENGTH $sort_dir LIMIT 1";
+            break;
+
+        case SEARCH_SORT_FOLDER_NAME:
+
+            $sql.= "ORDER BY FID $sort_dir LIMIT 1";
+            break;
+
+        case SEARCH_SORT_AUTHOR_NAME:
+
+            $sql.= "ORDER BY FROM_UID $sort_dir LIMIT 1";
+            break;
+
+        default:
+
+            $sql.= "ORDER BY CREATED $sort_dir LIMIT 1";
+            break;
+    }
 
     if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
@@ -707,14 +830,14 @@ function search_date_range($from, $to)
     }
 
     if (isset($from_timestamp)) {
-    
-        $from_datetime = date(MYSQL_DATETIME, $from_timestamp);    
+
+        $from_datetime = date(MYSQL_DATETIME, $from_timestamp);
         $range = "AND POST.CREATED >= CAST('$from_datetime' AS DATETIME) ";
-    }     
-        
+    }
+
     if (isset($to_timestamp)) {
-    
-        $to_datetime = date(MYSQL_DATETIME, $to_timestamp); 
+
+        $to_datetime = date(MYSQL_DATETIME, $to_timestamp);
         $range.= "AND POST.CREATED <= CAST('$to_datetime' AS DATETIME) ";
     }
 
@@ -781,7 +904,7 @@ function check_search_frequency()
     $search_min_frequency = intval(forum_get_setting('search_min_frequency', false, 30));
 
     if ($search_min_frequency == 0) return true;
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.307 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: messages.php,v 1.308 2009-11-25 20:41:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -340,38 +340,10 @@ if (isset($_GET['highlight'])) {
     $highlight_array = search_get_keywords();
 }
 
-// Check for search words to highlight -------------------------------------
-
-if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
-
-    $highlight_pattern = array();
-    $highlight_replace = array();
-
-    foreach ($highlight_array as $key => $word) {
-
-        $highlight_word = preg_quote($word, "/");
-
-        $highlight_pattern[$key] = "/($highlight_word)/iu";
-        $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
-    }
-
-    $thread_parts = preg_split('/([<|>])/u', htmlentities_array($thread_title), -1, PREG_SPLIT_DELIM_CAPTURE);
-
-    for ($i = 0; $i < sizeof($thread_parts); $i++) {
-
-        if (!($i % 4)) {
-
-            $thread_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $thread_parts[$i], 1);
-        }
-    }
-
-    $thread_title = implode('', $thread_parts);
-}
-
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y')), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true, $highlight_array), "</td>\n";
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 

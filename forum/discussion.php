@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.134 2009-11-24 21:04:19 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.135 2009-11-25 20:41:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -70,10 +70,6 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
-
-// Don't cache this page - fixes problems with Opera.
-
-cache_disable();
 
 // Get Webtag
 

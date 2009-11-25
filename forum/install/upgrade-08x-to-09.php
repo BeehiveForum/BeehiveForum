@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-09.php,v 1.7 2009-11-22 22:56:47 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-09.php,v 1.8 2009-11-25 20:41:25 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade-08x-to-083.php') {
 
@@ -335,6 +335,26 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     // Add index for sticky thread sorting
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD INDEX `STICKY` (`STICKY`, `MODIFIED`, `FID`, `LENGTH`, `DELETED`)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add LAST_SEARCH_SORT_BY to USER_TRACK
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_BY TINYINT UNSIGNED NULL AFTER LAST_SEARCH_KEYWORDS";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add LAST_SEARCH_SORT_DIR to USER_TRACK
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_DIR TINYINT UNSIGNED NULL AFTER LAST_SEARCH_SORT_BY";
 
     if (!$result = @db_query($sql, $db_install)) {
 

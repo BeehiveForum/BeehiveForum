@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.160 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.161 2009-11-25 20:41:24 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -794,19 +794,19 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $action_text = sprintf($lang['modifiedfolderpermsforuser'], $entry_array[0]);
                 break;
-                
+
             case DELETE_USER:
-            
+
                 $action_text = sprintf($lang['deleteduseraccount'], $entry_array[0]);
                 break;
-            
+
             case DELETE_USER_DATA:
-            
+
                 $index_link = "<a href=\"index.php?webtag=$webtag&amp;final_uri=%s\" target=\"_blank\">%s</a>";
 
                 $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[0]);
                 $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[1]);
-            
+
                 $action_text = sprintf($lang['deletedalluserdataforaccount'], $admin_user_link);
                 break;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.583 2009-11-12 21:32:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.584 2009-11-25 20:41:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -188,7 +188,7 @@ function message_get_content($tid, $pid)
     if (($message_content = cache_lite_get("$tid.$pid"))) {
         return $message_content;
     }
-    
+
     if (!$db_message_get_content = db_connect()) return false;
 
     if (!is_numeric($tid)) return "";
@@ -525,13 +525,43 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
     return preg_replace('/<\/?noemots>|<\/?nowiki>/u', '', $message);
 }
 
-function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
+function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true, $highlight_array)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag();
 
     $frame_top_target = html_get_top_frame_name();
+
+    $thread_title = htmlentities_array($thread_title);
+
+    $folder_title = htmlentities_array($folder_title);
+
+    if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
+
+        $highlight_pattern = array();
+        $highlight_replace = array();
+
+        foreach ($highlight_array as $key => $word) {
+
+            $highlight_word = preg_quote($word, "/");
+
+            $highlight_pattern[$key] = "/($highlight_word)/iu";
+            $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
+        }
+
+        $thread_parts = preg_split('/([<|>])/u', htmlentities_array($thread_title), -1, PREG_SPLIT_DELIM_CAPTURE);
+
+        for ($i = 0; $i < sizeof($thread_parts); $i++) {
+
+            if (!($i % 4)) {
+
+                $thread_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $thread_parts[$i], 1);
+            }
+        }
+
+        $thread_title = implode('', $thread_parts);
+    }
 
     if ($folder_interest_level == FOLDER_SUBSCRIBED) {
         echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" onclick=\"return openFolderOptions($folder_fid, '$webtag')\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>&nbsp;";
@@ -543,8 +573,8 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     if ($frame_links) {
 
-        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags(htmlentities_array($folder_title)), "</a> ";
-        echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
+        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title), "</a> ";
+        echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title), "</a>";
 
     }else {
 
@@ -1411,7 +1441,7 @@ function messages_interest_form($tid, $pid, $interest)
     $lang = load_language_file();
 
     $webtag = get_webtag();
-    
+
     $interest_levels_array = array(THREAD_IGNORED => $lang['ignore'],
                                    THREAD_NOINTEREST => $lang['normal'],
                                    THREAD_INTERESTED => $lang['interested'],
@@ -1527,38 +1557,38 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     // User UID
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
-    
+
     // Mark as read cut off
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
-    
+
     // Guest users' can't mark as read!
 
     if (!user_is_guest() && ($pid > $last_read)) {
 
-        if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {    
+        if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
 
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
             // Get the last PID within the unread-cut-off.
-            
+
             $sql = "SELECT COALESCE(MAX(POST.PID), 0) AS UNREAD_PID ";
             $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
             $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
             $sql.= "AND POST.TID = '$tid'";
-            
+
             if (!$result = db_query($sql, $db_message_update_read)) return false;
-            
+
             list($unread_pid) = db_fetch_array($result, DB_RESULT_NUM);
-            
+
             // If the specified PID is lower than the cut-off set it to the cut-off.
-            
+
             $pid = ($pid < $unread_pid) ? $unread_pid : $pid;
-            
+
             // Update the unread data.
-            
+
             $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT) ";
             $sql.= "VALUES ('$uid', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
             $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = CAST('$current_datetime' AS DATETIME)";

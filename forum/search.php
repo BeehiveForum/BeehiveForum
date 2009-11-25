@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.244 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: search.php,v 1.245 2009-11-25 20:41:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -136,6 +136,7 @@ if (user_is_guest()) {
 }
 
 if (isset($_GET['sort_by'])) {
+
     if ($_GET['sort_by'] == SEARCH_SORT_NUM_REPLIES) {
         $sort_by = SEARCH_SORT_NUM_REPLIES;
     } elseif ($_GET['sort_by'] == SEARCH_SORT_FOLDER_NAME) {
@@ -144,18 +145,23 @@ if (isset($_GET['sort_by'])) {
         $sort_by = SEARCH_SORT_AUTHOR_NAME;
     } else {
         $sort_by = SEARCH_SORT_CREATED;
-    }   
+    }
+
 }else {
+
     $sort_by = SEARCH_SORT_CREATED;
 }
 
 if (isset($_GET['sort_dir'])) {
+
     if ($_GET['sort_dir'] == SEARCH_SORT_DESC) {
         $sort_dir = SEARCH_SORT_DESC;
     } else {
         $sort_dir = SEARCH_SORT_ASC;
-    }   
+    }
+
 }else {
+    
     $sort_dir = SEARCH_SORT_DESC;
 }
 
@@ -205,7 +211,7 @@ $search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
 
 // Drop down sort dir options
 
-$search_sort_dir_array = array(SEARCH_SORT_ASC  => $lang['ascendingorder'], 
+$search_sort_dir_array = array(SEARCH_SORT_ASC  => $lang['ascendingorder'],
                                SEARCH_SORT_DESC => $lang['decendingorder']);
 
 // Get a list of available folders.
@@ -341,16 +347,17 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         $search_arguments['username'] = trim(stripslashes_array($_GET['logon']));
         $search_arguments['user_include'] = SEARCH_FILTER_USER_POSTS;
-        $search_arguments['date_from'] = 12;
-        $search_arguments['date_to'] = 1;
+
+        $search_arguments['date_from'] = SEARCH_FROM_BEGINNING_OF_TIME;
+        $search_arguments['date_to'] = SEARCH_TO_TODAY;
+
+        $search_arguments['sort_by'] = SEARCH_SORT_CREATED;
+        $search_arguments['sort_dir'] = SEARCH_SORT_DESC;
     }
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
-
         $search_arguments['user_include'] = $_POST['user_include'];
-
     }elseif (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
-
         $search_arguments['user_include'] = $_GET['user_include'];
     }
 

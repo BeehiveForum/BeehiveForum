@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.33 2009-10-24 19:21:35 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.34 2009-11-25 20:41:25 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -85,11 +85,11 @@ function cache_lite_get($cache_id)
     if (!forum_check_webtag_available($webtag)) return false;
 
     if (forum_get_setting('message_cache_enabled', 'Y')) {
-    
+
         set_error_handler('cache_lite_error_handler');
 
         include_once('Cache/Lite.php');
-        
+
         if (class_exists('Cache_Lite')) {
 
             $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
@@ -112,7 +112,7 @@ function cache_lite_get($cache_id)
             }
         }
     }
-    
+
     restore_error_handler();
 
     return false;
@@ -134,7 +134,7 @@ function cache_lite_save($cache_id, $content)
     if (!forum_check_webtag_available($webtag)) return false;
 
     if (forum_get_setting('message_cache_enabled', 'Y')) {
-    
+
         set_error_handler('cache_lite_error_handler');
 
         include_once('Cache/Lite.php');
@@ -160,7 +160,7 @@ function cache_lite_save($cache_id, $content)
     }
 
     restore_error_handler();
-    
+
     return false;
 }
 
@@ -180,7 +180,7 @@ function cache_lite_remove($cache_id)
     if (!forum_check_webtag_available($webtag)) return false;
 
     if (forum_get_setting('message_cache_enabled', 'Y')) {
-    
+
         set_error_handler('cache_lite_error_handler');
 
         include_once('Cache/Lite.php');
@@ -200,7 +200,7 @@ function cache_lite_remove($cache_id)
     }
 
     restore_error_handler();
-    
+
     return false;
 }
 
@@ -240,21 +240,23 @@ function cache_check_thread_list()
     if (strstr(php_sapi_name(), 'cgi')) return false;
 
     if (!$db_thread_list_check_cache_header = db_connect()) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     if (!cache_check_logon_hash()) return false;
-    
+
     if (!cache_check_enabled()) return false;
-    
+
+    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-        
+
         cache_disable();
         return false;
     }
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
-    
+
     // Get the thread last modified date and user last read date.
 
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
@@ -266,32 +268,32 @@ function cache_check_thread_list()
     $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";    
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    
+
     // If we're looking at a specific folder add it's ID to the query.
-    
+
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-        
+
         $folder = db_escape_string($_GET['folder']);
         $sql.= "WHERE THREAD.FID = '$folder'";
     }
-    
+
     if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
 
-    if (db_num_rows($result) > 0) {    
-    
+    if (db_num_rows($result) > 0) {
+
         // Get the two modified dates from the query
-        
+
         list($last_read, $created, $modified, $closed, $admin_lock, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
-        
+
         // Work out which one is newer (higher).
-       
+
         $local_cache_date = max($last_read, $created, $modified, $closed, $admin_lock, $folder_created, $folder_modified);
-               
+
         // Last Modified Header for cache control
-    
+
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
         $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
@@ -330,23 +332,25 @@ function cache_check_start_page()
     if (strstr(php_sapi_name(), 'cgi')) return false;
 
     if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     if (!cache_check_logon_hash()) return false;
-    
+
     if (!cache_check_enabled()) return false;
-    
+
+    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-        
+
         cache_disable();
         return false;
     }
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Get the thread last modified date and user last read date.
-    
+
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
@@ -357,24 +361,24 @@ function cache_check_start_page()
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";    
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-   
+
     if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
 
-    if (db_num_rows($result) > 0) {    
-    
+    if (db_num_rows($result) > 0) {
+
         // Get the modified dates from the query
-               
+
         list($last_read, $created, $modified, $closed, $last_logon, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
-        
+
         // Work out which one is newer (higher).
-        
+
         $local_cache_date = max($last_read, $created, $modified, $closed, $last_logon, $folder_created, $folder_modified);
-               
+
         // Last Modified Header for cache control
-    
+
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
         $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
@@ -415,13 +419,15 @@ function cache_check_messages()
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     if (!cache_check_logon_hash()) return false;
-    
+
     if (!cache_check_enabled()) return false;
-    
+
+    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+
     // Disable cache on these URL queries.
-    
+
     if (isset($_GET['delete_success'])) return false;
     if (isset($_GET['edit_success'])) return false;
     if (isset($_GET['font_resize'])) return false;
@@ -432,7 +438,7 @@ function cache_check_messages()
     if (isset($_GET['setstats'])) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-        
+
         cache_disable();
         return false;
     }
@@ -462,13 +468,13 @@ function cache_check_messages()
     if (db_num_rows($result) > 0) {
 
         // Get the two modified dates from the query
-        
+
         list($created, $viewed, $approved, $edited, $poll_vote) = db_fetch_array($result, DB_RESULT_NUM);
-        
+
         // Work out which one is newer (higher).
-        
+
         $local_cache_date = max($created, $viewed, $approved, $edited, $poll_vote);
-        
+
         // Last Modified Header for cache control
 
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
@@ -506,14 +512,14 @@ function cache_check_messages()
 function cache_check_logon_hash()
 {
     $logon_hash_check = md5(bh_session_get_value('LOGON'));
-    
+
     if (($logon_hash = bh_getcookie('bh_cache_hash', 'strlen', ''))) {
         if ($logon_hash === $logon_hash_check) return true;
     }
-    
+
     bh_setcookie('bh_cache_hash', $logon_hash_check);
     return false;
-}    
+}
 
 /**
 * Check cache config var
@@ -532,7 +538,7 @@ function cache_check_enabled()
     if (isset($http_cache_enabled) && $http_cache_enabled === false) {
         return false;
     }
-    
+
     return true;
 }
 

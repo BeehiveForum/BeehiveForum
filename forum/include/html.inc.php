@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.351 2009-11-24 21:04:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.352 2009-11-28 15:18:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -880,12 +880,12 @@ function html_draw_top()
 
     if ((basename($_SERVER['PHP_SELF']) == "index.php") && bh_session_active()) {
 
-        printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s/threads_rss.php?webtag=%s\" />\n", htmlentities_array($title), htmlentities_array($lang['rssfeed']), $forum_path, $webtag);
+        printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s/threads_rss.php?webtag=%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $forum_path, $webtag);
 
         if (($folders_array = folder_get_available_details())) {
 
             foreach ($folders_array as $folder) {
-                printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s/threads_rss.php?webtag=%s&amp;fid=%s\" />\n", htmlentities_array($title), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $forum_path, $webtag, $folder['FID']);
+                printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s/threads_rss.php?webtag=%s&amp;fid=%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $forum_path, $webtag, $folder['FID']);
             }
         }
     }
@@ -1426,15 +1426,27 @@ function bh_setcookie($name, $value, $expires = 0)
 
     if (!defined('BEEHIVEMODE_LIGHT')) {
 
-        $cookie_domain_array = @parse_url($cookie_domain);
+        // Set the defaults.
 
-        if (isset($cookie_domain_array['host']) && isset($cookie_domain_array['path'])) {
+        $cookie_domain = html_get_forum_domain();
+        $cookie_path = '/';
 
-            $cookie_domain = $cookie_domain_array['host'];
-            $cookie_path = $cookie_domain_array['path'];
+        // Try and parse the cookie_domain config.inc.php setting.
+        // Only set the path if we can also get the hostname.
 
-            return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $cookie_secure);
+        if (($cookie_domain_array = @parse_url($cookie_domain))) {
+
+            if (isset($cookie_domain_array['host'])) {
+
+                $cookie_domain = $cookie_domain_array['host'];
+
+                if (isset($cookie_domain_array['path'])) {
+                    $cookie_path = $cookie_domain_array['path'];
+                }
+            }
         }
+
+        return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $cookie_secure);
     }
 
     return setcookie($name, $value, $expires, '', '', $cookie_secure);
@@ -1662,7 +1674,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_forum_uri($append_path = "", $allow_https = true)
+function html_get_forum_domain($allow_https = true, $return_array = false)
 {
     $uri_array = array();
 
@@ -1678,7 +1690,7 @@ function html_get_forum_uri($append_path = "", $allow_https = true)
 
         }elseif (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
 
-            $uri_array['scheme'] = (mb_strtolower($_SERVER['HTTPS']) != 'off' && $allow_https === true) ? 'https' : 'http';
+            $uri_array['scheme'] = ((strtolower($_SERVER['HTTPS']) != 'off') && $allow_https === true) ? 'https' : 'http';
 
         }else {
 
@@ -1711,30 +1723,45 @@ function html_get_forum_uri($append_path = "", $allow_https = true)
                 }
             }
         }
+    }
 
-        if (!isset($uri_array['path']) || strlen(trim($uri_array['path'])) < 1) {
+    if ($return_array) return $uri_array;
 
-            if (isset($_SERVER['PATH_INFO']) && strlen(trim($_SERVER['PATH_INFO'])) > 0) {
+    $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
+    $server_uri.= (isset($uri_array['host']))   ? "{$uri_array['host']}"      : '';
+    $server_uri.= (isset($uri_array['port']))   ? ":{$uri_array['port']}"     : '';
 
-                $path = @parse_url($_SERVER['PATH_INFO']);
+    return $server_uri;
+}
 
-            }else {
+function html_get_forum_uri($append_path = '', $allow_https = true)
+{
+    $uri_array = html_get_forum_domain($allow_https, true);
 
-                $path = @parse_url($_SERVER['PHP_SELF']);
-            }
+    if (!isset($uri_array['path']) || strlen(trim($uri_array['path'])) < 1) {
 
-            $uri_array['path'] = $path['path'];
+        if (isset($_SERVER['PATH_INFO']) && strlen(trim($_SERVER['PATH_INFO'])) > 0) {
+
+            $path = @parse_url($_SERVER['PATH_INFO']);
+
+        }else {
+
+            $path = @parse_url($_SERVER['PHP_SELF']);
         }
+
+        $uri_array['path'] = $path['path'];
     }
 
     if (server_os_mswin()) {
 
-        $uri_array['path'] = str_replace('\\', '/', dirname("{$uri_array['path']}beehive"));
+        $path_boundary = md5(uniqid(rand()));
+
+        $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname("{$uri_array['path']}$path_boundary"));
         $uri_array['path'] = rtrim($uri_array['path'], '/');
 
     }else {
 
-        $uri_array['path'] = dirname("{$uri_array['path']}beehive");
+        $uri_array['path'] = dirname("{$uri_array['path']}$path_boundary");
     }
 
     $uri_array['path'] = rtrim($uri_array['path'], '/');

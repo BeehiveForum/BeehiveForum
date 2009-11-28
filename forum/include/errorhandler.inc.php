@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.144 2009-11-08 14:10:06 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.145 2009-11-28 15:18:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,7 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 
-// Set the error reporting level to report all 
+// Set the error reporting level to report all
 // error messages and PHP5 strict mode.
 
 error_reporting(E_ALL | E_STRICT);
@@ -132,21 +132,17 @@ function bh_exception_handler($exception)
     }else {
         $error_report_email_addr_from = '';
     }
-    
+
     // The requested script's filename
-    
-    $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));    
-    
-    // Let's ignore PHP5's strict warnings.
-    
-    //if (($exception->code & E_STRICT) > 0) return;
+
+    $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
 
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
 
         // Disable the HTTP cache.
-        
+
         cache_disable();
 
         // Clean the output buffer
@@ -364,11 +360,11 @@ function bh_exception_handler($exception)
                 install_missing_files();
             }
         }
-        
+
         // If Ajax request force display of Lightmode error messages.
-        
+
         if (in_array($script_filename, array('pm.php', 'user_stats.php'))) {
-            
+
             if (isset($_GET['check_messages']) || isset($_GET['get_stats'])) {
 
                 if (defined('BEEHIVE_INSTALL_NOWARN') || defined('BEEHIVEMODE_INSTALL')) {

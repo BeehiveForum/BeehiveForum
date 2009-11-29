@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.236 2009-11-25 20:41:25 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.237 2009-11-29 20:36:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -78,7 +78,7 @@ function search_execute($search_arguments, &$error)
     // Check the sort_dir is valid
 
     if (!in_array($search_arguments['sort_dir'], array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
-        $search_arguments['sort_dir'] = SEARCH_SORT_ASC;
+        $search_arguments['sort_dir'] = SEARCH_SORT_DESC;
     }
 
     // Database connection.
@@ -654,7 +654,7 @@ function search_get_first_result_msg()
     $sql = "SELECT TID, PID FROM SEARCH_RESULTS WHERE UID = '$uid' ";
 
     if (!in_array($sort_dir, array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
-        $sort_dir = SEARCH_SORT_ASC;
+        $sort_dir = SEARCH_SORT_DESC;
     }
 
     $sort_dir = ($sort_dir == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.153 2009-07-05 16:20:14 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.154 2009-12-01 22:54:35 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -129,7 +129,7 @@ $cookie_domain = "";
 // and have them accessible from all addresses you would set the
 // $cookie_domain value as follows:
 //
-// $cookie_domain = "mybeehiveforum.net/forum/";
+// $cookie_domain = "mybeehiveforum.net/";
 //
 // As you may have noticed the string used is common to all of
 // addresses listed above and so any cookies set at any of the domains

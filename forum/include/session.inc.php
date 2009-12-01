@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.397 2009-11-24 21:04:19 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.398 2009-12-01 22:54:35 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -500,51 +500,47 @@ function bh_session_get_value($session_key)
 * @return void
 * @param void
 */
-
 function bh_remove_stale_sessions()
 {
     if (!$db_bh_remove_stale_sessions = db_connect()) return false;
 
-    if (($session_cutoff = forum_get_setting('session_cutoff', false, 86400))) {
+    if (!($session_cutoff = forum_get_setting('session_cutoff', false, 86400))) {
+        return true;
+    }
 
-        $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
 
-        $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
-        $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
+    $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
+
+    if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
+
+    $expired_sessions_array = array();
+
+    $sql = "SELECT HASH, UID, NOW() FROM SESSIONS WHERE ";
+    $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND UID > 0 LIMIT 0, 5";
+
+    if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
+
+    while (($session_data = db_fetch_array($result))) {
+
+        bh_update_user_time($session_data['UID']);
+        $expired_sessions_array[] = $session_data['HASH'];
+    }
+
+    if (sizeof($expired_sessions_array) > 0) {
+
+        $expired_sessions = implode("', '", $expired_sessions_array);
+
+        $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
+        $sql.= "AND TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
 
         if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
-
-        $expired_sessions_array = array();
-
-        $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
-        $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
-        $sql.= "AND UID > 0 LIMIT 0, 5";
-
-        if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
-
-        while (($session_data = db_fetch_array($result))) {
-
-            bh_update_user_time($session_data['UID']);
-            $expired_sessions_array[] = $session_data['HASH'];
-        }
-
-        if (sizeof($expired_sessions_array) > 0) {
-
-            $expired_sessions = implode("', '", $expired_sessions_array);
-
-            $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
-            $sql.= "AND TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
-
-            if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
-
-            return true;
-        }
     }
 
     return true;
 }
-
-// Updates the visitor log for the current user
 
 /**
 * Updates the visitor log

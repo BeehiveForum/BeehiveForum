@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.238 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.239 2009-12-01 22:54:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,7 +116,7 @@ function light_html_draw_top()
     }
 
     if (($stylesheet = html_get_style_sheet())) {
-        echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen, handheld\" />\n";
+        //echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen, handheld\" />\n";
     }
 
     if (isset($link_array) && is_array($link_array)) {
@@ -153,7 +153,7 @@ function light_html_draw_top()
 
     echo "</head>\n";
     echo "<body>\n";
-    
+
     if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
 
         adsense_output_html();
@@ -164,8 +164,8 @@ function light_html_draw_top()
 function light_html_draw_bottom()
 {
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
-    
-    echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";    
+
+    echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
     echo "</body>\n";
     echo "</html>\n";
 }
@@ -175,7 +175,7 @@ function light_draw_logon_form($error_msg_array = array())
     $lang = load_language_file();
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
@@ -187,36 +187,36 @@ function light_draw_logon_form($error_msg_array = array())
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         light_html_display_error_array($error_msg_array);
     }
-    
+
     $username_array = array();
     $password_array = array();
     $passhash_array = array();
-    
+
     logon_get_cookies($username_array, $password_array, $passhash_array);
-    
+
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, "autocomplete=\"off\""). "</p>\n";
-    
+
     if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
 
         if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-        
+
             echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</p>\n";
             echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], true, "autocomplete=\"off\""), "</p>\n";
-        
+
         }else {
-        
+
             echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</p>\n";
             echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], false, "autocomplete=\"off\""), "</p>\n";
         }
-        
+
     }else {
-    
+
         echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</p>\n";
         echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], false, "autocomplete=\"off\""), "</p>\n";
     }
-    
+
     echo "  <p>", light_form_checkbox("auto_logon", "Y", $lang['logmeinautomatically'], false, "autocomplete=\"off\""), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
@@ -291,12 +291,12 @@ function light_draw_messages($msg)
     $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
     light_html_draw_top("title=$thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
-    
+
     $msg_count = count($messages);
 
     light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
-    
-    light_pm_check_messages();    
+
+    light_pm_check_messages();
 
     if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
@@ -377,12 +377,12 @@ function light_draw_messages($msg)
                 light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
                 $last_pid = $message['PID'];
             }
-            
+
             if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
 
                 echo "<br />\n";
                 adsense_output_html();
-            }            
+            }
         }
     }
 
@@ -403,12 +403,12 @@ function light_draw_messages($msg)
     if (($msg_count > 0 && !user_is_guest())) {
         messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
     }
-    
+
     if (user_is_guest()) {
         echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";
     }else {
         echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
-    }    
+    }
 }
 
 function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start_from = 0)
@@ -444,9 +444,9 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     echo "<h1>{$lang['threadlist']}</h1>\n";
     echo "<br />\n";
-    
+
     light_pm_check_messages();
-    
+
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
@@ -810,7 +810,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         echo light_form_submit("mark_read_submit", $lang['goexcmark'], "onclick=\"return confirmMarkAsRead()\""). "\n";
         echo "    </form>\n";
     }
-    
+
     echo "<h4>";
 
     if (forums_get_available_count() > 1) {
@@ -824,7 +824,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a>";
     }
 
-    echo "</h4>\n";    
+    echo "</h4>\n";
 }
 
 function light_draw_pm_inbox()
@@ -832,7 +832,7 @@ function light_draw_pm_inbox()
     $webtag = get_webtag();
 
     $lang = load_language_file();
-    
+
     // Get custom folder names array.
 
     if (!$pm_folder_names_array = pm_get_folder_names()) {
@@ -842,7 +842,7 @@ function light_draw_pm_inbox()
                                        PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
                                        PM_FOLDER_SAVED   => $lang['pmsaveditems'],
                                        PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
-    }    
+    }
 
     // Check to see which page we should be on
 
@@ -862,7 +862,7 @@ function light_draw_pm_inbox()
 
         if (!$message_folder = pm_message_get_folder($mid)) {
             $message_folder = PM_FOLDER_INBOX;
-        }    
+        }
 
     }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
@@ -870,8 +870,8 @@ function light_draw_pm_inbox()
 
         if (!$message_folder = pm_message_get_folder($mid)) {
             $message_folder = PM_FOLDER_INBOX;
-        }  
-        
+        }
+
     }else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
         $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
@@ -925,7 +925,7 @@ function light_draw_pm_inbox()
 
             header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
             exit;
-        }    
+        }
     }
 
     if (isset($mid) && is_numeric($mid) && $mid > 0) {
@@ -956,7 +956,7 @@ function light_draw_pm_inbox()
                 light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
             }else if (isset($_GET['message_saved'])) {
                 html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
-            }    
+            }
 
             $pm_message_array['CONTENT'] = pm_get_content($mid);
 
@@ -975,7 +975,7 @@ function light_draw_pm_inbox()
             light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
         }else if (isset($_GET['message_saved'])) {
             html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
-        }    
+        }
 
         $pm_message_count_array = pm_get_folder_message_counts();
 
@@ -1069,7 +1069,7 @@ function light_draw_pm_inbox()
 
                                 echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), " ";
                                 echo format_time($message['CREATED']);
-                            }                            
+                            }
 
                             echo "</li>\n";
                         }
@@ -1101,7 +1101,7 @@ function light_draw_pm_inbox()
         if (pm_auto_prune_enabled()) {
             echo "<p>{$lang['pmfolderpruningisenabled']}</p>\n";
         }
-        
+
                     echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
     }
 }
@@ -1119,15 +1119,15 @@ function light_draw_my_forums()
         $page = 1;
         $start = 0;
     }
-    
-    echo "<h1>{$lang['myforums']}</h1>\n";    
+
+    echo "<h1>{$lang['myforums']}</h1>\n";
     echo "<br />\n";
-    
+
     light_pm_check_messages();
 
     if (isset($_GET['webtag_error'])) {
         light_html_display_error_msg($lang['invalidforumidorforumnotfound']);
-    }    
+    }
 
     if (!user_is_guest()) {
 
@@ -1202,7 +1202,7 @@ function light_draw_my_forums()
         echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>";
     }else {
         echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>";
-    }    
+    }
 }
 
 function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)
@@ -1412,7 +1412,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
         }else {
 
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
-            
+
                 $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
 
                 $user_poll_votes_display_array = array();
@@ -1915,7 +1915,7 @@ function light_form_field($name, $value = "", $width = false, $maxchars = false,
         $html.= sprintf(" %s", trim($custom_html));
     }
 
-    if (is_numeric($width)) {
+    if (is_numeric($width) && $width > 0) {
         $html.= " size=\"$width\"";
     }
 
@@ -2157,7 +2157,7 @@ function light_html_display_error_array($error_list_array)
     $error_list_array = array_filter($error_list_array, 'is_string');
 
     if (sizeof($error_list_array) < 1) return;
-    
+
     echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"error_msg\">\n";
     echo "  <tr>\n";
     echo "    <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
@@ -2170,7 +2170,7 @@ function light_html_display_error_array($error_list_array)
     echo "      </ul>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
-    echo "</table>\n";    
+    echo "</table>\n";
 }
 
 function light_html_display_success_msg($string_msg)
@@ -2192,7 +2192,7 @@ function light_html_display_warning_msg($string_msg)
     $lang = load_language_file();
 
     if (!is_string($string_msg)) return;
-    
+
     echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"warning_msg\">\n";
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
@@ -2256,7 +2256,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     $webtag = get_webtag();
 
     echo "<p>";
-    
+
     if ($folder == PM_FOLDER_INBOX) {
 
         echo "<b>{$lang['from']}: ";
@@ -2308,11 +2308,11 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         echo "<i>{$lang['nosubject']}</i></b>\n";
     }
-    
+
     echo "</p>\n";
-    
+
     echo $pm_message_array['CONTENT'];
-    
+
     echo "                      </tr>\n";
 
     if (isset($pm_message_array['AID'])) {
@@ -2381,26 +2381,26 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
             echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
         }
     }
-    
+
     echo "<hr />";
 }
 
 function light_pm_check_messages()
 {
     static $pm_checked = false;
-    
+
     // Check if we've already displayed the notification once.
-    
+
     if ($pm_checked === true) return;
 
     // Load the Language file
 
     $lang = load_language_file();
-    
+
     // Get the webtag
-    
+
     $webtag = get_webtag();
-    
+
     // Default the variables to return 0 even on error.
 
     $pm_new_count = 0;
@@ -2445,15 +2445,15 @@ function light_pm_check_messages()
 
         $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
     }
-    
+
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
-    
+
         // Wrap the notification in a hyperlink.
 
-        $pm_notification = sprintf("<a href=\"lpm.php?webtag=$webtag\">%s</a>\n", $pm_notification);    
-        
+        $pm_notification = sprintf("<a href=\"lpm.php?webtag=$webtag\">%s</a>\n", $pm_notification);
+
         // Display the notification
-        
+
         light_html_display_success_msg($pm_notification);
     }
 

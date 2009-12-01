@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.352 2009-11-28 15:18:34 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.353 2009-12-01 22:54:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,6 +41,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 }
 
 include_once(BH_INCLUDE_PATH. "adsense.inc.php");
+include_once(BH_INCLUDE_PATH. "browser.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -1156,6 +1157,10 @@ function html_draw_bottom($frame_set_html = false)
             echo "</script>\n";
         }
 
+        if (basename($_SERVER['PHP_SELF']) != 'nav.php') {
+            echo "<p align=\"center\">", number_format((memory_get_usage() / 1024) / 1024, 4), "MB /", number_format((memory_get_peak_usage() / 1024) / 1024, 4), "MB</p>\n";
+        }
+
         echo "</body>\n";
     }
 
@@ -1197,7 +1202,7 @@ class html_frameset_rows extends html_frameset
         if (is_numeric($framespacing)) $this->framespacing = $framespacing;
         if (is_numeric($frameborder)) $this->frameborder = $frameborder;
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        if (browser_check(BROWSER_MSIE)) {
             $this->allowtransparency = " allowtransparency=\"true\"";
         }
     }
@@ -1236,7 +1241,7 @@ class html_frameset_cols extends html_frameset
         if (is_numeric($framespacing)) $this->framespacing = $framespacing;
         if (is_numeric($frameborder)) $this->frameborder = $frameborder;
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        if (browser_check(BROWSER_MSIE)) {
             $this->allowtransparency = " allowtransparency=\"true\"";
         }
     }
@@ -1272,13 +1277,13 @@ class html_frame
         if (in_array($scrolling, array('yes', 'no', ''))) $this->scrolling = $scrolling;
         if (in_array($noresize, array('noresize', ''))) $this->noresize = $noresize;
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/webkit/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        if (browser_check(BROWSER_WEBKIT)) {
             $this->frameborder = 1;
         }else {
             $this->frameborder = (is_numeric($frameborder)) ? $frameborder : 0;
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        if (browser_check(BROWSER_MSIE)) {
             $this->allowtransparency = "allowtransparency=\"true\" ";
         }
     }
@@ -1424,7 +1429,13 @@ function bh_setcookie($name, $value, $expires = 0)
     $cookie_domain = (isset($GLOBALS['cookie_domain'])) ? $GLOBALS['cookie_domain'] : "";
     $cookie_secure = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on');
 
-    if (!defined('BEEHIVEMODE_LIGHT')) {
+    // Some versions of Opera don''t play well with cookie restrictions.
+    // Because we don't have an exhaustive list of which don't work,
+    // we disable cookie domain and path for them.
+
+    // If we're also on Light mode we disable by default.
+
+    if (!defined('BEEHIVEMODE_LIGHT') && !browser_check(BROWSER_OPERA)) {
 
         // Set the defaults.
 

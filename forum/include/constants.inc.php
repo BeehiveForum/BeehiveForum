@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.169 2009-11-12 21:32:46 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.170 2009-12-01 22:54:35 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -631,5 +631,21 @@ define('ADSENSE_DISPLAY_AFTER_RANDOM_MSG', 6);
 define('MAIL_FUNCTION_PHP', 0);
 define('MAIL_FUNCTION_SMTP', 1);
 define('MAIL_FUNCTION_SENDMAIL', 2);
+
+// Browser detection
+
+define('BROWSER_LYNX', 1);
+define('BROWSER_CHROME', 2);
+define('BROWSER_SAFARI', 4);
+define('BROWSER_GECKO', 8);
+define('BROWSER_MSIE_WIN', 16);
+define('BROWSER_MSIE_MAC', 32);
+define('BROWSER_OPERA', 64);
+define('BROWSER_NETSCAPE4', 128);
+define('BROWSER_IPHONE', 256);
+define('BROWSER_MSIE', 512);
+define('BROWSER_MSIE7', 1024);
+define('BROWSER_KONQUEROR', 2048);
+define('BROWSER_WEBKIT', 4096);
 
 ?>

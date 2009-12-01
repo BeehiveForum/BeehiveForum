@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.141 2009-10-25 17:31:05 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.142 2009-12-01 22:54:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,7 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
         $html.= sprintf(" %s", trim($custom_html));
     }
 
-    if (is_numeric($width)) {
+    if (is_numeric($width) && $width > 0) {
         $html.= " size=\"$width\"";
     }
 
@@ -366,7 +366,7 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = "", $cl
     }
 
     $html = '<button type="submit" name="%s" id="%s" class="%s"%s"><span>%s</span></button>';
-    
+
     return sprintf($html, $name, $id, $class, $custom_html, $value);
 }
 

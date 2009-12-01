@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.92 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.93 2009-12-01 22:54:35 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -42,7 +42,9 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "browser.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -185,16 +187,13 @@ function emoticons_get_browser_fix()
 {
     $emoticons_browser_fix = "</span>";
 
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+    if (browser_check(BROWSER_KONQUEROR | BROWSER_SAFARI | BROWSER_MSIE7)) {
 
-        if (preg_match("/konqueror|safari|msie 7/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        $emoticons_browser_fix = "&nbsp;</span>";
 
-            $emoticons_browser_fix = "&nbsp;</span>";
+    }else if (browser_check(BROWSER_GECKO)) {
 
-        }else if (preg_match("/gecko/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
-
-            $emoticons_browser_fix = "</span>&nbsp;";
-        }
+        $emoticons_browser_fix = "</span>&nbsp;";
     }
 
     return $emoticons_browser_fix;

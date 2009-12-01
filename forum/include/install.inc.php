@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.99 2009-11-22 22:56:47 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.100 2009-12-01 22:54:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,6 +40,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
 }
 
+include_once(BH_INCLUDE_PATH. "browser.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
@@ -533,7 +534,7 @@ function install_remove_indexes($database_name, $table_name)
 
 function install_msie_buffer_fix()
 {
-    if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+    if (browser_check(BROWSER_MSIE)) {
         echo str_repeat("<!-- bh_install_buffer //-->\n", 20);
     }
 }

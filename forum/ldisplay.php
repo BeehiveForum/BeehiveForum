@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.54 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.55 2009-12-04 18:54:18 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -90,7 +90,7 @@ if (!$user_sess = bh_session_check()) {
 
 // Light mode check to see if we should bounce to the logon screen.
 
-if (!bh_session_active()) {
+if (bh_getcookie('bh_logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 

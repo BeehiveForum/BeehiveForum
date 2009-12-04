@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.198 2009-11-24 21:04:19 decoyduck Exp $ */
+/* $Id: index.php,v 1.199 2009-12-04 18:54:18 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -104,10 +104,6 @@ $webtag = get_webtag();
 
 forum_check_webtag_available($webtag);
 
-// Check to see if we have an active session
-
-$session_active = bh_session_active();
-
 // Check for login failure.
 
 if (isset($_GET['logon_failed'])) {
@@ -147,10 +143,6 @@ $lang = load_language_file();
 // Top frame filename
 
 $top_html = html_get_top_page();
-
-// Clear the logon cookie
-
-bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
 // Are we being redirected somewhere?
 
@@ -208,7 +200,36 @@ if ($skip_logon_page === true) {
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-}else if ($session_active && $logon_failed === false) {
+}else if (bh_getcookie('bh_logon') && user_is_guest()) {
+
+    // Display the logon page.
+
+    if (isset($final_uri) && strlen($final_uri) > 0) {
+
+        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
+
+    }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
+
+    }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
+
+    }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
+
+    }else {
+
+        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
+    }
+
+    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,*");
+    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+    $frameset->html_frame($final_uri, html_get_frame_name('main'));
+
+}else {
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -282,33 +303,6 @@ if ($skip_logon_page === true) {
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
-
-}else {
-
-    if (isset($final_uri) && strlen($final_uri) > 0) {
-
-        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
-
-    }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
-
-    }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
-
-    }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
-
-    }else {
-
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
-    }
-
-    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,*");
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
-    $frameset->html_frame($final_uri, html_get_frame_name('main'));
 }
 
 $frameset->output_html(false);
@@ -316,7 +310,11 @@ $frameset->output_html(false);
 echo "<noframes>\n";
 echo "<body>\n";
 
-if ($session_active && $logon_failed === false) {
+if (bh_getcookie('bh_logon') && user_is_guest()) {
+
+    light_draw_logon_form();
+
+} else {
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -355,11 +353,11 @@ if ($session_active && $logon_failed === false) {
 
         echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
     }
-
-}else {
-
-    light_draw_logon_form();
 }
+
+// Clear the logon cookie
+
+bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 echo "</body>\n";

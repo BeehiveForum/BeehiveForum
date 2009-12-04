@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.399 2009-12-04 18:22:55 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.400 2009-12-04 18:54:18 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -79,6 +79,14 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 
 function bh_session_check($show_session_fail = true, $init_guest_session = true)
 {
+    static $user_sess = false;
+
+    // If the session is already started return it.
+
+    if (is_array($user_sess)) return $user_sess;
+
+    // Database connection.
+
     if (!$db_bh_session_check = db_connect()) return false;
 
     // Fetch the user's IP Address
@@ -128,7 +136,11 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
 
             // If the session belongs to a guest pass control to bh_guest_session_init();
 
-            if ($user_sess['UID'] == 0) return bh_guest_session_init();
+            if ($user_sess['UID'] == 0) {
+
+                $user_sess = bh_guest_session_init();
+                return $user_sess;
+            }
 
             // check to see if the user's credentials match the
             // ban data set up on this forum.
@@ -206,11 +218,11 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
 
     // Only try to login as a guest if we're told to.
 
-    if ($init_guest_session) {
-        return bh_guest_session_init();
+    if ($init_guest_session === true) {
+        $user_sess = bh_guest_session_init();
     }
 
-    return false;
+    return $user_sess;
 }
 
 function bh_session_expired()
@@ -311,6 +323,10 @@ function bh_session_expired()
 
 function bh_guest_session_init()
 {
+    static $user_sess = false;
+
+    if (is_array($user_sess)) return $user_sess;
+
     if (!$db_bh_guest_session_init = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
@@ -450,29 +466,9 @@ function bh_guest_session_init()
         // ban data set up on this forum.
 
         ban_check($user_sess, true);
-
-        return $user_sess;
     }
 
-    return false;
-}
-
-/**
-* Checks if a session is active.
-*
-* Checks the user cookies and session to see if the current user is logged in.
-*
-* @return bool
-* @param void
-*/
-
-function bh_session_active()
-{
-    if (bh_getcookie('bh_logon')) return false;
-    if (bh_getcookie('bh_sess_hash')) return true;
-    if (user_guest_enabled() && !user_cookies_set()) return true;
-
-    return false;
+    return $user_sess;
 }
 
 /**

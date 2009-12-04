@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: browser.inc.php,v 1.1 2009-12-01 22:54:35 decoyduck Exp $ */
+/* $Id: browser.inc.php,v 1.2 2009-12-04 18:22:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 */
 function browser_check($browser_check = null)
 {
-    $browser = 0;
+    $browser = BROWSER_UNKNOWN;
 
     if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
@@ -85,29 +85,29 @@ function browser_check($browser_check = null)
                 $browser = $browser | BROWSER_NETSCAPE4;
             }
         }
-    }
 
-    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'webkit') !== false) {
-        $browser = $browser | BROWSER_WEBKIT;
-    }
+        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'webkit') !== false) {
+            $browser = $browser | BROWSER_WEBKIT;
+        }
 
-    if ((($browser & BROWSER_SAFARI) > 0) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') !== false) {
-        $browser = $browser | BROWSER_IPHONE;
-    }
+        if ((($browser & BROWSER_SAFARI) > 0) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') !== false) {
+            $browser = $browser | BROWSER_IPHONE;
+        }
 
-    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 7') !== false) {
-        $browser = $browser | BROWSER_MSIE7;
-    }
+        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 7') !== false) {
+            $browser = $browser | BROWSER_MSIE7;
+        }
 
-    if (($browser & BROWSER_MSIE) > 0) {
+        if (($browser & BROWSER_MSIE) > 0) {
 
-        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'win') !== false) {
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'win') !== false) {
 
-            $browser = $browser | BROWSER_MSIE_WIN;
+                $browser = $browser | BROWSER_MSIE_WIN;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mac') !== false) {
+            } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mac') !== false) {
 
-            $browser = $browser | BROWSER_MSIE_MAC;
+                $browser = $browser | BROWSER_MSIE_MAC;
+            }
         }
     }
 

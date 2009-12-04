@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.358 2009-10-12 18:06:10 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.359 2009-12-04 18:54:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,6 @@ function threads_get_folders()
     $access_allowed = USER_PERM_POST_READ;
 
     if (!$table_data = get_table_prefix()) return false;
-    if (!is_numeric($access_allowed)) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST ";
     $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
@@ -178,7 +177,7 @@ function threads_get_started_by_me($uid) // get threads started by user
     // If there are any problems with the function arguments we bail out.
 
     if (!is_numeric($uid)) return array(0, 0);
-    
+
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
@@ -375,9 +374,9 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
-    
+
     // Generate datetime for '$days' days ago.
-    
+
     $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     // Formulate query.
@@ -576,9 +575,9 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
-    
+
     // Generate datetime for yesterday
-    
+
     $threads_viewed_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - DAY_IN_SECONDS);
 
     // Formulate query
@@ -1088,9 +1087,9 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     // Check to see if unread messages have been disabled.
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
-    
+
     // Generate datetime for '$days' days ago.
-    
+
     $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     // Formulate query
@@ -1269,9 +1268,9 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
 function threads_get_unread_cutoff()
 {
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
-    
+
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
-    
+
     return (mktime(0, 0, 0, $month, $day, $year) - $unread_cutoff_stamp);
 }
 
@@ -1286,19 +1285,19 @@ function threads_process_list($result)
     // Unread cutoff
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
-    
+
     // Check for a specified folder
-    
+
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
         $folder_order = array($_GET['folder']);
-    }    
+    }
 
     if (db_num_rows($result) > 0) {
-    
+
         $threads_array = array();
-        
+
         while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
-                    
+
             if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
                 if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
                     $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
@@ -1306,7 +1305,7 @@ function threads_process_list($result)
             }
 
             if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
-            if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";        
+            if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
 
             if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
             if (!isset($thread['INTEREST']) || is_null($thread['INTEREST'])) $thread['INTEREST'] = 0;
@@ -1345,7 +1344,7 @@ function threads_process_list($result)
         threads_have_attachments($threads_array);
         return array($threads_array, $folder_order);
     }
-    
+
     return array(0, 0);
 }
 
@@ -1418,7 +1417,7 @@ function threads_mark_all_read()
     if (!$table_data = get_table_prefix()) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
@@ -1442,7 +1441,7 @@ function threads_mark_50_read()
     if (!$table_data = get_table_prefix()) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
@@ -1468,7 +1467,7 @@ function threads_mark_folder_read($fid)
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
@@ -1497,7 +1496,7 @@ function threads_mark_read($tid_array)
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
     $tid_list = implode(",", array_keys($tid_array));
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
@@ -1694,7 +1693,7 @@ function thread_has_attachments($tid)
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
     list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);
-    
+
     return ($attachment_count > 0);
 }
 
@@ -1703,7 +1702,7 @@ function thread_auto_prune_unread_data()
     if (!$db_thread_prune_unread_data = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
 
         $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";

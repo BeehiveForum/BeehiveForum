@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.353 2009-12-01 22:54:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.354 2009-12-04 18:22:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1157,7 +1157,7 @@ function html_draw_bottom($frame_set_html = false)
             echo "</script>\n";
         }
 
-        if (basename($_SERVER['PHP_SELF']) != 'nav.php') {
+        if (defined('BEEHIVE_INSTALL_NOWARN') && basename($_SERVER['PHP_SELF']) != 'nav.php') {
             echo "<p align=\"center\">", number_format((memory_get_usage() / 1024) / 1024, 4), "MB /", number_format((memory_get_peak_usage() / 1024) / 1024, 4), "MB</p>\n";
         }
 
@@ -1763,9 +1763,9 @@ function html_get_forum_uri($append_path = '', $allow_https = true)
         $uri_array['path'] = $path['path'];
     }
 
-    if (server_os_mswin()) {
+    $path_boundary = md5(uniqid(rand()));
 
-        $path_boundary = md5(uniqid(rand()));
+    if (server_os_mswin()) {
 
         $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname("{$uri_array['path']}$path_boundary"));
         $uri_array['path'] = rtrim($uri_array['path'], '/');

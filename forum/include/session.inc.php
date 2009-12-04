@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.398 2009-12-01 22:54:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.399 2009-12-04 18:22:55 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -77,7 +77,7 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 * @param string $show_session_fail - Disable the default behaviour of showing the session expired page.
 */
 
-function bh_session_check($show_session_fail = true)
+function bh_session_check($show_session_fail = true, $init_guest_session = true)
 {
     if (!$db_bh_session_check = db_connect()) return false;
 
@@ -196,13 +196,21 @@ function bh_session_check($show_session_fail = true)
 
             return $user_sess;
 
-        }elseif ($show_session_fail) {
+        // Check if we're showing the session failed page.
+
+        }else if ($show_session_fail) {
 
             bh_session_expired();
         }
     }
 
-    return bh_guest_session_init();
+    // Only try to login as a guest if we're told to.
+
+    if ($init_guest_session) {
+        return bh_guest_session_init();
+    }
+
+    return false;
 }
 
 function bh_session_expired()

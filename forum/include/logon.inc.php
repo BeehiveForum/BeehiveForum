@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.113 2009-12-04 18:22:55 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.114 2009-12-05 19:40:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -206,11 +206,11 @@ function logon_perform()
 
             if (forum_check_webtag_available($webtag)) {
 
-                bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
-                bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_{$webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_{$webtag}_light_thread_mode", "", time() - YEAR_IN_SECONDS);
             }
 
-            bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
             bh_session_init(0);
             return true;
         }
@@ -260,11 +260,11 @@ function logon_perform()
 
             if (forum_check_webtag_available($webtag)) {
 
-                bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
-                bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_{$webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_{$webtag}_light_thread_mode", "", time() - YEAR_IN_SECONDS);
             }
 
-            bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
 
@@ -287,7 +287,7 @@ function logon_perform_auto()
 
     forum_check_webtag_available($webtag);
 
-    if (bh_getcookie("bh_auto_logon", "Y") && !bh_session_check(false, false)) {
+    if (!bh_getcookie('bh_logon') && bh_getcookie("bh_auto_logon", "Y") && !bh_session_check(false, false)) {
 
         logon_get_cookies($username_array, $password_array, $passhash_array);
 
@@ -326,7 +326,7 @@ function logon_draw_form($logon_options)
 
     // Clean the logon cookie so we don't bounce to the logon screen.
 
-    bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
     // Retrieve existing cookie data if any
 

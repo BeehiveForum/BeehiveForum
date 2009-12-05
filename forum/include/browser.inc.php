@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: browser.inc.php,v 1.2 2009-12-04 18:22:55 decoyduck Exp $ */
+/* $Id: browser.inc.php,v 1.3 2009-12-05 19:40:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,7 +44,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 * @param mixed $browser_check
 * @return bool.
 */
-function browser_check($browser_check = null)
+function browser_check($browser_check)
 {
     $browser = BROWSER_UNKNOWN;
 
@@ -111,7 +111,7 @@ function browser_check($browser_check = null)
         }
     }
 
-    return (isset($browser_check)) ? ($browser & $browser_check > 0) : $browser;
+    return ($browser & $browser_check) > 0;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.240 2009-12-04 18:54:18 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.241 2009-12-05 19:40:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -178,7 +178,7 @@ function light_draw_logon_form($error_msg_array = array())
 
     forum_check_webtag_available($webtag);
 
-    bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
     echo "<h1>{$lang['logon']}</h1>\n";
 

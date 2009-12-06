@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.355 2009-12-04 18:54:18 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.356 2009-12-06 11:47:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1487,51 +1487,8 @@ function bh_getcookie($cookie_name, $callback = false, $default = false)
 
 function bh_remove_all_cookies()
 {
-    // Arrays to hold the cookie data
-
-    $username_array = array();
-    $password_array = array();
-    $passhash_array = array();
-
-    // Retrieve existing cookie data if any
-
-    logon_get_cookies($username_array, $password_array, $passhash_array);
-
-    // Remove logon tracking and session cookies
-
-    bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
-
-    // Remove the old saved logon cookies
-
-    while (list($key) = each($username_array)) {
-
-        bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
-    }
-
-    // The newer cookie format.
-
-    bh_setcookie("bh_remember_username", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_remember_passhash", "", time() - YEAR_IN_SECONDS);
-
-    // Remove the legacy light mode saved logon cookies.
-
-    bh_setcookie("bh_light_remember_username", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
-
-    if (($webtag_array = forum_get_all_webtags())) {
-
-        foreach ($webtag_array as $forum_webtag) {
-
-            bh_setcookie("bh_{$forum_webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_{$forum_webtag}_password", "", time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_{$forum_webtag}_style", "", time() - YEAR_IN_SECONDS);
-        }
+    foreach (array_keys($_COOKIE) as $name) {
+        bh_setcookie($name, '', time() - YEAR_IN_SECONDS);
     }
 }
 

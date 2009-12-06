@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.55 2009-10-24 19:21:35 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.56 2009-12-06 11:47:30 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -214,7 +214,7 @@ html_draw_top("title=$thread_title » {$poll_data['QUESTION']}", "openprofile.js
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_title, THREAD_NOINTEREST, FOLDER_NOINTEREST, false, false, false, false, false), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), false, array()), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";

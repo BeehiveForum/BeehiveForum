@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.175 2009-11-22 10:19:43 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.176 2009-12-07 20:26:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -254,7 +254,7 @@ function thread_set_length($tid, $length)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($length)) return false;
 
-    $current_datetime = date(MYSQL_DATE, time());
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET LENGTH = '$length', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
@@ -384,7 +384,7 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 
     $sticky_sql = ($sticky === true) ? 'Y' : 'N';
 
-    $current_datetime = date(MYSQL_DATE, time());
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (is_numeric($sticky_until) && $sticky_until !== false) {
 

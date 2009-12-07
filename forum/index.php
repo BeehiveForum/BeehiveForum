@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.199 2009-12-04 18:54:18 decoyduck Exp $ */
+/* $Id: index.php,v 1.200 2009-12-07 20:26:11 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -83,10 +83,6 @@ cache_disable();
 // See if we can try and logon automatically
 
 logon_perform_auto();
-
-// Load the user session
-
-$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 
@@ -163,7 +159,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 
         $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
 
-        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php|^logout.php/u", $final_uri) > 0) {
+        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
 
             $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
@@ -181,11 +177,6 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     }
 }
 
-// Calculate how tall the nav frameset should be based on the user's fontsize.
-
-$navsize = bh_session_get_value('FONT_SIZE');
-$navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
-
 // Output starts here
 
 html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
@@ -194,13 +185,13 @@ html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
 if ($skip_logon_page === true) {
 
-    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,$navsize,*");
+    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,22,*");
 
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-}else if (bh_getcookie('bh_logon') && user_is_guest()) {
+}else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
 
     // Display the logon page.
 
@@ -230,6 +221,15 @@ if ($skip_logon_page === true) {
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
 }else {
+
+    $user_sess = bh_session_check(false);
+
+    // Calculate how tall the nav frameset should be based on the user's fontsize.
+
+    $navsize = bh_session_get_value('FONT_SIZE');
+    $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
+
+    // Check for Forum webtag.
 
     if (forum_check_webtag_available($webtag)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.257 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.258 2009-12-07 20:26:11 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -75,19 +75,19 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
     $poll_question = db_escape_string($poll_question);
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     if (is_numeric($poll_closes) && $poll_closes !== false) {
-    
+
         $poll_closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, $poll_closes);
-    
+
         $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, POLLTYPE, ";
         $sql.= "SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) VALUES ('$tid', ";
         $sql.= "CAST('$poll_closes_datetime' AS DATETIME), '$poll_change_vote', '$poll_type', ";
         $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_question', ";
         $sql.= "'$poll_allow_guests')";
-        
+
     }else {
-    
+
         $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, ";
         $sql.= "POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) ";
         $sql.= "VALUES ('$tid', NULL, '$poll_change_vote', '$poll_type', ";
@@ -137,8 +137,8 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
     if (!forum_get_setting('poll_allow_guests', false)) $poll_allow_guests = POLL_GUEST_DENIED;
 
     if (!$table_data = get_table_prefix()) return false;
-    
-    $current_datetime = date(MYSQL_DATE, time());
+
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET TITLE = '$thread_title', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
@@ -154,7 +154,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
     if (is_numeric($poll_closes) && $poll_closes > 0) {
 
         $poll_closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, $poll_closes);
-        
+
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET CHANGEVOTE = '$poll_change_vote', ";
         $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$poll_show_results', ";
         $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$poll_option_type', ";
@@ -2147,7 +2147,7 @@ function poll_vote($tid, $vote_array)
     if (!$table_data = get_table_prefix()) return false;
 
     $poll_data = poll_get($tid);
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if ((!poll_get_user_vote($tid)) || ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) || (user_is_guest() && ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) {

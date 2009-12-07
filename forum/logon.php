@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.197 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: logon.php,v 1.198 2009-12-07 20:26:11 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -97,12 +97,6 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
     $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
-}
-
-// If the final_uri contains logout.php then unset it.
-
-if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
-    unset($final_uri);
 }
 
 // Don't cache this page - fixes problems with Opera.

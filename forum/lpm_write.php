@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_write.php,v 1.11 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: lpm_write.php,v 1.12 2009-12-08 12:04:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -603,15 +603,15 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 // Send the PM
 
 if ($valid && isset($_POST['send'])) {
-    
+
     if (check_ddkey($t_dedupe)) {
-       
+
         foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
             if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
 
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
-                
+
             }else {
 
                 $error_msg_array[] = $lang['errorcreatingpm'];
@@ -621,7 +621,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
             pm_delete_message($t_edit_mid);
-        }    
+        }
     }
 
     if ($valid) {
@@ -687,7 +687,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['CONTENT'] = $t_content;
 
     light_pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true);
-    
+
     echo "<br />\n";
 }
 
@@ -706,7 +706,7 @@ echo "<p>{$lang['subject']}: ";
 echo light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</p>\n";
 echo "<p>{$lang['to']}: ";
 echo form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
 if ($allow_html == true) {
 

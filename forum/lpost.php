@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.155 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.156 2009-12-08 12:04:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -565,7 +565,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h1>{$lang['messagepreview']}</h1>";
-    
+
     light_pm_check_messages();
 
     if ($t_to_uid == 0) {
@@ -628,9 +628,9 @@ if (!isset($t_fid)) {
 if ($new_thread) {
 
     echo "<h1>{$lang['createnewthread']}</h1>\n";
-    
+
     light_pm_check_messages();
-    
+
     echo "<p>{$lang['selectfolder']}: ";
     echo light_folder_draw_dropdown($t_fid, "t_fid"), "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
@@ -658,9 +658,9 @@ if ($new_thread) {
     }else {
 
         echo "<h1>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h1>\n";
-        
+
         light_pm_check_messages();
-        
+
         echo form_input_hidden("t_tid", htmlentities_array($reply_to_tid));
         echo form_input_hidden("t_rpid", htmlentities_array($reply_to_pid))."\n";
     }
@@ -671,10 +671,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
 }
 
 if ($allow_html == true) {

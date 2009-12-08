@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.241 2009-12-05 19:40:02 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.242 2009-12-08 12:04:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -165,7 +165,8 @@ function light_html_draw_bottom()
 {
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
 
-    echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
+    echo "<!--// Mouse and Kos fat have fat fingers //-->\n";
+    echo "<h6 align=\"right\">&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
     echo "</body>\n";
     echo "</html>\n";
 }
@@ -2040,7 +2041,7 @@ function light_mode_check_noframes()
 
     if (isset($_GET['noframes'])) {
 
-        if (bh_session_check(false) && !isset($_GET['logon_failed'])) {
+        if (bh_session_check(false, false) && !isset($_GET['logon_failed'])) {
 
             if (forum_check_webtag_available($webtag)) {
 
@@ -2055,7 +2056,7 @@ function light_mode_check_noframes()
 
         }else {
 
-            header_redirect("llogon.php?webtag=$webtag");
+            header_redirect("llogon.php");
             exit;
         }
     }

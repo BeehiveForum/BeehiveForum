@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.80 2009-12-04 18:54:18 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.81 2009-12-08 12:04:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -84,7 +84,7 @@ forum_check_webtag_available($webtag);
 
 // Load user session and see if we're a guest
 
-if (($user_sess = bh_session_check(false)) && !user_is_guest()) {
+if (($user_sess = bh_session_check(false, false)) && !user_is_guest()) {
     header_redirect("lthread_list.php?webtag=$webtag");
     exit;
 }

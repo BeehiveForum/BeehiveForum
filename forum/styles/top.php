@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: top.php,v 1.3 2009-11-17 21:13:34 decoyduck Exp $ */
+/* $Id: top.php,v 1.4 2009-12-08 12:04:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -68,10 +68,7 @@ $webtag = get_webtag();
 
 // Check we're logged in correctly
 
-if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
+$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 

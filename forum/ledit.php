@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.57 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.58 2009-12-08 12:04:48 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -214,7 +214,7 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 $valid = true;
 
-light_html_draw_top("title={$lang['editmessage']}", "robots=noindex,nofollow");
+light_html_draw_top(sprintf("title={$lang['editmessage']}", $edit_msg), "robots=noindex,nofollow");
 
 $t_content = "";
 $t_sig = "";
@@ -614,10 +614,10 @@ if ($valid && isset($_POST['preview'])) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
 }
 
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
 }
 
 if ($allow_html == true) {

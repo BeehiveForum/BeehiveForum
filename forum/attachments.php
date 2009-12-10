@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.176 2009-11-15 20:58:39 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.177 2009-12-10 21:48:37 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -211,16 +211,16 @@ if (isset($_POST['upload'])) {
                     $filesize = $_FILES['userfile']['size'][$i];
                     $tempfile = $_FILES['userfile']['tmp_name'][$i];
                     $filetype = $_FILES['userfile']['type'][$i];
-                    
+
                     if (sizeof($attachment_mime_types) > 0 && !in_array($filetype, $attachment_mime_types)) {
-                        
+
                         $upload_not_allowed[] = $filename;
 
                         if (@file_exists($tempfile)) {
 
                             unlink($tempfile);
                         }
-                        
+
                     }else if (($max_attachment_space > 0) && ($users_free_space < $filesize)) {
 
                         $upload_failure[] = $filename;
@@ -455,7 +455,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
         html_display_error_msg(sprintf($lang['failedtoupload'], htmlentities_array(implode(", ", $upload_failure))), '600', 'left');
     }
-    
+
     if (isset($upload_not_allowed) && is_array($upload_not_allowed) && sizeof($upload_not_allowed) > 0) {
         html_display_error_msg(sprintf($lang['mimetypenotallowed'], htmlentities_array(implode(", ", $upload_not_allowed))), '600', 'left');
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.175 2009-11-15 20:58:39 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.176 2009-12-10 21:48:38 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -56,7 +56,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 /**
-* Fetch upload temporary directory
+* attachments_get_upload_tmp_dir
 *
 * Fetches the upload temporary directory as defined in php.ini
 * or as defined by the system environment variable 'TEMP' / 'TMP'
@@ -79,7 +79,7 @@ function attachments_get_upload_tmp_dir()
 }
 
 /**
-* Checks attachments directory
+* attachments_check_dir
 *
 * Checks that the specified attachments directory exists and is writable.
 * Attempts to create the directory if it doesn't exist. Returns string
@@ -110,7 +110,7 @@ function attachments_check_dir()
 }
 
 /**
-* Fetch the attachment hash from the URL
+* get_attachment_query_hash
 *
 * Fetches the attachment hash from the URL, providing support for both
 * newer get_attachment.php/hash/filename and ?hash= methods
@@ -122,7 +122,7 @@ function attachments_check_dir()
 function get_attachment_query_hash(&$redirect)
 {
     $attachment_data = array();
-    
+
     if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
         return $_GET['hash'];
@@ -140,7 +140,7 @@ function get_attachment_query_hash(&$redirect)
 }
 
 /**
-* Fetches user attachments
+* get_attachments
 *
 * Fetches the available attachments based on the provided parameters that match $aid
 *
@@ -226,7 +226,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 }
 
 /**
-* Fetches user attachments
+* get_all_attachments
 *
 * Fetches the available attachments based on the provided parameters that do not match $aid
 *
@@ -292,7 +292,7 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
 }
 
 /**
-* Fetches user attachments
+* get_users_attachments
 *
 * Fetches the available attachments for the provided User ID
 *
@@ -373,7 +373,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 }
 
 /**
-* Add user attachment
+* add_attachment
 *
 * Adds a record to the database for a new file attachment
 *
@@ -407,7 +407,7 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 }
 
 /**
-* Delete an attachment
+* delete_attachment_by_aid
 *
 * Deletes an attachment by it's Post attachment ID
 *
@@ -440,7 +440,7 @@ function delete_attachment_by_aid($aid)
 }
 
 /**
-* Delete an attachment
+* delete_attachment
 *
 * Deletes an attachment by it's file hash
 *
@@ -527,7 +527,7 @@ function delete_attachment($hash)
 }
 
 /**
-* Delete an attachment thumbnail
+* delete_attachment_thumbnail
 *
 * Deletes an attachments thunbnail by it's file hash.
 *
@@ -599,7 +599,7 @@ function delete_attachment_thumbnail($hash)
 }
 
 /**
-* Get free attachment space
+* get_free_attachment_space
 *
 * Gets the free attachment space for the specified User ID
 *
@@ -611,43 +611,43 @@ function delete_attachment_thumbnail($hash)
 function get_free_attachment_space($uid, $aid)
 {
     // Get max settings for attachment space (default: 1MB)
-    
+
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
     $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
 
     // Get the user's used attachment space (global and per-post)
-    
-    $user_attachment_space = get_user_attachment_space($uid);   
+
+    $user_attachment_space = get_user_attachment_space($uid);
     $post_attachment_space = get_post_attachment_space($aid);
-    
+
     // If Max user attachment space > 0 use that to check the free space.
     // Checking that Max post attachment space > 0 and lower than max user space.
-    
+
     if ($max_user_attachment_space > 0) {
-        
+
         if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space)) {
-        
-            return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);        
-            
+
+            return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
+
         }else {
 
-            return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);        
+            return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
         }
     }
-    
+
     // If Max post attachment space > 0 use that to check against the used post attachment space.
-    
+
     if ($max_post_attachment_space > 0) {
         return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
     }
-    
+
     // All out of space?
-    
+
     return 0;
 }
 
 /**
-* Get free user attachment space
+* get_free_user_attachment_space
 *
 * Gets the free user (global) attachment space for the specified User ID
 *
@@ -658,14 +658,14 @@ function get_free_attachment_space($uid, $aid)
 function get_free_user_attachment_space($uid)
 {
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
-    
+
     $user_attachment_space = get_user_attachment_space($uid);
-    
+
     return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
 }
 
 /**
-* Get free post attachment space
+* get_free_post_attachment_space
 *
 * Gets the free post attachment space for the specified Post AID
 *
@@ -676,14 +676,14 @@ function get_free_user_attachment_space($uid)
 function get_free_post_attachment_space($aid)
 {
     $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
-    
+
     $post_attachment_space = get_post_attachment_space($aid);
-    
+
     return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
 }
 
 /**
-* Get max user attachment space
+* get_max_attachment_space
 *
 * Gets the maximum amount of space available to the user
 *
@@ -694,21 +694,21 @@ function get_free_post_attachment_space($aid)
 function get_max_attachment_space()
 {
     // Get max settings for attachment space (default: 1MB)
-    
+
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
     $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
-    
+
     if ($max_user_attachment_space > 0) {
         return $max_user_attachment_space;
     }else if ($max_post_attachment_space > 0) {
         return $max_post_attachment_space;
     }
-    
+
     return 0;
-}    
+}
 
 /**
-* Get used user attachment space
+* get_user_attachment_space
 *
 * Gets the amount of space used by the user for all their attachments.
 *
@@ -742,7 +742,7 @@ function get_user_attachment_space($uid)
 }
 
 /**
-* Get free attachment space
+* get_post_attachment_space
 *
 * Gets the free attachment space for the specified Post AID
 *
@@ -776,7 +776,7 @@ function get_post_attachment_space($aid)
 }
 
 /**
-* Gets Post attachment ID
+* get_attachment_id
 *
 * Gets the post attachment ID from the provided Thread ID and Post ID
 *
@@ -813,7 +813,7 @@ function get_attachment_id($tid, $pid)
 }
 
 /**
-* Get folder ID
+* get_folder_fid
 *
 * Get the folder ID from the provided post attachment ID
 *
@@ -849,7 +849,7 @@ function get_folder_fid($aid)
 }
 
 /**
-* Get PM attachment ID
+* get_pm_attachment_id
 *
 * Gets the PM attachment ID from the provided personal message ID
 *
@@ -877,7 +877,7 @@ function get_pm_attachment_id($mid)
 }
 
 /**
-* Get message link
+* get_message_link
 *
 * Constucts the URI for use in a HTML anchor href attribute for the message that contains the specified attachment.
 *
@@ -922,7 +922,7 @@ function get_message_link($aid, $get_pm_link = true)
 }
 
 /**
-* Gets attachment count for specified post attachment ID
+* get_num_attachments
 *
 * Returns the number of individual attachments a post or PM contains
 *
@@ -949,7 +949,7 @@ function get_num_attachments($aid)
 }
 
 /**
-* Fetches an attachment
+* get_attachment_by_hash
 *
 * Fetches the attachment that matches the specified file hash
 *
@@ -990,7 +990,7 @@ function get_attachment_by_hash($hash)
 }
 
 /**
-* Increment download count
+* attachment_inc_dload_count
 *
 * Increments the download count for the specified file hash
 *
@@ -1013,7 +1013,7 @@ function attachment_inc_dload_count($hash)
 }
 
 /**
-* Check for embedded attachments
+* attachment_embed_check
 *
 * Checks provided content for attachments embedded in HTML image / object tags
 *
@@ -1031,7 +1031,7 @@ function attachment_embed_check($content)
 }
 
 /**
-* Make attachment link
+* attachment_make_link
 *
 * Constucts the correct type of link for the specified attachment / image attachment
 *
@@ -1163,7 +1163,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 }
 
 /**
-* Set thumb transparency
+* attachment_thumb_transparency
 *
 * Assigns alpha transparency to an image to correctly create thumbnails from
 * pngs with alpha transparency.
@@ -1197,15 +1197,110 @@ function attachment_thumb_transparency($im)
 }
 
 /**
-* Create a thumbnail
+* attachment_create_thumb
 *
-* Creates a thumbnail for the attachment if it is of a supported image type
+* Wrapper function for attachment_create_thumb_im and
+* attachment_create_thumb_gd.
+*
+* @param mixed $filepath
+* @param mixed $max_width
+* @param mixed $max_height
+* @return bool
+*/
+function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
+{
+    if (!attachment_create_thumb_im($filepath, $max_width, $max_height)) {
+        return attachment_create_thumb_gd($filepath, $max_width, $max_height);
+    }
+
+    return true;
+}
+
+/**
+* attachment_create_thumb_im
+*
+* Create attachment thumbnail using ImageMagick.
+*
+* @param string $imagemagick_path
+* @param string $filepath
+* @param mixed $max_width
+* @param mixed $max_height
+*/
+function attachment_create_thumb_im($filepath, $max_width, $max_height)
+{
+    if (!is_numeric($max_width)) $max_width = 150;
+    if (!is_numeric($max_height)) $max_height = 150;
+
+    // Get the imagemagick path from settings.
+
+    if (!($imagemagick_path = forum_get_global_setting('imagemagick_path'))) return false;
+
+    // Check the image filepath exists
+
+    if (!@file_exists($filepath) || (!@$image_info = getimagesize($filepath))) return false;
+
+    // Check that the specified imagemagick path exists and can be executed.
+
+    if (!file_exists($imagemagick_path) || !is_executable($imagemagick_path)) return false;
+
+    // Run imagemagick with it's -version command line to see if it
+    // really is imagemagick. Not really an authoritative test, but it'll do.
+
+    exec(sprintf('%s -version', escapeshellarg($imagemagick_path)), $imagemagick_info);
+
+    // Convert result into a string.
+
+    $imagemagick_info = trim(implode("\n", $imagemagick_info));
+
+    // Check it contains the string "Version: ImageMagick"
+
+    if (strstr($imagemagick_info, 'Version: ImageMagick') === false) return false;
+
+    // If we're dealing with a GIF image, we need to
+    // process it to correctly resize all the frames it
+    // might contain - in the case of animated gifs.
+
+    if (($image_info[2] == IMAGETYPE_GIF)) {
+
+        // Resize the gif, dropping all but the first frame.
+
+        exec(sprintf('%s %s[0] -resize "%dx%d>" %s', escapeshellarg($imagemagick_path),
+                                                     escapeshellarg($filepath),
+                                                     $max_width,
+                                                     $max_height,
+                                                     escapeshellarg("$filepath.thumb")));
+
+    } else {
+
+        // It's not a gif, so carry on and resize the image.
+
+        exec(sprintf('%s %s -resize "%dx%d>" %s', escapeshellarg($imagemagick_path),
+                                                  escapeshellarg($filepath),
+                                                  $max_width,
+                                                  $max_height,
+                                                  escapeshellarg("$filepath.thumb")));
+    }
+
+    // if imagemagick baulks, it won't create the final image, so we
+    // test that exists before returning the result.
+
+    if (!file_exists(sprintf('%s.thumb', $filepath))) return false;
+
+    return true;
+}
+
+/**
+* attachment_create_thumb_gd
+*
+* Create a thumbnail for the attachment using PHP's GD functionality.
+* If GD is not enabled or the required read/write functions are not
+* available returns false.
 *
 * @return bool
 * @param string $filepath - path to the file attachment on the server
+* @return bool.
 */
-
-function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
+function attachment_create_thumb_gd($filepath, $max_width, $max_height)
 {
     if (!is_numeric($max_width)) $max_width = 150;
     if (!is_numeric($max_height)) $max_height = 150;
@@ -1225,13 +1320,13 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
     // Required GD read support
 
     $required_read_support = array(1 => 'GIF Read Support',
-                                   2 => 'JPG Support',
+                                   2 => 'JPEG Support',
                                    3 => 'PNG Support');
 
     // Required GD write support
 
     $required_write_support = array(1 => 'GIF Create Support',
-                                    2 => 'JPG Support',
+                                    2 => 'JPEG Support',
                                     3 => 'PNG Support');
 
     if (@file_exists($filepath) && @$image_info = getimagesize($filepath)) {
@@ -1292,12 +1387,21 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
     return false;
 }
 
+/**
+* attachment_get_mime_types
+*
+* Get array of permitted attachment mime types.
+* Returns empty array if no mimetypes set.
+*
+* @param void
+* @return array
+*/
 function attachment_get_mime_types()
 {
     if (($allowed_mimetypes = forum_get_setting('attachment_mime_types'))) {
         return explode(';', $allowed_mimetypes);
     }
-    
+
     return array();
 }
 

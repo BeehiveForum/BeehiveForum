@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.397 2009-12-10 21:48:38 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.398 2009-12-12 22:58:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -667,18 +667,18 @@ function forum_check_global_setting_name($setting_name)
     $valid_global_forum_settings = array('adsense_publisher_id', 'adsense_medium_ad_id', 'adsense_small_ad_id',
                                          'adsense_display_users', 'adsense_display_pages', 'active_sess_cutoff',
                                          'allow_new_registrations', 'allow_search_spidering', 'allow_username_changes',
-                                         'attachments_allow_embed', 'attachments_enabled', 'attachments_max_user_space',
-                                         'attachments_max_post_space', 'attachment_allow_guests', 'attachment_dir',
-                                         'attachment_mime_types', 'attachment_use_old_method', 'bh_remove_stale_sessions_last_run',
-                                         'cache_dir', 'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
-                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
-                                         'forum_maintenance_schedule', 'forum_timezone', 'pm_system_prune_folders_last_run',
-                                         'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run',
-                                         'sitemap_create_file_last_run', 'enable_google_analytics', 'allow_forum_google_analytics',
-                                         'google_analytics_code', 'guest_account_enabled', 'guest_show_recent', 'imagemagick_path',
-                                         'message_cache_enabled', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
-                                         'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
-                                         'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune',
+                                         'attachments_allow_embed', 'attachments_enabled', 'attachment_thumbnails',
+                                         'attachments_max_user_space', 'attachments_max_post_space', 'attachment_allow_guests',
+                                         'attachment_dir', 'attachment_mime_types', 'attachment_use_old_method',
+                                         'bh_remove_stale_sessions_last_run', 'cache_dir', 'forum_desc',  'forum_email',
+                                         'forum_keywords', 'forum_name', 'forum_noreply_email', 'forum_rules_enabled',
+                                         'forum_rules_message', 'forum_maintenance_function', 'forum_maintenance_schedule',
+                                         'forum_timezone', 'pm_system_prune_folders_last_run', 'thread_auto_prune_unread_data_last_run',
+                                         'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'enable_google_analytics',
+                                         'allow_forum_google_analytics', 'google_analytics_code', 'guest_account_enabled',
+                                         'guest_show_recent', 'imagemagick_path', 'message_cache_enabled', 'messages_unread_cutoff',
+                                         'messages_unread_cutoff_custom', 'new_user_email_notify', 'new_user_mark_as_of_int',
+                                         'new_user_pm_notify_email', 'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune',
                                          'pm_max_user_messages', 'require_email_confirmation', 'require_unique_email',
                                          'require_user_approval', 'search_min_frequency', 'searchbots_show_active',
                                          'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',

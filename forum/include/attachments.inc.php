@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.176 2009-12-10 21:48:38 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.177 2009-12-12 22:58:19 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -1066,7 +1066,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
     $lang = load_language_file();
 
-    if (($user_show_thumbs = bh_session_get_value('SHOW_THUMBS')) > 0) {
+    if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = bh_session_get_value('SHOW_THUMBS')) > 0) || user_is_guest())) {
 
         $thumbnail_size = array(1 => 50, 2 => 100, 3 => 150);
         $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs])
@@ -1209,6 +1209,8 @@ function attachment_thumb_transparency($im)
 */
 function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
 {
+    if (forum_get_setting('attachment_thumbnails', 'N')) return false;
+
     if (!attachment_create_thumb_im($filepath, $max_width, $max_height)) {
         return attachment_create_thumb_gd($filepath, $max_width, $max_height);
     }

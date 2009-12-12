@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.150 2009-11-15 20:58:39 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.151 2009-12-12 22:58:19 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -489,6 +489,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['attachments_enabled'] = "N";
     }
 
+    if (isset($_POST['attachment_thumbnails']) && $_POST['attachment_thumbnails'] == "Y") {
+        $new_forum_settings['attachment_thumbnails'] = "Y";
+    }else {
+        $new_forum_settings['attachment_thumbnails'] = "N";
+    }
+
     if (isset($_POST['attachment_dir']) && strlen(trim(stripslashes_array($_POST['attachment_dir']))) > 0) {
 
         $new_forum_settings['attachment_dir'] = trim(stripslashes_array($_POST['attachment_dir']));
@@ -510,12 +516,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }else {
         $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
     }
-    
+
     if (isset($_POST['attachments_max_post_space']) && is_numeric($_POST['attachments_max_post_space'])) {
         $new_forum_settings['attachments_max_post_space'] = ($_POST['attachments_max_post_space'] * 1024) * 1024;
     }else {
         $new_forum_settings['attachments_max_post_space'] = 1048576; // 1MB in bytes
-    }    
+    }
 
     if (isset($_POST['attachments_allow_embed']) && $_POST['attachments_allow_embed'] == "Y") {
         $new_forum_settings['attachments_allow_embed'] = "Y";
@@ -1438,6 +1444,10 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['enableattachments']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("attachments_enabled", "Y", $lang['yes'], (isset($forum_global_settings['attachments_enabled']) && $forum_global_settings['attachments_enabled'] == 'Y')), "&nbsp;", form_radio("attachments_enabled", "N", $lang['no'], (isset($forum_global_settings['attachments_enabled']) && $forum_global_settings['attachments_enabled'] == 'N') || !isset($forum_global_settings['attachments_enabled'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['enableattachmentthumbnails']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("attachment_thumbnails", "Y", $lang['yes'], (isset($forum_global_settings['attachment_thumbnails']) && $forum_global_settings['attachment_thumbnails'] == 'Y') || !isset($forum_global_settings['attachment_thumbnails'])), "&nbsp;", form_radio("attachment_thumbnails", "N", $lang['no'], isset($forum_global_settings['attachment_thumbnails']) && $forum_global_settings['attachment_thumbnails'] == 'N'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['allowembeddingofattachments']}:</td>\n";

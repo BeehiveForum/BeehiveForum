@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.52 2009-11-15 20:58:39 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.53 2009-12-12 22:58:19 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -162,85 +162,97 @@ $attachment_mime_types = attachment_get_mime_types();
 
 if (isset($hash) && is_md5($hash)) {
 
-    if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
+    // Get the attachment details.
 
-        if (($attachment_details = get_attachment_by_hash($hash))) {
+    if (($attachment_details = get_attachment_by_hash($hash))) {
 
-            // If we're requesting the thumbnail then we need to append
-            //.thumb to the filepath. If we're getting the full image we
-            // increase the view count by one.
+        // If we're requesting an image attachment thumbnail then
+        // we need to append .thumb to the filepath. If we're getting
+        // the full image we increase the view count by one.
 
-            if (isset($_GET['thumb']) && $_GET['thumb'] == 1) {
+        if (isset($_GET['thumb']) && forum_get_setting('attachment_thumbnails', 'Y')) {
 
-                $filepath = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
+            $filepath = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
 
-            }elseif (!isset($_GET['profile_picture']) && !isset($_GET['avatar_picture'])) {
+        }else {
 
-                attachment_inc_dload_count($hash);
+            if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
+
+                // Construct the attachment filepath.
+
                 $filepath = "{$attachment_dir}/{$attachment_details['hash']}";
-            }
-            
-            // Check the mimetype is allowed.
-            
-            if (sizeof($attachment_mime_types) == 0 || in_array($filetype, $attachment_mime_types)) {
 
-                // Use the filename quite a few times, so assign it to a variable to save some time.
+                // Increment the view count only if the attachment
+                // isn't being used as an avatar or profile picture.
 
-                $filename = rawurldecode(basename($attachment_details['filename']));
-
-                if (@file_exists($filepath)) {
-
-                    // Filesize for Content-Length header.
-
-                    $length = filesize($filepath);
-
-                    // Are we viewing or downloading the attachment?
-
-                    if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
-                        header("Content-Type: application/x-ms-download", true);
-                    }else {
-                        header("Content-Type: ". $attachment_details['mimetype'], true);
-                    }
-
-                    // Only do the cache control if we're not running
-                    // in PHP CGI Mode. We need to do this check as
-                    // we need to modify the HTTP Response header
-                    // which is not permitted under PHP CGI Mode.
-
-                    if (preg_match('/cgi/u', php_sapi_name()) < 1) {
-
-                        // Etag Header for cache control
-                        $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
-
-                        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-                            $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-                        }else {
-                            $remote_etag = false;
-                        }
-
-                        // Last Modified Header for cache control
-                        $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
-
-                        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-                            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-                        }else {
-                            $remote_last_modified = false;
-                        }
-
-                        if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-                            header("HTTP/1.1 304 Not Modified");
-                            exit;
-                        }
-
-                        header("Last-Modified: $local_last_modified", true);
-                        header("Etag: \"$local_etag\"", true);
-                    }
-
-                    header("Content-Length: $length", true);
-                    header("Content-disposition: inline; filename=\"$filename\"", true);
-                    readfile($filepath);
-                    exit;
+                if (!isset($_GET['profile_picture']) && !isset($_GET['avatar_picture'])) {
+                    attachment_inc_dload_count($hash);
                 }
+            }
+        }
+
+        // Check the mimetype is allowed.
+
+        if (sizeof($attachment_mime_types) == 0 || in_array($filetype, $attachment_mime_types)) {
+
+            // Use the filename quite a few times, so assign it to a variable to save some time.
+
+            $filename = rawurldecode(basename($attachment_details['filename']));
+
+            // Check the filepath is set and exists.
+
+            if (isset($filepath) && @file_exists($filepath)) {
+
+                // Filesize for Content-Length header.
+
+                $length = filesize($filepath);
+
+                // Are we viewing or downloading the attachment?
+
+                if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
+                    header("Content-Type: application/x-ms-download", true);
+                }else {
+                    header("Content-Type: ". $attachment_details['mimetype'], true);
+                }
+
+                // Only do the cache control if we're not running
+                // in PHP CGI Mode. We need to do this check as
+                // we need to modify the HTTP Response header
+                // which is not permitted under PHP CGI Mode.
+
+                if (preg_match('/cgi/u', php_sapi_name()) < 1) {
+
+                    // Etag Header for cache control
+                    $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+
+                    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+                        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                    }else {
+                        $remote_etag = false;
+                    }
+
+                    // Last Modified Header for cache control
+                    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
+
+                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+                        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+                    }else {
+                        $remote_last_modified = false;
+                    }
+
+                    if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
+                        header("HTTP/1.1 304 Not Modified");
+                        exit;
+                    }
+
+                    header("Last-Modified: $local_last_modified", true);
+                    header("Etag: \"$local_etag\"", true);
+                }
+
+                header("Content-Length: $length", true);
+                header("Content-disposition: inline; filename=\"$filename\"", true);
+                readfile($filepath);
+                exit;
             }
         }
     }

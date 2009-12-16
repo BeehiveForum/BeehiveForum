@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.111 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.112 2009-12-16 18:31:02 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -265,14 +265,14 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         $user = user_get($uid);
 
-        html_draw_top("title={$lang['admin']} » {$lang['editprofile']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))));
+        html_draw_top("title={$lang['admin']} » {$lang['editprofile']} » ". format_user_name($user['LOGON'], $user['NICKNAME']));
 
-        echo "<h1>{$lang['admin']} &raquo; {$lang['editprofile']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; {$lang['editprofile']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
     }else {
 
         html_draw_top("title={$lang['mycontrols']} » {$lang['editprofile']}");
-        
+
         echo "<h1>{$lang['editprofile']}</h1>\n";
     }
 

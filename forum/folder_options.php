@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_options.php,v 1.18 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: folder_options.php,v 1.19 2009-12-16 18:31:02 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -217,7 +217,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['folderoptions']} » ". word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "basetarget=_blank", "folder_options.js");
+html_draw_top("title={$lang['folderoptions']} » {$folder_data['TITLE']}", "basetarget=_blank", "folder_options.js");
 
 echo "<h1>{$lang['folderoptions']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 

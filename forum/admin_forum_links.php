@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.77 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.78 2009-12-16 18:31:01 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -421,7 +421,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['editlink']} » ". word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])));
+    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['editlink']} » {$forum_link['TITLE']}");
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
 

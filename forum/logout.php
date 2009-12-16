@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.112 2009-06-26 17:14:20 decoyduck Exp $ */
+/* $Id: logout.php,v 1.113 2009-12-16 18:38:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -78,25 +78,32 @@ $webtag = get_webtag();
 
 // After we've logged out redirect to index.php
 
-if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
-    $final_uri = "&final_uri=". rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
+if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
+    $final_uri = "final_uri=". rawurlencode(trim(stripslashes_array($_REQUEST['final_uri'])));
 }else {
     $final_uri = "";
 }
 
 bh_session_end();
 
+if (isset($_REQUEST['register'])) {
+
+    $final_uri = rawurlencode("register.php?$final_uri");
+    header_redirect("index.php?final_uri=$final_uri");
+    exit;
+}
+
 bh_setcookie("bh_logon", "1");
 bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
 
 if (user_is_guest()) {
 
-    header_redirect("index.php?webtag=$webtag$final_uri");
+    header_redirect("index.php?webtag=$webtag&$final_uri");
     exit;
 
 }else {
 
-    header_redirect("index.php?webtag=$webtag&logout_success=true$final_uri");
+    header_redirect("index.php?webtag=$webtag&logout_success=true&$final_uri");
     exit;
 }
 

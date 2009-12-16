@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.131 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.132 2009-12-16 18:31:02 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -267,9 +267,9 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageuser']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
-    
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    html_draw_top("title={$lang['admin']} » {$lang['manageuser']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
+
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 }else {
 

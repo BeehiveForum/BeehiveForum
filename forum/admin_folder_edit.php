@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.85 2009-10-22 20:36:05 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.86 2009-12-16 18:31:01 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -313,7 +313,7 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
                             FOLDER_ALLOW_POLL_THREAD   => $lang['pollthreadsonly'],
                             FOLDER_ALLOW_ALL_THREAD    => $lang['both']);
 
-html_draw_top("{$lang['admin']} » {$lang['managefolders']} » {$lang['editfolder']} » ". word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])));
+html_draw_top("{$lang['admin']} » {$lang['managefolders']} » {$lang['editfolder']} » {$folder_data['TITLE']}");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['managefolders']} &raquo; {$lang['editfolder']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 

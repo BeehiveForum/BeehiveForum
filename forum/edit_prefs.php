@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.118 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.119 2009-12-16 18:31:02 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -645,14 +645,14 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} » {$lang['userdetails']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), 'attachments.js');
-    
+    html_draw_top("title={$lang['admin']} » {$lang['userdetails']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js');
+
     echo "<h1>{$lang['admin']} &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
     html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']}");
-    
+
     echo "<h1>{$lang['userdetails']}</h1>\n";
 }
 

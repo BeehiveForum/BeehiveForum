@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.242 2009-12-08 12:04:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.243 2009-12-22 18:48:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1208,7 +1208,7 @@ function light_draw_my_forums()
 
 function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)
 {
-    $html = "<select name=\"$name\"";
+    $html = "<select name=\"$name\" class=\"bhlightselect\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
@@ -1870,25 +1870,16 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     return false;
 }
 
-function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = false)
+function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = '')
 {
-    $html = "<textarea name=\"$name\" class=\"bhlightinput\"";
+    if (!is_numeric($rows)) $rows = 5;
+    if (!is_numeric($cols)) $cols = 50;
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $custom_html = sprintf(' %s', trim($custom_html));
     }
 
-    if (is_numeric($rows)) {
-        $html.= " rows=\"$rows\"";
-    }
-
-    if (is_numeric($cols)) {
-        $html.= " cols=\"$cols\"";
-    }
-
-    $html.= ">$value</textarea>";
-
-    return $html;
+    return sprintf('<textarea name="%s" class="bhlightinput" rows="%s" cols="%s"%s>%s</textarea>', $name, $rows, $cols, $custom_html, $value);
 }
 
 function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)

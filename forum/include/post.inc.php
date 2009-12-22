@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.219 2009-11-12 21:32:46 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.220 2009-12-22 18:48:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -67,7 +67,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
     if (!is_numeric($reply_pid)) return -1;
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return -1;
@@ -130,7 +130,7 @@ function post_approve($tid, $pid)
     $approve_uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
@@ -167,7 +167,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $closed = false)
 {
     if (!is_numeric($fid)) return false;
-    
+
     if (!is_numeric($uid)) return false;
 
     $title = db_escape_string($title);
@@ -175,15 +175,15 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $poll = ($poll == 'Y') ? 'Y' : 'N';
 
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';
-    
+
     $closed = ($closed === true) ? sprintf("'%s'", date(MYSQL_DATETIME, time())) : 'NULL';
 
     if (!$db_post_create_thread = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     // Current datetime
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
@@ -203,7 +203,7 @@ function post_update_thread_length($tid, $length)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($length)) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET LENGTH = '$length', ";
@@ -230,7 +230,10 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid\">";
+    $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'bhselect';
+
+    $html = "<select name=\"t_to_uid\" class=\"$class\">";
+
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!is_numeric($default_uid)) $default_uid = 0;
@@ -304,7 +307,10 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($new_thread ? 0 : 1).")\">";
+    $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'recent_user_dropdown';
+
+    $html = "<select name=\"t_to_uid_recent\" class=\"$class\" onclick=\"checkToRadio(". ($new_thread ? 0 : 1).")\">";
+
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -375,7 +381,10 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" $custom_html>";
+    $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'user_in_thread_dropdown';
+
+    $html = "<select name=\"t_to_uid_in_thread\" class=\"$class\" $custom_html>";
+
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
@@ -485,7 +494,7 @@ function check_ddkey($ddkey)
     if (!$db_check_ddkey = db_connect()) return false;
 
     if (!is_numeric($ddkey)) return false;
-    
+
     $ddkey_datetime = date(MYSQL_DATETIME, $ddkey);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -530,7 +539,7 @@ function check_post_frequency()
     $minimum_post_frequency = intval(forum_get_setting('minimum_post_frequency', false, 0));
 
     if ($minimum_post_frequency == 0) return true;
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) + $minimum_post_frequency, ";

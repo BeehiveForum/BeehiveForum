@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.69 2009-12-22 18:48:02 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.70 2009-12-22 18:59:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -157,9 +157,9 @@ class dictionary {
         foreach ($this->content_array as $key => $word) {
 
             if ($key == $this->current_word) {
-                echo "<span class=\"highlight\" id=\"highlighted_word\">", nl2br(htmlentities_array($word)), "</span>";
+                return sprintf('<span class="highlight" id="highlighted_word">%s</span>', nl2br(htmlentities_array($word)));
             }else {
-                echo nl2br(htmlentities_array($word));
+                return nl2br(htmlentities_array($word));
             }
         }
     }
@@ -168,13 +168,12 @@ class dictionary {
     {
         if (!$db_dictionary_add_custom_word = db_connect()) return false;
 
-        $metaphone = db_escape_string(metaphone(trim($word)));
         $word = db_escape_string(trim($word));
 
         if (($uid = bh_session_get_value('UID')) === false) return false;
 
         $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
-        $sql.= "VALUES ('$word', '$metaphone', '$uid')";
+        $sql.= "VALUES ('$word', SOUNDEX('$word'), '$uid')";
 
         if (!db_query($sql, $db_dictionary_add_custom_word)) return false;
 
@@ -252,7 +251,7 @@ class dictionary {
 
         if (!$this->word_is_valid($word)) return;
 
-        // The offset of the metaphone results
+        // The offset of the soundex results
 
         $offset = $this->offset_match;
 
@@ -326,7 +325,7 @@ class dictionary {
 
     function find_next_word()
     {
-        while (($this->current_word < sizeof($this->content_array))) {
+        while (($this->current_word < sizeof($this->content_array) - 1)) {
 
             $this->current_word = $this->current_word + 1;
             $this->offset_match = 0;

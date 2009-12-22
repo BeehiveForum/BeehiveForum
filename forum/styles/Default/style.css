@@ -502,7 +502,7 @@ a {
     text-align: center;
 }
 
-button::-moz-focus-inner { 
+button::-moz-focus-inner {
     border: 0;
     padding: 0;
 }
@@ -567,14 +567,14 @@ button::-moz-focus-inner {
 }
 
 .bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
-.bhinputlogon, .bhlogondropdown, .register_dropdown, 
-.search_dropdown, .banned_dropdown, .links_dropdown, 
-.timezone_dropdown, .admin_startpage_textarea, 
-.dictionary_word_display, .dictionary_best_selection, 
-.dictionary_change_to, .post_folder_dropdown, .thread_title, 
-.post_content, .signature_content, .edit_signature_content, 
-.to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown, 
-.admin_options_dropdown, .user_in_thread_dropdown, 
+.bhinputlogon, .bhlogondropdown, .register_dropdown,
+.search_dropdown, .banned_dropdown, .links_dropdown,
+.timezone_dropdown, .admin_startpage_textarea,
+.dictionary_word_display, .dictionary_best_selection,
+.dictionary_change_to, .post_folder_dropdown, .thread_title,
+.post_content, .signature_content, .edit_signature_content,
+.to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown,
+.admin_options_dropdown, .user_in_thread_dropdown,
 .user_pref_field, .bhinputprofileitem, .text_captcha_input,
 .user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
@@ -611,6 +611,10 @@ button::-moz-focus-inner {
 .bhlightinput {
     max-width: 90%;
     max-height: 40%;
+}
+
+.bhlightselect {
+    max-width: 75%;
 }
 
 .bhinputprofileitem {
@@ -1195,7 +1199,7 @@ button::-moz-focus-inner {
     margin: 10px;
     width: 95px;
     height: 95px;
-    border: 1px solid #000000;    
+    border: 1px solid #000000;
 }
 
 .profile_image_none {
@@ -1375,7 +1379,7 @@ button::-moz-focus-inner {
     text-align: left;
 }
 
-.error_msg {    
+.error_msg {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     background-color: #FDFC9F;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.68 2009-09-12 13:30:18 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.69 2009-12-22 18:48:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -92,7 +92,7 @@ class dictionary {
         $sql = "SELECT COUNT(WORD) FROM DICTIONARY";
 
         if (!$result = db_query($sql, $db_dictionary_check_setup)) return false;
-        
+
         list($word_count) = db_fetch_array($result, DB_RESULT_NUM);
 
         return ($word_count > 0);
@@ -238,11 +238,6 @@ class dictionary {
         return in_array(mb_strtolower($this->get_current_word()), $this->ignored_words_array);
     }
 
-    function word_get_metaphone()
-    {
-        return metaphone(trim($this->get_current_word()));
-    }
-
     function word_get_suggestions()
     {
         if (!$db_dictionary_word_get_suggestions = db_connect()) return;
@@ -251,7 +246,9 @@ class dictionary {
 
         // Fetch the current word
 
-        $word = db_escape_string(mb_strtolower($this->get_current_word()));
+        $word = db_escape_string($this->get_current_word());
+
+        // Check it is valid.
 
         if (!$this->word_is_valid($word)) return;
 
@@ -279,42 +276,37 @@ class dictionary {
             return;
         }
 
-        // Metaphone match (English pronounciation match)
+        // Soundex match.
 
-        if (($metaphone = $this->word_get_metaphone())) {
+        $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = SOUNDEX('$word') ";
+        $sql.= "AND (UID = 0 OR UID = '$uid') ";
+        $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
-            $metaphone = db_escape_string($metaphone);
+        if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
 
-            $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-            $sql.= "AND (UID = 0 OR UID = '$uid') ";
-            $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
+        if (db_num_rows($result) > 0) {
 
-            if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
+            while (($spelling_data = db_fetch_array($result))) {
 
-            if (db_num_rows($result) > 0) {
-
-                while (($spelling_data = db_fetch_array($result))) {
-
-                    $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
-                }
-
-            }else {
-
-                if ($this->offset_match == 0) {
-
-                    $this->word_suggestion_result = DICTIONARY_NOMATCH;
-                    return;
-                }
-
-                $this->offset_match = 0;
-                $this->word_get_suggestions();
+                $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
             }
 
-            if (sizeof($this->suggestions_array) > 0) {
+        }else {
 
-                $this->word_suggestion_result = DICTIONARY_SUGGEST;
+            if ($this->offset_match == 0) {
+
+                $this->word_suggestion_result = DICTIONARY_NOMATCH;
                 return;
             }
+
+            $this->offset_match = 0;
+            $this->word_get_suggestions();
+        }
+
+        if (sizeof($this->suggestions_array) > 0) {
+
+            $this->word_suggestion_result = DICTIONARY_SUGGEST;
+            return;
         }
 
         $this->word_suggestion_result = DICTIONARY_NOMATCH;

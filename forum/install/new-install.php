@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.200 2009-11-25 20:41:25 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.201 2009-12-26 20:57:15 decoyduck Exp $ */
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'new-install.php') {
 
@@ -371,7 +371,7 @@ $sql.= "  PRIMARY KEY (TID), ";
 $sql.= "  KEY BY_UID (BY_UID), ";
 $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
 $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
-$sql.= "  FULLTEXT KEY TITLE (TITLE), ";
+$sql.= "  FULLTEXT KEY TITLE (TITLE) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -1348,50 +1348,38 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
     if (@file_exists("$dictionary_path/english.dic")) {
 
-        $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' INTO TABLE DICTIONARY ";
-        $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
-        $sql.= "(WORD, SOUND)";
+        $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
+        $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
+
+        // SQL import method failed, now we need to resort to
+        // loading the file in PHP and running queries to MySQL.
 
         if (!$result = @db_query($sql, $db_install)) {
 
-            // SQL import method failed, now we need to resort to
-            // loading the file in PHP and running queries to MySQL.
+            $dictionary_words_array = file($dictionary_path);
 
-            if (($fp = @fopen($dictionary_file, 'r'))) {
+            foreach ($dictionary_words_array as $word) {
 
-                while (!feof($fp)) {
+                $word = db_escape_string(trim($word));
 
-                    install_prevent_client_timeout();
+                $sql = "INSERT INTO DICTIONARY (WORD) VALUES('$word')";
 
-                    $dictionary_line = fgets($fp, 100);
+                if (!$result = db_query($sql, $db_install)) {
 
-                    $dictionary_word_array = array();
-
-                    if (preg_match('/^([^\s]+)[^\S]+([^$]+)$/Diu', trim($dictionary_line), $dictionary_word_array) > 0) {
-
-                        array_shift($dictionary_word_array);
-
-                        list($str_word, $str_meta) = $dictionary_word_array;
-
-                        if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
-
-                            $str_meta = db_escape_string($str_meta);
-                            $str_word = db_escape_string($str_word);
-
-                            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-                            $sql.= "VALUES ('$str_word', '$str_meta', 0)";
-
-                            if (!$result = db_query($sql, $db_install)) {
-
-                                $valid = false;
-                                return;
-                            }
-                        }
-                    }
+                    $valid = false;
+                    return;
                 }
-
-                fclose($fp);
             }
+        }
+
+        // Generate the soundex values for the words.
+
+        $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
         }
     }
 }

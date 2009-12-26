@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.53 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.54 2009-12-26 12:29:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ function forum_links_get_links()
 
     $forum_links_top_link = forum_get_setting('forum_links_top_link', false, $lang['forumlinks']);
 
-    $sql = "SELECT TITLE, URI FROM `{$table_data['PREFIX']}FORUM_LINKS` ";
+    $sql = "SELECT LID, TITLE, URI FROM `{$table_data['PREFIX']}FORUM_LINKS` ";
     $sql.= "ORDER BY POS ASC";
 
     if (!$result = db_query($sql, $db_forum_links_get_links)) return false;
@@ -67,7 +67,7 @@ function forum_links_get_links()
 
             if (!isset($forum_links_data['URI']) || strlen(trim($forum_links_data['URI'])) < 1) {
 
-                $links_array[] = $forum_links_data['TITLE'];
+                $links_array[$forum_links_data['LID']] = $forum_links_data['TITLE'];
 
             }else {
 
@@ -140,10 +140,16 @@ function forum_links_fix_url($uri)
 
         foreach ($uri_query_array as $key => $value) {
 
-            if (strlen($key) > 0 && strlen($value) > 0) {
+            if (strlen($key) > 0) {
 
-                $value = rawurlencode($value);
-                $new_uri_query_array[] = "{$key}={$value}";
+                if (strlen($value) > 0) {
+
+                    $new_uri_query_array[] = sprintf('%s=%s', urlencode($key_name), urlencode($uri_query_values[$key]));
+
+                } else {
+
+                    $new_uri_query_array[] = urlencode($key_name);
+                }
             }
         }
 

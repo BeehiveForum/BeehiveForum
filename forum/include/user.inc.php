@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.388 2009-11-16 19:37:27 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.389 2009-12-28 11:10:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,7 +93,7 @@ function user_create($logon, $password, $nickname, $email)
     }
 
     if (!$ipaddress = get_ip_address()) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, REFERER, IPADDRESS) ";
@@ -120,7 +120,7 @@ function user_update($uid, $logon, $nickname, $email)
     $logon = db_escape_string($logon);
     $nickname = db_escape_string($nickname);
     $email = db_escape_string($email);
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Check to see if we need to save the current
@@ -701,7 +701,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
                                'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM',
                                'SHOW_THUMBS', 'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
-                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 
+                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE',
                                'REPLY_QUICK', 'THREAD_LAST_PAGE');
 
     // Loop through the passed preference names and check they're valid
@@ -731,37 +731,37 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     // Check to see we have some preferences to set globally.
 
     if (sizeof($global_prefs_array) > 0) {
-        
+
         // Concat the column names together, escaping them and enclosing them in backticks.
-        
+
         $column_names = implode("`, `", array_map('db_escape_string', array_keys($global_prefs_array)));
-        
+
         // Concat the values together, escaping them and enclosing them in quotes.
-        
+
         $column_insert_values = implode("', '", array_map('db_escape_string', array_values($global_prefs_array)));
-        
+
         // Concat the column names together, pass them through user_update_prefs_helper
         // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
-        
+
         $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($global_prefs_array)));
-        
+
         // Construct the query and run it.
-        
+
         $sql = "INSERT INTO USER_PREFS (`UID`, `$column_names`) VALUES('$uid', '$column_insert_values') ";
         $sql.= "ON DUPLICATE KEY UPDATE $column_update_values ";
-        
+
         if (!db_query($sql, $db_user_update_prefs)) return false;
-        
-        // If a pref is set globally, we need to remove it from all the 
+
+        // If a pref is set globally, we need to remove it from all the
         // per-forum USER_PREFS tables. We use array_intersect to find
         // out which columns we need to update.
 
-        $update_prefs_array = array_intersect($forum_pref_names, array_keys($global_prefs_array)); 
-        
+        $update_prefs_array = array_intersect($forum_pref_names, array_keys($global_prefs_array));
+
         // Only proceed if we have something to process.
 
-        if (sizeof($update_prefs_array) > 0) {        
-        
+        if (sizeof($update_prefs_array) > 0) {
+
             if (!$forum_prefix_array = forum_get_all_prefixes()) return false;
 
             foreach ($forum_prefix_array as $forum_prefix) {
@@ -772,29 +772,29 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
-        }    
+        }
     }
 
     if ((sizeof($forum_prefs_array) > 0) && ($table_data = get_table_prefix())) {
-        
+
         // Concat the column names together, escaping them and enclosing them in backticks.
-        
+
         $column_names = implode("`, `", array_map('db_escape_string', array_keys($forum_prefs_array)));
-        
+
         // Concat the values together, escaping them and enclosing them in quotes.
-        
+
         $column_insert_values = implode("', '", array_map('db_escape_string', array_values($forum_prefs_array)));
-        
+
         // Concat the column names together, pass them through user_update_prefs_helper
         // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
-        
+
         $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($forum_prefs_array)));
-        
+
         // Construct the query and run it.
-        
+
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PREFS` (`UID`, `$column_names`) ";
         $sql.= "VALUES('$uid', '$column_insert_values')ON DUPLICATE KEY UPDATE $column_update_values ";
-        
+
         if (!db_query($sql, $db_user_update_prefs)) return false;
     }
 
@@ -906,22 +906,24 @@ function user_get_forthcoming_birthdays()
     if (!$table_data = get_table_prefix()) return false;
 
     $uid = bh_session_get_value('UID');
-    
-    list($month, $day) = explode('-', date('m-d', time()));
+
+    // Constants for user relationship
+
+    $user_ignored = USER_IGNORED;
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS.DOB, ";
-    $sql.= "DAYOFMONTH(USER_PREFS.DOB) AS BDAY, MONTH(USER_PREFS.DOB) AS BMONTH ";
+    $sql.= "IF (DATEDIFF(DATE_FORMAT(USER_PREFS.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')) < 0, ";
+    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
+    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
     $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_GLOBAL ";
-    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY > 1 ";
-    $sql.= "OR USER_PREFS_GLOBAL.DOB_DISPLAY > 1) ";
-    $sql.= "AND ((MONTH(USER_PREFS.DOB) = $month ";
-    $sql.= "AND DAYOFMONTH(USER_PREFS.DOB) >= $day) ";
-    $sql.= "OR MONTH(USER_PREFS.DOB) > $month) ";
-    $sql.= "ORDER BY BMONTH ASC, BDAY ASC ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY > 1 OR USER_PREFS_GLOBAL.DOB_DISPLAY > 1) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "HAVING DAY_COUNT < DATE_FORMAT(LAST_DAY(CURDATE()), '%d') ";
+    $sql.= "ORDER BY DAY_COUNT ";
     $sql.= "LIMIT 0, 5";
 
     if (!$result = db_query($sql, $db_user_get_forthcoming_birthdays)) return false;
@@ -1464,7 +1466,7 @@ function user_is_active($uid)
     if (!$result = db_query($sql, $db_user_is_active)) return false;
 
     list($user_active_count) = db_fetch_array($result, DB_RESULT_NUM);
-    
+
     return ($user_active_count > 0);
 }
 
@@ -1478,9 +1480,9 @@ function user_allow_pm($uid)
     $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
 
     if (!$result = db_query($sql, $db_user_allow_pm)) return false;
-    
+
     list($allow_pm_count) = db_fetch_array($result, DB_RESULT_NUM);
-    
+
     return ($allow_pm_count > 0);
 }
 
@@ -1496,7 +1498,7 @@ function user_allow_email($uid)
     if (!$result = db_query($sql, $db_user_allow_email)) return false;
 
     list($allow_email_count) = db_fetch_array($result, DB_RESULT_NUM);
-    
+
     return ($allow_email_count > 0);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.93 2009-12-01 22:54:35 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.94 2010-01-03 15:19:33 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -463,14 +463,18 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
                     $emot_tooltip_matches[] = htmlentities_array($emot_match);
                 }
 
-                $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
+                $emot_tip_text = trim(implode(" ", $emot_tooltip_matches));
 
-                $html.= "<img src=\"emoticons/$emoticon_set/{$emoticons_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emoticons_array[$i]['matches'][0]) ." ');\" /> ";
+                $emot_match = $emoticons_array[$i]['matches'][0];
+
+                $emot_image = $emoticons_array[$i]['img'];
+
+                $html.= sprintf('<a class="emoticon_preview_img" rel="%s"><img src="emoticons/%s/%s" alt="%4$s" title="%4$s" /></a> ', htmlentities_array($emot_match), $emoticon_set, $emot_image, $emot_tip_text);
             }
 
             if ($display_limit < sizeof($emoticons_array)) {
 
-                $html.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" onclick=\"return openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
+                $html.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" class=\"view_more\">{$lang['more']}</a></b>";
             }
 
             $html.= "</div>";

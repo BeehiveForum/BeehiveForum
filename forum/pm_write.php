@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.231 2009-10-25 17:31:05 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.232 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -803,7 +803,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top("title={$lang['privatemessages']} » {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "tinymce_auto_focus=t_content", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("title={$lang['privatemessages']} » {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "tinymce_auto_focus=t_content", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['sendnewpm']}</h1>\n";
 

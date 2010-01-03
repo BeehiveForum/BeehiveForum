@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.143 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.144 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -323,7 +323,7 @@ if (isset($_POST['clear_search'])) {
     $user_search = "";
 }
 
-html_draw_top("title={$lang['visitorlog']}", "openprofile.js");
+html_draw_top("title={$lang['visitorlog']}");
 
 echo "<h1>{$lang['visitorlog']}</h1>\n";
 
@@ -418,7 +418,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         }elseif ($user_array['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_array['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";
 
         }else {
 

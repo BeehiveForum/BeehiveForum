@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.619 2009-12-12 22:58:19 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.620 2010-01-03 15:19:36 decoyduck Exp $ */
 
 // British English language file
 
@@ -1044,6 +1044,7 @@ $lang['mimetypenotallowed'] = "Failed to upload: %s. File type is not allowed!";
 $lang['complete'] = "Complete";
 $lang['uploadattachment'] = "Upload a file for attachment to the message";
 $lang['enterfilenamestoupload'] = "Enter filename(s) to upload";
+$lang['uploadanotherattachment'] = "Upload another attachment";
 $lang['attachmentsforthismessage'] = "Attachments for this message";
 $lang['otherattachmentsincludingpm'] = "Other Attachments (including PM Messages and other forums)";
 $lang['totalsize'] = "Total Size";

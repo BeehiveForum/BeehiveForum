@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.26 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.27 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -122,7 +122,7 @@ $user_count = user_count();
 
 // And off we go ...
 
-html_draw_top("title={$lang['admin']} » {$lang['forumstats']}", 'openprofile.js');
+html_draw_top("title={$lang['admin']} » {$lang['forumstats']}");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['forumstats']}</h1>\n";
 
@@ -300,7 +300,7 @@ if (($top_poster = stats_get_top_poster()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['topposter']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$top_poster['UID']}\" target=\"_blank\" onclick=\"return openProfile({$top_poster['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($top_poster['LOGON'], $top_poster['NICKNAME']))), "</a> (", number_format($top_poster['POST_COUNT'], 0, '.', ','), " {$lang['posts']}) [<a href=\"admin_post_stats.php?webtag=$webtag\">{$lang['viewtop20']}</a>]</td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$top_poster['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($top_poster['LOGON'], $top_poster['NICKNAME']))), "</a> (", number_format($top_poster['POST_COUNT'], 0, '.', ','), " {$lang['posts']}) [<a href=\"admin_post_stats.php?webtag=$webtag\">{$lang['viewtop20']}</a>]</td>\n";
     echo "                </tr>\n";
 }
 
@@ -530,7 +530,7 @@ if (($newest_user = stats_get_newest_user()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['newestuser']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$newest_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']))), "</a></td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_user['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']))), "</a></td>\n";
     echo "                </tr>\n";
 }
 
@@ -656,7 +656,7 @@ if (($most_active_user = stats_get_most_active_user()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['mostactiveuser']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$most_active_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$most_active_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($most_active_user['LOGON'], $most_active_user['NICKNAME']))), "</a> (", format_time_display($most_active_user['TOTAL_TIME'], true), ")</td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$most_active_user['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($most_active_user['LOGON'], $most_active_user['NICKNAME']))), "</a> (", format_time_display($most_active_user['TOTAL_TIME'], true), ")</td>\n";
     echo "                </tr>\n";
 }
 

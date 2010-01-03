@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.114 2009-12-05 19:40:02 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.115 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -406,8 +406,7 @@ function logon_draw_form($logon_options)
 
         $current_logon = key($username_array);
 
-        echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword('$webtag')\" autocomplete=\"off\"", "bhlogondropdown");
-        echo form_input_hidden("user_logon", htmlentities_array($username_array[$current_logon]));
+        echo form_dropdown_array("user_logon", $username_dropdown_array, "", "autocomplete=\"off\"", "bhlogondropdown");
 
         $username_array_keys = array_keys($username_array);
 
@@ -462,7 +461,7 @@ function logon_draw_form($logon_options)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"90\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"90\">{$lang['passwd']}:</td>\n";
@@ -473,7 +472,7 @@ function logon_draw_form($logon_options)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"90\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
 
             if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
@@ -507,14 +506,14 @@ function logon_draw_form($logon_options)
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && strlen($password_array[0]) > 0 && isset($passhash_array[0]) && strlen($passhash_array[0]) > 0 && $other_logon === false), "autocomplete=\"off\" onclick=\"toogleAutoLogon()\""), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && strlen($password_array[0]) > 0 && isset($passhash_array[0]) && strlen($passhash_array[0]) > 0 && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
         echo "                      </tr>\n";
 
         if (!($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">", form_checkbox("auto_logon", "Y", $lang['logmeinautomatically'], false, "autocomplete=\"off\" onclick=\"changeAutoLogon()\""), "</td>\n";
+            echo "                        <td align=\"left\">", form_checkbox("auto_logon", "Y", $lang['logmeinautomatically'], false, "autocomplete=\"off\""), "</td>\n";
             echo "                      </tr>\n";
         }
     }

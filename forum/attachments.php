@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.177 2009-12-10 21:48:37 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.178 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -384,61 +384,9 @@ if (isset($_POST['upload'])) {
             exit;
         }
     }
-
-}elseif (isset($_POST['complete'])) {
-
-    html_draw_top('pm_popup_disabled');
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "    try {\n";
-    echo "        if (/edit_attachments.php|edit_prefs.php/.test(window.opener.location) == true) {\n";
-    echo "            window.opener.location.reload();\n";
-    echo "        }\n";
-    echo "    }catch(e) {\n\n";
-    echo "    }\n";
-    echo "    window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
 }
 
-
 html_draw_top("title={$lang['attachments']}", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled');
-
-$javascript_upload_link = "<img src=\"%1\$s\" border=\"0\" alt=\"%2\$s\" title=\"%2\$s\" />";
-$javascript_upload_link.= "<a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">%3\$s</a>";
-
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "var upload_field_array = new Array();\n\n";
-echo "var upload_field_html = '", form_input_file("userfile[]", "", 30, 0),"';\n";
-echo "var upload_field_link_html = '", html_js_safe_str(sprintf($javascript_upload_link, style_image('attach.png'), $lang['attachment'], 'Upload another file')), "';\n\n";
-echo "function add_upload_field_link()\n";
-echo "{\n";
-echo "    var upload_field_link_obj;\n\n";
-echo "    if (document.getElementById) {\n\n";
-echo "        upload_field_link_obj = document.getElementById('upload_fields_link');\n";
-echo "        upload_field_link_obj.innerHTML = upload_field_link_html;\n";
-echo "    }\n";
-echo "}\n\n";
-echo "function add_upload_field()\n";
-echo "{\n";
-echo "    var upload_fields_obj;\n\n";
-echo "    if (document.getElementById) {\n\n";
-echo "        upload_field_obj = document.getElementById('upload_fields');\n\n";
-echo "        upload_field_child_objs = upload_field_obj.getElementsByTagName('div');\n\n";
-echo "        if (upload_field_child_objs.length < 9) {\n\n";
-echo "            new_upload_div = document.createElement('div');\n";
-echo "            upload_field_obj.appendChild(new_upload_div);\n";
-echo "            new_upload_div.innerHTML =  upload_field_html;\n\n";
-echo "        }else {\n\n";
-echo "            alert('", html_js_safe_str($lang['canonlyuploadmaximum']), "');\n";
-echo "        }\n";
-echo "    }\n";
-echo "}\n\n";
-echo "//-->\n";
-echo "</script>\n";
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 
@@ -484,7 +432,10 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\" valign=\"top\">{$lang['enterfilenamestoupload']} :</td>\n";
 echo "                        <td align=\"left\" class=\"postbody\">\n";
 echo "                          ", form_input_file("userfile[]", "", 30, 0), "\n";
-echo "                          <div id=\"upload_fields\"></div>\n";
+echo "                          <div class=\"upload_fields\">\n";
+echo "                            <img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
+echo "                            <a class=\"add_upload_field\">{$lang['uploadanotherattachment']}</a>\n";
+echo "                          </div>\n";
 echo "                        </td>\n";
 echo "                        <td align=\"left\" class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""), "</td>\n";
 echo "                      </tr>\n";
@@ -517,7 +468,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main", "", false, "onclick=\"attachmentToggleMain();\""), "</td>\n";
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main", ""), "</td>\n";
     echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
     echo "                </tr>\n";
 
@@ -591,7 +542,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other", "", false, "onclick=\"attachmentToggleOther();\""), "</td>\n";
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other", ""), "</td>\n";
     echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
     echo "                </tr>\n";
 
@@ -718,7 +669,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_submit("complete", $lang['complete']), "&nbsp;", form_submit("delete", $lang['delete']), "</td>\n";
+echo "      <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_button("complete", $lang['complete']), "&nbsp;", form_submit("delete", $lang['delete']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

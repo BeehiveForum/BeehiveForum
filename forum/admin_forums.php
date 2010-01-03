@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.107 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.108 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -454,7 +454,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['addforum']}", 'admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['addforum']}", 'search.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['addforum']}</h1>\n";
 
@@ -491,7 +491,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumleader']}:</td>\n";
-    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_owner", (isset($_POST['t_owner']) ? htmlentities_array(stripslashes_array($_POST['t_owner'])) : ""), 27, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_owner\" onclick=\"return openLogonSearch('$webtag', 't_owner');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
+    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_owner", (isset($_POST['t_owner']) ? htmlentities_array(stripslashes_array($_POST['t_owner'])) : ""), 27, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_owner\" class=\"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
@@ -571,7 +571,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['editforum']} » {$forum_data['WEBTAG']}", 'admin.js');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['editforum']} » {$forum_data['WEBTAG']}", 'search.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
 
@@ -610,7 +610,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumleader']}:</td>\n";
-    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_owner", (isset($_POST['t_owner']) ? htmlentities_array(stripslashes_array($_POST['t_owner'])) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 32, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_owner\" onclick=\"return openLogonSearch('$webtag', 't_owner');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>", form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
+    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_owner", (isset($_POST['t_owner']) ? htmlentities_array(stripslashes_array($_POST['t_owner'])) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 32, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_owner\" class=\"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>", form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
     echo "                      </tr>\n";
 
     if ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED) {

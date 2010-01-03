@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.67 2009-12-22 18:59:07 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.68 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -150,12 +150,9 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
 
-    html_draw_top("title={$lang['dictionary']}", 'dictionary.js', "onload=initialiseDictionary('$obj_id')", 'pm_popup_disabled');
+    html_draw_top("title={$lang['dictionary']}", 'dictionary.js', 'pm_popup_disabled');
 
-    echo "<h1>{$lang['dictionary']}</h1>\n";
-    echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
-
-    echo "<form accept-charset=\"utf-8\" name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" id=\"dictionary_init\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('obj_id', htmlentities_array($obj_id)), "\n";
     echo "  ", form_input_hidden('content', ""), "\n";
@@ -214,41 +211,7 @@ if (!$dictionary->is_installed()) {
 
 $dictionary->initialise($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
 
-// Close the window
-
-if (isset($_POST['cancel'])) {
-
-    html_draw_top('pm_popup_disabled');
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  if (window.opener.auto_check_spell_started) {\n";
-    echo "    window.opener.auto_check_spell_started = false;";
-    echo "  }\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
-// Send the results back to the form
-
-if (isset($_POST['close'])) {
-
-    html_draw_top('pm_popup_disabled');
-
-    $content = $dictionary->get_js_safe_content();
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  if (window.opener.updateContent) {\n";
-    echo "    window.opener.updateContent('$obj_id', '", $dictionary->get_js_safe_content(), "');\n";
-    echo "  }\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
+// Check for submit
 
 if (isset($_POST['ignoreall'])) {
 
@@ -406,11 +369,11 @@ echo "                                <td align=\"left\" valign=\"top\" width=\"
 
 if (($suggestions_array = $dictionary->get_suggestions_array())) {
 
-    echo "                                  ", form_dropdown_array("suggestion", $suggestions_array, $dictionary->get_best_suggestion(), "size=\"5\" onchange=\"changeWord(this)\"", "dictionary_best_selection"), "\n";
+    echo "                                  ", form_dropdown_array("suggestions", $suggestions_array, $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
 
 }else {
 
-    echo "                                  ", form_dropdown_array("suggestion", array($lang['nosuggestions']), $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
+    echo "                                  ", form_dropdown_array("no_suggestions", array($lang['nosuggestions']), $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
 }
 
 echo "                                </td>\n";
@@ -437,13 +400,13 @@ echo "      </tr>\n";
 if (($dictionary->is_check_complete())) {
 
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit('restart', $lang['restartspellcheck']), "&nbsp;", form_submit("close", $lang['close']), "&nbsp;", form_submit("cancel", $lang['cancelchanges']), "</td>\n";
+    echo "        <td align=\"center\">", form_submit('restart', $lang['restartspellcheck']), "&nbsp;", form_button("close", $lang['close']), "&nbsp;", form_button("cancel", $lang['cancelchanges']), "</td>\n";
     echo "      </tr>\n";
 
 }else {
 
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit("close", $lang['close']), "&nbsp;", form_submit("cancel", $lang['cancelchanges']), "</td>\n";
+    echo "        <td align=\"center\">", form_button("close", $lang['close']), "&nbsp;", form_button("cancel", $lang['cancelchanges']), "</td>\n";
     echo "      </tr>\n";
 }
 

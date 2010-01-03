@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.161 2009-11-23 19:29:39 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.162 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -182,7 +182,7 @@ $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 $page_title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
 
-html_draw_top("title=$page_title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
+html_draw_top("title=$page_title", "user_profile.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -196,8 +196,8 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\" width=\"95%\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\"><a href=\"javascript:void(0)\" onclick=\"openProfileOptions()\" target=\"_self\" id=\"profile_options\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" border=\"0\" /></a></h2>\n";
-echo "                          <div class=\"profile_options_container_closed\" id=\"profile_options_container\">\n";
+echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\" id=\"profile_options\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" border=\"0\" /></h2>\n";
+echo "                          <div class=\"profile_options_container\" id=\"profile_options_container\">\n";
 echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                              <tr>\n";
 echo "                                <td align=\"left\" colspan=\"3\">\n";
@@ -236,23 +236,23 @@ if ($uid <> bh_session_get_value('UID')) {
     echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" onclick=\"return findUserThreads('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" onclick=\"return findUserThreads('$logon', '$webtag');\">", sprintf($lang['findthreadsstartedbyuser'], $logon), "</a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" class=\"opener_top\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" class=\"opener_top\">", sprintf($lang['findthreadsstartedbyuser'], $logon), "</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" onclick=\"return findUserPosts('$logon', '$webtag');\">", sprintf($lang['findpostsmadebyuser'], $logon), "</a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" class=\"opener_top\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" class=\"opener_top\">", sprintf($lang['findpostsmadebyuser'], $logon), "</a></td>\n";
     echo "                                                </tr>\n";
 
 }else {
 
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" onclick=\"return findUserThreads('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findthreadsstartedbyme']}\" title=\"{$lang['findthreadsstartedbyme']}\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" onclick=\"return findUserThreads('$logon', '$webtag');\">{$lang['findthreadsstartedbyme']}</a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" class=\"opener_top\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findthreadsstartedbyme']}\" title=\"{$lang['findthreadsstartedbyme']}\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" class=\"opener_top\">{$lang['findthreadsstartedbyme']}</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['findpostsmadebyme']}\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findpostsmadebyme']}\" title=\"{$lang['findpostsmadebyme']}\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['sendemail']}\" onclick=\"return findUserPosts('$logon', '$webtag');\">{$lang['findpostsmadebyme']}</a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['findpostsmadebyme']}\" class=\"opener_top\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findpostsmadebyme']}\" title=\"{$lang['findpostsmadebyme']}\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['sendemail']}\" class=\"opener_top\">{$lang['findpostsmadebyme']}</a></td>\n";
     echo "                                                </tr>\n";
 }
 

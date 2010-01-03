@@ -19,126 +19,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.js,v 1.27 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: pm.js,v 1.28 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var pm_logon_search = false;
+$(document).ready(function() {
 
-var pm_timeout;
+    $.getJSON('pm.php', { 'webtag' : webtag, 'check_messages' : 'true' }, function(data) {
 
-var pm_notification = new xml_http_request();
+        if (data.text) $('#pm_message_count').html(data.text);
 
-function pmToggleAll()
-{
-    for (var i = 0; i < document.pm.elements.length; i++) {
-
-        if (document.pm.elements[i].type == 'checkbox') {
-
-            if (document.pm.toggle_all.checked == true) {
-
-                document.pm.elements[i].checked = true;
-
-            }else {
-
-                document.pm.elements[i].checked = false;
-            }
+        if (data.notification && window.confirm(data.notification)) {
+            top.frames[bh_frame_main].location.replace('pm.php?webtag=' + webtag);
         }
-    }
-}
-
-function openRecipientSearch(webtag, obj_name)
-{
-    if (typeof pm_logon_search == 'object' && !pm_logon_search.closed) {
-    
-        pm_logon_search.focus();
-
-    }else {
-
-        var form_obj = getObjsByName(obj_name)[0];
-
-        if (typeof form_obj == 'object') {
-
-            pm_logon_search = window.open('search_popup.php?webtag=' + webtag + '&allow_multi=Y&type=1&selection=' + form_obj.value + '&obj_name='+ obj_name, 'pm_logon_search', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
-        }
-    }
-
-    return false;
-}
-
-function returnSearchResult(obj_name, content)
-{
-    var form_obj = getObjsByName(obj_name)[0];
-
-    if (typeof form_obj == 'object') {
-
-        form_obj.value = content;
-        return true;
-    }
-
-    return false;
-}
-
-function checkToRadio(num)
-{
-    var to_radio_obj = getObjsByName('to_radio');
-
-    if (typeof to_radio_obj[num] == 'object') {
-        to_radio_obj[num].checked = true;
-    }
-}
-
-function pm_notification_initialise()
-{
-    pm_timeout = setTimeout('pm_notification_check_messages()', 0);
-    return true;
-}
-
-function pm_notification_check_messages()
-{
-    clearTimeout(pm_timeout);
-    
-    var date = new Date();
-    var timestamp = date.getTime();    
-    
-    pm_notification.set_handler(pm_notification_handler);
-    pm_notification.get_url('pm.php?webtag=' + webtag + '&check_messages=true&timestamp=' + timestamp);
-}
-
-function pm_notification_abort()
-{
-    pm_notification.abort();
-    pm_notification.close();
-    delete pm_notification;
-}
-
-function pm_notification_handler()
-{
-    var response_xml = pm_notification.get_response_xml();
-    var pm_message_count_obj = getObjById('pm_message_count');
-
-    if (typeof(pm_message_count_obj) == 'object' || typeof(pm_message_count_obj) == 'function') {
-
-        var pm_message_count_text = response_xml.getElementsByTagName('text')[0];
-        
-        if (typeof(pm_message_count_text) == 'object' || typeof(pm_message_count_text) == 'function') {
-
-            pm_message_count_obj.innerHTML = pm_message_count_text.childNodes[0].nodeValue;
-        }
-    }
-
-    var message_array = response_xml.getElementsByTagName('notification')[0];
-
-    if (typeof(message_array) == 'object' || typeof(message_array) == 'function') {
-
-        var message_display_text = message_array.childNodes[0].nodeValue;
-
-        if (message_display_text.length > 0) {
-
-            if (window.confirm(message_display_text)) {
-
-                top.frames[bh_frame_main].location.replace('pm.php?webtag=' + webtag);
-            }
-        }
-    }
-    
-    return true;
-}
+    });
+});

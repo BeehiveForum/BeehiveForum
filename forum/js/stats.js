@@ -19,50 +19,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.js,v 1.9 2009-04-16 18:35:34 decoyduck Exp $ */
+/* $Id: stats.js,v 1.10 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var stats_timeout;
+$(document).ready(function() {
 
-var stats_data = new xml_http_request();
-
-function stats_display_initialise()
-{
-    var forum_stats_obj = getObjById('forum_stats');
-
-    if (typeof(forum_stats_obj) == 'object' || typeof(forum_stats_obj) == 'function') {
-
-        stats_timeout = setTimeout('stats_display_get_data()', 0);
-        return true;
-    }
-}
-
-function stats_display_get_data()
-{
-    clearTimeout(stats_timeout);
-    
-    var date = new Date();
-    var timestamp = date.getTime();    
-
-    stats_data.set_handler(stats_display_handler);
-    stats_data.get_url('user_stats.php?webtag=' + webtag + '&get_stats=true&timestamp=' + timestamp);
-}
-
-function stats_display_abort()
-{
-    stats_data.abort();
-    stats_data.close();
-    delete stats_data;
-}
-
-function stats_display_handler()
-{
-    var response_html = stats_data.get_response_text();
-    
-    var forum_stats_obj = getObjById('forum_stats');
-
-    if (typeof(forum_stats_obj) == 'object' || typeof(forum_stats_obj) == 'function') {
-        forum_stats_obj.innerHTML = response_html;
-    }
-    
-    return true;
-}
+    $.ajax({
+        'url' : 'user_stats.php',
+        'data' : { 'webtag' : webtag, 'get_stats' : true },
+        'cache' : false,
+        'success' : function(data) {
+            $('#forum_stats').html(data);
+        }
+    });
+});

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.151 2009-12-12 22:58:19 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.152 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -714,7 +714,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['mailfunction']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("mail_function", htmlentities_array($mail_functions_array), (isset($forum_global_settings['mail_function']) ? htmlentities_array($forum_global_settings['mail_function']) : 0), "onchange=\"changeMailFunction(this);\""), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("mail_function", htmlentities_array($mail_functions_array), (isset($forum_global_settings['mail_function']) ? htmlentities_array($forum_global_settings['mail_function']) : 0)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

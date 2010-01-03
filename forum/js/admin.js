@@ -19,79 +19,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.js,v 1.20 2009-10-23 19:55:27 decoyduck Exp $ */
+/* $Id: admin.js,v 1.21 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var search_logon = false;
+$(document).ready(function() {
 
-function openLogonSearch(webtag, obj_name)
-{
-    if (typeof search_logon == 'object' && !search_logon.closed) {
+    $('select#mail_function').bind('change', function() {
 
-        search_logon.focus();
-
-    }else {
-
-        var form_obj = getObjsByName(obj_name)[0];
-
-        if (typeof form_obj == 'object') {
-
-            search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&selection=' + form_obj.value + '&obj_name=' + obj_name, 'search_logon', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
-        }
-    }
-
-    return false;
-}
-
-function returnSearchResult(obj_name, content)
-{
-    var form_obj = getObjsByName(obj_name)[0];
-
-    if (typeof form_obj == 'object') {
-        
-        form_obj.value = content;
-        return true;
-    }
-
-    return false;
-}
-
-function changeColourSwatch(source_obj_id, button_obj_id)
-{
-    var source_obj = getObjById(source_obj_id);
-    var button_obj = getObjById(button_obj_id);
-
-    if ((typeof source_obj == 'object') && (typeof button_obj == 'object')) {
-
-        button_obj.style.backgroundColor = source_obj.value;
-    }
-}
-
-function changeMailFunction(select)
-{
-    if (typeof select == 'object') {
-
-        var smtp_settings =  getObjById('smtp_settings');
-        var sendmail_settings = getObjById('sendmail_settings');
-
-        switch (select.value) {
+        switch($(this).val()) {
 
             case "0":
 
-                smtp_settings.style.display = 'none';
-                sendmail_settings.style.display = 'none';
+                $('#smtp_settings').hide();
+                $('#sendmail_settings').hide();
                 break;
 
             case "1":
 
-                smtp_settings.style.display = 'block';
-                sendmail_settings.style.display = 'none';
+                $('#smtp_settings').show();
+                $('#sendmail_settings').hide();
                 break;
 
             case "2":
 
-                smtp_settings.style.display = 'none';
-                sendmail_settings.style.display = 'block';
+                $('#smtp_settings').hide();
+                $('#sendmail_settings').show();
                 break;
         }
-    }
-}
+    })
+});

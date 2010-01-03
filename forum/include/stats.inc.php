@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.139 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.140 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,7 +60,7 @@ function stats_update($session_count, $recent_post_count)
     $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_update_stats)) return false;
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     if (db_num_rows($result) > 0) {
@@ -95,17 +95,17 @@ function stats_output_xml()
     // Check HTTP cache headers
 
     cache_check_last_modified();
-    
+
     // Load Language file
-    
+
     $lang = load_language_file();
-    
+
     // Get webtag
-    
+
     $webtag = get_webtag();
-    
+
     // Current active user UID
-    
+
     $uid = bh_session_get_value('UID');
 
     // Number of active users
@@ -119,21 +119,21 @@ function stats_output_xml()
     // Update the stats records.
 
     stats_update($session_count, $recent_post_count);
-    
+
     // User Profile link is used by Active users and Newest user stats
-    
-    $user_profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\" onclick=\"return openProfile(%s, '$webtag')\">%s</a>";
-    
+
+    $user_profile_link = "<a href=\"user_profile.php?webtag=%s&amp;uid=%s\" target=\"_blank\" class=\"popup 650x500\">%s</a>";
+
     // Search Engine Bot link
-    
+
     $search_engine_bot_link = "<a href=\"%s\" target=\"_blank\"><span class=\"user_stats_normal\">%s</span></a>";
 
     // Output the HTML.
-    
+
     if (($user_stats = stats_get_active_user_list())) {
 
         $active_user_list_array = array();
-        
+
         echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         echo "  <tr>\n";
         echo "    <td width=\"35\">&nbsp;</td>\n";
@@ -143,32 +143,32 @@ function stats_output_xml()
         echo "  <tr>\n";
         echo "    <td>&nbsp;</td>\n";
         echo "    <td>";
-        
+
         if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
-        
+
             if ($user_stats['GUESTS'] <> 1) {
                 $active_user_list_array[] = sprintf($lang['numactiveguests'], $user_stats['GUESTS']);
             }else {
                 $active_user_list_array[] = $lang['oneactiveguest'];
             }
         }
-        
+
         if ($user_stats['USER_COUNT'] <> 1) {
             $active_user_list_array[] = sprintf($lang['numactivemembers'], $user_stats['USER_COUNT']);
         }else {
             $active_user_list_array[] = $lang['oneactivemember'];
         }
-        
+
         if ($user_stats['ANON_USERS'] <> 1) {
             $active_user_list_array[] = sprintf($lang['numactiveanonymousmembers'], $user_stats['ANON_USERS']);
         }else {
             $active_user_list_array[] = $lang['oneactiveanonymousmember'];
         }
-        
+
         $active_user_list = implode(", ", $active_user_list_array);
-        
+
         $active_user_time = format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false);
-        
+
         echo sprintf($lang['usersactiveinthepasttimeperiod'], $active_user_list, $active_user_time);
 
         echo " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"", html_get_frame_name('main'), "\">{$lang['viewcompletelist']}</a> ]\n";
@@ -181,12 +181,12 @@ function stats_output_xml()
             $active_users_array = array();
 
             foreach ($user_stats['USERS'] as $user) {
-            
+
                 if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
 
                     $active_user_display = word_filter_add_ob_tags(htmlentities_array($user['BOT_NAME']));
                     $active_user_display = sprintf($search_engine_bot_link, $user['BOT_URL'], $active_user_display);
-                    
+
                     $active_users_array[] = $active_user_display;
 
                 }else {
@@ -212,8 +212,8 @@ function stats_output_xml()
 
                         $active_user_display = sprintf("<span class=\"user_stats_normal\">%s</span>", $active_user_display);
                     }
-                    
-                    $active_users_array[] = sprintf($user_profile_link, $user['UID'], $user['UID'], $active_user_display);
+
+                    $active_users_array[] = sprintf($user_profile_link, $webtag, $user['UID'], $active_user_display);
                 }
             }
 
@@ -237,28 +237,28 @@ function stats_output_xml()
         echo "  </tr>\n";
         echo "</table>\n";
     }
-    
+
     $thread_count = stats_get_thread_count();
-    
+
     $post_count = stats_get_post_count();
 
     echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
     echo "  <tr>\n";
     echo "    <td width=\"35\">&nbsp;</td>\n";
     echo "    <td>";
-    
+
     if ($thread_count <> 1) {
         $num_threads_display = sprintf($lang['numthreadscreated'], number_format($thread_count, 0, ".", ","));
     }else {
         $num_threads_display = $lang['onethreadcreated'];
-    }     
+    }
 
     if ($post_count <> 1) {
         $num_posts_display = sprintf($lang['numpostscreated'], number_format($post_count, 0, ".", ","));
     }else {
         $num_posts_display = $lang['onepostcreated'];
-    }     
-    
+    }
+
     echo sprintf($lang['ourmembershavemadeatotalofnumthreadsandnumposts'], $num_threads_display, $num_posts_display), '<br />';
     echo "    <td width=\"35\">&nbsp;</td>\n";
     echo "  </tr>\n";
@@ -270,14 +270,14 @@ function stats_output_xml()
         echo "  <tr>\n";
         echo "    <td width=\"35\">&nbsp;</td>\n";
         echo "    <td>";
-        
+
         $longest_thread_title = word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
-        
+
         $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
         $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], $longest_thread['LENGTH']) : $lang['onepostcreated'];
-        
+
         echo sprintf($lang['longestthreadisthreadnamewithnumposts'], $longest_thread_link, $longest_thread_post_count);
-        
+
         echo "    </td>\n";
         echo "    <td width=\"35\">&nbsp;</td>\n";
         echo "  </tr>\n";
@@ -295,14 +295,14 @@ function stats_output_xml()
     echo "  <tr>\n";
     echo "    <td width=\"35\">&nbsp;</td>\n";
     echo "    <td>";
-    
+
     if ($recent_post_count <> 1) {
-        
-        $recent_post_count = number_format($recent_post_count, 0, ",", ",");        
+
+        $recent_post_count = number_format($recent_post_count, 0, ",", ",");
         echo sprintf($lang['therehavebeenxpostsmadeinthelastsixtyminutes'], $recent_post_count);
-        
+
     }else {
-    
+
         echo $lang['therehasbeenonepostmadeinthelastsixtyminutes'];
     }
 
@@ -319,18 +319,18 @@ function stats_output_xml()
             echo "  <tr>\n";
             echo "    <td width=\"35\">&nbsp;</td>\n";
             echo "    <td>";
-            
+
             $post_stats_record_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
-            
+
             echo sprintf($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
-            
+
             echo "    </td>\n";
             echo "    <td width=\"35\">&nbsp;</td>\n";
             echo "  </tr>\n";
             echo "</table>\n";
         }
     }
-    
+
     if (($user_count = user_count())) {
 
         echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
@@ -342,24 +342,24 @@ function stats_output_xml()
         echo "  <tr>\n";
         echo "    <td width=\"35\">&nbsp;</td>\n";
         echo "    <td>";
-        
+
         if ($user_count <> 1) {
-        
+
             if (($newest_member = stats_get_newest_user())) {
 
                 $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']));
-                $user_newest_profile_link = sprintf($user_profile_link, $newest_member['UID'], $newest_member['UID'], $user_newest_display);
+                $user_newest_profile_link = sprintf($user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
 
                 echo sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);
 
             }else {
-            
+
                 echo sprintf($lang['wehavenumregisteredmember'], $user_count);
-                
+
             }
-            
+
         }else {
-        
+
             echo $lang['wehaveoneregisteredmember'];
         }
 
@@ -377,12 +377,12 @@ function stats_output_xml()
             echo "  <tr>\n";
             echo "    <td width=\"35\">&nbsp;</td>\n";
             echo "    <td>";
-            
+
             $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
             $most_users_date = format_time($most_users['MOST_USERS_DATE'], 1);
-            
+
             echo sprintf($lang['mostuserseveronlinewasnumondate'], $most_users_count, $most_users_date);
-            
+
             echo "    </td>\n";
             echo "    <td width=\"35\">&nbsp;</td>\n";
             echo "  </tr>\n";
@@ -403,7 +403,7 @@ function stats_output_xml()
     echo "    <td>&nbsp;</td>\n";
     echo "    <td width=\"35\">&nbsp;</td>\n";
     echo "  </tr>\n";
-    echo "</table>\n";    
+    echo "</table>\n";
     exit;
 }
 
@@ -414,7 +414,7 @@ function stats_get_active_session_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
@@ -437,7 +437,7 @@ function stats_get_active_registered_user_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
@@ -460,11 +460,11 @@ function stats_get_active_guest_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
-    
+
     $sql = "SELECT COUNT(UID) AS GUEST_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid' AND UID = 0";
@@ -488,11 +488,11 @@ function stats_get_active_user_list()
     if (!$table_data = get_table_prefix()) return $stats;
 
     $forum_fid = $table_data['FID'];
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return $stats;
 
     // Current active number of guests
@@ -560,32 +560,32 @@ function stats_get_active_user_list()
         }elseif (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
 
             if (isset($user_data['SID']) && !is_null($user_data['SID'])) {
-            
+
                 if (forum_get_setting('searchbots_show_active', 'Y')) {
-                
+
                     $stats['BOTS']++;
 
                     $stats['USERS'][$user_data['SID']] = array('BOT_NAME' => $user_data['BOT_NAME'],
                                                                'BOT_URL'  => $user_data['BOT_URL']);
-                
+
                 }else {
 
                    $stats['GUESTS']++;
                 }
 
             }else {
-            
+
                 $stats['USER_COUNT']++;
-                
+
                 $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
                                                            'LOGON'        => $user_data['LOGON'],
                                                            'NICKNAME'     => $user_data['NICKNAME'],
                                                            'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
                                                            'ANON_LOGON'   => $anon_logon);
             }
-        
+
         }else {
-        
+
             $stats['ANON_USERS']++;
         }
     }
@@ -605,7 +605,7 @@ function stats_get_thread_count()
     if (!$result = db_query($sql, $db_stats_get_thread_count)) return false;
 
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-    
+
     return $thread_count;
 }
 
@@ -789,7 +789,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $post_tallys = array('user_stats' => array(), 'post_count' => 0);
 
     $uid = bh_session_get_value('UID');
-    
+
     $post_start_datetime = date(MYSQL_DATETIME, $start_timestamp);
     $post_end_datetime = date(MYSQL_DATETIME, $end_timestamp);
 
@@ -797,7 +797,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
     $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME)";
-    
+
     if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
 
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
@@ -1119,7 +1119,7 @@ function stats_get_most_popular_forum_style()
 
     $sql = "SELECT USER_PREFS.STYLE, USERS.USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE LIMIT 1) AS USERS ";
-    $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)"; 
+    $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return false;
 
@@ -1145,7 +1145,7 @@ function stats_get_most_popular_emoticon_pack()
 
     $sql = "SELECT USER_PREFS.EMOTICONS, USERS.USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
-    $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)"; 
+    $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
 
@@ -1171,7 +1171,7 @@ function stats_get_most_popular_language()
 
     $sql = "SELECT USER_PREFS.LANGUAGE, USERS.USER_COUNT FROM `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
-    $sql.= "ON (USERS.LANGUAGE = USER_PREFS.LANGUAGE)"; 
+    $sql.= "ON (USERS.LANGUAGE = USER_PREFS.LANGUAGE)";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return false;
 
@@ -1272,27 +1272,27 @@ function stats_get_visitor_counts()
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-    
+
     // Year, Month, Week and Day
-    
+
     list($year, $month, $week, $day) = explode('-', date('Y-m-w-d', time()));
-    
+
     // Calculate the datetime for January 1st this year.
-    
+
     $year_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, 1, 1, $year));
-    
+
     // Calculate the datetime for 1st of the month
-    
+
     $month_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, 1, $year));
-    
+
     // Calculate the timestamps for start of this week.
-    
+
     $week_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, ($day - $week), $year));
-    
+
     // Calculate the datetime for start of today.
-    
+
     $day_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, $day, $year));
-    
+
     // Get visitors for today.
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
@@ -1336,10 +1336,10 @@ function stats_get_visitor_counts()
 function stats_get_average_age()
 {
     if (!$db_stats_get_average_age = db_connect()) return false;
-    
+
     // Year, Month and Day
-    
-    list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));    
+
+    list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
 
     $sql = "SELECT AVG($year - DATE_FORMAT(DOB, '%Y') - ";
     $sql.= "(CAST('00-$month-$day' AS DATE) < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";

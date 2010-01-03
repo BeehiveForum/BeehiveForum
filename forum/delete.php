@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.153 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: delete.php,v 1.154 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -255,14 +255,14 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
-        
+
         if ($thread_data['LENGTH'] > 1) {
 
             header_redirect("discussion.php?webtag=$webtag&msg=$msg&delete_success=$msg");
             exit;
-        
+
         }else {
-        
+
             header_redirect("discussion.php?webtag=$webtag&delete_success=$msg");
             exit;
         }
@@ -273,7 +273,7 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-html_draw_top("title={$lang['deletemessage']}", "openprofile.js", "post.js", "poll.js", "resize_width=720", "basetarget=_blank");
+html_draw_top("title={$lang['deletemessage']}", "post.js", "resize_width=720", "basetarget=_blank");
 
 echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
 

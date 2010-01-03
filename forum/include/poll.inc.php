@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.258 2009-12-07 20:26:11 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.259 2010-01-03 15:19:33 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -2016,9 +2016,7 @@ function poll_public_ballot_user_callback($user_data)
 
     if (isset($user_data['UID']) && $user_data['UID'] > 0) {
 
-        $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" ";
-        $user_profile_link_html.= "onclick=\"return openProfile('%1\$s', '%1\$3')\">%2\$s</a>";
-
+        $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" class=\"popup 650x500\">%2\$s</a>";
         return sprintf($user_profile_link_html, $user_data['UID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME']))), $webtag);
 
     }else {

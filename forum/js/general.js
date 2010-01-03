@@ -19,533 +19,187 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.46 2009-07-26 14:32:59 decoyduck Exp $ */
+/* $Id: general.js,v 1.47 2010-01-03 15:19:36 decoyduck Exp $ */
 
-// sprintf function based on code available at http://jan.moesen.nu
+var beehive = {
 
-var IE = (document.all ? true : false);
-
-function forumGetURL()
-{
-    var domain = document.domain;
-    var pathname = location.pathname.substring(0, location.pathname.lastIndexOf('\/') + 1);
-    
-    return domain + pathname;
+    window_options : [ 'toolbox=0',
+                       'location=0',
+                       'directories=0',
+                       'status=0',
+                       'menubar=0',
+                       'resizeable=yes',
+                       'scrollbars=yes' ]
 }
 
-function disableButton(button)
-{
-    button.className = 'button_disabled';
-    
-    if (document.all || document.getElementById) {
-        button.disabled = true;
-    }else if (button) {
-        button.oldonclick = button.onclick;
-        button.onclick = null;
+$(document).ready(function() {
+
+    $.ajaxSetup({
+        cache: false
+    });
+
+    var process_frames = function(context, callback) {
+
+        if (!$('frame', context).length) return;
+
+        $('frame', context).each(function() {
+
+            process_frames(this.contentDocument, callback);
+            callback.call(this);
+        });
     }
 
-    return true;
-}
+    $.getJSON('json_data.php', { 'webtag' : webtag }, function(data) {
+        if (data.valid) beehive = $.extend({}, beehive, data);
+    });
 
-function enableButton(button)
-{
-    button.className = 'button';
-    
-    if (document.all || document.getElementById) {
-        button.disabled = false;
-    }else if (button) {
-        button.onclick = button.oldonclick;
-    }
+    $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
+        return false;
+    });
 
-    return true;
-}
+    $('#thread_mode').bind('change', function() {
+        $(this).closest('form').submit();
+    });
 
-function getObjById(obj_id)
-{
-    if (document.getElementById) {       
-        var obj = document.getElementById(obj_id);
-    }else if (document.all) {
-        var obj = eval("document.all." + obj_id);
-    }else if (document.layer) {
-        var obj = eval("document." + obj_id);
-    }
+    $('a.popup').bind('click', function() {
 
-    if (obj != null) return obj;
-    return false;
-}
+        var class_names = $(this).attr('class').split(' ');
 
-function getObjsByName(obj_name)
-{
-    if (document.getElementsByName) {
-        var obj = document.getElementsByName(obj_name);
-    }else if (document.all) {
-        var obj = eval("document.all." + obj_name);
-    }else if (document.layer) {
-        var obj = eval("document." + obj_name);
-    }
-    
-    if (obj != null) return obj;
-    return false;
-}
+        var window_options = beehive.window_options;
 
-function findPosX(obj)
-{
-    var curleft = 0;
+        for (var key in class_names) {
 
-    if (obj.offsetParent) {
-        
-        while (1) {
+            if (dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key])) {
 
-            curleft += obj.offsetLeft;
-
-            if (!obj.offsetParent) break;
-            obj = obj.offsetParent;
+                window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
+            }
         }
 
-    }else if (obj.x) {
+        window.open($(this).attr('href'), $(this).attr('id'), window_options.join(','));
 
-        curleft += obj.x;
-    }
-    
-    return curleft;
-}
+        return false;
+    });
 
-function findPosY(obj)
-{
-    var curtop = 0;
+    $('button.close_popup').bind('click', function() {
+        window.close();
+    });
 
-    if (obj.offsetParent) {
-        
-        while (1) {
+    var check_overflow = function() {
 
-            curtop += obj.offsetTop;
-            if (!obj.offsetParent) break;
-            obj = obj.offsetParent;
-        }
+        $('td.postbody').each(function() {
 
-    } else if (obj.y) {
-        
-        curtop += obj.y;
-    }
+            if ($(this).find('div.overflow_fix').length > 0) {
 
-    return curtop;
-}
+                $(this).find('div.overflow_fix').css('width', $('body').attr('clientWidth') * 0.95);
 
-function getImageMaxWidth()
-{
-    if (typeof(document.maxWidth) != 'undefined' && document.maxWidth > 0) {
-        return document.maxWidth;
-    }
+            } else {
 
-    var body_tag = document.getElementsByTagName('body');
-    return body_tag[0].clientWidth;
-}
+                if ($(this).width() > $('body').attr('clientWidth')) {
 
-function getImageResizeText()
-{
-    if (typeof(document.resizeText) != 'undefined' && document.resizeText.length > 0) {
-        return document.resizeText;
-    }
+                    var $overflow_container = $('<div class="overflow_fix"></div>');
 
-    return 'This image has been resized (original size %1$sx%2$s). To view the full-size image click here.';
-}
+                    $overflow_container.html($(this).html());
 
-function addOverflow()
-{
-    var body_tag = document.getElementsByTagName('body');
-    var body_tag = body_tag[0];
+                    $overflow_container.css('width', $('body').attr('clientWidth') * 0.95);
+                    $overflow_container.css('overflow', 'auto');
 
-    var td_tags = document.getElementsByTagName('td');
-    var td_count = td_tags.length;
-
-    var maxWidth = getImageMaxWidth();
-
-    resizeImages();
-
-    for (var i = 0; i < td_count; i++)  {
-
-        if (td_tags[i].className == 'postbody') {
-            
-            if (td_tags[i].clientWidth >= maxWidth) {
-
-                if (typeof(td_tags[i].resized) == 'undefined') {
-                
-                    var new_div = document.createElement('div');
-
-                    if (IE) {
-
-                        new_div.style.overflowX = 'scroll';
-                        new_div.style.overflowY = 'auto';
-
-                    }else {
-
-                        new_div.style.overflow = 'auto';
-                    }
-
-                    new_div.className = 'bhoverflowfix';
-
-                    td_tags[i].style.width = (maxWidth * 0.94) + 'px';
-                    new_div.style.width = (maxWidth * 0.94) + 'px';
-
-                    while (td_tags[i].hasChildNodes()) {
-                        new_div.appendChild(td_tags[i].firstChild);
-                    }
-
-                    td_tags[i].appendChild(new_div);
-                
-                }else {
-
-                    alert(td_tags[i].width);
+                    $(this).html($overflow_container);
                 }
             }
-        }
+        });
     }
 
-    if (window.attachEvent) {
-        window.attachEvent("onresize", redoOverFlow);
-    }else {
-        window.addEventListener("resize", redoOverFlow, true);
-    }
-}
+    var resize_images = function() {
 
-function redoOverFlow()
-{
-    var body_tag = document.getElementsByTagName('body');
-    var body_tag = body_tag[0];
+        $('td.postbody img').each(function() {
 
-    var td_tags = document.getElementsByTagName('td');
-    var td_count = td_tags.length;
+            $image = $(this);
 
-    var maxWidth = getImageMaxWidth();
+            if ($(this).parent('span.resized_image').length > 0) {
 
-    resizeImages();
+                $(this).parent('span.resized_image').css('width', $('body').attr('clientWidth') * 0.95);
 
-    for (var i = 0; i < td_count; i++)  {
+            } else {
 
-        if (td_tags[i].className == 'postbody') {
-            
-            if (td_tags[i].clientWidth >= maxWidth) {
-            
-                td_tags[i].style.width = (maxWidth * 0.94) + 'px';
-            
-                var div_tags = td_tags[i].getElementsByTagName('div');
-                var div_count = div_tags.length;
+                if ($(this).width() > $('body').attr('clientWidth')) {
 
-                for (var j = 0; j < div_count; j++)  {
+                    $(this).wrap('<span class="resized_image"></span>');
 
-                    if (div_tags[j].className == 'bhoverflowfix') {
+                    $parent_span = $(this).parent('span.resized_image');
 
-                        div_tags[j].style.width = (maxWidth * 0.94) + 'px';
-            }
+                    $parent_span.prepend('<span class="resize_banner"></span>');
+
+                    $resize_banner = $parent_span.find('span.resize_banner');
+
+                    $parent_span.css( { 'display' : 'block',
+                                        'width' : $('body').attr('clientWidth') * 0.95 } );
+
+                    $image.css('width', '100%');
+
+                    $resize_banner.html('Image Resized').css('display', 'block');
+
+                    $resize_banner.bind('click', function() {
+                        console.log($image.attr('src'));
+                        window.open($image.attr('src'));
+                    });
                 }
             }
-        }
-    }
-}
-
-function attachListener(obj, event, func)
-{
-    if (obj.attachEvent) {
-        obj.attachEvent('on' + event, func);
-    }else {
-        obj.addEventListener(event, func, true);
-    }
-}
-
-function resizeImages()
-{
-    var forum_url = forumGetURL();
-    
-    var body_tag = document.getElementsByTagName('body');
-    var body_tag = body_tag[0];
-
-    var img_tags = document.getElementsByTagName('img');
-    var img_count = img_tags.length;
-
-    for (var index = 0; index < img_count; index++)  {
-        
-        if ((img_tags[index].src.indexOf(forum_url)) < 0) {
-        
-            resizeImage(img_tags[index], index);
-        }
-    }
-}
-
-function resizeImage(img, index)
-{
-    if (typeof(img.original_width) == 'undefined') {
-
-       img.original_width = img.width;
-       img.original_height = img.height;
+        });
     }
 
-    var maxWidth = getImageMaxWidth();
-
-    var resizeText = getImageResizeText();
-
-    if (img.original_width > maxWidth) {
-
-        if (typeof(img.resize_container_id) == 'undefined') {
-        
-            // Give the image an ID to track it later
-    
-            img.id = 'image_resize_image_' + index;
-    
-            // Generate the info tip IDs.
-    
-            img.resize_container_id  = 'img_resize_container_' + index;
-            img.resize_info_bar_id = 'img_resize_info_bar_' + index;
-    
-            // Generate the popup window ID.
-    
-            img.popup_id  = 'image_popup_' + index;
-
-            // Create container div and assign it an id.
-
-            var img_resize_container = document.createElement('div');
-            img_resize_container.id = 'img_resize_container_' + index;
-
-            // Create the info bar div
-
-            var img_resize_info_bar = document.createElement('div');
-            img_resize_info_bar.id = 'img_resize_info_bar_' + index;
-
-            // Set the info bar class name
-
-            img_resize_info_bar.className = 'image_resize_text';
-   
-            // Set up an onclick handler for the info bar
-        
-            attachListener(img_resize_info_bar, 'click', function () { popupImage(img.id) });
-        
-            // Stick the original dimensions of the image in the text and
-            // create the link to the full-sized image.
-        
-            var img_resize_icon = document.createElement('img');
-            var img_resize_text = document.createTextNode(resizeText.replace('%1$s', img.original_width).replace('%2$s', img.original_height));
-        
-            // Set up the link and the image.
-        
-            img_resize_icon.setAttribute('src', 'images/warning.png');
-            img_resize_icon.setAttribute('alt', '');
-            img_resize_icon.className = 'image_resize_icon';
-        
-            // Insert the icon into the icon column of the text row.
-        
-            img_resize_info_bar.appendChild(img_resize_icon);
-        
-            // Insert text into the text column of the text row
-        
-            img_resize_info_bar.appendChild(img_resize_text);
-        
-            // Get the original image's parent element.
-        
-            var parent_node = img.parentNode;
-        
-            // If the parent is an anchor tag we need to grab that to stick
-            // inside our container div so as to prevent the links from breaking.
-        
-            if (parent_node.tagName.toLowerCase() == 'a') {
-        
-                var child_node = parent_node;
-                parent_node = parent_node.parentNode;
-        
-                parent_node.insertBefore(img_resize_container, child_node.nextSibling);
-                img_resize_container.appendChild(child_node);
-        
-            }else {
-        
-                parent_node.insertBefore(img_resize_container, img.nextSibling);
-                img_resize_container.appendChild(img);
-            }
-        
-            // Insert the info bar div into the container div.
-        
-            img_resize_container.appendChild(img_resize_info_bar);
-
-            // Resize the image container
-
-            img_resize_container.style.width = Math.round(maxWidth * 0.8) + 'px';
-
-            // Resize the image to fill the container div
-
-            img.style.width = '100%';
-                    
-        }else {
-
-            var img_resize_container = getObjById(img.resize_container_id);
-
-            if (typeof img_resize_container == 'object') {
-                img_resize_container.style.width = Math.round(maxWidth * 0.8) + 'px';
-            }
-
-            var img_resize_info_bar = getObjById(img.resize_info_bar_id);
-
-            if (typeof img_resize_info_bar == 'object') {
-                img_resize_info_bar.style.display = 'block';
-            }
-        }
-    
-    }else if (typeof(img.resize_info_bar_id) != 'undefined') {
-
-        var img_resize_container = getObjById(img.resize_container_id);
-
-        if (typeof img_resize_container == 'object') {
-            img_resize_container.style.width = img.original_width + 'px';
-        }
-        
-        var img_resize_info_bar = getObjById(img.resize_info_bar_id);
-
-        if (typeof img_resize_info_bar == 'object') {
-            img_resize_info_bar.style.display = 'none';
-        }
-    }
-}    
+    $(window).bind('resize', function() {
 
-function popupImage(img_id)
-{   
-    var img_obj = document.getElementById(img_id);
-   
-    if (typeof(img_obj.popup_window) == 'undefined') img_obj.popup_window = false;
+        resize_images();
 
-    if (!img_obj.popup_window.closed && img_obj.popup_window.location) {
+        check_overflow();
+    });
 
-        img_obj.popup_window.focus();
+    resize_images();
 
-    }else {
+    check_overflow();
 
-        img_obj.popup_window = window.open(img_obj.src);
-        img_obj.popup_window.id = img_obj.popup_id;
-    }
+    $('select.user_in_thread_dropdown').bind('change', function() {
+        $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
+    });
 
-    return false;
-}
+    $('select.recent_user_dropdown').bind('change', function() {
+        $('input[name="to_radio"][value="recent"]').attr('checked', true);
+    });
 
-Array.prototype.unique = function(b)
-{
-    var a = [], i, l = this.length;
+    $('input.post_to_others').bind('focus', function() {
+        $('input[name="to_radio"][value="others"]').attr('checked', true);
+    });
 
-    for (var i = 0; i < l; i++) {
+    $('input#toggle_all').bind('click', function() {
+        $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
+    });
 
-        if (a.indexOf(this[i].toUpperCase(), 0, b) < 0 ) {
-            
-            a.push(this[i].toUpperCase()); 
-        }
-    }
-    
-    return a;
-}
+    $('a.font_size').live('click', function() {
 
-String.prototype.trim = function()
-{
-    return this.replace(/^\s+|\s+$/g,"");
-}
+        $parent = $(this).closest('td');
 
-String.prototype.ltrim = function()
-{
-    return this.replace(/^\s+/,"");
-}
+        $.getJSON($(this).attr('href'), { 'json' : true }, function(data) {
 
-String.prototype.rtrim = function()
-{
-    return this.replace(/\s+$/,"");
-}
+            if (!data.success) return false;
 
-function sprintf()
-{
-    if (!arguments || arguments.length < 1 || !RegExp) return false;
+            $parent.html(data.html);
 
-    var str = arguments[0];
-    
-    var re = /([^%]*)%('.|0|\x20)?(-)?(\d+)?(\.\d+)?(%|b|c|d|u|f|o|s|x|X)(.*)/;
+            top.document.body.rows = '60,' + Math.max(data.font_size * 2, 22) + ',*';
 
-    var a = b = [], numSubstitutions = 0, numMatches = 0;
+            process_frames(top.document.body, function() {
 
-    while (a = re.exec(str)) {
+                var $head = $(this.contentDocument).find('head');
 
-        var leftpart = a[1], pPad = a[2], pJustify = a[3], pMinLength = a[4];
-        var pPrecision = a[5], pType = a[6], rightPart = a[7];
-                
-        numMatches++;
+                $.ajax({
+                    'url' : 'font_size.php',
+                    'data' : { 'webtag' : webtag },
+                    'success' : function(data) {
+                        $head.find('style[title="user_font"]').html(data).appendTo($head);
+                    }
+                });
+            });
+        });
 
-        if (pType == '%') {
-                    
-            subst = '%';
-        
-        }else {
-
-            numSubstitutions++;
-            
-            if (numSubstitutions >= arguments.length) {
-                alert('Error: Not enough function arguments for:\n\n' + str);
-            }
-
-            var param = arguments[numSubstitutions];
-            var pad = '';
-
-            if (pPad && pPad.substr(0,1) == "'") {
-            
-                pad = leftpart.substr(1, 1);
-
-            }else if (pPad) { 
-            
-                pad = pPad;
-            }
-
-            var justifyRight = true;
-
-            if (pJustify && pJustify === "-") justifyRight = false;
-
-            var minLength = -1;
-
-            if (pMinLength) minLength = parseInt(pMinLength);
-
-            var precision = -1;
-
-            if (pPrecision && pType == 'f') precision = parseInt(pPrecision.substring(1));
-
-            var subst = param;
-
-            if (pType == 'b') {
-
-                subst = parseInt(param).toString(2);
-
-            }else if (pType == 'c') {
-
-                subst = String.fromCharCode(parseInt(param));
-
-            }else if (pType == 'd') {
-
-                subst = parseInt(param) ? parseInt(param) : 0;
-
-            }else if (pType == 'u') {
-
-                subst = Math.abs(param);
-
-            }else if (pType == 'f') {
-
-                subst = (precision > -1) ? Math.round(parseFloat(param) * Math.pow(10, precision)) / Math.pow(10, precision): parseFloat(param);
-
-            }else if (pType == 'o') {
-
-                subst = parseInt(param).toString(8);
-
-            }else if (pType == 's') {
-
-                subst = param;
-
-            }else if (pType == 'x') {
-
-                subst = ('' + parseInt(param).toString(16)).toLowerCase();
-
-            }else if (pType == 'X') {
-
-                subst = ('' + parseInt(param).toString(16)).toUpperCase();
-            }
-        }
-        
-        str = leftpart + subst.replace('%', '&#037;') + rightPart;
-    }
-    
-    return str;
-}
+        return false;
+    });
+});

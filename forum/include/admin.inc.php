@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.193 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.194 2010-01-03 15:19:33 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -77,7 +77,7 @@ function admin_add_log_entry($action, $data = "")
     if (is_array($data)) $data = implode("\x00", preg_replace('/[\x00]+/u', '', $data));
 
     $data = db_escape_string($data);
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
@@ -108,7 +108,7 @@ function admin_prune_log($remove_type, $remove_days)
     if (!is_numeric($remove_days)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}ADMIN_LOG` ";
@@ -436,7 +436,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
-    
+
     $user_get_all_array = array();
 
     $up_banned = USER_PERM_BANNED;
@@ -560,7 +560,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     }else {
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
@@ -1164,8 +1164,8 @@ function admin_prune_visitor_log($remove_days)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-    
-    $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));    
+
+    $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
     $sql.= "AND LAST_LOGON < CAST('$remove_days_datetime' AS DATETIME)";
@@ -1565,7 +1565,7 @@ function admin_approve_user($uid)
     if (!$db_admin_approve_user = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = CAST('$current_datetime' AS DATETIME) ";
@@ -1601,13 +1601,13 @@ function admin_delete_user($uid, $delete_content = false)
     $pm_saved_out    = PM_SAVED_OUT;
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
-    
+
     // UID of current user
-    
+
     $admin_uid = bh_session_get_value('UID');
-    
+
     // Before we delete we verify the user account exists and that
     // the user is not the current user account.
 
@@ -1835,9 +1835,9 @@ function admin_delete_user($uid, $delete_content = false)
         $sql = "DELETE QUICK FROM USER WHERE UID = '$uid'";
 
         if (!db_query($sql, $db_admin_delete_user)) return false;
-        
+
         // Add a log entry to show what we've done.
-        
+
         admin_add_log_entry(DELETE_USER, $user_logon);
 
         return true;
@@ -1889,7 +1889,7 @@ function admin_prepare_affected_sessions($affected_session)
     if ($affected_session['UID'] > 0) {
 
         $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
-        $affected_session_text.= "target=\"_blank\" onclick=\"return openProfile({$affected_session['UID']}, '$webtag')\">";
+        $affected_session_text.= "target=\"_blank\" class=\"popup 650x500\">";
         $affected_session_text.= word_filter_add_ob_tags(htmlentities_array(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
         $affected_session_text.= "</a></li>\n";
 

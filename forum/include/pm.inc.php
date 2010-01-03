@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.282 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.283 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -149,7 +149,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -239,7 +239,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -329,7 +329,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -419,7 +419,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -511,7 +511,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -663,7 +663,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) return false;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -1105,7 +1105,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         }else {
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['FROM_UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</a></span></td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</a></span></td>\n";
         }
 
     }else {
@@ -1142,7 +1142,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
             }else {
 
                 echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></span></td>\n";
+                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></span></td>\n";
             }
 
         }else {
@@ -1410,7 +1410,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     // PM_OUTBOX constant.
 
     $pm_outbox = PM_OUTBOX;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Insert the main PM Data into the database
@@ -1418,7 +1418,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
     $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
     $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), 0)";
-    
+
     if (db_query($sql, $db_pm_send_message)) {
 
         $new_mid = db_insert_id($db_pm_send_message);
@@ -1427,7 +1427,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
-        
+
         if (!db_query($sql, $db_pm_send_message)) return false;
 
         // Check to see if we should be adding a 'Sent Item'
@@ -1481,9 +1481,9 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
     // PM_SENT constant.
 
     $pm_sent = PM_SENT;
-    
+
     // Current datetime
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Insert the main PM Data into the database
@@ -1540,7 +1540,7 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
     $content = db_escape_string($content);
 
     $pm_saved_draft = PM_SAVED_DRAFT;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (pm_get_free_space($uid) > 0) {
@@ -1698,18 +1698,18 @@ function pm_delete_message($mid)
     if (!$db_delete_pm = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
-    
+
     // Constants required.
-    
+
     $pm_inbox_items = PM_INBOX_ITEMS;
     $pm_outbox_items = PM_OUTBOX_ITEMS;
     $pm_sent_items = PM_SENT_ITEMS;
     $pm_saved_out = PM_SAVED_OUT;
     $pm_saved_in  = PM_SAVED_IN;
-    $pm_draft_items = PM_DRAFT_ITEMS;    
-    
+    $pm_draft_items = PM_DRAFT_ITEMS;
+
     // User UID
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Verify the PM is 'owned' by the current user.
@@ -1727,7 +1727,7 @@ function pm_delete_message($mid)
     $sql.= "AND PM.MID = '$mid' GROUP BY PM.MID LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_delete_pm)) return false;
-    
+
     if (db_num_rows($result) > 0) {
 
         $db_delete_pm_row = db_fetch_array($result);
@@ -1749,7 +1749,7 @@ function pm_delete_message($mid)
 
         return true;
     }
-    
+
     return false;
 }
 
@@ -1980,9 +1980,9 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
 function pm_check_messages()
 {
-    // Outputting XML
+    // Outputting JSON
 
-    header('Content-type: text/xml; charset=UTF-8', true);
+    header('Content-type: application/json; charset=UTF-8', true);
 
     // Load the Language file
 
@@ -1991,10 +1991,6 @@ function pm_check_messages()
     // Get the number of messages.
 
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
-
-    // XML header
-
-    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     // Format the message sent to the client.
 
@@ -2031,20 +2027,19 @@ function pm_check_messages()
         $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
     }
 
-    echo "<inbox>\n";
-    
+    $pm_notification_data = array();
+
     if ($pm_new_count > 0) {
-        echo "  <text><![CDATA[", html_js_safe_str("[$pm_new_count {$lang['new']}]"), "]]></text>\n";
-    }else if ($pm_unread_count > 0) {
-        echo "  <text><![CDATA[", html_js_safe_str("[$pm_unread_count {$lang['unread']}]"), "]]></text>\n";
+        $pm_notification_data['text'] = sprintf('[%d %s]', $pm_new_count, $lang['new']);
+    } else if ($pm_unread_count > 0) {
+        $pm_notification_data['text'] = sprintf('[%d %s]', $pm_unread_count, $lang['unread']);
     }
 
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
-        echo "  <notification><![CDATA[", html_js_safe_str(wordwrap($pm_notification, 65, "\n")), "]]></notification>\n";
+        $pm_notification_data['notification'] = wordwrap($pm_notification, 65, "\n");
     }
 
-    echo "</inbox>\n";
-
+    echo json_encode($pm_notification_data);
     exit;
 }
 
@@ -2139,7 +2134,7 @@ function pm_system_prune_folders()
         $pm_read = PM_READ;
         $pm_sent_items = PM_SENT_ITEMS;
 
-        $pm_prune_length_seconds = ($pm_prune_length * DAY_IN_SECONDS);        
+        $pm_prune_length_seconds = ($pm_prune_length * DAY_IN_SECONDS);
         $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
@@ -2734,14 +2729,14 @@ function pm_get_folder_names()
                                        PM_FOLDER_SAVED   => $lang['pmsaveditems'],
                                        PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
     }else {
-    
+
         $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
                                        PM_FOLDER_SENT    => $lang['pmsentitems'],
                                        PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
                                        PM_FOLDER_SAVED   => $lang['pmsaveditems'],
                                        PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
                                        PM_SEARCH_RESULTS => $lang['searchresults']);
-    }    
+    }
 
     $sql = "SELECT FID, TITLE FROM PM_FOLDERS WHERE UID = '$uid'";
 
@@ -2752,7 +2747,7 @@ function pm_get_folder_names()
         while (($folder_name_data = db_fetch_array($result))) {
 
             if (strlen(trim($folder_name_data['TITLE'])) > 0) {
-                
+
                 $pm_folder_names_array[$folder_name_data['FID']] = $folder_name_data['TITLE'];
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.135 2009-11-12 21:32:45 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.136 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -449,7 +449,7 @@ if (isset($_POST['save'])) {
                         if (validate_msg($merge_thread)) {
                             list($merge_thread) = explode('.', $merge_thread);
                         }
-                        
+
                         if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
 
                             post_add_edit_text($tid, 1);
@@ -569,8 +569,8 @@ if (isset($_POST['save'])) {
 if ($thread_data['DELETED'] == 'N') {
 
     $thread_title_display = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
-    
-    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", "thread_options.js");
+
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank");
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -1036,7 +1036,7 @@ if ($thread_data['DELETED'] == 'N') {
 
 }else if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", "thread_options.js");
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank");
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 

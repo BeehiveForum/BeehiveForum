@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.146 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.147 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -186,7 +186,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
     $aid = $_GET['aid'];
 
     if (!$t_fid = get_folder_fid($aid)) {
-        
+
         html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         html_error_msg($lang['aidnotspecified']);
         html_draw_bottom();
@@ -204,7 +204,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
         html_draw_bottom();
         exit;
     }
-    
+
 }else {
 
     $aid = false;
@@ -232,7 +232,7 @@ $total_attachment_size = 0;
 if (is_md5($aid)) {
 
     $users_free_space = get_free_post_attachment_space($aid);
-    
+
 }else {
 
     $users_free_space = get_free_user_attachment_space($uid);
@@ -307,7 +307,7 @@ if (isset($_POST['delete_confirm'])) {
         if (get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
 
             if (isset($_POST['delete_thumbs'])) {
-                
+
                 html_draw_top("title={$lang['deletethumbnails']}", 'pm_popup_disabled');
                 echo "<h1>{$lang['deletethumbnails']}</h1>\n";
 
@@ -421,17 +421,6 @@ if (isset($_POST['delete_confirm'])) {
             exit;
         }
     }
-
-}elseif (isset($_POST['close']) && $popup == 1) {
-
-    html_draw_top('pm_popup_disabled');
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
 }
 
 html_draw_top("title={$lang['attachments']}", 'attachments.js', 'post.js', 'pm_popup_disabled');
@@ -743,7 +732,7 @@ if ($uid == bh_session_get_value('UID')) {
     }else {
 
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit('delete', $lang['delete']), "&nbsp;", form_button('complete', $lang['close']), "</td>\n";
         echo "    </tr>\n";
     }
 }

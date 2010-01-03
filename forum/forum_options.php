@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.155 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.156 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -499,27 +499,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['updated'])) {
 
     html_display_success_msg($lang['preferencesupdated'], '600', 'left');
-
-    $top_html = html_get_top_page();
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "if (top.document.body.rows) {\n\n";
-
-    if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
-        echo "    top.document.body.rows='60, ' + ". max($user_prefs['FONT_SIZE'] * 2, 22) ."+ ', *';\n";
-    }else {
-        echo "    top.document.body.rows='60, 22, *';\n";
-    }
-
-    echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";
-    echo "    top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n";
-    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.reload();\n\n";
-    echo "} else if (top.document.body.cols) {\n\n";
-    echo "    top.frames['", html_get_frame_name('left'), "'].location.reload();\n\n";
-    echo "}\n\n";
-    echo "-->\n";
-    echo "</script>";
 }
 
 echo "<br />\n";

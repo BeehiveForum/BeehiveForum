@@ -19,18 +19,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forumlinks.js,v 1.8 2009-12-26 12:29:21 decoyduck Exp $ */
+/* $Id: forumlinks.js,v 1.9 2010-01-03 15:19:36 decoyduck Exp $ */
 
-function openForumLink(obj)
-{
-    var url = obj.options[obj.selectedIndex].value;
+$(document).ready(function() {
 
-    if (/^[a-z[0-9]+:\/\//.exec(url)) {
+    $('select#forum_links').bind('change', function() {
 
-        window.open(url);
-        return false;
-    }
-
-    obj.selectedIndex = 0;
-    return true;
-}
+        if (/^[a-z[0-9]+:\/\//.test($(this).val())) {
+            window.open($(this).val());
+        }
+    });
+});

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.79 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.80 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -237,7 +237,10 @@ if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")))
     foreach ($emots_array as $emot) {
 
         echo "                          <tr>\n";
-        echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\"><img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" onclick=\"insertEmoticon(' ", html_js_safe_str($emot['matches'][0]), " ');\" /></td>\n";
+        echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\">\n";
+        echo "                              <a class=\"emoticon_preview_img\" rel=\"{$emot['text']}\">\n";
+        echo "                                <img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" />\n";
+        echo "                              </a>\n";
         echo "                            <td align=\"left\">";
 
         foreach ($emot['matches'] as $emot_match) {

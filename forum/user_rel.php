@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.130 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.131 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -264,13 +264,13 @@ if (isset($_POST['reset_nickname'])) {
 
 $peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
 
-html_draw_top("title={$lang['userrelationship']} » $peer_user_display", "openprofile.js");
+html_draw_top("title={$lang['userrelationship']} » $peer_user_display");
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

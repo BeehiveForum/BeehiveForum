@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.383 2009-10-25 17:31:05 decoyduck Exp $ */
+/* $Id: post.php,v 1.384 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -864,7 +864,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_c
     exit;
 }
 
-html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "post.js", "attachments.js", "poll.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
+html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js');
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 
@@ -1000,7 +1000,7 @@ if (!$new_thread) {
     echo "                        <td align=\"left\">", form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false, 'onclick="checkToRadio(0)"'), "</td>\n";
+    echo "                        <td align=\"left\">", post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -1014,7 +1014,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($new_thread ? 1 : 2). ")\"", "post_to_others"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_to_uid_others\" onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, false, "post_to_others"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_to_uid_others\" class=\"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
@@ -1100,7 +1100,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit("post", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit("post", $lang['post']));
 }else {
     $tools->setTinyMCE(false);
 }
@@ -1153,13 +1153,13 @@ if (($tools->getTinyMCE())) {
     echo "  <br /><br />\n";
 }
 
-echo form_submit("post", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
-echo "&nbsp;", form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
+echo form_submit("post", $lang['post'], "tabindex=\"2\"");
+echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\"");
+echo "&nbsp;", form_submit("cancel", $lang['cancel'], "tabindex=\"4\"");
 
 if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo form_input_hidden("aid", htmlentities_array($aid));
 }
 

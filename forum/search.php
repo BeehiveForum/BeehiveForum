@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.245 2009-11-25 20:41:25 decoyduck Exp $ */
+/* $Id: search.php,v 1.246 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -161,7 +161,7 @@ if (isset($_GET['sort_dir'])) {
     }
 
 }else {
-    
+
     $sort_dir = SEARCH_SORT_DESC;
 }
 
@@ -441,7 +441,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                     $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
 
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
                     $error_msg_array[] = sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link);
 
                     $keywords_error_str = implode(", ", $keywords_error_array['keywords']);
@@ -451,7 +451,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                 }else {
 
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
                     $error_msg_array[] = sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link);
 
                     break;
@@ -649,7 +649,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         case SEARCH_NO_KEYWORDS:
 
-            $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
+            $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
             html_display_error_msg(sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link));
             break;
 
@@ -719,7 +719,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, 0, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" onclick=\"return openLogonSearch('$webtag', 'username');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, 0, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" \"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -774,11 +774,11 @@ echo "                        <td align=\"left\">", form_dropdown_array("date_to
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, (isset($search_arguments['sort_by']) && in_array($search_arguments['sort_by'], array_keys($search_sort_by_array)) ? $search_arguments['sort_by'] : 'CREATED'), false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, (isset($search_arguments['sort_by']) && in_array($search_arguments['sort_by'], array_keys($search_sort_by_array)) ? $search_arguments['sort_by'] : SEARCH_SORT_CREATED), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, (isset($search_arguments['sort_dir']) && in_array($search_arguments['sort_dir'], array_keys($search_sort_dir_array)) ? $search_arguments['sort_dir'] : 'DESC'), false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, (isset($search_arguments['sort_dir']) && in_array($search_arguments['sort_dir'], array_keys($search_sort_dir_array)) ? $search_arguments['sort_dir'] : SEARCH_SORT_DESC), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
@@ -801,7 +801,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit('search_submit', $lang['find'], "onclick=\"searchFormSubmit()\""), "&nbsp;", form_submit('search_reset', $lang['reset']), "</td>\n";
+echo "      <td align=\"center\">", form_submit('search_submit', $lang['find']), "&nbsp;", form_submit('search_reset', $lang['reset']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

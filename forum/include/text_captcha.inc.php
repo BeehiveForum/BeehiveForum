@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.39 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.40 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -254,13 +254,13 @@ class captcha {
                     $this->random_color(0, 127);
                     $shadow = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
 
-                    if (!@imagettftext($image, $text_size, $text_angle, $text_x + (int)($text_size / 15), $text_y, $shadow, $this->random_font(), $text)) {
+                    if (!imagettftext($image, $text_size, $text_angle, $text_x + (int)($text_size / 15), $text_y, $shadow, $this->random_font(), $text)) {
 
                         $this->error = TEXT_CAPTCHA_FONT_ERROR;
                         return false;
                     }
 
-                    if (!@imagettftext($image, $text_size, $text_angle, $text_x, $text_y - (int)($text_size / 15), $color, $this->get_current_font(), $text)) {
+                    if (!imagettftext($image, $text_size, $text_angle, $text_x, $text_y - (int)($text_size / 15), $color, $this->get_current_font(), $text)) {
 
                         $this->error = TEXT_CAPTCHA_FONT_ERROR;
                         return false;

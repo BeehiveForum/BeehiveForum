@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.77 2009-07-15 11:37:24 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.78 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -125,38 +125,85 @@ if (user_is_guest()) {
     exit;
 }
 
-// Check we have a msg ID
+// Check we have a valid request
 
-if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+if (!user_is_guest() && isset($_GET['fontsize'])) {
 
-    $msg = $_GET['msg'];
+    // Check for message ID
 
-    if (isset($_GET['fontsize']) && is_numeric($_GET['fontsize']) && $_GET['fontsize'] > 4 && $_GET['fontsize'] < 16 && !user_is_guest()) {
-
-        $user_prefs['FONT_SIZE'] = $_GET['fontsize'];
-        $user_prefs_global['FONT_SIZE'] = false;
-
-        if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-
-            header_redirect("messages.php?webtag=$webtag&msg=$msg&font_resize=1");
-
-        }else {
-
-            html_draw_top();
-            html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
-            html_draw_bottom();
-        }
-
-    }else {
-
-       header_redirect("messages.php?webtag=$webtag&msg=$msg");
-
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        list($tid, $pid) = explode('.', $_GET['msg']);
+    } else {
+        $tid = 1; $pid = 1;
     }
 
-}else {
+    // Load the user prefs
+
+    $user_prefs = user_get_prefs($uid);
+
+    // Calculate the new font size.
+
+    switch ($_GET['fontsize']) {
+
+        case 'smaller':
+
+            $user_prefs['FONT_SIZE'] = $user_prefs['FONT_SIZE'] - 1;
+            break;
+
+        case 'larger':
+
+            $user_prefs['FONT_SIZE'] = $user_prefs['FONT_SIZE'] + 1;
+            break;
+    }
+
+    // Check the font size is not lower than 5
+
+    if ($user_prefs['FONT_SIZE'] < 5) $user_prefs['FONT_SIZE'] = 5;
+
+    // Check the font size is not greater than 15
+
+    if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
+
+    // Apply the font size to this forum only.
+
+    $user_prefs_global['FONT_SIZE'] = false;
+
+    // Update the user prefs.
+
+    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+        // If we have a JSON request respond with the replacement
+        // HTML for the fontsize links, otherwise redirect back
+        // to messages.php
+
+        if (isset($_REQUEST['json'])) {
+
+            header('Content-type: application/json; charset=UTF-8', true);
+            
+            echo json_encode(array('success'   => true,
+                                   'font_size' => $user_prefs['FONT_SIZE'],
+                                   'html'      => messages_fontsize_form($tid, $pid, true, $user_prefs['FONT_SIZE'])));
+            exit;
+
+        } else {
+
+            header_redirect("messages.php?webtag=$webtag&msg=$tid.$pid&font_resize=1");
+        }
+    }
+}
+
+// If we got here, something above went wrong.
+
+if (isset($_REQUEST['json'])) {
+
+    header('Content-type: application/json; charset=UTF-8', true);
+    echo json_encode(array('success' => false));
+    exit;
+
+} else {
 
     html_draw_top();
-    html_error_msg($lang['invalidmsgidornomessageidspecified']);
+    html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
     html_draw_bottom();
 }
 

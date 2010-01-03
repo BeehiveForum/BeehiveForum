@@ -19,25 +19,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.js,v 1.11 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: emoticons.js,v 1.12 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var emoticons_window = false;
+$(document).ready(function() {
 
-function openEmoticons(pack, webtag)
-{
-    if (typeof emoticons_window == 'object' && !emoticons_window.closed) {
-        emoticons_window.focus();
-    }else {
-        emoticons_window = window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons_window','width=500, height=400, resizable=yes, scrollbars=yes');
-    }
+    $('.emoticon_preview_popup .emoticon_preview_img').bind('click', function() {
+        if ($.isFunction(window.opener.add_text)) {
+            window.opener.add_text(' ' + $(this).attr('rel') + ' ');
+        }
+    });
 
-    return false;
-}
+    $('.emoticon_preview .emoticon_preview_img').bind('click', function() {
+        add_text(' ' + $(this).attr('rel') + ' ');
+    });
 
-function insertEmoticon(text)
-{
-    if (window.opener.add_text) {
+    $('.emoticon_preview .view_more').bind('click', function() {
 
-        window.opener.add_text(text);
-    }
-}
+        var popup_window_options = window_options;
+        window.open($(this).attr('href'), $(this).attr('id'), popup_window_options.join(','));
+    });
+});

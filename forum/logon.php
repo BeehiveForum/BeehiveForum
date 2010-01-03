@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.198 2009-12-07 20:26:11 decoyduck Exp $ */
+/* $Id: logon.php,v 1.199 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -183,7 +183,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
     }
 }
 
-html_draw_top('logon.js', 'onload=toogleAutoLogon()');
+html_draw_top('logon.js');
 
 echo "<div align=\"center\">\n";
 

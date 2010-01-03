@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.85 2009-10-25 14:55:48 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.86 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -282,7 +282,7 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("title={$lang['admin']} » {$lang['approvepost']}", "post.js", "poll.js", "resize_width=720", "openprofile.js");
+        html_draw_top("title={$lang['admin']} » {$lang['approvepost']}", "post.js", "resize_width=720");
 
         echo "<h1>{$lang['admin']} &raquo; {$lang['approvepost']}</h1>\n";
 
@@ -379,8 +379,8 @@ if (isset($msg) && validate_msg($msg)) {
     }
 
     $page_title = "{$lang['admin']} &raquo; ". forum_get_setting('forum_name', false, 'A Beehive Forum'). " &raquo; {$lang['postapprovalqueue']}";
-    
-    html_draw_top("title=page_title", 'openprofile.js');
+
+    html_draw_top("title=$page_title");
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
@@ -415,7 +415,7 @@ if (isset($msg) && validate_msg($msg)) {
             echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']))), "</a></td>\n";
             echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
-            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" onclick=\"return openProfile({$post_approval_entry['UID']}, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']))) . "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']))) . "</a></td>\n";
             echo "                   <td align=\"left\">", format_time($post_approval_entry['CREATED']), "</td>\n";
             echo "                 </tr>\n";
         }

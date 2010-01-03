@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.208 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: register.php,v 1.209 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -160,18 +160,17 @@ if (isset($_GET['reload_captcha'])) {
 
     if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
 
-        // Outputting XML
+        // Construct array to send as JSON response.
 
-        cache_disable();
+        $text_captcha_data = array('image' => $text_captcha->get_image_filename(),
+                                   'chars' => $text_captcha->get_num_chars(),
+                                   'key'   => $text_captcha->get_public_key());
 
-        header('Content-type: text/xml; charset=UTF-8', true);
+        // Outputting JSON
 
-        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        echo "<captcha>\n";
-        echo "  <image>", $text_captcha->get_image_filename(), "</image>\n";
-        echo "  <chars>", $text_captcha->get_num_chars(), "</chars>\n";
-        echo "  <key>", $text_captcha->get_public_key(), "</key>\n";
-        echo "</captcha>\n";
+        header('Content-type: application/json; charset=UTF-8', true);
+
+        echo json_encode($text_captcha_data);
         exit;
     }
 }
@@ -841,7 +840,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf($lang['textcaptchaexplain'], $forum_owner_link), "</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
-            echo "                        <td align=\"left\" valign=\"top\"><a href=\"Javascript:void(0)\" onclick=\"return captcha_reload()\"><img src=\"", style_image('reload.png'), "\" border=\"0\" alt=\"\" /></a></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><img src=\"", style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", "", 20, htmlentities_array($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key())), "</td>\n";
@@ -859,6 +858,10 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
+
+        } else if (defined('BEEHIVE_INSTALL_NOWARN')) {
+
+            echo $text_captcha->get_error();
         }
     }
 

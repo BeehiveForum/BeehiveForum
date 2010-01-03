@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.276 2009-10-25 17:31:05 decoyduck Exp $ */
+/* $Id: edit.php,v 1.277 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -667,7 +667,7 @@ if (isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("title={$lang['editmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
+html_draw_top("title={$lang['editmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "edit.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js");
 
 echo "<h1>", sprintf($lang['editmessage'], $edit_msg), "</h1>\n";
 
@@ -723,7 +723,7 @@ echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "</a><br /><br />\n";
+    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "</a><br /><br />\n";
 
 }else {
 

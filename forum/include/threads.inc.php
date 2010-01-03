@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.359 2009-12-04 18:54:18 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.360 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1541,7 +1541,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
     return false;
 }
 
-function thread_list_draw_top($mode)
+function thread_list_draw_top($thread_mode)
 {
     $lang = load_language_file();
 
@@ -1549,19 +1549,6 @@ function thread_list_draw_top($mode)
 
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
-    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "function change_current_thread (thread_id)\n";
-    echo "{\n";
-    echo "    if (current_thread > 0) {\n";
-    echo "        document[\"t\" + current_thread].src = \"", style_image('bullet.png'), "\";\n";
-    echo "    }\n";
-    echo "    document[\"t\" + thread_id].src = \"", style_image('current_thread.png'), "\";\n";
-    echo "    current_thread = thread_id;\n";
-    echo "    return true;\n";
-    echo "}\n\n";
-    echo "// -->\n";
-    echo "</script>\n\n";
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
@@ -1647,7 +1634,7 @@ function thread_list_draw_top($mode)
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("mode", $available_views, htmlentities_array($mode), "onchange=\"submit()\""), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

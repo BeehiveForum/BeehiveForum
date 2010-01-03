@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.380 2009-11-15 20:41:39 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.381 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -143,12 +143,12 @@ if (!forum_check_access_level()) {
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $folder = $_GET['folder'];
-    $mode = ALL_DISCUSSIONS;
+    $thread_mode = ALL_DISCUSSIONS;
 
 }else if (isset($_POST['folder']) && is_numeric($_POST['folder'])) {
 
     $folder = $_POST['folder'];
-    $mode = ALL_DISCUSSIONS;
+    $thread_mode = ALL_DISCUSSIONS;
 
 }else {
 
@@ -167,10 +167,10 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 
 // View mode
 
-if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
-    $mode = $_GET['mode'];
-}else if (isset($_POST['mode']) && is_numeric($_POST['mode'])) {
-    $mode = $_POST['mode'];
+if (isset($_GET['thread_mode']) && is_numeric($_GET['thread_mode'])) {
+    $thread_mode = $_GET['thread_mode'];
+}else if (isset($_POST['thread_mode']) && is_numeric($_POST['thread_mode'])) {
+    $thread_mode = $_POST['thread_mode'];
 }
 
 // Number of posts per page
@@ -197,8 +197,8 @@ if (user_is_guest()) {
     // or those in the past x days, since the other options
     // would be impossible
 
-    if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
-        $mode = ALL_DISCUSSIONS;
+    if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
+        $thread_mode = ALL_DISCUSSIONS;
     }
 
 }else {
@@ -207,11 +207,11 @@ if (user_is_guest()) {
 
     $threads_any_unread = threads_any_unread();
 
-    if (isset($mode) && is_numeric($mode)) {
+    if (isset($thread_mode) && is_numeric($thread_mode)) {
 
-        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
+        bh_setcookie("bh_{$webtag}_thread_mode", $thread_mode);
 
-        if ($mode == SEARCH_RESULTS) {
+        if ($thread_mode == SEARCH_RESULTS) {
 
             header_redirect("search.php?webtag=$webtag&offset=0");
             exit;
@@ -219,10 +219,10 @@ if (user_is_guest()) {
 
     }else {
 
-        $mode = bh_getcookie("bh_{$webtag}_thread_mode", false, UNREAD_DISCUSSIONS);
+        $thread_mode = bh_getcookie("bh_{$webtag}_thread_mode", false, UNREAD_DISCUSSIONS);
 
-        if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-            $mode = ALL_DISCUSSIONS;
+        if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+            $thread_mode = ALL_DISCUSSIONS;
         }
     }
 
@@ -244,7 +244,7 @@ if (user_is_guest()) {
 
                     if (threads_mark_read($thread_data)) {
 
-                        header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                        header_redirect("thread_list.php?webtag=$webtag&mode=$thread_mode&folder=$folder&mark_read_success=true");
                         exit;
 
                     }else {
@@ -258,7 +258,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_all_read()) {
 
-                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$thread_mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -271,7 +271,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_50_read()) {
 
-                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$thread_mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -284,7 +284,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_folder_read($folder)) {
 
-                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$thread_mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -308,7 +308,7 @@ if (user_is_guest()) {
 
 // Output XHTML header
 
-html_draw_top("modslist.js", "poll.js", "thread_options.js", "folder_options.js");
+html_draw_top('thread_list.js');
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -332,7 +332,7 @@ echo "</script>\n";
 if (isset($folder) && is_numeric($folder) && $folder > 0) {
     list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 }else {
-    switch ($mode) {
+    switch ($thread_mode) {
         case ALL_DISCUSSIONS:
             list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
             break;
@@ -433,9 +433,9 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (($thread = thread_get($selected_tid))) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
-        
+
         // Check the folder display order / user is a guest.
-        
+
         if ((bh_session_get_value('THREADS_BY_FOLDER') != 'Y') || user_is_guest()) {
 
             // Remove the folder from the list of folders.
@@ -527,7 +527,7 @@ if (bh_session_get_value('UID') > 0) {
 
 // Draw discussion dropdown
 
-thread_list_draw_top($mode);
+thread_list_draw_top($thread_mode);
 
 // If no threads are returned, say something to that effect
 
@@ -549,7 +549,7 @@ if (isset($_GET['mark_read_success'])) {
     echo "<br />\n";
 }
 
-if (($start_from > 0 && $mode == ALL_DISCUSSIONS && !is_numeric($folder))) {
+if (($start_from > 0 && $thread_mode == ALL_DISCUSSIONS && !is_numeric($folder))) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
@@ -594,7 +594,7 @@ foreach ($folder_order as $folder_number) {
         echo "          </td>\n";
 
         if (bh_session_get_value('UID') > 0) {
-            echo "          <td align=\"left\" class=\"folderpostnew\" nowrap=\"nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openModsList({$folder_number}, '$webtag')\"><img src=\"". style_image('mods_list.png'). "\" border=\"0\" alt=\"View moderators\" title=\"View moderators\" /></a></td>";
+            echo "          <td align=\"left\" class=\"folderpostnew\" nowrap=\"nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"". style_image('mods_list.png'). "\" border=\"0\" alt=\"View moderators\" title=\"View moderators\" /></a></td>";
         }
 
         echo "        </tr>\n";
@@ -603,7 +603,7 @@ foreach ($folder_order as $folder_number) {
         echo "  </tr>\n";
         echo "</table>\n";
 
-        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
             echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "  <tr>\n";
@@ -659,7 +659,7 @@ foreach ($folder_order as $folder_number) {
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {
-                        
+
                             echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                             echo "                    <tr>\n";
                             echo "                      <td align=\"center\" valign=\"top\" nowrap=\"nowrap\" width=\"20\">";
@@ -685,11 +685,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
                             }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
@@ -714,11 +714,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
                             }else {
@@ -739,11 +739,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('bullet.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
                             }
 
@@ -753,7 +753,7 @@ foreach ($folder_order as $folder_number) {
 
                             echo "&nbsp;</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";
-                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
+                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" rel=\"t{$thread['TID']}\"";
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
@@ -770,7 +770,7 @@ foreach ($folder_order as $folder_number) {
                             echo "                      <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
                             echo "                    </tr>\n";
                             echo "                  </table>\n";
-                            
+
                             unset($thread_info[$key]);
                         }
                     }
@@ -881,7 +881,7 @@ foreach ($folder_order as $folder_number) {
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 
-if ($mode == ALL_DISCUSSIONS && !is_numeric($folder)) {
+if ($thread_mode == ALL_DISCUSSIONS && !is_numeric($folder)) {
 
     $total_threads = 0;
 
@@ -930,7 +930,7 @@ if (!user_is_guest()) {
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "        ", form_input_hidden("mode", htmlentities_array($mode)), "\n";
+    echo "        ", form_input_hidden("mode", htmlentities_array($thread_mode)), "\n";
     echo "        ", form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
     echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
@@ -955,7 +955,7 @@ if (!user_is_guest()) {
     }
 
     echo "        ", form_dropdown_array("mark_read_type", $labels, $selected_option). "\n";
-    echo "        ", form_submit("mark_read_submit", $lang['goexcmark'], "onclick=\"return confirmMarkAsRead()\""). "\n";
+    echo "        ", form_submit("mark_read_submit", $lang['goexcmark']). "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

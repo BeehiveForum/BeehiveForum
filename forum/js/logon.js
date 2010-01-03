@@ -19,99 +19,71 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.js,v 1.8 2008-12-09 18:26:46 decoyduck Exp $ */
+/* $Id: logon.js,v 1.9 2010-01-03 15:19:36 decoyduck Exp $ */
 
-function changePassword(webtag)
-{
-    var logon_array_obj = getObjsByName('logonarray')[0];
+$(document).ready(function() {
 
-    if (typeof logon_array_obj == 'object') {
-        
-        var selected_logon = logon_array_obj.selectedIndex;
+    $('select#user_logon').bind('change', function() {
 
-        if ((logon_array_obj.length - 1) == selected_logon) {
+        var $selected = $('select#user_logon option:selected');
 
-            self.location.href = 'logon.php?webtag=' + webtag + '&other_logon=true';
-            return;
+        if ($selected.hasClass('bhlogonother')) {
 
-        }else {
+            $(this).replaceWith('<input id="user_logon" name="user_logon" class="bhinputlogon" />');
 
-            var user_logon_obj = getObjsByName('user_logon')[0];
+            $('input#user_password').val('');
 
-            var user_password_obj = getObjsByName('user_password')[0];
-            var user_passhash_obj = getObjsByName('user_passhash')[0];
+            $('#remember_user').attr('checked', false);
 
-            var password_selection_obj = getObjsByName('user_password' + selected_logon)[0];       
-            var passhash_selection_obj = getObjsByName('user_passhash' + selected_logon)[0];
+            $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
+            $('#auto_logon').attr('checked', false);
+            $('#auto_logon').attr('disabled', true);
 
-            var remember_password_obj = getObjsByName('remember_user')[0];
+            $('input#user_logon').focus();
 
-            if ((typeof user_logon_obj == 'object') && (typeof user_password_obj == 'object') && (typeof user_passhash_obj == 'object')) {
+        } else {
 
-                if ((typeof password_selection_obj == 'object') && (typeof passhash_selection_obj == 'object') && (typeof remember_password_obj == 'object')) {
+            var $selected_password = $('#user_password' + $selected.attr('index'));
+            var $selected_passhash = $('#user_passhash' + $selected.attr('index'));
 
-                    user_logon_obj.value = logon_array_obj.options[selected_logon].value;
+            if (/^[A-Fa-f0-9]{32}$/.test($selected_passhash.val()) == true) {
 
-                    if (/^[A-Fa-f0-9]{32}$/.test(passhash_selection_obj.value) == true) {
+                $('input#user_password').val($selected_password.val());
+                $('input#user_passhash').val($selected_passhash.val());
 
-                        user_password_obj.value = password_selection_obj.value;
-                        user_passhash_obj.value = passhash_selection_obj.value;
+                $('#remember_user').attr('checked', true);
 
-                        remember_password_obj.checked = true;
+            } else {
 
-                    }else {
+                $('input#user_password').val('');
+                $('input#user_passhash').val('');
 
-                        user_password_obj.value = '';
-                        user_passhash_obj.value = '';
-
-                        remember_password_obj.checked = false;
-                    }
-                }
+                $('#remember_user').attr('checked', false);
             }
         }
-    }
-}
+    });
 
-function clearPassword()
-{
-    var user_password_obj = getObjsByName('user_password')[0];
-    var user_passhash_obj = getObjsByName('user_passhash')[0];
+    $('input#user_logon').bind('change', function() {
+        $('input#user_password').val('');
+    });
 
-    if ((typeof user_password_obj == 'object') && (typeof user_passhash_obj == 'object')) {
+    $('#auto_logon').bind('click', function() {
+        $(this).attr('defaultChecked', $(this).attr('checked'));
+    });
 
-        user_password_obj.value = '';
-        user_passhash_obj.value = '';
-    }
-}
+    $('#remember_user').bind('click', function() {
 
-function toogleAutoLogon()
-{
-    var auto_logon_obj = getObjsByName('auto_logon')[0];
+        if ($(this).attr('checked')) {
 
-    var remember_password_obj = getObjsByName('remember_user')[0];
-    
-    var label_auto_logon_obj = getObjsByName('label_auto_logon');
-    
-    if ((typeof auto_logon_obj == 'object') && (typeof remember_password_obj == 'object')) {
-        
-        for (var i = 0; i < label_auto_logon_obj.length; i++) {
-            label_auto_logon_obj[i].className = (remember_password_obj.checked == false) ? 'bhinputcheckboxdisabled' : '';
+            $('label[name="label_auto_logon"]').removeClass('bhinputcheckboxdisabled');
+            $('#auto_logon').attr('checked', $('#auto_logon').attr('defaultChecked'));
+            $('#auto_logon').attr('disabled', false);
+
+        } else {
+
+            $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
+            $('#auto_logon').attr('checked', false);
+            $('#auto_logon').attr('disabled', true);
         }
-        
-        auto_logon_obj.checked = (remember_password_obj.checked) ? auto_logon_checked : false;
-        auto_logon_obj.disabled = (remember_password_obj.checked == false);
-        
-    }
-}    
-
-function changeAutoLogon()
-{
-    var auto_logon_obj = getObjsByName('auto_logon')[0];
-    
-    if (typeof auto_logon_obj == 'object') {   
-        auto_logon_checked = auto_logon_obj.checked;
-    }
-}
-
-var has_clicked = false;
-var auto_logon_checked = false;
+    });
+});

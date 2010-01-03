@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.108 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: email.php,v 1.109 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -148,17 +148,6 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     exit;
 }
 
-if (isset($_POST['close'])) {
-
-    html_draw_top('pm_popup_disabled');
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
 $uid = bh_session_get_value('UID');
 
 $to_user = user_get($to_uid);
@@ -273,7 +262,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("send", $lang['send']), "&nbsp;", form_submit("close", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("send", $lang['send']), "&nbsp;", form_button("close_popup", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -685,8 +685,8 @@ button::-moz-focus-inner {
 .spoiler {
     font-family: verdana, arial, helvetica, sans-serif;
     border: 1px solid #CCCCCC;
-    color: #EEEEEE;
     background-color: #EEEEEE;
+    color: #EEEEEE;
     margin-top: 0px;
     margin-bottom: 10px;
     margin-left: 40px;
@@ -695,20 +695,23 @@ button::-moz-focus-inner {
 }
 
 .spoiler * {
-    color: #EEEEEE;
-    text-decoration: none;
+    margin-left: -9999px;
 }
 
 .spoiler_reveal {
     font-family: verdana, arial, helvetica, sans-serif;
     border: 1px solid #CCCCCC;
-    color: #000000;
     background-color: #EEEEEE;
+    color: #000000;
     margin-top: 0px;
     margin-bottom: 10px;
     margin-left: 40px;
     margin-right: 10px;
     padding: 3px;
+}
+
+.spoiler_reveal * {
+    margin-left: 0px;
 }
 
 .spoiler_light {
@@ -788,15 +791,7 @@ button::-moz-focus-inner {
     background-color: #FFFFFF;
 }
 
-.emoticon_preview img {
-    cursor: pointer;
-}
-
-.emoticon_preview_popup {
-    padding: 2px;
-}
-
-.emoticon_preview_popup img {
+.emoticon_preview_img {
     cursor: pointer;
 }
 
@@ -855,6 +850,10 @@ button::-moz-focus-inner {
     height: 140px;
     overflow: auto;
     padding: 2px;
+}
+
+.install_help_icon {
+    cursor: pointer;
 }
 
 .admin_startpage_textarea {
@@ -1189,6 +1188,7 @@ button::-moz-focus-inner {
 .profile_logon {
     font-size: 10pt;
     color: #000000;
+    cursor: pointer;
 }
 
 .profile_logon a {
@@ -1253,18 +1253,10 @@ button::-moz-focus-inner {
     cursor: pointer;
 }
 
-.profile_options_container_closed {
+.profile_options_container {
     position: absolute;
     text-align: left;
     display: none;
-    overflow: scroll;
-}
-
-.profile_options_container_opened {
-    position: absolute;
-    text-align: left;
-    display: block;
-    overflow: scroll;
 }
 
 .profile_options_menu {
@@ -1324,18 +1316,14 @@ button::-moz-focus-inner {
     cursor: pointer;
 }
 
-.post_options_container_closed {
+.post_options_container {
     position: absolute;
     text-align: left;
     display: none;
-    overflow: scroll;
 }
 
-.post_options_container_opened {
-    position: absolute;
-    text-align: left;
-    display: block;
-    overflow: scroll;
+.post_options_container * {
+    margin-left: -9999px;
 }
 
 .post_options_menu {
@@ -1439,6 +1427,14 @@ button::-moz-focus-inner {
 
 .warning_msg_text {
     padding-left: 0px;
+}
+
+.upload_fields {
+    display: none;
+}
+
+.add_upload_field {
+    cursor: pointer;
 }
 
 .google_adsense_register_note {

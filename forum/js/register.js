@@ -19,52 +19,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.js,v 1.2 2009-10-23 11:33:21 decoyduck Exp $ */
+/* $Id: register.js,v 1.3 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var captcha_data = new xml_http_request();
+$(document).ready(function() {
 
-function captcha_reload()
-{
-    captcha_data.set_handler(captcha_reload_handler);
-    captcha_data.get_url('register.php?webtag=' + webtag + '&reload_captcha=true');
-}
+    $('#text_captcha_reload').bind('click', function() {
 
-function captcha_reload_abort()
-{
-    captcha_data.abort();
-    captcha_data.close();
-    delete captcha_data;
-}
+        $.getJSON('register.php', { 'webtag' : webtag, 'reload_captcha' : 'true' }, function(data) {
 
-function captcha_reload_handler()
-{
-    var response_xml = captcha_data.get_response_xml();
-
-    var captcha_img_obj = getObjById('captcha_img');
-    var private_key_obj = getObjById('private_key');
-    var public_key_obj  = getObjById('public_key');
-
-    if (typeof(captcha_img_obj) == 'object') {
-
-        if (typeof(private_key_obj) == 'object') {
-
-            if (typeof(public_key_obj) == 'object') {
-
-                var new_captcha_img = response_xml.getElementsByTagName('image')[0];
-                var new_key_length  = response_xml.getElementsByTagName('chars')[0];
-                var new_public_key  = response_xml.getElementsByTagName('key')[0];
-
-                if (typeof(new_captcha_img) == 'object' && typeof(new_key_length) == 'object' && typeof(new_public_key) == 'object') {
-
-                    private_key_obj.value = '';
-                    private_key_obj.maxLength = new_key_length.childNodes[0].nodeValue;
-                    public_key_obj.value = new_public_key.childNodes[0].nodeValue;
-
-                    captcha_img_obj.src = new_captcha_img.childNodes[0].nodeValue;
-                }
-            }
-        }
-    }
-
-    return true;
-}
+            $('#captcha_img').attr('src', data.image);
+            $('#public_key').val(data.key).attr('maxLength', data.chars);
+            $('#private_key').val('');
+        });
+    });
+});

@@ -19,10 +19,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: modslist.js,v 1.6 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: user_profile.js,v 1.1 2010-01-03 15:20:44 decoyduck Exp $ */
 
-function openModsList(fid, webtag)
-{
-    window.open('mods_list.php?webtag=' + webtag + '&fid=' + fid, fid,'width=580, height=450, toolbars=no, resizable=yes');
-    return false;
-}
+$(document).ready(function() {
+
+   $('body').bind('click', function(e) {
+       if ($(e.target).closest('div#profile_options_container').length < 1) {
+           $('div#profile_options_container').hide();
+       };
+   });
+
+   $('h2#profile_options').bind('click', function() {
+
+       $('div#profile_options_container').show();
+       return false;
+   });
+
+   $('.opener_top').bind('click', function() {
+
+       if (window.opener) {
+
+           window.opener.top.document.location.href = $(this).attr('href');
+           window.close();
+           return false;
+       }
+   });
+});

@@ -19,66 +19,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.js,v 1.27 2008-09-06 16:05:58 decoyduck Exp $ */
+/* $Id: search.js,v 1.28 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var search_stop_words = false;
-var search_logon = false;
+$(document).ready(function() {
 
-function searchFormSubmit()
-{
-    var search_form = getObjById('search_form');
+    var search_logon = false;
 
-    var search_submit = getObjsByName('search_submit')[0];
-    var search_reset = getObjsByName('search_reset')[0];
-
-    if ((typeof search_form == 'object') && (typeof search_submit == 'object')) {
-
-        disableButton(search_submit);
-	disableButton(search_reset);
-
-        search_form.submit();
-    }
-}
-
-function displayMysqlStopwords(webtag, keywords)
-{
-    if (typeof search_thread == 'object' && !search_thread.closed) {
-        search_stop_words.focus();
-    }else {
-        search_stop_words = window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, resizable=yes, scrolling=yes');
+    var return_result = function(obj_name, value) {
+        $(obj_name).val(value);
     }
 
-    return false;
-}
+    $('a.logon_search').bind('click', function() {
 
-function openLogonSearch(webtag, obj_name)
-{
-    if (typeof search_thread == 'object' && !search_thread.closed) {
+        var $search_field = $('input.search_logon');
 
-        search_logon.focus();
+        var window_options = beehive.window_options;
 
-    }else {
+        var search_query = { 'webtag'    : webtag,
+                             'type'      : '1',
+                             'selection' : $search_field.val(),
+                             'obj_name'  : $search_field.attr('name') }
 
-        var form_obj = getObjsByName(obj_name)[0];
-        
-        if (typeof form_obj == 'object') {
-
-            search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&selection=' + form_obj.value + '&obj_name='+ obj_name, 'search_logon', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
+        if ($(this).hasClass('allow_multi')) {
+            search_query['allow_multi'] = 'Y';
         }
-    }
 
-    return false;
-}
+        search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).attr('id'), window_options.join(','));
 
-function returnSearchResult(obj_name, content)
-{
-    var form_obj = getObjsByName(obj_name)[0];
+        search_logon.return_result = return_result;
+    });
 
-    if (typeof form_obj == 'object') {
+    $('#search_submit').bind('click', function() {
 
-        form_obj.value = content;
-        return true;
-    }
-
-    return false;
-}
+        $(this).addClass('button_disabled').attr('disabled', 'true');
+        $('#search_reset').addClass('button_disabled').attr('disabled', 'true');
+    });
+});

@@ -19,78 +19,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.js,v 1.12 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: attachments.js,v 1.13 2010-01-03 15:19:36 decoyduck Exp $ */
 
-var attachments_window = false;
-var attachments_window_edit = false;
+$(document).ready(function() {
 
-function attachmentToggleMain()
-{
-    for (var i = 0; i < document.attachments.elements.length; i++) {
+    $('input#toggle_main').bind('click', function() {
+        $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
+    });
 
-        if (document.attachments.elements[i].type == 'checkbox') {
+    $('input#toggle_other').bind('click', function() {
+        $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
+    });
 
-            if (document.attachments.elements[i].name.substring(0, 17)  == 'delete_attachment') {
-            
-                if (document.attachments.toggle_main.checked == true) {
+    $('.upload_fields').css('display', 'block');
 
-                    document.attachments.elements[i].checked = true;
+    $('button#complete').bind('click', function() {
 
-                }else {
+        try {
 
-                    document.attachments.elements[i].checked = false;
-                }
+            if (/edit_attachments\.php|edit_prefs\.php/.test(window.opener.location)) {
+                window.opener.location.reload();
             }
+
+        } catch(e) { }
+
+        window.close();
+    });
+
+    $('.add_upload_field').bind('click', function() {
+
+        $('#userfile').clone().prependTo($('.upload_fields'));
+
+        if ($('.upload_fields #userfile').length > 8) {
+            $('.upload_fields *:not(#userfile)').css('display', 'none');
         }
-    }
-}
-
-function attachmentToggleOther()
-{
-    for (var i = 0; i < document.attachments.elements.length; i++) {
-
-        if (document.attachments.elements[i].type == 'checkbox') {
-
-            if (document.attachments.elements[i].name.substring(0, 23)  == 'delete_other_attachment') {
-            
-                if (document.attachments.toggle_other.checked == true) {
-
-                    document.attachments.elements[i].checked = true;
-
-                }else {
-
-                    document.attachments.elements[i].checked = false;
-                }
-            }
-        }
-    }
-}
-
-function closeAttachWin()
-{
-    if (typeof attachments_window == 'object' && !attachments_window.closed) {
-        attachments_window.close();
-    }
-}
-
-function launchAttachWin(aid, webtag)
-{
-    if (typeof attachments_window == 'object' && !attachments_window.closed) {
-        attachments_window.focus();
-    }else {
-        attachments_window = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments_window', 'width=660, height=500, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
-    }
-
-    return false;
-}
-
-function launchAttachEditWin(uid, aid, webtag)
-{
-    if (typeof attachments_window_edit == 'object' && !attachments_window_edit.closed) {
-        attachments_window_edit.focus();
-    }else {
-        attachments_window_edit = window.open('edit_attachments.php?webtag=' + webtag + '&uid=' + uid + '&aid=' + aid + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
-    }
-
-    return false;
-}
+    });
+});

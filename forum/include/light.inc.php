@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.243 2009-12-22 18:48:02 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.244 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -130,6 +130,7 @@ function light_html_draw_top()
         }
     }
 
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.min.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
@@ -425,23 +426,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     $visible_threads_array = array();
 
     if (($uid = bh_session_get_value('UID')) === false) return;
-
-    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "function confirmMarkAsRead()\n";
-    echo "{\n";
-    echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n";
-    echo "    var mark_read_confirm = getObjsByName('mark_read_confirm')[0];\n\n";
-    echo "    if ((typeof mark_read_type == 'object') && (typeof mark_read_confirm == 'object')) {\n\n";
-    echo "        if (window.confirm('", html_js_safe_str($lang['confirmmarkasread']), "')) {\n\n";
-    echo "            mark_read_confirm.value = 'Y';\n";
-    echo "            return true;\n";
-    echo "        }\n";
-    echo "    }\n\n";
-    echo "    return false;\n";
-    echo "}\n\n";
-    echo "//-->\n";
-    echo "</script>\n";
 
     echo "<h1>{$lang['threadlist']}</h1>\n";
     echo "<br />\n";

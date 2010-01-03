@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.95 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.96 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -519,7 +519,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     $valid = true;
 
-    html_draw_top("title={$lang['error']}", 'openprofile.js');
+    html_draw_top("title={$lang['error']}");
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['bancontrols']}</h1>\n";
 
@@ -692,7 +692,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['bancontrols']}", 'openprofile.js');
+    html_draw_top("title={$lang['admin']} » {$lang['bancontrols']}");
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['bancontrols']}</h1>\n";
 
@@ -836,7 +836,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['bancontrols']}", 'openprofile.js');
+    html_draw_top("title={$lang['admin']} » {$lang['bancontrols']}");
 
     $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
 

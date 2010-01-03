@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.270 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.271 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -597,7 +597,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             exit;
         }
 
-        html_draw_top("title=$page_title", 'admin.js');
+        html_draw_top("title=$page_title");
 
         echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
@@ -653,7 +653,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'view_history') {
 
-        html_draw_top("title=$page_title", 'admin.js');
+        html_draw_top("title=$page_title");
 
         $user_history_array = admin_get_user_history($user['UID']);
 
@@ -802,7 +802,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'user_aliases') {
 
-        html_draw_top("title=$page_title", 'admin.js');
+        html_draw_top("title=$page_title");
 
         $user_alias_view = USER_ALIAS_IPADDRESS;
 
@@ -1017,7 +1017,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             exit;
         }
 
-        html_draw_top("title=$page_title", 'admin.js');
+        html_draw_top("title=$page_title");
 
         echo "<h1>$page_title</h1>\n";
         echo "<br />\n";
@@ -1073,7 +1073,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'delete_posts') {
 
-        html_draw_top("title=$page_title", 'admin.js');
+        html_draw_top("title=$page_title");
 
         echo "<h1>$page_title</h1>\n";
         echo "<br />\n";
@@ -1126,7 +1126,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'post_count') {
 
-        html_draw_top("title=$page_title", 'admin.js');
+        html_draw_top("title=$page_title");
 
         echo "<h1>$page_title</h1>\n";
         echo "<br />\n";
@@ -1180,7 +1180,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
     }
 }
 
-html_draw_top("title=$page_title", 'admin.js', 'openprofile.js');
+html_draw_top("title=$page_title");
 
 echo "<h1>$page_title</h1>\n";
 
@@ -1229,7 +1229,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openProfile($uid, '$webtag')\">", htmlentities_array($user['LOGON']), "</a></td>\n";
+    echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" class=\"popup 650x500\">", htmlentities_array($user['LOGON']), "</a></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";

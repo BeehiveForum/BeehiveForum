@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.182 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.183 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -489,7 +489,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "openprofile.js", "post.js", "poll.js");
+html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "post.js");
 
 if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
@@ -908,7 +908,7 @@ for ($i = 0; $i < $answer_count; $i++) {
         if (isset($poll_results['OPTION_NAME'][$i])) {
 
             $parsed_text = new MessageTextParse($poll_results['OPTION_NAME'][$i], false);
-            
+
             $t_post_html = $parsed_text->getMessageHTML();
 
             $t_answer = new MessageText($allow_html ? $t_post_html : false, $parsed_text->getMessage(), false, false);

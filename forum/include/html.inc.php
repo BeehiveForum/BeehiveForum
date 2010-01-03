@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.359 2009-12-26 12:29:20 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.360 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -629,7 +629,11 @@ function html_include_javascript($script)
     $minified_script = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
 
     if (file_exists("$forum_path/js/$minified_script")) {
-        echo "<script type=\"text/javascript\" src=\"js/$minified_script\"></script>\n";
+        $script = $minified_script;
+    }
+
+    if (defined('BEEHIVE_INSTALL_NOWARN')) {
+        echo "<script type=\"text/javascript\" src=\"js/$script?", filemtime("$forum_path/js/$script"), "\"></script>\n";
     } else {
         echo "<script type=\"text/javascript\" src=\"js/$script\"></script>\n";
     }
@@ -719,9 +723,6 @@ function html_draw_top()
 {
     $lang = load_language_file();
 
-    $onload_array = array();
-    $onunload_array = array();
-
     $arg_array = func_get_args();
     $meta_refresh_delay = false;
     $meta_refresh_url = false;
@@ -768,12 +769,10 @@ function html_draw_top()
         }
 
         if (preg_match('/^onload=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (isset($func_matches[1])) $onload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
         if (preg_match('/^onunload=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (isset($func_matches[1])) $onunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -935,6 +934,8 @@ function html_draw_top()
     echo "var bh_frame_pm_folders = '", html_get_frame_name('pm_folders'), "'\n";
     echo "var bh_frame_pm_messages = '", html_get_frame_name('pm_messages'), "'\n\n";
     echo "var webtag = '", html_js_safe_str($webtag), "'\n";
+    echo "var font_size = '", bh_session_get_value('FONT_SIZE'), "'\n";
+    echo "var top_html_src = '", html_js_safe_str(html_get_top_page()), "'\n";
 
     if (strlen(trim($title)) > 0) {
         echo "top.document.title = \"", html_js_safe_str(word_filter_apply($forum_name, $uid)), " » ",  html_js_safe_str(word_filter_apply($title, $uid)), "\";\n";
@@ -943,24 +944,24 @@ function html_draw_top()
     echo "//-->\n";
     echo "</script>\n";
 
+    html_include_javascript('jquery.min.js');
     html_include_javascript('general.js');
-    html_include_javascript('xml_http.js');
 
     // Font size (not for Guests)
 
     if (!user_is_guest()) {
 
-        $fontsize = bh_session_get_value('FONT_SIZE');
-
-        if ($fontsize && $fontsize != '10') {
-            echo "<style type=\"text/css\">@import \"font_size.php?webtag=$webtag\";</style>\n";
+        if (($fontsize = bh_session_get_value('FONT_SIZE')) === false) {
+            $fontsize = 10;
         }
+
+        echo "<style type=\"text/css\" title=\"user_font\">@import \"font_size.php?webtag=$webtag\";</style>\n";
 
         if (isset($_GET['font_resize'])) {
 
             echo "<script type=\"text/javascript\">\n";
             echo "<!--\n\n";
-            echo "top.document.body.rows='60,' + ". max($fontsize* 2, 22) ."+ ',*';\n";
+            echo "top.document.body.rows='60,' + ". max($fontsize * 2, 22) ."+ ',*';\n";
             echo "top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.reload();\n";
             echo "top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n\n";
             echo "//-->\n";
@@ -994,11 +995,7 @@ function html_draw_top()
                 // Check that we're not on one of the pages.
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
-
                     html_include_javascript('pm.js');
-
-                    if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
-                    if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
                 }
             }
 
@@ -1022,8 +1019,6 @@ function html_draw_top()
                     echo "document.resizeText = '$image_resized_text';\n\n";
                     echo "//-->\n";
                     echo "</script>\n";
-
-                    $onload_array[] = "addOverflow()";
                 }
             }
 
@@ -1040,7 +1035,6 @@ function html_draw_top()
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
                     html_include_javascript('spoiler.js');
-                    if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
                 }
             }
         }
@@ -1054,9 +1048,6 @@ function html_draw_top()
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
                 html_include_javascript('stats.js');
-
-                if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
-                if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
             }
         }
     }
@@ -1098,10 +1089,6 @@ function html_draw_top()
         echo "</script>";
     }
 
-    $onload = trim(implode(";", $onload_array));
-
-    $onunload = trim(implode(";", $onunload_array));
-
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
 
         echo "<script type=\"text/javascript\">\n";
@@ -1120,10 +1107,7 @@ function html_draw_top()
 
     if ($frame_set_html === false) {
 
-        echo "<body", ($body_class) ? " class=\"$body_class\"" : "";
-        echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
-        echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
-        echo ">\n";
+        echo "<body", ($body_class) ? " class=\"$body_class\">\n" : ">\n";
 
         if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
 

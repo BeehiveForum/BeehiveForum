@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.195 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.196 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -202,7 +202,7 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = ADMIN_USER_FILTER_NONE;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusers']}", 'openprofile.js');
+html_draw_top("title={$lang['admin']} » {$lang['manageusers']}");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
 

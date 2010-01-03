@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.400 2009-12-04 18:54:18 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.401 2010-01-03 15:19:33 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -249,22 +249,13 @@ function bh_session_expired()
 
             $request_uri = get_request_uri(true, false);
 
-            if ((isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) && !user_is_guest()) {
+            if ((isset($_POST) && is_array($_POST) && sizeof($_POST) > 0)) {
 
                 html_draw_top('logon.js');
 
                 echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
 
                 $top_html = html_get_top_page();
-
-                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                echo "<!--\n\n";
-                echo "if (top.document.body.rows) {\n\n";
-                echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";
-                echo "    top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n";
-                echo "}\n\n";
-                echo "-->\n";
-                echo "</script>";
 
                 html_display_warning_msg($lang['presscontinuetoresend'], '600', 'center');
 
@@ -284,7 +275,7 @@ function bh_session_expired()
                 echo form_input_hidden_array(stripslashes_array($_POST));
 
                 echo form_submit('continue', $lang['continue']), "&nbsp;";
-                echo form_button('cancel', $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+                echo "<a href=\"$request_uri\" class=\"button\"><span>{$lang['cancel']}</span></a>\n";
                 echo "</form>\n";
                 echo "</div>\n";
 

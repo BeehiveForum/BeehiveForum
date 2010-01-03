@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.220 2009-12-22 18:48:02 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.221 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -309,7 +309,7 @@ function post_draw_to_dropdown_recent($default_uid, $new_thread)
 
     $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'recent_user_dropdown';
 
-    $html = "<select name=\"t_to_uid_recent\" class=\"$class\" onclick=\"checkToRadio(". ($new_thread ? 0 : 1).")\">";
+    $html = "<select name=\"t_to_uid_recent\" class=\"$class\">";
 
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 

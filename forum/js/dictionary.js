@@ -19,72 +19,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.31 2008-08-19 19:24:26 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.32 2010-01-03 15:19:36 decoyduck Exp $ */
 
-function initialiseDictionary(obj_id)
-{
-
-    var dictObj = getObjsByName('dictionary')[0];
-    var contObj = getObjsByName('content')[0];
-
-    if ((typeof dictObj == 'object') && (typeof contObj == 'object')) {
-  
-        if (window.opener.readContent) {
-        
-            contObj.value = window.opener.readContent(obj_id);
-            dictObj.submit();
-        }
-    }
+function read_content(obj_id) {
+    return $('#' + obj_id).val();
 }
 
-function changeWord(obj)
-{
-    var change_to = getObjsByName('change_to')[0];
-
-    if (typeof change_to == 'object') {
-    
-        change_to.value = obj.options[obj.selectedIndex].value;   
-        return true;
-    }
-
-    return false;
+function update_content(obj_id, content) {
+    $('#' + obj_id).val(content);
 }
 
-function readContent(obj_id)
-{
-    if (self.tinyMCE) {
-        return tinyMCE.activeEditor.getContent();
-    }
+$(document).ready(function() {
 
-    var form_obj = getObjById(obj_id);
+    var obj_id = $('#obj_id').val();
 
-    if (typeof form_obj == 'object') {
+    var $content = $('#content');
 
-        return form_obj.value;
-    }
-}
+    $('#dictionary_init').each(function() {
 
-function updateContent(obj_id, content)
-{
-    if (self.tinyMCE) {
-        return tinyMCE.activeEditor.setContent(content);
-    }
+        $content.val(window.opener.read_content(obj_id));
+        $(this).submit();
+    });
 
-    var form_obj = getObjById(obj_id);
+    $('span#highlighted_word').each(function() {
+        this.scrollIntoView(false);
+    });
 
-    if (typeof form_obj == 'object') {
+    $('#suggestions').bind('change', function() {
+        $('#change_to').val($(this).val());
+    });
 
-        form_obj.value = content;
-    }
-}
+    $('#close').bind('click', function() {
+        window.opener.update_content(obj_id, $content.val());
+        window.close();
+    });
 
-function showCurrentWord()
-{
-
-    var highlighted_word = getObjById('highlighted_word');
-
-    if (typeof highlighted_word == 'object') {
-
-        highlighted_word.scrollIntoView(false);
-    }
-}
+    $('#cancel').bind('click', function() {
+        window.close();
+    });
+});

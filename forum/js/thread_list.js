@@ -19,10 +19,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_options.js,v 1.1 2008-07-13 10:01:41 decoyduck Exp $ */
+/* $Id: thread_list.js,v 1.1 2010-01-03 15:20:44 decoyduck Exp $ */
 
-function openFolderOptions(fid, webtag)
-{
-    window.open('folder_options.php?webtag=' + webtag + '&fid=' + fid, fid,'width=580, height=450, toolbars=no, resizable=yes');
-    return false;
-}
+$(document).ready(function() {
+
+    $('a.threadname').bind('click', function() {
+
+        $('.thread_bullet').attr('src', beehive.images['bullet.png']);
+        $('#' + $(this).attr('rel')).attr('src', beehive.images['current_thread.png']);
+    });
+
+    $('#mark_read_submit').bind('click', function() {
+
+        if (window.confirm(beehive.lang['confirmmarkasread'])) {
+
+            $('#mark_read_confirm').val('Y');
+            return true;
+        }
+
+        return false;
+    });
+});

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.100 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.101 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -130,7 +130,7 @@ $error_msg_array = array();
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['userrelationships']}", "openprofile.js", "basetarget=_blank");
+html_draw_top("title={$lang['mycontrols']} » {$lang['userrelationships']}", "basetarget=_blank");
 
 echo "<h1>{$lang['userrelationships']}</h1>\n";
 

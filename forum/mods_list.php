@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.47 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.48 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -138,7 +138,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 $folder_title = folder_get_title($fid);
 
-html_draw_top("title={$folder_title} » {$lang['moderatorlist']}", "openprofile.js", 'pm_popup_disabled');
+html_draw_top("title={$folder_title} » {$lang['moderatorlist']}", 'pm_popup_disabled');
 
 if (isset($_POST['close'])) {
 
@@ -173,7 +173,7 @@ if (($forum_mods_array = mods_list_get_mods(0))) {
 
     foreach ($forum_mods_array as $forum_mod) {
 
-        echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$forum_mod['UID']}\" target=\"_blank\" onclick=\"return openProfile({$forum_mod['UID']}, '$webtag')\">";
+        echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$forum_mod['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         echo word_filter_add_ob_tags(htmlentities_array(format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME']))), "</a></li>\n";
     }
 
@@ -190,7 +190,7 @@ if (($folder_mods_array = mods_list_get_mods($fid))) {
 
     foreach ($folder_mods_array as $folder_mod) {
 
-        echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$folder_mod['UID']}\" target=\"_blank\" onclick=\"return openProfile({$folder_mod['UID']}, '$webtag')\">";
+        echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$folder_mod['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         echo word_filter_add_ob_tags(htmlentities_array(format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME']))), "</a></li>\n";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.107 2009-09-10 21:02:31 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.108 2010-01-03 15:19:33 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -101,7 +101,7 @@ function user_get_profile($uid)
     $user_groups_array = array();
 
     $user_prefs = user_get_prefs($uid);
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
@@ -342,7 +342,7 @@ function user_get_profile_entries($uid)
         while (($user_profile_data = db_fetch_array($result))) {
 
             if (strlen(trim($user_profile_data['ENTRY'])) > 0) {
-            
+
                 if (($user_profile_data['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_data['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
                     $profile_item_options_array = explode("\n", $user_profile_data['OPTIONS']);
@@ -419,10 +419,7 @@ function user_profile_popup_callback($logon)
 {
     $webtag = get_webtag();
 
-    $html = "<a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" ";
-    $html.= "onclick=\"return openProfileByLogon('$logon', '$webtag')\">$logon</a>";
-
-    return $html;
+    return "<a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" class=\"popup 650x500\" target=\"_blank\">$logon</a>";
 }
 
 ?>

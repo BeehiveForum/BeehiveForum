@@ -19,12 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.34 2009-06-18 20:10:55 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.35 2010-01-03 15:19:36 decoyduck Exp $ */
 
 var selected_text = '';
 var active_field  = '';
 
-var auto_check_spell_started = false;
+var auto_spell_check_started = false;
 
 function set_focus()
 {
@@ -34,13 +34,13 @@ function set_focus()
 function active_text(t, dbl)
 {
     if (t.createTextRange) {
-        
+
         var selection = document.selection;
 
         try {
 
             var range = selection.createRange();
-            t.caretPos = range.duplicate();      
+            t.caretPos = range.duplicate();
             active_field.t = '';
 
         }catch (e) {
@@ -48,7 +48,7 @@ function active_text(t, dbl)
             return;
         }
     }
-    
+
     active_field = t;
 
     if (!active_field.createTextRange && !active_field.setSelectionRange) return;
@@ -63,12 +63,12 @@ function active_text(t, dbl)
             var se = get_selection_end() - 1;
 
             if (active_field.setSelectionRange) {
-            
+
                 active_field.focus();
                 active_field.setSelectionRange(ss, se);
 
             }else if (active_field.createTextRange) {
-                
+
                 t.caretPos.moveEnd('character', -1);
                 t.caretPos.select();
             }
@@ -77,18 +77,18 @@ function active_text(t, dbl)
 }
 
 function active_page_text ()
-{ 
+{
     selected_text = (document.all) ? document.selection.createRange().text : window.getSelection();
 }
 
 function get_selection()
 {
     if (active_field.createTextRange) {
-        
+
         return document.selection.createRange().text;
 
     }else if (active_field.setSelectionRange) {
-        
+
         var selLength = active_field.textLength;
         var selStart = active_field.selectionStart;
         var selEnd = active_field.selectionEnd;
@@ -96,11 +96,11 @@ function get_selection()
         if (selEnd == 1 || selEnd == 2) {
             selEnd = selLength;
         }
-        
+
         return (active_field.value).substring(selStart, selEnd);
 
     }else {
-        
+
         return window.getSelection();
     }
 }
@@ -125,49 +125,49 @@ function get_selection_start ()
         var gap = Math.ceil(t.length/2);
 
         if (u.length == 0) {
-            
+
             no_sel = true;
             gap = 1;
         }
-        
+
         while (true) {
-        
+
             if (++i > t.length * 5) {
                 break; // something's gone wrong
             }
-            
+
             last_s = s.duplicate();
             tmp_s  = s.duplicate();
 
             tmp_s.moveStart("character", -gap);
 
             if (t.indexOf(tmp_s.text) > -1) {
-                
+
                 s.moveStart("character", -gap);
 
                 // yet another IE bug - if there is no selection, just a placed cursor,
-                // then moveStart will ignore any combinations of \r\n until it hits a 
+                // then moveStart will ignore any combinations of \r\n until it hits a
                 // non-linebreak character. "Argh".
 
                 if (no_sel == true) {
-                
+
                     if (last_s.text == s.text) {
-                    
+
                         count++;
-                    
+
                     }else {
-                        
+
                         no_sel = 0;
                         gap = Math.ceil(t.length/2);
                     }
                 }
-            
+
             }else if (gap > 1) {
-                
+
                 gap = Math.ceil(gap/2);
-            
+
             }else {
-                
+
                 break;
             }
         }
@@ -176,7 +176,7 @@ function get_selection_start ()
 
         // Remove 'junk' characters before the textfield
         // See textarea() in htmltools.inc.php
-        
+
         var re = new RegExp("^" + String.fromCharCode(9999) + "*\r?\n?");
         var u2 = s.text.replace(re, "");
 
@@ -187,11 +187,11 @@ function get_selection_start ()
 function get_selection_end ()
 {
     if (active_field.setSelectionRange) {
-    
+
         return active_field.selectionEnd;
 
     }else if (active_field.createTextRange) {
-        
+
         var s = active_field.caretPos.duplicate();
         var u = s.text;
 
@@ -623,16 +623,16 @@ function add_tag (tag, a, v, enclose)
         range.moveEnd('character', se);
         range.moveStart('character', ss);
         range.select();
-    }    
+    }
 
     return str;
 }
 
 
 function add_text(text)
-{       
+{
     if (!active_field.createTextRange && !active_field.setSelectionRange) {
-        
+
         active_field.value += text;
         return;
     }
@@ -650,7 +650,7 @@ function add_text(text)
     var extra_left = "", extra_right = "";
 
     if (/<[^<>]*$/.test(left_bound) == true) {
-        
+
         var re = new RegExp("^[^<>]*>");
         re = re.exec(right_bound);
         ss += (re != null) ? re[0].length : 0;
@@ -659,12 +659,12 @@ function add_text(text)
     active_field.value = active_field.value.substr(0, ss) + text + active_field.value.substr(ss);
 
     if (active_field.setSelectionRange) {
-        
+
         active_field.focus();
         active_field.setSelectionRange(ss, ss + text.length);
 
     }else if (active_field.createTextRange) {
-        
+
         ss -= active_field.value.substr(0, ss+1).split(/\n/).length-1;
         var range = active_field.createTextRange();
         range.collapse(true);
@@ -726,12 +726,12 @@ function change_attribute(tag, a, v)
         }else {
 
             if (/^[\"\']/.test(split_tag[i][1]) == true) {
-                
+
                 split_tag[i][1] = split_tag[i][1].substr(1);
             }
 
             if (/[\"\']$/.test(split_tag[i][1]) == true) {
-                
+
                 split_tag[i][1] = split_tag[i][1].substr(0, split_tag[i][1].length - 1);
             }
 
@@ -753,58 +753,44 @@ function change_attribute(tag, a, v)
 function add_link ()
 {
     var url = prompt("URL:", "http://");
-    
+
     if (url != null) {
         add_tag("a", "href", url);
     }
-    
+
     return;
 }
 
-function add_image ()
+function add_image()
 {
     var url = prompt("Image URL:", "http://");
 
     if (url != null) {
         add_tag("img", "src", url, true);
     }
-    
+
     return;
 }
 
-function autoCheckSpell(webtag)
+function auto_spell_check()
 {
-    var form_obj;
-
-    if (document.getElementsByName) {
-        form_obj = document.getElementsByName('t_check_spelling')[0];
-    }else if (document.all) {
-        form_obj = document.all.t_check_spelling;
-    }else if (document.layer) {
-        form_obj = document.t_check_spelling;
-    }else {
-        return true;
-    }
-
     if (active_field.value.length == 0) return true;
 
-    if (form_obj.checked == true && !auto_check_spell_started) {
+    if ($('#t_check_spelling').is(':checked') && !auto_spell_check_started) {
 
-        auto_check_spell_started = true;
-        openSpellCheck(webtag);
+        auto_spell_check_started = true;
+        open_spell_check(active_field.id);
         return false;
     }
 }
 
-function openSpellCheck(webtag)
-{    
-    if (active_field.value.length > 0) {
-    
-        dictionarywin = window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + active_field.id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
-    }
+function open_spell_check(obj_id)
+{
+    if ($('#' + obj_id).val().length == 0) return true;
+    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + obj_id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
 }
 
-function openEmoticons(pack, webtag)
+function open_emoticons(pack, webtag)
 {
     window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, resizable=yes, scrollbars=yes');
 }
@@ -843,7 +829,7 @@ function parse_list (a, num)
                     c = 1; // uppercase
                     n = n.toLowerCase();
                 }
-                
+
                 if (n.length == 1) {
 
                     if (pl_roman(re.exec(nl[1])[1]) == pl_roman(n) + 1) {
@@ -905,7 +891,7 @@ function parse_list (a, num)
 
                 nl[i] = nl[i].replace(re, "");
                 nl[i] = "<li>" + nl[i] + "</li>\n";
-                
+
                 str += nl[i];
             }
 
@@ -967,7 +953,7 @@ function pl_roman(b)
         var nextca = a.charAt(i+1);
 
         if ((ca == 'i' || ca == 'x' || ca == 'c') && numerals[ca] < numerals[nextca]) {
-            
+
             n -= numerals[ca];
 
         }else {
@@ -985,51 +971,178 @@ function pl_alpha(b)
     return (ab.indexOf(b.toLowerCase()) + 1);
 }
 
-function _escape(a)
-{
-    a = escape(a);
-    a = a.replace(/\//g, "%2F");
-    a = a.replace(/\?/g, "%3F");
-    a = a.replace(/=/g, "%3D");
-    a = a.replace(/&/g, "%26");
-    a = a.replace(/@/g, "%40");
-    
-    return a;
-}
-
 function show_hide(layer_ref, state)
-{ 
-    if (document.all) {
-        
-        eval("document.all." + layer_ref + ".style.display = '" + state + "'"); 
-    
-    }else if (document.layers) {
-        
-        document.layers[layer_ref].display = state; 
-    
-    }else if (document.getElementById &&!document.all) { 
-        
-        var hza = document.getElementById(layer_ref); 
-        hza.style.display = state; 
-    } 
-} 
-
-function m_ov(b)
 {
-    b.className = "tools_over";
+    $(layer_ref).css('display', state);
 }
 
-function m_ou(b)
-{
-    b.className = "tools_up";
-}
+$(document).ready(function() {
 
-function m_d(b)
-{
-    b.className = "tools_down";
-}
+    $('textarea.htmltools').bind('keypress keydown keyup click change select', function() {
 
-function m_u(b)
-{
-    b.className = "tools_over";
-}
+        active_text(this);
+
+    }).bind('dblclick', function() {
+
+        active_text(this, true);
+    });
+
+    $('div.tools img').bind('mouseover', function() {
+
+        $(this).addClass('tools_over');
+
+    }).bind('mouseout', function() {
+
+        $(this).removeClass('tools_over');
+
+    }).bind('mousedown', function() {
+
+        $(this).addClass('tools_down');
+
+    }).bind('mouseup', function() {
+
+        $(this).removeClass('tools_down');
+
+    }).bind('click', function() {
+
+        var $button = $(this).parent('a');
+
+        if ($button.length != 1) return;
+
+        switch($button.attr('rel')) {
+
+            case 'bold':
+
+                add_tag('b');
+                break;
+
+            case 'italic':
+
+                add_tag('i');
+                break;
+
+            case 'underline':
+
+                add_tag('u');
+                break;
+
+            case 'strikethrough':
+
+                add_tag('s');
+                break;
+
+            case 'superscript':
+
+                add_tag('sup');
+                break;
+
+            case 'subscript':
+
+                add_tag('sub');
+                break;
+
+            case 'leftalign':
+
+                add_tag('div', 'align', 'left');
+                break;
+
+            case 'center':
+
+                add_tag('div', 'align', 'center');
+                break;
+
+            case 'rightalign':
+
+                add_tag('div', 'align', 'right');
+                break;
+
+            case 'numberedlist':
+
+                add_tag('list', true, null, true);
+                break;
+
+            case 'list':
+
+                add_tag('list', null, null, true);
+                break;
+
+            case 'indenttext':
+
+                add_tag('blockquote', null, null, true);
+                break;
+
+            case 'code':
+
+                add_tag('code', 'language', '', true);
+                break;
+
+            case 'quote':
+
+                add_tag('quote', 'source', '', true);
+                break;
+
+            case 'spoiler':
+
+                add_tag('spoiler', null, null, true);
+                break;
+
+            case 'horizontalrule':
+
+                add_tag('hr', null, null, true);
+                break;
+
+            case 'image':
+
+                add_image();
+                break;
+
+            case 'hyperlink':
+
+                add_link();
+                break;
+
+            case 'spellcheck':
+
+                open_spell_check(active_field.id);
+                break;
+
+            case 'noemoticons':
+
+                add_tag('noemots', null, null, true);
+                break;
+
+            case 'emoticons':
+
+                open_emoticons();
+                break;
+        }
+    });
+
+    $('select[name="font_face"]').bind('change', function() {
+
+        add_tag('font', 'face', $(this).val());
+        $(this).attr('selectedIndex', 0);
+    });
+
+    $('select[name="font_size"]').bind('change', function() {
+
+        add_tag('font', 'size', $(this).val());
+        $(this).attr('selectedIndex', 0);
+    });
+
+    $('select[name="font_colour"]').bind('change', function() {
+
+        add_tag('font', 'color', $(this).val());
+        $(this).attr('selectedIndex', 0);
+    });
+
+    $('div.tools button').bind('click', function() {
+
+        if (!auto_spell_check()) return false;
+        clear_focus();
+    });
+
+    $(window).unload(function() {
+        clear_focus();
+    });
+});

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.584 2009-11-25 20:41:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.585 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -803,7 +803,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if ($message['FROM_UID'] > -1) {
 
-        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</a></span>";
 
     }else {
@@ -857,7 +857,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
@@ -1047,7 +1047,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     if ($quick_reply=='Y') {
 
                         echo "<img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" />\n";
-                        echo "<a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a>\n";
+                        echo "<a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">{$lang['quickreply']}</a>\n";
 
                     }else {
 
@@ -1085,8 +1085,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "</td>\n";
             echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
-            echo "                  <a href=\"javascript:void(0)\" onclick=\"openPostOptions({$message['PID']})\" target=\"_self\">{$lang['more']}&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" id=\"post_options_{$message['PID']}\" border=\"0\" /></a>\n";
-            echo "                    <div class=\"post_options_container_closed\" id=\"post_options_container_{$message['PID']}\">\n";
+            echo "                  <a href=\"javascript:void(0)\" rel=\"{$message['PID']}\" target=\"_self\" class=\"post_options_link\">{$lang['more']}&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" id=\"post_options_{$message['PID']}\" border=\"0\" /></a>\n";
+            echo "                    <div class=\"post_options_container\" id=\"post_options_container_{$message['PID']}\">\n";
             echo "                      <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "                        <tr>\n";
             echo "                          <td align=\"left\" colspan=\"3\">\n";
@@ -1104,8 +1104,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if ($quick_reply=='N') {
 
-                echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
-                echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a></td>\n";
+                echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
+                echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">{$lang['quickreply']}</a></td>\n";
 
             }else {
 
@@ -1816,55 +1816,60 @@ function messages_get_most_recent_unread($uid, $fid = false)
     return false;
 }
 
-function messages_fontsize_form($tid, $pid)
+function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag();
 
-    $fontstrip = "{$lang['adjtextsize']}: ";
+    // Valid TID and PID.
 
-    if (($fontsize = bh_session_get_value('FONT_SIZE')) === false) {
-        $fontsize = 10;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    // Check to see if we've been passed a font size
+
+    if (!is_numeric($font_size)) {
+
+        if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
+            $font_size = 10;
+        }
     }
 
-    if (($fontsize > 5) && ($fontsize < 15)) {
+    // Start of HTML.
 
-        $fontsmaller = $fontsize - 1;
-        $fontlarger = $fontsize + 1;
+    $font_size_html = array("{$lang['adjtextsize']}:");
 
-        if ($fontsmaller < 5) $fontsmaller = 5;
-        if ($fontlarger > 15) $fontlarger = 15;
+    // Check font size is greater than 4
 
-        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">&laquo; {$lang['smaller']}</a> ";
-        $fontstrip.= $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']} &raquo;</a>\n";
-
-    }elseif ($fontsize <= 5) {
-
-        $fontlarger = $fontsize + 1;
-        $fontstrip.= "{$lang['smaller']} ". $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']} &raquo;</a>\n";
-
-    }elseif ($fontsize >= 15) {
-
-        $fontsmaller = $fontsize - 1;
-        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">&laquo; {$lang['smaller']}</a> $fontsize {$lang['larger']}\n";
-
-    }else {
-
-        $fontsmaller = $fontsize - 1;
-        $fontlarger = $fontsize + 1;
-
-        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=9\" target=\"_self\">&laquo; {$lang['smaller']}</a> ";
-        $fontstrip.= "10 <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=11\" target=\"_self\">{$lang['larger']} &raquo;</a>\n";
-
+    if ($font_size > 5) {
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size\">&laquo; {$lang['smaller']}</a>";
     }
 
-    echo "            <table class=\"posthead\" width=\"100%\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"center\">$fontstrip</td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "            <br />\n";
+    // Add the current font size.
+
+    $font_size_html[] = $font_size;
+
+    // Check the font size is lower than 16
+
+    if ($font_size < 15) {
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size\">{$lang['larger']} &raquo;</a>\n";
+    }
+
+    // Check if we should return just the inner HTML
+
+    if ($return === true) return implode(' ', $font_size_html);
+
+    // Construct rest of HTML.
+
+    $html = "<table class=\"posthead\" width=\"100%\">\n";
+    $html.= "  <tr>\n";
+    $html.= "    <td align=\"center\">". implode(' ', $font_size_html). "</td>\n";
+    $html.= "  </tr>\n";
+    $html.= "</table>\n";
+    $html.= "<br />\n";
+
+    echo $html;
 }
 
 function validate_msg($msg)

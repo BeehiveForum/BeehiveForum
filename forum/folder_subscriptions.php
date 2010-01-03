@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.19 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.20 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -275,7 +275,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if (sizeof($folder_subscriptions['folder_array']) > 0) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptionsToggleAll();\""), "</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all"), "</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['foldertitle']}</td>\n";
     echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
     echo "                </tr>\n";

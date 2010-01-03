@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.98 2009-10-24 13:41:38 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.99 2010-01-03 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,26 +70,21 @@ function TinyMCE($tinymce_auto_focus)
     $str.= "        theme_advanced_toolbar_align : \"left\",\n";
     $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\"\n";
     $str.= "    });\n\n";
-    $str.= "    var auto_check_spell_started = false;\n\n";
-    $str.= "    function clearFocus(){ return; };\n\n";
-    $str.= "    function autoCheckSpell()\n";
+    $str.= "    function clear_focus() { return; };\n\n";
+    $str.= "    function auto_spell_check()\n";
     $str.= "    {\n";
-    $str.= "        var form_obj;\n\n";
-    $str.= "        if (document.getElementsByName) {\n";
-    $str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
-    $str.= "        }else if (document.all) {\n";
-    $str.= "            form_obj = document.all.t_check_spelling;\n";
-    $str.= "        }else if (document.layer) {\n";
-    $str.= "            form_obj = document.t_check_spelling;\n";
-    $str.= "        }else {\n";
-    $str.= "            return true;\n";
-    $str.= "        }\n\n";
     $str.= "        if (tinyMCE.activeEditor.getContent().length == 0) return true;\n\n";
-    $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
-    $str.= "            auto_check_spell_started = true;\n";
-    $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.activeEditor.id, 'spellcheck','width=550, height=480, scrollbars=1');\n";
+    $str.= "        if (\$('#t_check_spelling').is(':checked') && !auto_spell_check_started) {\n";
+    $str.= "            auto_spell_check_started = true;\n";
+    $str.= "            open_spell_check(tinyMCE.activeEditor.id);\n";
     $str.= "            return false;\n";
     $str.= "        }\n";
+    $str.= "    }\n\n";
+    $str.= "    function read_content(obj_id) {\n";
+    $str.= "        return tinyMCE.activeEditor.getContent();\n";
+    $str.= "    }\n\n";
+    $str.= "    function update_content(obj_id, content) {\n";
+    $str.= "        tinyMCE.activeEditor.setContent(content);\n";
     $str.= "    }\n\n";
     $str.= "    function add_text(text)\n";
     $str.= "    {\n";
@@ -105,11 +100,9 @@ function TinyMCE($tinymce_auto_focus)
     return $str;
 }
 
-// WARNING: Remember to declare onUnload="clearFocus()" in your <body> tag
-
 /* Example of usage:
 
-html_draw_top("onunload=clearFocus()", "htmltools.js");
+html_draw_top("htmltools.js");
 
 $tools = new TextAreaHTML("myFormName");
 
@@ -192,37 +185,37 @@ class TextAreaHTML {
             $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_no_dict.png');\">\n";
         }
 
-        $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
-        $str.= $this->bh_tb_img($lang['italic'], "add_tag('i');");
-        $str.= $this->bh_tb_img($lang['underline'], "add_tag('u');");
-        $str.= $this->bh_tb_img($lang['strikethrough'], "add_tag('s');");
-        $str.= $this->bh_tb_img($lang['superscript'], "add_tag('sup');");
-        $str.= $this->bh_tb_img($lang['subscript'], "add_tag('sub');");
-        $str.= $this->bh_tb_img($lang['leftalign'], "add_tag('div', 'align', 'left');");
-        $str.= $this->bh_tb_img($lang['center'], "add_tag('div', 'align', 'center');");
-        $str.= $this->bh_tb_img($lang['rightalign'], "add_tag('div', 'align', 'right');");
-        $str.= $this->bh_tb_img($lang['numberedlist'], "add_tag('list', true, null, true);");
-        $str.= $this->bh_tb_img($lang['list'], "add_tag('list', null, null, true);");
-        $str.= $this->bh_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);");
-        $str.= $this->bh_tb_img($lang['code'], "add_tag('code', 'language', '', true);");
-        $str.= $this->bh_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);");
-        $str.= $this->bh_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);");
-        $str.= $this->bh_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);");
-        $str.= $this->bh_tb_img($lang['image'], "add_image();");
-        $str.= $this->bh_tb_img($lang['hyperlink'], "add_link();");
+        $str.= $this->bh_tb_img($lang['bold'], 'bold'); //, "add_tag('b');");
+        $str.= $this->bh_tb_img($lang['italic'], 'italic'); //, "add_tag('i');");
+        $str.= $this->bh_tb_img($lang['underline'], 'underline'); //, "add_tag('u');");
+        $str.= $this->bh_tb_img($lang['strikethrough'], 'strikethrough'); //, "add_tag('s');");
+        $str.= $this->bh_tb_img($lang['superscript'], 'superscript'); //, "add_tag('sup');");
+        $str.= $this->bh_tb_img($lang['subscript'], 'subscript'); //, "add_tag('sub');");
+        $str.= $this->bh_tb_img($lang['leftalign'], 'leftalign'); //, "add_tag('div', 'align', 'left');");
+        $str.= $this->bh_tb_img($lang['center'], 'center'); //, "add_tag('div', 'align', 'center');");
+        $str.= $this->bh_tb_img($lang['rightalign'], 'rightalign'); //, "add_tag('div', 'align', 'right');");
+        $str.= $this->bh_tb_img($lang['numberedlist'], 'numberedlist'); //, "add_tag('list', true, null, true);");
+        $str.= $this->bh_tb_img($lang['list'], 'list'); //, "add_tag('list', null, null, true);");
+        $str.= $this->bh_tb_img($lang['indenttext'], 'indenttext'); //, "add_tag('blockquote', null, null, true);");
+        $str.= $this->bh_tb_img($lang['code'], 'code'); //, "add_tag('code', 'language', '', true);");
+        $str.= $this->bh_tb_img($lang['quote'], 'quote'); //, "add_tag('quote', 'source', '', true);");
+        $str.= $this->bh_tb_img($lang['spoiler'], 'spoiler'); //, "add_tag('spoiler', null, null, true);");
+        $str.= $this->bh_tb_img($lang['horizontalrule'], 'horizontalrule'); //, "add_tag('hr', null, null, true);");
+        $str.= $this->bh_tb_img($lang['image'], 'image'); //, "add_image();");
+        $str.= $this->bh_tb_img($lang['hyperlink'], 'hyperlink'); //, "add_link();");
 
         if ($dictionary->is_installed()) {
-            $str.= $this->bh_tb_img($lang['spellcheck'], "openSpellCheck('$webtag');");
+            $str.= $this->bh_tb_img($lang['spellcheck'], 'spellcheck'); //, "openSpellCheck('$webtag');");
         }
 
-        $str.= $this->bh_tb_img($lang['noemoticons'], "add_tag('noemots', null, null, true);");
+        $str.= $this->bh_tb_img($lang['noemoticons'], 'noemoticons'); //, "add_tag('noemots', null, null, true);");
 
         if ($emoticons == true) {
-            $str.= $this->bh_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+            $str.= $this->bh_tb_img($lang['emoticons'], 'emoticons');
         }
 
         $str.= "    <br />\n";
-        $str.= "    <select class=\"bhselect\" onchange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
+        $str.= "    <select class=\"bhselect\" name=\"font_face\">\n";
         $str.= "        <option value=\"\" selected=\"selected\">{$lang['fontface']}</option>\n";
         $str.= "        <option value=\"Arial\">Arial</option>\n";
         $str.= "        <option value=\"Times New Roman\">Times New Roman</option>\n";
@@ -232,7 +225,7 @@ class TextAreaHTML {
         $str.= "        <option value=\"Trebuchet MS\">Trebuchet MS</option>\n";
         $str.= "        <option value=\"Microsoft Sans Serif\">Microsoft Sans Serif</option>\n";
         $str.= "    </select>\n";
-        $str.= "    <select class=\"bhselect\" onchange=\"add_tag('font', 'size', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_size\">\n";
+        $str.= "    <select class=\"bhselect\" name=\"font_size\">\n";
         $str.= "        <option value=\"\" selected=\"selected\">{$lang['size']}</option>\n";
         $str.= "        <option value=\"1\">1</option>\n";
         $str.= "        <option value=\"2\">2</option>\n";
@@ -242,7 +235,7 @@ class TextAreaHTML {
         $str.= "        <option value=\"6\">6</option>\n";
         $str.= "        <option value=\"7\">7</option>\n";
         $str.= "    </select>\n";
-        $str.= "    <select class=\"bhselect\" onchange=\"add_tag('font', 'color', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_colour\">\n";
+        $str.= "    <select class=\"bhselect\" name=\"font_colour\">\n";
         $str.= "        <option value=\"\" selected=\"selected\">{$lang['colour']}</option>\n";
         $str.= "        <option value=\"#FF0000\" style=\"color: #FF0000;\">{$lang['red']}</option>\n";
         $str.= "        <option value=\"#FFA500\" style=\"color: #FFA500;\">{$lang['orange']}</option>\n";
@@ -279,12 +272,12 @@ class TextAreaHTML {
         $this->tbs = $this->tbs + 1;
 
         $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_reduced.png');\">\n";
-        $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
-        $str.= $this->bh_tb_img($lang['italic'], "add_tag('i');");
-        $str.= $this->bh_tb_img($lang['underline'], "add_tag('u');");
+        $str.= $this->bh_tb_img($lang['bold'], 'bold'); //, "add_tag('b');");
+        $str.= $this->bh_tb_img($lang['italic'], 'italic'); //, "add_tag('i');");
+        $str.= $this->bh_tb_img($lang['underline'], 'underline'); //, "add_tag('u');");
 
         if ($emoticons == true) {
-            $str.= $this->bh_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+            $str.= $this->bh_tb_img($lang['emoticons'], 'emoticons');
         }
 
         $str.= "</div>\n";
@@ -306,6 +299,8 @@ class TextAreaHTML {
 
         $str = '';
 
+        $class.= ' htmltools';
+
         if ($this->tinymce) {
 
             if ($this->tbs < $this->allowed_toolbars) {
@@ -319,13 +314,12 @@ class TextAreaHTML {
                 $rows += 5;
 
                 if ($allow_tiny_mce === true) {
+
                     $custom_html.= ' mce_editable="true"';
                 }
             }
 
         }else {
-
-            $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
 
             $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         }
@@ -375,25 +369,29 @@ class TextAreaHTML {
 
         if (!$this->tinymce) {
 
-            $str.= "    function clearFocus() {\n";
+            $str.= "    function clear_focus()\n";
+            $str.= "    {\n";
 
-            for ($i=0; $i<count($this->tas); $i++) {
-                $str.= "        document.{$this->form}.{$this->tas[$i]}.caretPos = \"\";\n";
+            foreach ($this->tas as $tas) {
+                $str.= "        \$('#$tas').attr('caretPos', '');\n";
             }
 
-            $str.= "    }\n";
+            $str.= "    }\n\n";
+
             $str.= "    function activate_tools()\n";
             $str.= "    {\n";
-            $str.= "        for (var i=1; i<={$this->tbs}; i++) {\n";
-            $str.= "            show_hide('bh_tb' + i, 'block');\n";
-            $str.= "        }\n\n";
 
-            if ($focus !== false) {
-                $str.= "        document.{$this->form}.". ($focus === true ? $this->tas[0] : $focus). ".focus();\n";
+            for ($i = 1; $i <= $this->tbs; $i++) {
+                $str.= "        show_hide('#bh_tb$i', 'block');\n";
             }
 
-            $str.= "        active_text(document.{$this->form}.{$this->tas[0]});\n";
-            $str.= "    }\n";
+            if ($focus !== false) {
+                $str.= "        \$('#{$this->tas[0]}').focus();\n";
+            }
+
+            $str.= "        active_text(\$('#{$this->tas[0]}').get(0));\n";
+            $str.= "    }\n\n";
+
             $str.= "    activate_tools();\n";
         }
 
@@ -498,9 +496,9 @@ class TextAreaHTML {
     // Internal function - returns HTML for toolbar image
     // ----------------------------------------------------
 
-    function bh_tb_img ($title, $on_click, $image_name = "blank.png")
+    function bh_tb_img($title, $action, $image_name = "blank.png")
     {
-        return "<img src=\"". style_image($image_name). "\" alt=\"{$title}\" onclick=\"{$on_click}\" title=\"{$title}\" class=\"tools_up\" onmouseover=\"m_ov(this);\" onmouseout=\"m_ou(this);\" onmousedown=\"m_d(this);\" onmouseup=\"m_u(this);\" />";
+        return "<a rel=\"$action\"><img src=\"". style_image($image_name). "\" alt=\"{$title}\" title=\"{$title}\" class=\"tools_up\" /></a>";
     }
 
     // ----------------------------------------------------

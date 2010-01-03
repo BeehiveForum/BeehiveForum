@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.116 2009-10-10 15:55:24 decoyduck Exp $ */
+/* $Id: install.php,v 1.117 2010-01-03 15:19:32 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -383,7 +383,7 @@ if (isset($_POST['install_method'])) {
                         echo "    </td>\n";
                         echo "  </tr>\n";
                         echo "</table>\n";
-                        
+
                     }
 
                     echo "</div>\n";
@@ -561,6 +561,7 @@ echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/jquery.min.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/install.js\"></script>\n";
 echo "</head>\n";
@@ -605,7 +606,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Basic Configuration</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(0)\" tabindex=\"15\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_basic\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -649,7 +650,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">MySQL Database Configuration</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(1)\" tabindex=\"16\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_database\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -697,7 +698,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installs only)</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(2)\" tabindex=\"17\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_admin\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -741,7 +742,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Advanced Options</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(3)\" tabindex=\"18\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_advanced\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -777,7 +778,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirmInstall(this);\" tabindex=\"15\" /></td>\n";
+echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" id=\"install_button\" value=\"Install\" class=\"button\" tabindex=\"15\" /></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";

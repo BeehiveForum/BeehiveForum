@@ -19,39 +19,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.js,v 1.13 2010-01-03 15:19:36 decoyduck Exp $ */
+/* $Id: attachments.js,v 1.14 2010-01-10 14:26:27 decoyduck Exp $ */
 
 $(document).ready(function() {
 
-    $('input#toggle_main').bind('click', function() {
-        $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
-    });
+    $('body').bind('init', function() {
 
-    $('input#toggle_other').bind('click', function() {
-        $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
-    });
+        $('input#toggle_main').bind('click', function() {
+            $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
+        });
 
-    $('.upload_fields').css('display', 'block');
+        $('input#toggle_other').bind('click', function() {
+            $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
+        });
 
-    $('button#complete').bind('click', function() {
+        $('.upload_fields').css('display', 'block');
 
-        try {
+        $('button#complete').bind('click', function() {
 
-            if (/edit_attachments\.php|edit_prefs\.php/.test(window.opener.location)) {
-                window.opener.location.reload();
+            try {
+
+                if (/edit_attachments\.php|edit_prefs\.php/.test(window.opener.location)) {
+                    window.opener.location.reload();
+                }
+
+            } catch(e) { }
+
+            window.close();
+        });
+
+        $('.add_upload_field').bind('click', function() {
+
+            $('#userfile').clone().prependTo($('.upload_fields'));
+
+            if ($('.upload_fields #userfile').length > 8) {
+                $('.upload_fields *:not(#userfile)').css('display', 'none');
             }
-
-        } catch(e) { }
-
-        window.close();
-    });
-
-    $('.add_upload_field').bind('click', function() {
-
-        $('#userfile').clone().prependTo($('.upload_fields'));
-
-        if ($('.upload_fields #userfile').length > 8) {
-            $('.upload_fields *:not(#userfile)').css('display', 'none');
-        }
+        });
     });
 });

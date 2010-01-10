@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.360 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.361 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,17 +72,6 @@ function html_guest_error()
     $available_support_pages_preg = implode("|^", array_map('preg_quote_callback', $available_support_pages));
 
     if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
-
-        if (isset($_POST['close_popup'])) {
-
-            html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-            echo "<script type=\"text/javascript\">\n";
-            echo "  window.close();\n";
-            echo "</script>\n";
-
-            html_draw_bottom();
-            exit;
-        }
 
         html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
         html_error_msg($lang['guesterror'], $final_uri, 'post', array('close_popup' => $lang['close']));
@@ -212,7 +201,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
-    echo "      <td class=\"error_msg_icon\">{$lang['thefollowingerrorswereencountered']}</td>\n";
+    echo "      <td class=\"error_msg_text\">{$lang['thefollowingerrorswereencountered']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -240,7 +229,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
-    echo "      <td valign=\"top\" class=\"success_msg_icon\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" class=\"success_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
@@ -261,7 +250,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
-    echo "      <td valign=\"top\" class=\"error_msg_icon\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" class=\"error_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
@@ -662,10 +651,10 @@ function html_include_css($script, $media = 'screen')
 //      allows you to load .js support files from Beehive's /js/
 //      folder. For example:
 //
-//      html_draw_top("openprofile.js")
+//      html_draw_top("user_profile.js")
 //
 //      This will include openprofile.js as a
-//      <script src="openprofile.js"> tag within the HTML output.
+//      <script src="user_profile.js"> tag within the HTML output.
 //
 //      To retain the old functionality as well as offer all this
 //      html_draw_top also supports 6 named arguments, which
@@ -916,35 +905,8 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    // Dynamic Frame names, forum webtag and language string initialisation happens here.
-
-    echo "<script type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "var bh_frame_index = '", html_get_frame_name('index'), "'\n";
-    echo "var bh_frame_admin = '", html_get_frame_name('admin'), "'\n";
-    echo "var bh_frame_start = '", html_get_frame_name('start'), "'\n";
-    echo "var bh_frame_discussion = '", html_get_frame_name('discussion'), "'\n";
-    echo "var bh_frame_user = '", html_get_frame_name('user'), "'\n";
-    echo "var bh_frame_pm = '", html_get_frame_name('pm'), "'\n";
-    echo "var bh_frame_main = '", html_get_frame_name('main'), "'\n";
-    echo "var bh_frame_ftop = '", html_get_frame_name('ftop'), "'\n";
-    echo "var bh_frame_fnav = '", html_get_frame_name('fnav'), "'\n";
-    echo "var bh_frame_left = '", html_get_frame_name('left'), "'\n";
-    echo "var bh_frame_right = '", html_get_frame_name('right'), "'\n";
-    echo "var bh_frame_pm_folders = '", html_get_frame_name('pm_folders'), "'\n";
-    echo "var bh_frame_pm_messages = '", html_get_frame_name('pm_messages'), "'\n\n";
-    echo "var webtag = '", html_js_safe_str($webtag), "'\n";
-    echo "var font_size = '", bh_session_get_value('FONT_SIZE'), "'\n";
-    echo "var top_html_src = '", html_js_safe_str(html_get_top_page()), "'\n";
-
-    if (strlen(trim($title)) > 0) {
-        echo "top.document.title = \"", html_js_safe_str(word_filter_apply($forum_name, $uid)), " » ",  html_js_safe_str(word_filter_apply($title, $uid)), "\";\n";
-    }
-
-    echo "//-->\n";
-    echo "</script>\n";
-
     html_include_javascript('jquery.min.js');
+    html_include_javascript('jquery.sprintf.js');
     html_include_javascript('general.js');
 
     // Font size (not for Guests)
@@ -956,17 +918,6 @@ function html_draw_top()
         }
 
         echo "<style type=\"text/css\" title=\"user_font\">@import \"font_size.php?webtag=$webtag\";</style>\n";
-
-        if (isset($_GET['font_resize'])) {
-
-            echo "<script type=\"text/javascript\">\n";
-            echo "<!--\n\n";
-            echo "top.document.body.rows='60,' + ". max($fontsize * 2, 22) ."+ ',*';\n";
-            echo "top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.reload();\n";
-            echo "top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n\n";
-            echo "//-->\n";
-            echo "</script>\n";
-        }
     }
 
     if ($frame_set_html === false) {
@@ -1011,14 +962,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                    $image_resized_text = html_js_safe_str($lang['imageresized']);
-
-                    echo "<script type=\"text/javascript\">\n";
-                    echo "<!--\n\n";
-                    echo "document.maxWidth = $resize_width;\n";
-                    echo "document.resizeText = '$image_resized_text';\n\n";
-                    echo "//-->\n";
-                    echo "</script>\n";
+                    html_include_javascript('overflow.js');
                 }
             }
 
@@ -1073,20 +1017,6 @@ function html_draw_top()
 
             html_include_javascript($func_args);
         }
-    }
-
-    if (isset($_GET['reload_frames'])) {
-
-        $top_html = html_get_top_page();
-
-        echo "<script type=\"text/javascript\">\n";
-        echo "<!--\n\n";
-        echo "if (top.document.body.rows) {\n\n";
-        echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";
-        echo "    top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n";
-        echo "}\n\n";
-        echo "-->\n";
-        echo "</script>";
     }
 
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {

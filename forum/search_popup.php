@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.53 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.54 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -124,16 +124,6 @@ if (user_is_guest()) {
     exit;
 }
 
-if (isset($_POST['close'])) {
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
 // Check if we're allowed multiple-select.
 
 if (isset($_POST['allow_multi']) && $_POST['allow_multi'] == 'Y') {
@@ -161,7 +151,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
     }else {
 
         html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-        html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close' => $lang['close']));
+        html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close_popup' => $lang['close']));
         html_draw_bottom();
         exit;
     }
@@ -181,7 +171,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
     }else {
 
         html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-        html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close' => $lang['close']));
+        html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close_popup' => $lang['close']));
         html_draw_bottom();
         exit;
     }
@@ -189,7 +179,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 }else {
 
     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['mustspecifytypeofsearch'], 'search_popup.php', 'post', array('close' => $lang['close']));
+    html_error_msg($lang['mustspecifytypeofsearch'], 'search_popup.php', 'post', array('close_popup' => $lang['close']));
     html_draw_bottom();
     exit;
 }
@@ -207,7 +197,7 @@ if (isset($_POST['obj_name']) && strlen(trim(stripslashes_array($_POST['obj_name
 }else {
 
     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['noformobj'], 'search_popup.php', 'post', array('close' => $lang['close']));
+    html_error_msg($lang['noformobj'], 'search_popup.php', 'post', array('close_popup' => $lang['close']));
     html_draw_bottom();
     exit;
 }
@@ -291,33 +281,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-// Select button has been pressed
-
-if (isset($_POST['select'])) {
-
-    if (isset($_POST['selection']) && is_array($_POST['selection'])) {
-        $selection = implode(';', array_splice(array_unique($_POST['selection']), 0, 10));
-    }elseif (isset($_POST['selection']) && strlen(trim(stripslashes_array($_POST['selection']))) > 0) {
-        $selection = trim(stripslashes_array($_POST['selection']));
-    }else {
-        $selection = "";
-    }
-
-    html_draw_top('pm_popup_disabled');
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "  if (window.opener.returnSearchResult) {\n";
-    echo "    window.opener.returnSearchResult('$obj_name', '", html_js_safe_str(trim($selection)), "');\n";
-    echo "  }\n";
-    echo "  window.close();\n";
-    echo "//-->\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
 // Empty array for storing the results of our search
 
 $search_results_array = array();
@@ -341,14 +304,6 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
 }
 
 html_draw_top("title={$lang['search']}", 'pm_popup_disabled');
-
-echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "  if (window.opener.returnSearchResult) {\n";
-echo "    window.opener.returnSearchResult('$obj_name', '", html_js_safe_str(trim($selection)), "');\n";
-echo "  }\n";
-echo "//-->\n";
-echo "</script>\n";
 
 echo "<h1>{$lang['search']}</h1>\n";
 
@@ -559,7 +514,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit('select', $lang['select']), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+echo "      <td align=\"center\">", form_button('select', $lang['select']), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('close_popup', $lang['close']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

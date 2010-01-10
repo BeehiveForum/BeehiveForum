@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.103 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.104 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,6 +46,8 @@ function get_forum_list($offset)
     if (!$db_get_forum_list = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
+
+    $offset = abs($offset);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -130,6 +132,8 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
     if (!is_numeric($view_type)) return false;
     if (!is_numeric($offset)) return false;
+
+    $offset = abs($offset);
 
     $sort_by_array  = array('FORUM_NAME', 'FORUM_DESC', 'LAST_VISIT');
     $sort_dir_array = array('ASC', 'DESC');
@@ -224,7 +228,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             // Get any unread messages
 
             if ($unread_cutoff_datetime !== false) {
-            
+
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
                 $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";

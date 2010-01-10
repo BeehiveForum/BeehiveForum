@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.194 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.195 2010-01-10 14:26:25 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -144,6 +144,10 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     if (!is_numeric($offset)) $offset = 0;
 
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
+
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
@@ -210,6 +214,10 @@ function admin_get_word_filter_list($offset)
     if (!$db_admin_get_word_filter = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     $word_filter_array = array();
 
@@ -421,6 +429,10 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
+
     if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
@@ -548,6 +560,10 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
@@ -805,6 +821,10 @@ function admin_get_forum_list($offset)
 
     $forums_array = array();
 
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
+
     $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.WEBTAG, FORUMS.DEFAULT_FORUM, ";
     $sql.= "FORUMS.ACCESS_LEVEL, FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
     $sql.= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
@@ -895,6 +915,10 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1004,6 +1028,10 @@ function admin_get_post_approval_queue($offset = 0)
 
     if (!is_numeric($offset)) $offset = 0;
 
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
@@ -1064,6 +1092,10 @@ function admin_get_visitor_log($offset)
     if (!$db_admin_get_visitor_log = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.39 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.40 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -248,16 +248,6 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     if (isset($_GET['folder_renamed'])) {
 
         html_display_success_msg($lang['successfullyrenamedfolder'], '500', 'center');
-
-        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-        echo "<!--\n\n";
-        echo "if (top.document.body.rows) {\n";
-        echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
-        echo "}else if (top.document.body.cols) {\n";
-        echo "    top.frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
-        echo "}\n\n";
-        echo "-->\n";
-        echo "</script>\n\n";
 
     }elseif (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

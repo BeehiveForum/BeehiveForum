@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.156 2009-12-08 12:04:48 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.157 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -671,10 +671,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
+echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 10, 50), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", htmlentities_array($sig->getTidyContent()), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
 }
 
 if ($allow_html == true) {

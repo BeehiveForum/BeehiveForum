@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.246 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.247 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -230,16 +230,6 @@ if (isset($_GET['show_stop_words'])) {
 
     html_draw_top("title={{$lang['mysqlstopwordlist']}", 'pm_popup_disabled');
 
-    if (isset($_GET['close'])) {
-
-        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-        echo "  window.close();\n";
-        echo "</script>\n";
-
-        html_draw_bottom();
-        exit;
-    }
-
     if (isset($_GET['keywords']) && strlen(trim(stripslashes_array($_GET['keywords']))) > 0) {
 
         $highlight_keywords_array = explode(" ", trim(stripslashes_array($_GET['keywords'])));
@@ -306,7 +296,7 @@ if (isset($_GET['show_stop_words'])) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
+    echo "      <td align=\"center\">", form_button('close_popup', $lang['close']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -616,20 +606,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "<div id=\"search_success\">\n";
     html_display_success_msg(sprintf($lang['searchsuccessfullycompleted'], $results_link), '500', 'center');
     echo "</div>\n";
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "if (top.document.body.rows) {\n";
-    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0&sort_by=$sort_by&sort_dir=$sort_dir');\n";
-    echo "}else if (top.document.body.cols) {\n";
-    echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0&sort_by=$sort_by&sort_dir=$sort_dir');\n";
-    echo "}\n\n";
-    echo "var search_success_container = getObjById('search_success');\n\n";
-    echo "if (typeof search_success_container == 'object') {\n";
-    echo "    search_success_container.innerHTML = '", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '500', 'center'), "';\n";
-    echo "}\n\n";
-    echo "-->\n";
-    echo "</script>\n\n";
 
 }elseif (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
 

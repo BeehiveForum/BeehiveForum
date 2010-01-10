@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lpm_edit.php,v 1.9 2009-12-08 12:04:48 decoyduck Exp $ */
+/* $Id: lpm_edit.php,v 1.10 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -392,7 +392,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<p>{$lang['subject']}: ";
 echo light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</p>\n";
 echo "<p>{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
+echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 10, 50), "</p>\n";
 
 if ($allow_html == true) {
 

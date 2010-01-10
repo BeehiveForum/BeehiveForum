@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.108 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.109 2010-01-10 14:26:25 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -149,6 +149,8 @@ function profile_sections_get_by_page($offset)
 
     if (!is_numeric($offset)) return false;
 
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $profile_sections_array = array();
@@ -170,7 +172,7 @@ function profile_sections_get_by_page($offset)
 
     if (!$result_count = db_query($sql, $db_profile_sections_get_by_page)) return false;
 
-    list($profile_sections_count) = db_fetch_array($result_count, DB_RESULT_NUM);    
+    list($profile_sections_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 
@@ -227,6 +229,8 @@ function profile_items_get_by_page($psid, $offset)
     if (!is_numeric($psid)) return false;
     if (!is_numeric($offset)) return false;
 
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $profile_items_array = array();
@@ -236,14 +240,14 @@ function profile_items_get_by_page($psid, $offset)
     $sql.= "ORDER BY POSITION, PIID LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_profile_items_get_by_page)) return false;
-    
+
     // Fetch the number of total results
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_profile_items_get_by_page)) return false;
 
-    list($profile_items_count) = db_fetch_array($result_count, DB_RESULT_NUM);    
+    list($profile_items_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

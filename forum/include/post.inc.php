@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.221 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.222 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -641,13 +641,13 @@ class MessageText {
         return $this->links;
     }
 
-    function setLinks ($bool)
+    function setLinks($bool)
     {
         $this->links = ($bool == true) ? true : false;
         $this->setContent($this->getOriginalContent());
     }
 
-    function setContent ($text)
+    function setContent($text)
     {
         $this->original_text = $text;
 
@@ -684,28 +684,28 @@ class MessageText {
         $this->text = $text;
     }
 
-    function getContent ()
+    function getContent()
     {
         return $this->text;
     }
 
-    function getTidyContent ()
+    function getTidyContent()
     {
         if ($this->html > POST_HTML_DISABLED) {
 
-            if ($this->tiny_mce) return htmlentities_array(tidy_html($this->text, false, $this->links, true));
-            return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
+            if ($this->tiny_mce) return tidy_html($this->text, false, $this->links, true);
+            return tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links);
         }
 
         return strip_tags($this->text);
     }
 
-    function getOriginalContent ()
+    function getOriginalContent()
     {
         return $this->original_text;
     }
 
-    function isDiff ()
+    function isDiff()
     {
         return $this->diff;
     }

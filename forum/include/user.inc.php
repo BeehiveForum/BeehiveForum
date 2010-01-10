@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.389 2009-12-28 11:10:20 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.390 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -961,6 +961,8 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     if (!is_numeric($offset)) return false;
     if (!is_numeric($exclude_uid)) return false;
 
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $lang = load_language_file();
@@ -1112,6 +1114,8 @@ function user_get_relationships($uid, $offset = 0)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($offset)) return false;
 
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $lang = load_language_file();
@@ -1214,6 +1218,8 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     if (!is_numeric($offset)) return false;
     if (!is_numeric($exclude_uid)) return false;
 
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $lang = load_language_file();
@@ -1279,6 +1285,8 @@ function user_get_word_filter_list($offset)
     if (!$db_user_get_word_filter_list = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
+
+    $offset = abs($offset);
 
     $word_filter_array = array();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.51 2009-10-10 16:31:23 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.52 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -209,6 +209,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if (!is_numeric($offset)) return false;
 
+    $offset = abs($offset);
+
     if (!is_array($profile_items_array)) return false;
 
     // Fetch the table prefix.
@@ -262,13 +264,13 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                                              'LOCAL_TIME'      => '(LOCAL_TIME IS NOT NULL)');
 
     // Year, Month and Day for Age calculation
-    
+
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
-    
+
     // Current Date for User's local time
-    
+
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
-    
+
     // Main Query
 
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -615,12 +617,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             }
 
             $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
-            
+
             if (isset($user_data['LOCAL_TIME']) && is_numeric($user_data['LOCAL_TIME'])) {
                 $user_data['LOCAL_TIME'] = format_time($user_data['LOCAL_TIME']);
             }else {
                 $user_data['LOCAL_TIME'] = $lang['unknown'];
-            }            
+            }
 
             if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
                 $user_data['POST_COUNT'] = 0;
@@ -657,7 +659,7 @@ function visitor_log_clean_up()
     $forum_fid = $table_data['FID'];
 
     // Keep visitor log for 7 days.
-    
+
     $visitor_cutoff_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - (DAY_IN_SECONDS * 7));
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";

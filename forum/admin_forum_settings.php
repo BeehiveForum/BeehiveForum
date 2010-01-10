@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.164 2009-10-18 17:51:06 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.165 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -676,13 +676,10 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
 }
 
 $closed_message = new TextAreaHTML("prefsform");
-echo $closed_message->preload();
 
 $restricted_message = new TextAreaHTML("prefsform");
-echo $restricted_message->preload();
 
 $password_protected_message = new TextAreaHTML("prefsform");
-echo $password_protected_message->preload();
 
 $tool_type = POST_TOOLBAR_DISABLED;
 
@@ -725,26 +722,26 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 
 }else {
 
-    $closed_message->setTinyMCE(false);
+    $closed_message->set_tinymce(false);
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", $forum_settings_closed_message->getTidyContent(), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", htmlentities_array($forum_settings_closed_message->getTidyContent()), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumrestrictedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", $forum_settings_restricted_message->getTidyContent(), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", htmlentities_array($forum_settings_restricted_message->getTidyContent()), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumpasswordprotectedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", $forum_settings_password_protected_message->getTidyContent(), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", htmlentities_array($forum_settings_password_protected_message->getTidyContent()), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $closed_message->js(false), "</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

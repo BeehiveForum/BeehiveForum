@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.384 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: post.php,v 1.385 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -888,8 +888,6 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 $tools = new TextAreaHTML("f_post");
 
-echo $tools->preload();
-
 if ($valid && isset($_POST['preview'])) {
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
@@ -1102,16 +1100,16 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar(false, form_submit("post", $lang['post']));
 }else {
-    $tools->setTinyMCE(false);
+    $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "tabindex=\"1\"", "post_content"), "\n";
+echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, "tabindex=\"1\"", "post_content"), "\n";
 
 if ($post->isDiff()) {
 
-    echo $tools->compare_original("t_content", $post->getOriginalContent());
+    echo $tools->compare_original("t_content", $post);
 
-    if (($tools->getTinyMCE())) {
+    if (($tools->get_tinymce())) {
         echo "  <br />\n";
     }else {
         echo "  <br /><br />\n";
@@ -1120,7 +1118,7 @@ if ($post->isDiff()) {
 
 if ($allow_html == true) {
 
-    if (($tools->getTinyMCE())) {
+    if (($tools->get_tinymce())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
@@ -1133,11 +1131,6 @@ if ($allow_html == true) {
         echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
         echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
         echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
-
-        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-
-            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-        }
     }
 
 }else {
@@ -1147,7 +1140,7 @@ if ($allow_html == true) {
 
 // SUBMIT BUTTONS
 
-if (($tools->getTinyMCE())) {
+if (($tools->get_tinymce())) {
     echo "  <br />\n";
 }else {
     echo "  <br /><br />\n";
@@ -1177,7 +1170,7 @@ if ($allow_sig == true) {
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", htmlentities_array($t_sig), 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
 
         if ($sig->isDiff() && !$fetched_sig) {
             echo $tools->compare_original("t_sig", $sig->getOriginalContent());
@@ -1253,8 +1246,6 @@ if (!$new_thread) {
     echo "    </tr>\n";
     echo "  </table>\n";
 }
-
-echo $tools->js();
 
 echo "</form>\n";
 

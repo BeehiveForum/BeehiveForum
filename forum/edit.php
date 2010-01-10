@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.277 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: edit.php,v 1.278 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -667,9 +667,11 @@ if (isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("title={$lang['editmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "edit.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js");
+$page_title = sprintf($lang['editmessage'], $edit_msg);
 
-echo "<h1>", sprintf($lang['editmessage'], $edit_msg), "</h1>\n";
+html_draw_top("title=$page_title", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js");
+
+echo "<h1>$page_title</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
@@ -689,7 +691,6 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 
 $tools = new TextAreaHTML("f_edit");
-echo $tools->preload();
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -784,16 +785,16 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar(false, form_submit("apply", $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 } else {
-    $tools->setTinyMCE(false);
+    $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "tabindex=\"1\"", "post_content"), "\n";
+echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, "tabindex=\"1\"", "post_content"), "\n";
 
 if ($post->isDiff()) {
 
     echo $tools->compare_original("t_content", $post->getOriginalContent());
 
-    if (($tools->getTinyMCE())) {
+    if (($tools->get_tinymce())) {
         echo "<br />\n";
     } else {
         echo "<br /><br />\n";
@@ -802,7 +803,7 @@ if ($post->isDiff()) {
 
 if ($allow_html == true) {
 
-    if (($tools->getTinyMCE())) {
+    if (($tools->get_tinymce())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
@@ -815,11 +816,6 @@ if ($allow_html == true) {
         echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
         echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
         echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
-
-        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-
-            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-        }
     }
 
 }else {
@@ -827,7 +823,7 @@ if ($allow_html == true) {
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-if (($tools->getTinyMCE())) {
+if (($tools->get_tinymce())) {
     echo "<br />\n";
 } else {
     echo "<br /><br />\n";
@@ -855,7 +851,7 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
+        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", htmlentities_array($t_sig), 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
 
         if ($sig->isDiff()) {
 
@@ -870,8 +866,6 @@ if ($allow_sig == true) {
     echo "  </tr>\n";
     echo "</table>\n";
 }
-
-echo $tools->js();
 
 echo "</td></tr>\n";
 echo "</table>";

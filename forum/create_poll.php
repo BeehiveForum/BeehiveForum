@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.256 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.257 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -935,7 +935,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 }
 
 $tools = new TextAreaHTML("f_poll");
-echo $tools->preload();
 
 echo "  <table class=\"posthead\" width=\"785\">\n";
 echo "    <tr>\n";
@@ -1259,11 +1258,11 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
 
 }else {
 
-    $tools->setTinyMCE(false);
+    $tools->set_tinymce(false);
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea('t_message_text', $t_message_text, 20, 75, "tabindex=\"1\"", "post_content"), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea('t_message_text', htmlentities_array($t_message_text), 20, 75, "tabindex=\"1\"", "post_content"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
@@ -1274,7 +1273,7 @@ if ($post->isDiff()) {
 
 if ($allow_html == true) {
 
-    if (($tools->getTinyMCE())) {
+    if (($tools->get_tinymce())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
@@ -1287,11 +1286,6 @@ if ($allow_html == true) {
         echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
         echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
         echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
-
-        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-
-            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-        }
     }
 
 }else {
@@ -1320,7 +1314,7 @@ if ($allow_sig == true) {
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", htmlentities_array($t_sig), 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
 
         if ($sig->isDiff() && !$fetched_sig) {
 
@@ -1369,7 +1363,6 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "  ", $tools->js(false);
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

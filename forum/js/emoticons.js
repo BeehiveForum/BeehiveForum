@@ -19,23 +19,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.js,v 1.12 2010-01-03 15:19:36 decoyduck Exp $ */
+/* $Id: emoticons.js,v 1.13 2010-01-10 14:26:27 decoyduck Exp $ */
 
 $(document).ready(function() {
 
-    $('.emoticon_preview_popup .emoticon_preview_img').bind('click', function() {
-        if ($.isFunction(window.opener.add_text)) {
-            window.opener.add_text(' ' + $(this).attr('rel') + ' ');
-        }
-    });
+    $('body').bind('init', function() {
 
-    $('.emoticon_preview .emoticon_preview_img').bind('click', function() {
-        add_text(' ' + $(this).attr('rel') + ' ');
-    });
+        $('.emoticon_preview_popup .emoticon_preview_img').bind('click', function() {
+            if ($.isFunction(window.opener.add_text)) {
+                window.opener.add_text(' ' + $(this).attr('rel') + ' ');
+            }
+        });
 
-    $('.emoticon_preview .view_more').bind('click', function() {
+        $('.emoticon_preview .emoticon_preview_img').bind('click', function() {
+            add_text(' ' + $(this).attr('rel') + ' ');
+        });
 
-        var popup_window_options = window_options;
-        window.open($(this).attr('href'), $(this).attr('id'), popup_window_options.join(','));
+        $('.emoticon_preview .view_more').bind('click', function() {
+
+            var popup_window_options = window_options;
+            window.open($(this).attr('href'), $(this).attr('id'), popup_window_options.join(','));
+        });
     });
 });

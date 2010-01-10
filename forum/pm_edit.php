@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.147 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.148 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -508,7 +508,6 @@ echo "                        <td align=\"left\">";
 echo "                         <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
-echo $tools->preload();
 
 $t_content = $post->getTidyContent();
 
@@ -524,10 +523,10 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar(false, form_submit('apply', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 
 } else {
-    $tools->setTinyMCE(false);
+    $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "tabindex=\"1\"", "post_content"), "\n";
+echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, "tabindex=\"1\"", "post_content"), "\n";
 
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -546,7 +545,7 @@ echo "                        <td align=\"left\">\n";
 
 if ($allow_html == true) {
 
-    if (($tools->getTinyMCE())) {
+    if (($tools->get_tinymce())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
@@ -559,12 +558,6 @@ if ($allow_html == true) {
         echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
         echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
         echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
-
-        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-
-            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-        }
-
         echo "              <br />";
     }
 
@@ -600,9 +593,6 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
-echo $tools->js();
-
 echo "</form>\n";
 
 html_draw_bottom();

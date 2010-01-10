@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.381 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.382 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -309,23 +309,6 @@ if (user_is_guest()) {
 // Output XHTML header
 
 html_draw_top('thread_list.js');
-
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "function confirmMarkAsRead()\n";
-echo "{\n";
-echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n";
-echo "    var mark_read_confirm = getObjsByName('mark_read_confirm')[0];\n\n";
-echo "    if ((typeof mark_read_type == 'object') && (typeof mark_read_confirm == 'object')) {\n\n";
-echo "        if (window.confirm('", html_js_safe_str($lang['confirmmarkasread']), "')) {\n\n";
-echo "            mark_read_confirm.value = 'Y';\n";
-echo "            return true;\n";
-echo "        }\n";
-echo "    }\n\n";
-echo "    return false;\n";
-echo "}\n\n";
-echo "//-->\n";
-echo "</script>\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
@@ -982,17 +965,6 @@ echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
-echo "<!--\n";
-
-if (is_numeric($first_thread)) {
-    echo "current_thread = $first_thread;\n";
-}else {
-    echo "current_thread = 0;\n";
-}
-
-echo "// -->";
-echo "</script>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.57 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.58 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -128,18 +128,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 $start = floor($page - 1) * 5;
 if ($start < 0) $start = 0;
-
-if (isset($_POST['close'])) {
-
-    html_draw_top('pm_popup_disabled');
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
 
 if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
@@ -312,7 +300,7 @@ if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ". form_submit('close', $lang['close']). "\n";
+echo "  ", form_button('close_popup', $lang['close']), "\n";
 echo "</form>\n";
 echo "</div>\n";
 

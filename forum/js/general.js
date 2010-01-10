@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.47 2010-01-03 15:19:36 decoyduck Exp $ */
+/* $Id: general.js,v 1.48 2010-01-10 14:26:27 decoyduck Exp $ */
 
 var beehive = {
 
@@ -29,28 +29,24 @@ var beehive = {
                        'status=0',
                        'menubar=0',
                        'resizeable=yes',
-                       'scrollbars=yes' ]
-}
+                       'scrollbars=yes' ],
 
-$(document).ready(function() {
-
-    $.ajaxSetup({
-        cache: false
-    });
-
-    var process_frames = function(context, callback) {
+    process_frames : function(context, callback) {
 
         if (!$('frame', context).length) return;
 
         $('frame', context).each(function() {
 
-            process_frames(this.contentDocument, callback);
-            callback.call(this);
+            beehive.process_frames(this.contentDocument, callback);
+            if ($.isFunction(callback)) callback.call(this);
         });
-    }
+    },
+}
 
-    $.getJSON('json_data.php', { 'webtag' : webtag }, function(data) {
-        if (data.valid) beehive = $.extend({}, beehive, data);
+$(document).ready(function() {
+
+    $.ajaxSetup({
+        cache: true
     });
 
     $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
@@ -80,83 +76,9 @@ $(document).ready(function() {
         return false;
     });
 
-    $('button.close_popup').bind('click', function() {
+    $('button#close_popup').bind('click', function() {
         window.close();
     });
-
-    var check_overflow = function() {
-
-        $('td.postbody').each(function() {
-
-            if ($(this).find('div.overflow_fix').length > 0) {
-
-                $(this).find('div.overflow_fix').css('width', $('body').attr('clientWidth') * 0.95);
-
-            } else {
-
-                if ($(this).width() > $('body').attr('clientWidth')) {
-
-                    var $overflow_container = $('<div class="overflow_fix"></div>');
-
-                    $overflow_container.html($(this).html());
-
-                    $overflow_container.css('width', $('body').attr('clientWidth') * 0.95);
-                    $overflow_container.css('overflow', 'auto');
-
-                    $(this).html($overflow_container);
-                }
-            }
-        });
-    }
-
-    var resize_images = function() {
-
-        $('td.postbody img').each(function() {
-
-            $image = $(this);
-
-            if ($(this).parent('span.resized_image').length > 0) {
-
-                $(this).parent('span.resized_image').css('width', $('body').attr('clientWidth') * 0.95);
-
-            } else {
-
-                if ($(this).width() > $('body').attr('clientWidth')) {
-
-                    $(this).wrap('<span class="resized_image"></span>');
-
-                    $parent_span = $(this).parent('span.resized_image');
-
-                    $parent_span.prepend('<span class="resize_banner"></span>');
-
-                    $resize_banner = $parent_span.find('span.resize_banner');
-
-                    $parent_span.css( { 'display' : 'block',
-                                        'width' : $('body').attr('clientWidth') * 0.95 } );
-
-                    $image.css('width', '100%');
-
-                    $resize_banner.html('Image Resized').css('display', 'block');
-
-                    $resize_banner.bind('click', function() {
-                        console.log($image.attr('src'));
-                        window.open($image.attr('src'));
-                    });
-                }
-            }
-        });
-    }
-
-    $(window).bind('resize', function() {
-
-        resize_images();
-
-        check_overflow();
-    });
-
-    resize_images();
-
-    check_overflow();
 
     $('select.user_in_thread_dropdown').bind('change', function() {
         $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
@@ -186,7 +108,7 @@ $(document).ready(function() {
 
             top.document.body.rows = '60,' + Math.max(data.font_size * 2, 22) + ',*';
 
-            process_frames(top.document.body, function() {
+            beehive.process_frames(top.document.body, function() {
 
                 var $head = $(this.contentDocument).find('head');
 
@@ -201,5 +123,15 @@ $(document).ready(function() {
         });
 
         return false;
+    });
+
+    $.getJSON('json.php', { }, function(data) {
+
+        if (data.success) {
+
+            beehive = $.extend({}, beehive, data);
+
+            $('body').trigger('init');
+        }
     });
 });

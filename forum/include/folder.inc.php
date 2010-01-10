@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.171 2009-10-22 10:18:41 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.172 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -258,7 +258,7 @@ function folder_move_threads($from, $to)
     if (!is_numeric($to)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET FID = '$to', ";
@@ -392,6 +392,8 @@ function folder_get_all_by_page($offset)
     if (!$db_folder_get_all_by_page = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
+
+    $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return array();
 
@@ -542,7 +544,7 @@ function folder_get_available_details()
     if (db_num_rows($result) > 0) {
 
         $folders_array = array();
-        
+
         while (($folder_data = db_fetch_array($result))) {
             $folders_array[$folder_data['FID']] = $folder_data;
         }
@@ -566,7 +568,7 @@ function folder_is_valid($fid)
     $sql = "SELECT COUNT(FID) FROM `{$table_data['PREFIX']}FOLDER` WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_folder_get_available)) return false;
-    
+
     list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return ($folder_count > 0);
@@ -794,6 +796,8 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $off
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($interest_type)) $interest_type = FOLDER_NOINTEREST;
 
+    $offset = abs($offset);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $folder_subscriptions_array = array();
@@ -861,6 +865,8 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($interest_type)) $interest_type = FOLDER_NOINTEREST;
+
+    $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.136 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.137 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1315,7 +1315,7 @@ $lang['automaticallyparseurls'] = "Transformer automatiquement les adresses URLs
 $lang['automaticallycheckspelling'] = "Vérifier automatiquement l'orthographe";
 $lang['setthreadtohighinterest'] = "Établir le niveau d'intérêt du fil de discussion à élevé";
 $lang['enabledwithautolinebreaks'] = "Activé avec coupures de lignes automatiques";
-$lang['fixhtmlexplanation'] = "Ce forum utilise le filtrage d'HTML. Le code HTML que vous avez soumis a été modifié par les filtres de façon quelconque.\\n\\nPour voir votre code original, sélectionner la case d'option \\'Code sousmis\\'.\\nPour voir le code modifié, sélectionner la case d'option \\'Code corrigé\\'.";
+$lang['fixhtmlexplanation'] = "Ce forum utilise le filtrage d'HTML. Le code HTML que vous avez soumis a été modifié par les filtres de façon quelconque.\n\nPour voir votre code original, sélectionner la case d'option 'Code sousmis'.\nPour voir le code modifié, sélectionner la case d'option 'Code corrigé'.";
 $lang['messageoptions'] = "Options de message";
 $lang['notallowedembedattachmentpost'] = "Vous n'avez pas la permission d'incorporer des fichiers joints dans vos messages.";
 $lang['notallowedembedattachmentsignature'] = "Vous n'avez pas la permission d'incorporer des fichiers joints dans votre signature.";
@@ -1448,7 +1448,7 @@ $lang['youhavexpmwaiting'] = "Vous avez %d messages en attente de livraison. Pou
 $lang['youdonothaveenoughfreespace'] = "Vous n'avez pas assez d'espace libre pour envoyer ce message.";
 $lang['userhasoptedoutofpm'] = "%s a choisi de ne pas recevoir les messages personnels";
 $lang['pmfolderpruningisenabled'] = "L'élagation du dossier MP est activée!";
-$lang['pmpruneexplanation'] = "Ce forum utilise l'élagation du dossier PM. Les messages que vous avez de conservé dans vos \\ndossiers de boîte de réception et de boîte d'envoi sont assujettis à la suppression automatique. Veuillez transférer à \\nvotre dossier \\'Items sauvegardés\\' tout message que vous désirez conserver afin qu'ils ne soient pas supprimés.";
+$lang['pmpruneexplanation'] = "Ce forum utilise l'élagation du dossier PM. Les messages que vous avez de conservé dans vos \ndossiers de boîte de réception et de boîte d'envoi sont assujettis à la suppression automatique. Veuillez transférer à \nvotre dossier 'Items sauvegardés' tout message que vous désirez conserver afin qu'ils ne soient pas supprimés.";
 $lang['yourpmfoldersare'] = "Vos dossiers MP sont %s pleins";
 $lang['currentmessage'] = "Message actuel";
 $lang['unreadmessage'] = "Message non-lu";

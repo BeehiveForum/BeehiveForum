@@ -1437,6 +1437,10 @@ button::-moz-focus-inner {
     cursor: pointer;
 }
 
+.fix_html_help {
+    cursor: pointer;
+}
+
 .google_adsense_register_note {
     background-color: #FFFFFF;
     color: #000000;

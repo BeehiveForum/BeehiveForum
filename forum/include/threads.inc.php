@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.360 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.361 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -111,14 +111,18 @@ function threads_get_folders()
     return false;
 }
 
-function threads_get_all($uid, $start_from = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_all($uid, $offset = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
     // If there are any problems with the function arguments we bail out.
 
     if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($start_from)) return array(0, 0);
+    if (!is_numeric($offset)) return array(0, 0);
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
@@ -163,7 +167,7 @@ function threads_get_all($uid, $start_from = 0) // get "all" threads (i.e. most 
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT $start_from, 50";
+    $sql.= "LIMIT $offset, 50";
 
     if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
 
@@ -932,7 +936,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     return threads_process_list($result);
 }
 
-function threads_get_folder($uid, $fid, $start = 0)
+function threads_get_folder($uid, $fid, $offset = 0)
 {
     if (!$db_threads_get_folder = db_connect()) return array(0, 0);
 
@@ -940,7 +944,11 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($fid)) return array(0, 0);
-    if (!is_numeric($start)) return array(0, 0);
+    if (!is_numeric($offset)) return array(0, 0);
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
@@ -988,7 +996,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT $start, 50";
+    $sql.= "LIMIT $offset, 50";
 
     if (!$result = db_query($sql, $db_threads_get_folder)) return array(0, 0);
 
@@ -1713,6 +1721,10 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
 
     if (!$table_data = get_table_prefix()) return false;
 
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
+
     $thread_subscriptions_array = array();
 
     $uid = bh_session_get_value('UID');
@@ -1776,6 +1788,10 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    // Ensure offset is positive.
+
+    $offset = abs($offset);
 
     $thread_search = db_escape_string($thread_search);
 

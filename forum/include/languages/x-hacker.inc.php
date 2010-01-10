@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.308 2009-10-18 17:51:17 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.309 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1315,7 +1315,7 @@ $lang['automaticallyparseurls'] = "au+0M4+1C4LlY p4Rs3 URl5";
 $lang['automaticallycheckspelling'] = "aU+0M4t1calLy cH3ck \$p3LLIN9";
 $lang['setthreadtohighinterest'] = "s3t THR34d +o hI9H 1Ntere5+";
 $lang['enabledwithautolinebreaks'] = "eN4BL3D W1+H 4U+0-l1n3-8R3@K5";
-$lang['fixhtmlexplanation'] = "th1S pH0rUM Us3S H+Ml f1lt3r1Ng. y0uR \$u8mI++3D H+ML h4\$ b33n M0D1pHIeD 8Y t3H f1LtErS In \$oME W4Y.\\n\\n+0 VI3w y0Ur 0r19iN4l c0dE, 53lEc+ +h3 \\'5UbM1T+3d cOdE\\' r@D1o 8U+ton.\\n+o VI3W +EH M0DIFIED C0de, 53l3Ct +h3 \\'COrR3cTED C0D3\\' r4D1O 8Ut+On.";
+$lang['fixhtmlexplanation'] = "th1S pH0rUM Us3S H+Ml f1lt3r1Ng. y0uR \$u8mI++3D H+ML h4\$ b33n M0D1pHIeD 8Y t3H f1LtErS In \$oME W4Y.\n\n+0 VI3w y0Ur 0r19iN4l c0dE, 53lEc+ +h3 '5UbM1T+3d cOdE' r@D1o 8U+ton.\n+o VI3W +EH M0DIFIED C0de, 53l3Ct +h3 'COrR3cTED C0D3' r4D1O 8Ut+On.";
 $lang['messageoptions'] = "mE\$sA93 OPT1OnS";
 $lang['notallowedembedattachmentpost'] = "j00 @r3 n0+ 4LLOW3D To eMBEd 4++4cHMENts iN YouR P0S+S.";
 $lang['notallowedembedattachmentsignature'] = "j00 are N0+ 4lL0W3d +o 3m8ed @T+4cHM3NT\$ 1N Y0UR s19N4+UR3.";
@@ -1448,7 +1448,7 @@ $lang['youhavexpmwaiting'] = "j00 h4v3 %d MEsS4G3S 4w41T1N9 D3LIVerY. +0 REce1Ve
 $lang['youdonothaveenoughfreespace'] = "j00 d0 nOT H4V3 3NoU9H FR3E sp4c3 +0 5End TH1S m3SS@93.";
 $lang['userhasoptedoutofpm'] = "%s h@s 0Pt3d 0U+ oF r3C31V1Ng PeRsON4L m3SS@93S";
 $lang['pmfolderpruningisenabled'] = "pm Ph0lDER pruN1N9 Is eN@8L3D!";
-$lang['pmpruneexplanation'] = "tHIs FOrum UsES Pm PhoLdER prUNIN9. +3H M3s\$@gE\$ J00 H4V3 S+or3D 1N y0uR IN8Ox 4ND \$3nT 1+3Ms\\nPhoLdeR5 4R3 suBJEc+ +O 4u+oM4T1c D3L3+I0N. 4Ny M3SS@9E\$ j00 WIsH +o KEEP \$HOuld 8e m0v3D +o\\nYOuR \\'sAV3d I+3MS\\' pHoLDER \$0 TH@t tH3Y @RE No+ DElET3d.";
+$lang['pmpruneexplanation'] = "tHIs FOrum UsES Pm PhoLdER prUNIN9. +3H M3s\$@gE\$ J00 H4V3 S+or3D 1N y0uR IN8Ox 4ND \$3nT 1+3Ms\nPhoLdeR5 4R3 suBJEc+ +O 4u+oM4T1c D3L3+I0N. 4Ny M3SS@9E\$ j00 WIsH +o KEEP \$HOuld 8e m0v3D +o\nYOuR 'sAV3d I+3MS' pHoLDER \$0 TH@t tH3Y @RE No+ DElET3d.";
 $lang['yourpmfoldersare'] = "y0UR pM PH0LD3RS 4R3 %s PhulL";
 $lang['currentmessage'] = "cURRENt m3SS4GE";
 $lang['unreadmessage'] = "unRE4d M3S\$49e";

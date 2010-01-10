@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.122 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.123 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -226,7 +226,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 $tools = new TextAreaHTML("startpage");
-echo $tools->preload();
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
@@ -311,7 +310,6 @@ echo "      <td align=\"center\">", form_submit("upload", $lang['upload']), "</t
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-echo $tools->js(false);
 echo "</div>\n";
 
 html_draw_bottom();

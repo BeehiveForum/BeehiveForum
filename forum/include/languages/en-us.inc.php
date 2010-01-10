@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.91 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.92 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1139,7 +1139,7 @@ $lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been create
 // Admin New User notification -----------------------------------------
 
 $lang['newuserregistrationsubject'] = "New User Account Notification for %s";
-$lang['newuserregistrationemail'] = "Hello %s,\\n\\nA new user account has been created on %s.\\n\\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\\n\\n%s";
+$lang['newuserregistrationemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s";
 
 // User Approved notification ------------------------------------------
 
@@ -1315,7 +1315,7 @@ $lang['automaticallyparseurls'] = "Automatically parse URLs";
 $lang['automaticallycheckspelling'] = "Automatically check spelling";
 $lang['setthreadtohighinterest'] = "Set thread to high interest";
 $lang['enabledwithautolinebreaks'] = "Enabled with auto-line-breaks";
-$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";
+$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\n\nTo view your original code, select the 'Submitted code' radio button.\nTo view the modified code, select the 'Corrected code' radio button.";
 $lang['messageoptions'] = "Message options";
 $lang['notallowedembedattachmentpost'] = "You are not allowed to embed attachments in your posts.";
 $lang['notallowedembedattachmentsignature'] = "You are not allowed to embed attachments in your signature.";
@@ -1448,7 +1448,7 @@ $lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['userhasoptedoutofpm'] = "%s has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
-$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
+$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\nyour 'Saved Items' folder so that they are not deleted.";
 $lang['yourpmfoldersare'] = "Your PM folders are %s full";
 $lang['currentmessage'] = "Current Message";
 $lang['unreadmessage'] = "Unread Message";

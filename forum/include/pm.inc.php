@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.283 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.284 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -150,6 +150,8 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
 
     if (!is_numeric($offset)) $offset = false;
 
+    $offset = abs($offset);
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -260,7 +262,11 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
+    if (is_numeric($offset)) {
+
+        $offset = abs($offset);
+        $sql.= "LIMIT $offset, $limit";
+    }
 
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
 
@@ -350,7 +356,11 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
+    if (is_numeric($offset)) {
+
+        $offset = abs($offset);
+        $sql.= "LIMIT $offset, $limit";
+    }
 
     if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
@@ -442,7 +452,11 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
+    if (is_numeric($offset)) {
+
+        $offset = abs($offset);
+        $sql.= "LIMIT $offset, $limit";
+    }
 
     if (!$result = db_query($sql, $db_pm_get_saved_items)) return false;
 
@@ -532,7 +546,11 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
+    if (is_numeric($offset)) {
+
+        $offset = abs($offset);
+        $sql.= "LIMIT $offset, $limit";
+    }
 
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
 
@@ -616,7 +634,7 @@ function pm_search_execute($search_string, &$error)
 
         $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
-        $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
+        $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', false, 100));
         $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
 
         $pm_inbox_items  = PM_INBOX_ITEMS;
@@ -664,7 +682,11 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
     if (!is_numeric($offset)) return false;
 
+    $offset = abs($offset);
+
     if (!is_numeric($limit)) $limit = 10;
+
+    $limit = abs($limit);
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -1857,6 +1879,8 @@ function pm_get_new_messages($limit)
     if (!$db_pm_get_new_messages = db_connect()) return false;
 
     if (!is_numeric($limit)) return false;
+
+    $limit = abs($limit);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

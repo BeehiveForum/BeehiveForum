@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.148 2009-10-22 10:18:41 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.149 2010-01-10 14:26:25 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -251,6 +251,8 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) return false;
+
+    $offset = abs($offset);
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'GROUPS.GROUP_NAME';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
@@ -773,13 +775,13 @@ function perm_remove_user_from_group($uid, $gid)
 function perm_get_user_permissions($uid)
 {
     static $user_perm_cache = array();
-    
+
     if (!is_numeric($uid)) return 0;
-    
+
     if (array_key_exists($uid, $user_perm_cache)) {
         return $user_perm_cache[$uid];
     }
-    
+
     if (!$db_perm_get_user_permissions = db_connect()) return false;
 
     if (($table_data = get_table_prefix())) {
@@ -1120,6 +1122,8 @@ function perm_group_get_users($gid, $offset = 0)
 
     if (!is_numeric($gid)) return 0;
     if (!is_numeric($offset)) $offset = 0;
+
+    $offset = abs($offset);
 
     if (perm_is_group($gid)) {
 

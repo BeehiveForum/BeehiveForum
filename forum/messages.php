@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.309 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: messages.php,v 1.310 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -261,7 +261,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("onunload=clearFocus()", "title=$thread_title", "post.js", "htmltools.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
+html_draw_top("title=$thread_title", "post.js", "htmltools.js", "basetarget=_blank");
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -496,8 +496,6 @@ echo "  ", form_input_hidden('t_rpid', '0'), "\n";
 
 $quick_reply_tools = new TextAreaHTML('quick_reply_form');
 
-echo $quick_reply_tools->preload();
-
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -552,9 +550,6 @@ echo "      <td align=\"center\">", form_submit("post", $lang['post']), "&nbsp;"
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-
-echo $quick_reply_tools->js(false);
-
 echo "</div>\n";
 
 if ($msg_count > 0) {

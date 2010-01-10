@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.106 2009-10-18 17:51:16 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.107 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1315,7 +1315,7 @@ $lang['automaticallyparseurls'] = "Automatisch URLs analysieren";
 $lang['automaticallycheckspelling'] = "Automatisch Rechtschreibung pruefen";
 $lang['setthreadtohighinterest'] = "Setze Eintrag auf Wichtig";
 $lang['enabledwithautolinebreaks'] = "Aktiviere Autom. Zeilenumbruch";
-$lang['fixhtmlexplanation'] = "Dieses Forum benutzt HTML-Filter. Dein uebertragenes HTML wurde vom Filter teilweise angepasst.\\n\\num Deinen Orginalcode anzuzeigen, waehle \\'Uebertragener Code\\' radio button.\\nUm den angepassten Code zu zeigen, waehle \\'Korrigierter Code\\' radio button.";
+$lang['fixhtmlexplanation'] = "Dieses Forum benutzt HTML-Filter. Dein uebertragenes HTML wurde vom Filter teilweise angepasst.\n\num Deinen Orginalcode anzuzeigen, waehle 'Uebertragener Code' radio button.\nUm den angepassten Code zu zeigen, waehle 'Korrigierter Code' radio button.";
 $lang['messageoptions'] = "Nachrichtsoptionen";
 $lang['notallowedembedattachmentpost'] = "Du hast nicht das Recht eingebettete Anhaenge in Deinen Posts zu verwenden.";
 $lang['notallowedembedattachmentsignature'] = "Du hast nicht das Recht eingebettete Anhaenge in Deiner Signatur zu verwenden.";
@@ -1448,7 +1448,7 @@ $lang['youhavexpmwaiting'] = "Sie haben %d neue Nachrichten.\n\nSie haben weiter
 $lang['youdonothaveenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachricht zu senden.";
 $lang['userhasoptedoutofpm'] = "%s wurde aus dem PM-Empfang entfernt";
 $lang['pmfolderpruningisenabled'] = "PM-Ordnerkuerzung eingeschaltet!";
-$lang['pmpruneexplanation'] = "Dieses Forum nutzt PM-Ordnerkuerzung. Die Nachrichten wurden in Deinem Posteingang gespeichert und gesendete Eintraege \\nfolders werden automatisch geloescht. Jede Nachricht die Du gespeichert halten moechtest sollte verschoben werden nach \\nyour \\'Saved Items\\' Ordner damitsie nicht geloescht werden.";
+$lang['pmpruneexplanation'] = "Dieses Forum nutzt PM-Ordnerkuerzung. Die Nachrichten wurden in Deinem Posteingang gespeichert und gesendete Eintraege \nfolders werden automatisch geloescht. Jede Nachricht die Du gespeichert halten moechtest sollte verschoben werden nach \nyour 'Gespeicherte Nachrichten' Ordner damitsie nicht geloescht werden.";
 $lang['yourpmfoldersare'] = "Ihre PM-Ordner sind zu %s voll";
 $lang['currentmessage'] = "Aktuelle Nachricht";
 $lang['unreadmessage'] = "Ungelesene Nachricht";

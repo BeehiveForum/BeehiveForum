@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.133 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.134 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -196,10 +196,10 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
         $t_sig_content = "";
     }
 
-    if (isset($_POST['sig_html']) && $_POST['sig_html'] == "Y") {
-        $t_sig_html = "Y";
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
+        $t_t_post_html = "Y";
     }else {
-        $t_sig_html = "N";
+        $t_t_post_html = "N";
     }
 
     if (isset($_POST['sig_global']) && $_POST['sig_global'] == 'Y') {
@@ -208,11 +208,11 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
         $t_sig_global = 'N';
     }
 
-    if ($t_sig_html == "Y") $t_sig_content = fix_html($t_sig_content);
+    if ($t_t_post_html == "Y") $t_sig_content = fix_html($t_sig_content);
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
 
-    if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
+    if (attachment_embed_check($t_sig_content) && $t_t_post_html == "Y") {
 
         $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
         $valid = false;
@@ -225,7 +225,7 @@ if (isset($_POST['save'])) {
 
         // Update USER_SIG
 
-        if (user_update_sig($uid, $t_sig_content, $t_sig_html, ($t_sig_global == 'Y'))) {
+        if (user_update_sig($uid, $t_sig_content, $t_t_post_html, ($t_sig_global == 'Y'))) {
 
             if ($admin_edit === true) {
 
@@ -251,14 +251,14 @@ if (isset($_POST['save'])) {
 
 // Initialise the $user_sig array
 
-$user_sig = array('SIG_CONTENT' => '', 'SIG_HTML' => 'N');
+$user_sig = array('SIG_CONTENT' => '', 't_post_html' => 'N');
 
 // Get the User's Signature
 
-if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML'])) {
+if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['t_post_html'])) {
 
     $user_sig['SIG_CONTENT'] = '';
-    $user_sig['SIG_HTML'] = 'Y';
+    $user_sig['t_post_html'] = 'Y';
 }
 
 // Start Output Here
@@ -291,15 +291,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_success_msg($lang['signatureupdatedforallforums'], '600', 'left');
 }
 
-if (isset($t_sig_html)) {
-    $sig_html = ($t_sig_html == "Y");
+if (isset($t_t_post_html)) {
+    $t_post_html = ($t_t_post_html == "Y");
 } else {
-    $sig_html = ($user_sig['SIG_HTML'] == "Y");
+    $t_post_html = ($user_sig['t_post_html'] == "Y");
 }
 
 if (isset($t_sig_content)) {
 
-    if ($sig_html == "Y") {
+    if ($t_post_html == "Y") {
 
         $sig_code = htmlentities_array(tidy_html($t_sig_content, false, false));
 
@@ -310,7 +310,7 @@ if (isset($t_sig_content)) {
 
 }else {
 
-    if ($sig_html == "Y") {
+    if ($t_post_html == "Y") {
 
         $sig_code = htmlentities_array(tidy_html($user_sig['SIG_CONTENT'], false, false));
 
@@ -321,7 +321,6 @@ if (isset($t_sig_content)) {
 }
 
 $tools = new TextAreaHTML("prefs");
-echo $tools->preload();
 
 echo "<br />\n";
 
@@ -364,7 +363,7 @@ if (isset($_POST['preview'])) {
 
         $preview_message['CONTENT'] = $lang['signaturepreview'];
 
-        if ($t_sig_html == "Y") {
+        if ($t_t_post_html == "Y") {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
         }else {
             $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
@@ -427,7 +426,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 if ($tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar();
 }else {
-    $tools->setTinyMCE(false);
+    $tools->set_tinymce(false);
 }
 
 echo $tools->textarea("sig_content", $sig_code, 12, 85, "tabindex=\"7\"", "edit_signature_content");
@@ -479,16 +478,16 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 
-if ((!$tools->getTinyMCE())) {
+if ((!$tools->get_tinymce())) {
 
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], $sig_html), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_post_html", "Y", $lang['signaturecontainshtmlcode'], $t_post_html), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
 
-    echo "                    ", form_input_hidden("sig_html", "Y");
+    echo "                    ", form_input_hidden("t_post_html", "Y");
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
 }
 
@@ -501,7 +500,7 @@ if ($show_set_all) {
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), $tools->assign_checkbox("sig_html"), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
     echo "                      </tr>\n";
 }
 

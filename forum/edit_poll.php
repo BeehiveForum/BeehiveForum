@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.183 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.184 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -913,7 +913,7 @@ for ($i = 0; $i < $answer_count; $i++) {
 
             $t_answer = new MessageText($allow_html ? $t_post_html : false, $parsed_text->getMessage(), false, false);
 
-            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer->getTidyContent(), 40, 255), "</td>\n";
+            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", htmlentities_array($t_answer->getTidyContent()), 40, 255), "</td>\n";
 
         }else {
 

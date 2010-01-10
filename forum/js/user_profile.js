@@ -19,29 +19,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.js,v 1.1 2010-01-03 15:20:44 decoyduck Exp $ */
+/* $Id: user_profile.js,v 1.2 2010-01-10 14:26:27 decoyduck Exp $ */
 
 $(document).ready(function() {
 
-   $('body').bind('click', function(e) {
-       if ($(e.target).closest('div#profile_options_container').length < 1) {
-           $('div#profile_options_container').hide();
-       };
-   });
+    $('body').bind('init', function() {
 
-   $('h2#profile_options').bind('click', function() {
+       $('body').bind('click', function(e) {
+           if ($(e.target).closest('div#profile_options_container').length < 1) {
+               $('div#profile_options_container').hide();
+           };
+       });
 
-       $('div#profile_options_container').show();
-       return false;
-   });
+       $('h2#profile_options').bind('click', function() {
 
-   $('.opener_top').bind('click', function() {
-
-       if (window.opener) {
-
-           window.opener.top.document.location.href = $(this).attr('href');
-           window.close();
+           $('div#profile_options_container').show();
            return false;
-       }
-   });
+       });
+
+       $('.opener_top').bind('click', function() {
+
+           if (window.opener) {
+
+               window.opener.top.document.location.href = $(this).attr('href');
+               window.close();
+               return false;
+           }
+       });
+    });
 });

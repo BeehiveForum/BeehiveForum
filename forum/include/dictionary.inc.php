@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.71 2009-12-23 15:35:01 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.72 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,7 +66,7 @@ class dictionary {
         $this->current_word = $current_word;
         $this->obj_id = $obj_id;
 
-        $this->offset_match = $offset_match;
+        $this->offset_match = abs($offset_match);
 
         $this->check_complete = false;
 

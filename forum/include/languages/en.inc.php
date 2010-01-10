@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.620 2010-01-03 15:19:36 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.621 2010-01-10 14:26:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1332,7 +1332,7 @@ $lang['automaticallyparseurls'] = "Automatically parse URLs";
 $lang['automaticallycheckspelling'] = "Automatically check spelling";
 $lang['setthreadtohighinterest'] = "Set thread to high interest";
 $lang['enabledwithautolinebreaks'] = "Enabled with auto-line-breaks";
-$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";
+$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\n\nTo view your original code, select the 'Submitted code' radio button.\nTo view the modified code, select the 'Corrected code' radio button.";
 $lang['messageoptions'] = "Message options";
 $lang['notallowedembedattachmentpost'] = "You are not allowed to embed attachments in your posts.";
 $lang['notallowedembedattachmentsignature'] = "You are not allowed to embed attachments in your signature.";
@@ -1400,7 +1400,7 @@ $lang['messagecountdisplay'] = "%s of %s";
 $lang['linktothread'] = "Permanent link to this thread";
 $lang['linktopost'] = "Link to post";
 $lang['linktothispost'] = "Link to this post";
-$lang['imageresized'] = "This image has been resized (original size %1\$sx%2\$s). To view the full-size image click here.";
+$lang['imageresized'] = "This image has been resized (original size %dx%d). To view the full-size image click here.";
 $lang['messagedeletedbyuser'] = "Message %s.%s deleted %s by %s";
 $lang['messagedeleted'] = "Message %s.%s was deleted";
 $lang['viewinframeset'] = "View in Frameset";
@@ -1465,7 +1465,7 @@ $lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['userhasoptedoutofpm'] = "%s has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
-$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
+$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\nyour 'Saved Items' folder so that they are not deleted.";
 $lang['yourpmfoldersare'] = "Your PM folders are %s full";
 $lang['currentmessage'] = "Current Message";
 $lang['unreadmessage'] = "Unread Message";

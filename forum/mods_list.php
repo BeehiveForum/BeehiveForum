@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.48 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.49 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -140,16 +140,6 @@ $folder_title = folder_get_title($fid);
 
 html_draw_top("title={$folder_title} » {$lang['moderatorlist']}", 'pm_popup_disabled');
 
-if (isset($_POST['close'])) {
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  window.close();\n";
-    echo "</script>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -219,7 +209,7 @@ echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"mods_list.php\" target=\"_self\">\n";
 echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "    ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
-echo "    ". form_submit('close', $lang['close']). "\n";
+echo "    ". form_button('close_popup', $lang['close']). "\n";
 echo "  </form>\n";
 echo "</div>\n";
 

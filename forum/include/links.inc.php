@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.99 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.100 2010-01-10 14:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,6 +52,8 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (!is_numeric($fid)) return false;
     if (!is_numeric($offset)) return false;
     if (!is_bool($invisible)) $invisible = false;
+
+    $offset = abs($offset);
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'TITLE';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
@@ -174,7 +176,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     if (!$db_links_add = db_connect()) return false;
 
     $visible = $visible ? "Y" : "N";
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
@@ -386,6 +388,8 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
     if (!is_numeric($offset)) return false;
     if (!is_bool($invisible)) $invisible = false;
 
+    $offset = abs($offset);
+
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'TITLE';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
@@ -522,7 +526,7 @@ function links_vote($lid, $vote, $uid)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($vote)) return false;
     if (!is_numeric($uid))  return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
@@ -562,7 +566,7 @@ function links_add_comment($lid, $uid, $comment)
     if (!is_numeric($uid))  return false;
 
     $comment = db_escape_string($comment);
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;

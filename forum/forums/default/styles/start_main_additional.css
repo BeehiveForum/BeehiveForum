@@ -1,0 +1,51 @@
+.logo { 
+    position: absolute; 
+    left: 50%; 
+    top: 50%; 
+    width: 340px; 
+    height: 150px;
+    margin-left: -170px; 
+    margin-top: -75px; 
+    z-index: 0; 
+    border: 0px 
+}
+
+.nominate_info {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -200px;
+    overflow: auto;
+    padding: 0px 20px;
+    position: absolute;
+    top: 100%;
+    width: 500px;
+}
+
+.nominate_logo {
+    float: left;
+    margin: 10px;
+}
+
+.nominate_text {
+    margin-left: 180px;
+    margin-top: 35px;
+}
+
+.nominate_text h4 {
+    font-size: 14pt;
+    margin: 10px 0px 0px;
+}
+
+.nominate_text a {
+    text-decoration: underline;
+}
+
+a { 
+    text-decoration: none;
+}
+
+a:hover { 
+    text-decoration: underline 
+}

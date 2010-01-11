@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.178 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.179 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -437,7 +437,7 @@ echo "                            <img src=\"", style_image('attach.png'), "\" b
 echo "                            <a class=\"add_upload_field\">{$lang['uploadanotherattachment']}</a>\n";
 echo "                          </div>\n";
 echo "                        </td>\n";
-echo "                        <td align=\"left\" class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""), "</td>\n";
+echo "                        <td align=\"left\" class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";

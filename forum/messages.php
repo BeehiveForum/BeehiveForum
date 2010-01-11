@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.310 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: messages.php,v 1.311 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -262,62 +262,6 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
 html_draw_top("title=$thread_title", "post.js", "htmltools.js", "basetarget=_blank");
-
-echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "function initialisePostQuoting()\n";
-echo "{\n";
-echo "    var form_obj = getObjsByName('quote_list')[0];\n\n";
-echo "    if (typeof form_obj == 'object') {\n";
-echo "        form_obj.value = '';\n";
-echo "    }\n";
-echo "}\n\n";
-echo "function togglePostQuoting(post_id)\n";
-echo "{\n";
-echo "    var form_obj = getObjsByName('quote_list')[0];\n";
-echo "    var post_img = getObjsByName('p' + post_id)[0];\n\n";
-echo "    var post_quotelink = getObjsByName('q' + post_id)[0];\n\n";
-echo "    if ((typeof form_obj == 'object') && (typeof post_img == 'object')) {\n\n";
-echo "        if (form_obj.value.length > 0) {\n\n";
-echo "            var quote_list = form_obj.value.split(',');\n\n";
-echo "            for (var check_post_id in quote_list) {\n\n";
-echo "                if (quote_list[check_post_id] == post_id) {\n\n";
-echo "                    quote_list.splice(check_post_id, 1);\n";
-echo "                    form_obj.value = quote_list.join(',');\n";
-echo "                    post_img.src = '", style_image('quote_disabled.png'), "';\n";
-echo "                    post_quotelink.innerHTML = '{$lang['quote']}';\n";
-echo "                    return false;\n";
-echo "                }\n";
-echo "            }\n\n";
-echo "            quote_list.push(post_id);\n";
-echo "            post_img.src = '", style_image('quote_enabled.png'), "';\n";
-echo "            post_quotelink.innerHTML = '{$lang['unquote']}';\n";
-echo "            form_obj.value = quote_list.join(',');\n\n";
-echo "        }else {\n\n";
-echo "            post_img.src = '", style_image('quote_enabled.png'), "';\n";
-echo "            post_quotelink.innerHTML = '{$lang['unquote']}';\n";
-echo "            form_obj.value = post_id;\n";
-echo "        }\n";
-echo "    }\n";
-echo "    return false;\n";
-echo "}\n\n";
-echo "function checkPostQuoting(replyto_id)\n";
-echo "{\n";
-echo "    var quote_list_obj = getObjsByName('quote_list')[0];\n\n";
-echo "    if (typeof quote_list_obj == 'object') {\n\n";
-echo "        var f_quote_obj = getObjsByName('f_quote')[0];\n";
-echo "        var replyto_obj = getObjsByName('replyto')[0];\n\n";
-echo "        if (typeof f_quote_obj == 'object' && typeof replyto_obj == 'object') {\n\n";
-echo "            if (quote_list_obj.value.length > 0) {\n\n";
-echo "                replyto_obj.value = replyto_id;\n";
-echo "                f_quote_obj.submit();\n";
-echo "                return false;\n";
-echo "            }\n";
-echo "        }\n";
-echo "    }\n";
-echo "}\n\n";
-echo "//-->\n";
-echo "</script>\n";
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
@@ -614,7 +558,10 @@ echo "  <tr>\n";
 
 if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
-    echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></td>\n";
+    echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\" class=\"postbody\">";
+    echo "      <img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> ";
+    echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a>\n";
+    echo "    </td>\n";
 
 }else {
 
@@ -679,7 +626,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
-    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag')\">{$lang['viewresults']}</a>\n";
+    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 640x480\">{$lang['viewresults']}</a>\n";
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";

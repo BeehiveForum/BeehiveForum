@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.119 2009-12-16 18:31:02 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.120 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -873,7 +873,8 @@ echo "    </tr>\n";
 if (forum_get_setting('attachments_enabled', 'Y') && $admin_edit === false) {
 
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_button("attachments", $lang['uploadnewattachment'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "</td>\n";
+    echo "      <td align=\"center\">";
+    echo "        ", form_submit("save", $lang['save']), "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo "    </tr>\n";
 
 }else {

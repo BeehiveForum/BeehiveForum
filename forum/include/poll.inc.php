@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.259 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.260 2010-01-11 19:59:35 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -689,7 +689,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag');\""). "</td>\n";
+                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_button("pollresults", $lang['resultdetails']). "</td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
@@ -772,11 +772,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag')\"");
+                        $poll_data['CONTENT'].= form_button("pollresults", $lang['resultdetails']);
 
                     }else {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"openPollResults('$tid', '$webtag')\"");
+                        $poll_data['CONTENT'].= form_button("pollresults", $lang['results']);
 
                     }
                 }
@@ -818,11 +818,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag')\"");
+                        $poll_data['CONTENT'].= form_button("pollresults", $lang['resultdetails']);
 
                     }else {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"openPollResults('$tid', '$webtag')\"");
+                        $poll_data['CONTENT'].= form_button("pollresults", $lang['results']);
                     }
                 }
 

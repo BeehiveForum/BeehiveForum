@@ -975,7 +975,7 @@ button::-moz-focus-inner {
     width: 169px;
 }
 
-.search_logon {
+.search_input {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;

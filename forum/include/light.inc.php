@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.244 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.245 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -131,6 +131,7 @@ function light_html_draw_top()
     }
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.min.js\"></script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
@@ -143,12 +144,7 @@ function light_html_draw_top()
 
         if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
-            echo "</head>\n";
-            echo "<body onload=\"spoilerInitialise()\">\n";
-
-            return;
         }
     }
 
@@ -791,8 +787,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $selected_option = THREAD_MARK_READ_FOLDER;
         }
 
-        echo light_form_dropdown_array("mark_read_type", $labels, $selected_option). "\n";
-        echo light_form_submit("mark_read_submit", $lang['goexcmark'], "onclick=\"return confirmMarkAsRead()\""). "\n";
+        echo light_form_dropdown_array("mark_read_type", $labels, $selected_option), "\n";
+        echo light_form_submit("mark_read_submit", $lang['goexcmark']), "\n";
         echo "    </form>\n";
     }
 

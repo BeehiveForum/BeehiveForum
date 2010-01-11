@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.361 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.362 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -907,6 +907,7 @@ function html_draw_top()
 
     html_include_javascript('jquery.min.js');
     html_include_javascript('jquery.sprintf.js');
+    html_include_javascript('jquery.parsequery.js');
     html_include_javascript('general.js');
 
     // Font size (not for Guests)

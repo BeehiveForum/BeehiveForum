@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.143 2010-01-03 15:19:33 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.144 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -92,6 +92,24 @@ function form_input_hidden($name, $value = false, $custom_html = false)
     return form_field($name, $value, 0, 0, "hidden", $custom_html);
 }
 
+function form_input_text_search($name, $value = false, $width = false, $maxchars = false, $type = SEARCH_LOGON, $allow_multi = false, $custom_html = false)
+{
+    $webtag = get_webtag();
+
+    $lang = load_language_file();
+
+    $allow_multi = ($allow_multi) ? "allow_multi" : "";
+
+    if (!in_array($type, array(SEARCH_LOGON, SEARCH_THREAD))) $type = SEARCH_LOGON;
+
+    $type = ($type == SEARCH_LOGON) ? "search_logon" : "search_thread";
+
+    $html = "<div class=\"bhinputsearch $allow_multi $type\">";
+    $html.= form_input_text($name, $value, $width, $maxchars, $custom_html, "search_input");
+    $html.= "</div>\n";
+
+    return $html;
+}
 
 function form_input_hidden_array($array)
 {

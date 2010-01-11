@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.54 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.55 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -126,27 +126,27 @@ if (user_is_guest()) {
 
 // Check if we're allowed multiple-select.
 
-if (isset($_POST['allow_multi']) && $_POST['allow_multi'] == 'Y') {
-    $allow_multi = true;
-}elseif (isset($_GET['allow_multi']) && $_GET['allow_multi'] == 'Y') {
-    $allow_multi = true;
+if (isset($_POST['multi']) && $_POST['multi'] == 'Y') {
+    $multi = true;
+}elseif (isset($_GET['multi']) && $_GET['multi'] == 'Y') {
+    $multi = true;
 }else {
-    $allow_multi = false;
+    $multi = false;
 }
 
 // Search type
 
 if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
-    if ($_GET['type'] == SEARCH_POPUP_TYPE_USER) {
+    if ($_GET['type'] == SEARCH_LOGON) {
 
-        $type = SEARCH_POPUP_TYPE_USER;
+        $type = SEARCH_LOGON;
 
-    }elseif ($_GET['type'] == SEARCH_POPUP_TYPE_THREAD) {
+    }elseif ($_GET['type'] == SEARCH_THREAD) {
 
-        $type = SEARCH_POPUP_TYPE_THREAD;
+        $type = SEARCH_THREAD;
 
-        $allow_multi = false;
+        $multi = false;
 
     }else {
 
@@ -158,15 +158,15 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
 }elseif (isset($_POST['type']) && is_numeric($_POST['type'])) {
 
-    if ($_POST['type'] == SEARCH_POPUP_TYPE_USER) {
+    if ($_POST['type'] == SEARCH_LOGON) {
 
-        $type = SEARCH_POPUP_TYPE_USER;
+        $type = SEARCH_LOGON;
 
-    }elseif ($_POST['type'] == SEARCH_POPUP_TYPE_THREAD) {
+    }elseif ($_POST['type'] == SEARCH_THREAD) {
 
-        $type = SEARCH_POPUP_TYPE_THREAD;
+        $type = SEARCH_THREAD;
 
-        $allow_multi = false;
+        $multi = false;
 
     }else {
 
@@ -186,13 +186,13 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
 // Form Object ID
 
-if (isset($_POST['obj_name']) && strlen(trim(stripslashes_array($_POST['obj_name']))) > 0) {
+if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
 
-    $obj_name = trim(stripslashes_array($_POST['obj_name']));
+    $obj_id = trim(stripslashes_array($_POST['obj_id']));
 
-}elseif (isset($_GET['obj_name']) && strlen(trim(stripslashes_array($_GET['obj_name']))) > 0) {
+}elseif (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
 
-    $obj_name = trim(stripslashes_array($_GET['obj_name']));
+    $obj_id = trim(stripslashes_array($_GET['obj_id']));
 
 }else {
 
@@ -204,38 +204,38 @@ if (isset($_POST['obj_name']) && strlen(trim(stripslashes_array($_POST['obj_name
 
 // Current selection
 
-if (isset($_POST['selection']) && is_array($_POST['selection'])) {
+if (isset($_POST['selected']) && is_array($_POST['selected'])) {
 
-    $selection_array = array_unique($_POST['selection']);
+    $selected_array = array_unique($_POST['selected']);
 
-}else if (isset($_GET['selection']) && strlen(trim(stripslashes_array($_GET['selection']))) > 0) {
+}else if (isset($_GET['selected']) && strlen(trim(stripslashes_array($_GET['selected']))) > 0) {
 
-    $selection_array = array_unique(preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selection']))));
+    $selected_array = array_unique(preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selected']))));
 
-    if ($allow_multi === false) {
-        $search_query = trim(stripslashes_array($_GET['selection']));
+    if ($multi === false) {
+        $search_query = trim(stripslashes_array($_GET['selected']));
     }
 
 }else {
 
-    $selection_array = array();
+    $selected_array = array();
 }
 
 // Limit the selection to maximum of 10
 
-$selection_array = array_splice($selection_array, 0, 10);
+$selected_array = array_splice($selected_array, 0, 10);
 
 // Add any search results to selection
 
-if (isset($_POST['addtoselection']) && $allow_multi === true) {
+if (isset($_POST['addtoselected']) && $multi === true) {
 
-    if (isset($_POST['selection_add']) && is_array($_POST['selection_add'])) {
+    if (isset($_POST['selected_add']) && is_array($_POST['selected_add'])) {
 
-        foreach ($_POST['selection_add'] as $selection_add) {
+        foreach ($_POST['selected_add'] as $selected_add) {
 
-            if (sizeof($selection_array) < 10) {
+            if (sizeof($selected_array) < 10) {
 
-                array_push($selection_array, $selection_add);
+                array_push($selected_array, $selected_add);
             }
         }
     }
@@ -264,10 +264,10 @@ if (isset($_POST['clear'])) {
 
 // Selection for page links and for return to parent
 
-if (isset($selection_array) && is_array($selection_array) && sizeof($selection_array) > 0) {
-    $selection = implode(';', array_splice($selection_array, 0, 10));
+if (isset($selected_array) && is_array($selected_array) && sizeof($selected_array) > 0) {
+    $selected = implode(';', $selected_array);
 }else {
-    $selection = "";
+    $selected = "";
 }
 
 // Page numbers for results.
@@ -289,7 +289,7 @@ $search_results_array = array();
 
 if (isset($search_query) && strlen(trim($search_query)) > 0) {
 
-    if ($type == SEARCH_POPUP_TYPE_USER) {
+    if ($type == SEARCH_LOGON) {
 
         $search_results_array = user_search($search_query, $start);
 
@@ -303,7 +303,7 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
     }
 }
 
-html_draw_top("title={$lang['search']}", 'pm_popup_disabled');
+html_draw_top("title={$lang['search']}", 'pm_popup_disabled', 'search_popup.js');
 
 echo "<h1>{$lang['search']}</h1>\n";
 
@@ -323,15 +323,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" action=\"search_popup.php\" method=\"post\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("obj_id", htmlentities_array($obj_id)), "\n";
 echo "  ", form_input_hidden("type", htmlentities_array($type)), "\n";
-echo "  ", form_input_hidden("allow_multi", $allow_multi ? 'Y' : 'N'), "\n";
-echo "  ", form_input_hidden("obj_name", htmlentities_array($obj_name)), "\n";
+echo "  ", form_input_hidden("multi", $multi ? 'Y' : 'N'), "\n";
 
-if ($allow_multi === true) {
+if ($multi === true) {
 
-    if (isset($selection_array) && is_array($selection_array) && sizeof($selection_array) > 0) {
+    if (isset($selected_array) && is_array($selected_array) && sizeof($selected_array) > 0) {
 
-        if (sizeof($selection_array) > 9) {
+        if (sizeof($selected_array) > 9) {
             html_display_warning_msg($lang['maximumselectionoftenlimitreached'], '450', 'center');
         }
 
@@ -350,12 +350,12 @@ if ($allow_multi === true) {
         echo "                    <div class=\"search_popup_results\">\n";
         echo "                      <table width=\"95%\">\n";
 
-        foreach ($selection_array as $user_logon) {
+        foreach ($selected_array as $user_logon) {
 
             if (($user_array = user_get_by_logon($user_logon))) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selection[]", htmlentities_array($user_array['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_checkbox("selected[]", htmlentities_array($user_array['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
             }
         }
@@ -403,31 +403,31 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
 
     foreach ($search_results_array['results_array'] as $search_result) {
 
-        if ($type == SEARCH_POPUP_TYPE_USER) {
+        if ($type == SEARCH_LOGON) {
 
-            if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
+            if (($search_results_array['results_count'] > 1) && $multi === false) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_radio("selection", htmlentities_array($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_radio("selected", htmlentities_array($search_result['LOGON']), '', in_array($search_result['LOGON'], $selected_array) && sizeof($selected_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
 
-            }elseif ($allow_multi === false) {
+            }elseif ($multi === false) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selection", htmlentities_array($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_radio("selected", htmlentities_array($search_result['LOGON']), '', in_array($search_result['LOGON'], $selected_array) && sizeof($selected_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
 
             }else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selection_add[]", htmlentities_array($search_result['LOGON']), '', in_array($search_result['LOGON'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_checkbox("selected_add[]", htmlentities_array($search_result['LOGON']), '', in_array($search_result['LOGON'], $selected_array) && sizeof($selected_array) < 10), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                 echo "                      </tr>\n";
             }
 
         }else {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("selection", $search_result['TID'], '', in_array($search_result['TID'], $selection_array) && sizeof($selection_array) < 10), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("selected", $search_result['TID'], '', in_array($search_result['TID'], $selected_array) && sizeof($selected_array) < 10), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }
@@ -449,16 +449,16 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
     echo "      <td class=\"postbody\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&search_query=$search_query&type=$type&obj_name=$obj_name&allow_multi=$allow_multi&selection=$selection", $start, $search_results_array['results_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&obj_id=$obj_id&type=$type&multi=$multi&selected=$selected&search_query=$search_query", $start, $search_results_array['results_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (($allow_multi === true) && sizeof($selection_array) < 10) {
+    if (($multi === true) && sizeof($selected_array) < 10) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit('addtoselection', $lang['addtoselection']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit('addtoselected', $lang['addtoselection']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "  <br />\n";
@@ -473,7 +473,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-if ($type == SEARCH_POPUP_TYPE_USER) {
+if ($type == SEARCH_LOGON) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
@@ -484,7 +484,7 @@ if ($type == SEARCH_POPUP_TYPE_USER) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\">{$lang['username']}:</td>\n";
 
-}elseif ($type == SEARCH_POPUP_TYPE_THREAD) {
+}elseif ($type == SEARCH_THREAD) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforthread']}</td>\n";

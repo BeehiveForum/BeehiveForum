@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.76 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.77 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -808,7 +808,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         echo form_submit('pm_save_messages', $lang['save'], "title=\"{$lang['saveselectedmessages']}\""), "&nbsp;";
     }
 
-    echo form_submit('pm_delete_messages', $lang['delete'], "onclick=\"return confirmDeleteSelected();\" title=\"{$lang['deleteselectedmessages']}\""), "&nbsp;";
+    echo form_submit('pm_delete_messages', $lang['delete']), "&nbsp;";
 
     if ($current_folder != PM_SEARCH_RESULTS) {
         echo form_submit('pm_export_messages', $lang['export'], "title=\"{$lang['exportselectedmessages']}\""), "&nbsp;";

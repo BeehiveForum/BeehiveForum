@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.118 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: display.php,v 1.119 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -248,7 +248,7 @@ echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "        ", form_input_hidden("msg", htmlentities_array("$tid.$pid")), "\n";
 
 if (isset($_GET['print_msg']) && is_numeric($_GET['print_msg'])) {
-    echo "        ", form_submit("back", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"self.print()\""), "\n";
+    echo "        ", form_submit("back", $lang['back']), "&nbsp;", form_button("print", $lang['print']), "\n";
 }else {
     echo "        ", form_submit("back", $lang['back']), "\n";
 }

@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.48 2010-01-10 14:26:27 decoyduck Exp $ */
+/* $Id: general.js,v 1.49 2010-01-11 19:59:35 decoyduck Exp $ */
 
 var beehive = {
 
@@ -49,80 +49,83 @@ $(document).ready(function() {
         cache: true
     });
 
-    $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
-        return false;
-    });
+    $('body').bind('init', function() {
 
-    $('#thread_mode').bind('change', function() {
-        $(this).closest('form').submit();
-    });
-
-    $('a.popup').bind('click', function() {
-
-        var class_names = $(this).attr('class').split(' ');
-
-        var window_options = beehive.window_options;
-
-        for (var key in class_names) {
-
-            if (dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key])) {
-
-                window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
-            }
-        }
-
-        window.open($(this).attr('href'), $(this).attr('id'), window_options.join(','));
-
-        return false;
-    });
-
-    $('button#close_popup').bind('click', function() {
-        window.close();
-    });
-
-    $('select.user_in_thread_dropdown').bind('change', function() {
-        $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
-    });
-
-    $('select.recent_user_dropdown').bind('change', function() {
-        $('input[name="to_radio"][value="recent"]').attr('checked', true);
-    });
-
-    $('input.post_to_others').bind('focus', function() {
-        $('input[name="to_radio"][value="others"]').attr('checked', true);
-    });
-
-    $('input#toggle_all').bind('click', function() {
-        $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
-    });
-
-    $('a.font_size').live('click', function() {
-
-        $parent = $(this).closest('td');
-
-        $.getJSON($(this).attr('href'), { 'json' : true }, function(data) {
-
-            if (!data.success) return false;
-
-            $parent.html(data.html);
-
-            top.document.body.rows = '60,' + Math.max(data.font_size * 2, 22) + ',*';
-
-            beehive.process_frames(top.document.body, function() {
-
-                var $head = $(this.contentDocument).find('head');
-
-                $.ajax({
-                    'url' : 'font_size.php',
-                    'data' : { 'webtag' : webtag },
-                    'success' : function(data) {
-                        $head.find('style[title="user_font"]').html(data).appendTo($head);
-                    }
-                });
-            });
+        $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
+            return false;
         });
 
-        return false;
+        $('#thread_mode').bind('change', function() {
+            $(this).closest('form').submit();
+        });
+
+        $('a.popup').bind('click', function() {
+
+            var class_names = $(this).attr('class').split(' ');
+
+            var window_options = beehive.window_options;
+
+            for (var key in class_names) {
+
+                if (dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key])) {
+
+                    window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
+                }
+            }
+
+            window.open($(this).attr('href'), $(this).attr('id'), window_options.join(','));
+
+            return false;
+        });
+
+        $('button#close_popup').bind('click', function() {
+            window.close();
+        });
+
+        $('select.user_in_thread_dropdown').bind('change', function() {
+            $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
+        });
+
+        $('select.recent_user_dropdown').bind('change', function() {
+            $('input[name="to_radio"][value="recent"]').attr('checked', true);
+        });
+
+        $('input.post_to_others').bind('focus', function() {
+            $('input[name="to_radio"][value="others"]').attr('checked', true);
+        });
+
+        $('input#toggle_all').bind('click', function() {
+            $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
+        });
+
+        $('a.font_size').live('click', function() {
+
+            $parent = $(this).closest('td');
+
+            $.getJSON($(this).attr('href'), { 'json' : true }, function(data) {
+
+                if (!data.success) return false;
+
+                $parent.html(data.html);
+
+                top.document.body.rows = '60,' + Math.max(data.font_size * 2, 22) + ',*';
+
+                beehive.process_frames(top.document.body, function() {
+
+                    var $head = $(this.contentDocument).find('head');
+
+                    $.ajax({
+                        'url' : 'font_size.php',
+                        'data' : { 'webtag' : webtag },
+                        'success' : function(data) {
+                            $head.find('style[title="user_font"]').html(data).appendTo($head);
+                        }
+                    });
+                });
+            });
+
+            return false;
+        });
     });
 
     $.getJSON('json.php', { }, function(data) {

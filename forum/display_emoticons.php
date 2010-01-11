@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.80 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.81 2010-01-11 19:59:35 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -271,7 +271,7 @@ echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"center\">", form_submit('close', $lang['close'], "onclick='window.close()'"), "</td>\n";
+echo "    <td align=\"center\">", form_button('close_popup', $lang['close']), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

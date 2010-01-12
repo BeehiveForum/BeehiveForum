@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.311 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: messages.php,v 1.312 2010-01-12 21:38:28 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -358,15 +358,6 @@ if (isset($_GET['font_resize'])) {
     echo "<div id=\"font_resize_success\">\n";
     html_display_success_msg(sprintf($lang['fontsizechanged'], $lang['framesmustbereloaded']), '96%', 'center');
     echo "</div>\n";
-
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "var font_resize_success_container = getObjById('font_resize_success');\n\n";
-    echo "if (typeof font_resize_success_container == 'object') {\n\n";
-    echo "    font_resize_success_container.innerHTML = '", html_display_success_msg_js(sprintf($lang['fontsizechanged'], ''), '96%', 'center'), "';\n\n";
-    echo "}\n\n";
-    echo "-->\n";
-    echo "</script>\n\n";
 }
 
 if (($tracking_data_array = thread_get_tracking_data($tid))) {

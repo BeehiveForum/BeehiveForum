@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.39 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.40 2010-01-12 21:38:28 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -79,39 +79,15 @@ if (!$user_sess = bh_session_check()) {
 
 // Check to see if the user is banned.
 
-if (bh_session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
+if (bh_session_user_banned()) exit;
 
 // Check to see if the user has been approved.
 
-if (!bh_session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Check that we have access to this forum
-
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+if (!bh_session_user_approved()) exit;
 
 // Guests can't do different font sizes.
 
-if (user_is_guest()) {
-    exit;
-}
+if (user_is_guest()) exit;
 
 // User's UID
 
@@ -127,102 +103,132 @@ if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 
+// Make sure the font size is positive and an integer.
+
+$font_size = floor(abs($font_size));
+
 // Output in text/css.
 
 header("Content-Type: text/css");
 
-// Generate etag for cache control
-
-$local_etag = md5(sprintf("%s-%s-%s", $sess_hash, $font_size, $uid));
-
 // Check the cache
 
-cache_check_etag($local_etag);
+cache_check_etag(md5(sprintf("%s-%s-%s", $sess_hash, $font_size, $uid)));
 
 // Check the user's font size.
 
 if ($font_size < 5) $font_size = 5;
 if ($font_size > 15) $font_size = 15;
 
+// Array of different font sizes
+
+$css_selectors = array('body'                          => array(10, 'pt'),
+                       '.navpage'                      => array(10, 'px'),
+                       'p'                             => array(10, 'pt'),
+                       'h1'                            => array(10, 'pt'),
+                       'h2'                            => array(10, 'pt'),
+                       '.smalltext'                    => array(9, 'pt'),
+                       '.thread_list_mode'             => array(10, 'pt'),
+                       '.threads'                      => array(10, 'pt'),
+                       '.threads_left'                 => array(10, 'pt'),
+                       '.threads_right'                => array(10, 'pt'),
+                       '.threads_top_left'             => array(10, 'pt'),
+                       '.threads_top_right'            => array(10, 'pt'),
+                       '.threads_bottom_left'          => array(10, 'pt'),
+                       '.threads_bottom_right'         => array(10, 'pt'),
+                       '.threads_left_right'           => array(10, 'pt'),
+                       '.threads_left_right_bottom'    => array(10, 'pt'),
+                       '.threads_top_left_bottom'      => array(10, 'pt'),
+                       '.threads_top_right_bottom'     => array(10, 'pt'),
+                       '.folderinfo'                   => array(8, 'pt'),
+                       '.folderpostnew'                => array(8, 'pt'),
+                       '.threadname'                   => array(10, 'pt'),
+                       '.threadtime'                   => array(8, 'pt'),
+                       '.threadxnewofy'                => array(8, 'pt'),
+                       '.foldername'                   => array(10, 'pt'),
+                       '.posthead'                     => array(10, 'pt'),
+                       '.pmheadl'                      => array(10, 'pt'),
+                       '.pmheadr'                      => array(10, 'pt'),
+                       '.pm_message_count'             => array(8, 'pt'),
+                       '.postbody'                     => array(10, 'pt'),
+                       '.postnumber'                   => array(10, 'pt'),
+                       '.postinfo'                     => array(10, 'pt'),
+                       '.posttofromlabel'              => array(10, 'pt'),
+                       '.posttofrom'                   => array(10, 'pt'),
+                       '.postresponse'                 => array(10, 'pt'),
+                       '.messagefoot'                  => array(10, 'pt'),
+                       '.dictionary_button'            => array(9, 'pt'),
+                       '.button'                       => array(9, 'pt'),
+                       '.button_disabled'              => array(9, 'pt'),
+                       '.smallbutton'                  => array(8, 'pt'),
+                       '.subhead'                      => array(10, 'pt'),
+                       '.bhinputtext'                  => array(9, 'pt'),
+                       '.bhtextarea'                   => array(9, 'pt'),
+                       '.bhselect'                     => array(9, 'pt'),
+                       '.install_dropdown'             => array(9, 'pt'),
+                       '.bhinputlogon'                 => array(9, 'pt'),
+                       '.bhlogondropdown'              => array(9, 'pt'),
+                       '.register_dropdown'            => array(9, 'pt'),
+                       '.search_dropdown'              => array(9, 'pt'),
+                       '.banned_dropdown'              => array(9, 'pt'),
+                       '.links_dropdown'               => array(9, 'pt'),
+                       '.timezone_dropdown'            => array(9, 'pt'),
+                       '.admin_startpage_textarea'     => array(9, 'pt'),
+                       '.dictionary_word_display'      => array(9, 'pt'),
+                       '.dictionary_best_selection'    => array(9, 'pt'),
+                       '.dictionary_change_to'         => array(9, 'pt'),
+                       '.post_folder_dropdown'         => array(9, 'pt'),
+                       '.thread_title'                 => array(9, 'pt'),
+                       '.post_content'                 => array(9, 'pt'),
+                       '.signature_content'            => array(9, 'pt'),
+                       '.edit_signature_content'       => array(9, 'pt'),
+                       '.to_uid_dropdown'              => array(9, 'pt'),
+                       '.recipient_dropdown'           => array(9, 'pt'),
+                       '.recent_user_dropdown'         => array(9, 'pt'),
+                       '.admin_options_dropdown'       => array(9, 'pt'),
+                       '.user_in_thread_dropdown'      => array(9, 'pt'),
+                       '.user_pref_field'              => array(9, 'pt'),
+                       '.bhinputprofileitem'           => array(9, 'pt'),
+                       '.text_captcha_input'           => array(9, 'pt'),
+                       '.user_pref_dob_dropdown'       => array(9, 'pt'),
+                       '.user_pref_dropdown'           => array(9, 'pt'),
+                       '.bhselectoptgroup'             => array(9, 'pt'),
+                       '.bhselectoptgroup'             => array(9, 'pt'),
+                       '.bhinputcheckbox'              => array(8, 'pt'),
+                       '.bhinputradio'                 => array(8, 'pt'),
+                       '.quotetext'                    => array(8, 'pt'),
+                       '.activeusers'                  => array(8, 'pt'),
+                       '.adminipdisplay'               => array(8, 'pt'),
+                       '.pmnewcount'                   => array(8, 'pt'),
+                       '.pmbar_text'                   => array(8, 'pt'),
+                       '.pagenum_text'                 => array(8, 'pt'),
+                       '.admin_settings_text'          => array(8, 'pt'),
+                       '.post_to_others'               => array(9, 'pt'),
+                       '.recipient_list'               => array(9, 'pt'),
+                       '.search_input'                 => array(9, 'pt'),
+                       '.merge_thread_id'              => array(9, 'pt'),
+                       '.edit_text'                    => array(10, 'px'),
+                       '.approved_text'                => array(10, 'px'),
+                       '.subhead_sort_asc'             => array(10, 'pt'),
+                       '.subhead_sort_desc'            => array(10, 'pt'),
+                       '.subhead_checkbox'             => array(10, 'pt'),
+                       '.profile_logon'                => array(10, 'pt'),
+                       '.profile_item_name'            => array(9, 'pt'),
+                       '.profile_item_value'           => array(9, 'pt'),
+                       '.profile_item_value a'         => array(9, 'pt'),
+                       '.image_resize_text'            => array(8, 'pt'),
+                       '.forum_rules_box'              => array(9, 'pt'),
+                       '.small_optional_text'          => array(7, 'pt'),
+                       '.error_handler_details'        => array(9, 'pt'),
+                       '.error_msg'                    => array(9, 'pt'),
+                       '.success_msg'                  => array(9, 'pt'),
+                       '.warning_msg'                  => array(9, 'pt'),
+                       '.google_adsense_register_note' => array(7, 'pt'));
+
 // Output the CSS
 
-echo "body                       { font-size: ", $font_size, "pt; }\n";
-echo "p                          { font-size: ", $font_size, "pt; }\n";
-echo "h1                         { font-size: ", $font_size, "pt; }\n";
-echo "h2                         { font-size: ", $font_size, "pt; }\n";
-echo ".smalltext                 { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".thread_list_mode          { font-size: ", $font_size, "pt; }\n";
-echo ".threads                   { font-size: ", $font_size, "pt; }\n";
-echo ".threads_left              { font-size: ", $font_size, "pt; }\n";
-echo ".threads_right             { font-size: ", $font_size, "pt; }\n";
-echo ".threads_top_left          { font-size: ", $font_size, "pt; }\n";
-echo ".threads_top_right         { font-size: ", $font_size, "pt; }\n";
-echo ".threads_bottom_left       { font-size: ", $font_size, "pt; }\n";
-echo ".threads_bottom_right      { font-size: ", $font_size, "pt; }\n";
-echo ".threads_left_right        { font-size: ", $font_size, "pt; }\n";
-echo ".threads_left_right_bottom { font-size: ", $font_size, "pt; }\n";
-echo ".threads_top_left_bottom   { font-size: ", $font_size, "pt; }\n";
-echo ".threads_top_right_bottom  { font-size: ", $font_size, "pt; }\n";
-echo ".folderinfo                { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".folderpostnew             { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".threadname                { font-size: ", $font_size, "pt; }\n";
-echo ".threadtime                { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".threadxnewofy             { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".foldername                { font-size: ", $font_size, "pt; }\n";
-echo ".posthead                  { font-size: ", $font_size, "pt; }\n";
-echo ".pmheadl                   { font-size: ", $font_size, "pt; }\n";
-echo ".pmheadr                   { font-size: ", $font_size, "pt; }\n";
-echo ".postbody                  { font-size: ", $font_size, "pt; }\n";
-echo ".postinfo                  { font-size: ", $font_size, "pt; }\n";
-echo ".posttofromlabel           { font-size: ", $font_size, "pt; }\n";
-echo ".posttofrom                { font-size: ", $font_size, "pt; }\n";
-echo ".postresponse              { font-size: ", $font_size, "pt; }\n";
-echo ".messagefoot               { font-size: ", $font_size, "pt; }\n";
-echo ".dictionary_button         { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".button                    { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".button_disabled           { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".smallbutton               { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".subhead                   { font-size: ", $font_size, "pt; }\n";
-echo ".bhinputtext               { font-size: ", floor($font_size * 1.2), "pt; }\n";
-echo ".bhtextarea                { font-size: ", floor($font_size * 1.2), "pt; }\n";
-echo ".bhselect                  { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".bhinputcheckbox           { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".bhinputradio              { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".install_dropdown          { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".bhinputlogon              { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".bhlogondropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".register_dropdown         { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".search_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".banned_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".links_dropdown            { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".admin_startpage_textarea  { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".dictionary_word_display   { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".dictionary_best_selection { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".dictionary_change_to      { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".post_folder_dropdown      { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".thread_title              { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".post_to_others            { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".post_content              { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".signature_content         { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".to_uid_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".recipient_dropdown        { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".recipient_list            { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".recent_user_dropdown      { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".user_in_thread_dropdown   { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".highlight                 { font-size: ", $font_size, "pt; }\n";
-echo ".quotetext                 { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".spellcheckbodytext        { font-size: ", $font_size, "pt; }\n";
-echo ".activeusers               { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".adminipdisplay            { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".pmnewcount                { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".pmbar_text                { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".pagenum_text              { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".admin_settings_text       { font-size: ", floor($font_size * 0.9), "pt; }\n";
-echo ".subhead_sort_asc          { font-size: ", $font_size, "pt; }\n";
-echo ".subhead_sort_desc         { font-size: ", $font_size, "pt; }\n";
-echo ".error_msg                 { font-size: ", $font_size * 0.9, "pt }\n";
-echo ".success_msg               { font-size: ", $font_size * 0.9, "pt }\n";
-echo ".warning_msg               { font-size: ", $font_size * 0.9, "pt }\n";
-echo ".navpage                   { font-size: ", $font_size, "px }\n";
+foreach ($css_selectors as $selector => $font_info) {
+    printf("%s { font-size: %d%s !important; }\n", $selector, $font_size * ($font_info[0] / 10), $font_info[1]);
+}
 
 ?>

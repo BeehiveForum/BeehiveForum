@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.49 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: general.js,v 1.50 2010-01-12 21:38:28 decoyduck Exp $ */
 
 var beehive = {
 
@@ -116,7 +116,7 @@ $(document).ready(function() {
 
                     $.ajax({
                         'url' : 'font_size.php',
-                        'data' : { 'webtag' : webtag },
+                        'data' : { 'webtag' : beehive.webtag },
                         'success' : function(data) {
                             $head.find('style[title="user_font"]').html(data).appendTo($head);
                         }

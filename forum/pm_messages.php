@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.77 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.78 2010-01-15 21:29:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -488,30 +488,6 @@ if ($current_folder == PM_FOLDER_INBOX) {
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$pm_folder_names_array[$current_folder]}</h1>\n";
 
-echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "function reloadPMFolderView()\n";
-echo "{\n";
-echo "    if (top.document.body.rows) {\n";
-echo "        top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
-echo "    }else if (top.document.body.cols) {\n";
-echo "        top.frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
-echo "    }\n\n";
-echo "}\n\n";
-echo "function confirmDeleteSelected()\n";
-echo "{\n";
-echo "    var pm_delete_confirm = getObjsByName('pm_delete_confirm')[0];\n\n";
-echo "    if ((typeof pm_delete_confirm == 'object')) {\n\n";
-echo "        if (window.confirm('", html_js_safe_str($lang['deletemessagesconfirmation']), "')) {\n\n";
-echo "            pm_delete_confirm.value = 'Y';\n";
-echo "            return true;\n";
-echo "        }\n\n";
-echo "        return false;\n";
-echo "    }\n";
-echo "}\n\n";
-echo "//-->\n";
-echo "</script>\n";
-
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '96%', 'center');
@@ -527,12 +503,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['deleted'])) {
 
     html_display_success_msg($lang['successfullydeletedselectedmessages'], '96%', 'center');
-    echo "<script language=\"Javascript\" type=\"text/javascript\">reloadPMFolderView()</script>\n";
 
 }else if (isset($_GET['archived'])) {
 
     html_display_success_msg($lang['successfullyarchivedselectedmessages'], '96%', 'center');
-    echo "<script language=\"Javascript\" type=\"text/javascript\">reloadPMFolderView()</script>\n";
 
 }else if (isset($_GET['search_no_results'])) {
 

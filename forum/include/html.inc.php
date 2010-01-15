@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.362 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.363 2010-01-15 21:29:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -609,22 +609,27 @@ function html_get_top_frame_name()
     return '_top';
 }
 
-function html_include_javascript($script)
+function html_include_javascript($script_filepath)
 {
-    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
+    $path_parts = pathinfo($script_filepath);
 
-    $path_parts = pathinfo($script);
+    if ((preg_match('/\.min\.js$/', $script_filepath) < 1) && ($path_parts = pathinfo($script_filepath))) {
 
-    $minified_script = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
+        if (array_keys_exist($path_parts, 'filename', 'extension', 'dirname')) {
 
-    if (file_exists("$forum_path/js/$minified_script")) {
-        $script = $minified_script;
+            $script_min_filepath = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
+
+            if (file_exists($script_min_filepath)) {
+
+                $script_filepath = $script_min_filepath;
+            }
+        }
     }
 
-    if (defined('BEEHIVE_INSTALL_NOWARN')) {
-        echo "<script type=\"text/javascript\" src=\"js/$script?", filemtime("$forum_path/js/$script"), "\"></script>\n";
+    if (defined('BEEHIVE_INSTALL_NOWARN') && file_exists($script_filepath)) {
+        echo "<script type=\"text/javascript\" src=\"$script_filepath?", filemtime($script_filepath), "\"></script>\n";
     } else {
-        echo "<script type=\"text/javascript\" src=\"js/$script\"></script>\n";
+        echo "<script type=\"text/javascript\" src=\"$script_filepath\"></script>\n";
     }
 }
 
@@ -720,8 +725,6 @@ function html_draw_top()
     $body_class = '';
     $base_target = '';
 
-    $tinymce_auto_focus = '';
-
     $robots = 'noindex,nofollow';
 
     $webtag = get_webtag();
@@ -762,11 +765,6 @@ function html_draw_top()
         }
 
         if (preg_match('/^onunload=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            unset($arg_array[$key]);
-        }
-
-        if (preg_match('/^tinymce_auto_focus=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($tinymce_auto_focus)) < 1 && isset($func_matches[1])) $tinymce_auto_focus = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -905,10 +903,10 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    html_include_javascript('jquery.min.js');
-    html_include_javascript('jquery.sprintf.js');
-    html_include_javascript('jquery.parsequery.js');
-    html_include_javascript('general.js');
+    html_include_javascript('./js/jquery.min.js');
+    html_include_javascript('./js/jquery.sprintf.js');
+    html_include_javascript('./js/jquery.parsequery.js');
+    html_include_javascript('./js/general.js');
 
     // Font size (not for Guests)
 
@@ -947,7 +945,7 @@ function html_draw_top()
                 // Check that we're not on one of the pages.
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
-                    html_include_javascript('pm.js');
+                    html_include_javascript('./js/pm.js');
                 }
             }
 
@@ -963,7 +961,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                    html_include_javascript('overflow.js');
+                    html_include_javascript('./js/overflow.js');
                 }
             }
 
@@ -979,7 +977,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    html_include_javascript('spoiler.js');
+                    html_include_javascript('./js/spoiler.js');
                 }
             }
         }
@@ -992,7 +990,7 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                html_include_javascript('stats.js');
+                html_include_javascript('./js/stats.js');
             }
         }
     }
@@ -1001,22 +999,23 @@ function html_draw_top()
 
     foreach ($arg_array as $func_args) {
 
-        if ($func_args == "htmltools.js" && @file_exists("$forum_path/tiny_mce/tiny_mce.js")) {
+        if (($func_args == "htmltools.js") && @file_exists("$forum_path/tiny_mce/tiny_mce.js")) {
 
             $page_prefs = bh_session_get_post_page_prefs();
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                echo TinyMCE($tinymce_auto_focus);
+                html_include_javascript("$forum_path/tiny_mce/tiny_mce.js");
+                html_include_javascript('./js/tiny_mce.js');
 
             }else {
 
-                html_include_javascript($func_args);
+                html_include_javascript("./js/$func_args");
             }
 
         }else {
 
-            html_include_javascript($func_args);
+            html_include_javascript("./js/$func_args");
         }
     }
 

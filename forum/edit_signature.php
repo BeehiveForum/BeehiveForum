@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.134 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.135 2010-01-15 21:29:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -267,13 +267,13 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageuser']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js");
+    html_draw_top("title={$lang['admin']} » {$lang['manageuser']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js");
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} » {$lang['editsignature']}", "basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js");
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editsignature']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js");
 
     echo "<h1>{$lang['editsignature']}</h1>\n";
 }

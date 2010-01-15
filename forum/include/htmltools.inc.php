@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.100 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.101 2010-01-15 21:29:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,91 +44,22 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function TinyMCE($tinymce_auto_focus)
-{
-    $str = "<!-- tinyMCE -->\n";
-    $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
-    $str.= "<script type=\"text/javascript\">\n";
-    $str.= "<!--\n";
-    $str.= "    tinyMCE.init({\n";
-    $str.= "        // General options\n";
-    $str.= "        mode : \"textareas\",\n";
-    $str.= "        editor_selector : /(post_content|edit_signature_content|admin_startpage_textarea)/,\n";
-    $str.= "        theme : \"advanced\",\n";
-    $str.= "        force_br_newlines : true,\n";
-    $str.= "        forced_root_block : '',\n";
-    $str.= "        inline_styles : false,\n";
-    $str.= "        auto_focus : '$tinymce_auto_focus',\n";
-    $str.= "        plugins : \"safari,table,inlinepopups,paste,beehive\",\n\n";
-    $str.= "        // Theme options\n";
-    $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
-    $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,code,removeformat,|,visualaid,|,tablecontrols\",\n";
-    $str.= "        theme_advanced_buttons3 : \"forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,bhquote,bhcode,bhspoiler,bhnoemots,bhspellcheck\",\n";
-    $str.= "        extended_valid_elements : \"b,marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
-    $str.= "        invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\",\n";
-    $str.= "        theme_advanced_toolbar_location : \"top\",\n";
-    $str.= "        theme_advanced_toolbar_align : \"left\",\n";
-    $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\"\n";
-    $str.= "    });\n\n";
-    $str.= "    function clear_focus() { return; };\n\n";
-    $str.= "    function auto_spell_check()\n";
-    $str.= "    {\n";
-    $str.= "        if (tinyMCE.activeEditor.getContent().length == 0) return true;\n\n";
-    $str.= "        if (\$('#t_check_spelling').is(':checked') && !auto_spell_check_started) {\n";
-    $str.= "            auto_spell_check_started = true;\n";
-    $str.= "            open_spell_check(tinyMCE.activeEditor.id);\n";
-    $str.= "            return false;\n";
-    $str.= "        }\n";
-    $str.= "    }\n\n";
-    $str.= "    function read_content(obj_id) {\n";
-    $str.= "        return tinyMCE.activeEditor.getContent();\n";
-    $str.= "    }\n\n";
-    $str.= "    function update_content(obj_id, content) {\n";
-    $str.= "        tinyMCE.activeEditor.setContent(content);\n";
-    $str.= "    }\n\n";
-    $str.= "    function add_text(text)\n";
-    $str.= "    {\n";
-    $str.= "        if (tinyMCE.activeEditor.getContent().length < 1) {\n\n";
-    $str.= "            tinyMCE.activeEditor.setContent('');\n";
-    $str.= "        }\n\n";
-    $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
-    $str.= "    }\n";
-    $str.= "//-->\n";
-    $str.= "</script>\n";
-    $str.= "<!-- /tinyMCE -->\n";
-
-    return $str;
-}
-
-/* Example of usage:
-
-html_draw_top("htmltools.js");
-
-$tools = new TextAreaHTML("myFormName");
-
-echo '<form accept-charset=\"utf-8\" name="myFormName">';
-echo $tools->toolbar();
-echo $tools->textarea("textarea_name", "content for textarea", 20, 0);
-echo $tools->textarea("textarea_2_name", "content for textarea 2", 20, 0);
-echo $tools->js();
-echo '</form>'; */
-
 class TextAreaHTML
 {
-    private $form;                      // name of the form the textareas will belong to
+    private $textareas = array();
 
-    private $textareas = array();       // array of all the html-enabled textarea's names
+    private $toolbar_count = 0;
 
-    private $toolbar_count = 0;         // count of all the generated toolbars
+    public $allowed_toolbars = 1;
 
-    private $allowed_toolbars = 1;      // number of allowed TinyMCE toolbars, default 1
+    public $tinymce = false;
 
-    private $tinymce = false;           // marker if the TinyMCE editor is being used
+    public $autofocus = false;
 
-    public function __construct($form)
+    public $emoticons = false;
+
+    public function __construct()
     {
-        $this->form = $form;
-
         if (@file_exists("tiny_mce/tiny_mce.js")) {
 
             $page_prefs = bh_session_get_post_page_prefs();
@@ -139,27 +70,20 @@ class TextAreaHTML
         }
     }
 
-    // ----------------------------------------------------
-    // Returns true if the TinyMCE editor is being used
-    // ----------------------------------------------------
-
     public function get_tinymce()
     {
         return $this->tinymce;
     }
 
-    // ----------------------------------------------------
-    // Enables/disables the TinyMCE toolbar
-    // ----------------------------------------------------
-
     public function set_tinymce($bool)
     {
-        $this->tinymce = ($bool == true) ? true : false;
+        $this->tinymce = ($bool === true) ? true : false;
     }
 
-    // ----------------------------------------------------
-    // Sets the number of allowed HTML toolbars per page
-    // ----------------------------------------------------
+    public function set_autofocus($bool)
+    {
+        $this->autofocus = ($bool === true) ? true : false;
+    }
 
     public function set_allowed_toolbars($num)
     {
@@ -168,9 +92,6 @@ class TextAreaHTML
         }
     }
 
-    // ----------------------------------------------------
-    // Returns the HTML for the toolbar
-    // ----------------------------------------------------
     public function toolbar($emoticons = true, $custom_html = '')
     {
         if ($this->tinymce || $this->toolbar_count >= $this->allowed_toolbars) return '';
@@ -259,11 +180,7 @@ class TextAreaHTML
         return $str;
     }
 
-    // --------------------------------------------------------------------------
-    // Returns the HTML for the reduced functionality toolbar used in Quick Reply
-    // --------------------------------------------------------------------------
-
-    function toolbar_reduced($emoticons = true)
+    public function toolbar_reduced($emoticons = true)
     {
         if ($this->tinymce || $this->toolbar_count >= $this->allowed_toolbars) return '';
 
@@ -288,19 +205,15 @@ class TextAreaHTML
         return $str;
     }
 
-
-    // ----------------------------------------------------
-    // Returns a HTML toolbar-enabled textarea
-    // Takes the same arguments as form_textarea in form.inc.php
-    // ----------------------------------------------------
-
-    function textarea ($name, $value = false, $rows = false, $cols = false, $custom_html = "", $class = "bhinputtext", $allow_tiny_mce = true)
+    public function textarea($name, $value = false, $rows = false, $cols = false, $custom_html = "", $class = "bhinputtext")
     {
         $this->textareas[] = $name;
 
         $str = '';
 
-        $class.= ' htmltools';
+        if ($this->autofocus) {
+            $class.= ' autofocus';
+        }
 
         if ($this->tinymce) {
 
@@ -312,12 +225,12 @@ class TextAreaHTML
 
                 $rows+= 5;
 
-                if ($allow_tiny_mce === true) {
-                    $custom_html.= ' mce_editable="true"';
-                }
+                $class.= ' tinymce_editor';
             }
 
         }else {
+
+            $class.= ' htmltools';
 
             $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         }
@@ -327,13 +240,7 @@ class TextAreaHTML
         return $str;
     }
 
-    // ----------------------------------------------------
-    // Generate the "see what fixhtml changed" radio buttons
-    //        $ta = name of textarea
-    //        $text = 'original' code submitted to fixhtml
-    // ----------------------------------------------------
-
-    function compare_original($textarea, MessageText $text)
+    public function compare_original($textarea, MessageText $text)
     {
         $lang = load_language_file();
 
@@ -344,17 +251,10 @@ class TextAreaHTML
         return $str;
     }
 
-    // ----------------------------------------------------
-    // Internal function - returns HTML for toolbar image
-    // ----------------------------------------------------
-
     protected function toolbar_img($title, $action, $image_name = "blank.png")
     {
         return "<a rel=\"$action\"><img src=\"". style_image($image_name). "\" alt=\"{$title}\" title=\"{$title}\" class=\"tools_up\" /></a>";
     }
-
-    // ----------------------------------------------------
-
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.182 2009-09-12 13:30:18 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.183 2010-01-15 21:29:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -638,6 +638,25 @@ function array_isearch($needle, $haystack)
 }
 
 /**
+* array_keys_exists
+*
+* Search an array for all the keys
+*
+* @param array $array
+* @param mixed $key, [$key, [...]]
+*/
+function array_keys_exist()
+{
+    $keys = func_get_args();
+
+    $array = array_shift($keys);
+
+    if (!is_array($array)) return false;
+
+    return array_intersect($keys, array_keys($array)) === $keys;
+}
+
+/**
 * Validate MD5 hash.
 *
 * Checks that MD5 hash contains valid caharacters and is required length.
@@ -840,9 +859,9 @@ function implode_assoc($array, $separator = ': ', $glue = ', ')
     if (!is_array($array)) return false;
     if (!is_string($separator)) return false;
     if (!is_string($glue)) return false;
-    
+
     $result_array = array();
-    
+
     foreach ($array as $key => $value) {
         $result_array[] = $key. $separator. $value;
     }

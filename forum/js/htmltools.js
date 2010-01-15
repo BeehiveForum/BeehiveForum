@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.36 2010-01-10 14:26:27 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.37 2010-01-15 21:29:06 decoyduck Exp $ */
 
 var htmltools = function()
 {
@@ -680,6 +680,16 @@ var htmltools = function()
             return;
         },
 
+        get_content : function()
+        {
+            return active_field.value;
+        },
+
+        set_content : function(content)
+        {
+            active_field.value = content;
+        },
+
         change_attribute : function(tag, a, v)
         {
             tag = tag.substr(1, tag.length - 2);
@@ -778,24 +788,14 @@ var htmltools = function()
 
         auto_spell_check : function()
         {
-            var form_obj;
-
-            if (document.getElementsByName) {
-                form_obj = document.getElementsByName('t_check_spelling')[0];
-            }else if (document.all) {
-                form_obj = document.all.t_check_spelling;
-            }else if (document.layer) {
-                form_obj = document.t_check_spelling;
-            }else {
-                return true;
-            }
-
             if (active_field.value.length == 0) return true;
 
             if (form_obj.checked == true && !auto_check_spell_started) {
 
                 auto_check_spell_started = true;
-                openSpellCheck(beehive.webtag);
+
+                this.open_spell_check();
+
                 return false;
             }
         },

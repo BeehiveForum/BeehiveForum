@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.385 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: post.php,v 1.386 2010-01-15 21:29:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -864,7 +864,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_c
     exit;
 }
 
-html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js');
+html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js');
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 

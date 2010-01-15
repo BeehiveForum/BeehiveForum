@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.279 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: edit.php,v 1.280 2010-01-15 21:29:05 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -669,7 +669,7 @@ if (isset($_POST['preview'])) {
 
 $page_title = sprintf($lang['editmessage'], $edit_msg);
 
-html_draw_top("title=$page_title", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js");
+html_draw_top("title=$page_title", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js");
 
 echo "<h1>$page_title</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.390 2010-01-10 14:26:26 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.391 2010-01-16 14:41:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -954,14 +954,9 @@ function user_search_array_clean($user_search)
     return db_escape_string(trim(str_replace("%", "", $user_search)));
 }
 
-function user_search($user_search, $offset = 0, $exclude_uid = 0)
+function user_search($user_search, $selected_array = array())
 {
     if (!$db_user_search = db_connect()) return false;
-
-    if (!is_numeric($offset)) return false;
-    if (!is_numeric($exclude_uid)) return false;
-
-    $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -979,13 +974,12 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     // Main query.
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM USER USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-    $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
+    $sql.= "LIMIT 10";
 
     if (!$result = db_query($sql, $db_user_search)) return false;
 
@@ -1014,11 +1008,6 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
             $user_array[$user_data['UID']] = $user_data;
         }
-
-    }else if ($user_count > 0) {
-
-        $offset = floor(($user_count - 1) / 10) * 10;
-        return user_search($user_search, $offset, $exclude_uid);
     }
 
     return array('results_count' => $user_count,

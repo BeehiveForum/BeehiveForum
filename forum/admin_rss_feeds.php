@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.75 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.76 2010-01-16 14:41:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -510,7 +510,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
-    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array(stripslashes_array($_POST['t_user_new'])) : ""), 30, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_user_new\" class=\"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array(stripslashes_array($_POST['t_user_new'])) : ""), 30, 15, SEARCH_LOGON, false), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
@@ -575,7 +575,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['editfeed']} » {$rss_feed['NAME']}");
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['editfeed']} » {$rss_feed['NAME']}", 'search_popup.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
 
@@ -640,7 +640,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
-    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_user", (isset($_POST['t_user']) ? htmlentities_array(stripslashes_array($_POST['t_user'])) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_user\" class=\"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a>", form_input_hidden("t_user_old", (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), "</div></td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_user", (isset($_POST['t_user']) ? htmlentities_array(stripslashes_array($_POST['t_user'])) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15, SEARCH_LOGON, false), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.157 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.158 2010-01-16 14:41:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -498,7 +498,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
+    html_display_success_msg($lang['preferencesupdated'], '600', 'left', 'preferences_updated');
 }
 
 echo "<br />\n";

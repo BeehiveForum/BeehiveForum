@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.136 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.137 2010-01-16 14:41:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -570,7 +570,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     $thread_title_display = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank");
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", 'search_popup.js');
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -762,7 +762,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("merge_thread", "", 28, 15, "", "merge_thread_id"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=2&amp;obj_name=merge_thread\" onclick=\"return openThreadSearch('$webtag', 'merge_thread');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("merge_thread", "", 28, 15, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -809,7 +809,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text('merge_thread', '', 26, 0, "", "merge_thread_id"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openThreadSearch('$webtag', 'merge_thread');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search('merge_thread', '', 26, false, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";

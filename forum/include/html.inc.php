@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.363 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.364 2010-01-16 14:41:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -91,13 +91,13 @@ function html_guest_error()
     }
 }
 
-function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
+function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
 {
      $lang = load_language_file();
-     html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target, $align);
+     html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target, $align, $id);
 }
 
-function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
+function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
 {
     $webtag = get_webtag();
 
@@ -124,7 +124,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
         }
     }
 
-    echo "  <div align=\"$align\">\n";
+    echo "  <div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"message_box\">\n";
     echo "      <tr>\n";
     echo "        <td align=\"left\">\n";
@@ -184,7 +184,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     }
 }
 
-function html_display_error_array($error_list_array, $width = '600', $align = 'center')
+function html_display_error_array($error_list_array, $width = '600', $align = 'center', $id = false)
 {
     $lang = load_language_file();
 
@@ -197,7 +197,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\">\n";
+    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
@@ -214,7 +214,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "</div>\n";
 }
 
-function html_display_success_msg($string_msg, $width = '600', $align = 'center')
+function html_display_success_msg($string_msg, $width = '600', $align = 'center', $id = false)
 {
     $lang = load_language_file();
 
@@ -225,7 +225,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\">\n";
+    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
@@ -235,7 +235,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "</div>\n";
 }
 
-function html_display_error_msg($string_msg, $width = '600', $align = 'center')
+function html_display_error_msg($string_msg, $width = '600', $align = 'center', $id = false)
 {
     $lang = load_language_file();
 
@@ -246,7 +246,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\">\n";
+    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
@@ -256,7 +256,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
     echo "</div>\n";
 }
 
-function html_display_warning_msg($string_msg, $width = '600', $align = 'center')
+function html_display_warning_msg($string_msg, $width = '600', $align = 'center', $id = false)
 {
     $lang = load_language_file();
 
@@ -267,7 +267,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\">\n";
+    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
@@ -275,19 +275,6 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
-}
-
-function html_display_success_msg_js($string_msg, $width = '600', $align = 'center')
-{
-    ob_start();
-
-    html_display_success_msg($string_msg, $width, $align);
-
-    $html_display_success_msg_html = ob_get_contents();
-
-    ob_end_clean();
-
-    return html_js_safe_str($html_display_success_msg_html);
 }
 
 function html_user_banned()

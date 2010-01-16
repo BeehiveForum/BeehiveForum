@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.247 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: search.php,v 1.248 2010-01-16 14:41:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -461,7 +461,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     if (($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir))) {
 
-        html_draw_top("search.js");
+        html_draw_top('search.js', 'search_popup.js');
 
         thread_list_draw_top(SEARCH_RESULTS);
 
@@ -545,7 +545,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     }else {
 
-        html_draw_top("search.js");
+        html_draw_top('search.js', 'search_popup.js');
 
         thread_list_draw_top(SEARCH_RESULTS);
 
@@ -590,7 +590,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     exit;
 }
 
-html_draw_top("search.js");
+html_draw_top('search.js', 'search_popup.js');
 
 echo "<h1>{$lang['searchmessages']}</h1>\n";
 
@@ -695,7 +695,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, 0, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" \"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, false, SEARCH_LOGON, false, "", "search_logon"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

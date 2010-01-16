@@ -19,29 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search_popup.js,v 1.1 2010-01-15 21:30:09 decoyduck Exp $ */
-
-function return_result(obj_id, $data) {
-
-    var $search_input = $('#' + obj_id);
-
-    if ($search_input.length > 0) {
-
-        $search_container = $search_input.closest('div.bhinputsearch');
-
-        if ($search_container.length != 1) return false;
-
-        var result_array = [];
-
-        $data.each(function() {
-
-            result_array.push($(this).val());
-            return $search_input.hasClass('allow_multi');
-        });
-
-        $search_input.find('input:text').val(result_array.join(';'));
-    }
-}
+/* $Id: search_popup.js,v 1.2 2010-01-16 14:41:16 decoyduck Exp $ */
 
 $(document).ready(function() {
 
@@ -49,30 +27,50 @@ $(document).ready(function() {
 
         $('div.bhinputsearch').each(function() {
 
+            var $container = $(this);
+
             var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
 
-            var $search_input = $(this).find('input:text');
+            var $search_input = $container.find('input:text');
 
             if ($search_input.length != 1) return false;
 
-            var popup_query = { 'webtag'   : beehive.webtag,
-                                'obj_id'   : $search_input.attr('id'),
-                                'type'     : $(this).hasClass('search_logon') ? 1 : 2,
-                                'multi'    : $(this).hasClass('allow_multi') ? 'Y' : 'N',
-                                'selected' : $search_input.val() };
-
             $search_button.bind('click', function() {
+
+                var popup_query = { 'webtag'   : beehive.webtag,
+                                    'obj_id'   : $search_input.attr('id'),
+                                    'type'     : $container.hasClass('search_logon') ? 1 : 2,
+                                    'multi'    : $container.hasClass('allow_multi') ? 'Y' : 'N',
+                                    'selected' : $search_input.val() };
+
                 window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
             });
 
-            $search_button.appendTo($(this));
+            $search_button.appendTo($container);
         });
 
         $('#select').bind('click', function() {
 
             var obj_id = $('#obj_id').val();
 
-            window.opener.return_result(obj_id, $('input#selected:checked'));
+            var $search_input = $('#' + obj_id, window.opener.document);
+
+            if ($search_input.length > 0) {
+
+                $search_container = $search_input.closest('div.bhinputsearch');
+
+                if ($search_container.length != 1) return false;
+
+                var result_array = [];
+
+                $('input[name^=selected]:checked').each(function() {
+
+                    result_array.push($(this).val());
+                    return $search_container.hasClass('allow_multi');
+                });
+
+                $search_input.val(result_array.join(';'));
+            }
 
             window.close();
         });

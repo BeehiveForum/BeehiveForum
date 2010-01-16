@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.235 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.236 2010-01-16 14:41:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -803,7 +803,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top("title={$lang['privatemessages']} » {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("title={$lang['privatemessages']} » {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "search_popup.js", "basetarget=_blank");
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['sendnewpm']}</h1>\n";
 
@@ -914,7 +914,7 @@ if (($friends_array = pm_user_get_friends())) {
     echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_OTHERS, $lang['others'], (isset($to_radio) && $to_radio == POST_RADIO_OTHERS) ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -926,7 +926,7 @@ if (($friends_array = pm_user_get_friends())) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;allow_multi=Y&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "</td>\n";
     echo "                      </tr>\n";
 }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.386 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: post.php,v 1.387 2010-01-16 14:41:15 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -864,7 +864,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_c
     exit;
 }
 
-html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js');
+html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js');
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 
@@ -1012,7 +1012,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, false, "post_to_others"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_to_uid_others\" class=\"logon_search\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_to_uid_others", "", false, false, SEARCH_LOGON, false, "", "post_to_others"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";

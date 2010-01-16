@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.177 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.178 2010-01-16 14:41:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1240,13 +1240,9 @@ function thread_can_be_undeleted($tid)
     return ($length > 0);
 }
 
-function thread_search($thread_search, $offset = 0)
+function thread_search($thread_search, $selected_array = array())
 {
     if (!$db_thread_search = db_connect()) return false;
-
-    if (!is_numeric($offset)) return false;
-
-    $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1256,13 +1252,22 @@ function thread_search($thread_search, $offset = 0)
 
     $thread_search = db_escape_string(str_replace("%", "", $thread_search));
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, ";
-    $sql.= "FOLDER.PREFIX FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $selected_array = array_filter($selected_array, 'is_numeric');
+
+    $sql = "SELECT DISTINCT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TITLE LIKE '$thread_search%' ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
-    $sql.= "LIMIT $offset, 10";
+
+    if (sizeof($selected_array) > 0) {
+
+        $selected = implode(', ', $selected_array);
+        $sql.= "AND THREAD.TID NOT IN ($selected) ";
+    }
+
+    $sql.= "LIMIT 10";
 
     if (!$result = db_query($sql, $db_thread_search)) return false;
 
@@ -1278,16 +1283,8 @@ function thread_search($thread_search, $offset = 0)
 
         while (($thread_data = db_fetch_array($result))) {
 
-            if (!isset($results_array[$thread_data['TID']])) {
-
-                $results_array[$thread_data['TID']] = $thread_data;
-            }
+            $results_array[$thread_data['TID']] = $thread_data;
         }
-
-    }else if ($results_count > 0) {
-
-        $offset = floor(($results_count - 1) / 10) * 10;
-        return thread_search($thread_search, $offset);
     }
 
     return array('results_count' => $results_count,

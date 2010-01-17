@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.20 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.21 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -230,7 +230,7 @@ if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['foldersubscriptions']} » {$header_text_array[$view_filter]}", 'edit_subscriptions.js');
+html_draw_top("title={$lang['mycontrols']} Â» {$lang['foldersubscriptions']} Â» {$header_text_array[$view_filter]}", 'edit_subscriptions.js');
 
 echo "<h1>{$lang['foldersubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
 

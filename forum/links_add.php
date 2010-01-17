@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.114 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.115 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -312,7 +312,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
 if ($mode == LINKS_ADD_LINK) {
 
-    html_draw_top("title={$lang['links']} » {$lang['addlink']}");
+    html_draw_top("title={$lang['links']} Â» {$lang['addlink']}");
 
     echo "<h1>{$lang['links']} &raquo; {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
@@ -375,7 +375,7 @@ if ($mode == LINKS_ADD_LINK) {
 
 }elseif ($mode == LINKS_ADD_FOLDER) {
 
-    html_draw_top("title={$lang['links']} » {$lang['addnewfolder']}");
+    html_draw_top("title={$lang['links']} Â» {$lang['addnewfolder']}");
 
     echo "<h1>{$lang['links']} &raquo; {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";

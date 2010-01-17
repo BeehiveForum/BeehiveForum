@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.79 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.80 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -240,7 +240,7 @@ if (!$group = perm_get_group($gid)) {
     exit;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$group['GROUP_NAME']} » {$lang['addremoveusers']}");
+html_draw_top("title={$lang['admin']} Â» {$lang['manageusergroups']} Â» {$group['GROUP_NAME']} Â» {$lang['addremoveusers']}");
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 

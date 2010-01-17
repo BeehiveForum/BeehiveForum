@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.162 2010-01-17 11:31:49 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.163 2010-01-17 11:37:17 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -256,7 +256,7 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} Â» {$lang['adminaccesslog']}");
+html_draw_top("title={$lang['admin']} » {$lang['adminaccesslog']}");
 
 $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 

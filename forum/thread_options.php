@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.138 2010-01-17 11:31:49 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.139 2010-01-17 11:37:17 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -570,7 +570,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     $thread_title_display = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-    html_draw_top("title={$lang['threadoptions']} Â» $thread_title_display", "basetarget=_blank", 'search_popup.js');
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", 'search_popup.js');
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -1036,7 +1036,7 @@ if ($thread_data['DELETED'] == 'N') {
 
 }else if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-    html_draw_top("title={$lang['threadoptions']} Â» $thread_title_display", "basetarget=_blank");
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank");
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 

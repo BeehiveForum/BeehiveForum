@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.130 2010-01-17 11:31:49 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.131 2010-01-17 11:37:17 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -314,7 +314,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top("title={$lang['admin']} Â» {$lang['wordfilter']} Â» {$lang['addwordfilter']}");
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['addwordfilter']}");
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
 
@@ -413,7 +413,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} Â» {$lang['wordfilter']} Â» {$lang['editwordfilter']}");
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['editwordfilter']}");
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
 
@@ -489,7 +489,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} Â» {$lang['wordfilter']}");
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']}");
 
     $word_filter_array = admin_get_word_filter_list($start);
 

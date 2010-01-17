@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_folder_edit.php,v 1.23 2010-01-17 11:31:49 decoyduck Exp $ */
+/* $Id: links_folder_edit.php,v 1.24 2010-01-17 11:37:17 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -193,7 +193,7 @@ if (isset($_POST['update'])) {
     exit;
 }
 
-html_draw_top("title={$lang['links']} Â» {$lang['editfolder']}");
+html_draw_top("title={$lang['links']} » {$lang['editfolder']}");
 
 echo "<h1>{$lang['links']} &raquo; {$lang['editfolder']}</h1>\n";
 echo "<p>{$lang['editingfolder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";

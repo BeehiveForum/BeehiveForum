@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.40 2010-01-12 21:38:28 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.41 2010-01-17 12:35:14 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -124,6 +124,7 @@ if ($font_size > 15) $font_size = 15;
 
 $css_selectors = array('body'                          => array(10, 'pt'),
                        '.navpage'                      => array(10, 'px'),
+                       '.forumlinks'                   => array(10, 'pt'),
                        'p'                             => array(10, 'pt'),
                        'h1'                            => array(10, 'pt'),
                        'h2'                            => array(10, 'pt'),

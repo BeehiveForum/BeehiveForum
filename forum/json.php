@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: json.php,v 1.1 2010-01-10 14:34:29 decoyduck Exp $ */
+/* $Id: json.php,v 1.2 2010-01-17 12:35:14 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -100,6 +100,18 @@ if (!forum_check_webtag_available($webtag)) {
 
 $lang = load_language_file();
 
+// Required language strings. Add here the keys
+// of the required language strings to be returned
+// as the JSON response.
+
+$lang_required = array('fixhtmlexplanation',
+                       'imageresized',
+                       'deletemessagesconfirmation',
+                       'unquote',
+                       'quote',
+                       'searchsuccessfullycompleted',
+                       'confirmmarkasread');
+
 // JSON header
 
 header('Content-type: application/json; charset=UTF-8', true);
@@ -108,7 +120,7 @@ header('Content-type: application/json; charset=UTF-8', true);
 
 $json_data = array('success'   => true,
                    'webtag'    => $webtag,
-                   'lang'      => $lang,
+                   'lang'      => array_intersect_key($lang, array_flip($lang_required)),
                    'images'    => array(),
                    'font_size' => bh_session_get_value('FONT_SIZE'),
                    'top_html'  => html_get_top_page(),

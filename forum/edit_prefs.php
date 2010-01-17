@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.121 2010-01-17 11:31:49 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.122 2010-01-17 11:37:17 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -538,7 +538,7 @@ if (isset($_POST['save'])) {
 
                             perm_user_apply_email_confirmation($uid);
 
-                            html_draw_top("title={$lang['mycontrols']} Â» {$lang['userdetails']} Â» {$lang['emailaddresschanged']}");
+                            html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']} » {$lang['emailaddresschanged']}");
                             html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
                             html_draw_bottom();
                             exit;
@@ -645,13 +645,13 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} Â» {$lang['userdetails']} Â» ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js');
+    html_draw_top("title={$lang['admin']} » {$lang['userdetails']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} Â» {$lang['userdetails']}");
+    html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']}");
 
     echo "<h1>{$lang['userdetails']}</h1>\n";
 }

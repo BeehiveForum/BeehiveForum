@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.96 2010-01-17 11:31:49 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.97 2010-01-17 11:37:17 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -226,7 +226,7 @@ $user_prefs = user_get_prefs($uid);
 
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
-html_draw_top("title={$lang['mycontrols']} Â» {$lang['emailandprivacy']}");
+html_draw_top("title={$lang['mycontrols']} » {$lang['emailandprivacy']}");
 
 echo "<h1>", htmlentities_array($lang['emailandprivacy']), "</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.58 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.59 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -197,7 +197,7 @@ $poll_user_count = 0;
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("title=$thread_title » {$poll_data['QUESTION']}", 'pm_popup_disabled');
+html_draw_top("title=$thread_title Â» {$poll_data['QUESTION']}", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";

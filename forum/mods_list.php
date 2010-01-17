@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.49 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.50 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -138,7 +138,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 $folder_title = folder_get_title($fid);
 
-html_draw_top("title={$folder_title} » {$lang['moderatorlist']}", 'pm_popup_disabled');
+html_draw_top("title={$folder_title} Â» {$lang['moderatorlist']}", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";

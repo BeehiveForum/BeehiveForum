@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.123 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.124 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -294,7 +294,7 @@ $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0))
 
 $links_folder_path = links_display_folder_path($link['FID'], $folders, true, true, "links.php?webtag=$webtag");
 
-html_draw_top("title={$lang['links']} » $links_folder_path");
+html_draw_top("title={$lang['links']} Â» $links_folder_path");
 
 echo "<h1>{$lang['links']} &raquo; $links_folder_path &raquo; <a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
 

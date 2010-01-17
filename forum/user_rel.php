@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.131 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.132 2010-01-17 11:31:49 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -264,7 +264,7 @@ if (isset($_POST['reset_nickname'])) {
 
 $peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
 
-html_draw_top("title={$lang['userrelationship']} » $peer_user_display");
+html_draw_top("title={$lang['userrelationship']} Â» $peer_user_display");
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 

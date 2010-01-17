@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.51 2010-01-16 14:41:16 decoyduck Exp $ */
+/* $Id: general.js,v 1.52 2010-01-17 12:35:14 decoyduck Exp $ */
 
 var beehive = {
 
@@ -44,19 +44,28 @@ var beehive = {
 
     resize_fonts : function() {
 
-        top.document.body.rows = '60,' + Math.max(beehive.font_size * 2, 22) + ',*';
+        if (top.document.body.rows) {
+            top.document.body.rows = '60,' + Math.max(beehive.font_size * 2, 22) + ',*';
+        }
 
         beehive.process_frames(top.document.body, function() {
+            if (!this.contentDocument) return;
+            beehive.reload_user_font.call($(this.contentDocument).find('head').get(0));
+        });
+        
+        beehive.reload_user_font.call($('body').parent().find('head').get(0));        
+    },
+    
+    reload_user_font : function() {
+        
+        var $head = $(this);
 
-            var $head = $(this.contentDocument).find('head');
-
-            $.ajax({
-                'url' : 'font_size.php',
-                'data' : { 'webtag' : beehive.webtag },
-                'success' : function(data) {
-                    $head.find('style[title="user_font"]').html(data).appendTo($head);
-                }
-            });
+        $.ajax({
+            'url' : 'font_size.php',
+            'data' : { 'webtag' : beehive.webtag },
+            'success' : function(data) {
+                $head.find('style[title="user_font"]').html(data).appendTo($head);
+            }
         });
     }
 }
@@ -139,6 +148,8 @@ $(document).ready(function() {
             beehive.resize_fonts();
             return false;
         });
+        
+        $('title', top.document).text($('title').text());
     });
 
     $.getJSON('json.php', { }, function(data) {

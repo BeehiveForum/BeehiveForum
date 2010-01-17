@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.364 2010-01-16 14:41:16 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.365 2010-01-17 11:34:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -890,7 +890,7 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    html_include_javascript('./js/jquery.min.js');
+    html_include_javascript('./js/jquery-1.4.js');
     html_include_javascript('./js/jquery.sprintf.js');
     html_include_javascript('./js/jquery.parsequery.js');
     html_include_javascript('./js/general.js');

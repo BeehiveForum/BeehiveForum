@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: json.php,v 1.2 2010-01-17 12:35:14 decoyduck Exp $ */
+/* $Id: json.php,v 1.3 2010-01-18 20:07:08 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -94,6 +94,26 @@ if (!bh_session_user_approved()) {
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+}
+
+// Look for autocomplete search request
+
+if (isset($_GET['search'])) {
+    
+    $search_results_array = array();
+    
+    if (isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
+        
+        $query = trim(stripslashes_array($_GET['q']));
+        
+        $search_results_array = user_search($query);
+        
+        foreach ($search_results_array['results_array'] as $search_result) {
+            echo json_encode(array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))), "\n";
+        } 
+    }
+    
+    exit;
 }
 
 // Load the language file.

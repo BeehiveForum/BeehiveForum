@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.248 2010-01-16 14:41:15 decoyduck Exp $ */
+/* $Id: search.php,v 1.249 2010-01-18 20:07:08 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -695,7 +695,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, false, SEARCH_LOGON, false, "", "search_logon"), "</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, false, SEARCH_LOGON, false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

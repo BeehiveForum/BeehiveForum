@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.81 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.82 2010-01-18 20:07:08 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -238,9 +238,7 @@ if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")))
 
         echo "                          <tr>\n";
         echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\">\n";
-        echo "                              <a class=\"emoticon_preview_img\" rel=\"{$emot['text']}\">\n";
-        echo "                                <img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" />\n";
-        echo "                              </a>\n";
+        echo "                              <img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" class=\"emoticon_preview_img\" />\n";
         echo "                            <td align=\"left\">";
 
         foreach ($emot['matches'] as $emot_match) {

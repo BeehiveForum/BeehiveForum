@@ -19,13 +19,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.37 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.38 2010-01-18 20:07:09 decoyduck Exp $ */
 
 var htmltools = function()
 {
     var selected_text = '';
 
-    var active_field  = '';
+    var active_field;
 
     var auto_check_spell_started = false;
 
@@ -206,9 +206,11 @@ var htmltools = function()
 
         add_tag : function(tag, a, v, enclose)
         {
+            if (!active_field) return;
+            
             if (self.tools_feedback) tools_feedback();
 
-            var single_tags = {br:true, img:true, hr:true, area:true, embed:true};
+            var single_tags = {br : true, img : true, hr : true, area : true, embed : true};
 
             if (!active_field.createTextRange && !active_field.setSelectionRange) {
 
@@ -769,7 +771,7 @@ var htmltools = function()
             var url = prompt("URL:", "http://");
 
             if (url != null) {
-                add_tag("a", "href", url);
+                htmltools.add_tag("a", "href", url);
             }
 
             return;
@@ -780,7 +782,7 @@ var htmltools = function()
             var url = prompt("Image URL:", "http://");
 
             if (url != null) {
-                add_tag("img", "src", url, true);
+                htmltools.add_tag("img", "src", url, true);
             }
 
             return;
@@ -788,7 +790,7 @@ var htmltools = function()
 
         auto_spell_check : function()
         {
-            if (active_field.value.length == 0) return true;
+            if (!active_field || active_field.value.length == 0) return true;
 
             if (form_obj.checked == true && !auto_check_spell_started) {
 
@@ -802,8 +804,7 @@ var htmltools = function()
 
         open_spell_check : function()
         {
-            if (active_field.value.length > 0) {
-
+            if (active_field && active_field.value.length > 0) {
                 dictionarywin = window.open('dictionary.php?webtag=' + beehive.webtag + '&obj_id=' + active_field.id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
             }
         },

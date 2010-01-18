@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.119 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: display.php,v 1.120 2010-01-18 20:07:08 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -243,17 +243,8 @@ if ($message) {
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
-echo "      <form accept-charset=\"utf-8\" name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
-echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-echo "        ", form_input_hidden("msg", htmlentities_array("$tid.$pid")), "\n";
-
-if (isset($_GET['print_msg']) && is_numeric($_GET['print_msg'])) {
-    echo "        ", form_submit("back", $lang['back']), "&nbsp;", form_button("print", $lang['print']), "\n";
-}else {
-    echo "        ", form_submit("back", $lang['back']), "\n";
-}
-
-echo "      </form>\n";
+echo "      <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"_self\" class=\"button\"><span>{$lang['back']}</span></a>\n";
+echo "      ", form_button("print", $lang['print']), "\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";

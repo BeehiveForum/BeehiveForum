@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.58 2010-01-11 19:59:35 decoyduck Exp $ */
+/* $Id: post.js,v 1.59 2010-01-18 20:07:09 decoyduck Exp $ */
 
 $(document).ready(function() {
 
@@ -29,24 +29,28 @@ $(document).ready(function() {
 
         $('.post_options_link').bind('click', function() {
 
-            var $post_options_container = $('#post_options_container_' + $(this).attr('rel'));
+            var $link = $(this);
+            
+            var $post_options_container = $link.next('.post_options_container');
 
             if ($post_options_container.length != 1) return;
+            
+            if ($post_options_container.is(':visible')) return;
 
-            var link_offset = $(this).offset();
+            var link_offset = $link.offset();
 
             $post_options_container.show();
 
             var container_offset = $post_options_container.offset();
 
-            if (($post_options_container.height() + container_offset.top) > $(window).height()) {
+            if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
                 $post_options_container.css('top', link_offset.top - $post_options_container.height());
             } else {
-                $post_options_container.css('top', link_offset.top + $(this).height());
+                $post_options_container.css('top', link_offset.top + $link.height());
             }
 
             $post_options_container.find('*').css('margin-left', 0);
-            $post_options_container.css('left', link_offset.left - ($post_options_container.width() - $(this).width()));
+            $post_options_container.css('left', link_offset.left - ($post_options_container.width() - $link.width()));
 
             return false;
         });
@@ -55,8 +59,22 @@ $(document).ready(function() {
 
             if ($(e.target).closest('div.post_options_container').length < 1) {
 
-                $('.post_options_container').hide();
-                $('.post_options_container').find('*').css('margin-left', -9999);
+                $('.post_options_container').each(function() {
+                    
+                    var $post_options_container = $(this);
+                    
+                    var $link = $(this).prev('a.post_options_link');
+                    
+                    if ($link.length != 1) return;
+                    
+                    var link_offset = $link.offset();
+                    
+                    $post_options_container.hide();
+                    
+                    $post_options_container.css('top', link_offset.top + $link.height());
+                    
+                    $post_options_container.find('*').css('margin-left', -9999);
+                });
             }
         });
 

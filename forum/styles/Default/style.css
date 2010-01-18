@@ -901,7 +901,7 @@ button::-moz-focus-inner {
     font-size: 9pt;
     color: #000000;
     background-color: #FFFFFF;
-    width: 169px;
+    width: 186px;
     border: 0px;
 }
 
@@ -972,7 +972,7 @@ button::-moz-focus-inner {
     color: #000000;
     background-color: #FFFFFF;
     border: 0px;
-    width: 169px;
+    width: 186px;
 }
 
 .search_input {
@@ -1458,4 +1458,40 @@ button::-moz-focus-inner {
 .google_adsense_register_note a:hover {
     text-decoration: none;
     color: inherit;
+}
+
+.ac_results {
+    padding: 0px;
+    border: 1px solid black;
+    background-color: white;
+    overflow: hidden;
+    z-index: 99999;
+}
+
+.ac_results ul {
+    width: 100%;
+    list-style-position: outside;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ac_results li {
+    margin: 0px;
+    padding: 2px 5px;
+    cursor: default;
+    display: block;
+    font: menu;
+    font-size: 12px;
+    line-height: 16px;
+    overflow: hidden;
+}
+
+.ac_odd {
+    background-color: #eee;
+}
+
+.ac_over {
+    background-color: #0A246A;
+    color: white;
 }

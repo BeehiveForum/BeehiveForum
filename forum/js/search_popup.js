@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search_popup.js,v 1.2 2010-01-16 14:41:16 decoyduck Exp $ */
+/* $Id: search_popup.js,v 1.3 2010-01-18 20:07:09 decoyduck Exp $ */
 
 $(document).ready(function() {
 
@@ -29,12 +29,12 @@ $(document).ready(function() {
 
             var $container = $(this);
 
-            var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
-
             var $search_input = $container.find('input:text');
 
             if ($search_input.length != 1) return false;
-
+            
+            var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
+            
             $search_button.bind('click', function() {
 
                 var popup_query = { 'webtag'   : beehive.webtag,
@@ -47,6 +47,31 @@ $(document).ready(function() {
             });
 
             $search_button.appendTo($container);
+            
+            $search_button.load(function() {
+                $search_input.css('width', $search_input.width() - $(this).width());
+            });
+            
+            if ($container.hasClass('search_logon')) {
+            
+                $search_input.autocomplete('json.php', {
+                    
+                    selectFirst : false,
+                    
+                    extraParams : { 'ajax'   : true,
+                                    'search' : true },
+                    
+                    formatItem : function(item) {
+                        var data = JSON.parse(item);
+                        return $.sprintf('%s (%s)', data['NICKNAME'], data['LOGON']);
+                    },
+                    
+                    formatResult : function(item) {
+                        var data = JSON.parse(item);
+                        return data['LOGON'];
+                    }
+                });
+            }
         });
 
         $('#select').bind('click', function() {

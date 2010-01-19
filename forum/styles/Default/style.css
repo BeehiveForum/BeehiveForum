@@ -1462,7 +1462,10 @@ button::-moz-focus-inner {
 
 .ac_results {
     padding: 0px;
-    border: 1px solid black;
+    border-top: 1px solid #82827E;
+    border-left: 1px solid #82827E;
+    border-right: 1px solid #F9F9F6;
+    border-bottom: 1px solid #F9F9F6;
     background-color: white;
     overflow: hidden;
     z-index: 99999;
@@ -1488,10 +1491,17 @@ button::-moz-focus-inner {
 }
 
 .ac_odd {
-    background-color: #eee;
+    border-bottom: 1px solid #C8D7E6;
+}
+
+.ac_even {
+    border-bottom: 1px solid #C8D7E6;
 }
 
 .ac_over {
-    background-color: #0A246A;
-    color: white;
+    background-color: #EAEFF4;
+}
+
+.ac_results li:last-child {
+    border: none;
 }

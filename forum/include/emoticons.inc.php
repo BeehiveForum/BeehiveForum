@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.95 2010-01-18 20:07:08 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.96 2010-01-23 10:21:37 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -187,7 +187,7 @@ function emoticons_get_browser_fix()
 {
     $emoticons_browser_fix = "</span>";
 
-    if (browser_check(BROWSER_KONQUEROR | BROWSER_SAFARI | BROWSER_MSIE7)) {
+    if (browser_check(BROWSER_KONQUEROR | BROWSER_SAFARI | BROWSER_CHROME | BROWSER_MSIE7)) {
 
         $emoticons_browser_fix = "&nbsp;</span>";
 
@@ -291,34 +291,16 @@ function emoticons_get_available($include_text_none = true)
 
         while ((@$file = readdir($dir)) !== false) {
 
-            if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
-
-                 if (preg_match("/^none$|^text$/Diu", $file) > 0) {
-
-                     if ($include_text_none === true) {
-
-                         if (@file_exists("emoticons/$file/desc.txt")) {
-
-                             $pack_name = implode("", file("emoticons/$file/desc.txt"));
-                             $emoticon_sets_txtnon[$file] = htmlentities_array($pack_name);
-
-                         }else {
-
-                             $emoticon_sets_txtnon[$file] = htmlentities_array($file);
-                         }
-                     }
-
-                 }else if (@file_exists("emoticons/$file/style.css")) {
-
-                     if (@file_exists("emoticons/$file/desc.txt")) {
-
-                         $pack_name = implode("", file("emoticons/$file/desc.txt"));
-                         $emoticon_sets_normal[$file] = htmlentities_array($pack_name);
-
-                     }else {
-
-                         $emoticon_sets_normal[$file] = htmlentities_array($file);
-                     }
+            if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
+                
+                if ((@file_exists("emoticons/$file/style.css") && filesize("emoticons/$file/style.css") > 0) || (preg_match("/^none$|^text$/Diu", $file) > 0 && ($include_text_none === true))) { 
+                
+                    if (@file_exists("emoticons/$file/desc.txt")) {
+                        $pack_name = implode('', file("emoticons/$file/desc.txt"));
+                    }
+                         
+                    $pack_name = (isset($pack_name) && strlen(trim($pack_name)) > 0) ? $pack_name : $file;
+                    $emoticon_sets_txtnon[$file] = htmlentities_array($pack_name);
                  }
              }
         }

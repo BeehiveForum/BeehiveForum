@@ -19,87 +19,82 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search_popup.js,v 1.3 2010-01-18 20:07:09 decoyduck Exp $ */
+/* $Id: search_popup.js,v 1.4 2010-01-24 20:07:10 decoyduck Exp $ */
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    $('div.bhinputsearch').each(function() {
 
-        $('div.bhinputsearch').each(function() {
+        var $container = $(this);
 
-            var $container = $(this);
+        var $search_input = $container.find('input:text');
 
-            var $search_input = $container.find('input:text');
+        if ($search_input.length != 1) return false;
+        
+        var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
+        
+        $search_button.bind('click', function() {
 
-            if ($search_input.length != 1) return false;
-            
-            var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
-            
-            $search_button.bind('click', function() {
+            var popup_query = { 'webtag'   : beehive.webtag,
+                                'obj_id'   : $search_input.attr('id'),
+                                'type'     : $container.hasClass('search_logon') ? 1 : 2,
+                                'multi'    : $container.hasClass('allow_multi') ? 'Y' : 'N',
+                                'selected' : $search_input.val() };
 
-                var popup_query = { 'webtag'   : beehive.webtag,
-                                    'obj_id'   : $search_input.attr('id'),
-                                    'type'     : $container.hasClass('search_logon') ? 1 : 2,
-                                    'multi'    : $container.hasClass('allow_multi') ? 'Y' : 'N',
-                                    'selected' : $search_input.val() };
-
-                window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
-            });
-
-            $search_button.appendTo($container);
-            
-            $search_button.load(function() {
-                $search_input.css('width', $search_input.width() - $(this).width());
-            });
-            
-            if ($container.hasClass('search_logon')) {
-            
-                $search_input.autocomplete('json.php', {
-                    
-                    selectFirst : false,
-                    
-                    extraParams : { 'ajax'   : true,
-                                    'search' : true },
-                    
-                    formatItem : function(item) {
-                        var data = JSON.parse(item);
-                        return $.sprintf('%s (%s)', data['NICKNAME'], data['LOGON']);
-                    },
-                    
-                    formatResult : function(item) {
-                        var data = JSON.parse(item);
-                        return data['LOGON'];
-                    }
-                });
-            }
+            window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
         });
 
-        $('#select').bind('click', function() {
-
-            var obj_id = $('#obj_id').val();
-
-            var $search_input = $('#' + obj_id, window.opener.document);
-
-            if ($search_input.length > 0) {
-
-                $search_container = $search_input.closest('div.bhinputsearch');
-
-                if ($search_container.length != 1) return false;
-
-                var result_array = [];
-
-                $('input[name^=selected]:checked').each(function() {
-
-                    result_array.push($(this).val());
-                    return $search_container.hasClass('allow_multi');
-                });
-
-                $search_input.val(result_array.join(';'));
-            }
-
-            window.close();
+        $search_button.appendTo($container);
+        
+        $search_button.load(function() {
+            $search_input.css('width', $search_input.width() - $(this).width());
         });
+        
+        if ($container.hasClass('search_logon')) {
+        
+            $search_input.autocomplete('json.php', {
+                
+                selectFirst : false,
+                
+                extraParams : { 'ajax'   : true,
+                                'search' : true },
+                
+                formatItem : function(item) {
+                    var data = JSON.parse(item);
+                    return $.sprintf('%s (%s)', data['NICKNAME'], data['LOGON']);
+                },
+                
+                formatResult : function(item) {
+                    var data = JSON.parse(item);
+                    return data['LOGON'];
+                }
+            });
+        }
     });
 
-    var return_result
+    $('#select').bind('click', function() {
+
+        var obj_id = $('#obj_id').val();
+
+        var $search_input = $('#' + obj_id, window.opener.document);
+
+        if ($search_input.length > 0) {
+
+            $search_container = $search_input.closest('div.bhinputsearch');
+
+            if ($search_container.length != 1) return false;
+
+            var result_array = [];
+
+            $('input[name^=selected]:checked').each(function() {
+
+                result_array.push($(this).val());
+                return $search_container.hasClass('allow_multi');
+            });
+
+            $search_input.val(result_array.join(';'));
+        }
+
+        window.close();
+    });
 });

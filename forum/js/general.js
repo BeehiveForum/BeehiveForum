@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.53 2010-01-18 20:07:09 decoyduck Exp $ */
+/* $Id: general.js,v 1.54 2010-01-24 20:07:10 decoyduck Exp $ */
 
 var beehive = {
 
@@ -70,99 +70,88 @@ var beehive = {
     }
 }
 
-$(document).ready(function() {
+$.ajaxSetup({
+    cache: true
+});
 
-    $.ajaxSetup({
-        cache: true
+$(beehive).bind('init', function() {
+
+    $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
+        return false;
     });
 
-    $('body').bind('init', function() {
+    $('#thread_mode').bind('change', function() {
+        $(this).closest('form').submit();
+    });
 
-        $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
-            return false;
-        });
+    $('a.popup').bind('click', function() {
 
-        $('#thread_mode').bind('change', function() {
-            $(this).closest('form').submit();
-        });
+        var class_names = $(this).attr('class').split(' ');
 
-        $('a.popup').bind('click', function() {
+        var window_options = beehive.window_options;
 
-            var class_names = $(this).attr('class').split(' ');
+        for (var key in class_names) {
 
-            var window_options = beehive.window_options;
+            if (dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key])) {
 
-            for (var key in class_names) {
-
-                if (dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key])) {
-
-                    window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
-                }
+                window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
             }
+        }
 
-            window.open($(this).attr('href'), $(this).attr('id'), window_options.join(','));
+        window.open($(this).attr('href'), $(this).attr('id'), window_options.join(','));
 
-            return false;
-        });
+        return false;
+    });
 
-        $('button#close_popup').bind('click', function() {
-            window.close();
-        });
+    $('button#close_popup').bind('click', function() {
+        window.close();
+    });
 
-        $('select.user_in_thread_dropdown').bind('change', function() {
-            $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
-        });
+    $('select.user_in_thread_dropdown').bind('change', function() {
+        $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
+    });
 
-        $('select.recent_user_dropdown').bind('change', function() {
-            $('input[name="to_radio"][value="recent"]').attr('checked', true);
-        });
+    $('select.recent_user_dropdown').bind('change', function() {
+        $('input[name="to_radio"][value="recent"]').attr('checked', true);
+    });
 
-        $('input.post_to_others').bind('focus', function() {
-            $('input[name="to_radio"][value="others"]').attr('checked', true);
-        });
+    $('input.post_to_others').bind('focus', function() {
+        $('input[name="to_radio"][value="others"]').attr('checked', true);
+    });
 
-        $('input#toggle_all').bind('click', function() {
-            $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
-        });
+    $('input#toggle_all').bind('click', function() {
+        $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
+    });
 
-        $('a.font_size').live('click', function() {
+    $('a.font_size').live('click', function() {
 
-            $parent = $(this).closest('td');
+        $parent = $(this).closest('td');
+        
+        if (beehive.uid == 0) return true;
 
-            $.getJSON($(this).attr('href'), { 'json' : true }, function(data) {
+        $.getJSON($(this).attr('href'), { 'json' : true }, function(data) {
 
-                if (!data.success) return false;
+            if (!data.success) return false;
 
-                $parent.html(data.html);
+            $parent.html(data.html);
 
-                beehive.font_size = data.font_size;
-
-                beehive.resize_fonts();
-            });
-
-            return false;
-        });
-
-        $('#preferences_updated').each(function() {
+            beehive.font_size = data.font_size;
 
             beehive.resize_fonts();
-            return false;
         });
-        
-        $('button#print').bind('click', function() {
-            window.print();
-        });
-        
-        $('title', top.document).text($('title').text());
+
+        return false;
     });
 
-    $.getJSON('json.php', { }, function(data) {
+    $('#preferences_updated').each(function() {
 
-        if (data.success) {
-
-            beehive = $.extend({}, beehive, data);
-
-            $('body').trigger('init');
-        }
+        if (beehive.uid != 0) beehive.resize_fonts();
+        return false;
     });
+    
+    $('button#print').bind('click', function() {
+        window.print();
+    });
+    
+    top.document.title = document.title;
 });

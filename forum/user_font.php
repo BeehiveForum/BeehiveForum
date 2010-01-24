@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.78 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.79 2010-01-24 20:07:10 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -74,33 +74,7 @@ $webtag = get_webtag();
 
 // Check we're logged in correctly
 
-if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-
-if (bh_session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-
-if (!bh_session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+$user_sess = bh_session_check();
 
 // Load language file
 
@@ -109,21 +83,6 @@ $lang = load_language_file();
 // User's UID
 
 $uid = bh_session_get_value('UID');
-
-// Check that we have access to this forum
-
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Guests can't change their font size.
-
-if (user_is_guest()) {
-
-    html_guest_error();
-    exit;
-}
 
 // Check we have a valid request
 
@@ -189,12 +148,15 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
 
             header_redirect("messages.php?webtag=$webtag&msg=$tid.$pid&font_resize=1");
         }
+    
+    } else {
+        
+        html_draw_top();
+        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+        html_draw_bottom();        
     }
-}
 
-// If we got here, something above went wrong.
-
-if (isset($_REQUEST['json'])) {
+} else if (isset($_REQUEST['json'])) {
 
     header('Content-type: application/json; charset=UTF-8', true);
     echo json_encode(array('success' => false));
@@ -202,9 +164,8 @@ if (isset($_REQUEST['json'])) {
 
 } else {
 
-    html_draw_top();
-    html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
-    html_draw_bottom();
+    html_guest_error();
+    exit;
 }
 
 ?>

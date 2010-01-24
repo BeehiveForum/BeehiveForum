@@ -19,37 +19,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.34 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.35 2010-01-24 20:07:10 decoyduck Exp $ */
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    var obj_id = $('#obj_id').val();
 
-        var obj_id = $('#obj_id').val();
+    var $content = $('#content');
 
-        var $content = $('#content');
+    $('#dictionary_init').each(function() {
 
-        $('#dictionary_init').each(function() {
+        $content.val(window.opener.htmltools.get_content());
+        $(this).submit();
+    });
 
-            $content.val(window.opener.htmltools.get_content());
-            $(this).submit();
-        });
+    $('span#highlighted_word').each(function() {
+        this.scrollIntoView(false);
+    });
 
-        $('span#highlighted_word').each(function() {
-            this.scrollIntoView(false);
-        });
+    $('#suggestions').bind('change', function() {
+        $('#change_to').val($(this).val());
+    });
 
-        $('#suggestions').bind('change', function() {
-            $('#change_to').val($(this).val());
-        });
+    $('#close').bind('click', function() {
+        window.opener.htmltools.set_content($content.val());
+        window.close();
+    });
 
-        $('#close').bind('click', function() {
-            window.opener.htmltools.set_content($content.val());
-            window.close();
-        });
-
-        $('#cancel').bind('click', function() {
-            window.close();
-        });
+    $('#cancel').bind('click', function() {
+        window.close();
     });
 });

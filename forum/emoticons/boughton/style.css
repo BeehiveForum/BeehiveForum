@@ -1,5 +1,7 @@
 .e_smile { /* :) :-) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -11,7 +13,9 @@
 }
 
 .e_wink { /* ;) ;-) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -23,7 +27,9 @@
 }
 
 .e_sad { /* :( :-( */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -35,7 +41,9 @@
 }
 
 .e_cry { /* :'( :'-( */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -47,7 +55,9 @@
 }
 
 .e_tongue { /* :P :-P */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -59,7 +69,9 @@
 }
 
 .e_grin { /* :D :-D */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -71,7 +83,9 @@
 }
 
 .e_confused { /* :S :-S */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -83,7 +97,9 @@
 }
 
 .e_plain { /* :| :-| */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -95,7 +111,9 @@
 }
 
 .e_unsure { /* :/ :-/ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -107,7 +125,9 @@
 }
 
 .e_shock { /* :O :-O */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -119,7 +139,9 @@
 }
 
 .e_angry { /* :@ :-@ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -131,7 +153,9 @@
 }
 
 .e_sidelook { /* ¬_¬ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -143,7 +167,9 @@
 }
 
 .e_cringe { /* >.< */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -155,7 +181,9 @@
 }
 
 .e_cheeky { /* :> */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -170,7 +198,9 @@
 .e_evil_cheeky span {
 	display: none;
 }:> */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -179,7 +209,9 @@
 }
 
 .e_happy { /* ^.^ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -191,7 +223,9 @@
 }
 
 .e_shades { /* B-) B) 8-) 8) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -203,7 +237,9 @@
 }
 
 .e_smile_big_nose { /* :o) :O) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -215,7 +251,9 @@
 }
 
 .e_beer { /* (beer) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -227,7 +265,9 @@
 }
 
 .e_boy { /* (boy) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -239,7 +279,9 @@
 }
 
 .e_brokenheart { /* (heartbroke) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -251,7 +293,9 @@
 }
 
 .e_cat { /* (cat) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -263,7 +307,9 @@
 }
 
 .e_cheering { /* (cheer) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -275,7 +321,9 @@
 }
 
 .e_cig { /* (cig) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -287,7 +335,9 @@
 }
 
 .e_clock { /* (clock) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -299,7 +349,9 @@
 }
 
 .e_cow { /* (cow) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -311,7 +363,9 @@
 }
 
 .e_cowboy { /* (cowboy) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -323,7 +377,9 @@
 }
 
 .e_drink { /* (drink) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -335,7 +391,9 @@
 }
 
 .e_envelope { /* (envelope) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -347,7 +405,9 @@
 }
 
 .e_fail { /* (fail) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -359,7 +419,9 @@
 }
 
 .e_fish { /* (fish) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -371,7 +433,9 @@
 }
 
 .e_flower { /* (flower) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -383,7 +447,9 @@
 }
 
 .e_girl { /* (girl) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -395,7 +461,9 @@
 }
 
 .e_heartbeat { /* (heart) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -407,7 +475,9 @@
 }
 
 .e_kiss { /* (kiss) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -419,7 +489,9 @@
 }
 
 .e_lightbulb { /* (lightbulb) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -431,7 +503,9 @@
 }
 
 .e_monkey { /* (monkey) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -443,7 +517,9 @@
 }
 
 .e_musicnote { /* (music) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -455,7 +531,9 @@
 }
 
 .e_nosmoke { /* (nosmoke) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -467,7 +545,9 @@
 }
 
 .e_rainbow { /* (rainbow) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -479,7 +559,9 @@
 }
 
 .e_pipe { /* :Y :-Y */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -491,7 +573,9 @@
 }
 
 .e_star { /* (star) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -503,7 +587,9 @@
 }
 
 .e_tea { /* (tea) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -515,7 +601,9 @@
 }
 
 .e_crying { /* :(( :-(( */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -527,7 +615,9 @@
 }
 
 .e_eek { /* 8-O */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -539,7 +629,9 @@
 }
 
 .e_bounce { /* (bounce) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -551,7 +643,9 @@
 }
 
 .e_woot { /* (woot) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -563,7 +657,9 @@
 }
 
 .e_dance { /* (dance) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;
@@ -575,7 +671,9 @@
 }
 
 .e_horror { /* :& */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  15px;
     height: 13px;
 	font-size: 13px;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.123 2010-01-10 14:26:25 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.124 2010-01-24 20:41:44 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -250,7 +250,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $tools->toolbar(true, form_submit('save', $lang['save'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea("t_content", $t_content, 20, 85, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea("t_content", $t_content, 20, 85, true, false, 'admin_startpage_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

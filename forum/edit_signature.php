@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.137 2010-01-17 11:37:17 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.138 2010-01-24 20:41:44 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -429,7 +429,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
     $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 12, 85, "tabindex=\"7\"", "edit_signature_content");
+echo $tools->textarea("sig_content", $sig_code, 12, 85, true, 'tabindex="7"', 'edit_signature_content');
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

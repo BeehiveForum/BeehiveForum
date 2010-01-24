@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.101 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.102 2010-01-24 20:41:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,8 +54,6 @@ class TextAreaHTML
 
     public $tinymce = false;
 
-    public $autofocus = false;
-
     public $emoticons = false;
 
     public function __construct()
@@ -78,11 +76,6 @@ class TextAreaHTML
     public function set_tinymce($bool)
     {
         $this->tinymce = ($bool === true) ? true : false;
-    }
-
-    public function set_autofocus($bool)
-    {
-        $this->autofocus = ($bool === true) ? true : false;
     }
 
     public function set_allowed_toolbars($num)
@@ -205,14 +198,14 @@ class TextAreaHTML
         return $str;
     }
 
-    public function textarea($name, $value = false, $rows = false, $cols = false, $custom_html = "", $class = "bhinputtext")
+    public function textarea($name, $value = false, $rows = false, $cols = false, $auto_focus = false, $custom_html = "", $class = "bhinputtext")
     {
         $this->textareas[] = $name;
 
         $str = '';
 
-        if ($this->autofocus) {
-            $class.= ' autofocus';
+        if ($auto_focus) {
+            $class.= ' auto_focus';
         }
 
         if ($this->tinymce) {

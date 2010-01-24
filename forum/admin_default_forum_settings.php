@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.154 2010-01-17 11:37:17 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.155 2010-01-24 20:41:44 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -1228,7 +1228,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", htmlentities_array($forum_rules_message->getTidyContent()), 10, 80, "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", htmlentities_array($forum_rules_message->getTidyContent()), 10, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

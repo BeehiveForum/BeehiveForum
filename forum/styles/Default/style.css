@@ -1,6 +1,11 @@
+html {
+    height: 100%;
+}
+
 body {
     border: none;
     background-color: #EAEFF4;
+    height: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 05px;

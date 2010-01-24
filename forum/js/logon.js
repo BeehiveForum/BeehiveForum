@@ -19,76 +19,73 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.js,v 1.11 2010-01-17 11:34:44 decoyduck Exp $ */
+/* $Id: logon.js,v 1.12 2010-01-24 20:07:10 decoyduck Exp $ */
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    $('select#user_logon').bind('change', function() {
 
-        $('select#user_logon').bind('change', function() {
+        var $selected = $('select#user_logon option:selected');
 
-            var $selected = $('select#user_logon option:selected');
+        if ($selected.hasClass('bhlogonother')) {
 
-            if ($selected.hasClass('bhlogonother')) {
+            $(this).replaceWith('<input id="user_logon" name="user_logon" class="bhinputlogon" />');
 
-                $(this).replaceWith('<input id="user_logon" name="user_logon" class="bhinputlogon" />');
+            $('input#user_password').val('');
+
+            $('#remember_user').attr('checked', false);
+
+            $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
+            $('#auto_logon').attr('checked', false);
+            $('#auto_logon').attr('disabled', true);
+
+            $('input#user_logon').focus();
+
+        } else {
+
+            var $selected_password = $('#user_password' + $selected.attr('index'));
+            var $selected_passhash = $('#user_passhash' + $selected.attr('index'));
+
+            if (/^[A-Fa-f0-9]{32}$/.test($selected_passhash.val()) == true) {
+
+                $('input#user_password').val($selected_password.val());
+                $('input#user_passhash').val($selected_passhash.val());
+
+                $('#remember_user').attr('checked', true);
+
+            } else {
 
                 $('input#user_password').val('');
+                $('input#user_passhash').val('');
 
                 $('#remember_user').attr('checked', false);
-
-                $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
-                $('#auto_logon').attr('checked', false);
-                $('#auto_logon').attr('disabled', true);
-
-                $('input#user_logon').focus();
-
-            } else {
-
-                var $selected_password = $('#user_password' + $selected.attr('index'));
-                var $selected_passhash = $('#user_passhash' + $selected.attr('index'));
-
-                if (/^[A-Fa-f0-9]{32}$/.test($selected_passhash.val()) == true) {
-
-                    $('input#user_password').val($selected_password.val());
-                    $('input#user_passhash').val($selected_passhash.val());
-
-                    $('#remember_user').attr('checked', true);
-
-                } else {
-
-                    $('input#user_password').val('');
-                    $('input#user_passhash').val('');
-
-                    $('#remember_user').attr('checked', false);
-                }
             }
-        });
-
-        $('input#user_logon').bind('change', function() {
-            $('input#user_password').val('');
-        });
-
-        $('#auto_logon').bind('click', function() {
-            $(this).attr('defaultChecked', $(this).attr('checked'));
-        });
-
-        $('#remember_user').bind('click', function() {
-
-            if ($(this).attr('checked')) {
-
-                $('label[name="label_auto_logon"]').removeClass('bhinputcheckboxdisabled');
-                $('#auto_logon').attr('checked', $('#auto_logon').attr('defaultChecked'));
-                $('#auto_logon').attr('disabled', false);
-
-            } else {
-
-                $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
-                $('#auto_logon').attr('checked', false);
-                $('#auto_logon').attr('disabled', true);
-            }
-        });
-        
-        $('#auto_logon').attr('disabled', !$('#remember_user').attr('checked'));
+        }
     });
+
+    $('input#user_logon').bind('change', function() {
+        $('input#user_password').val('');
+    });
+
+    $('#auto_logon').bind('click', function() {
+        $(this).attr('defaultChecked', $(this).attr('checked'));
+    });
+
+    $('#remember_user').bind('click', function() {
+
+        if ($(this).attr('checked')) {
+
+            $('label[name="label_auto_logon"]').removeClass('bhinputcheckboxdisabled');
+            $('#auto_logon').attr('checked', $('#auto_logon').attr('defaultChecked'));
+            $('#auto_logon').attr('disabled', false);
+
+        } else {
+
+            $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
+            $('#auto_logon').attr('checked', false);
+            $('#auto_logon').attr('disabled', true);
+        }
+    });
+    
+    $('#auto_logon').attr('disabled', !$('#remember_user').attr('checked'));
 });

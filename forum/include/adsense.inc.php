@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: adsense.inc.php,v 1.13 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: adsense.inc.php,v 1.14 2010-01-24 20:07:10 decoyduck Exp $ */
 
 /**
 * adsense.inc.php - admin functions
@@ -183,13 +183,15 @@ function adsense_output_html()
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
 
-            echo "<div class=\"google_adsense_container\" style=\"width: {$ad_width}px; margin: auto\">\n";
-            echo "  <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
+            echo "<div class=\"google_adsense_container\" style=\"width: 100%; text-align: center\">\n";
+            echo "  <div style=\"width: {$ad_width}px; margin: auto\">\n";
+            echo "    <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 
             if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
                 echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
             }
 
+            echo "  </div>\n";
             echo "</div>\n";
 
             $adsense_displayed = true;

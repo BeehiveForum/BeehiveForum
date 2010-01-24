@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: json.php,v 1.3 2010-01-18 20:07:08 decoyduck Exp $ */
+/* $Id: json.php,v 1.4 2010-01-24 20:07:10 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -66,34 +66,14 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 $webtag = get_webtag();
 
-// Check we're logged in correctly
+// Start User Session.
 
-if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
+$user_sess = bh_session_check();
 
-// Check to see if the user is banned.
+// User font size
 
-if (bh_session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-
-if (!bh_session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
+    $font_size = 10;
 }
 
 // Look for autocomplete search request
@@ -109,66 +89,83 @@ if (isset($_GET['search'])) {
         $search_results_array = user_search($query);
         
         foreach ($search_results_array['results_array'] as $search_result) {
+            
             echo json_encode(array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))), "\n";
         } 
     }
-    
-    exit;
+
+} else {
+
+    // Load the language file.
+
+    $lang = load_language_file();
+
+    // Required language strings. Add here the keys
+    // of the required language strings to be returned
+    // as the JSON response.
+
+    $lang_required = array('fixhtmlexplanation',
+                           'imageresized',
+                           'deletemessagesconfirmation',
+                           'unquote',
+                           'quote',
+                           'searchsuccessfullycompleted',
+                           'confirmmarkasread');
+                           
+    // Construct the Javascript / JSON array
+
+    $json_data = array('webtag'    => $webtag,
+                       'uid'       => bh_session_get_value('UID'),
+                       'lang'      => array_intersect_key($lang, array_flip($lang_required)),
+                       'images'    => array(),
+                       'font_size' => $font_size,
+                       'top_html'  => html_get_top_page(),
+                       'frames'    => array('index'       => html_get_frame_name('index'),
+                                            'admin'       => html_get_frame_name('admin'),
+                                            'start'       => html_get_frame_name('start'),
+                                            'discussion'  => html_get_frame_name('discussion'),
+                                            'user'        => html_get_frame_name('user'),
+                                            'pm'          => html_get_frame_name('pm'),
+                                            'main'        => html_get_frame_name('main'),
+                                            'ftop'        => html_get_frame_name('ftop'),
+                                            'fnav'        => html_get_frame_name('fnav'),
+                                            'left'        => html_get_frame_name('left'),
+                                            'right'       => html_get_frame_name('right'),
+                                            'pm_folders'  => html_get_frame_name('pm_folders'),
+                                            'pm_messages' => html_get_frame_name('pm_messages')));
+
+
+
+    // Get all the style images
+
+    foreach (glob("images/*.png") as $image_filename) {
+        
+        $image_filename = basename($image_filename);
+        $json_data['images'][$image_filename] = style_image($image_filename);
+    }
+
+    // If the data is requested via JSON send the 
+    // correct header and content.
+
+    if (isset($_GET['json'])) {                       
+
+        // JSON header
+
+        header('Content-type: application/json; charset=UTF-8', true);
+
+        // Output the JSON data.
+
+        echo json_encode($json_data);
+
+    } else {
+        
+        header('Content-type: text/javascript; charset=UTF-8', true);
+        
+        echo "beehive = $.extend({}, beehive, ", json_encode($json_data), ");\n";
+        echo "$(document).ready(function() {\n";
+        echo "  $(beehive).trigger('init');\n";
+        echo "});";
+    }
 }
-
-// Load the language file.
-
-$lang = load_language_file();
-
-// Required language strings. Add here the keys
-// of the required language strings to be returned
-// as the JSON response.
-
-$lang_required = array('fixhtmlexplanation',
-                       'imageresized',
-                       'deletemessagesconfirmation',
-                       'unquote',
-                       'quote',
-                       'searchsuccessfullycompleted',
-                       'confirmmarkasread');
-
-// JSON header
-
-header('Content-type: application/json; charset=UTF-8', true);
-
-// Construct the JSON array
-
-$json_data = array('success'   => true,
-                   'webtag'    => $webtag,
-                   'lang'      => array_intersect_key($lang, array_flip($lang_required)),
-                   'images'    => array(),
-                   'font_size' => bh_session_get_value('FONT_SIZE'),
-                   'top_html'  => html_get_top_page(),
-                   'frames'    => array('index'       => html_get_frame_name('index'),
-                                        'admin'       => html_get_frame_name('admin'),
-                                        'start'       => html_get_frame_name('start'),
-                                        'discussion'  => html_get_frame_name('discussion'),
-                                        'user'        => html_get_frame_name('user'),
-                                        'pm'          => html_get_frame_name('pm'),
-                                        'main'        => html_get_frame_name('main'),
-                                        'ftop'        => html_get_frame_name('ftop'),
-                                        'fnav'        => html_get_frame_name('fnav'),
-                                        'left'        => html_get_frame_name('left'),
-                                        'right'       => html_get_frame_name('right'),
-                                        'pm_folders'  => html_get_frame_name('pm_folders'),
-                                        'pm_messages' => html_get_frame_name('pm_messages')));
-
-
-
-// Get all the style images
-
-foreach (glob("images/*.png") as $image_filename) {
-    $image_filename = basename($image_filename);
-    $json_data['images'][$image_filename] = style_image($image_filename);
-}
-
-// Output the JSON data.
-
-echo json_encode($json_data);
 
 ?>

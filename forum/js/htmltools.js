@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.38 2010-01-18 20:07:09 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.39 2010-01-24 20:07:10 decoyduck Exp $ */
 
 var htmltools = function()
 {
@@ -992,215 +992,212 @@ var htmltools = function()
     }
 }();
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    $('textarea.htmltools').each(function() {
 
-        $('textarea.htmltools').each(function() {
-
-            $(this).bind('keypress keydown keyup click change select', function() {
-
-                htmltools.active_text(this);
-
-            }).bind('dblclick', function() {
-
-                htmltools.active_text(this, true);
-            });
-
-            $(this).closest('form').bind('submit', function() {
-                $('textarea.htmltools').attr('caretPos', '');
-            });
-        });
-
-        $(window).bind('unload', function() {
-            $('textarea.htmltools').attr('caretPos', '');
-        });
-
-        $('select[name="font_face"]').bind('change', function() {
-
-            htmltools.add_tag('font', 'face', $(this).val());
-            $(this).attr('selectedIndex', 0);
-        });
-
-        $('select[name="font_size"]').bind('change', function() {
-
-            htmltools.add_tag('font', 'size', $(this).val());
-            $(this).attr('selectedIndex', 0);
-        });
-
-        $('select[name="font_colour"]').bind('change', function() {
-
-            htmltools.add_tag('font', 'color', $(this).val());
-            $(this).attr('selectedIndex', 0);
-        });
-
-        $('div.tools button').bind('click', function() {
-
-            if (!htmltools.auto_spell_check()) return false;
-            clear_focus();
-        });
-
-        $('div.tools img').bind('mouseover', function() {
-
-            $(this).addClass('tools_over');
-
-        }).bind('mouseout', function() {
-
-            $(this).removeClass('tools_over');
-
-        }).bind('mousedown', function() {
-
-            $(this).addClass('tools_down');
-
-        }).bind('mouseup', function() {
-
-            $(this).removeClass('tools_down');
-
-        }).bind('click', function() {
-
-            var $button = $(this).parent('a');
-
-            if ($button.length != 1) return;
-
-            $('input:radio[name="t_post_html"]').each(function() {
-
-                if ($('input:radio[name="t_post_html"][value!="disabled"][checked]').length == 0) {
-
-                    $('input:radio[name="t_post_html"][value!="enabled"]').attr('checked', true);
-                    return false;
-                }
-            });
-
-            $('input:checkbox[name="t_post_html"]').attr('checked', true);
-
-            switch($button.attr('rel')) {
-
-                case 'bold':
-
-                    htmltools.add_tag('b');
-                    break;
-
-                case 'italic':
-
-                    htmltools.add_tag('i');
-                    break;
-
-                case 'underline':
-
-                    htmltools.add_tag('u');
-                    break;
-
-                case 'strikethrough':
-
-                    htmltools.add_tag('s');
-                    break;
-
-                case 'superscript':
-
-                    htmltools.add_tag('sup');
-                    break;
-
-                case 'subscript':
-
-                    htmltools.add_tag('sub');
-                    break;
-
-                case 'leftalign':
-
-                    htmltools.add_tag('div', 'align', 'left');
-                    break;
-
-                case 'center':
-
-                    htmltools.add_tag('div', 'align', 'center');
-                    break;
-
-                case 'rightalign':
-
-                    htmltools.add_tag('div', 'align', 'right');
-                    break;
-
-                case 'numberedlist':
-
-                    htmltools.add_tag('list', true, null, true);
-                    break;
-
-                case 'list':
-
-                    htmltools.add_tag('list', null, null, true);
-                    break;
-
-                case 'indenttext':
-
-                    htmltools.add_tag('blockquote', null, null, true);
-                    break;
-
-                case 'code':
-
-                    htmltools.add_tag('code', 'language', '', true);
-                    break;
-
-                case 'quote':
-
-                    htmltools.add_tag('quote', 'source', '', true);
-                    break;
-
-                case 'spoiler':
-
-                    htmltools.add_tag('spoiler', null, null, true);
-                    break;
-
-                case 'horizontalrule':
-
-                    htmltools.add_tag('hr', null, null, true);
-                    break;
-
-                case 'image':
-
-                    htmltools.add_image();
-                    break;
-
-                case 'hyperlink':
-
-                    htmltools.add_link();
-                    break;
-
-                case 'spellcheck':
-
-                    htmltools.open_spell_check();
-                    break;
-
-                case 'noemoticons':
-
-                    htmltools.add_tag('noemots', null, null, true);
-                    break;
-
-                case 'emoticons':
-
-                    htmltools.open_emoticons();
-                    break;
-            }
-        });
-
-        $('div.tools').css('display', 'block');
-
-        $('textarea.htmltools.focus').each(function() {
+        $(this).bind('keypress keydown keyup click change select', function() {
 
             htmltools.active_text(this);
-            htmltools.set_focus(this);
+
+        }).bind('dblclick', function() {
+
+            htmltools.active_text(this, true);
         });
 
-        $('span.fix_html_compare input:radio').bind('click', function() {
+        $(this).closest('form').bind('submit', function() {
+            $('textarea.htmltools').attr('caretPos', '');
+        });
+    });
 
-            if (textarea_name = /^co_(.*)_rb$/.exec($(this).attr('name'))) {
+    $(window).bind('unload', function() {
+        $('textarea.htmltools').attr('caretPos', '');
+    });
 
-                $textarea = $('textarea.htmltools[name=' + textarea_name[1] + ']');
-                if ($textarea.length > 0) $textarea.val($(this).val());
+    $('select[name="font_face"]').bind('change', function() {
+
+        htmltools.add_tag('font', 'face', $(this).val());
+        $(this).attr('selectedIndex', 0);
+    });
+
+    $('select[name="font_size"]').bind('change', function() {
+
+        htmltools.add_tag('font', 'size', $(this).val());
+        $(this).attr('selectedIndex', 0);
+    });
+
+    $('select[name="font_colour"]').bind('change', function() {
+
+        htmltools.add_tag('font', 'color', $(this).val());
+        $(this).attr('selectedIndex', 0);
+    });
+
+    $('div.tools button').bind('click', function() {
+
+        if (!htmltools.auto_spell_check()) return false;
+        clear_focus();
+    });
+
+    $('div.tools img').bind('mouseover', function() {
+
+        $(this).addClass('tools_over');
+
+    }).bind('mouseout', function() {
+
+        $(this).removeClass('tools_over');
+
+    }).bind('mousedown', function() {
+
+        $(this).addClass('tools_down');
+
+    }).bind('mouseup', function() {
+
+        $(this).removeClass('tools_down');
+
+    }).bind('click', function() {
+
+        var $button = $(this).parent('a');
+
+        if ($button.length != 1) return;
+
+        $('input:radio[name="t_post_html"]').each(function() {
+
+            if ($('input:radio[name="t_post_html"][value!="disabled"][checked]').length == 0) {
+
+                $('input:radio[name="t_post_html"][value!="enabled"]').attr('checked', true);
+                return false;
             }
         });
 
-        $('a.fix_html_help').bind('click', function() {
-            alert(beehive.lang.fixhtmlexplanation);
-        })
+        $('input:checkbox[name="t_post_html"]').attr('checked', true);
+
+        switch($button.attr('rel')) {
+
+            case 'bold':
+
+                htmltools.add_tag('b');
+                break;
+
+            case 'italic':
+
+                htmltools.add_tag('i');
+                break;
+
+            case 'underline':
+
+                htmltools.add_tag('u');
+                break;
+
+            case 'strikethrough':
+
+                htmltools.add_tag('s');
+                break;
+
+            case 'superscript':
+
+                htmltools.add_tag('sup');
+                break;
+
+            case 'subscript':
+
+                htmltools.add_tag('sub');
+                break;
+
+            case 'leftalign':
+
+                htmltools.add_tag('div', 'align', 'left');
+                break;
+
+            case 'center':
+
+                htmltools.add_tag('div', 'align', 'center');
+                break;
+
+            case 'rightalign':
+
+                htmltools.add_tag('div', 'align', 'right');
+                break;
+
+            case 'numberedlist':
+
+                htmltools.add_tag('list', true, null, true);
+                break;
+
+            case 'list':
+
+                htmltools.add_tag('list', null, null, true);
+                break;
+
+            case 'indenttext':
+
+                htmltools.add_tag('blockquote', null, null, true);
+                break;
+
+            case 'code':
+
+                htmltools.add_tag('code', 'language', '', true);
+                break;
+
+            case 'quote':
+
+                htmltools.add_tag('quote', 'source', '', true);
+                break;
+
+            case 'spoiler':
+
+                htmltools.add_tag('spoiler', null, null, true);
+                break;
+
+            case 'horizontalrule':
+
+                htmltools.add_tag('hr', null, null, true);
+                break;
+
+            case 'image':
+
+                htmltools.add_image();
+                break;
+
+            case 'hyperlink':
+
+                htmltools.add_link();
+                break;
+
+            case 'spellcheck':
+
+                htmltools.open_spell_check();
+                break;
+
+            case 'noemoticons':
+
+                htmltools.add_tag('noemots', null, null, true);
+                break;
+
+            case 'emoticons':
+
+                htmltools.open_emoticons();
+                break;
+        }
     });
+
+    $('div.tools').css('display', 'block');
+
+    $('textarea.htmltools.focus').each(function() {
+
+        htmltools.active_text(this);
+        htmltools.set_focus(this);
+    });
+
+    $('span.fix_html_compare input:radio').bind('click', function() {
+
+        if (textarea_name = /^co_(.*)_rb$/.exec($(this).attr('name'))) {
+
+            $textarea = $('textarea.htmltools[name=' + textarea_name[1] + ']');
+            if ($textarea.length > 0) $textarea.val($(this).val());
+        }
+    });
+
+    $('a.fix_html_help').bind('click', function() {
+        alert(beehive.lang.fixhtmlexplanation);
+    })
 });

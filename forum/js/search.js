@@ -19,53 +19,50 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.js,v 1.30 2010-01-17 12:35:14 decoyduck Exp $ */
+/* $Id: search.js,v 1.31 2010-01-24 20:07:10 decoyduck Exp $ */
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    var search_logon = false;
 
-        var search_logon = false;
+    var return_result = function(obj_name, value) {
+        $(obj_name).val(value);
+    }
 
-        var return_result = function(obj_name, value) {
-            $(obj_name).val(value);
+    $('a.logon_search').bind('click', function() {
+
+        var $search_field = $('input.search_logon');
+
+        var window_options = beehive.window_options;
+
+        var search_query = { 'webtag'    : webtag,
+                             'type'      : '1',
+                             'selection' : $search_field.val(),
+                             'obj_name'  : $search_field.attr('name') }
+
+        if ($(this).hasClass('allow_multi')) {
+            search_query['allow_multi'] = 'Y';
         }
 
-        $('a.logon_search').bind('click', function() {
+        search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).attr('id'), window_options.join(','));
 
-            var $search_field = $('input.search_logon');
+        search_logon.return_result = return_result;
+    });
 
-            var window_options = beehive.window_options;
+    $('#search_submit').bind('click', function() {
 
-            var search_query = { 'webtag'    : webtag,
-                                 'type'      : '1',
-                                 'selection' : $search_field.val(),
-                                 'obj_name'  : $search_field.attr('name') }
+        $(this).addClass('button_disabled').attr('disabled', 'true');
+        $('#search_reset').addClass('button_disabled').attr('disabled', 'true');
+    });
 
-            if ($(this).hasClass('allow_multi')) {
-                search_query['allow_multi'] = 'Y';
-            }
+    $('div#search_success').each(function() {
 
-            search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).attr('id'), window_options.join(','));
+        if (top.document.body.rows) {
+            top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&offset=0');
+        } else if (top.document.body.cols) {
+            top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&offset=0');
+        }
 
-            search_logon.return_result = return_result;
-        });
-
-        $('#search_submit').bind('click', function() {
-
-            $(this).addClass('button_disabled').attr('disabled', 'true');
-            $('#search_reset').addClass('button_disabled').attr('disabled', 'true');
-        });
-
-        $('div#search_success').each(function() {
-
-            if (top.document.body.rows) {
-                top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&offset=0');
-            } else if (top.document.body.cols) {
-                top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&offset=0');
-            }
-
-            $(this).find('.success_msg_text').html($.sprintf(beehive.lang['searchsuccessfullycompleted'], ''));
-        });
+        $(this).find('.success_msg_text').html($.sprintf(beehive.lang['searchsuccessfullycompleted'], ''));
     });
 });

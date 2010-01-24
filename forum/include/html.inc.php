@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.366 2010-01-18 20:07:08 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.367 2010-01-24 20:07:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -890,11 +890,11 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    html_include_javascript('./js/jquery-1.4.js');
-    html_include_javascript('./js/jquery.sprintf.js');
-    html_include_javascript('./js/jquery.parsequery.js');
-    html_include_javascript('./js/jquery.autocomplete.js');
-    html_include_javascript('./js/general.js');
+    html_include_javascript("./js/jquery-1.4.js");
+    html_include_javascript("./js/jquery.sprintf.js");
+    html_include_javascript("./js/jquery.parsequery.js");
+    html_include_javascript("./js/jquery.autocomplete.js");
+    html_include_javascript("./js/general.js");
 
     // Font size (not for Guests)
 
@@ -1020,6 +1020,8 @@ function html_draw_top()
         echo "}\n";
         echo "</script>\n";
     }
+    
+    html_include_javascript("./json.php?webtag=$webtag");
 
     echo "</head>\n\n";
 

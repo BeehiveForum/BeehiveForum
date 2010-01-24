@@ -19,83 +19,80 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: overflow.js,v 1.1 2010-01-10 14:34:29 decoyduck Exp $ */
+/* $Id: overflow.js,v 1.2 2010-01-24 20:07:10 decoyduck Exp $ */
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    beehive = $.extend({}, beehive, {
 
-        beehive = $.extend({}, beehive, {
+        resize_images : function() {
 
-            resize_images : function() {
+            $('td.postbody img').each(function() {
 
-                $('td.postbody img').each(function() {
+                if ($(this).parent('span.resized_image').length > 0) {
 
-                    if ($(this).parent('span.resized_image').length > 0) {
+                    $(this).parent('span.resized_image').css('width', $('body').attr('clientWidth') * 0.95);
 
-                        $(this).parent('span.resized_image').css('width', $('body').attr('clientWidth') * 0.95);
+                } else {
 
-                    } else {
+                    if ($(this).width() > $('body').attr('clientWidth')) {
 
-                        if ($(this).width() > $('body').attr('clientWidth')) {
+                        $parent_div = $('<div>');
 
-                            $parent_div = $('<div>');
+                        $resize_banner = $('<div class="image_resize_text">');
 
-                            $resize_banner = $('<div class="image_resize_text">');
+                        $resize_icon = $('<img class="image_resize_icon" />');
+                        $resize_icon.attr('src', beehive.images['warning.png']);
 
-                            $resize_icon = $('<img class="image_resize_icon" />');
-                            $resize_icon.attr('src', beehive.images['warning.png']);
+                        $resize_banner.append($resize_icon);
+                        $resize_banner.append($.sprintf(beehive.lang['imageresized'], $(this).width(), $(this).height()));
 
-                            $resize_banner.append($resize_icon);
-                            $resize_banner.append($.sprintf(beehive.lang['imageresized'], $(this).width(), $(this).height()));
+                        $(this).wrap($parent_div).css('width', '100%');
 
-                            $(this).wrap($parent_div).css('width', '100%');
+                        $(this).parent('div').prepend($resize_banner);
 
-                            $(this).parent('div').prepend($resize_banner);
+                        $image = $(this);
 
-                            $image = $(this);
-
-                            $resize_banner.bind('click', function() {
-                                window.open($image.attr('src'));
-                            });
-                        }
+                        $resize_banner.bind('click', function() {
+                            window.open($image.attr('src'));
+                        });
                     }
-                });
-            },
+                }
+            });
+        },
 
-            check_overflow : function() {
+        check_overflow : function() {
 
-                $('td.postbody').each(function() {
+            $('td.postbody').each(function() {
 
-                    if ($(this).find('div.overflow_fix').length > 0) {
+                if ($(this).find('div.overflow_fix').length > 0) {
 
-                        $(this).find('div.overflow_fix').css('width', $('body').attr('clientWidth') * 0.95);
+                    $(this).find('div.overflow_fix').css('width', $('body').attr('clientWidth') * 0.95);
 
-                    } else {
+                } else {
 
-                        if ($(this).width() > $('body').attr('clientWidth')) {
+                    if ($(this).width() > $('body').attr('clientWidth')) {
 
-                            var $overflow_container = $('<div class="overflow_fix"></div>');
+                        var $overflow_container = $('<div class="overflow_fix"></div>');
 
-                            $overflow_container.html($(this).html());
+                        $overflow_container.html($(this).html());
 
-                            $overflow_container.css('width', $('body').attr('clientWidth') * 0.95);
-                            $overflow_container.css('overflow', 'auto');
+                        $overflow_container.css('width', $('body').attr('clientWidth') * 0.95);
+                        $overflow_container.css('overflow', 'auto');
 
-                            $(this).html($overflow_container);
-                        }
+                        $(this).html($overflow_container);
                     }
-                });
-            }
-        });
+                }
+            });
+        }
+    });
 
-        $(window).bind('resize', function() {
-
-            beehive.resize_images();
-            beehive.check_overflow();
-        });
+    $(window).bind('resize', function() {
 
         beehive.resize_images();
         beehive.check_overflow();
     });
+
+    beehive.resize_images();
+    beehive.check_overflow();
 });

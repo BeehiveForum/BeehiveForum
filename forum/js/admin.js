@@ -19,34 +19,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.js,v 1.22 2010-01-10 14:26:27 decoyduck Exp $ */
+/* $Id: admin.js,v 1.23 2010-01-24 20:07:10 decoyduck Exp $ */
 
-$(document).ready(function() {
+$(beehive).bind('init', function() {
 
-    $('body').bind('init', function() {
+    $('select#mail_function').bind('change', function() {
 
-        $('select#mail_function').bind('change', function() {
+        switch($(this).val()) {
 
-            switch($(this).val()) {
+            case "0":
 
-                case "0":
+                $('#smtp_settings').hide();
+                $('#sendmail_settings').hide();
+                break;
 
-                    $('#smtp_settings').hide();
-                    $('#sendmail_settings').hide();
-                    break;
+            case "1":
 
-                case "1":
+                $('#smtp_settings').show();
+                $('#sendmail_settings').hide();
+                break;
 
-                    $('#smtp_settings').show();
-                    $('#sendmail_settings').hide();
-                    break;
+            case "2":
 
-                case "2":
-
-                    $('#smtp_settings').hide();
-                    $('#sendmail_settings').show();
-                    break;
-            }
-        })
-    });
+                $('#smtp_settings').hide();
+                $('#sendmail_settings').show();
+                break;
+        }
+    })
 });

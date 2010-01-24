@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.96 2010-01-23 10:21:37 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.97 2010-01-24 20:07:10 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -173,33 +173,6 @@ function emoticons_initialise()
 }
 
 /**
-* Get Browser fix for emoticons.
-*
-* Different browsers require different "fixes" to display the emoticons correctly.
-* This function checks the User Agent string of the browser to check which is
-* being used by the user.
-*
-* @return string
-* @param void
-*/
-
-function emoticons_get_browser_fix()
-{
-    $emoticons_browser_fix = "</span>";
-
-    if (browser_check(BROWSER_KONQUEROR | BROWSER_SAFARI | BROWSER_CHROME | BROWSER_MSIE7)) {
-
-        $emoticons_browser_fix = "&nbsp;</span>";
-
-    }else if (browser_check(BROWSER_GECKO)) {
-
-        $emoticons_browser_fix = "</span>&nbsp;";
-    }
-
-    return $emoticons_browser_fix;
-}
-
-/**
 * Apply emoticons to content
 *
 * Applies the emoticons to the specified string. Automatically initialises the emoticons
@@ -215,17 +188,13 @@ function emoticons_apply($content)
 
     if (!$emoticons_array = emoticons_initialise()) return $content;
 
-    // Get the required browser fix for the client browser.
-
-    $emoticon_browser_fix = emoticons_get_browser_fix();
-
     // PREG match for emoticons.
 
     $emoticon_preg_match = '(?<=\s|^|>)%s(?=\s|$|<)';
 
     // HTML code for emoticons.
 
-    $emoticon_html_code = "<span class=\"e_%1\$s\" title=\"%2\$s\"><span class=\"e__\">%2\$s</span>%3\$s";
+    $emoticon_html_code = "<span class=\"e_%1\$s\" title=\"%2\$s\"><span class=\"e__\">%2\$s</span></span>";
 
     // Generate the HTML required for each emoticon.
 
@@ -236,14 +205,14 @@ function emoticons_apply($content)
         if ($key != $key_encoded) {
 
             $pattern_string = sprintf($emoticon_preg_match, preg_quote($key_encoded, "/"));
-            $replace_string = sprintf($emoticon_html_code, $emoticon, $key_encoded, $emoticon_browser_fix);
+            $replace_string = sprintf($emoticon_html_code, $emoticon, $key_encoded);
 
             $pattern_array[] = $pattern_string;
             $replace_array[$replace_string] = $key_encoded;
         }
 
         $pattern_string = sprintf($emoticon_preg_match, preg_quote($key, "/"));
-        $replace_string = sprintf($emoticon_html_code, $emoticon, $key, $emoticon_browser_fix);
+        $replace_string = sprintf($emoticon_html_code, $emoticon, $key);
 
         $pattern_array[] = $pattern_string;
         $replace_array[$replace_string] = $key;

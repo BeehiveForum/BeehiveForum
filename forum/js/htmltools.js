@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.39 2010-01-24 20:07:10 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.40 2010-01-24 20:41:45 decoyduck Exp $ */
 
 var htmltools = function()
 {
@@ -1182,7 +1182,7 @@ $(beehive).bind('init', function() {
 
     $('div.tools').css('display', 'block');
 
-    $('textarea.htmltools.focus').each(function() {
+    $('textarea.htmltools.auto_focus').each(function() {
 
         htmltools.active_text(this);
         htmltools.set_focus(this);

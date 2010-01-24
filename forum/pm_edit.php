@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.150 2010-01-15 21:29:06 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.151 2010-01-24 20:41:44 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -526,7 +526,7 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, "tabindex=\"1\"", "post_content"), "\n";
+echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
 
 echo "                        </td>\n";
 echo "                      </tr>\n";

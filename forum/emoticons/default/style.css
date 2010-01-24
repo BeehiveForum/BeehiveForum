@@ -1,5 +1,7 @@
 .e_smile { /* :) :-) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -11,7 +13,9 @@
 }
 
 .e_wink { /* ;) ;-) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -23,7 +27,9 @@
 }
 
 .e_sad { /* :( :-( */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -35,7 +41,9 @@
 }
 
 .e_cry { /* :'( :'-( */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -47,7 +55,9 @@
 }
 
 .e_cringe { /* >.< */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -59,7 +69,9 @@
 }
 
 .e_tongue { /* :P :-P */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -71,7 +83,9 @@
 }
 
 .e_grin { /* :D :-D */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -83,7 +97,9 @@
 }
 
 .e_confused { /* :S :-S */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -95,7 +111,9 @@
 }
 
 .e_plain { /* :| :-| */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -107,7 +125,9 @@
 }
 
 .e_shock { /* :O :-O */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -119,7 +139,9 @@
 }
 
 .e_angry { /* :@ :-@ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -131,7 +153,9 @@
 }
 
 .e_embarrassed { /* :$ :-$ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -143,7 +167,9 @@
 }
 
 .e_shades { /* B) B-) (h) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -155,7 +181,9 @@
 }
 
 .e_angel { /* (a) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -167,7 +195,9 @@
 }
 
 .e_devil { /* (6) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -179,7 +209,9 @@
 }
 
 .e_alien { /* =:) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -191,7 +223,9 @@
 }
 
 .e_anglesad { /* :< :-< */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -203,7 +237,9 @@
 }
 
 .e_cheeky { /* :> :-> */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -215,7 +251,9 @@
 }
 
 .e_smile_big_nose { /* :O) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -227,7 +265,9 @@
 }
 
 .e_rabbit { /* :B :-B */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -239,7 +279,9 @@
 }
 
 .e_happycry { /* :'D */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -251,7 +293,9 @@
 }
 
 .e_fail { /* (fail) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -263,7 +307,9 @@
 }
 
 .e_horror { /* :& :-& */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -275,7 +321,9 @@
 }
 
 .e_nod { /* (nod) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -287,7 +335,9 @@
 }
 
 .e_sleepyhead { /* I-) I) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -299,7 +349,9 @@
 }
 
 .e_unsure { /* :/ :-/ */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -311,7 +363,9 @@
 }
 
 .e_eek { /* 8-O */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;
@@ -323,7 +377,9 @@
 }
 
 .e_wrong { /* (wrong) */
-	display: inline-block;
+	vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
     width:  19px;
     height: 19px;
 	font-size: 19px;

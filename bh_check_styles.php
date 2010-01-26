@@ -21,145 +21,268 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_styles.php,v 1.15 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: bh_check_styles.php,v 1.16 2010-01-26 22:26:59 decoyduck Exp $ */
 
-function item_preg_callback(&$item, $key, $delimiter)
+// Set the default timezone
+
+date_default_timezone_set('UTC');
+
+// Constant to define where the include files are
+
+define("BH_INCLUDE_PATH", "./forum/include/");
+
+// Mimic Lite Mode
+
+define("BEEHIVEMODE_LIGHT", true);
+
+// Enable the error handler
+
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+
+// Database functions.
+
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+
+// Array of files to exclude from the matches
+
+$exclude_files_array = array('start_main_additional.css', 'start_main.css', 'make_style.css');
+
+// Array of directories to exclude from the matches
+
+$exclude_dirs_array = array('forum/styles/Default');
+
+// Get array of files in specified directory and sub-directories.
+
+function get_file_list(&$file_list_array, $path, $extension)
 {
-    if (isset($key)) $item = preg_quote($item, $delimiter);
+    $extension_preg = preg_quote($extension, '/');
+
+    if (!is_array($file_list_array)) $file_list_array = array();
+
+    if (($dir_handle = opendir($path))) {
+
+        while (($file_name = readdir($dir_handle)) !== false) {
+
+            if ($file_name != "." && $file_name != "..") {
+
+                if (@is_dir("$path/$file_name") && !in_array("$path/$file_name", $GLOBALS['exclude_dirs_array'])) {
+
+                    get_file_list($file_list_array, "$path/$file_name", $extension);
+
+                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
+
+                    $file_list_array[] = "$path/$file_name";
+                }
+            }
+        }
+    }
 }
 
-function item_trim_callback(&$item, $key)
+// Parse the CSS file into a multi-dimensional array of
+// selectors and attributes and values
+
+function parse_css_to_array($css_file_contents)
 {
-    if (isset($key)) $item = trim($item);
+    $css_rules_array = array();
+    
+    preg_match_all('/([^}]+){([^}]+)}/im', $css_file_contents, $rule_matches_array, PREG_SET_ORDER);
+    
+    foreach ($rule_matches_array as $rule_match) {
+        
+        $selector = preg_replace('/ +/', ' ', preg_replace("/\r|\r\n|\n/", " ", trim($rule_match[1])));
+        
+        $css_rules_array[$selector] = array();
+        
+        $attributes_array = array_filter(array_map('trim', explode(';', $rule_match[2])), 'strlen');
+        
+        foreach ($attributes_array as $attribute_line) {
+            
+            list($attribute, $value) = explode(':', $attribute_line);
+            $css_rules_array[$selector][trim($attribute)] = trim($value);
+        }
+    }
+    
+    return $css_rules_array;
 }
 
-$styles_dir = "forum/styles";
+function selector_sort($a, $b)
+{
+    if ($a == 'html' && $b == 'body') return -1;
+    if ($a == 'body' && $b == 'html') return 1;
+    
+    if ($a == 'html') return -1;
+    if ($b == 'html') return 1;
+    
+    if ($a == 'body') return -1;
+    if ($b == 'body') return 1;
+    
+    if (substr($a, 0, 1) == '.' && substr($b, 0, 1) != '.') return 1;
+    if (substr($a, 0, 1) != '.' && substr($b, 0, 1) == '.') return -1;
+    
+    return strcmp($a, $b);
+}
 
-$style_errors = array();
+function parse_array_to_css($css_rules_array)
+{
+    $css_file_contents = '';
+    
+    uksort($css_rules_array, 'selector_sort');
+    
+    foreach ($css_rules_array as $selector => $rules_set) {
+        
+        ksort($rules_set);
+        
+        $css_file_contents.= sprintf("%s {\n    %s;\n}\n\n", wordwrap($selector, 65), implode_assoc($rules_set, ': ', ";\n    "));
+    }
+    
+    return trim($css_file_contents);
+}
 
-$matches_array = array();
-
-if (@file_exists("$styles_dir/default/style.css")) {
-
-    // Default theme
-
-    $default_style_file = file_get_contents("$styles_dir/default/style.css");
-    preg_match_all('/([^\{]+)(\{[^\}]+\})/iu', $default_style_file, $matches_array);
-    array_walk($matches_array[1], 'item_trim_callback');
-    $default_style_array = $matches_array[1];
-
-    // make_style.css
-
-    $default_style_file = file_get_contents("$styles_dir/make_style.css");
-    preg_match_all('/([^\{]+){[^\}]+}/iu', $default_style_file, $matches_array);
-    array_walk($matches_array[1], 'item_trim_callback');
-    $style_file_array['make_style.css'] = $matches_array[1];
-
-    // main style.css (when no DEFAULT)
-
-    $default_style_file = file_get_contents("$styles_dir/style.css");
-    preg_match_all('/([^\{]+){[^\}]+}/iu', $default_style_file, $matches_array);
-    array_walk($matches_array[1], 'item_trim_callback');
-    $style_file_array['style.css'] = $matches_array[1];
-
-    if (@is_dir($styles_dir)) {
-
-        if (($dir = opendir($styles_dir))) {
-
-            while (($file = readdir($dir)) !== false) {
-
-                if (($file != "." && $file != ".." && file_exists("$styles_dir/$file/style.css"))) {
-
-                    $style_file = file_get_contents("$styles_dir/$file/style.css");
-                    preg_match_all('/([^\{]+){[^\}]+}/iu', $style_file, $matches_array);
-                    array_walk($matches_array[1], 'item_trim_callback');
-                    $style_file_array[$file] = $matches_array[1];
-                }
-            }
+function array_diff_key_recursive($array1, $array2) 
+{
+    foreach($array1 as $key => $value) {
+        
+        if (is_array($value) && array_key_exists($key, $array2)) {
+            
+            $result[$key] = array_diff_key_recursive($array1[$key], $array2[$key]);
+        
+        } else if (is_array($value)) {
+            
+            $result[$key] = $array1[$key];
+        
+        }else {
+            
+            $result = array_diff_key($array1, $array2);
         }
 
-        closedir($dir);
+        if (is_array($result) && isset($result[$key]) && is_array($result[$key]) && count($result[$key]) == 0) {
+            unset($result[$key]);
+        }
     }
+    
+    return $result;
+}
 
-    $default_style_array_preg = $default_style_array;
-    array_walk($default_style_array_preg, 'item_preg_callback', '/');
-    $default_style_array_preg = implode('$|^', $default_style_array_preg);
+function filter_css($rule_set)
+{
+    return true;
+}
 
-    foreach ($style_file_array as $style_file => $style_class_array) {
+// Array to hold our CSS schemes.
 
-        $classes_deprecated[$style_file] = preg_grep("/^$default_style_array_preg$/iu", $style_class_array, PREG_GREP_INVERT);
+$css_rules_array = array();
 
-        $style_file_matches_preg = $style_class_array;
-        array_walk($style_file_matches_preg, 'item_preg_callback', '/');
-        $style_file_matches_preg = implode('$|^', $style_file_matches_preg);
+// Get the CSS files in the main forum/styles directory
 
-        $classes_missing[$style_file] = preg_grep("/^$style_file_matches_preg$/iu", $default_style_array, PREG_GREP_INVERT);
+get_file_list($file_list, 'forum/styles', '.css');
+
+// Get the CSS files in the forums directory.
+
+get_file_list($file_list, 'forum/forums', '.css');
+
+// Iterate over each of the files.
+
+foreach($file_list as $css_filepath) {
+    $css_rules_array[$css_filepath] = parse_css_to_array(file_get_contents($css_filepath));
+}
+
+// Load the default style
+
+$default_css_rules = parse_css_to_array(file_get_contents('forum/styles/Default/style.css'));
+
+// Make backup of default style
+
+rename('forum/styles/Default/style.css', sprintf('forum/styles/Default/style.css.%s', date('YmdHis')));
+
+// Clean the default style and save it.
+
+file_put_contents('forum/styles/Default/style.css', parse_array_to_css($default_css_rules));
+
+// Debug output.
+    
+foreach($css_rules_array as $css_filepath => &$css_rules_set) {
+    
+    // Remove depreceated selectors
+    
+    $css_rules_set = array_diff_key($css_rules_set, array_diff_key($css_rules_set, $default_css_rules));
+    
+    // Add the missing selectors
+    
+    $css_rules_set = array_merge($css_rules_set, array_diff_key($default_css_rules, $css_rules_set));
+    
+    // Copy the missing rules to the selectors
+    
+    foreach(array_diff_key_recursive($default_css_rules, $css_rules_set) as $selector => $missing_rules_set) {
+        
+        foreach($missing_rules_set as $rule_name => $value) {
+            
+            $css_rules_set[$selector][$rule_name] = $value;
+        }
     }
-
-    $shown_header_deprecated = false;
-    $shown_header_missing = false;
-
-    $shown_deprecated_results = false;
-    $shown_missing_results = false;
-
-    foreach ($classes_deprecated as $style_file => $style_classes_array) {
-
-        if ($style_file != 'make_style.css') {
-
-            if (sizeof($style_classes_array) > 0) {
-
-                $shown_deprecated_results = true;
-
-                if ($shown_header_deprecated === false) {
-
-                    echo "Deprecated Classes\n==================\n\n";
-                    $shown_header_deprecated = true;
-                }
-
-                echo $style_file, "\n", str_repeat("-", strlen($style_file)), "\n\n";
-
-                foreach ($style_classes_array as $deprecated_class) {
-                    echo $deprecated_class, "\n";
-                }
-
-                echo "\n\n\n";
+    
+    // Remove the extra rules from selectors, taking care not 
+    // to remove those with the word color in them.
+    
+    foreach(array_diff_key_recursive($css_rules_set, $default_css_rules) as $selector => $additional_rules_set) {
+        
+        foreach($additional_rules_set as $rule_name => $value) {
+            
+            if (preg_match('/color|background-image/', $rule_name) < 1) {
+                unset($css_rules_set[$selector][$rule_name]);
             }
         }
     }
+    
+    // Backup the original file.
+    
+    rename($css_filepath, sprintf("$css_filepath.%s", date('YmdHis')));
+    
+    // Output the fixed style.
+    
+    file_put_contents($css_filepath, parse_array_to_css($css_rules_set));
+}
 
-    if ($shown_deprecated_results === false) {
+// Load the make_style.css
 
-        echo "Deprecated Classes\n==================\n\n";
-        echo "No deprecated classes in CSS files.\n\n";
-    }
+$make_style_css_rules = parse_css_to_array(file_get_contents('forum/styles/make_style.css'));
 
-    foreach ($classes_missing as $style_file => $style_classes_array) {
+// Remove depreceated selectors
 
-        if (sizeof($style_classes_array) > 0) {
+$make_style_css_rules = array_diff_key($make_style_css_rules, array_diff_key($make_style_css_rules, $default_css_rules));
 
-            $shown_missing_results = true;
+// Add the missing selectors
 
-            if ($shown_header_missing === false) {
+$make_style_css_rules = array_merge($make_style_css_rules, array_diff_key($default_css_rules, $make_style_css_rules));
 
-                echo "Missing Classes\n==================\n\n";
-                $shown_header_missing = true;
-            }
+// Copy the missing rules to the selectors
 
-            echo $style_file, "\n", str_repeat("-", strlen($style_file)), "\n\n";
-
-            foreach ($style_classes_array as $missing_class) {
-                echo $missing_class, "\n";
-            }
-
-            echo "\n\n\n";
-        }
-    }
-
-    if ($shown_missing_results === false) {
-
-        echo "Missing Classes\n==================\n\n";
-        echo "No missing classes in CSS files.\n\n";
+foreach(array_diff_key_recursive($default_css_rules, $make_style_css_rules) as $selector => $missing_rules_set) {
+    
+    foreach($missing_rules_set as $rule_name => $value) {
+        
+        $make_style_css_rules[$selector][$rule_name] = $value;
     }
 }
+
+// Remove the extra rules from selectors, taking care not 
+// to remove those with the word color in them.
+
+foreach(array_diff_key_recursive($make_style_css_rules, $default_css_rules) as $selector => $additional_rules_set) {
+    
+    foreach($additional_rules_set as $rule_name => $value) {
+        
+        if (preg_match('/color|background-image/', $rule_name) < 1) {
+            unset($make_style_css_rules[$selector][$rule_name]);
+        }
+    }
+}
+
+// Backup the original file.
+
+rename('forum/styles/make_style.css', sprintf('forum/styles/make_style.css.%s', date('YmdHis')));
+
+// Output the fixed style.
+
+file_put_contents('forum/styles/make_style.css', parse_array_to_css($make_style_css_rules));
 
 ?>

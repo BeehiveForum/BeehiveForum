@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: json.php,v 1.4 2010-01-24 20:07:10 decoyduck Exp $ */
+/* $Id: json.php,v 1.5 2010-01-27 22:39:05 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -114,25 +114,27 @@ if (isset($_GET['search'])) {
                            
     // Construct the Javascript / JSON array
 
-    $json_data = array('webtag'    => $webtag,
-                       'uid'       => bh_session_get_value('UID'),
-                       'lang'      => array_intersect_key($lang, array_flip($lang_required)),
-                       'images'    => array(),
-                       'font_size' => $font_size,
-                       'top_html'  => html_get_top_page(),
-                       'frames'    => array('index'       => html_get_frame_name('index'),
-                                            'admin'       => html_get_frame_name('admin'),
-                                            'start'       => html_get_frame_name('start'),
-                                            'discussion'  => html_get_frame_name('discussion'),
-                                            'user'        => html_get_frame_name('user'),
-                                            'pm'          => html_get_frame_name('pm'),
-                                            'main'        => html_get_frame_name('main'),
-                                            'ftop'        => html_get_frame_name('ftop'),
-                                            'fnav'        => html_get_frame_name('fnav'),
-                                            'left'        => html_get_frame_name('left'),
-                                            'right'       => html_get_frame_name('right'),
-                                            'pm_folders'  => html_get_frame_name('pm_folders'),
-                                            'pm_messages' => html_get_frame_name('pm_messages')));
+    $json_data = array('webtag'     => $webtag,
+                       'uid'        => bh_session_get_value('UID'),
+                       'lang'       => array_intersect_key($lang, array_flip($lang_required)),
+                       'images'     => array(),
+                       'font_size'  => $font_size,
+                       'top_html'   => html_get_top_page(),
+                       'user_style' => html_get_style_sheet(),
+                       'emoticons'  => html_get_emoticon_style_sheet(),
+                       'frames'     => array('index'       => html_get_frame_name('index'),
+                                             'admin'       => html_get_frame_name('admin'),
+                                             'start'       => html_get_frame_name('start'),
+                                             'discussion'  => html_get_frame_name('discussion'),
+                                             'user'        => html_get_frame_name('user'),
+                                             'pm'          => html_get_frame_name('pm'),
+                                             'main'        => html_get_frame_name('main'),
+                                             'ftop'        => html_get_frame_name('ftop'),
+                                             'fnav'        => html_get_frame_name('fnav'),
+                                             'left'        => html_get_frame_name('left'),
+                                             'right'       => html_get_frame_name('right'),
+                                             'pm_folders'  => html_get_frame_name('pm_folders'),
+                                             'pm_messages' => html_get_frame_name('pm_messages')));
 
 
 

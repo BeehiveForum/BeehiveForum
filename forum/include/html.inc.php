@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.367 2010-01-24 20:07:10 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.368 2010-01-27 22:39:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -620,18 +620,20 @@ function html_include_javascript($script_filepath)
     }
 }
 
-function html_include_css($script, $media = 'screen')
+function html_include_css($script, $id, $media = 'screen')
 {
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     $path_parts = pathinfo($script);
 
     $minified_script = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
+    
+    $id = strlen(trim($id)) > 0 ? $id : form_unique_id('stylesheet');
 
     if (file_exists("$forum_path/$minified_script")) {
-        echo "<link rel=\"stylesheet\" href=\"$minified_script\" type=\"text/css\" media=\"$media\" />\n";
+        echo "<link rel=\"stylesheet\" id=\"$id\" href=\"$minified_script\" type=\"text/css\" media=\"$media\" />\n";
     } else {
-        echo "<link rel=\"stylesheet\" href=\"$script\" type=\"text/css\" media=\"$media\" />\n";
+        echo "<link rel=\"stylesheet\" id=\"$id\" href=\"$script\" type=\"text/css\" media=\"$media\" />\n";
     }
 }
 
@@ -869,19 +871,19 @@ function html_draw_top()
     }
 
     if (($stylesheet = html_get_style_sheet())) {
-        html_include_css($stylesheet);
+        html_include_css($stylesheet, 'user_style');
     }
 
     if (($emoticon_style_sheet = html_get_emoticon_style_sheet())) {
-        html_include_css($emoticon_style_sheet, 'print, screen');
+        html_include_css($emoticon_style_sheet, 'emoticon_style', 'print, screen');
     }
 
     if (isset($stylesheet_array) && is_array($stylesheet_array)) {
 
         foreach ($stylesheet_array as $stylesheet) {
 
-            if (isset($stylesheet['filename']) && isset($stylesheet['filename'])) {
-                html_include_css($stylesheet['filename'], $stylesheet['media']);
+            if (isset($stylesheet['filename']) && isset($stylesheet['media'])) {
+                html_include_css($stylesheet['filename'], false, $stylesheet['media']);
             }
         }
     }

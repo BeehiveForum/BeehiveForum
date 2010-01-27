@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.54 2010-01-24 20:07:10 decoyduck Exp $ */
+/* $Id: general.js,v 1.55 2010-01-27 22:39:05 decoyduck Exp $ */
 
 var beehive = {
 
@@ -42,18 +42,26 @@ var beehive = {
         });
     },
 
-    resize_fonts : function() {
+    reload_user_prefs : function() {
 
         if (top.document.body.rows) {
             top.document.body.rows = '60,' + Math.max(beehive.font_size * 2, 22) + ',*';
         }
 
         beehive.process_frames(top.document.body, function() {
+            
             if (!this.contentDocument) return;
+            
             beehive.reload_user_font.call($(this.contentDocument).find('head').get(0));
+            beehive.reload_style_sheets.call($(this.contentDocument).find('head').get(0));
+            
+            if ($(this).attr('name') == beehive.frames.ftop) {
+                $(this).attr('src', beehive.top_html);
+            }
         });
         
-        beehive.reload_user_font.call($('body').parent().find('head').get(0));        
+        beehive.reload_user_font.call($('body').parent().find('head').get(0));
+        beehive.reload_style_sheets.call($('body').parent().find('head').get(0));       
     },
     
     reload_user_font : function() {
@@ -67,6 +75,14 @@ var beehive = {
                 $head.find('style[title="user_font"]').html(data).appendTo($head);
             }
         });
+    },
+    
+    reload_style_sheets : function() {
+        
+        var $head = $(this);
+        
+        $head.find('link[id="user_style"]').attr('href', beehive.user_style).appendTo($head);
+        $head.find('link[id="emoticon_style"]').attr('href', beehive.emoticons).appendTo($head);
     }
 }
 
@@ -137,7 +153,7 @@ $(beehive).bind('init', function() {
 
             beehive.font_size = data.font_size;
 
-            beehive.resize_fonts();
+            beehive.reload_user_prefs();
         });
 
         return false;
@@ -145,7 +161,7 @@ $(beehive).bind('init', function() {
 
     $('#preferences_updated').each(function() {
 
-        if (beehive.uid != 0) beehive.resize_fonts();
+        beehive.reload_user_prefs();
         return false;
     });
     

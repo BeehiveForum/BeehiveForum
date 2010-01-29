@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.113 2009-12-16 18:38:15 decoyduck Exp $ */
+/* $Id: logout.php,v 1.114 2010-01-29 20:54:27 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -34,6 +34,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Disable caching if on AOL
+cache_disable_aol();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

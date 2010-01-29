@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.81 2009-12-08 12:04:48 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.82 2010-01-29 20:54:27 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -37,6 +37,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Disable caching if on AOL
+cache_disable_aol();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

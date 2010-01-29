@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.117 2010-01-03 15:19:32 decoyduck Exp $ */
+/* $Id: install.php,v 1.118 2010-01-29 20:54:27 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -46,10 +46,14 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
 }
 
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
+
+// Disable cache on AOL
+cache_disable_aol();
 
 // Check the PHP version
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.34 2009-11-25 20:41:25 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.35 2010-01-29 20:55:06 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -54,157 +54,6 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 /**
-* Cache_Lite Error Handler.
-*
-* Cache_Lite isn't (yet) working well when we expect PHP5 Strict code.
-* This function simply replaces Beehive's error handler, silenting trapping
-* errors within Cache_Lite and Beehive's support functions.
-*
-* @return void
-* @param void
-*/
-
-function cache_lite_error_handler()
-{
-    return;
-}
-
-/**
-* Check for PEAR Cache_Lite Cache.
-*
-* Check if a cache is available and return it.
-*
-* @return mixed - returns data from the cache or false if no cache available.
-* @param integer $cache_id - Cache ID
-*/
-
-function cache_lite_get($cache_id)
-{
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
-    if (forum_get_setting('message_cache_enabled', 'Y')) {
-
-        set_error_handler('cache_lite_error_handler');
-
-        include_once('Cache/Lite.php');
-
-        if (class_exists('Cache_Lite')) {
-
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
-
-            $message_cache = new Cache_Lite($cache_options);
-
-            if (method_exists($message_cache, 'setLifeTime')) {
-
-                $message_cache->setLifeTime(HOUR_IN_SECONDS);
-                $message_cache->clean(false, 'old');
-            }
-
-            if (method_exists($message_cache, 'get')) {
-
-                if (($message_cache_data = $message_cache->get($cache_id, $webtag))) {
-
-                    restore_error_handler();
-                    return $message_cache_data;
-                }
-            }
-        }
-    }
-
-    restore_error_handler();
-
-    return false;
-}
-
-/**
-* Save data to Cache_Lite Cache.
-*
-* Saved specified data to the Cache Lite Cache.
-*
-* @return boolean.
-* @param integer $cache_id - Cache ID
-*/
-
-function cache_lite_save($cache_id, $content)
-{
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
-    if (forum_get_setting('message_cache_enabled', 'Y')) {
-
-        set_error_handler('cache_lite_error_handler');
-
-        include_once('Cache/Lite.php');
-
-        if (class_exists('Cache_Lite')) {
-
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
-
-            $message_cache = new Cache_Lite($cache_options);
-
-            if (method_exists($message_cache, 'setLifeTime')) {
-
-                $message_cache->setLifeTime(WEEK_IN_SECONDS);
-                $message_cache->clean(false, 'old');
-            }
-
-            if (method_exists($message_cache, 'save')) {
-
-                restore_error_handler();
-                return $message_cache->save($content, $cache_id, $webtag);
-            }
-        }
-    }
-
-    restore_error_handler();
-
-    return false;
-}
-
-/**
-* Remove data from Cache_Lite Cache.
-*
-* Remove specified cache_id from CacheLite Cache.
-*
-* @return boolean.
-* @param integer $cache_id - Cache ID
-*/
-
-function cache_lite_remove($cache_id)
-{
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
-    if (forum_get_setting('message_cache_enabled', 'Y')) {
-
-        set_error_handler('cache_lite_error_handler');
-
-        include_once('Cache/Lite.php');
-
-        if (class_exists('Cache_Lite')) {
-
-            $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, sys_get_temp_dir()));
-
-            $message_cache = new Cache_Lite($cache_options);
-
-            if (method_exists($message_cache, 'remove')) {
-
-                restore_error_handler();
-                return $message_cache->remove($cache_id, $webtag);
-            }
-        }
-    }
-
-    restore_error_handler();
-
-    return false;
-}
-
-/**
 * Prevent caching of a page.
 *
 * Prevents caching of a page by sending headers which indicate that the page
@@ -220,8 +69,25 @@ function cache_disable()
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);  // always modified
     header("Content-Type: text/html; charset=UTF-8", true);               // Internet Explorer Bug
     header("Cache-Control: no-store, no-cache, must-revalidate", true);   // HTTP/1.1
-    header("Cache-Control: post-check=0, pre-check=0", true);
+    header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache", true);
+}
+
+/**
+* cache_disable_aol
+* 
+* Disable HTTP cache if AOL browser is detected.
+* 
+* @param void
+* @return void
+*/
+function cache_disable_aol()
+{
+    if (!browser_check(BROWSER_AOL)) return false;
+    
+    header("Cache-Control: no-store, private, must-revalidate", true);
+    header("Cache-Control: proxy-revalidate, post-check=0,pre-check=0", false);
+    header("Cache-Control: max-age=0, s-maxage=0", false);
 }
 
 /**

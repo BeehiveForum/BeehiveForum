@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: browser.inc.php,v 1.3 2009-12-05 19:40:02 decoyduck Exp $ */
+/* $Id: browser.inc.php,v 1.4 2010-01-29 20:55:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,11 @@ function browser_check($browser_check)
 
     if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
-        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'lynx') !== false) {
+        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'aol') !== false) {
+            
+            $browser = $browser | BROWSER_AOL;
+        
+        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'lynx') !== false) {
 
             $browser = $browser | BROWSER_LYNX;
 

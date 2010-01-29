@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.587 2010-01-18 20:07:09 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.588 2010-01-29 20:55:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -185,10 +185,6 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    if (($message_content = cache_lite_get("$tid.$pid"))) {
-        return $message_content;
-    }
-
     if (!$db_message_get_content = db_connect()) return false;
 
     if (!is_numeric($tid)) return "";
@@ -204,8 +200,6 @@ function message_get_content($tid, $pid)
     if (db_num_rows($result) > 0) {
 
         list($message_content) = db_fetch_array($result, DB_RESULT_NUM);
-
-        cache_lite_save("$tid.$pid", $message_content);
 
         return $message_content;
     }
@@ -659,8 +653,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
-
-    $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));

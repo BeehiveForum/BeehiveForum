@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.56 2009-10-18 17:51:07 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.57 2010-01-29 20:54:26 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -36,6 +36,9 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Disable caching if on AOL
+cache_disable_aol();
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

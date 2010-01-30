@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.js,v 1.15 2010-01-24 20:07:10 decoyduck Exp $ */
+/* $Id: emoticons.js,v 1.15 2010/01/24 20:07:10 decoyduck Exp $ */
 
 $(beehive).bind('init', function() {
 

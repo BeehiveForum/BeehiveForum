@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.12 2008-08-20 19:03:01 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.12 2008/08/20 19:03:01 decoyduck Exp $ */
 
 // Constant to define where the Beehive Forum include files are
 

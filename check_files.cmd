@@ -19,7 +19,7 @@
 :: USA
 :: ======================================================================
 ::
-:: $Id: check_files.cmd,v 1.5 2004-02-22 21:01:32 decoyduck Exp $
+:: $Id: check_files.cmd,v 1.5 2004/02/22 21:01:32 decoyduck Exp $
 :: 
 :: Checks each of the files includes with Beehive by parsing the file
 :: using the CLI version of php.exe. Run from a command prompt in the

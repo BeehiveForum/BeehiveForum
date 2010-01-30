@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_styles.php,v 1.16 2010-01-26 22:26:59 decoyduck Exp $ */
+/* $Id: bh_check_styles.php,v 1.16 2010/01/26 22:26:59 decoyduck Exp $ */
 
 // Set the default timezone
 

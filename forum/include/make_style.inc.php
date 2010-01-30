@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.32 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.32 2009/09/04 22:01:45 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling

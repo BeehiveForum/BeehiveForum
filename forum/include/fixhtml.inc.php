@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.160 2009-10-22 20:36:06 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.160 2009/10/22 20:36:06 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *

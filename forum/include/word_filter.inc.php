@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.61 2009-09-04 22:01:45 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.61 2009/09/04 22:01:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 

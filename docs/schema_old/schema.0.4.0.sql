@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Dec 07, 2003 at 21:15 PM
 #
-# $Id: schema.0.4.0.sql,v 1.1 2004-04-11 21:30:51 decoyduck Exp $
+# $Id: schema.0.4.0.sql,v 1.1 2004/04/11 21:30:51 decoyduck Exp $
 #
 # --------------------------------------------------------
 

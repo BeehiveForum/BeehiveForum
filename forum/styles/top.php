@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: top.php,v 1.5 2010-01-29 20:55:06 decoyduck Exp $ */
+/* $Id: top.php,v 1.5 2010/01/29 20:55:06 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');

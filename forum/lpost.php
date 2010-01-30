@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.158 2010-01-29 20:54:27 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.158 2010/01/29 20:54:27 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');

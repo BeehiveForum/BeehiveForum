@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.35 2010-01-29 20:55:06 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.35 2010/01/29 20:55:06 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions

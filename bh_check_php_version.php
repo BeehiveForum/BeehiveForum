@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_php_version.php,v 1.13 2009-07-12 17:00:31 decoyduck Exp $ */
+/* $Id: bh_check_php_version.php,v 1.13 2009/07/12 17:00:31 decoyduck Exp $ */
 
 // Requires PHP PEAR to be installed and PHP_CompatInfo Class.
 // See: http://www.laurent-laville.org/index.php?module=pear&desc=pci

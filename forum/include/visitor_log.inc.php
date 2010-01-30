@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.52 2010-01-10 14:26:26 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.53 2010-01-30 11:50:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -312,14 +312,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
         if (is_numeric($column)) {
 
-            $profile_entry_sql = "USER_PROFILE_{$column}.ENTRY AS ENTRY_{$column} ";
-            $profile_entry_array[$column] = $profile_entry_sql;
-
-            $profile_item_type_sql = "PROFILE_ITEM_{$column}.TYPE AS PROFILE_ITEM_TYPE_{$column} ";
-            $profile_item_type_array[] = $profile_item_type_sql;
-
-            $profile_item_options_sql = "PROFILE_ITEM_{$column}.OPTIONS AS PROFILE_ITEM_OPTIONS_{$column} ";
-            $profile_item_options_array[] = $profile_item_options_sql;
+            $profile_entry_array[$column] = "USER_PROFILE_{$column}.ENTRY AS ENTRY_{$column} ";
+            $profile_item_type_array[] = "PROFILE_ITEM_{$column}.TYPE AS PROFILE_ITEM_TYPE_{$column} ";
+            $profile_item_options_array[] = "PROFILE_ITEM_{$column}.OPTIONS AS PROFILE_ITEM_OPTIONS_{$column} ";
         }
     }
 
@@ -438,8 +433,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
             if (is_numeric($column)) {
 
-                $having_query_array[] = "(ENTRY_{$column} IS NOT NULL) ";
-                $having_visitor_array[] = "(ENTRY_{$column} IS NOT NULL) ";
+                $having_query_array[] = "(LENGTH(ENTRY_{$column}) > 0) ";
+                $having_visitor_array[] = "(LENGTH(ENTRY_{$column}) > 0) ";
 
             }else {
 
@@ -503,11 +498,11 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
         $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
 
-        $profile_entry_array = array_filter($profile_entry_array, 'is_numeric');
-
+        $profile_entry_array = array_filter(array_keys($profile_items_array), 'is_numeric');
+        
         if (sizeof($profile_entry_array) > 0) {
 
-            $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', array_keys($profile_entry_array)));
+            $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', $profile_entry_array));
 
             $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
             $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
@@ -538,7 +533,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
         }
     }
-
+    
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 
     // Fetch the number of total results

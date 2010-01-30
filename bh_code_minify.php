@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_code_minify.php,v 1.1 2009/10/28 19:56:52 decoyduck Exp $ */
+/* $Id$ */
 
 // Array of files to exclude from the matches
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.20 2008/08/12 17:13:46 decoyduck Exp $ */
+/* $Id$ */
 
 /**
 * bh_cvs_log_parse.php

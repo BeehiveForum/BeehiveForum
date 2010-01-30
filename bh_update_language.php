@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.19 2008/12/30 22:18:36 decoyduck Exp $ */
+/* $Id$ */
 
 // Constant to define where the include files are
 

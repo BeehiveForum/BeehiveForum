@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_iconv_utf8.php,v 1.1 2010/01/17 10:34:22 decoyduck Exp $ */
+/* $Id$ */
 
 // Array of files to exclude from the matches
 

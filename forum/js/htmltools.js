@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.41 2010/01/24 21:00:41 decoyduck Exp $ */
+/* $Id$ */
 
 var htmltools = function()
 {
@@ -1059,11 +1059,11 @@ $(beehive).bind('init', function() {
 
         if ($button.length != 1) return;
 
-        $('input:radio[name="t_post_html"]').each(function() {
+        $('input[type="radio"][name="t_post_html"]').each(function() {
 
-            if ($('input:radio[name="t_post_html"][value!="disabled"][checked]').length == 0) {
+            if ($('input[type="radio"][name="t_post_html"][value!="disabled"][checked]').length == 0) {
 
-                $('input:radio[name="t_post_html"][value!="enabled"]').attr('checked', true);
+                $('input[type="radio"][name="t_post_html"][value!="enabled"]').attr('checked', true);
                 return false;
             }
         });
@@ -1187,7 +1187,7 @@ $(beehive).bind('init', function() {
         htmltools.set_focus();
     });
 
-    $('span.fix_html_compare input:radio').bind('click', function() {
+    $('span.fix_html_compare input[type="radio"]').bind('click', function() {
 
         if (textarea_name = /^co_(.*)_rb$/.exec($(this).attr('name'))) {
 

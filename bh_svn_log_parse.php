@@ -136,6 +136,8 @@ function svn_mysql_parse($svn_log_contents)
             }
         }
     }
+    
+    return true;
 }
 
 /**

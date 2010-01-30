@@ -1,49 +1,646 @@
-Project Beehive Forum Change Log (Generated: Wed, 15 Jul 2009 11:46:03)
+Project Beehive Forum Change Log (Generated: Sat, 30 Jan 2010 23:01:48)
 
 Author: decoyduck
-Date: Tue, 14 Jul 2009 19:53:58
+Date: Fri, 29 Jan 2010 20:55:06
 -----------------------
-Changed: Updated documentation for pending 0.9.1 release.
+Added: AOL Browser detection added to browser_check function
+Added: Prevent caching for AOL browsers. Curse you ISPs who cache dynamic
+content.
+Changed: Deprecated cache_lite support as it's too badly written not to
+cause problems with BH's strict error handler.
 
-Date: Tue, 14 Jul 2009 19:21:44
+Date: Wed, 27 Jan 2010 22:39:05
 -----------------------
-Fixed: Admin Forums not setting forum name if the forum already had a name
-saved.
-Fixed: Installer Continue button going to install.php instead of index.php
-after downloading config.inc.php.
+Added: id attribute added to link tags to allow javascript reloading of
+stylesheets.
+Added: Reload emoticons and forum style when changing prefs.
+Added: User style and emoticons style paths to beehive DOM object.
+Fixed: Removed background-color: transparent from p, h1, h2 selector.
 
-Date: Sun, 12 Jul 2009 16:00:31
+Date: Tue, 26 Jan 2010 22:27:00
 -----------------------
-Fixed: PHP 5.3.0 depreciated split function.
+Changed: bh_check_styles.php to process style sheets according to the
+default style.css.
+Changed: Style sheets all changed to match default
+Fixed: search_logon not scaling the input field to the correct width.
 
-Date: Sun, 12 Jul 2009 11:33:37
+Date: Sun, 24 Jan 2010 21:46:40
 -----------------------
-Changed: PHP 5.3.0 has depreciated ereg functionality.
+Fixed: Emoticons not displaying in FF2.x
 
-Date: Sun, 12 Jul 2009 08:59:21
+Date: Sun, 24 Jan 2010 21:02:59
 -----------------------
-Fixed: Debugging output of SQL query left in pm.inc.php is visible on IIS
-servers.
+Fixed: Transparency on quote buttons in IE6.
 
-Date: Sat, 11 Jul 2009 18:34:41
+Date: Sun, 24 Jan 2010 21:00:41
 -----------------------
-Fixed: add_paragraphs adding too many <br /> tags
-Fixed: Forum rules in language packs having empty lines between
-paragraphs.
+Fixed: htmltools png image transparency in IE6.
+Fixed: htmltools not working in IE6.
 
-Date: Sat, 11 Jul 2009 18:16:48
+Date: Sun, 24 Jan 2010 20:41:45
 -----------------------
-Changed: Relaxed checking on $cookie_path and $cookie_domain in
-bh_setcookie.
-Changed: Removed microtime_float function as we don't use it.
-Added: bh_check_function_names.php which checks the function names all
-start with their filename. Prep work for future autoload of includes.
-Added: bh_x7chat_auth.php for automatic logon using BH's authentication to
-X7Chat.
-Added: Alternative top.php which can be used in place of top.html.
+Fixed: htmltools textarea auto focus
 
-Date: Thu, 09 Jul 2009 17:34:58
+Date: Sun, 24 Jan 2010 20:07:10
 -----------------------
-Fixed: Error during install if no FILE permission on MySQL account
-Fixed: Forum doesn't work if GeSHi is not installed.
+Fixed: Adsense advert in IE6 Quirks mode wasn't centered.
+Fixed: user_font.php returning HTML error message when requested by JSON.
+Changed: Font resize now checks if user is logged in before using JSON.
+Changed: $('body').bind('init') to $(beehive).bind('init') so we don't
+have to use $(document).ready().
+Changed: json.php is now included with <script> tags instead of loaded via
+JSON. Still has JSON support so it can be reloaded when required.
+Changed: Emoticons are now all display: inline-block and the compatibility
+fixes are gone. Doesn't work with FF2.x.
+
+Date: Sat, 23 Jan 2010 10:21:37
+-----------------------
+Fixed: Emoticons not showing in Google Chrome.
+
+Date: Tue, 19 Jan 2010 21:29:40
+-----------------------
+Changed: Made the autocomplete styles more fitting for Beehive (default
+style only)
+Added: Missing jquery.autocomplete.js added to CVS.
+
+Date: Mon, 18 Jan 2010 20:07:09
+-----------------------
+Fixed: Print button not working on display.php
+Fixed: Undefined function add_tag and add_text in htmltools.js
+Fixed: Post popup menu was jumping about the page and wasn't taking into
+consideration page scroll for position.
+Changed: Removed <a rel=""> from emoticon links as they work fine without
+it by putting the text in the alt attribute.
+Changed: Back button on display.php is now an anchor tag so as to keep the
+URL clean.
+Changed: form_input_text_search now has a $class argument that it appends
+search_input to.
+Changed: Added jquery.autocomplete.js to html_draw_top();
+Changed: Removed rel attribute from post popup menu.
+Changed: Added autocomplete to form_input_text_search of type
+SEARCH_LOGON.
+Changed: Removed redundant HTML from search.php
+Changed: Added autocomplete base styles to Default\style.css.
+
+Date: Sun, 17 Jan 2010 12:35:14
+-----------------------
+Fixed: Font resizing outside of a frameset didn't reload the
+font_size.php.
+Fixed: Incorrect use of beehive.lang in search.js
+Changed: forumlinks class added to font_size.php so the forum links select
+resizes correctly.
+Changed: json.php now has a list of language keys to send rather than send
+the whole file.
+
+Date: Sun, 17 Jan 2010 11:37:17
+-----------------------
+Fixed: Broken encoding on literal &raquo; character
+
+Date: Sun, 17 Jan 2010 11:34:44
+-----------------------
+Fixed: html_draw_top not using correct JQuery library
+Fixed: Logon page not disabling auto logon checkbox when no saved
+credentials.
+
+Date: Sun, 17 Jan 2010 11:31:49
+-----------------------
+Fixed: Some files were not in UTF-8
+
+Date: Sun, 17 Jan 2010 10:34:22
+-----------------------
+Added: bh_iconv_utf8.php for converting files from Windows-1252 to UTF-8
+
+Date: Sat, 16 Jan 2010 18:56:10
+-----------------------
+Changed: Upgrade to JQuery 1.4
+
+Date: Sat, 16 Jan 2010 14:41:16
+-----------------------
+Fixed: Added missing search_popup.js to the scripts that use it.
+Fixed: form_input_text_search messing the CSS up for search fields.
+Changed: Forum Options now reloads font_size.php
+Changed: Removed reload_frames when session expires.
+Changed: Made the search_popup.php easier to use.
+Changed: All scripts that now use search_popup.js call
+form_input_text_search to draw the field.
+
+Date: Fri, 15 Jan 2010 21:30:09
+-----------------------
+Added: jquery.parsequery.js for parsing query strings with jquery.
+Added: search_popup.js for search popup window.
+Added: tiny_mce.js file for Beehive's tiny_mce support.
+
+Date: Fri, 15 Jan 2010 21:29:06
+-----------------------
+Fixed: Undefined variable webtag in Beehive TinyMCE plugin
+Changed: Removed tinymce_auto_focus property from html_draw_top
+Changed: PM delete confirmation code moved to pm.js
+Changed: More and more JQuery-ification.
+
+Date: Tue, 12 Jan 2010 21:38:28
+-----------------------
+Fixed: Undefined webtag in general.js when resizing fonts.
+Changed: Rewritten font_size.php to be more intuitive and easier to keep
+up to date.
+Changed: Removed font resize confirmation header JS from messages.php.
+
+Date: Mon, 11 Jan 2010 19:59:35
+-----------------------
+Changed: More Javascript rewriting. More JQuery goodness. Definitely still
+WIP.
+
+Date: Sun, 10 Jan 2010 14:34:29
+-----------------------
+Added: start_main_additional.css example
+Added: jquery.sprintf.js library, overflow.js and json.php.
+
+Date: Sun, 10 Jan 2010 14:26:27
+-----------------------
+Changed: More Javascript rewriting. JQueryified and large majority of
+<script> tags removed from HTML output. Still WIP.
+
+Date: Sun, 03 Jan 2010 15:20:44
+-----------------------
+Changed: Complete rewrite of all javascript (except for majority of
+htmltools.js) to use JQuery. This is still a WIP.
+
+Date: Mon, 28 Dec 2009 11:10:20
+-----------------------
+Changed: user_get_forthcoming_birthdays function to return birthdays in
+future months, limited by number of days in current month.
+
+Date: Sat, 26 Dec 2009 20:57:15
+-----------------------
+Fixed: Query error during installation and forum creation.
+Changed: Installer now correctly creates dictionary with SOUNDEX values
+Changed: Removed metaphone values from english.dic.
+
+Date: Sat, 26 Dec 2009 12:29:21
+-----------------------
+Fixed: Not urlencoding URL query keys
+Fixed: Forum Links opening links without a URL and causing 404 error.
+
+Date: Wed, 23 Dec 2009 15:35:01
+-----------------------
+Fixed: Dictionary would show the complete banner even when it wasn't
+finished checking.
+
+Date: Tue, 22 Dec 2009 18:59:07
+-----------------------
+Fixed: Dictionary wouldn't mark incorrectly spelt words that weren't in
+the dictionary when it had reached the end of the text.
+
+Date: Tue, 22 Dec 2009 18:48:02
+-----------------------
+Fixed: Dictionary wouldn't mark incorrectly spelt words that weren't in
+the dictionary.
+Changed: Light mode select boxes now carry a max-width of 65% so they
+don't force horizontal scrolling on small screen devices.
+Changed: Dictionary now uses SQL SOUNDEX instead of PHP's metaphone
+function.
+
+Date: Wed, 16 Dec 2009 18:38:15
+-----------------------
+Changed: Added Register button to Guest error display.
+
+Date: Wed, 16 Dec 2009 18:31:02
+-----------------------
+Fixed: HTML entities encoded word filter tags in folder_options.php
+Fixed: Word filter being applied to some Admin pages when they shouldn't
+be.
+Changed: CSS for anchor tags as buttons.
+
+Date: Sat, 12 Dec 2009 22:58:19
+-----------------------
+Added: Option to disable generation of attachment thumbnails, by request.
+Changed: Guests now always see image attachments with thumbnails, tempting
+them to register to view the full attachment.
+
+Date: Thu, 10 Dec 2009 21:48:38
+-----------------------
+Added: Experimental support for ImageMagick attachment thumbnail
+creation.
+
+Date: Tue, 08 Dec 2009 12:04:48
+-----------------------
+Fixed: Light mode not redirecting to logon page if saved cookies
+encountered.
+Fixed: Editing %s in title of light mode post edit.
+Fixed: Example top.php was redirecting to logon.php when it shouldn't have
+been.
+Changed: Reduced number of columns in light mode textareas.
+
+Date: Mon, 07 Dec 2009 20:26:11
+-----------------------
+Fixed: thread_set_sticky, thread_set_length and poll_edit were all
+changing the specified thread's modified date to midnight today.
+Fixed: html_draw_top was instancing a session when it shouldn't have been.
+Changed: index.php is now responsible for checking for user_cookies_set
+and !bh_session_check to see if we need to show logon page.
+Changed: Removed useless code from logon.php.
+
+Date: Sun, 06 Dec 2009 11:47:30
+-----------------------
+Fixed: Missing argument $highlight_array in poll_results.php
+Changed: bh_remove_all_cookies now simply loops over $_COOKIE
+super global.
+
+Date: Sat, 05 Dec 2009 19:40:02
+-----------------------
+Changed: browser_check function's argument is no longer optional
+Changed: bh_logon cookie unset changed to remove value as well as set date
+in past.
+Changed: logon_auto_perform() now checks for the absence of bh_logon
+cookie.
+
+Date: Fri, 04 Dec 2009 18:54:18
+-----------------------
+Fixed: CSS was not being enabled on Light mode.
+Changed: $user_sess is now a static in bh_session_check() so it can be
+called multiple times without querying the database more than once.
+Changed: Tests in index.php to see if we are logged in / showing logon
+page are performed the same for Full and Light modes.
+
+Date: Fri, 04 Dec 2009 18:22:55
+-----------------------
+Fixed: Undefined index HTTP_USER_AGENT in browser.inc.php
+Fixed: Undefined variable $path_boundary in html.inc.php
+Changed: Only display memory usage if BEEHIVE_INSTALL_NOWARN is enabled.
+Changed: logon_perform_auto now checks bh_session_check() to see if he
+user is logged in instead of bh_session_active()
+Added: Constant for BROWSER_UNKNOWN
+Added: Optional argument to bh_session_check to prevent it from creating a
+guest session if no user_sess cookie set.
+
+Date: Tue, 01 Dec 2009 22:54:35
+-----------------------
+Added: browser.inc.php which contains routines for detecting many
+different browsers.
+Changed: All browser detection code now goes via browser_check function.
+
+Date: Sun, 29 Nov 2009 20:36:31
+-----------------------
+Changed: Made Search more consistent in how it chooses it's sort order if
+one is not defined.
+
+Date: Sat, 28 Nov 2009 15:18:34
+-----------------------
+Changed: Removed commented E_STRICT test
+Changed: bh_setcookie now sets cookies for the root of the domain unless
+cookie_domain says otherwise.
+Fixed: RSS Feeds not including forum name in the Title.
+
+Date: Wed, 25 Nov 2009 20:41:25
+-----------------------
+Fixed: Searching by user logon limited the results to their first 1000
+posts instead of the last 1000.
+Fixed: Cache wasn't being correctly disabled on development environments.
+Fixed: Encoded search highlight tags in thread title
+Added: LAST_SEARCH_SORT_DIR and LAST_SEARCH_SORT_BY columns to USER_TRACK
+table
+Changed: Removed cache_disable() from discussion.php
+Changed: Moved functionality for highlighting thread title into
+messages_top()
+
+Date: Tue, 24 Nov 2009 21:04:19
+-----------------------
+Added: frameset tags now have name attributes.
+
+Date: Mon, 23 Nov 2009 19:29:39
+-----------------------
+Fixed: Word filter tags in User Profile <title> tags.
+
+Date: Sun, 22 Nov 2009 22:56:47
+-----------------------
+Changed: Indexes on THREAD table changed to allow indexing of thread list
+queries correctly.
+
+Date: Sun, 22 Nov 2009 10:19:43
+-----------------------
+Fixed: session.inc.php functions were not updating ip addresses of users
+all the time.
+Changed: Joins on USER_FORUM in bh_session_update_time changed to use LEFT
+JOIN to allow coalesce to work correctly.
+Changed: Joins on POST_CONTENT WHEN merging / splitting threads changed to
+LEFT JOIN to insert NULLs into table where post content has been deleted.
+
+Date: Tue, 17 Nov 2009 21:13:34
+-----------------------
+Fixed: Forum and Thread title not being filtered by wordfilter in browser
+title.
+
+Date: Mon, 16 Nov 2009 19:37:27
+-----------------------
+Changed: Rolled back changes to user_prefs_update user_prefs_get and the
+tables.
+
+Date: Sun, 15 Nov 2009 20:58:39
+-----------------------
+Added: Mimetype restriction and checking to attachments.
+
+Date: Sun, 15 Nov 2009 20:41:39
+-----------------------
+Fixed: Removed debugging from thread_get() function
+Fixed: Layout issues on start_left.php with broken threads.
+Fixed: Folder order when user pref for THREADS_BY_FOLDER is not set.
+Changed: function user_update_prefs_callback2() now puts NULL into prefs
+we're clearing.
+Changed: WEBTAG_USER_PREFS table needs nullable columns to allow COALESCE
+to work.
+
+Date: Thu, 12 Nov 2009 21:32:46
+-----------------------
+Changed: post_create_thread now always returns false on failure, instead
+of -1
+Changed: thread_merge and thread_split now do much more processing in SQL
+with far fewer queries and less likelihood of going wrong.
+Changed: Mark as unread uses select box to pick post ID to prevent errors
+when entering number too high or too low.
+Fixed: padding on search_button in FireFox made the image appear offset
+incorrectly.
+
+Date: Sun, 08 Nov 2009 14:10:07
+-----------------------
+Changed: db_fetch_mysql_version uses a static variable to store the result
+from the query
+Changed: user_get_prefs uses a single query with COALESCE instead of two
+queries and array_merge.
+
+Date: Sat, 07 Nov 2009 21:39:38
+-----------------------
+Fixed: Only variables should be passed by reference error in
+search_popup.php
+
+Date: Tue, 03 Nov 2009 18:38:25
+-----------------------
+Fixed: Error 'Only variables should be passed by reference' when using
+search_popup.php.
+Changed: Removed legacy code from html.inc.php.
+
+Date: Wed, 28 Oct 2009 20:07:53
+-----------------------
+Added: Edd's emoticon pack now officially part of Beehive.
+
+Date: Wed, 28 Oct 2009 19:56:52
+-----------------------
+Added: Beehive Forum Facebook Group is added as a Forum Link when
+installing / creating a new forum.
+Fixed:  functions html_include_javascript and html_include_css where not
+correctly generating minified filename.
+Fixed: functions html_include_javascript and html_include_css where not
+using BH_FORUM_PATH constant.
+Added: bh_code_minify.php which uses yui_compressor.jar to compress
+Beehive's JS and CSS files.
+
+Date: Sun, 25 Oct 2009 17:31:05
+-----------------------
+Fixed: Toggle buttons were being styles with the default OS buttons.
+Fixed: Toggle buttons submit code needed changing to handle click.
+
+Date: Sun, 25 Oct 2009 14:55:48
+-----------------------
+Changed: Polls to always display results even in preview mode when
+replying to the poll.
+
+Date: Sun, 25 Oct 2009 12:58:15
+-----------------------
+Fixed: Undefined index mail_function in admin_default_forum_settings.php
+
+Date: Sun, 25 Oct 2009 11:08:50
+-----------------------
+Changed: Buttons now use button tag type="submit", etc. to make them
+easier to customise with images, etc.
+
+Date: Sat, 24 Oct 2009 19:21:35
+-----------------------
+Changed: Updated dependencies in all scripts.
+
+Date: Sat, 24 Oct 2009 13:41:38
+-----------------------
+Added: Support for loading minified Javascript and CSS files if they
+exist.
+
+Date: Fri, 23 Oct 2009 21:04:36
+-----------------------
+Changed: Removed the anti-caching from CSS and Javascript.
+
+Date: Fri, 23 Oct 2009 20:00:55
+-----------------------
+Added: Additional headers to emails to aid in debugging.
+
+Date: Fri, 23 Oct 2009 19:55:27
+-----------------------
+Added: Options to set SMTP server / sendmail settings to use with Swift
+Mailer.
+Added: Callback support to forum_get_setting and
+forum_get_global_settings.
+
+Date: Fri, 23 Oct 2009 11:34:00
+-----------------------
+Fixed: Removed debugging output from email.inc.php.
+
+Date: Fri, 23 Oct 2009 11:33:21
+-----------------------
+Fixed: Static DEFAULT webtag in several links.
+Fixed: Sending a message to a user had the recipient in place of the forum
+name and was sending the message to the sender from the recipient.
+
+Date: Thu, 22 Oct 2009 20:36:06
+-----------------------
+Changed: Zend Code Analyzer code clean up.
+Fixed: Undefined var $lang in lforums.php and lpm.php
+Fixed: Undefined var $forum_link in admin_folder_edit.php
+Fixed: Undefined var $page_title in admin_prof_sect.php
+Fixed: Undefined var $forum_email in email.inc.php
+
+Date: Thu, 22 Oct 2009 20:02:51
+-----------------------
+Changed: bh_zendcodeanalyzer.php script now used proc_open to get the
+results.
+
+Date: Thu, 22 Oct 2009 10:18:41
+-----------------------
+Fixed: Expected array in email.inc.php when sending subscription
+notifications
+Fixed: Folder permissions were not allowing newly created folders from
+being included due to incorrect INNER JOIN condition.
+
+Date: Sun, 18 Oct 2009 20:02:23
+-----------------------
+Changed: Added manual sendmail support to Beehive via
+SwiftSendMailTransport.
+
+Date: Sun, 18 Oct 2009 19:53:36
+-----------------------
+Changed: All email functions are now using Swift. To do: Make sure they
+all work add interface for setting smtp settings on forum settings.
+
+Date: Sun, 18 Oct 2009 17:51:17
+-----------------------
+Added: Javascript to update the top frameset title on all right-hand pages
+(excludes thread list, start_main, start_left, admin_menu, user_menu,
+etc.),
+
+Date: Fri, 16 Oct 2009 07:19:44
+-----------------------
+Changed: Relaxed session tests to see if it helps mobile users stay logged
+in longer.
+
+Date: Tue, 13 Oct 2009 21:19:56
+-----------------------
+Fixed: Default HTML mode in create_poll wasn't obeying user preference.
+Changed: Updated MySQL Stop Word list.
+
+Date: Mon, 12 Oct 2009 18:19:13
+-----------------------
+Changed: Converted some of the email functions to use Swift. Testing still
+required for these.
+
+Date: Mon, 12 Oct 2009 18:06:10
+-----------------------
+Fixed: SQL query error caused by threads_have_attachments()
+
+Date: Sat, 10 Oct 2009 21:34:47
+-----------------------
+Fixed: Viewing old already read posts changed the last unread post.
+
+Date: Sat, 10 Oct 2009 16:31:23
+-----------------------
+Changed: preg_grep with /[0-9]+/ match to array_filter with is_numeric as
+the callback.
+
+Date: Sat, 10 Oct 2009 15:55:24
+-----------------------
+Fixed: Maximum length on register.php and install.php logon and password
+fields.
+
+Date: Sat, 10 Oct 2009 14:52:53
+-----------------------
+Fixed: message_update_read function not working correctly if the thread is
+entirely newer than the cut-off.
+
+Date: Sat, 10 Oct 2009 13:18:30
+-----------------------
+Fixed: bh_x7chat_auth.php not including logon.inc.php
+Added: Swift Mailer classes added to CVS Repository in preparation for
+switching away from PHP's mail function.
+
+Date: Sat, 10 Oct 2009 13:12:56
+-----------------------
+Changed: Updated Error Handler to catch Exceptions as well as Errors.
+
+Date: Sun, 04 Oct 2009 11:13:41
+-----------------------
+Fixed: HTML entities in Javascript top.document.title.
+
+Date: Sat, 03 Oct 2009 19:43:17
+-----------------------
+Changed: Sessions are now tied to IP Address and hash. Hopefully this will
+fix people being signed out constantly.
+Changed: Removed harmless duplicate column update in thread.inc.php.
+Fixed: Installer and create new forum were not creating the MODIFIED
+column in FOLDERS table.
+
+Date: Sat, 19 Sep 2009 19:11:12
+-----------------------
+Removing GeSHI from our Repository.
+
+Date: Sat, 19 Sep 2009 19:09:54
+-----------------------
+Removing TinyMCE from our repository.
+
+Date: Sat, 12 Sep 2009 22:21:11
+-----------------------
+Fixed: Deleting the currently open PM results in an error about the
+message not being found.
+
+Date: Sat, 12 Sep 2009 13:30:18
+-----------------------
+Changed: HTML toolbar hides the spell check button if the dictionary is
+not installed.
+
+Date: Thu, 10 Sep 2009 21:02:31
+-----------------------
+Changed: > is now &raquo; in all page titles.
+Changed: Deleting profile entry removes the text from the database
+Changed: Profile popup doesn't display empty entries.
+Added: Forum name to email popup title
+Added: Javascript to change page / tab title when clicking on a thread
+title.
+
+Date: Thu, 10 Sep 2009 16:59:58
+-----------------------
+Changed: RSS feed output now adds the folder title to the feed name.
+
+Date: Thu, 10 Sep 2009 16:44:10
+-----------------------
+Fixed: THREAD_LAST_PAGE always enabled, despite user preference.
+Fixed: webtag not working in html_draw_top() resulting in broken RSS and
+search links.
+
+Date: Thu, 10 Sep 2009 14:58:07
+-----------------------
+Changed: Denied access to RSS feed if user is a guest and guest account
+disabled.
+
+Date: Thu, 10 Sep 2009 14:54:45
+-----------------------
+Changed: RSS Feeds are hidden if user isn't logged in.
+
+Date: Thu, 10 Sep 2009 14:52:10
+-----------------------
+Added: Per-folder RSS feeds for each forum.
+
+Date: Thu, 10 Sep 2009 11:49:10
+-----------------------
+Added: Created and Modified datetime columns to folders table.
+Added: Option for thread list quick link to go to last page in thread.
+Changed: Thread list cache now checks the new Folders created and modified
+columns.
+
+Date: Wed, 09 Sep 2009 23:43:35
+-----------------------
+Added: By request, options to hide Search Engine Bots from Visitor Log and
+Active Users. With these options enabled the bots show up as Guests.
+
+Date: Wed, 09 Sep 2009 14:39:38
+-----------------------
+Fixed: Auto logon not working when the Guest account was disabled.
+Fixed: Attachments not working correctly if Guest account disabled
+(redirect loop).
+
+Date: Tue, 08 Sep 2009 10:44:33
+-----------------------
+Fixed: Array returned instead of int by permissions
+perm_get_user_permissions() resulting in broken worming and allowed edit
+perms.
+
+Date: Fri, 04 Sep 2009 22:01:48
+-----------------------
+Fixed: Redirect bug when downloading an attachment with the same name as
+one of BH's includes.
+
+Date: Wed, 02 Sep 2009 19:10:54
+-----------------------
+Fixed: Undefined $GLOBALS[super_global] in server.inc.php - Might be
+something odd with php.ini settings or PHP distro.
+
+Date: Sun, 30 Aug 2009 20:17:49
+-----------------------
+Fixed: Search Engine Bots were not correctly updating their SID in SESSION
+table if a session already existed for their IP Address.
+
+Date: Sun, 26 Jul 2009 14:32:59
+-----------------------
+Fixed: Forum Post Stats not working due to incorrect variable being used
+to construct date range.
+Fixed: Default value on ANON_LOGON column was invalid.
+Fixed: Return values on Javascript functions.
+Changed: Grammar mistakes in en and en-us language packs.
+Changed: Simplified user_update_prefs function to require fewer loops to
+construct SQL.
+
+Date: Thu, 16 Jul 2009 12:06:29
+-----------------------
+Fixed: SQL error when saving folder name.
 

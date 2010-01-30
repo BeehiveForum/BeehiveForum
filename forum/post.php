@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.389 2010-01-29 20:54:27 decoyduck Exp $ */
+/* $Id: post.php,v 1.390 2010-01-30 14:41:46 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -1176,7 +1176,7 @@ if ($allow_sig == true) {
         echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", htmlentities_array($t_sig), 5, 75, false, 'tabindex="7"', 'signature_content'), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
 
         if ($sig->isDiff() && !$fetched_sig) {
-            echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+            echo $tools->compare_original("t_sig", $sig);
         }
 
     }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_ms_word_spelling_check.php,v 1.10 2008/08/12 17:13:46 decoyduck Exp $ */
+/* $Id$ */
 
 function word_spell_check($matches)
 {

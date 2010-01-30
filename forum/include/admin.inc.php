@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.195 2010/01/10 14:26:25 decoyduck Exp $ */
+/* $Id$ */
 
 /**
 * admin.inc.php - admin functions

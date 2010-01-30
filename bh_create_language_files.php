@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_create_language_files.php,v 1.1 2009/02/27 13:35:15 decoyduck Exp $ */
+/* $Id$ */
 
 // Array of files to exclude from the matches
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.399 2009/12/26 20:57:15 decoyduck Exp $ */
+/* $Id$ */
 
 // We shouldn't be accessing this file directly.
 

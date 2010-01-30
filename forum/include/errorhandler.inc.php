@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.145 2009/11/28 15:18:34 decoyduck Exp $ */
+/* $Id$ */
 
 // We shouldn't be accessing this file directly.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x7chat_auth.php,v 1.2 2009/10/10 13:18:30 decoyduck Exp $ */
+/* $Id$ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.57 2010/01/29 20:54:27 decoyduck Exp $ */
+/* $Id$ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');

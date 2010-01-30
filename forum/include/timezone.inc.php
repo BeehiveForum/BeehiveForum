@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.17 2009/09/04 22:01:45 decoyduck Exp $ */
+/* $Id$ */
 
 /**
 * timezone.inc.php - International Timezones with DST support

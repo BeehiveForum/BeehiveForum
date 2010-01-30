@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.368 2010-01-27 22:39:05 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.369 2010-01-30 13:55:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1076,7 +1076,12 @@ function html_draw_bottom($frame_set_html = false)
 class html_frameset
 {
     private $frames_array = array();
-
+    
+    protected $id;
+    protected $framespacing = 0;
+    protected $frameborder = 0;
+    protected $allowtransparency = '';
+    
     public function html_frame($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
     {
         array_push($this->frames_array, new html_frame($src, $name, $frameborder, $scrolling, $noresize));
@@ -1092,14 +1097,9 @@ class html_frameset_rows extends html_frameset
 {
     private $rows = '';
 
-    private $name = '';
-    private $framespacing = 0;
-    private $frameborder = 0;
-    private $allowtransparency = '';
-
-    public function html_frameset_rows($name, $rows, $framespacing = 0, $frameborder = 0)
+    public function __construct($id, $rows, $framespacing = 0, $frameborder = 0)
     {
-        $this->name = $name;
+        $this->id = $id;
 
         if (preg_match('/^[0-9,\*%]+$/D', $rows)) {
             $this->rows = $rows;
@@ -1115,7 +1115,7 @@ class html_frameset_rows extends html_frameset
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset name=\"%s\" rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->name, $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
+        echo sprintf("<frameset id=\"%s\" rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->id, $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
         $frames_array = parent::get_frames();
 
@@ -1131,14 +1131,9 @@ class html_frameset_cols extends html_frameset
 {
     private $cols = '';
 
-    private $name = '';
-    private $framespacing = 0;
-    private $frameborder = 0;
-    private $allowtransparency = '';
-
-    public function html_frameset_cols($name, $cols, $framespacing = 4, $frameborder = 4)
+    public function __construct($id, $cols, $framespacing = 4, $frameborder = 4)
     {
-        $this->name = $name;
+        $this->id = $id;
 
         if (preg_match('/^[0-9,\*%]+$/D', $cols)) {
             $this->cols = $cols;
@@ -1154,7 +1149,7 @@ class html_frameset_cols extends html_frameset
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset name=\"%s\" cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->name, $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
+        echo sprintf("<frameset id=\"%s\" cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->id, $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
         $frames_array = parent::get_frames();
 

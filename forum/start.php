@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.98 2010-01-29 20:54:27 decoyduck Exp $ */
+/* $Id: start.php,v 1.99 2010-01-30 13:55:04 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -116,7 +116,7 @@ if (!forum_check_access_level()) {
 
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols(html_get_frame_name('start_frameset'), '280,*');
+$frameset = new html_frameset_cols('start', '280,*');
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.85 2010-01-29 20:54:27 decoyduck Exp $ */
+/* $Id: user.php,v 1.86 2010-01-30 13:55:04 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -126,7 +126,7 @@ if (user_is_guest()) {
 
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols(html_get_frame_name('user_frameset'), '250,*');
+$frameset = new html_frameset_cols('user', '250,*');
 
 if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0) {
 

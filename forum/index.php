@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.201 2010-01-29 20:54:27 decoyduck Exp $ */
+/* $Id: index.php,v 1.202 2010-01-30 13:55:04 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -188,7 +188,7 @@ html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
 if ($skip_logon_page === true) {
 
-    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,22,*");
+    $frameset = new html_frameset_rows('index', "60,22,*");
 
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
@@ -219,7 +219,7 @@ if ($skip_logon_page === true) {
         $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
     }
 
-    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,*");
+    $frameset = new html_frameset_rows('index', "60,*");
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
@@ -302,7 +302,7 @@ if ($skip_logon_page === true) {
         }
     }
 
-    $frameset = new html_frameset_rows(html_get_frame_name('index_frameset'), "60,$navsize,*");
+    $frameset = new html_frameset_rows('index', "60,$navsize,*");
     $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.260 2010-01-29 20:54:27 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.261 2010-01-30 14:41:46 decoyduck Exp $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -1271,7 +1271,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
 if ($post->isDiff()) {
-    echo $tools->compare_original("t_message_text", $post->getOriginalContent());
+    echo $tools->compare_original("t_message_text", $post);
 }
 
 if ($allow_html == true) {
@@ -1321,7 +1321,7 @@ if ($allow_sig == true) {
 
         if ($sig->isDiff() && !$fetched_sig) {
 
-            echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+            echo $tools->compare_original("t_sig", $sig);
         }
 
     }else {

@@ -716,6 +716,7 @@ p, h1, h2 {
     display: none;
     position: absolute;
     text-align: left;
+    width: 160px;
 }
 
 .post_options_container * {

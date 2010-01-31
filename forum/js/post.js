@@ -42,13 +42,13 @@ $(beehive).bind('init', function() {
         var container_offset = $post_options_container.offset();
 
         if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
-            $post_options_container.css('top', link_offset.top - $post_options_container.height());
+            $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
         } else {
-            $post_options_container.css('top', link_offset.top + $link.height());
+            $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
         }
 
         $post_options_container.find('*').css('margin-left', 0);
-        $post_options_container.css('left', link_offset.left - ($post_options_container.width() - $link.width()));
+        $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
 
         return false;
     });

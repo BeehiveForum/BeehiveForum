@@ -276,7 +276,7 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
     foreach ($user_groups_array['user_groups_array'] as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "</td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">", form_checkbox("delete_group[]", $user_group['GID']), "</td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
 
         if (isset($user_group['GROUP_DESC']) && strlen(trim($user_group['GROUP_DESC'])) > 0) {

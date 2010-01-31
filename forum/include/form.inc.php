@@ -266,7 +266,7 @@ function form_unique_id($name)
 
 // Creates a checkbox field
 
-function form_checkbox($name, $value, $text, $checked = false, $custom_html = false, $class = "bhinputcheckbox")
+function form_checkbox($name, $value, $text = '', $checked = false, $custom_html = false, $class = "bhinputcheckbox")
 {
     $id = form_unique_id($name);
 
@@ -313,7 +313,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 // Create a radio field
 
-function form_radio($name, $value, $text, $checked = false, $custom_html = false, $class = "bhinputradio")
+function form_radio($name, $value, $text = '', $checked = false, $custom_html = false, $class = "bhinputradio")
 {
     $id = form_unique_id($name);
 

@@ -390,7 +390,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
     foreach ($admin_user_array['user_array'] as $user) {
 
         echo "                 <tr>\n";
-        echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y", ""), "</td>\n";
+        echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y"), "</td>\n";
         echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {

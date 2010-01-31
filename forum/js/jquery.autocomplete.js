@@ -721,7 +721,6 @@ $.Autocompleter.Select = function (options, input, select, config) {
 		},
 		show: function() {
 			var offset = $(input).closest('.bhinputsearch').offset();
-            console.log(offset);
 			element.css({
 				width: typeof options.width == "string" || options.width > 0 ? options.width : $(input).closest('.bhinputsearch').width() + 2,
 				top: offset.top + input.offsetHeight + 2,

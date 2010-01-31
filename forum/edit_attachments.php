@@ -462,14 +462,14 @@ if ($attachment_result) {
     if (is_md5($aid)) {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main", ""), "</td>\n";
+        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
         echo "                </tr>\n";
 
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main", ""), "</td>\n";
+        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
         echo "                </tr>\n";
     }
@@ -481,7 +481,7 @@ if ($attachment_result) {
             if (($attachment_link = attachment_make_link($attachment, false, true))) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -509,7 +509,7 @@ if ($attachment_result) {
             if (($attachment_link = attachment_make_link($attachment, false, true))) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -578,7 +578,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
     if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other", ""), "</td>\n";
+        echo "                  <td class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other"), "</td>\n";
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
         echo "                </tr>\n";
 
@@ -589,7 +589,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                 if (($attachment_link = attachment_make_link($attachment, false))) {
 
                     echo "                <tr>\n";
-                    echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
+                    echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                     if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -617,7 +617,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                 if (($attachment_link = attachment_make_link($attachment, false))) {
 
                     echo "                <tr>\n";
-                    echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
+                    echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                     if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {

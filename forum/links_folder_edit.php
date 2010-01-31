@@ -199,7 +199,7 @@ if (isset($_POST['update'])) {
 html_draw_top("title={$lang['links']} » {$lang['editfolder']}");
 
 echo "<h1>{$lang['links']} &raquo; {$lang['editfolder']}</h1>\n";
-echo "<p>{$lang['editingfolder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
+echo "<p>{$lang['editingfolder']}: <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'left');

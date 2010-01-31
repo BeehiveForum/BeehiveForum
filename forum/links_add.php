@@ -318,7 +318,7 @@ if ($mode == LINKS_ADD_LINK) {
     html_draw_top("title={$lang['links']} » {$lang['addlink']}");
 
     echo "<h1>{$lang['links']} &raquo; {$lang['addlink']}</h1>\n";
-    echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
+    echo "<p>{$lang['addinglinkin']}: <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'left');
@@ -381,7 +381,7 @@ if ($mode == LINKS_ADD_LINK) {
     html_draw_top("title={$lang['links']} » {$lang['addnewfolder']}");
 
     echo "<h1>{$lang['links']} &raquo; {$lang['addnewfolder']}</h1>\n";
-    echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
+    echo "<p>{$lang['addnewfolderunder']}: <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'left');

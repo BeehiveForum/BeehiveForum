@@ -295,11 +295,11 @@ if (!$link = links_get_single($lid)) {
 
 $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
-$links_folder_path = links_display_folder_path($link['FID'], $folders, true, true, "links.php?webtag=$webtag");
+$page_title = links_get_folder_page_title($link['TITLE'], $link['FID'], $folders);
 
-html_draw_top("title={$lang['links']} » $links_folder_path");
+html_draw_top("title={$lang['links']} » {$page_title}");
 
-echo "<h1>{$lang['links']} &raquo; $links_folder_path &raquo; <a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
+echo "<h1>{$lang['links']} &raquo; ", links_get_folder_path_links($link['FID'], $folders, true, true), " &raquo; <a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

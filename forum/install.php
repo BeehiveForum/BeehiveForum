@@ -565,7 +565,7 @@ echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/jquery.min.js\"></script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/install.js\"></script>\n";
 echo "</head>\n";

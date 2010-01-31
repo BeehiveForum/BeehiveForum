@@ -242,7 +242,7 @@ function links_update_folder($fid, $name)
     return (db_affected_rows($db_links_update_folder) > 0);
 }
 
-function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
+function links_get_folder_path_links($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
 {
     $webtag = get_webtag();
 
@@ -279,6 +279,37 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     }
 
     return $html;
+}
+
+function links_get_folder_page_title($link_title, $fid, $folders)
+{
+    $webtag = get_webtag();
+
+    if (!is_numeric($fid)) return false;
+    if (!is_array($folders)) return false;
+
+    $tree_fid = $fid; 
+    
+    $tree_array = array();
+
+    list($key) = array_keys($folders);
+
+    while ($tree_fid != $key) {
+        $tree_array[] = $tree_fid;
+        $tree_fid = $folders[$tree_fid]['PARENT_FID'];
+    }
+
+    $path = $folders[$key]['NAME'];
+
+    if (is_array($tree_array) && sizeof($tree_array) > 0) {
+
+        while (($val = array_pop($tree_array))) {
+            
+            $path.= " » ". $folders[$val]['NAME'];
+        }
+    }
+
+    return $path. ' » '. $link_title;
 }
 
 function links_get_subfolders($fid, $folders)
@@ -624,7 +655,7 @@ function links_folder_dropdown($default_fid, $folders)
 {
     while (list($key) = each($folders)) {
 
-        $labels[$key] = links_display_folder_path($key, $folders, false);
+        $labels[$key] = links_get_folder_path_links($key, $folders, false);
         if ($key == $default_fid) $default_value = $key;
     }
 

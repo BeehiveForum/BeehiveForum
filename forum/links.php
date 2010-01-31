@@ -250,7 +250,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <h2>", links_display_folder_path($fid, $folders), "&nbsp;<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$fid\" class=\"threadtime\">[{$lang['edit']}]</a></h2>\n";
+    echo "        <h2>", links_get_folder_path_links($fid, $folders), "&nbsp;<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$fid\" class=\"threadtime\">[{$lang['edit']}]</a></h2>\n";
 
     if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">{$lang['folderhidden']}. <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;action=foldershow\">[{$lang['unhide']}]</a></p>";
 

@@ -163,7 +163,7 @@ function svn_mysql_output_log($log_filename)
         $svn_log_entry_author = '';
         $svn_log_entry_date = '';
 
-        file_put_contents($log_filename, sprintf("Project Beehive Forum Change Log (Generated: %s)\n\n", gmdate('D, d M Y H:i:s')));
+        file_put_contents($log_filename, sprintf("Project Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s')));
 
         while (($svn_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
@@ -171,22 +171,22 @@ function svn_mysql_output_log($log_filename)
 
             if ($svn_log_entry_author != $svn_log_entry_array['AUTHOR']) {
                 $svn_log_entry_author = $svn_log_entry_array['AUTHOR'];
-                $svn_log_entry.= sprintf("Author: %s\n", $svn_log_entry_author);
+                $svn_log_entry.= sprintf("Author: %s\r\n", $svn_log_entry_author);
             }
 
             if ($svn_log_entry_date != $svn_log_entry_array['DATE']) {
                 $svn_log_entry_date = $svn_log_entry_array['DATE'];
-                $svn_log_entry.= sprintf("Date: %s\n-----------------------\n", gmdate('D, d M Y H:i:s', $svn_log_entry_date));
+                $svn_log_entry.= sprintf("Date: %s\r\n-----------------------\r\n", gmdate('D, d M Y H:i:s', $svn_log_entry_date));
             }
 
             $svn_log_entry.= "{$svn_log_entry_array['COMMENTS']}\r\n\r\n";
 
-            file_put_contents($log_filename, wordwrap($svn_log_entry, 75), FILE_APPEND);
+            file_put_contents($log_filename, wordwrap($svn_log_entry, 75, "\r\n"), FILE_APPEND);
         }
 
     }else {
 
-        echo "Table BEEHIVE_SVN_LOG is empty. No Changelog generated.\n";
+        echo "Table BEEHIVE_SVN_LOG is empty. No Changelog generated.\r\n";
     }
 
     return true;
@@ -206,28 +206,28 @@ if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', 
 
     if (svn_mysql_prepare_table()) {
 
-        echo "Fetching SVN Log Data...\n";
+        echo "Fetching SVN Log Data...\r\n";
 
         if (($svn_log_contents = get_svn_log_data($modified_date))) {
 
-            echo "Parsing SVN Log Data...\n";
+            echo "Parsing SVN Log Data...\r\n";
 
             if (!svn_mysql_parse($svn_log_contents)) {
 
-                echo "Error while fetching or parsing SVN log contents\n";
+                echo "Error while fetching or parsing SVN log contents\r\n";
                 exit;
             }
 
         }else {
 
-            echo "Error while fetching SVN log\n";
+            echo "Error while fetching SVN log\r\n";
             exit;
         }
 
         if (isset($_SERVER['argv'][2]) && strlen(trim($_SERVER['argv'][2])) > 0) {
 
             $output_log_filename = trim($_SERVER['argv'][2]);
-            echo "Generating Change Log. Saving to $output_log_filename\n";
+            echo "Generating Change Log. Saving to $output_log_filename\r\n";
             svn_mysql_output_log($output_log_filename);
             exit;
         }
@@ -244,7 +244,7 @@ if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', 
 
     if (svn_mysql_prepare_table(false)) {
 
-        echo "Generating Change Log. Saving to $output_log_filename\n";
+        echo "Generating Change Log. Saving to $output_log_filename\r\n";
         svn_mysql_output_log($output_log_filename);
 
     }else {
@@ -255,25 +255,25 @@ if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', 
 
 }else {
 
-    echo "Generate changelog.txt from SVN comments\n\n";
-    echo "Usage: php-bin bh_svn_log_parse.php [YYYY-MM-DD] [FILE]\n\n";
-    echo "Examples:\n";
-    echo "  php-bin bh_svn_log_parse.php 2007-01-01\n";
-    echo "  php-bin bh_svn_log_parse.php 2007-01-01 changelog.txt\n";
-    echo "  php-bin bh_svn_log_parse.php changelog.txt\n\n";
-    echo "[FILE] specifies the output filename for the changelog.\n\n";
-    echo "[YYYY-MM-DD] specifies the date the changelog should start from\n\n";
-    echo "Both arguments can be combined or used separatly to achieve\n";
-    echo "different results.\n\n";
-    echo "Specifying the date on it's own will save the results from the\n";
-    echo "SVN comments to a MySQL database named BEEHIVE_SVN_LOG using the\n";
-    echo "connection details from your Beehive Forum config.inc.php\n\n";
-    echo "Specifying only the output filename will take any saved results\n";
-    echo "in the BEEHIVE_SVN_LOG table and generate a changelog from them.\n\n";
-    echo "Using them together will both save the results to the BEEHIVE_SVN_LOG\n";
-    echo "table and generate the specified changelog.\n\n";
-    echo "Subsequent runs using the date argument will truncate the database\n";
-    echo "table before generating the changelog.\n";
+    echo "Generate changelog.txt from SVN comments\r\n\r\n";
+    echo "Usage: php-bin bh_svn_log_parse.php [YYYY-MM-DD] [FILE]\r\n\r\n";
+    echo "Examples:\r\n";
+    echo "  php-bin bh_svn_log_parse.php 2007-01-01\r\n";
+    echo "  php-bin bh_svn_log_parse.php 2007-01-01 changelog.txt\r\n";
+    echo "  php-bin bh_svn_log_parse.php changelog.txt\r\n\r\n";
+    echo "[FILE] specifies the output filename for the changelog.\r\n\r\n";
+    echo "[YYYY-MM-DD] specifies the date the changelog should start from\r\n\r\n";
+    echo "Both arguments can be combined or used separatly to achieve\r\n";
+    echo "different results.\r\n\r\n";
+    echo "Specifying the date on it's own will save the results from the\r\n";
+    echo "SVN comments to a MySQL database named BEEHIVE_SVN_LOG using the\r\n";
+    echo "connection details from your Beehive Forum config.inc.php\r\n\r\n";
+    echo "Specifying only the output filename will take any saved results\r\n";
+    echo "in the BEEHIVE_SVN_LOG table and generate a changelog from them.\r\n\r\n";
+    echo "Using them together will both save the results to the BEEHIVE_SVN_LOG\r\n";
+    echo "table and generate the specified changelog.\r\n\r\n";
+    echo "Subsequent runs using the date argument will truncate the database\r\n";
+    echo "table before generating the changelog.\r\n";
 }
 
 ?>

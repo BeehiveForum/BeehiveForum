@@ -21,7 +21,7 @@ USA
 
 /* $Id$ */
 
-$(beehive).bind('init', function() {
+$(document).ready(function() {
 
     $('#install_button').bind('click', function() {
 

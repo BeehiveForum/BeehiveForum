@@ -599,6 +599,8 @@ function html_get_top_frame_name()
 function html_include_javascript($script_filepath)
 {
     $path_parts = pathinfo($script_filepath);
+    
+    $seperator = strstr($script_filepath, '?') ? '&amp;' : '?';
 
     if ((preg_match('/\.min\.js$/', $script_filepath) < 1) && ($path_parts = pathinfo($script_filepath))) {
 
@@ -613,11 +615,7 @@ function html_include_javascript($script_filepath)
         }
     }
 
-    if (defined('BEEHIVE_INSTALL_NOWARN') && file_exists($script_filepath)) {
-        echo "<script type=\"text/javascript\" src=\"$script_filepath?", filemtime($script_filepath), "\"></script>\n";
-    } else {
-        echo "<script type=\"text/javascript\" src=\"$script_filepath\"></script>\n";
-    }
+    printf("<script type=\"text/javascript\" src=\"%s%s%s\"></script>\n", $script_filepath, $seperator, @filemtime($script_filepath));
 }
 
 function html_include_css($script, $id, $media = 'screen')
@@ -625,16 +623,16 @@ function html_include_css($script, $id, $media = 'screen')
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     $path_parts = pathinfo($script);
+    
+    $seperator = strstr($script, '?') ? '&' : '?';
 
     $minified_script = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
     
     $id = strlen(trim($id)) > 0 ? $id : form_unique_id('stylesheet');
 
-    if (file_exists("$forum_path/$minified_script")) {
-        echo "<link rel=\"stylesheet\" id=\"$id\" href=\"$minified_script\" type=\"text/css\" media=\"$media\" />\n";
-    } else {
-        echo "<link rel=\"stylesheet\" id=\"$id\" href=\"$script\" type=\"text/css\" media=\"$media\" />\n";
-    }
+    if (file_exists("$forum_path/$minified_script")) $script = $minified_script;
+        
+    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script, $seperator, @filemtime($script), $media);
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags

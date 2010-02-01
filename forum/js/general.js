@@ -169,5 +169,11 @@ $(beehive).bind('init', function() {
         window.print();
     });
     
+    $('a.button').bind('mousedown', function() {
+        $(this).css('border', '1px inset');
+    }).bind('mouseup mouseout', function() {
+        $(this).css('border', '1px outset');
+    });
+    
     top.document.title = document.title;
 });

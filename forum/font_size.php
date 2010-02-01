@@ -232,7 +232,7 @@ $css_selectors = array('body'                          => array(10, 'pt'),
 // Output the CSS
 
 foreach ($css_selectors as $selector => $font_info) {
-    printf("%s { font-size: %d%s !important; }\n", $selector, $font_size * ($font_info[0] / 10), $font_info[1]);
+    printf("%s { font-size: %d%s; }\n", $selector, $font_size * ($font_info[0] / 10), $font_info[1]);
 }
 
 ?>

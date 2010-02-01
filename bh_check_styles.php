@@ -122,11 +122,16 @@ function selector_sort($a, $b)
     return strcmp($a, $b);
 }
 
+function sort_array_by_array($array, $sort_by)
+{
+    $common_keys = array_intersect_key(array_flip($sort_by), $array);
+    $common_key_values = array_intersect_key($array, $common_keys);
+    return array_merge($common_keys, $common_key_values);
+}
+
 function parse_array_to_css($css_rules_array)
 {
     $css_file_contents = '';
-    
-    uksort($css_rules_array, 'selector_sort');
     
     foreach ($css_rules_array as $selector => $rules_set) {
         
@@ -162,12 +167,7 @@ function array_diff_key_recursive($array1, $array2)
     
     return $result;
 }
-
-function filter_css($rule_set)
-{
-    return true;
-}
-
+    
 // Array to hold our CSS schemes.
 
 $css_rules_array = array();
@@ -209,6 +209,8 @@ foreach($css_rules_array as $css_filepath => &$css_rules_set) {
     // Add the missing selectors
     
     $css_rules_set = array_merge($css_rules_set, array_diff_key($default_css_rules, $css_rules_set));
+    
+    $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
     
     // Copy the missing rules to the selectors
     

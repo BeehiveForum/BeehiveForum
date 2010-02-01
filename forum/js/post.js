@@ -87,7 +87,7 @@ $(beehive).bind('init', function() {
     });
 
     $('#quick_reply_container button#post').bind('click', function() {
-        if ($(this).val().trim().length < 1) return false;
+        return $('#quick_reply_container #t_content').val().trim().length > 0;
     });
 
     $('#quick_reply_container button#cancel').bind('click', function() {

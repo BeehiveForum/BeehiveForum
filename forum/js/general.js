@@ -71,6 +71,7 @@ var beehive = {
         $.ajax({
             'url' : 'font_size.php',
             'data' : { 'webtag' : beehive.webtag },
+            'cache' : false,
             'success' : function(data) {
                 $head.find('style[title="user_font"]').html(data).appendTo($head);
             }

@@ -14,6 +14,21 @@ a {
     text-decoration: underline;
 }
 
+a.button {
+    background-color: #5A809F;
+    border: 1px outset;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    font-weight: bold;
+    margin: 0px;
+    outline: none;
+    padding: 1px 6px;
+    text-align: center;
+    text-decoration: none;
+}
+
 button::-moz-focus-inner {
     border: 0;
     padding: 0;
@@ -74,7 +89,6 @@ p {
 }
 
 p, h1, h2 {
-    background-color: transparent;
     font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
 }
@@ -182,7 +196,7 @@ p, h1, h2 {
 }
 
 .bhinputlogon {
-    width: 165px;
+    width: 175px;
 }
 
 .bhinputprofileitem {
@@ -259,6 +273,20 @@ p, h1, h2 {
     padding: 0px;
 }
 
+.button, .dictionary_button {
+    background-color: #5A809F;
+    border-width: 1px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    font-weight: bold;
+    margin: 0px;
+    padding: 1px 6px;
+    text-align: center;
+    text-decoration: none;
+}
+
 .button_disabled {
     background-color: #EBEBE4;
     border-bottom: 1px solid buttonshadow;
@@ -311,10 +339,10 @@ p, h1, h2 {
 }
 
 .dictionary_best_selection {
-    height: 90px;
+    height: 85px;
     margin: 0px;
     padding: 0px;
-    width: 100%;
+    width: 330px;
 }
 
 .dictionary_best_selection option {
@@ -323,39 +351,22 @@ p, h1, h2 {
 }
 
 .dictionary_button {
-    width: 90%;
-}
-
-.dictionary_button, .button {
-    background-color: #5A809F;
-    border-bottom: 1px solid buttonshadow;
-    border-left: 1px solid buttonhighlight;
-    border-right: 1px solid buttonshadow;
-    border-top: 1px solid buttonhighlight;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
-    font-weight: bold;
-    margin: 0px;
-    padding: 1px 6px;
-    text-align: center;
-    text-decoration: none;
+    width: 110px;
 }
 
 .dictionary_change_to {
-    width: 99%;
+    width: 325px;
 }
 
 .dictionary_pretty_content {
-    height: 152px;
+    height: 85px;
     overflow: auto;
     padding-left: 5px;
-    width: 350px;
+    width: 323px;
 }
 
 .dictionary_word_display {
-    width: 95%;
+    width: 200px;
 }
 
 .edit_signature_content {
@@ -482,8 +493,6 @@ p, h1, h2 {
 }
 
 .forumlinks {
-    background-color: #5483B1;
-    color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
 }
 
@@ -631,9 +640,7 @@ p, h1, h2 {
 }
 
 .navpage {
-    background-color: #5483B1;
-    background-image: url('images/menu.png');
-    color: #FFFFFF;
+    color: #000000;
     font-size: 10px;
     font-weight: bold;
     margin: 0px;
@@ -641,7 +648,7 @@ p, h1, h2 {
 }
 
 .navpage a {
-    color: #FFFFFF;
+    color: #000000;
     text-decoration: none;
 }
 
@@ -719,6 +726,7 @@ p, h1, h2 {
     display: none;
     position: absolute;
     text-align: left;
+    width: 160px;
 }
 
 .post_options_container * {
@@ -735,7 +743,7 @@ p, h1, h2 {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
-    width: 169px;
+    width: 186px;
 }
 
 .postbody {
@@ -910,7 +918,7 @@ p, h1, h2 {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
-    width: 169px;
+    width: 186px;
 }
 
 .register_dropdown {
@@ -1002,7 +1010,6 @@ p, h1, h2 {
 }
 
 .spoiler * {
-    color: #EEEEEE;
     margin-left: -9999px;
 }
 
@@ -1145,7 +1152,7 @@ p, h1, h2 {
 }
 
 .thread_title {
-    width: 190px;
+    width: 186px;
 }
 
 .thread_track_notice {
@@ -1403,7 +1410,6 @@ p, h1, h2 {
 }
 
 .tools {
-    background-image: url('../../images/html_toolbar.png');
     background-repeat: no-repeat;
     display: none;
     margin: 0;

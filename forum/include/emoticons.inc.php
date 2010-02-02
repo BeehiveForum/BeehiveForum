@@ -190,7 +190,7 @@ function emoticons_apply($content)
 
     // PREG match for emoticons.
 
-    $emoticon_preg_match = '(?<=\s|^|>)%s(?=\s|$|<)';
+    $emoticon_preg_match = '/(?<=\s|^|>)%s(?=\s|$|<)/';
 
     // HTML code for emoticons.
 
@@ -204,36 +204,15 @@ function emoticons_apply($content)
 
         if ($key != $key_encoded) {
 
-            $pattern_string = sprintf($emoticon_preg_match, preg_quote($key_encoded, "/"));
-            $replace_string = sprintf($emoticon_html_code, $emoticon, $key_encoded);
-
-            $pattern_array[] = $pattern_string;
-            $replace_array[$replace_string] = $key_encoded;
+            $pattern_array[] = sprintf($emoticon_preg_match, preg_quote($key_encoded, "/"));
+            $replace_array[] = sprintf($emoticon_html_code, $emoticon, $key_encoded);
         }
 
-        $pattern_string = sprintf($emoticon_preg_match, preg_quote($key, "/"));
-        $replace_string = sprintf($emoticon_html_code, $emoticon, $key);
-
-        $pattern_array[] = $pattern_string;
-        $replace_array[$replace_string] = $key;
+        $pattern_array[] = sprintf($emoticon_preg_match, preg_quote($key, "/"));
+        $replace_array[] = sprintf($emoticon_html_code, $emoticon, $key_encoded);
     }
 
-    // Apply the emoticons to the content.
-
-    $pattern_match = implode("|", $pattern_array);
-
-    if (($content_array = preg_split("/($pattern_match)/u", $content, 100, PREG_SPLIT_DELIM_CAPTURE))) {
-
-        foreach ($content_array as $key => $value) {
-
-            if (($replace_string = array_search($value, $replace_array)) !== false) {
-
-                $content_array[$key] = $replace_string;
-            }
-        }
-
-        $content = implode('', $content_array);
-    }
+    $content = preg_replace($pattern_array, $replace_array, $content, 100);    
 
     // Return the content.
 

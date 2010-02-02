@@ -237,7 +237,7 @@ class TextAreaHTML
     {
         $lang = load_language_file();
 
-        $str = form_radio("co_{$textarea}_rb", htmlentities_array($text->getTidyContent()), $lang['correctedcode'], true, false, 'bhinputradio fix_html_compare'). "\n";
+        $str = form_radio("co_{$textarea}_rb", $text->getTidyContent(), $lang['correctedcode'], true, false, 'bhinputradio fix_html_compare'). "\n";
         $str.= form_radio("co_{$textarea}_rb", htmlentities_array($text->getOriginalContent()), $lang['submittedcode'], false, false, 'bhinputradio fix_html_compare'). "\n";
         $str.= "&nbsp;[<a class=\"fix_html_help\">?</a>]\n";
 

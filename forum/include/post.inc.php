@@ -693,8 +693,8 @@ class MessageText {
     {
         if ($this->html > POST_HTML_DISABLED) {
 
-            if ($this->tiny_mce) return tidy_html($this->text, false, $this->links, true);
-            return tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links);
+            if ($this->tiny_mce) return htmlentities_array(tidy_html($this->text, false, $this->links, true));
+            return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
         }
 
         return strip_tags($this->text);

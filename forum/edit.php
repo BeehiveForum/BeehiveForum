@@ -791,7 +791,7 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
 
 if ($post->isDiff()) {
 
@@ -855,7 +855,7 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", htmlentities_array($t_sig), 5, 75, false, 'tabindex="7"', 'signature_content'), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
+        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, false, 'tabindex="7"', 'signature_content'), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
 
         if ($sig->isDiff()) {
 

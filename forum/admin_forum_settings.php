@@ -729,19 +729,19 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", htmlentities_array($forum_settings_closed_message->getTidyContent()), 7, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", $forum_settings_closed_message->getTidyContent(), 7, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumrestrictedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", htmlentities_array($forum_settings_restricted_message->getTidyContent()), 7, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", $forum_settings_restricted_message->getTidyContent(), 7, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumpasswordprotectedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", htmlentities_array($forum_settings_password_protected_message->getTidyContent()), 7, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", $forum_settings_password_protected_message->getTidyContent(), 7, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

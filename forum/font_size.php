@@ -126,6 +126,7 @@ if ($font_size > 15) $font_size = 15;
 // Array of different font sizes
 
 $css_selectors = array('body'                          => array(10, 'pt'),
+                       'a.button'                      => array(9, 'pt'),
                        '.navpage'                      => array(10, 'px'),
                        '.forumlinks'                   => array(10, 'pt'),
                        'p'                             => array(10, 'pt'),

@@ -1231,7 +1231,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", htmlentities_array($forum_rules_message->getTidyContent()), 10, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_rules_message->getTidyContent(), 10, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

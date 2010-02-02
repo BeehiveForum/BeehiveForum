@@ -109,8 +109,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
             if ($i % 2) {
 
-                $html_parts[$i] = preg_replace("/\\s*\\/?$/u", '', $html_parts[$i]);
-
                 $tag = explode(' ', $html_parts[$i]);
 
                 if (substr($tag[0], 0, 1) == '/') {

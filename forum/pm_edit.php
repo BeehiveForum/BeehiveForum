@@ -529,7 +529,7 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     $tools->set_tinymce(false);
 }
 
-echo $tools->textarea("t_content", htmlentities_array($t_content), 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
 
 echo "                        </td>\n";
 echo "                      </tr>\n";

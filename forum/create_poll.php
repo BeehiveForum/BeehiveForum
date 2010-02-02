@@ -1265,7 +1265,7 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea('t_message_text', htmlentities_array($t_message_text), 20, 75, true, 'tabindex="1"', 'post_content'), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea('t_message_text', $t_message_text, 20, 75, true, 'tabindex="1"', 'post_content'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
@@ -1317,7 +1317,7 @@ if ($allow_sig == true) {
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", htmlentities_array($t_sig), 5, 75, false, 'tabindex="7"', 'signature_content'), "</td>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, false, 'tabindex="7"', 'signature_content'), "</td>\n";
 
         if ($sig->isDiff() && !$fetched_sig) {
 

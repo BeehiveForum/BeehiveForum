@@ -65,6 +65,10 @@ $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
+// Don't cache this page
+
+cache_disable();
+
 // Get webtag
 
 $webtag = get_webtag();

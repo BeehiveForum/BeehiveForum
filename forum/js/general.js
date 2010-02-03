@@ -61,7 +61,10 @@ var beehive = {
         });
         
         beehive.reload_user_font.call($('body').parent().find('head').get(0));
+        beehive.reload_user_font.call($('head', top.document).get(0));
+
         beehive.reload_style_sheets.call($('body').parent().find('head').get(0));       
+        beehive.reload_style_sheets.call($('head', top.document).get(0));       
     },
     
     reload_user_font : function() {

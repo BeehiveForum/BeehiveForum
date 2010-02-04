@@ -31,7 +31,7 @@ $(beehive).bind('init', function() {
 
     $('#mark_read_submit').bind('click', function() {
 
-        if (window.confirm(beehive.lang['confirmmarkasread'])) {
+        if (window.confirm(beehive.lang.confirmmarkasread)) {
 
             $('#mark_read_confirm').val('Y');
             return true;

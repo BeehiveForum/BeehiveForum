@@ -25,7 +25,7 @@ $(beehive).bind('init', function() {
 
     $('select#forum_links').bind('change', function() {
 
-        if (/^[a-z[0-9]+:\/\//.test($(this).val())) {
+        if (/^[a-z0-9]+:\/\//.test($(this).val())) {
             window.open($(this).val());
         }
     });

@@ -23,8 +23,6 @@ USA
 
 $(beehive).bind('init', function() {
 
-    var obj_id = $('#obj_id').val();
-
     var $content = $('#content');
 
     $('#dictionary_init').each(function() {

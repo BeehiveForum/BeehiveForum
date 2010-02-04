@@ -29,7 +29,9 @@ $(beehive).bind('init', function() {
 
         var $search_input = $container.find('input:text');
 
-        if ($search_input.length != 1) return false;
+        if ($search_input.length != 1) {
+            return false;
+        }
         
         var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
         
@@ -61,12 +63,12 @@ $(beehive).bind('init', function() {
                 
                 formatItem : function(item) {
                     var data = JSON.parse(item);
-                    return $.sprintf('%s (%s)', data['NICKNAME'], data['LOGON']);
+                    return $.sprintf('%s (%s)', data.NICKNAME, data.LOGON);
                 },
                 
                 formatResult : function(item) {
                     var data = JSON.parse(item);
-                    return data['LOGON'];
+                    return data.LOGON;
                 }
             });
         }
@@ -80,9 +82,11 @@ $(beehive).bind('init', function() {
 
         if ($search_input.length > 0) {
 
-            $search_container = $search_input.closest('div.bhinputsearch');
+            var $search_container = $search_input.closest('div.bhinputsearch');
 
-            if ($search_container.length != 1) return false;
+            if ($search_container.length != 1) {
+                 return false;
+            }
 
             var result_array = [];
 

@@ -37,21 +37,22 @@ $(beehive).bind('init', function() {
 
                     if ($(this).width() > $('body').attr('clientWidth')) {
 
-                        $parent_div = $('<div>');
+                        var $parent_div = $('<div>');
 
-                        $resize_banner = $('<div class="image_resize_text">');
+                        var $resize_banner = $('<div class="image_resize_text">');
 
-                        $resize_icon = $('<img class="image_resize_icon" />');
+                        var $resize_icon = $('<img class="image_resize_icon" />');
+                        
                         $resize_icon.attr('src', beehive.images['warning.png']);
 
                         $resize_banner.append($resize_icon);
-                        $resize_banner.append($.sprintf(beehive.lang['imageresized'], $(this).width(), $(this).height()));
+                        $resize_banner.append($.sprintf(beehive.lang.imageresized, $(this).width(), $(this).height()));
 
                         $(this).wrap($parent_div).css('width', '100%');
 
                         $(this).parent('div').prepend($resize_banner);
 
-                        $image = $(this);
+                        var $image = $(this);
 
                         $resize_banner.bind('click', function() {
                             window.open($image.attr('src'));

@@ -31,9 +31,13 @@ $(beehive).bind('init', function() {
         
         var $post_options_container = $link.next('.post_options_container');
 
-        if ($post_options_container.length != 1) return;
+        if ($post_options_container.length != 1) {
+             return;
+        }
         
-        if ($post_options_container.is(':visible')) return;
+        if ($post_options_container.is(':visible')) {
+             return;
+        }
 
         var link_offset = $link.offset();
 
@@ -63,25 +67,23 @@ $(beehive).bind('init', function() {
                 
                 var $link = $(this).prev('a.post_options_link');
                 
-                if ($link.length != 1) return;
+                if ($link.length == 1) {
                 
-                var link_offset = $link.offset();
-                
-                $post_options_container.hide();
-                
-                $post_options_container.css('top', link_offset.top + $link.height());
-                
-                $post_options_container.find('*').css('margin-left', -9999);
+                    var link_offset = $link.offset();
+                    
+                    $post_options_container.hide();
+                    
+                    $post_options_container.css('top', link_offset.top + $link.height());
+                    
+                    $post_options_container.find('*').css('margin-left', -9999);
+                }
             });
         }
     });
 
     $('#quick_reply_container #t_content').bind('keyup', function(e) {
 
-        if ($(this).val().trim().length < 1) return;
-
-        if (e.ctrlKey && e.which == 13) {
-
+        if ($(this).val().trim().length > 0 && e.ctrlKey && e.which == 13) {
             $('#quick_reply_container button#post').click();
         }
     });
@@ -102,19 +104,21 @@ $(beehive).bind('init', function() {
 
         var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).attr('rel'));
 
-        if (quick_reply_data.length != 3) return;
+        if (quick_reply_data.length === 3) {
 
-        $quick_reply_location = $('#quick_reply_' + quick_reply_data[2]);
+            var $quick_reply_location = $('#quick_reply_' + quick_reply_data[2]);
 
-        if ($quick_reply_location.length != 1) return;
+            if ($quick_reply_location.length == 1) {
 
-        $('#quick_reply_container #t_rpid').val(quick_reply_data[2]);
+                $('#quick_reply_container #t_rpid').val(quick_reply_data[2]);
 
-        $('#quick_reply_container').appendTo($quick_reply_location).show();
+                $('#quick_reply_container').appendTo($quick_reply_location).show();
 
-        $('#quick_reply_container #t_content').focus();
+                $('#quick_reply_container #t_content').focus();
 
-        $('#quick_reply_container #t_content').get(0).scrollIntoView(false);
+                $('#quick_reply_container #t_content').get(0).scrollIntoView(false);
+            }
+        }
     });
 
     $('a[id^="quote_"]').bind('click', function() {
@@ -125,7 +129,7 @@ $(beehive).bind('init', function() {
 
             $('img#quote_img_' + pid).attr('src', beehive.images['quote_enabled.png']);
 
-            $(this).html(beehive.lang['unquote']);
+            $(this).html(beehive.lang.unquote);
 
             beehive.quote_list.push(pid);
 
@@ -133,7 +137,7 @@ $(beehive).bind('init', function() {
 
             $('img#quote_img_' + pid).attr('src', beehive.images['quote_disabled.png']);
 
-            $(this).html(beehive.lang['quote']);
+            $(this).html(beehive.lang.quote);
 
             for (var check_post_id in beehive.quote_list) {
 
@@ -147,7 +151,7 @@ $(beehive).bind('init', function() {
 
             var query_string = $.parseQuery($(this).attr('href').split('?')[1]);
 
-            query_string['quote_list'] = beehive.quote_list.join(',');
+            query_string.quote_list = beehive.quote_list.join(',');
 
             $(this).attr('href', 'post.php?' + $.param(query_string));
         });

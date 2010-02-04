@@ -27,7 +27,7 @@ var htmltools = function()
 
     var active_field;
 
-    var auto_check_spell_started = false;
+    var auto_spell_check_started = false;
 
     return {
 
@@ -55,16 +55,18 @@ var htmltools = function()
 
             active_field = t;
             
-            if (!active_field.createTextRange && !active_field.setSelectionRange) return;
+            if (!active_field.createTextRange && !active_field.setSelectionRange) {
+                return;
+            }
 
-            if (dbl == true) {
+            if (dbl === true) {
 
                 var s = this.get_selection();
 
-                if (s.charAt(s.length-1) == " ") {
+                if (s.charAt(s.length-1) === ' ') {
 
                     var ss = this.get_selection_start();
-                    var se = get_selection_end() - 1;
+                    var se = this.get_selection_end() - 1;
 
                     if (active_field.setSelectionRange) {
 
@@ -128,7 +130,7 @@ var htmltools = function()
 
                 var gap = Math.ceil(t.length/2);
 
-                if (u.length == 0) {
+                if (u.length === 0) {
 
                     no_sel = true;
                     gap = 1;
@@ -137,7 +139,7 @@ var htmltools = function()
                 while (true) {
 
                     if (++i > t.length * 5) {
-                        break; // something's gone wrong
+                        break;
                     }
 
                     last_s = s.duplicate();
@@ -153,7 +155,7 @@ var htmltools = function()
                         // then moveStart will ignore any combinations of \r\n until it hits a
                         // non-linebreak character. "Argh".
 
-                        if (no_sel == true) {
+                        if (no_sel === true) {
 
                             if (last_s.text == s.text) {
 
@@ -176,7 +178,9 @@ var htmltools = function()
                     }
                 }
 
-                if (no_sel == 0) count *= 2;
+                if (no_sel === 0) {
+                    count*= 2;
+                }
 
                 // Remove 'junk' characters before the textfield
                 // See textarea() in htmltools.inc.php
@@ -205,23 +209,25 @@ var htmltools = function()
 
         add_tag : function(tag, a, v, enclose)
         {
-            if (!active_field) return;
+            if (!active_field){
+                return;
+            }
             
-            if (self.tools_feedback) tools_feedback();
-
             var single_tags = {br : true, img : true, hr : true, area : true, embed : true};
+            
+            var open_tag, close_tag, valid, ca, i, j, re, list_tmp;
 
             if (!active_field.createTextRange && !active_field.setSelectionRange) {
 
                 if (!single_tags[tag]) {
 
-                    var open_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\">" : ">");
-                    var close_tag = "</" + tag + ">";
+                    open_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\">" : ">");
+                    close_tag = "</" + tag + ">";
 
                 }else {
 
-                    var open_tag = "";
-                    var close_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\" />" : " />");
+                    open_tag = "";
+                    close_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
                 }
 
                 active_field.value += open_tag + close_tag;
@@ -234,42 +240,44 @@ var htmltools = function()
             var ss = this.get_selection_start();
             var se = ss + str.length;
 
-            if (ss != se && str.length == 0) ss = se;
+            if (ss != se && str.length === 0) {
+                 ss = se;
+            }
 
             var left_bound = active_field.value.substr(0, ss);
             var right_bound = active_field.value.substr(se);
 
             var extra_left = "", extra_right = "";
 
-            if (/^[^<>]*>/.test(str) == true) {
+            if (/^[^<>]*>/.test(str) === true) {
 
                 valid = false;
 
-                for (var i = left_bound.length - 1; i >= 0; i--) {
+                for (i = left_bound.length - 1; i >= 0; i--) {
 
-                    var ca = left_bound.charAt(i);
+                    ca = left_bound.charAt(i);
 
                     if (ca == "<") {
 
-                        var valid = true;
+                        valid = true;
                         break;
 
                     }else if (ca == ">") {
 
-                        var valid = false;
+                        valid = false;
                         break;
                     }
                 }
 
-                if (valid == true) {
+                if (valid === true) {
 
                     extra_left = left_bound.substr(i) + extra_left;
                     left_bound = left_bound.substr(0, i);
                 }
 
-            }else if (/<[^<>]*$/.test(left_bound) == true && /^[^<>]*>/.test(right_bound) == true) {
+            }else if (/<[^<>]*$/.test(left_bound) === true && /^[^<>]*>/.test(right_bound) === true) {
 
-                var re = new RegExp("<[^<>]*$");
+                re = new RegExp("<[^<>]*$");
 
                 re = re.exec(left_bound);
 
@@ -283,12 +291,12 @@ var htmltools = function()
             str_enclose = str;
 
             str_enclose = extra_left + str_enclose;
-            var str_enclose_extra_left = extra_left.length;
+
             var str_enclose_left = left_bound;
 
             valid = null;
 
-            for (var i = left_bound.length - 1; i >= 0 && valid != false; i--) {
+            for (i = left_bound.length - 1; i >= 0 && valid !== false; i--) {
 
                 if (left_bound.charAt(i) != ">") {
 
@@ -301,23 +309,23 @@ var htmltools = function()
 
                 valid = false;
 
-                for (var j = i; j >= 0; j--) {
+                for (j = i; j >= 0; j--) {
 
-                    var ca = left_bound.charAt(j);
+                    ca = left_bound.charAt(j);
 
                     if (ca == "<") {
 
-                        var valid = true;
+                        valid = true;
                         break;
 
                     }else if (ca == ">") {
 
-                        var valid = false;
+                        valid = false;
                         break;
                     }
                 }
 
-                if (valid == true) {
+                if (valid === true) {
 
                     extra_left = left_bound.substr(j) + extra_left;
                     left_bound = left_bound.substr(0, j);
@@ -327,35 +335,35 @@ var htmltools = function()
 
             valid = null;
 
-            if (/<[^<>]*$/.test(str) == true) {
+            if (/<[^<>]*$/.test(str) === true) {
 
                 valid = false;
 
-                for (var i = 0; i < right_bound.length; i++) {
+                for (i = 0; i < right_bound.length; i++) {
 
-                    var ca = right_bound.charAt(i);
+                    ca = right_bound.charAt(i);
 
                     if (ca == ">") {
 
-                        var valid = true;
+                        valid = true;
                         break;
 
                     }else if (ca == "<") {
 
-                        var valid = false;
+                        valid = false;
                         break;
                     }
                 }
 
-                if (valid == true) {
+                if (valid === true) {
 
                     extra_right+= right_bound.substr(0, i + 1);
                     right_bound = right_bound.substr(i + 1);
                 }
 
-            }else if (/^[^<>]*>/.test(right_bound) == true && /<[^<>]*$/.test(left_bound) == true) {
+            }else if (/^[^<>]*>/.test(right_bound) === true && /<[^<>]*$/.test(left_bound) === true) {
 
-                var re = new RegExp("^[^<>]*>");
+                re = new RegExp("^[^<>]*>");
 
                 re = re.exec(right_bound);
 
@@ -364,16 +372,15 @@ var htmltools = function()
                 right_bound = right_bound.substr(re[0].length);
             }
 
-            var mark = valid;
+            mark = valid;
 
             str_enclose += extra_right;
 
-            var str_enclose_extra_right = extra_right.length;
             var str_enclose_right = right_bound;
 
             valid = null;
 
-            for (var i = 0; i <= right_bound.length && valid != false; i++) {
+            for (i = 0; i <= right_bound.length && valid !== false; i++) {
 
                 if (right_bound.charAt(i) != "<") {
 
@@ -386,23 +393,23 @@ var htmltools = function()
 
                 valid = false;
 
-                for (var j = i; j <= right_bound.length; j++) {
+                for (j = i; j <= right_bound.length; j++) {
 
-                    var ca = right_bound.charAt(j);
+                    ca = right_bound.charAt(j);
 
                     if (ca == ">") {
 
-                        var valid = true;
+                        valid = true;
                         break;
 
                     }else if (ca == "<") {
 
-                        var valid = false;
+                        valid = false;
                         break;
                     }
                 }
 
-                if (valid == true) {
+                if (valid === true) {
 
                     extra_right += right_bound.substr(0, j + 1);
                     right_bound = right_bound.substr(j + 1);
@@ -412,19 +419,19 @@ var htmltools = function()
 
             str = extra_left + str + extra_right;
 
-            var re = new RegExp("^(<[^<>]+>)*(<" + tag + "( [^<>]*)?>)", "i");
+            re = new RegExp("^(<[^<>]+>)*(<" + tag + "( [^<>]*)?>)", "i");
             var open = re.exec(str);
 
-            var re = new RegExp("<\/" + tag + "( [^<>]*)?>(<[^<>]+>)*$", "i");
+            re = new RegExp("<\/" + tag + "( [^<>]*)?>(<[^<>]+>)*$", "i");
             var close = re.exec(str);
 
-            var list_tmp = 0;
+            list_tmp = 0;
 
-            if (open != null && close != null && enclose != true) {
+            if (open !== null && close !== null && enclose !== true) {
 
-                if (a != null) {
+                if (a !== null) {
 
-                    var newstr = change_attribute(open[2], a, v);
+                    var newstr = this.change_attribute(open[2], a, v);
                     re = new RegExp("<" + tag + "( [^<>]*)?>", "i");
                     str = str.replace(re, newstr);
 
@@ -444,9 +451,11 @@ var htmltools = function()
 
                 for (i = 0; i <= str.length; i++) {
 
-                    if (str.charAt(i) == "<" && mark_open == false) mark_open = true;
+                    if (str.charAt(i) == "<" && mark_open === false) {
+                         mark_open = true;
+                    }
 
-                    if (str.charAt(i) == ">" && str.charAt(i + 1) != "<" && mark_open == true) {
+                    if (str.charAt(i) == ">" && str.charAt(i + 1) != "<" && mark_open === true) {
 
                         text_start = i+1;
                         break;
@@ -457,9 +466,11 @@ var htmltools = function()
 
                 for (i = str.length; i >= 0; i--) {
 
-                    if (str.charAt(i) == ">" && mark_close == false) mark_close = true;
+                    if (str.charAt(i) == ">" && mark_close === false) {
+                         mark_close = true;
+                    }
 
-                    if (str.charAt(i) == "<" && str.charAt(i - 1) != ">" && mark_close == true) {
+                    if (str.charAt(i) == "<" && str.charAt(i - 1) != ">" && mark_close === true) {
 
                         text_end = i;
                         break;
@@ -479,14 +490,16 @@ var htmltools = function()
 
                 var open_found = false;
                 var close_found = false;
-
-                if (/^<[^<>]*>$/.test(str_enclose) != true && enclose != true) {
+                
+                if (/^<[^<>]*>$/.test(str_enclose) !== true && enclose !== true) {
 
                     for (i = 0; i < str_mid.length; i++) {
 
-                        var ca = str_mid.charAt(i);
+                        ca = str_mid.charAt(i);
 
-                        if (i==0 && ca != "<") break;
+                        if (i === 0 && ca != "<") {
+                             break;
+                        }
 
                         open_found = true;
 
@@ -496,15 +509,17 @@ var htmltools = function()
 
                             open_found = false;
                             i++;
-                            break
+                            break;
                         }
                     }
 
                     for (j = str_mid.length-1; j>i; j--) {
 
-                        var ca = str_mid.charAt(j);
+                        ca = str_mid.charAt(j);
 
-                        if (j == str_mid.length - 1 && ca != ">") break;
+                        if (j == str_mid.length - 1 && ca != ">") {
+                            break;
+                        }
 
                         close_found = true;
 
@@ -514,11 +529,11 @@ var htmltools = function()
 
                             close_found = false;
                             j--;
-                            break
+                            break;
                         }
                     }
 
-                    if (close_found == true && open_found == false) {
+                    if (close_found === true && open_found === false) {
 
                         j = str_mid.length - 1;
                         str_right = "";
@@ -535,27 +550,28 @@ var htmltools = function()
 
                     if (tag == "list") {
 
-                        var open_tag = "";
-                        var close_tag = "";
+                        open_tag = "";
+                        close_tag = "";
 
-                        var list_tmp = parse_list(str_mid, a);
+                        list_tmp = this.parse_list(str_mid, a);
+                        
                         str_mid = list_tmp;
                         list_tmp = list_tmp.split("\n").length - 1;
 
                     }else if (tag == "quote") {
 
-                        var open_tag = "<quote source=\"\" url=\"\">";
-                        var close_tag = "</quote>";
+                        open_tag = "<quote source=\"\" url=\"\">";
+                        close_tag = "</quote>";
 
                     }else if (!single_tags[tag]) {
 
-                        var open_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\">" : ">");
-                        var close_tag = "</" + tag + ">";
+                        open_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\">" : ">");
+                        close_tag = "</" + tag + ">";
 
                     }else {
 
-                        var open_tag = "";
-                        var close_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\" />" : " />");
+                        open_tag = "";
+                        close_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
                     }
 
                     str = str_left + open_tag + str_mid + close_tag + str_right;
@@ -565,23 +581,25 @@ var htmltools = function()
                     ss = ss - extra_left.length + (str_left + open_tag).length;
                     se = ss + str_mid.length;
 
-                    if (single_tags[tag] == true) ss = se;
+                    if (single_tags[tag] === true) {
+                         ss = se;
+                    }
 
                 }else {
 
                     if (tag == "list") {
 
-                        var open_tag = "";
-                        var close_tag = "";
+                        open_tag = "";
+                        close_tag = "";
 
-                        if (/^<[^<>]+>$/.test(str_enclose) == false) {
+                        if (/^<[^<>]+>$/.test(str_enclose) === false) {
 
-                            var list_tmp = this.parse_list(str_enclose, a);
+                            list_tmp = this.parse_list(str_enclose, a);
                             str_enclose = list_tmp;
 
                         }else {
 
-                            var list_tmp = this.parse_list("", a)
+                            list_tmp = this.parse_list("", a);
                             str_enclose += list_tmp;
                         }
 
@@ -589,18 +607,18 @@ var htmltools = function()
 
                     }else if (tag == "quote") {
 
-                        var open_tag = "<quote source=\"\" url=\"\">";
-                        var close_tag = "</quote>";
+                        open_tag = "<quote source=\"\" url=\"\">";
+                        close_tag = "</quote>";
 
                     }else if (!single_tags[tag]) {
 
-                        var open_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\">" : ">");
-                        var close_tag = "</" + tag + ">";
+                        open_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\">" : ">");
+                        close_tag = "</" + tag + ">";
 
                     }else {
 
-                        var open_tag = "";
-                        var close_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\" />" : " />");
+                        open_tag = "";
+                        close_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
                     }
 
                     active_field.value = str_enclose_left + open_tag + str_enclose + close_tag + str_enclose_right;
@@ -608,7 +626,9 @@ var htmltools = function()
                     ss = str_enclose_left.length + open_tag.length;
                     se = ss + str_enclose.length;
 
-                    if (single_tags[tag] == true) ss = se;
+                    if (single_tags[tag] === true) {
+                         ss = se;
+                    }
                 }
             }
 
@@ -652,13 +672,11 @@ var htmltools = function()
             var left_bound = active_field.value.substr(0, ss);
             var right_bound = active_field.value.substr(ss);
 
-            var extra_left = "", extra_right = "";
-
-            if (/<[^<>]*$/.test(left_bound) == true) {
+            if (/<[^<>]*$/.test(left_bound) === true) {
 
                 var re = new RegExp("^[^<>]*>");
                 re = re.exec(right_bound);
-                ss += (re != null) ? re[0].length : 0;
+                ss += (re !== null) ? re[0].length : 0;
             }
 
             active_field.value = active_field.value.substr(0, ss) + text + active_field.value.substr(ss);
@@ -696,6 +714,8 @@ var htmltools = function()
             tag = tag.substr(1, tag.length - 2);
 
             var split_tag = tag.split(/\s+/);
+            
+            var tempstr;
 
             for (var i = 1; i < split_tag.length; i++) {
 
@@ -707,7 +727,7 @@ var htmltools = function()
 
                     if (lastchar != quote) {
 
-                        var tempstr = split_tag[i];
+                        tempstr = split_tag[i];
 
                         for (var j=i+1; j<split_tag.length; j++) {
 
@@ -727,6 +747,7 @@ var htmltools = function()
             }
 
             tempstr = split_tag[0];
+            
             var found = false;
 
             for (i = 1; i < split_tag.length; i++) {
@@ -740,12 +761,12 @@ var htmltools = function()
 
                 }else {
 
-                    if (/^[\"\']/.test(split_tag[i][1]) == true) {
+                    if (/^[\"\']/.test(split_tag[i][1]) === true) {
 
                         split_tag[i][1] = split_tag[i][1].substr(1);
                     }
 
-                    if (/[\"\']$/.test(split_tag[i][1]) == true) {
+                    if (/[\"\']$/.test(split_tag[i][1]) === true) {
 
                         split_tag[i][1] = split_tag[i][1].substr(0, split_tag[i][1].length - 1);
                     }
@@ -754,7 +775,7 @@ var htmltools = function()
                 }
             }
 
-            if (found == false) {
+            if (found === false) {
                 split_tag.push(a + "=\"" + v + "\"");
             }
 
@@ -767,9 +788,9 @@ var htmltools = function()
 
         add_link : function()
         {
-            var url = prompt("URL:", "http://");
+            var url = window.prompt("URL:", "http://");
 
-            if (url != null) {
+            if (url !== null) {
                 htmltools.add_tag("a", "href", url);
             }
 
@@ -778,9 +799,9 @@ var htmltools = function()
 
         add_image : function()
         {
-            var url = prompt("Image URL:", "http://");
+            var url = window.prompt("Image URL:", "http://");
 
-            if (url != null) {
+            if (url !== null) {
                 htmltools.add_tag("img", "src", url, true);
             }
 
@@ -789,11 +810,13 @@ var htmltools = function()
 
         auto_spell_check : function()
         {
-            if (!active_field || active_field.value.length == 0) return true;
+            if (!active_field || active_field.value.length === 0) {
+                 return true;
+            }
 
-            if (form_obj.checked == true && !auto_check_spell_started) {
+            if ($('#t_check_spelling').is(':checked') && !auto_spell_check_started) {
 
-                auto_check_spell_started = true;
+                auto_spell_check_started= true;
 
                 this.open_spell_check();
 
@@ -804,7 +827,7 @@ var htmltools = function()
         open_spell_check : function()
         {
             if (active_field && active_field.value.length > 0) {
-                dictionarywin = window.open('dictionary.php?webtag=' + beehive.webtag + '&obj_id=' + active_field.id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
+                window.open('dictionary.php?webtag=' + beehive.webtag + '&obj_id=' + active_field.id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
             }
         },
 
@@ -817,30 +840,29 @@ var htmltools = function()
         {
             var nl = a.split(/[\n\r]+/);
 
-            var ab = "abcdefghijklmnopqrstuvwxyz";
-
-            var funcs = ["parseInt", "pl_alpha", "pl_roman"];
-
             var re = new RegExp("^[^0-9a-z]*([0-9]+|[a-z]+)([^0-9a-z])[ ]*", "i");
 
             var result = re.exec(nl[0]);
 
             var type = 3;
+            
             var start = 1;
+            
+            var func, str, n, c, count, i;
 
-            if (num == true) {
+            if (num === true) {
 
-                if (result != null) {
+                if (result !== null) {
 
-                    var n = result[1];
+                    n = result[1];
 
-                    if (!isNaN(parseInt(n))) {
+                    if (!isNaN(parseInt(n, 10))) {
 
                         type = 0;
 
                     }else {
 
-                        var c = 0; // lowercase
+                        c = 0; // lowercase
 
                         if (n.toLowerCase() != n) {
 
@@ -850,33 +872,33 @@ var htmltools = function()
 
                         if (n.length == 1) {
 
-                            if (pl_roman(re.exec(nl[1])[1]) == pl_roman(n) + 1) {
+                            if (this.pl_roman(re.exec(nl[1])[1]) == this.pl_roman(n) + 1) {
 
-                                type = 2;
+                                func = this.pl_roman;
 
                             } else {
 
-                                type = 1;
+                                func = this.pl_alpha;
                             }
 
                         }else {
 
-                            type = 2;
+                            func = this.pl_roman;
                         }
                     }
+                    
+                    start = func(n);
 
-                    start = eval('this.' + funcs[type])(n);
+                    count = start;
 
-                    var count = start;
-
-                    for (var i = 1; i < nl.length; i++) {
+                    for (i = 1; i < nl.length; i++) {
 
                         n = re.exec(nl[i])[1];
 
-                        if (eval('this.' + funcs[type])(n) != ++count) {
+                        if (func(n) != ++count) {
 
-                            type = 3;
-                            break
+                            func = this.pl_alpha;
+                            break;
                         }
                     }
                 }
@@ -903,7 +925,7 @@ var htmltools = function()
                         start = "";
                     }
 
-                    var str = "<ol" + type + start + ">\n";
+                    str = "<ol" + type + start + ">\n";
 
                     for (i=0; i<nl.length; i++) {
 
@@ -917,7 +939,7 @@ var htmltools = function()
 
                 }else {
 
-                    var str = "<ol>\n";
+                    str = "<ol>\n";
 
                     for (i = 0; i < nl.length; i++) {
 
@@ -925,12 +947,12 @@ var htmltools = function()
                         str += nl[i];
                     }
 
-                    str += "</ol>";
+                    str+= "</ol>";
                 }
 
             }else {
 
-                var str = "<ul>\n";
+                str = "<ul>\n";
 
                 for (i = 0; i < nl.length; i++) {
 
@@ -938,7 +960,7 @@ var htmltools = function()
                     str += nl[i];
                 }
 
-                str += "</ul>";
+                str+= "</ul>";
             }
 
             return str;
@@ -948,21 +970,23 @@ var htmltools = function()
         {
             var a = b.toLowerCase();
 
-            var numerals = new Array();
+            var numerals = [];
+            
+            var ca;
 
-            numerals['i'] = 1;
-            numerals['v'] = 5;
-            numerals['x'] = 10;
-            numerals['l'] = 50;
-            numerals['c'] = 100;
-            numerals['d'] = 500;
-            numerals['m'] = 1000;
+            numerals.i = 1;
+            numerals.v = 5;
+            numerals.x = 10;
+            numerals.l = 50;
+            numerals.c = 100;
+            numerals.d = 500;
+            numerals.m = 1000;
 
             var n = 0;
 
             for (var i = 0; i < a.length; i++) {
 
-                var ca = a.charAt(i);
+                ca = a.charAt(i);
 
                 if (i == a.length-1) {
                     return (n + numerals[ca]);
@@ -988,7 +1012,7 @@ var htmltools = function()
             var ab = "abcdefghijklmnopqrstuvwxyz";
             return (ab.indexOf(b.toLowerCase()) + 1);
         }
-    }
+    };
 }();
 
 $(beehive).bind('init', function() {
@@ -1033,8 +1057,9 @@ $(beehive).bind('init', function() {
 
     $('div.tools button').bind('click', function() {
 
-        if (!htmltools.auto_spell_check()) return false;
-        clear_focus();
+        if (htmltools.auto_spell_check()) {
+            htmltools.clear_focus();
+        }
     });
 
     $('div.tools img').bind('mouseover', function() {
@@ -1057,11 +1082,13 @@ $(beehive).bind('init', function() {
 
         var $button = $(this).parent('a');
 
-        if ($button.length != 1) return;
+        if ($button.length != 1) {
+             return;
+        }
 
         $('input[type="radio"][name="t_post_html"]').each(function() {
 
-            if ($('input[type="radio"][name="t_post_html"][value!="disabled"][checked]').length == 0) {
+            if ($('input[type="radio"][name="t_post_html"][value!="disabled"][checked]').length === 0) {
 
                 $('input[type="radio"][name="t_post_html"][value!="enabled"]').attr('checked', true);
                 return false;
@@ -1189,14 +1216,20 @@ $(beehive).bind('init', function() {
 
     $('span.fix_html_compare input[type="radio"]').bind('click', function() {
 
-        if (textarea_name = /^co_(.*)_rb$/.exec($(this).attr('name'))) {
+        var textarea_name = /^co_(.*)_rb$/.exec($(this).attr('name'));
+        
+        if (textarea_name[1]) {
 
-            $textarea = $('textarea.htmltools[name=' + textarea_name[1] + ']');
-            if ($textarea.length > 0) $textarea.val($(this).val());
+            var $textarea = $('textarea.htmltools[name=' + textarea_name[1] + ']');
+            
+            if ($textarea.length > 0) {
+                
+                $textarea.val($(this).val());
+            }
         }
     });
 
     $('a.fix_html_help').bind('click', function() {
-        alert(beehive.lang.fixhtmlexplanation);
-    })
+        window.alert(beehive.lang.fixhtmlexplanation);
+    });
 });

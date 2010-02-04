@@ -25,7 +25,7 @@ $(beehive).bind('init', function() {
 
     $('#text_captcha_reload').bind('click', function() {
 
-        $.getJSON('register.php', { 'webtag' : webtag, 'reload_captcha' : 'true' }, function(data) {
+        $.getJSON('register.php', { 'webtag' : beehive.webtag, 'reload_captcha' : 'true' }, function(data) {
 
             $('#captcha_img').attr('src', data.image);
             $('#public_key').val(data.key).attr('maxLength', data.chars);

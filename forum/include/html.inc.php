@@ -866,8 +866,9 @@ function html_draw_top()
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
     html_include_javascript("./js/jquery-1.4.1.js");
-    html_include_javascript("./js/jquery.sprintf.js");
     html_include_javascript("./js/jquery.autocomplete.js");
+    html_include_javascript("./js/jquery.parsequery.js");
+    html_include_javascript("./js/jquery.sprintf.js");
     html_include_javascript("./js/general.js");
 
     // Font size (not for Guests)

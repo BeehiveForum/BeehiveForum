@@ -33,13 +33,17 @@ var beehive = {
 
     process_frames : function(context, callback) {
 
-        if (!$('frame', context).length) return;
+        if ($('frame', context).length > 0) {
 
-        $('frame', context).each(function() {
+            $('frame', context).each(function() {
 
-            beehive.process_frames(this.contentDocument, callback);
-            if ($.isFunction(callback)) callback.call(this);
-        });
+                beehive.process_frames(this.contentDocument, callback);
+
+                if ($.isFunction(callback)) {
+                     callback.call(this);
+                }
+            });
+        }
     },
 
     reload_user_prefs : function() {
@@ -50,13 +54,14 @@ var beehive = {
 
         beehive.process_frames(top.document.body, function() {
             
-            if (!this.contentDocument) return;
+            if (this.contentDocument) {
             
-            beehive.reload_user_font.call($(this.contentDocument).find('head').get(0));
-            beehive.reload_style_sheets.call($(this.contentDocument).find('head').get(0));
-            
-            if ($(this).attr('name') == beehive.frames.ftop) {
-                $(this).attr('src', beehive.top_html);
+                beehive.reload_user_font.call($(this.contentDocument).find('head').get(0));
+                beehive.reload_style_sheets.call($(this.contentDocument).find('head').get(0));
+                
+                if ($(this).attr('name') === beehive.frames.ftop) {
+                    $(this).attr('src', beehive.top_html);
+                }
             }
         });
         
@@ -87,7 +92,7 @@ var beehive = {
         
         $head.find('link[id="user_style"]').attr('href', beehive.user_style).appendTo($head);
         $head.find('link[id="emoticon_style"]').attr('href', beehive.emoticons).appendTo($head);
-    }
+    },
 }
 
 $.ajaxSetup({

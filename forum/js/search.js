@@ -27,7 +27,7 @@ $(beehive).bind('init', function() {
 
     var return_result = function(obj_name, value) {
         $(obj_name).val(value);
-    }
+    };
 
     $('a.logon_search').bind('click', function() {
 
@@ -35,13 +35,13 @@ $(beehive).bind('init', function() {
 
         var window_options = beehive.window_options;
 
-        var search_query = { 'webtag'    : webtag,
+        var search_query = { 'webtag'    : beehive.webtag,
                              'type'      : '1',
                              'selection' : $search_field.val(),
-                             'obj_name'  : $search_field.attr('name') }
+                             'obj_name'  : $search_field.attr('name') };
 
         if ($(this).hasClass('allow_multi')) {
-            search_query['allow_multi'] = 'Y';
+            search_query.allow_multi = 'Y';
         }
 
         search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).attr('id'), window_options.join(','));
@@ -63,6 +63,6 @@ $(beehive).bind('init', function() {
             top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&offset=0');
         }
 
-        $(this).find('.success_msg_text').html($.sprintf(beehive.lang['searchsuccessfullycompleted'], ''));
+        $(this).find('.success_msg_text').html($.sprintf(beehive.lang.searchsuccessfullycompleted, ''));
     });
 });

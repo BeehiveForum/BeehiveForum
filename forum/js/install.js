@@ -52,7 +52,9 @@ $(document).ready(function() {
                 break;
         }
 
-        if ((confirm_text.length > 0) && !window.confirm(confirm_text)) return false;
+        if ((confirm_text.length > 0) && !window.confirm(confirm_text)) {
+             return false;
+        }
 
         $(this).attr('disabled', true);
 
@@ -100,8 +102,10 @@ $(document).ready(function() {
                 break;
         }
 
-        if (topic_text.length > 0) alert(topic_text);
+        if (topic_text.length > 0) {
+             window.alert(topic_text);
+        }
 
         return true;
-    })
+    });
 });

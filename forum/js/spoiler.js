@@ -23,11 +23,13 @@ USA
 
 $(beehive).bind('init', function() {
 
-   $('.spoiler').bind('mouseover', function(e) {
+   $('.spoiler').hover(function() {
+       
        $(this).addClass('spoiler_reveal');
-   });
-
-   $('.spoiler').bind('mouseout', function(e) {
+       
+   },function() {
+       
        $(this).removeClass('spoiler_reveal');
+       
    });
 });

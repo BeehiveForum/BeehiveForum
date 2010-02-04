@@ -24,9 +24,10 @@ USA
 $(beehive).bind('init', function() {
 
    $('body').bind('click', function(e) {
+       
        if ($(e.target).closest('div#profile_options_container').length < 1) {
            $('div#profile_options_container').hide();
-       };
+       }
    });
 
    $('h2#profile_options').bind('click', function() {

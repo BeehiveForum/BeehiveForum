@@ -46,7 +46,7 @@ $(beehive).bind('init', function() {
             var $selected_password = $('#user_password' + $selected.attr('index'));
             var $selected_passhash = $('#user_passhash' + $selected.attr('index'));
 
-            if (/^[A-Fa-f0-9]{32}$/.test($selected_passhash.val()) == true) {
+            if (/^[A-Fa-f0-9]{32}$/.test($selected_passhash.val()) === true) {
 
                 $('input#user_password').val($selected_password.val());
                 $('input#user_passhash').val($selected_passhash.val());

@@ -45,5 +45,5 @@ $(beehive).bind('init', function() {
                 $('#sendmail_settings').show();
                 break;
         }
-    })
+    });
 });

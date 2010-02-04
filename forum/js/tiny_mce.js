@@ -17,13 +17,15 @@ tinyMCE.init({
 
 var htmltools = function()
 {
-    var auto_check_spell_started = false;
+    var auto_spell_check_started = false;
 
     return {
 
         auto_spell_check : function()
         {
-            if (tinyMCE.activeEditor.getContent().length == 0) return true;
+            if (tinyMCE.activeEditor.getContent().length === 0) {
+                 return true;
+            }
 
             if ($('#t_check_spelling').is(':checked') && !auto_spell_check_started) {
 
@@ -53,7 +55,7 @@ var htmltools = function()
 
             tinyMCE.execCommand('mceInsertContent', false, text);
         }
-    }
+    };
 }();
 
 $(document).ready(function() {

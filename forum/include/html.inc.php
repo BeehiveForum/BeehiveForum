@@ -333,34 +333,17 @@ function html_get_top_page()
                 return "$forum_path/forums/$webtag/styles/$user_style/top.php";
             }
 
-            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.html")) {
-                echo __LINE__; exit;
-                return "$forum_path/forums/$webtag/styles/$user_style/top.html";
-            }
-            
             if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.php")) {
                 return "$forum_path/styles/$user_style/top.php";
             }
-
-            if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.html")) {
-                return "$forum_path/styles/$user_style/top.html";
-            }            
         }
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.php")) {
             return "$forum_path/forums/$webtag/top.php";
         }
-
-        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
-            return "$forum_path/forums/$webtag/top.html";
-        }
     }
 
-    if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/top.php")) {
-        return "$forum_path/styles/top.php";
-    }
-
-    return "$forum_path/styles/top.html";
+    return "$forum_path/styles/top.php";
 }
 
 function html_get_style_sheet()

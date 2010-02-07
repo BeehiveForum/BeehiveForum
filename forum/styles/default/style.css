@@ -640,7 +640,9 @@ p, h1, h2 {
 }
 
 .navpage {
-    color: #000000;
+    background-color: #5483B1;
+    background-image: url('images/menu.png');
+    color: #FFFFFF;
     font-size: 10px;
     font-weight: bold;
     margin: 0px;
@@ -648,7 +650,7 @@ p, h1, h2 {
 }
 
 .navpage a {
-    color: #000000;
+    color: #FFFFFF;
     text-decoration: none;
 }
 

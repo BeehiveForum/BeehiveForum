@@ -448,7 +448,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\">", $tools->js(), "&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
 if ($admin_edit === true) {

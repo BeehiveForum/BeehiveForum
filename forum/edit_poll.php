@@ -916,7 +916,7 @@ for ($i = 0; $i < $answer_count; $i++) {
 
             $t_answer = new MessageText($allow_html ? $t_post_html : false, $parsed_text->getMessage(), false, false);
 
-            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", htmlentities_array($t_answer->getTidyContent()), 40, 255), "</td>\n";
+            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer->getTidyContent(), 40, 255), "</td>\n";
 
         }else {
 

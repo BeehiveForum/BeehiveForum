@@ -709,7 +709,7 @@ echo "<p>{$lang['subject']}: ";
 echo light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</p>\n";
 echo "<p>{$lang['to']}: ";
 echo form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0), "</p>\n";
-echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 10, 50), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
 if ($allow_html == true) {
 

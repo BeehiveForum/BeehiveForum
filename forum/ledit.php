@@ -617,10 +617,10 @@ if ($valid && isset($_POST['preview'])) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
 }
 
-echo "<p>", light_form_textarea("t_content", htmlentities_array($post->getTidyContent()), 10, 50), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", htmlentities_array($sig->getTidyContent()), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
 }
 
 if ($allow_html == true) {

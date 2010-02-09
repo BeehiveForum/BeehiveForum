@@ -27,7 +27,7 @@ USA
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
+define("BH_INCLUDE_PATH", "../include/");
 
 // Installer Detection
 define("BEEHIVEMODE_INSTALL", true);
@@ -223,23 +223,23 @@ if (isset($_POST['install_method'])) {
 
             if (($install_method == 3) && (@file_exists('install/upgrade-08x-to-09.php'))) {
 
-                include_once("install/upgrade-08x-to-09.php");
+                include_once("upgrade-08x-to-09.php");
 
-            }elseif (($install_method == 1) && (@file_exists('install/new-install.php'))) {
+            }elseif (($install_method == 1) && (@file_exists('new-install.php'))) {
 
                 $remove_conflicts = true;
-                include_once("install/new-install.php");
+                include_once("new-install.php");
 
-            }elseif (($install_method == 0) && (@file_exists('install/new-install.php'))) {
+            }elseif (($install_method == 0) && (@file_exists('new-install.php'))) {
 
-                include_once("install/new-install.php");
+                include_once("new-install.php");
             }
 
             if ($valid) {
 
                 $config_file = "";
 
-                if (($config_file = @file_get_contents('install/config.inc.php'))) {
+                if (($config_file = @file_get_contents('config.inc.php'))) {
 
                     // Database details
 
@@ -275,8 +275,7 @@ if (isset($_POST['install_method'])) {
                     echo "<head>\n";
                     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
                     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-                    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-                    echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+                    echo "<link rel=\"stylesheet\" href=\"../styles/install.css\" type=\"text/css\" />\n";
                     echo "</head>\n";
                     echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
                     echo "<br />\n";
@@ -284,46 +283,41 @@ if (isset($_POST['install_method'])) {
 
                     if ($config_saved) {
 
-                        echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
-                        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-                        echo "    <tr>\n";
-                        echo "      <td align=\"left\" width=\"500\">\n";
-                        echo "        <table class=\"box\" width=\"100%\">\n";
-                        echo "          <tr>\n";
-                        echo "            <td align=\"left\" class=\"posthead\">\n";
-                        echo "              <table class=\"posthead\" width=\"100%\">\n";
-                        echo "                <tr>\n";
-                        echo "                  <td align=\"left\" class=\"subhead\">Installation Complete</td>\n";
-                        echo "                </tr>\n";
-                        echo "                <tr>\n";
-                        echo "                  <td align=\"center\" colspan=\"2\">\n";
-                        echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\">Installation of your Beehive Forum has completed successfully, but before you can use it you must delete both the install folder and install.php. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
-                        echo "                      </tr>\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        echo "                      </tr>\n";
-                        echo "                      <tr>\n";
-                        echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"install_remove_files\" id=\"install_remove_files\" value=\"Y\" checked=\"checked\" /><label for=\"install_remove_files\">Attempt automatic removal of installation files (recommended)</label></span></td>\n";
-                        echo "                      </tr>\n";
-                        echo "                    </table>\n";
-                        echo "                  </td>\n";
-                        echo "                </tr>\n";
-                        echo "              </table>\n";
-                        echo "            </td>\n";
-                        echo "          </tr>\n";
-                        echo "        </table>\n";
-                        echo "      </td>\n";
-                        echo "    </tr>\n";
-                        echo "    <tr>\n";
-                        echo "      <td align=\"left\">&nbsp;</td>\n";
-                        echo "    </tr>\n";
-                        echo "    <tr>\n";
-                        echo "      <td align=\"center\"><input type=\"submit\" name=\"finish_install\" value=\"Continue\" class=\"button\" /></td>\n";
-                        echo "    </tr>\n";
-                        echo "  </table>\n";
-                        echo "</form>\n";
+                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+                        echo "  <tr>\n";
+                        echo "    <td align=\"left\" width=\"500\">\n";
+                        echo "      <table class=\"box\" width=\"100%\">\n";
+                        echo "        <tr>\n";
+                        echo "          <td align=\"left\" class=\"posthead\">\n";
+                        echo "            <table class=\"posthead\" width=\"100%\">\n";
+                        echo "              <tr>\n";
+                        echo "                <td align=\"left\" class=\"subhead\">Installation Complete</td>\n";
+                        echo "              </tr>\n";
+                        echo "              <tr>\n";
+                        echo "                <td align=\"center\" colspan=\"2\">\n";
+                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+                        echo "                    <tr>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">Installation of your Beehive Forum has completed successfully, but before you can use it you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
+                        echo "                    </tr>\n";
+                        echo "                    <tr>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+                        echo "                    </tr>\n";
+                        echo "                  </table>\n";
+                        echo "                </td>\n";
+                        echo "              </tr>\n";
+                        echo "            </table>\n";
+                        echo "          </td>\n";
+                        echo "        </tr>\n";
+                        echo "      </table>\n";
+                        echo "    </td>\n";
+                        echo "  </tr>\n";
+                        echo "  <tr>\n";
+                        echo "    <td align=\"left\">&nbsp;</td>\n";
+                        echo "  </tr>\n";
+                        echo "  <tr>\n";
+                        echo "    <td align=\"center\"><a class=\"button\" href=\"../index.php\"><span>Continue</span</a></td>\n";
+                        echo "  </tr>\n";
+                        echo "</table>\n";
 
                     }else {
 
@@ -347,7 +341,7 @@ if (isset($_POST['install_method'])) {
                         echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
                         echo "                    </tr>\n";
                         echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete both the install folder and install.php. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
+                        echo "                      <td align=\"left\" class=\"postbody\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
                         echo "                    </tr>\n";
                         echo "                    <tr>\n";
                         echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
@@ -378,9 +372,7 @@ if (isset($_POST['install_method'])) {
                         echo "            </form>\n";
                         echo "          </td>\n";
                         echo "          <td align=\"left\" width=\"45%\">\n";
-                        echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
-                        echo "              <input type=\"submit\" name=\"finish_install\" value=\"Continue\" class=\"button\" />\n";
-                        echo "            </form>\n";
+                        echo "            <a class=\"button\" href=\"../index.php\" /><span>Continue</span></a>\n";
                         echo "          </td>\n";
                         echo "        </tr>\n";
                         echo "      </table>\n";
@@ -471,8 +463,7 @@ if (isset($_POST['install_method'])) {
             echo "<head>\n";
             echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-            echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+            echo "<link rel=\"stylesheet\" href=\"../styles/install.css\" type=\"text/css\" />\n";
             echo "</head>\n";
             echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
             echo "<br />\n";
@@ -534,16 +525,16 @@ if (isset($_POST['install_method'])) {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"install.php\">\n";
-            echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-            echo "      <tr>\n";
-            echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
-            echo "      </tr>\n";
-            echo "      <tr>\n";
-            echo "        <td align=\"center\"><input type=\"submit\" name=\"finish_install\" value=\"Continue\" class=\"button\" /></td>\n";
-            echo "      </tr>\n";
-            echo "    </table>\n";
-            echo "  </form>\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\" width=\"500\">&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">\n";
+            echo "        <a class=\"button\" href=\"../index.php\" /><span>Continue</span></a>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
             echo "</div>\n";
             echo "</body>\n";
             echo "</html>\n";
@@ -563,11 +554,10 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" d
 echo "<head>\n";
 echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/install.js\"></script>\n";
+echo "<link rel=\"stylesheet\" href=\"../styles/install.css\" type=\"text/css\" />\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/jquery-1.4.1.js\"></script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/general.js\"></script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/install.js\"></script>\n";
 echo "</head>\n";
 echo "<body>\n";
 echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"install.php\">\n";
@@ -587,7 +577,7 @@ if (isset($error_array) && sizeof($error_array) > 0) {
     echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\"><img src=\"images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+    echo "      <td align=\"left\"><img src=\"../images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
     echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -610,7 +600,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Basic Configuration</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_basic\" /></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"../images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_basic\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -654,7 +644,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">MySQL Database Configuration</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_database\" /></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"../images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_database\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -702,7 +692,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installs only)</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_admin\" /></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"../images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_admin\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -746,7 +736,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Advanced Options</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_advanced\" /></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><img src=\"../images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_advanced\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";

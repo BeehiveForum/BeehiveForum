@@ -25,9 +25,9 @@ USA
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade-08x-to-083.php') {
 
-    header("Request-URI: ../install.php");
-    header("Content-Location: ../install.php");
-    header("Location: ../install.php");
+    header("Request-URI: install.php");
+    header("Content-Location: install.php");
+    header("Location: install.php");
     exit;
 }
 

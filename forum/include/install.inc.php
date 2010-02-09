@@ -59,15 +59,9 @@ function dir_exists($dir)
 
 function check_install()
 {
-    if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
-
-        install_remove_files();
-        header_redirect('index.php');
-    }
-
     if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 
-        if ((@dir_exists('install') || @file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
+        if ((@dir_exists('install') || @file_exists('./install/install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -95,7 +89,7 @@ function check_install()
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">Your Beehive Forum would appear to be already installed, but you have not removed the installation files. You must delete both the 'install' directory and install.php before your Beehive Forum can be used.</td>\n";
+            echo "                        <td align=\"left\">Your Beehive Forum would appear to be already installed, but you have not removed the installation files. You must delete the 'install' directory before your Beehive Forum can be used.</td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
@@ -129,18 +123,7 @@ function check_install()
         return;
     }
 
-    header_redirect("install.php");
-}
-
-function install_remove_files()
-{
-    if (defined("BEEHIVE_INSTALL_NOWARN")) return true;
-
-    rmdir_recursive('install');
-
-    if (@file_exists('install.php')) return @unlink('install.php');
-
-    return true;
+    header_redirect("./install/install.php");
 }
 
 function install_incomplete()
@@ -186,7 +169,7 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"install.php\" target=\"", html_get_top_frame_name(), "\">\n";
+    echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"./install/install.php\" target=\"", html_get_top_frame_name(), "\">\n";
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";

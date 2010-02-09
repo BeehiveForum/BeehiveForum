@@ -241,7 +241,7 @@ Once everything's uploaded, you will need to run the forum's install script. Thi
 is located in the /install subdirectory of your forum. To access it, you will need
 to load the file in your browser from the web space you just uploaded to, e.g.:
 
-http://www.mysite.com/forum/install.php
+http://www.mysite.com/forum/install/install.php
 
 This will then walk you through the creation of your new forum. Note that you will
 need your MySQL database's host address, username and password for this stage, as
@@ -551,10 +551,10 @@ newer ones.
 ==============================
 
 Once you've backed up your database/files and uploaded the new files, you will
-need to run the upgrade script, located at install.php in your forum
+need to run the upgrade script, located at install/install.php in your forum
 directory:
 
-http://www.mysite.com/forumtemp/install.php
+http://www.mysite.com/forum/install/install.php
 
 Make sure you select the correct 'Upgrade' proceedure from the installation
 method drop-down list, and then follow the instructions.

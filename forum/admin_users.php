@@ -193,7 +193,7 @@ if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_se
     $user_search = "";
 }
 
-if (isset($_GET['reset'])) {
+if (isset($_GET['reset']) || isset($_POST['reset'])) {
     $user_search = "";
 }
 

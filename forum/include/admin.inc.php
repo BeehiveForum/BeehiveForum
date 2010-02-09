@@ -483,7 +483,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
 
         case ADMIN_USER_FILTER_BANNED: // Banned users
 
-            $user_fetch_sql = "WHERE GROUP_PERMS.PERM & $up_banned > 0 ";
+            $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0 ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
 
@@ -499,15 +499,17 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
+    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT ";
+    $sql.= "FROM USER LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
-    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER.UID = USER_FORUM.UID ";
-    $sql.= "AND USER_FORUM.FID = '$forum_fid') $user_fetch_sql ";
-    $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
+    $sql.= "AND USER_FORUM.FID = $forum_fid) LEFT JOIN (SELECT GROUP_USERS.UID, ";
+    $sql.= "GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) GROUP BY GROUPS.GID, ";
+    $sql.= "GROUP_USERS.UID, GROUP_PERMS.FORUM, GROUP_PERMS.FID) AS PERMS ";
+    $sql.= "ON (PERMS.UID = USER_FORUM.UID AND PERMS.FORUM IN (0, $forum_fid) AND PERMS.FID = 0) ";
+    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_user_search)) return false;
 
@@ -607,7 +609,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 
         case ADMIN_USER_FILTER_BANNED: // Banned users
 
-            $user_fetch_sql = "WHERE GROUP_PERMS.PERM & $up_banned > 0";
+            $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0";
 
             break;
 
@@ -616,18 +618,20 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
             $user_fetch_sql = "";
             break;
     }
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "SESSIONS.HASH, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
+    
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
+    $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT ";
+    $sql.= "FROM USER LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
-    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
-    $sql.= "LEFT JOIN USER_FORUM  ON (USER.UID = USER_FORUM.UID ";
-    $sql.= "AND USER_FORUM.FID = '$forum_fid') $user_fetch_sql ";
-    $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
+    $sql.= "AND USER_FORUM.FID = $forum_fid) LEFT JOIN (SELECT GROUP_USERS.UID, ";
+    $sql.= "GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) GROUP BY GROUPS.GID, ";
+    $sql.= "GROUP_USERS.UID, GROUP_PERMS.FORUM, GROUP_PERMS.FID) AS PERMS ";
+    $sql.= "ON (PERMS.UID = USER_FORUM.UID AND PERMS.FORUM IN (0, $forum_fid) AND PERMS.FID = 0) ";
+    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";    
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;
 
@@ -1951,10 +1955,12 @@ function admin_send_user_approval_notification()
 
     $notification_success = true;
 
-    $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_admin_tools) > 0 ";
+    $sql = "SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM = 0 GROUP BY GROUP_USERS.UID ";
+    $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
 
     if (!$result = db_query($sql, $db_admin_send_new_user_notification)) return false;
 
@@ -1986,20 +1992,26 @@ function admin_send_new_user_notification($new_user_uid)
     if (!is_numeric($new_user_uid)) return false;
 
     $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
+    
+    $notification_success = true;
 
-    $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_admin_tools) > 0 ";
+    $sql = "SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM = 0 GROUP BY GROUP_USERS.UID ";
+    $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
 
     if (!$result = db_query($sql, $db_admin_send_new_user_notification)) return false;
 
     while (list($admin_uid) = db_fetch_array($result, DB_RESULT_NUM)) {
 
-        if (!email_send_new_user_notification($admin_uid, $new_user_uid)) return false;
+        if (!email_send_new_user_notification($admin_uid, $new_user_uid)) {
+            $notification_success = false;
+        }
     }
 
-    return true;
+    return $notification_success;
 }
 
 /**
@@ -2027,12 +2039,12 @@ function admin_send_post_approval_notification($fid)
 
     $notification_success = true;
 
-    $sql = "SELECT DISTINCT USER.UID FROM USER ";
-    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
-    $sql.= "AND GROUP_PERMS.FID IN (0, $fid)";
+    $sql = "SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID IN (0, $fid) ";
+    $sql.= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_folder_moderate > 0";
 
     if (!$result = db_query($sql, $db_admin_send_post_approval_notification)) return false;
 

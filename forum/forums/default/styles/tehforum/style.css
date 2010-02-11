@@ -640,6 +640,8 @@ p, h1, h2 {
 }
 
 .navpage {
+    background-color: #5483B1;
+    background-image: url('images/menu.png');
     color: #000000;
     font-size: 10px;
     font-weight: bold;
@@ -1417,11 +1419,8 @@ p, h1, h2 {
     text-align: left;
 }
 
-.tools_down {
-    border-bottom: 1px solid buttonhighlight;
-    border-left: 1px solid buttonshadow;
-    border-right: 1px solid buttonhighlight;
-    border-top: 1px solid buttonshadow;
+.tools_up {
+    border: 1px solid #C8D7E6;
     height: 18px;
     margin-left: 1px;
     margin-right: 1px;
@@ -1439,8 +1438,11 @@ p, h1, h2 {
     width: 18px;
 }
 
-.tools_up {
-    border: 1px solid #C8D7E6;
+.tools_down {
+    border-bottom: 1px solid buttonhighlight;
+    border-left: 1px solid buttonshadow;
+    border-right: 1px solid buttonhighlight;
+    border-top: 1px solid buttonshadow;
     height: 18px;
     margin-left: 1px;
     margin-right: 1px;

@@ -646,6 +646,7 @@ p, h1, h2 {
 
 .navpage {
     background-color: #$elements[navpage];
+    background-image: url('images/menu.png');
     color: #$text_colour[navpage];
     font-size: 10px;
     font-weight: bold;

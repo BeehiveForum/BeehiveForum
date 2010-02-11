@@ -821,9 +821,9 @@ function bh_session_get_perm_array($uid)
 
     $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
-    $sql.= "FROM GROUP_USERS LEFT JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) WHERE GROUP_USERS.UID = '$uid' ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
     $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 
     if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
@@ -838,19 +838,23 @@ function bh_session_get_perm_array($uid)
             }
         }
     }
+    
+    if ($table_data = get_table_prefix()) {
 
-    $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
-    $sql.= "WHERE GID = 0 AND FORUM IN (0, $forum_fid) GROUP BY FORUM, FID";
+        $sql = "SELECT GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = GROUP_PERMS.FID) ";
+        $sql.= "WHERE GROUP_PERMS.GID = 0 AND FORUM IN (0, $forum_fid) GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 
-    if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
+        if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
 
-    if (db_num_rows($result) > 0) {
+        if (db_num_rows($result) > 0) {
 
-        while (($permission_data = db_fetch_array($result))) {
+            while (($permission_data = db_fetch_array($result))) {
 
-            if (!isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
+                if (!isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
 
-                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
+                    $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
+                }
             }
         }
     }

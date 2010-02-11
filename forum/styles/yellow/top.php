@@ -6,11 +6,11 @@
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 <!-- We Like Bees -->
-<body style="margin: 0px; background-color: rgb(153,153,153);">
+<body style="margin: 0px; background-color: rgb(36,55,74);">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
     <td align="left" valign="middle"><a href="http://www.beehiveforum.net/" target="_blank"><img src="./images/beehive_logo.png" border="0" alt="Beehive Logo" /></a></td>
-    <td align="right" valign="middle"><a href="http://sourceforge.net" target="_top"><img src="http://sourceforge.net/sflogo.php?group_id=50772&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></td>
+    <td align="right" valign="middle"><a href="http://sourceforge.net" target="_top"><img src="http://sourceforge.net/sflogo.php?group_id=50772&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>&nbsp;</td>
   </tr>
 </table>
 </body>

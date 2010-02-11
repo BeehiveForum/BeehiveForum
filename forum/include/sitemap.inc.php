@@ -116,10 +116,10 @@ function sitemap_forum_get_threads($forum_fid)
     if (($table_data = forum_get_table_prefix($forum_fid))) {
 
         $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD LEFT JOIN GROUP_PERMS ";
-        $sql.= "ON (GROUP_PERMS.FID = THREAD.FID) ";
-        $sql.= "WHERE GROUP_PERMS.PERM & $user_perm_guest_access > 0 ";
-        $sql.= "AND GROUP_PERMS.GID = '0' ORDER BY THREAD.TID";
+        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD INNER JOIN GROUP_PERMS ";
+        $sql.= "ON (GROUP_PERMS.FID = THREAD.FID) WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
+        $sql.= "AND GROUP_PERMS.PERM & $user_perm_guest_access > 0 ";
+        $sql.= "ORDER BY THREAD.TID";
 
         if (!$result = db_query($sql, $db_sitemap_forum_get_threads)) return false;
 

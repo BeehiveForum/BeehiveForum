@@ -114,6 +114,8 @@ function cache_check_thread_list()
     if (!cache_check_enabled()) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+    
+    if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -206,6 +208,8 @@ function cache_check_start_page()
     if (!cache_check_enabled()) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+    
+    if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -291,6 +295,8 @@ function cache_check_messages()
     if (!cache_check_enabled()) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+    
+    if (browser_check(BROWSER_AOL)) return false;
 
     // Disable cache on these URL queries.
 
@@ -427,6 +433,8 @@ function cache_check_last_modified($seconds = 300)
     if (!is_numeric($seconds)) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+    
+    if (browser_check(BROWSER_AOL)) return false;
 
     // Generate our last-modified and expires date stamps
 
@@ -471,6 +479,8 @@ function cache_check_last_modified($seconds = 300)
 function cache_check_etag($local_etag)
 {
     if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
+    
+    if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
         $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);

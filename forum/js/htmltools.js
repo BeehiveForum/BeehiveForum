@@ -221,13 +221,13 @@ var htmltools = function()
 
                 if (!single_tags[tag]) {
 
-                    open_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\">" : ">");
+                    open_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\">" : ">");
                     close_tag = "</" + tag + ">";
 
                 }else {
 
                     open_tag = "";
-                    close_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
+                    close_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
                 }
 
                 active_field.value += open_tag + close_tag;
@@ -429,7 +429,7 @@ var htmltools = function()
 
             if (open !== null && close !== null && enclose !== true) {
 
-                if (a !== null) {
+                if (a !== undefined && a !== null) {
 
                     var newstr = this.change_attribute(open[2], a, v);
                     re = new RegExp("<" + tag + "( [^<>]*)?>", "i");
@@ -565,13 +565,13 @@ var htmltools = function()
 
                     }else if (!single_tags[tag]) {
 
-                        open_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\">" : ">");
+                        open_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\">" : ">");
                         close_tag = "</" + tag + ">";
 
                     }else {
 
                         open_tag = "";
-                        close_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
+                        close_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
                     }
 
                     str = str_left + open_tag + str_mid + close_tag + str_right;
@@ -612,13 +612,13 @@ var htmltools = function()
 
                     }else if (!single_tags[tag]) {
 
-                        open_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\">" : ">");
+                        open_tag = "<" + tag + (a !== undefined && a !== null ? " " + a + "=\"" + v + "\">" : ">");
                         close_tag = "</" + tag + ">";
 
                     }else {
 
                         open_tag = "";
-                        close_tag = "<" + tag + (a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
+                        close_tag = "<" + tag + (a !== undefined && a !== null ? " " + a + "=\"" + v + "\" />" : " />");
                     }
 
                     active_field.value = str_enclose_left + open_tag + str_enclose + close_tag + str_enclose_right;
@@ -790,7 +790,7 @@ var htmltools = function()
         {
             var url = window.prompt("URL:", "http://");
 
-            if (url !== null) {
+            if (url !== null && url.length > 0 && url != 'http://') {
                 htmltools.add_tag("a", "href", url);
             }
 
@@ -801,7 +801,7 @@ var htmltools = function()
         {
             var url = window.prompt("Image URL:", "http://");
 
-            if (url !== null) {
+            if (url !== null && url.length > 0 && url != 'http://') {
                 htmltools.add_tag("img", "src", url, true);
             }
 

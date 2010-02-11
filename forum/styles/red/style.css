@@ -1419,11 +1419,8 @@ p, h1, h2 {
     text-align: left;
 }
 
-.tools_down {
-    border-bottom: 1px solid buttonhighlight;
-    border-left: 1px solid buttonshadow;
-    border-right: 1px solid buttonhighlight;
-    border-top: 1px solid buttonshadow;
+.tools_up {
+    border: 1px solid #FF6666;
     height: 18px;
     margin-left: 1px;
     margin-right: 1px;
@@ -1441,8 +1438,11 @@ p, h1, h2 {
     width: 18px;
 }
 
-.tools_up {
-    border: 1px solid #FF6666;
+.tools_down {
+    border-bottom: 1px solid buttonhighlight;
+    border-left: 1px solid buttonshadow;
+    border-right: 1px solid buttonhighlight;
+    border-top: 1px solid buttonshadow;
     height: 18px;
     margin-left: 1px;
     margin-right: 1px;

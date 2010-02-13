@@ -59,43 +59,6 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 
 error_reporting(E_ALL | E_STRICT);
 
-// Debug Backtrace function argument array processor
-
-function bh_error_handler_process_args($func_args_array)
-{
-    $arguments_array = array();
-
-    foreach ($func_args_array as $func_arg) {
-
-        if (is_array($func_arg)) {
-
-            $arguments_array[] = sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
-
-        }else if (is_object($func_arg)) {
-
-            $arguments_array[] = sprintf("Class: %s", get_class($func_arg));
-
-        }else if (is_resource($func_arg)) {
-
-            $arguments_array[] = $func_arg;
-
-        }else if (is_bool($func_arg)) {
-
-            $arguments_array[] = ($func_arg === true) ? 'true' : 'false';
-
-        }else if (is_string($func_arg)) {
-
-            $arguments_array[] = "'$func_arg'";
-
-        }else {
-
-            $arguments_array[] = $func_arg;
-        }
-    }
-
-    return implode(", ", $arguments_array);
-}
-
 // Beehive Error Handler to Exception Wrapper.
 
 function bh_error_handler($code, $message, $file = '', $line = 0)
@@ -174,49 +137,14 @@ function bh_exception_handler($exception)
         // Separator
 
         $error_msg_array[] = '<hr />';
+        
+        // Stacktrace header
+        
+        $error_msg_array[] = '<p><b>Stack trace:</b></p>';
 
-        // Debug backtrace data.
+        // Stacktrace data.
 
-        if (($exception_backtrace = $exception->getTrace())) {
-
-            $exception_backtrace = array_reverse($exception_backtrace);
-
-            $debug_backtrace_processed = false;
-
-            $error_msg_array[] = '<p><b>Backtrace Result:</b></p>';
-
-            foreach ($exception_backtrace as $debug_backtrace) {
-
-                if (!isset($debug_backtrace['function'])) $debug_backtrace['function'] = 'PHP_CORE_FUNCTION';
-
-                if (!in_array($debug_backtrace['function'], array('bh_error_handler', 'trigger_error', 'db_trigger_error'))) {
-
-                    if (isset($debug_backtrace['file']) && isset($debug_backtrace['line']) && isset($debug_backtrace['args'])) {
-
-                        $debug_backtrace_processed = true;
-
-                        if (sizeof($debug_backtrace['args']) > 0) {
-
-                            $debug_backtrace_file_line = sprintf('%s:%s', htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
-                            $debug_backtrace_func_args = sprintf('%s(<i>%s</i>)', htmlentities_array($debug_backtrace['function']), htmlentities_array(bh_error_handler_process_args($debug_backtrace['args'])));
-
-                            $error_msg_array[] = sprintf('<p>%s:%s</p>', $debug_backtrace_file_line, $debug_backtrace_func_args);
-
-                        }else {
-
-                            $debug_backtrace_file_line = sprintf('%s:%s', htmlentities_array(basename($debug_backtrace['file'])), htmlentities_array($debug_backtrace['line']));
-                            $debug_backtrace_func_args = sprintf('%s(<i>void</i>)', htmlentities_array($debug_backtrace['function']));
-
-                            $error_msg_array[] = sprintf('<p>%s:%s</p>', $debug_backtrace_file_line, $debug_backtrace_func_args);
-                        }
-                    }
-                }
-            }
-
-            if ($debug_backtrace_processed == false) {
-                $error_msg_array[] = '<p><i>(none)</i></p>';
-            }
-        }
+        $error_msg_array[] = print_r($exception->getTrace(), true);
 
         // Get the Beehive Forum Version
 
@@ -330,7 +258,7 @@ function bh_exception_handler($exception)
             $headers.= "X-Mailer: PHP/". phpversion(). "\n";
             $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
-            @error_log($error_log_email_message, 1, $error_report_email_addr_to, $headers);
+            @mail($error_report_email_addr_to, "Beehive Forum Error Report", $error_log_email_message, $headers);
         }
 
         // Format the error array for adding to the system error log.

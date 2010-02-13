@@ -231,7 +231,7 @@ if (isset($_GET['show_stop_words'])) {
 
     $highlight_keywords_array = array();
 
-    html_draw_top("title={{$lang['mysqlstopwordlist']}", 'pm_popup_disabled');
+    html_draw_top("title={$lang['mysqlstopwordlist']}", 'pm_popup_disabled');
 
     if (isset($_GET['keywords']) && strlen(trim(stripslashes_array($_GET['keywords']))) > 0) {
 

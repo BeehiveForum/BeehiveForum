@@ -147,7 +147,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 }else {
 
-    html_draw_top("title={{$lang['error']}", 'pm_popup_disabled');
+    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['nomessagespecifiedforedit']);
     html_draw_bottom();
     exit;
@@ -302,7 +302,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top("title={{$lang['error']}", 'pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         pm_edit_refuse();
         html_draw_bottom();
         exit;
@@ -327,7 +327,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top("title={{$lang['error']}", 'pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         pm_edit_refuse();
         html_draw_bottom();
         exit;
@@ -377,7 +377,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
-            html_draw_top("title={{$lang['error']}", 'pm_popup_disabled');
+            html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
             pm_edit_refuse();
             html_draw_bottom();
             exit;
@@ -400,14 +400,14 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top("title={{$lang['error']}", 'pm_popup_disabled');
+        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
         pm_edit_refuse();
         html_draw_bottom();
         exit;
     }
 }
 
-html_draw_top("title={{$lang['privatemessages']}", "onUnload=clearFocus()", "resize_width=720", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank", 'pm_popup_disabled');
+html_draw_top("title={$lang['privatemessages']}", "onUnload=clearFocus()", "resize_width=720", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['editpm']}</h1>\n";
 

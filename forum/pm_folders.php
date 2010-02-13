@@ -179,7 +179,7 @@ if (isset($_GET['manage_folder'])) {
 
     }else {
 
-        html_draw_top("title={{$lang['error']}");
+        html_draw_top("title={$lang['error']}");
         html_display_error_msg($lang['invalidfolderid']);
         html_draw_bottom();
         exit;
@@ -193,7 +193,7 @@ if (isset($_GET['manage_folder'])) {
 
     }else {
 
-        html_draw_top("title={{$lang['error']}");
+        html_draw_top("title={$lang['error']}");
         html_display_error_msg($lang['invalidfolderid']);
         html_draw_bottom();
         exit;
@@ -242,7 +242,7 @@ $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
 
-html_draw_top("title={{$lang['privatemessages']}", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
+html_draw_top("title={$lang['privatemessages']}", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 

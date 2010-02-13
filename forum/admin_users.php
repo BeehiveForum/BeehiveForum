@@ -488,10 +488,10 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_arr
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
-    echo "</form>\n";
 }
 
+echo "  <br />\n";
+echo "</form>\n";
 echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"get\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";

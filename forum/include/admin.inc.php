@@ -506,9 +506,9 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     $sql.= "AND USER_FORUM.FID = $forum_fid) LEFT JOIN (SELECT GROUP_USERS.UID, ";
     $sql.= "GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
     $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
-    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) GROUP BY GROUPS.GID, ";
-    $sql.= "GROUP_USERS.UID, GROUP_PERMS.FORUM, GROUP_PERMS.FID) AS PERMS ";
-    $sql.= "ON (PERMS.UID = USER_FORUM.UID AND PERMS.FORUM IN (0, $forum_fid) AND PERMS.FID = 0) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
+    $sql.= "GROUP BY GROUP_USERS.UID) AS PERMS ON (PERMS.UID = USER_FORUM.UID) ";
     $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_user_search)) return false;
@@ -628,9 +628,9 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sql.= "AND USER_FORUM.FID = $forum_fid) LEFT JOIN (SELECT GROUP_USERS.UID, ";
     $sql.= "GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
     $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
-    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) GROUP BY GROUPS.GID, ";
-    $sql.= "GROUP_USERS.UID, GROUP_PERMS.FORUM, GROUP_PERMS.FID) AS PERMS ";
-    $sql.= "ON (PERMS.UID = USER_FORUM.UID AND PERMS.FORUM IN (0, $forum_fid) AND PERMS.FID = 0) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
+    $sql.= "GROUP BY GROUP_USERS.UID) AS PERMS ON (PERMS.UID = USER_FORUM.UID) ";
     $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";    
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;

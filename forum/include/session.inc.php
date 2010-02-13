@@ -839,8 +839,10 @@ function bh_session_get_perm_array($uid)
         }
     }
     
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
 
+        $forum_fid = $table_data['FID'];
+        
         $sql = "SELECT GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
         $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = GROUP_PERMS.FID) ";
         $sql.= "WHERE GROUP_PERMS.GID = 0 AND FORUM IN (0, $forum_fid) GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";

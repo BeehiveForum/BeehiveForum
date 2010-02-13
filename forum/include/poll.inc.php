@@ -689,7 +689,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_button("pollresults", $lang['resultdetails']). "</td>\n";
+                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['resultdetails']}</span></a></td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
@@ -772,11 +772,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['resultdetails']);
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['resultdetails']}</span></a>";
 
                     }else {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['results']);
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['results']}</span></a>";
 
                     }
                 }
@@ -818,11 +818,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['resultdetails']);
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['resultdetails']}</span></a>";
 
                     }else {
 
-                        $poll_data['CONTENT'].= form_button("pollresults", $lang['results']);
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['results']}</span></a>";
                     }
                 }
 

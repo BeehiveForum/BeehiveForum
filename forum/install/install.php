@@ -221,7 +221,7 @@ if (isset($_POST['install_method'])) {
 
             // Check the install method
 
-            if (($install_method == 3) && (@file_exists('install/upgrade-08x-to-09.php'))) {
+            if (($install_method == 3) && (@file_exists('upgrade-08x-to-09.php'))) {
 
                 include_once("upgrade-08x-to-09.php");
 

@@ -81,7 +81,7 @@ function db_enable_compat_mode($connection_id)
 
         if ($mysql_version >= 40100) {
 
-            $sql = "SET SESSION SQL_MODE = ''";
+            $sql = "SET SESSION SQL_MODE = NO_AUTO_VALUE_ON_ZERO";
             if (!db_query($sql, $connection_id)) return false;
         }
     }

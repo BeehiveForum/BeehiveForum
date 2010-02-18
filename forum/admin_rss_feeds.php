@@ -688,7 +688,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     $rss_feeds = rss_get_feeds($start);
 
-    echo "<h1></h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

@@ -144,7 +144,7 @@ function bh_exception_handler($exception)
 
         // Stacktrace data.
 
-        $error_msg_array[] = print_r($exception->getTrace(), true);
+        $error_msg_array[] = sprintf('<pre>%s</pre>', print_r($exception->getTrace(), true));
 
         // Get the Beehive Forum Version
 

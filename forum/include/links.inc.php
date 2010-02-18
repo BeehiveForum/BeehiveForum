@@ -281,7 +281,7 @@ function links_get_folder_path_links($fid, $folders, $links = true, $link_last_t
     return $html;
 }
 
-function links_get_folder_page_title($link_title, $fid, $folders)
+function links_get_folder_page_title($fid, $folders, $link_title = false)
 {
     $webtag = get_webtag();
 
@@ -308,8 +308,12 @@ function links_get_folder_page_title($link_title, $fid, $folders)
             $path.= " » ". $folders[$val]['NAME'];
         }
     }
-
-    return $path. ' » '. $link_title;
+    
+    if ($link_title !== false) {
+        $path.= ' » '. $link_title;
+    }
+    
+    return $path;
 }
 
 function links_get_subfolders($fid, $folders)

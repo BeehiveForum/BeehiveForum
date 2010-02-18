@@ -381,13 +381,11 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    $page_title = "{$lang['admin']} &raquo; ". forum_get_setting('forum_name', false, 'A Beehive Forum'). " &raquo; {$lang['postapprovalqueue']}";
-
-    html_draw_top("title=$page_title");
+    html_draw_top("title={$lang['admin']} » {$lang['postapprovalqueue']}");
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
-    echo "<h1>page_title</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['postapprovalqueue']}</h1>\n";
 
     if (sizeof($post_approval_array['post_array']) < 1) {
         html_display_warning_msg($lang['nopostsawaitingapproval'], '720', 'center');

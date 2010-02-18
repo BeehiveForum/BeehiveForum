@@ -2094,54 +2094,15 @@ function forum_delete($fid)
 
             list($webtag, $database_name) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $sql = "DELETE QUICK FROM FORUMS WHERE FID = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "DELETE QUICK FROM FORUM_SETTINGS WHERE FID = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "SELECT GID FROM GROUPS WHERE FORUM = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            while (list($user_gid) = db_fetch_array($result)) {
-
-                $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID = '$user_gid'";
-
-                if (!db_query($sql, $db_forum_delete)) return false;
-            }
-
-            $sql = "DELETE QUICK FROM GROUPS WHERE FORUM = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "DELETE QUICK FROM USER_FORUM WHERE FID = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
-
-            if (!$result = db_query($sql, $db_forum_delete)) return false;
-
-            while (($attachment_data = db_fetch_array($result))) {
-                delete_attachment_by_aid($attachment_data['AID']);
-            }
-
-            $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK FROM FORUMS, FORUM_SETTINGS, GROUP_PERMS, GROUP_USERS, GROUPS, ";
+            $sql.= "POST_ATTACHMENT_IDS, POST_ATTACHMENT_FILES, SEARCH_RESULTS, VISITOR_LOG ";
+            $sql.= "USING FORUMS INNER JOIN FORUM_SETTINGS USING (FID) ";
+            $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FORUM = FORUMS.FID) ";
+            $sql.= "INNER JOIN GROUPS USING (GID) INNER JOIN GROUP_USERS USING (GID) ";
+            $sql.= "INNER JOIN POST_ATTACHMENT_IDS USING (FID) ";
+            $sql.= "INNER JOIN POST_ATTACHMENT_FILES USING (AID) ";
+            $sql.= "INNER JOIN SEARCH_RESULTS USING (FORUM) ";
+            $sql.= "WHERE FORUMS.FID = '$fid'";
 
             if (!db_query($sql, $db_forum_delete)) return false;
 

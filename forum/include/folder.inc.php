@@ -365,7 +365,7 @@ function folder_get_all()
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, ";
     $sql.= "FOLDER.POSITION, FOLDER.PREFIX, BIT_OR(GROUP_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "COUNT(GROUP_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID) ";
     $sql.= "WHERE GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0 ";
     $sql.= "GROUP BY FOLDER.FID ORDER BY FOLDER.POSITION";
@@ -402,7 +402,7 @@ function folder_get_all_by_page($offset)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, ";
     $sql.= "FOLDER.POSITION, FOLDER.PREFIX, BIT_OR(GROUP_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "COUNT(GROUP_PERMS.PERM) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID) ";
     $sql.= "WHERE GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0 ";
     $sql.= "GROUP BY FOLDER.FID ORDER BY FOLDER.POSITION ";
@@ -499,14 +499,14 @@ function folder_get($fid)
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE FOLDER.FID = '$fid' AND GROUP_PERMS.FORUM = '$forum_fid' ";
     $sql.= "AND GROUP_PERMS.GID = 0 GROUP BY FOLDER.FID, FOLDER.TITLE";
-
+    
     if (!$result = db_query($sql, $db_folder_get)) return false;
 
     if (db_num_rows($result) > 0) {
 
         $folder_array = db_fetch_array($result);
         $folder_array['THREAD_COUNT'] = folder_get_thread_count($fid);
-
+        
         return $folder_array;
     }
 

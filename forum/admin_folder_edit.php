@@ -279,7 +279,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if (($folder_data = folder_get($fid))) {
+if (!($folder_data = folder_get($fid))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['invalidfolderid'], 'admin_folders.php', 'get', array('back' => $lang['back']), array('page' => $page));

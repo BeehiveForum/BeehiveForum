@@ -341,29 +341,103 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
+    
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_BY")) {
 
-    // Add LAST_SEARCH_SORT_BY to USER_TRACK
+        // Add LAST_SEARCH_SORT_BY to USER_TRACK
 
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_BY TINYINT UNSIGNED NULL AFTER LAST_SEARCH_KEYWORDS";
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_BY TINYINT UNSIGNED NULL AFTER LAST_SEARCH_KEYWORDS";
 
-    if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
-        $valid = false;
-        return;
+            $valid = false;
+            return;
+        }
     }
+    
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_DIR")) {
 
-    // Add LAST_SEARCH_SORT_DIR to USER_TRACK
+        // Add LAST_SEARCH_SORT_DIR to USER_TRACK
 
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_DIR TINYINT UNSIGNED NULL AFTER LAST_SEARCH_SORT_BY";
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_DIR TINYINT UNSIGNED NULL AFTER LAST_SEARCH_SORT_BY";
 
-    if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
-        $valid = false;
-        return;
+            $valid = false;
+            return;
+        }
     }
 }
 
 // We got this far, that means we can now update the global forum tables.
+
+// GROUPS and GROUP_PERMS have changed to a schema which makes
+// a lot more sense and is more normalised.
+
+$sql = "CREATE TABLE GROUP_PERMS_NEW (";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY (FORUM, FID, GID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Copy the existing permissions to the new table.
+
+$sql = "INSERT INTO GROUP_PERMS_NEW (FORUM, FID, GID, PERM) SELECT FORUM, FID, GID, PERM FROM GROUP_PERMS";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove the unneccesary records from GROUPS.
+
+$sql = "DELETE FROM GROUPS WHERE AUTO_GROUP = 1;";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// AUTO_GROUP and FORUM have been depreceated in GROUPS.
+// GID is no longer the auto increment.
+
+$sql = "ALTER TABLE GROUPS DROP COLUMN FORUM, DROP COLUMN AUTO_GROUP, CHANGE GID GID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove the old GROUP_PERMS table.
+
+$sql = "DROP TABLE GROUP_PERMS";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Rename the new GROUP_PERMS_NEW to GROUP_PERMS.
+
+$sql = "RENAME TABLE GROUP_PERMS_NEW TO GROUP_PERMS";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
 
 // Dictionary has changed from metaphone to soundex matches
 

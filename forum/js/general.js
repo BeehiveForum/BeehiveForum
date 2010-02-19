@@ -92,7 +92,7 @@ var beehive = {
         
         $head.find('link[id="user_style"]').attr('href', beehive.user_style).appendTo($head);
         $head.find('link[id="emoticon_style"]').attr('href', beehive.emoticons).appendTo($head);
-    },
+    }
 }
 
 $.ajaxSetup({

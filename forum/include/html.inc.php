@@ -864,6 +864,10 @@ function html_draw_top()
 
         echo "<style type=\"text/css\" title=\"user_font\">@import \"font_size.php?webtag=$webtag\";</style>\n";
     }
+    
+    echo "<!--[if IE 6]>\n";
+    echo "<link rel=\"stylesheet\" href=\"$forum_path/styles/style_ie6.css\" type=\"text/css\" />\n";
+    echo "<![endif]-->\n";
 
     if ($frame_set_html === false) {
 

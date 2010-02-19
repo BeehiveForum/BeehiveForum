@@ -385,7 +385,7 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = "", $cl
         $custom_html = sprintf(" %s", trim($custom_html));
     }
 
-    $html = '<button type="submit" name="%s" id="%s" class="%s"%s><span>%s</span></button>';
+    $html = '<input type="submit" name="%s" id="%s" class="%s"%s value="%s" />';
 
     return sprintf($html, $name, $id, $class, $custom_html, $value);
 }
@@ -400,11 +400,9 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
         $custom_html = sprintf(" %s", trim($custom_html));
     }
 
-    $image = sprintf('<img src="%s" alt="%s" />', style_image($image), $alt);
+    $html = '<input type="image" name="%s" id="%s" class="%s"%s src="%s" />';
 
-    $html = '<button type="submit" name="%s" id="%s" class="%s"%s><span>%s</span></button>';
-
-    return sprintf($html, $name, $id, $class, $custom_html, $image);
+    return sprintf($html, $name, $id, $class, $custom_html, style_image($image));
 }
 
 // Creates a button with custom HTML, for onclick methods, etc.
@@ -417,7 +415,7 @@ function form_button($name, $value, $custom_html = "", $class="button")
         $custom_html = sprintf(" %s", trim($custom_html));
     }
 
-    $html = '<button type="button" name="%s" id="%s" class="%s"%s><span>%s</span></button>';
+    $html = '<input type="button" name="%s" id="%s" class="%s"%s value="%s" />';
 
     return sprintf($html, $name, $id, $class, $custom_html, $value);
 }

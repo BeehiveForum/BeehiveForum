@@ -283,8 +283,6 @@ function links_get_folder_path_links($fid, $folders, $links = true, $link_last_t
 
 function links_get_folder_page_title($fid, $folders, $link_title = false)
 {
-    $webtag = get_webtag();
-
     if (!is_numeric($fid)) return false;
     if (!is_array($folders)) return false;
 

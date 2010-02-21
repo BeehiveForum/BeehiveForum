@@ -146,11 +146,11 @@ function forum_links_fix_url($uri)
 
                 if (strlen($value) > 0) {
 
-                    $new_uri_query_array[] = sprintf('%s=%s', urlencode($key_name), urlencode($uri_query_values[$key]));
+                    $new_uri_query_array[] = sprintf('%s=%s', urlencode($key), urlencode($value));
 
                 } else {
 
-                    $new_uri_query_array[] = urlencode($key_name);
+                    $new_uri_query_array[] = urlencode($key);
                 }
             }
         }

@@ -594,6 +594,10 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!$table_data = get_table_prefix()) {
         return thread_merge_error(THREAD_MERGE_FORUM_ERROR, $error_str);
     }
+    
+    // Forum FID
+    
+    $forum_fid = $table_data['FID'];
 
     // Get Thread A data
 
@@ -759,7 +763,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
     $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
 
@@ -914,14 +918,14 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!($new_tid = post_create_thread($thread_data['FID'], $thread_data['BY_UID'], $thread_data['TITLE'], 'N', 'N', true))) {
 
         thread_split_error(THREAD_SPLIT_CREATE_ERROR, $error_str);
-        if ($tid_closed) thread_set_closed($tid, false);
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
         return false;
     }
 
     if (!($thread_new = thread_get($new_tid, true, true))) {
 
         thread_split_error(THREAD_SPLIT_CREATE_ERROR, $error_str);
-        if ($tid_closed) thread_set_closed($tid, false);
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
         return false;
     }
 
@@ -936,14 +940,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
 
-        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Copy the post contents to the new thread
@@ -956,14 +959,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
-
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+        
         // Return error message.
 
-        return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Update the REPLY_TO_PIDs in the new thread
@@ -979,10 +981,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
 
@@ -996,10 +997,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
 
@@ -1015,10 +1015,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
 
@@ -1041,10 +1040,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
 
@@ -1059,10 +1057,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
+        // Unlock the original thread if it wasn't originally locked.
 
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
 

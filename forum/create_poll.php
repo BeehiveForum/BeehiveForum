@@ -1265,7 +1265,7 @@ if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea('t_message_text', $t_message_text, 20, 75, true, 'tabindex="1"', 'post_content'), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea('t_message_text', $t_message_text, 20, 75, false, 'tabindex="1"', 'post_content'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";

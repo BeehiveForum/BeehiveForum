@@ -154,14 +154,18 @@ class dictionary {
 
     function pretty_print_content()
     {
+        $pretty_content = '';
+        
         foreach ($this->content_array as $key => $word) {
 
             if ($key == $this->current_word) {
-                return sprintf('<span class="highlight" id="highlighted_word">%s</span>', nl2br(htmlentities_array($word)));
+                $pretty_content.= sprintf('<span class="highlight" id="highlighted_word">%s</span>', nl2br(htmlentities_array($word)));
             }else {
-                return nl2br(htmlentities_array($word));
+                $pretty_content.= nl2br(htmlentities_array($word));
             }
         }
+        
+        return $pretty_content;
     }
 
     function add_custom_word($word)

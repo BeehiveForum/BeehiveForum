@@ -190,7 +190,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sql.= "STICKY, CREATED, MODIFIED, CLOSED) VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', ";
     $sql.= "CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), $closed)";
 
-    if (!$result = db_query($sql, $db_post_create_thread)) return false;
+    if (!db_query($sql, $db_post_create_thread)) return false;
 
     return db_insert_id($db_post_create_thread);
 }
@@ -303,7 +303,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     return $html;
 }
 
-function post_draw_to_dropdown_recent($default_uid, $new_thread)
+function post_draw_to_dropdown_recent($default_uid)
 {
     $lang = load_language_file();
 

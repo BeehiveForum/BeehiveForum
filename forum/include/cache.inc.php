@@ -83,7 +83,7 @@ function cache_disable()
 */
 function cache_disable_aol()
 {
-    if (!browser_check(BROWSER_AOL)) return false;
+    if (!browser_check(BROWSER_AOL)) return;
     
     header("Cache-Control: no-store, private, must-revalidate", true);
     header("Cache-Control: proxy-revalidate, post-check=0,pre-check=0", false);

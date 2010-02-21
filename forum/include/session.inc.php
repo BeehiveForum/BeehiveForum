@@ -255,8 +255,6 @@ function bh_session_expired()
 
                 echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
 
-                $top_html = html_get_top_page();
-
                 html_display_warning_msg($lang['presscontinuetoresend'], '600', 'center');
 
                 echo "<div align=\"center\">\n";
@@ -504,7 +502,7 @@ function bh_remove_stale_sessions()
     $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
     $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
 
-    if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
+    if (!db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
     $expired_sessions_array = array();
 

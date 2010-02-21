@@ -94,10 +94,6 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 
 function form_input_text_search($name, $value = false, $width = false, $maxchars = false, $type = SEARCH_LOGON, $allow_multi = false, $custom_html = false, $class = '')
 {
-    $webtag = get_webtag();
-
-    $lang = load_language_file();
-
     $allow_multi = ($allow_multi) ? "allow_multi" : "";
     
     $class = trim(sprintf('%s search_input', $class));
@@ -392,7 +388,7 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = "", $cl
 
 // Creates a form submit button using an image
 
-function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = "", $class = "button_image", $alt = "")
+function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = "", $class = "button_image")
 {
     $id = form_unique_id($name);
 
@@ -400,9 +396,9 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
         $custom_html = sprintf(" %s", trim($custom_html));
     }
 
-    $html = '<input type="image" name="%s" id="%s" class="%s"%s src="%s" />';
+    $html = '<input type="image" name="%s" id="%s" class="%s"%s src="%s" value="%s" />';
 
-    return sprintf($html, $name, $id, $class, $custom_html, style_image($image));
+    return sprintf($html, $name, $id, $class, $custom_html, style_image($image), $value);
 }
 
 // Creates a button with custom HTML, for onclick methods, etc.

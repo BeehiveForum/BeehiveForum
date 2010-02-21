@@ -442,6 +442,8 @@ function perm_remove_group($gid)
 
         return (db_affected_rows($db_perm_remove_group) > 0);
     }
+    
+    return false;
 }
 
 function perm_get_group($gid)

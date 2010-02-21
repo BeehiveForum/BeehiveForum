@@ -196,7 +196,7 @@ if (isset($hash) && is_md5($hash)) {
 
         // Check the mimetype is allowed.
 
-        if (sizeof($attachment_mime_types) == 0 || in_array($filetype, $attachment_mime_types)) {
+        if (sizeof($attachment_mime_types) == 0 || in_array($attachment_details['mimetype'], $attachment_mime_types)) {
 
             // Use the filename quite a few times, so assign it to a variable to save some time.
 

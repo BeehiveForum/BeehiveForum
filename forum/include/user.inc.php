@@ -954,7 +954,7 @@ function user_search_array_clean($user_search)
     return db_escape_string(trim(str_replace("%", "", $user_search)));
 }
 
-function user_search($user_search, $selected_array = array())
+function user_search($user_search)
 {
     if (!$db_user_search = db_connect()) return false;
 

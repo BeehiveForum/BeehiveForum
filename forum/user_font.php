@@ -155,7 +155,7 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
     } else {
         
         html_draw_top();
-        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
         html_draw_bottom();        
     }
 

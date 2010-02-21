@@ -1232,6 +1232,10 @@ function attachment_create_thumb_im($filepath, $max_width, $max_height)
 {
     if (!is_numeric($max_width)) $max_width = 150;
     if (!is_numeric($max_height)) $max_height = 150;
+    
+    // Array to store the results from ImageMagick
+    
+    $imagemagick_info = array();
 
     // Get the imagemagick path from settings.
 

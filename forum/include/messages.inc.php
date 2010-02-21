@@ -1050,8 +1050,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "&nbsp;&nbsp;<img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" id=\"quote_img_{$message['PID']}\" />";
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" id=\"quote_{$message['PID']}\" rel=\"{$message['PID']}\">{$lang['quote']}</a>";
 
-                    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
-
                     if ((!(bh_session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                         if ($is_poll && $message['PID'] == 1) {
@@ -1862,6 +1860,8 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     $html.= "<br />\n";
 
     echo $html;
+    
+    return true;
 }
 
 function validate_msg($msg)

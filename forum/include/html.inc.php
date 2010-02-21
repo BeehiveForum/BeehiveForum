@@ -680,8 +680,6 @@ function html_draw_top()
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $uid = bh_session_get_value('UID');
-
     $frame_set_html = false;
 
     $pm_popup_disabled = false;
@@ -857,11 +855,6 @@ function html_draw_top()
     // Font size (not for Guests)
 
     if (!user_is_guest()) {
-
-        if (($fontsize = bh_session_get_value('FONT_SIZE')) === false) {
-            $fontsize = 10;
-        }
-
         echo "<style type=\"text/css\" title=\"user_font\">@import \"font_size.php?webtag=$webtag\";</style>\n";
     }
     

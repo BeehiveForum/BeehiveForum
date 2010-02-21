@@ -91,8 +91,6 @@ class TextAreaHTML
 
         $lang = load_language_file();
 
-        $webtag = get_webtag();
-
         $this->toolbar_count++;
 
         $dictionary = new dictionary();
@@ -178,8 +176,6 @@ class TextAreaHTML
         if ($this->tinymce || $this->toolbar_count >= $this->allowed_toolbars) return '';
 
         $lang = load_language_file();
-
-        $webtag = get_webtag();
 
         $this->toolbar_count++;
 

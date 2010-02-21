@@ -400,7 +400,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 // Remove the unneccesary records from GROUPS.
 
-$sql = "DELETE FROM GROUPS WHERE AUTO_GROUP = 1;";
+$sql = "DELETE FROM GROUPS WHERE AUTO_GROUP = 1";
 
 if (!$result = @db_query($sql, $db_install)) {
 

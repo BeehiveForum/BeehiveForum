@@ -335,12 +335,10 @@ function perm_user_get_group_names($uid, &$user_groups_array)
 
     if (!is_array($user_groups_array)) $user_groups_array = array();
 
-    $sql = "SELECT GROUPS.GID, GROUPS.GROUP_NAME FROM GROUP_PERMS ";
-    $sql.= "INNER JOIN GROUP_USERS USING (GID) ";
-    $sql.= "INNER JOIN USER USING (UID) ";
-    $sql.= "WHERE GROUP_PERMS.FORUM = $forum_fid ";
-    $sql.= "AND GROUP_USERS.UID = '$uid' ";
-    $sql.= "GROUP BY GROUPS.GID";
+    $sql = "SELECT GROUPS.GID, GROUPS.GROUP_NAME FROM GROUPS ";
+    $sql.= "INNER JOIN GROUP_PERMS USING (GID) INNER JOIN GROUP_USERS USING (GID) ";
+    $sql.= "INNER JOIN USER USING (UID) WHERE GROUP_PERMS.FORUM = $forum_fid ";
+    $sql.= "AND GROUP_USERS.UID = '$uid' GROUP BY GROUPS.GID";
 
     if (!$result = db_query($sql, $db_perm_user_get_group_names)) return false;
 

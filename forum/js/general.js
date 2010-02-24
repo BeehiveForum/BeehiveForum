@@ -92,6 +92,17 @@ var beehive = {
         
         $head.find('link[id="user_style"]').attr('href', beehive.user_style).appendTo($head);
         $head.find('link[id="emoticon_style"]').attr('href', beehive.emoticons).appendTo($head);
+    },
+    
+    get_resize_width : function() {
+        
+        var $max_width = $(this).closest('.max_width[width]');
+        
+        if ($max_width.length > 0) {
+            return $max_width.attr('width');
+        }
+        
+        return $('body').attr('clientWidth');
     }
 }
 

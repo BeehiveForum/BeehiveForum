@@ -29,13 +29,15 @@ $(beehive).bind('init', function() {
 
             $('td.postbody img').each(function() {
 
+                var max_width = beehive.get_resize_width.call(this);
+                
                 if ($(this).parent('span.resized_image').length > 0) {
 
-                    $(this).parent('span.resized_image').css('width', $('body').attr('clientWidth') * 0.95);
+                    $(this).parent('span.resized_image').css('width', max_width * 0.95);
 
                 } else {
 
-                    if ($(this).width() > $('body').attr('clientWidth')) {
+                    if ($(this).width() > max_width) {
 
                         var $parent_div = $('<div>');
 
@@ -66,19 +68,21 @@ $(beehive).bind('init', function() {
 
             $('td.postbody').each(function() {
 
+                var max_width = beehive.get_resize_width.call(this);
+                
                 if ($(this).find('div.overflow_fix').length > 0) {
 
-                    $(this).find('div.overflow_fix').css('width', $('body').attr('clientWidth') * 0.95);
+                    $(this).find('div.overflow_fix').css('width', max_width * 0.95);
 
                 } else {
 
-                    if ($(this).width() > $('body').attr('clientWidth')) {
+                    if ($(this).width() > max_width) {
 
                         var $overflow_container = $('<div class="overflow_fix"></div>');
 
                         $overflow_container.html($(this).html());
 
-                        $overflow_container.css('width', $('body').attr('clientWidth') * 0.95);
+                        $overflow_container.css('width', max_width * 0.95);
                         $overflow_container.css('overflow', 'auto');
 
                         $(this).html($overflow_container);

@@ -794,7 +794,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('t_dedupe', htmlentities_array($t_dedupe)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

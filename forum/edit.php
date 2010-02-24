@@ -686,7 +686,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("msg", htmlentities_array($edit_msg));
 echo "  ", form_input_hidden("t_to_uid", htmlentities_array($to_uid));
 echo "  ", form_input_hidden("t_from_uid", htmlentities_array($from_uid));
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

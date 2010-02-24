@@ -819,7 +819,7 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" met
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

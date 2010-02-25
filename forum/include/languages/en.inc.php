@@ -833,6 +833,7 @@ $lang['prunelog'] = "Prune Log";
 
 $lang['noexistingforums'] = "No existing forums found. To create a new forum click the 'Add New' button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
+$lang['webtagmaxlength'] = "Webtag must no longer 32 characters in length";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID or forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";

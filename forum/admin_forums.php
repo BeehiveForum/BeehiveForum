@@ -261,6 +261,12 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = $lang['webtaginvalidchars'];
             $valid = false;
         }
+        
+        if (strlen(trim($t_webtag)) > 32) {
+
+            $error_msg_array[] = $lang['webtagmaxlength'];
+            $valid = false;
+        }        
 
     }else {
 
@@ -486,7 +492,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumwebtag']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_webtag", (isset($_POST['t_webtag']) ? htmlentities_array(stripslashes_array($_POST['t_webtag'])) : ""), 30, 15), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_webtag", (isset($_POST['t_webtag']) ? htmlentities_array(stripslashes_array($_POST['t_webtag'])) : ""), 30, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumname']}:</td>\n";

@@ -48,6 +48,10 @@ function db_connect($trigger_error = true)
                 db_set_time_zone_utc($connection_id);
 
                 db_enable_compat_mode($connection_id);
+                
+                if (!db_enable_no_auto_value($connection_id)) {
+                    trigger_error("Could not set MySQL Session Variable SQL_MODE to 'NO_AUTO_VALUE_ON_ZERO'", E_USER_ERROR);
+                }
 
                 return $connection_id;
             }
@@ -77,15 +81,6 @@ function db_enable_compat_mode($connection_id)
 {
     $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
 
-    if (($mysql_version = db_fetch_mysql_version())) {
-
-        if ($mysql_version >= 40100) {
-
-            $sql = "SET SESSION SQL_MODE = NO_AUTO_VALUE_ON_ZERO";
-            if (!db_query($sql, $connection_id)) return false;
-        }
-    }
-
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 
         $sql = "SET SESSION SQL_BIG_SELECTS = 1";
@@ -96,6 +91,23 @@ function db_enable_compat_mode($connection_id)
     }
 
     return true;
+}
+
+function db_enable_no_auto_value($connection_id)
+{
+    $sql = "SET SESSION SQL_MODE = NO_AUTO_VALUE_ON_ZERO";
+    
+    if (!db_query($sql, $connection_id)) return false;
+    
+    $sql = "SHOW SESSION VARIABLES LIKE 'SQL_MODE'";
+    
+    if (!($result = db_query($sql, $connection_id))) return false;
+    
+    if (db_num_rows($result) < 1) return false;
+    
+    list($variable, $value) = db_fetch_array($result, DB_RESULT_NUM);
+    
+    return ($value === 'NO_AUTO_VALUE_ON_ZERO');
 }
 
 function db_query($sql, $connection_id, $trigger_error = true)

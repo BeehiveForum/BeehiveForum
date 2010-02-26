@@ -1,6 +1,284 @@
-Project Beehive Forum Change Log (Generated: Sun, 31 Jan 2010 15:01:56)
+Project Beehive Forum Change Log (Generated: Fri, 26 Feb 2010 21:07:10)
 
 Author: decoyduck
+Date: Thu, 25 Feb 2010 20:50:34
+-----------------------
+Fixed: Maximum webtag length is 32 characters.
+
+Date: Thu, 25 Feb 2010 19:42:58
+-----------------------
+Changed: Moved SQL_MODE configuration into own function that we test result
+of.
+
+Date: Wed, 24 Feb 2010 00:18:03
+-----------------------
+Fixed: Reimplemented overflow max_width on post.php, create_poll.php,
+edit.php and pm_write.php.
+
+Date: Mon, 22 Feb 2010 21:02:29
+-----------------------
+Changed: button::-moz-focus-inner should be input::-moz-focus-inner
+
+Date: Mon, 22 Feb 2010 18:51:07
+-----------------------
+Fixed: Unknown column groups.gid in perm_user_get_group_names
+
+Date: Sun, 21 Feb 2010 20:56:19
+-----------------------
+Fixed: Removed autofocus on create_poll.php's htmltools textarea.
+Fixed:
+Undefined variable $filetype if restricted mimetypes were enabled.
+Fixed:
+Undefined variable $imagemagick_info
+Fixed: Dictionary pretty_print_content
+was broken.
+Fixed: forum_links_fix_url() not parsing URL query
+correctly.
+Fixed: thread_split was broken. Incorrect usage of $tida, $tidb
+and thread_merge_error calls.
+Fixed: Undefined variable $msg in
+user_font.php
+Changed: Return void from cache_disable_aol() instead of
+false.
+Changed: Removed calls to load_language_file and get_webtag from
+form_input_text_search()
+Changed: Removed deprecated arguments
+form_submit_image. Added missing value attribute to HTML output.
+Changed:
+Removed unnecessary variables from html_draw_top.
+Changed: Removed calls to
+get_webtag() from htmltools.inc.php toolbar() and toolbar_reduced()
+functions.
+Changed: Removed call to get_webtag() from
+links_get_folder_page_title()
+Changed: Removed duplicate assignment of
+$post_edit_time in messages.inc.php
+Changed: perm_remove_group could return
+void instead of true / false.
+Changed: Removed unnecessary assignment of
+$result in post_create_thread()
+Changed: Removed assignment of $top_html in
+bh_session_expired()
+Changed: Removed second argument from user_search() as
+it's not used any more.
+
+Date: Fri, 19 Feb 2010 19:22:46
+-----------------------
+Changed: Reverted back to <input type="button" /> because of IE6 not
+supporting <button> correctly.
+Changed: Added condition include for
+style_ie6.css to html_draw_top()
+Fixed: Huge padding on buttons in
+IE6.
+Fixed: JavaScript not initialising correctly on IE6.
+
+Date: Thu, 18 Feb 2010 23:01:50
+-----------------------
+Fixed: Couldn't re-run upgrade script if already at 0.9.1-cvs
+Changed:
+Added SQL for new GROUPS, GROUP_PERMS schema.
+
+Date: Thu, 18 Feb 2010 19:25:55
+-----------------------
+Fixed: Unable to edit a folder due to missing negation of folder_get result
+in admin_folder_edit.php
+Fixed: Page title contain double escape HTML in
+admin_post_approve.php
+Fixed: Missing <h1> content on
+admin_rss_feeds.php
+Fixed: Unknown table FOLDER_PERMS in folder.inc.php
+queries.
+Fixed: Session permissions initialisation was not working due to
+unnecessary join on GROUPS
+Fixed: Installer not working due to trying to
+include file that didn't exist.
+Changed: Beehive now requires
+NO_AUTO_VALUE_ON_ZERO in MySQL's SQL_MODE.
+Changed: Exception handler stack
+trace changed to simple print_r
+Changed: Query to delete a forum is now a
+single multi-delete query.
+Changed: links_get_folder_path_links() arguments
+changed to allow title to be optional.
+Changed: Massive rewrite of
+permissions functions. SQL schema changes required and coming
+soon.
+Changed: Links area now draws links_get_folder_path_links in <h1>.
+Moved add folder link to bottom of page.
+
+Date: Sat, 13 Feb 2010 21:52:05
+-----------------------
+Fixed: Missing trailing spaces on concatenated queries.
+
+Date: Sat, 13 Feb 2010 21:41:57
+-----------------------
+Fixed: Results button on polls wasn't opening popup.
+
+Date: Sat, 13 Feb 2010 21:31:17
+-----------------------
+Fixed: Stray { in some page titles.
+
+Date: Sat, 13 Feb 2010 21:30:48
+-----------------------
+Changed: Simplified the stack trace in errorhandler.inc.php
+
+Date: Sat, 13 Feb 2010 16:57:50
+-----------------------
+Fixed: Filter on admin users couldn't be changed back from banned
+users.
+Changed: Join conditions on admin users queries changes to where
+clauses.
+Changed: bh_session_get_perm_array only queries the database for
+folder perms if we have a webtag.
+Changed: Queries in perm.inc.php use
+INNER JOIN to validate permissions.
+
+Date: Thu, 11 Feb 2010 21:06:10
+-----------------------
+Changed: Queries in folder.inc.php, session.inc.php and sitemap.inc.php now
+use INNER JOIN for permissions tables.
+Changed: Background-color on top.php
+made darker. Moved SF.net logo away from right edge.
+Fixed: Missing
+bh_session_check() call in index.php which prevented correct style, RSS
+feeds, etc. from being used.
+Fixed: Order of styles that stopped tools_over
+and tools_down from working.
+
+Date: Tue, 09 Feb 2010 21:46:42
+-----------------------
+Fixed: Clear button on Admin Users not working.
+Changed: Queries for
+admin_user_get_all and admin_user_search changed to use derived queries
+with inner joins for perms.
+Changed: Queries for admin_send_* functions to
+use inner joins for perms.
+
+Date: Tue, 09 Feb 2010 20:42:50
+-----------------------
+Changed: Removed automatic deletion of installer files because it rarely
+works.
+Changed: Moved install.php into install folder to make removing the
+installer easier.
+Changed: Installer finish buttons are now styled anchors
+pointing to index.php.
+Added: styles/install.css for the installer only.
+
+Date: Tue, 09 Feb 2010 19:56:01
+-----------------------
+Fixed: Double encoded post and signature HTML in htmltools->textarea
+
+Date: Sun, 07 Feb 2010 19:25:43
+-----------------------
+Fixed: $tools->js() still in edit_signature.php stopping bottom of page
+from loading.
+Changed: URL for project in top.php changed.
+Changed: Default
+theme now mimics Teh Forum's dark blue nav bar.
+
+Date: Fri, 05 Feb 2010 21:19:05
+-----------------------
+Changed: Deprecated top.html in favour of top.php
+
+Date: Fri, 05 Feb 2010 20:58:19
+-----------------------
+Changed: Deprecated top.html in favour of top.php, added new top logos for
+all styles.
+
+Date: Thu, 04 Feb 2010 21:30:36
+-----------------------
+Changed: Recovered jquery.parsequery.js.
+
+Date: Thu, 04 Feb 2010 21:25:26
+-----------------------
+Changed: Syntax clean up on Javascript using JSLint.
+
+Date: Wed, 03 Feb 2010 20:32:03
+-----------------------
+Fixed: Not getting the correct top.html, style.css etc. due to not checking
+the styles directory.
+Fixed: Not reload the user font and style at window
+level
+Fixed: json.php was being cached incorrectly and preventing user
+styles from changing.
+
+Date: Tue, 02 Feb 2010 22:10:44
+-----------------------
+Changed: emoticons_apply now used preg_replace instead of preg_splitting
+and looking for match.
+Fixed: Double html entities fixed code in
+compare_original.
+
+Date: Tue, 02 Feb 2010 21:38:28
+-----------------------
+Changed: Reverted back (once again!) to having getTidyContent perform
+htmlentities.
+Fixed: Anchor buttons not reflecting change in font
+size.
+Fixed: Emoticons with htmlentities in them were being corrupted by
+fixhtml.
+
+Date: Mon, 01 Feb 2010 21:09:06
+-----------------------
+Changed: Prevent caching on ajax font resize requests.
+
+Date: Mon, 01 Feb 2010 20:50:26
+-----------------------
+Changed: Made bh_check_styles.php sort the selectors according to
+Default\style.css and not alphabetically.
+
+Date: Mon, 01 Feb 2010 20:49:08
+-----------------------
+Fixed: Buttons didn't have click down style.
+
+Date: Mon, 01 Feb 2010 19:57:37
+-----------------------
+Changed: Reimplemented anti-caching of CSS / Javascript.
+
+Date: Mon, 01 Feb 2010 19:46:24
+-----------------------
+Fixed: font_size.php !important was overriding style in user
+signatures.
+Fixed: Quick Reply not working.
+Fixed: Click login on Guest
+error and logging entering incorrect credentials didn't return to logon
+page.
+Fixed: Buttons didn't have click down effect.
+Added: JavaScript to
+simulate mousedown mouseup effect on anchor buttons.
+
+Date: Sun, 31 Jan 2010 20:33:50
+-----------------------
+Fixed: Post Options menu filling page width in IE8 / 7 Quirks mode.
+
+Date: Sun, 31 Jan 2010 15:02:47
+-----------------------
+Changed: Made bh_svn_log_parse.php use \r\n line endings for outputting
+changelog.
+
+Date: Sun, 31 Jan 2010 14:51:43
+-----------------------
+Fixed: JavaScript not working on install.php
+Fixed: Warning about missing
+CSS in example forum/forums/default/top.html
+
+Date: Sun, 31 Jan 2010 13:02:27
+-----------------------
+Changed: Upgraded to JQuery 1.4.1. Removed jquery.parsequery.js.
+Fixed:
+Removed console.log from jquery.autocomplete.js
+
+Date: Sun, 31 Jan 2010 11:14:41
+-----------------------
+Fixed: Wordfilter tags visible in links_detail.php
+Changed: Created
+separate function links_get_folder_page_title for getting the <title> tag
+contents for links_detail.php
+
+Date: Sun, 31 Jan 2010 10:21:44
+-----------------------
+Changed: Changed form_checkbox function so $text is optional.
+
 Date: Sat, 30 Jan 2010 23:06:49
 -----------------------
 Fixed: Not returning true from svn_mysql_parse function caused

@@ -79,20 +79,26 @@ $user_sess = bh_session_check(false);
 
 $webtag = get_webtag();
 
-// After we've logged out redirect to index.php
+// After we've logged out redirect somewhere
+
+$final_uri = '';
 
 if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
-    $final_uri = "final_uri=". rawurlencode(trim(stripslashes_array($_REQUEST['final_uri'])));
-}else {
-    $final_uri = "";
+
+    $available_files = get_available_files();
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/u", basename(trim(stripslashes_array($_REQUEST['final_uri'])))) > 0) {
+        $final_uri = basename(trim(stripslashes_array($_REQUEST['final_uri'])));
+    } 
 }
 
 bh_session_end();
 
 if (isset($_REQUEST['register'])) {
-
-    $final_uri = rawurlencode("register.php?$final_uri");
-    header_redirect("index.php?final_uri=$final_uri");
+    
+    $final_uri = rawurlencode("register.php?webtag=$webtag$final_uri");
+    header_redirect("index.php?webtag=$webtag&final_uri=$final_uri");
     exit;
 }
 
@@ -101,12 +107,12 @@ bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
 
 if (user_is_guest()) {
 
-    header_redirect("index.php?webtag=$webtag&$final_uri");
+    header_redirect("index.php?webtag=$webtag$final_uri");
     exit;
 
 }else {
 
-    header_redirect("index.php?webtag=$webtag&logout_success=true&$final_uri");
+    header_redirect("index.php?webtag=$webtag&logout_success=true$final_uri");
     exit;
 }
 

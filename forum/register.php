@@ -94,13 +94,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Where are we going after we've logged on?
 
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
-
-    $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
-
+    
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/u", basename($final_uri)) < 1) unset($final_uri);
+    if (preg_match("/^$available_files_preg/u", basename(trim(stripslashes_array($_GET['final_uri'])))) > 0) {
+        $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
+    }    
 }
 
 // Load the user session

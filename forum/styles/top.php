@@ -31,6 +31,9 @@ date_default_timezone_set('UTC');
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "../include/");
 
+// Path to the root Beehive install for CSS and JS
+define("BH_FORUM_PATH", "../");
+
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 

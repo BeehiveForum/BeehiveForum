@@ -54,12 +54,13 @@ function get_forum_list($offset)
     // Array to hold our forums in.
 
     $forums_array = array();
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
-    $sql.= "CONCAT(FORUMS.DATABASE_NAME, '`.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-    $sql.= "AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
+    
+    $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
+    $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+    $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL FROM FORUMS ";
+    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+    $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
 
@@ -77,16 +78,6 @@ function get_forum_list($offset)
 
             $forum_fid = $forum_data['FID'];
 
-            $forum_settings = forum_get_settings_by_fid($forum_fid);
-
-            foreach ($forum_settings as $key => $value) {
-
-                if (!isset($forum_data[mb_strtoupper($key)])) {
-
-                    $forum_data[mb_strtoupper($key)] = $value;
-                }
-            }
-
             // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
 
             if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
@@ -95,7 +86,7 @@ function get_forum_list($offset)
 
             // Check the forum description variable is set.
 
-            if (!isset($forum_data['FORUM_DESC'])) {
+            if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                 $forum_data['FORUM_DESC'] = "";
             }
 

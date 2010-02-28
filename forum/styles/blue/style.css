@@ -30,8 +30,8 @@ a.button {
 }
 
 input::-moz-focus-inner {
-    border: 0;
-    padding: 0;
+    border: 0px;
+    padding: 0px;
 }
 
 form {

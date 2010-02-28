@@ -64,7 +64,7 @@ function html_guest_error()
 
     $lang = load_language_file();
 
-    $final_uri = basename(get_request_uri());
+    $final_uri = basename(get_request_uri(true, false));
 
     $popup_files_preg = get_available_js_popup_files_preg();
 

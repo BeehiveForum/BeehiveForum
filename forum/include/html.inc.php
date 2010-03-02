@@ -1488,8 +1488,13 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 function html_get_forum_domain($allow_https = true, $return_array = false)
 {
     $uri_array = array();
-
-    if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
+    
+    if (($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
+        
+        $uri_array = @parse_url($forum_uri);
+    
+    } else if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
+        
         $uri_array = @parse_url($_SERVER['REQUEST_URI']);
     }
 
@@ -1507,6 +1512,9 @@ function html_get_forum_domain($allow_https = true, $return_array = false)
 
             $uri_array['scheme'] = 'http';
         }
+    }
+    
+    if (!isset($uri_array['host']) || strlen(trim($uri_array['host'])) < 1) {
 
         if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
 
@@ -1523,15 +1531,15 @@ function html_get_forum_domain($allow_https = true, $return_array = false)
 
             $uri_array['host'] = $_SERVER['SERVER_NAME'];
         }
+    }
+    
+    if (!isset($uri_array['port']) || strlen(trim($uri_array['port'])) < 1) {
 
-        if (!isset($uri_array['port']) || strlen(trim($uri_array['port'])) < 1) {
+        if (isset($_SERVER['SERVER_PORT']) && strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
 
-            if (isset($_SERVER['SERVER_PORT']) && strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
+            if ($_SERVER['SERVER_PORT'] != '80') {
 
-                if ($_SERVER['SERVER_PORT'] != '80') {
-
-                    $uri_array['port'] = $_SERVER['SERVER_PORT'];
-                }
+                $uri_array['port'] = $_SERVER['SERVER_PORT'];
             }
         }
     }
@@ -1545,7 +1553,7 @@ function html_get_forum_domain($allow_https = true, $return_array = false)
     return $server_uri;
 }
 
-function html_get_forum_uri($append_path = '', $allow_https = true)
+function html_get_forum_uri($append_path = null, $allow_https = true)
 {
     $uri_array = html_get_forum_domain($allow_https, true);
 

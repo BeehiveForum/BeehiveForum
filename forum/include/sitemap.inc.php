@@ -234,7 +234,7 @@ function sitemap_create_file()
 
     // Forum URL
 
-    $forum_location = html_get_forum_uri('', false);
+    $forum_location = html_get_forum_uri(null, false);
 
     // Check that search engine spidering is enabled
 

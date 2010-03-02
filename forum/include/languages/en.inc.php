@@ -878,6 +878,7 @@ $lang['forumname'] = "Forum Name";
 $lang['forumemail'] = "Forum Email";
 $lang['forumnoreplyemail'] = "No-Reply Email";
 $lang['forumdesc'] = "Forum Description";
+$lang['forumrooturi'] = "Forum Root URI";
 $lang['forumkeywords'] = "Forum Keywords";
 $lang['forumcontentrating'] = "Forum Content Rating";
 $lang['defaultstyle'] = "Default Style";
@@ -1032,6 +1033,8 @@ $lang['forum_settings_help_65'] = "To change Google AdSense account details and 
 $lang['forum_settings_help_66'] = "Your Beehive Forum supports 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
 $lang['forum_settings_help_67'] = "Select the <b>Mail function</b> suitable for your server. By default your Beehive Forum will use PHP's built-in mail function. If this doesn't work or you prefer to use another method to send emails from your server you can select it here.";
 $lang['forum_settings_help_68'] = "<b>Important:</b> If you are unsure what settings to use for sending email please consult your hosting provider's documentation.";
+$lang['forum_settings_help_69'] = "Your <b>Forum Root URI</b> is the address to your forum, excluding the file path and query string. Example: <i>http://www.beehiveforum.net/forum</i>";
+$lang['forum_settings_help_70'] = "<b>Important:</b> Only enter a <b>Forum Root URI</b> if Beehive fails to automatically detect your forum's URI or if it detects the wrong value. Entering an incorrect value could make some areas of your Beehive Forum installation inaccessible.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

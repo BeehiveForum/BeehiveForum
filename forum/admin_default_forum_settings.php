@@ -116,10 +116,6 @@ if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
     exit;
 }
 
-// Location of the forum for various URLs
-
-$forum_location = html_get_forum_uri();
-
 // Array to hold error messages
 
 $error_msg_array = array();
@@ -192,6 +188,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
     }else {
         $new_forum_settings['forum_keywords'] = "";
+    }
+
+    if (isset($_POST['forum_uri']) && strlen(trim(stripslashes_array($_POST['forum_uri']))) > 0) {
+        $new_forum_settings['forum_uri'] = trim(stripslashes_array($_POST['forum_uri']));
+    }else {
+        $new_forum_settings['forum_uri'] = "";
     }
 
     if (isset($_POST['mail_function']) && in_array($_POST['mail_function'], array_keys($mail_functions_array))) {
@@ -688,6 +690,15 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeywords']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_global_settings['forum_keywords']) ? htmlentities_array($forum_global_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumrooturi']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_uri", (isset($forum_global_settings['forum_uri']) ? htmlentities_array($forum_global_settings['forum_uri']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_69']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_70']}</p>\n";
+echo "                        </td>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";

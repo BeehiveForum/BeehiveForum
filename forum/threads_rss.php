@@ -87,7 +87,7 @@ $passhash_array = array();
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
 
-$forum_location = html_get_forum_uri();
+$forum_location = html_get_forum_uri(null, false);
 
 // Get the Forum Name
 
@@ -264,10 +264,10 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         // Output the item.
 
         echo "<item>\n";
-        echo "  <guid isPermaLink=\"true\">{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
+        echo "  <guid isPermaLink=\"true\">{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
         echo "  <pubDate>{$modified_date} UT</pubDate>\n";
         echo "  <title>{$t_title}</title>\n";
-        echo "  <link>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
+        echo "  <link>{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
 
         // Get the author of the message.
 
@@ -278,7 +278,7 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         }
 
         echo "  <description><![CDATA[{$t_content}]]></description>\n";
-        echo "  <comments>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
+        echo "  <comments>{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
         echo "</item>\n";
     }
 }

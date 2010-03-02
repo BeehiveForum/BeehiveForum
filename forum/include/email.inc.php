@@ -123,7 +123,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     // Generate link to the forum itself
 
-    $forum_link = html_get_forum_uri('', false);
+    $forum_link = html_get_forum_uri(null, false);
 
     // Generate the message link.
 

@@ -554,7 +554,7 @@ if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE,
 
     echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\" class=\"postbody\">";
     echo "      <img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> ";
-    echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a>\n";
+    echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" id=\"reply_0\"><b>{$lang['replyall']}</b></a>\n";
     echo "    </td>\n";
 
 }else {

@@ -1283,7 +1283,7 @@ function bh_setcookie($name, $value, $expires = 0)
 
         // Set the defaults.
 
-        $cookie_domain = html_get_forum_domain();
+        $cookie_domain = html_get_forum_domain(true, false, false);
         $cookie_path = '/';
 
         // Try and parse the cookie_domain config.inc.php setting.
@@ -1485,11 +1485,11 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_forum_domain($allow_https = true, $return_array = false)
+function html_get_forum_domain($allow_https = true, $return_array = false, $use_forum_uri = true)
 {
     $uri_array = array();
     
-    if (($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
+    if (($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false)) && $use_forum_uri) {
         
         $uri_array = @parse_url($forum_uri);
     

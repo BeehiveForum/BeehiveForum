@@ -330,16 +330,16 @@ function html_get_top_page()
             $user_style = basename($user_style);
             
             if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.php")) {
-                return "forums/$webtag/styles/$user_style/top.php";
+                return "forums/$webtag/styles/$user_style/top.php?webtag=$webtag";
             }
 
             if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.php")) {
-                return "styles/$user_style/top.php";
+                return "styles/$user_style/top.php?webtag=$webtag";
             } 
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles") && @file_exists("$forum_path/forums/$webtag/styles/top.php")) {
-            return "forums/$webtag/styles/top.php";
+            return "forums/$webtag/styles/top.php?webtag=$webtag";
         }
     }
 

@@ -148,6 +148,18 @@ if (isset($_POST['save'])) {
         $user_prefs_global['ALLOW_EMAIL'] = false;
     }
 
+    if (isset($_POST['use_email_addr']) && $_POST['use_email_addr'] == "Y") {
+        $user_prefs['USE_EMAIL_ADDR'] = "Y";
+    }else {
+        $user_prefs['USE_EMAIL_ADDR'] = "N";
+    }
+
+    if (isset($_POST['use_email_addr_global'])) {
+        $user_prefs_global['USE_EMAIL_ADDR_GLOBAL'] = ($_POST['use_email_addr_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['USE_EMAIL_ADDR_GLOBAL'] = false;
+    }
+
     if (isset($_POST['allow_pm']) && $_POST['allow_pm'] == "Y") {
         $user_prefs['ALLOW_PM'] = "Y";
     }else {
@@ -273,6 +285,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("allow_email", "Y", $lang['allowemails'], (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("allow_email_global", "Y", '', (isset($user_prefs['ALLOW_EMAIL_GLOBAL']) ? $user_prefs['ALLOW_EMAIL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("allow_email_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_email_addr", "Y", $lang['useemailaddr'], (isset($user_prefs['USE_EMAIL_ADDR']) && $user_prefs['USE_EMAIL_ADDR'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_email_addr_global", "Y", '', (isset($user_prefs['USE_EMAIL_ADDR_GLOBAL']) ? $user_prefs['USE_EMAIL_ADDR_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_email_addr_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("allow_pm", "Y", $lang['allowpersonalmessages'], (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";

@@ -1052,7 +1052,7 @@ function email_send_post_approval_notification($tuid)
     return $mailer->send($message) > 0;
 }
 
-function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
+function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_email_addr)
 {
     // Validate function arguments
 
@@ -1105,6 +1105,10 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body)
     // Add the recipient
 
     $message->setTo($to_user['EMAIL'], $recipient);
+    
+    // Set the from recipient
+    
+    if ($use_email_addr) $message->setFrom($from_user['EMAIL'], $sent_from);
     
     // Set the subject
 

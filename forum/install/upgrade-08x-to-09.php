@@ -222,6 +222,19 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "USE_EMAIL_ADDR")) {
+
+        // Add field for thread_last_page
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N'";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
     // ANON_LOGON column had wrong default value in < 0.9.2
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE `ANON_LOGON` `ANON_LOGON` CHAR(1) NOT NULL DEFAULT '0'";
@@ -367,6 +380,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
+    
 }
 
 // We got this far, that means we can now update the global forum tables.
@@ -491,6 +505,19 @@ if (!install_column_exists($db_database, "USER_PREFS", "THREADS_BY_FOLDER")) {
     // New User preference for thread list folder order
 
     $sql = "ALTER TABLE USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+if (!install_column_exists($db_database, "USER_PREFS", "USE_EMAIL_ADDR")) {
+
+    // New User preference for thread list folder order
+
+    $sql = "ALTER TABLE USER_PREFS ADD USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N'";
 
     if (!$result = @db_query($sql, $db_install)) {
 

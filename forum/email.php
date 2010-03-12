@@ -154,6 +154,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 $uid = bh_session_get_value('UID');
 
 $to_user = user_get($to_uid);
+
 $from_user = user_get($uid);
 
 if (isset($_POST['send'])) {
@@ -179,6 +180,12 @@ if (isset($_POST['send'])) {
         $error_msg_array[] = $lang['entercontentformessage'];
         $valid = false;
     }
+    
+    if (isset($_POST['t_use_email_addr']) && $_POST['t_use_email_addr'] == 'Y') {
+        $use_email_addr = true;
+    } else {
+        $use_email_addr = false;
+    }
 
     if (!user_allow_email($to_user['UID'])) {
 
@@ -194,7 +201,7 @@ if (isset($_POST['send'])) {
 
     if ($valid) {
 
-        if (email_send_message_to_user($to_uid, $uid, $subject, $message)) {
+        if (email_send_message_to_user($to_uid, $uid, $subject, $message, $use_email_addr)) {
 
             html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
             html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
@@ -214,7 +221,7 @@ if (isset($_POST['send'])) {
 html_draw_top("title=". sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled');
 
 echo "<h1>", sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</h1>\n";
-
+echo "<br />";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_email\" action=\"email.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -239,7 +246,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
-echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($from_user['NICKNAME'])), " (", word_filter_add_ob_tags(htmlentities_array($from_user['EMAIL'])), ")</td>\n";
+echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($from_user['NICKNAME'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";
@@ -248,6 +255,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
 echo "                        <td align=\"left\">", form_textarea("t_message", (isset($message) ? htmlentities_array($message) : ''), 12, 51), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', $lang['useemailaddrtosendmsg'], (isset($use_email_addr) ? $use_email_addr : bh_session_get_value('USE_EMAIL_ADDR') == 'Y')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

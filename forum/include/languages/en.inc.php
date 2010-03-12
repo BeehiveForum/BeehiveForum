@@ -1116,6 +1116,7 @@ $lang['subject'] = "Subject";
 $lang['send'] = "Send";
 $lang['userhasoptedoutofemail'] = "%s has opted out of email contact";
 $lang['userhasinvalidemailaddress'] = "%s has an invalid email address";
+$lang['useemailaddrtosendmsg'] = "Use my real email address to send this message";
 
 // Message nofificaiton ------------------------------------------------
 
@@ -1570,6 +1571,7 @@ $lang['largesized'] = "Large Sized";
 $lang['globallyignoresigs'] = "Globally ignore user signatures";
 $lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
 $lang['allowemails'] = "Allow other users to send me emails via my profile";
+$lang['useemailaddr'] = "Use my email address when sending other users emails via their profiles";
 $lang['timezonefromGMT'] = "Time zone";
 $lang['postsperpage'] = "Posts per page";
 $lang['fontsize'] = "Font size";

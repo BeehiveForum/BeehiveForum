@@ -130,7 +130,7 @@ function light_html_draw_top()
         }
     }
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.min.js\"></script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 

@@ -33,7 +33,7 @@ $(beehive).bind('init', function() {
 
     $('.upload_fields').css('display', 'block');
 
-    $('button#complete').bind('click', function() {
+    $('input#complete').bind('click', function() {
 
         try {
 

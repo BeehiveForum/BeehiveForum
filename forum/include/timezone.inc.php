@@ -453,7 +453,7 @@ function beforeSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
 function beforeFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
-    for ($i = 1; $i < 7; $i++) {
+    for ($i = 1; $i < 8; $i++) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
 

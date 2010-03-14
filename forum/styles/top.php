@@ -1,7 +1,6 @@
 <?php
 
 /*======================================================================
-
 Copyright Project Beehive Forum 2002
 
 This file is part of Beehive Forum.
@@ -20,42 +19,52 @@ You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
-
 ======================================================================*/
 
 /* $Id$ */
 
 // Set the default timezone
+
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "../include/");
 
-// Path to the root Beehive install for CSS and JS
-define("BH_FORUM_PATH", "../");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
+
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
+// Caching functions
+
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
+
 // Disable PHP's register_globals
+
 unregister_globals();
 
 // Disable caching if on AOL
+
 cache_disable_aol();
 
 // Compress the output
+
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
+
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
+
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
+
 check_install();
 
 // Multiple forum support
+
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings

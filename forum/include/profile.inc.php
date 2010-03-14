@@ -356,11 +356,10 @@ function profile_section_delete($psid)
 
     if (!db_query($sql, $db_profile_section_delete)) return false;
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_PROFILE` USER_PROFILE ";
-    $sql.= "USING `{$table_data['PREFIX']}USER_PROFILE` USER_PROFILE ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}PROFILE_ITEM` PROFILE_ITEM ";
-    $sql.= "ON (PROFILE_ITEM.PIID = USER_PROFILE.PIID) ";
-    $sql.= "WHERE PROFILE_ITEM.PIID IS NULL";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_PROFILE` ";
+    $sql.= "USING `{$table_data['PREFIX']}USER_PROFILE` LEFT JOIN `{$table_data['PREFIX']}PROFILE_ITEM` ";
+    $sql.= "ON (`{$table_data['PREFIX']}PROFILE_ITEM`.`PIID` = `{$table_data['PREFIX']}USER_PROFILE`.`PIID`) ";
+    $sql.= "WHERE `{$table_data['PREFIX']}PROFILE_ITEM`.`PIID` IS NULL";
 
     if (!db_query($sql, $db_profile_section_delete)) return false;
 

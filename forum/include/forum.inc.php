@@ -921,11 +921,13 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
             foreach ($forum_prefix_array as $forum_prefix) {
 
-                $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` USER_THREAD ";
-                $sql.= "USING `{$forum_prefix}USER_THREAD` USER_THREAD LEFT JOIN `{$forum_prefix}THREAD` THREAD ";
-                $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE THREAD.MODIFIED IS NOT NULL ";
-                $sql.= "AND THREAD.MODIFIED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
-                $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST = 0)";
+                $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` ";
+                $sql.= "USING `{$forum_prefix}USER_THREAD` LEFT JOIN `{$forum_prefix}THREAD` ";
+                $sql.= "ON (`{$forum_prefix}USER_THREAD`.`TID` = `{$forum_prefix}USER_THREAD`.`TID`) ";
+                $sql.= "WHERE `{$forum_prefix}THREAD`.`MODIFIED` IS NOT NULL ";
+                $sql.= "AND `{$forum_prefix}THREAD`.`MODIFIED` < CAST('$unread_cutoff_datetime' AS DATETIME) ";
+                $sql.= "AND (`{$forum_prefix}USER_THREAD`.`INTEREST` IS NULL ";
+                $sql.= "OR `{$forum_prefix}USER_THREAD`.`INTEREST` = 0)";
 
                 if (!db_query($sql, $db_forum_update_unread_data)) return false;
             }

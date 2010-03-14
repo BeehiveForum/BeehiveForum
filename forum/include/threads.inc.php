@@ -1700,11 +1700,13 @@ function thread_auto_prune_unread_data()
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
 
-        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-        $sql.= "USING `{$table_data['PREFIX']}USER_THREAD` USER_THREAD LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE THREAD.MODIFIED IS NOT NULL ";
-        $sql.= "AND THREAD.MODIFIED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
-        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST = 0)";
+        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_THREAD` ";
+        $sql.= "USING `{$table_data['PREFIX']}USER_THREAD` LEFT JOIN `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "ON (`{$table_data['PREFIX']}USER_THREAD`.`TID` = `{$table_data['PREFIX']}THREAD`.`TID`) ";
+        $sql.= "WHERE `{$table_data['PREFIX']}THREAD`.`MODIFIED` IS NOT NULL ";
+        $sql.= "AND `{$table_data['PREFIX']}THREAD`.`MODIFIED` < CAST('$unread_cutoff_datetime' AS DATETIME) ";
+        $sql.= "AND (`{$table_data['PREFIX']}USER_THREAD`.`INTEREST` IS NULL ";
+        $sql.= "OR `{$table_data['PREFIX']}USER_THREAD`.`INTEREST` = 0)";
 
         if (!db_query($sql, $db_thread_prune_unread_data)) return false;
     }

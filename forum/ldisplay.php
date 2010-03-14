@@ -24,36 +24,51 @@ USA
 /* $Id$ */
 
 // Set the default timezone
+
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
+
 define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
+
 define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
+
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
+// Caching functions
+
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
+
 // Disable PHP's register_globals
+
 unregister_globals();
 
 // Disable caching if on AOL
+
 cache_disable_aol();
 
 // Compress the output
+
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
+
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
+
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
+
 check_install();
 
 // Multiple forum support
+
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings

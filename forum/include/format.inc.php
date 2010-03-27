@@ -88,9 +88,9 @@ function format_file_size($size)
     $megabyte = 1024 * 1024;
 
     if ($size >= $megabyte) {
-        $resized = round($size / $megabyte, 1). " MB";
+        $resized = round($size / $megabyte, 1). " MiB";
     }else if ($size >= 1024) {
-        $resized = round($size / 1024, 1). " KB";
+        $resized = round($size / 1024, 1). " KiB";
     }else{
         $resized = $size. " bytes";
     }

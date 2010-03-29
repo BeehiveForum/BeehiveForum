@@ -207,6 +207,24 @@ function message_get_content($tid, $pid)
     return "";
 }
 
+function message_get_meta_content($msg, &$meta_keywords, &$meta_description)
+{
+    if (!validate_msg($msg)) return;
+    
+    list($tid, $pid) = explode('.', $msg);
+    
+    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
+    
+    if (($thread_data = thread_get($tid)) && ($message_content = message_get_content($tid, $pid))) {
+        
+        $meta_keywords_array = search_strip_keywords(strip_tags(htmlentities_decode_array($message_content)));
+        
+        $meta_description = $thread_data['TITLE'];
+        
+        $meta_keywords = htmlentities_array(implode(',', $meta_keywords_array['keywords']));
+    }
+}
+
 /**
 * Apply message formatting such as emoticons, wikilinks to posts; ignores signatures
 *

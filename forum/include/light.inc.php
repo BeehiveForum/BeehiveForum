@@ -66,12 +66,20 @@ function light_html_draw_top()
     $title = "";
 
     $robots = "index,follow";
+    
+    $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);    
 
     $link_array = array();
 
     $func_matches = array();
 
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
+    
+    $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+    
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     foreach ($arg_array as $key => $func_args) {
 
@@ -92,10 +100,18 @@ function light_html_draw_top()
     }
 
     if (strlen($title) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    
+    // Default Meta keywords and description.
+    
+    $meta_keywords = html_get_forum_keywords();
+    $meta_description = html_get_forum_description();
 
-    $forum_keywords = html_get_forum_keywords();
-    $forum_description = html_get_forum_description();
-
+    // Get the page meta keywords and description
+    
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
+    }
+    
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
@@ -103,8 +119,8 @@ function light_html_draw_top()
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
-    echo "<meta name=\"description\" content=\"$forum_description\" />\n";
+    echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
+    echo "<meta name=\"description\" content=\"$meta_description\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
 
@@ -114,7 +130,7 @@ function light_html_draw_top()
 
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
-
+    
     if (($stylesheet = html_get_style_sheet())) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen, handheld\" />\n";
     }
@@ -129,6 +145,19 @@ function light_html_draw_top()
             }
         }
     }
+    
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s/threads_rss.php?webtag=%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $forum_path, $webtag);
+
+    if (($folders_array = folder_get_available_details())) {
+
+        foreach ($folders_array as $folder) {
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s/threads_rss.php?webtag=%s&amp;fid=%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $forum_path, $webtag, $folder['FID']);
+        }
+    }
+    
+    if (@file_exists("$forum_path/forums/$webtag/favicon.ico")) {
+        echo "<link rel=\"shortcut icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
+    }    
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
@@ -225,9 +254,9 @@ function light_draw_messages($msg)
     if (!validate_msg($msg)) return;
 
     $webtag = get_webtag();
-
+    
     forum_check_webtag_available($webtag);
-
+    
     $lang = load_language_file();
 
     list($tid, $pid) = explode('.', $msg);
@@ -407,6 +436,8 @@ function light_draw_messages($msg)
     }else {
         echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
     }
+    
+    light_html_draw_bottom();
 }
 
 function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start_from = 0)
@@ -811,6 +842,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 function light_draw_pm_inbox()
 {
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
 
@@ -1090,6 +1123,8 @@ function light_draw_pm_inbox()
 function light_draw_my_forums()
 {
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
 
@@ -1226,6 +1261,8 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
     $lang = load_language_file();
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
 
@@ -1258,6 +1295,8 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
 function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $limit_text = true, $is_preview = false)
 {
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
 
@@ -1444,6 +1483,8 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     $attachments_array = array();
     $image_attachments_array = array();
@@ -1721,6 +1762,8 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     $lang = load_language_file();
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     // Less than 20 messages, no nav needed
     if ($pid == 1 && $length < $ppp) return;
@@ -1926,6 +1969,8 @@ function light_attachment_make_link($attachment)
     if (!isset($attachment['filename'])) return false;
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
     $href.= "&amp;filename={$attachment['filename']}";
@@ -2009,6 +2054,8 @@ function light_threads_draw_discussions_dropdown($mode)
 function light_mode_check_noframes()
 {
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     if (isset($_GET['noframes'])) {
 
@@ -2043,6 +2090,8 @@ function light_edit_refuse()
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     if (!is_string($header_text)) return;
     if (!is_string($string_msg)) return;
@@ -2226,6 +2275,8 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     $lang = load_language_file();
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     echo "<p>";
 
@@ -2372,6 +2423,8 @@ function light_pm_check_messages()
     // Get the webtag
 
     $webtag = get_webtag();
+    
+    forum_check_webtag_available($webtag);
 
     // Default the variables to return 0 even on error.
 

@@ -757,9 +757,18 @@ function html_draw_top()
     if (strlen(trim($base_target)) < 1) $base_target = false;
 
     if (!isset($resize_width)) $resize_width = 0;
+    
+    // Default Meta keywords and description.
+    
+    $meta_keywords = html_get_forum_keywords();
+    $meta_description = html_get_forum_description();
 
-    $forum_keywords = html_get_forum_keywords();
-    $forum_description = html_get_forum_description();
+    // Get the page meta keywords and description
+    
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
+    }    
+
     $forum_content_rating = html_get_forum_content_rating();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -773,16 +782,17 @@ function html_draw_top()
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
 
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+    
     if (strlen(trim($title)) > 0) {
         echo "<title>", htmlentities($forum_name), " &raquo; ", htmlentities_array($title), "</title>\n";
     }else {
         echo "<title>", htmlentities($forum_name), "</title>\n";
     }
-
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+    
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
-    echo "<meta name=\"description\" content=\"$forum_description\" />\n";
+    echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
+    echo "<meta name=\"description\" content=\"$meta_description\" />\n";
     echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
@@ -811,7 +821,7 @@ function html_draw_top()
     }
 
     if (@file_exists("$forum_path/forums/$webtag/favicon.ico")) {
-        echo "<link rel=\"icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
+        echo "<link rel=\"shortcut icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
     }
 
     if (($stylesheet = html_get_style_sheet())) {

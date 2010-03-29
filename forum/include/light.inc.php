@@ -99,7 +99,11 @@ function light_html_draw_top()
         }
     }
 
-    if (strlen($title) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    if (strlen(trim($title)) > 0) {
+        echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
+    }else {
+        echo "<title>", htmlentities_array($forum_name), "</title>\n";
+    }
     
     // Default Meta keywords and description.
     

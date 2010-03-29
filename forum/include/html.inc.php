@@ -785,9 +785,9 @@ function html_draw_top()
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     
     if (strlen(trim($title)) > 0) {
-        echo "<title>", htmlentities($forum_name), " &raquo; ", htmlentities_array($title), "</title>\n";
+        echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
     }else {
-        echo "<title>", htmlentities($forum_name), "</title>\n";
+        echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
     
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";

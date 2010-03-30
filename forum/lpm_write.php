@@ -351,9 +351,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         }
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_to_uid_others'])));
 
         $t_new_recipient_array['TO_UID'] = array();
         $t_new_recipient_array['LOGON']  = array();
@@ -397,7 +397,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             }
         }
 
-        $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
+        $t_to_uid_others = implode('; ', $t_new_recipient_array['LOGON']);
 
         if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
 
@@ -449,9 +449,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $aid = md5(uniqid(mt_rand()));
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_to_uid_others'])));
 
         if (sizeof($t_recipient_array) > 10) {
 
@@ -459,16 +459,16 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             $valid = false;
         }
 
-        $t_recipient_list = implode(';', $t_recipient_array);
+        $t_to_uid_others = implode(';', $t_recipient_array);
 
     }else {
 
-        $t_recipient_list = "";
+        $t_to_uid_others = "";
     }
 
 }else if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    if (!$t_recipient_list = pm_get_user($t_reply_mid)) $t_recipient_list = "";
+    if (!$t_to_uid_others = pm_get_user($t_reply_mid)) $t_to_uid_others = "";
 
     if (($pm_data = pm_message_get($t_reply_mid))) {
 
@@ -581,7 +581,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = $pm_data['SUBJECT'];
 
-        $t_recipient_list = $pm_data['RECIPIENTS'];
+        $t_to_uid_others = $pm_data['RECIPIENTS'];
 
         $aid = $pm_data['AID'];
 
@@ -652,7 +652,7 @@ if ($valid && isset($_POST['send'])) {
 
     if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
 
-        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, 0, $t_recipient_list)) {
+        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, 0, $t_to_uid_others)) {
 
             header_redirect("lpm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
             exit;
@@ -665,7 +665,7 @@ if ($valid && isset($_POST['send'])) {
 
     }else {
 
-        if (($saved_mid = pm_save_message($t_subject, $t_content, 0, $t_recipient_list))) {
+        if (($saved_mid = pm_save_message($t_subject, $t_content, 0, $t_to_uid_others))) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
@@ -723,7 +723,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<p>{$lang['subject']}: ";
 echo light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</p>\n";
 echo "<p>{$lang['to']}: ";
-echo form_input_text("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", 0, 0), "</p>\n";
+echo form_input_text("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", 0, 0), "</p>\n";
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
 if ($allow_html == true) {

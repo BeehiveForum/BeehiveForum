@@ -221,7 +221,7 @@ p, h1, h2 {
 .dictionary_word_display, .dictionary_best_selection,
 .dictionary_change_to, .post_folder_dropdown, .thread_title,
 .post_content, .signature_content, .edit_signature_content,
-.to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown,
+.friends_dropdown, .recipient_dropdown, .recent_user_dropdown,
 .admin_options_dropdown, .user_in_thread_dropdown,
 .user_pref_field, .bhinputprofileitem, .text_captcha_input,
 .user_pref_dob_dropdown, .user_pref_dropdown {
@@ -1409,7 +1409,7 @@ p, h1, h2 {
     width: 375px;
 }
 
-.to_uid_dropdown {
+.friends_dropdown {
     width: 190px;
 }
 

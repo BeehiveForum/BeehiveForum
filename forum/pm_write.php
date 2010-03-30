@@ -273,10 +273,10 @@ if (isset($_POST['emots_toggle'])) {
         $t_content = trim(stripslashes_array($_POST['t_content']));
     }
 
-    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
-        $to_radio = $_POST['to_radio'];
+    if (isset($_POST['to_radio']) && strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
+        $to_radio = trim(stripslashes_array($_POST['to_radio']));
     }else {
-        $to_radio = POST_RADIO_OTHERS;
+        $to_radio = '';
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
@@ -285,8 +285,8 @@ if (isset($_POST['emots_toggle'])) {
         $t_to_uid = 0;
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
-        $t_recipient_list = trim(stripslashes_array($_POST['t_recipient_list']));
+    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
+        $t_to_uid_others = trim(stripslashes_array($_POST['t_to_uid_others']));
     }
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
@@ -413,10 +413,10 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
-        $to_radio = $_POST['to_radio'];
+    if (isset($_POST['to_radio']) && strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
+        $to_radio = trim(stripslashes_array($_POST['to_radio']));
     }else {
-        $to_radio = POST_RADIO_OTHERS;
+        $to_radio = '';
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
@@ -425,7 +425,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $t_to_uid = 0;
     }
 
-    if ($to_radio == POST_RADIO_FRIENDS && $t_to_uid == 0) {
+    if ($to_radio == 'friends' && $t_to_uid == 0) {
 
         $error_msg_array[] = $lang['mustspecifyrecipient'];
         $valid = false;
@@ -446,9 +446,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         }
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_to_uid_others'])));
 
         $t_new_recipient_array['TO_UID'] = array();
         $t_new_recipient_array['LOGON']  = array();
@@ -469,7 +469,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
                     $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                 }
 
-                if ($to_radio == POST_RADIO_OTHERS) {
+                if ($to_radio == 'others') {
 
                     if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
@@ -495,9 +495,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             }
         }
 
-        $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
+        $t_to_uid_others = implode('; ', $t_new_recipient_array['LOGON']);
 
-        if ($to_radio == POST_RADIO_OTHERS) {
+        if ($to_radio == 'others') {
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
 
@@ -512,7 +512,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             }
         }
 
-    }elseif ($to_radio == POST_RADIO_OTHERS) {
+    }elseif ($to_radio == 'others') {
 
         $error_msg_array[] = $lang['mustspecifyrecipient'];
         $valid = false;
@@ -544,10 +544,10 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $t_content = "";
     }
 
-    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
-        $to_radio = $_POST['to_radio'];
+    if (isset($_POST['to_radio']) && strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
+        $to_radio = trim(stripslashes_array($_POST['to_radio']));
     }else {
-        $to_radio = POST_RADIO_OTHERS;
+        $to_radio = '';
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
@@ -562,9 +562,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $aid = md5(uniqid(mt_rand()));
     }
 
-    if (isset($_POST['t_recipient_list']) && strlen(trim(stripslashes_array($_POST['t_recipient_list']))) > 0) {
+    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_to_uid_others'])));
 
         if (sizeof($t_recipient_array) > 10) {
 
@@ -572,16 +572,16 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             $valid = false;
         }
 
-        $t_recipient_list = implode(';', $t_recipient_array);
+        $t_to_uid_others = implode(';', $t_recipient_array);
 
     }else {
 
-        $t_recipient_list = "";
+        $t_to_uid_others = "";
     }
 
 }else if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    if (!$t_recipient_list = pm_get_user($t_reply_mid)) $t_recipient_list = "";
+    if (!$t_to_uid_others = pm_get_user($t_reply_mid)) $t_to_uid_others = "";
 
     if (($pm_data = pm_message_get($t_reply_mid))) {
 
@@ -696,12 +696,12 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_to_uid = $pm_data['TO_UID'];
 
-        $t_recipient_list = $pm_data['RECIPIENTS'];
+        $t_to_uid_others = $pm_data['RECIPIENTS'];
 
-        if (strlen($t_recipient_list) > 0) {
-            $to_radio = POST_RADIO_OTHERS;
+        if (strlen($t_to_uid_others) > 0) {
+            $to_radio = 'others';
         }elseif ($t_to_uid > 0) {
-            $to_radio = POST_RADIO_FRIENDS;
+            $to_radio = 'friends';
         }
 
         $aid = $pm_data['AID'];
@@ -745,7 +745,7 @@ if ($valid && isset($_POST['send'])) {
 
     if (check_ddkey($t_dedupe)) {
 
-        if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
+        if (isset($to_radio) && $to_radio == 'friends') {
 
             if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
 
@@ -792,7 +792,7 @@ if ($valid && isset($_POST['send'])) {
 
     if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
 
-        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_to_uid_others)) {
 
             header_redirect("pm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
             exit;
@@ -805,7 +805,7 @@ if ($valid && isset($_POST['send'])) {
 
     }else {
 
-        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list))) {
+        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others))) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
@@ -849,7 +849,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['messagepreview']}</td>\n";
     echo "                </tr>\n";
 
-    if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
+    if (isset($to_radio) && $to_radio == 'friends') {
 
         $preview_tuser = user_get($t_to_uid);
 
@@ -913,25 +913,25 @@ if (($friends_array = pm_user_get_friends())) {
         if (in_array($to_user['UID'], array_keys($friends_array))) {
 
             $t_to_uid = $to_user['UID'];
-            $to_radio = 0;
+            $to_radio = 'friends';
 
         }else {
 
-            $t_recipient_list = $to_user['LOGON'];
+            $t_to_uid_others = $to_user['LOGON'];
         }
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_FRIENDS, $lang['friends'], (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS)), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", "friends", $lang['friends'], (isset($to_radio) && $to_radio == "friends")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array, (isset($t_to_uid) ? $t_to_uid : 0), "", "to_uid_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array, (isset($t_to_uid) ? $t_to_uid : 0), "", "friends_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_OTHERS, $lang['others'], (isset($to_radio) && $to_radio == POST_RADIO_OTHERS) ? true : (!isset($to_radio))), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others'], (isset($to_radio) && $to_radio == "others") ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -939,11 +939,11 @@ if (($friends_array = pm_user_get_friends())) {
     if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
         $to_user = user_get($_GET['uid']);
-        $t_recipient_list = $to_user['LOGON'];
+        $t_to_uid_others = $to_user['LOGON'];
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_recipient_list", isset($t_recipient_list) ? htmlentities_array($t_recipient_list) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
     echo "                      </tr>\n";
 }
 

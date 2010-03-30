@@ -150,6 +150,10 @@ $(beehive).bind('init', function() {
     $('select.recent_user_dropdown').bind('change', function() {
         $('input[name="to_radio"][value="recent"]').attr('checked', true);
     });
+    
+    $('select.friends_dropdown').bind('change', function() {
+        $('input[name="to_radio"][value="friends"]').attr('checked', true);
+    });
 
     $('input.post_to_others').bind('focus', function() {
         $('input[name="to_radio"][value="others"]').attr('checked', true);

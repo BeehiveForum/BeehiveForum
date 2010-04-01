@@ -98,12 +98,6 @@ function light_html_draw_top()
             unset($arg_array[$key]);
         }
     }
-
-    if (strlen(trim($title)) > 0) {
-        echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
-    }else {
-        echo "<title>", htmlentities_array($forum_name), "</title>\n";
-    }
     
     // Default Meta keywords and description.
     
@@ -120,7 +114,13 @@ function light_html_draw_top()
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
-    echo "<title>$title</title>\n";
+
+    if (strlen(trim($title)) > 0) {
+        echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
+    }else {
+        echo "<title>", htmlentities_array($forum_name), "</title>\n";
+    }    
+    
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";

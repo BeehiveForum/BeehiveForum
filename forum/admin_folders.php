@@ -219,7 +219,7 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
     exit;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['managefolders']}");
+html_draw_top("title={$lang['admin']} » {$lang['managefolders']}", 'class=window_title');
 
 $folder_array = folder_get_all_by_page($start);
 

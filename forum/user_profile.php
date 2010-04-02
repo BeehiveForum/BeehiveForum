@@ -181,7 +181,7 @@ $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 $page_title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
 
-html_draw_top("title=$page_title", "user_profile.js", "basetarget=_blank", 'pm_popup_disabled');
+html_draw_top("title=$page_title", "user_profile.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";

@@ -262,7 +262,7 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
     }
 }
 
-html_draw_top("title={$lang['search']}", 'pm_popup_disabled', 'search_popup.js');
+html_draw_top("title={$lang['search']}", 'pm_popup_disabled', 'search_popup.js', 'class=window_title');
 
 echo "<h1>{$lang['search']}</h1>\n";
 

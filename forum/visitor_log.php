@@ -340,7 +340,7 @@ if (isset($_POST['clear_search'])) {
     $user_search = "";
 }
 
-html_draw_top("title={$lang['visitorlog']}");
+html_draw_top("title={$lang['visitorlog']}", 'class=window_title');
 
 echo "<h1>{$lang['visitorlog']}</h1>\n";
 

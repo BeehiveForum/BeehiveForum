@@ -214,7 +214,7 @@ $poll_user_count = 0;
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("title=$thread_title » {$poll_data['QUESTION']}", 'pm_popup_disabled');
+html_draw_top("title=$thread_title » {$poll_data['QUESTION']}", 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";

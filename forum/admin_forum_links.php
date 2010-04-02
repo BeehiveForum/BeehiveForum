@@ -352,7 +352,7 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
 
 if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['addnewforumlink']}");
+    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['addnewforumlink']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['forumlinks']} &raquo; {$lang['addnewforumlink']}</h1>\n";
 
@@ -438,7 +438,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['editlink']} » {$forum_link['TITLE']}");
+    html_draw_top("title={$lang['admin']} » {$lang['forumlinks']} » {$lang['editlink']} » {$forum_link['TITLE']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
 
@@ -501,7 +501,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['editforumlinks']}");
+    html_draw_top("title={$lang['admin']} » {$lang['editforumlinks']}", 'class=window_title');
 
     $forum_links_array = forum_links_get_links_by_page($start);
 

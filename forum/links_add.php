@@ -329,7 +329,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
 if ($mode == LINKS_ADD_LINK) {
 
-    html_draw_top("title={$lang['links']} » {$lang['addlink']}");
+    html_draw_top("title={$lang['links']} » {$lang['addlink']}", 'class=window_title');
 
     echo "<h1>{$lang['links']} &raquo; {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
@@ -392,7 +392,7 @@ if ($mode == LINKS_ADD_LINK) {
 
 }elseif ($mode == LINKS_ADD_FOLDER) {
 
-    html_draw_top("title={$lang['links']} » {$lang['addnewfolder']}");
+    html_draw_top("title={$lang['links']} » {$lang['addnewfolder']}", 'class=window_title');
 
     echo "<h1>{$lang['links']} &raquo; {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";

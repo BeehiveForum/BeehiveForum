@@ -126,7 +126,7 @@ $frame_top_target = html_get_top_frame_name();
 
 // Top of the page.
 
-html_draw_top("title={$lang['myforums']}", "basetarget=$frame_top_target");
+html_draw_top("title={$lang['myforums']}", "basetarget=$frame_top_target", 'class=window_title');
 
 // Types of available forums.
 

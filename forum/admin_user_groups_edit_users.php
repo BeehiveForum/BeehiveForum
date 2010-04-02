@@ -257,7 +257,7 @@ if (!$group = perm_get_group($gid)) {
     exit;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$group['GROUP_NAME']} » {$lang['addremoveusers']}");
+html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$group['GROUP_NAME']} » {$lang['addremoveusers']}", 'class=window_title');
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 

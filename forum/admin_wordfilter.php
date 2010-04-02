@@ -331,7 +331,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['addwordfilter']}");
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['addwordfilter']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
 
@@ -430,7 +430,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['editwordfilter']}");
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']} » {$lang['editwordfilter']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
 
@@ -506,7 +506,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']}");
+    html_draw_top("title={$lang['admin']} » {$lang['wordfilter']}", 'class=window_title');
 
     $word_filter_array = admin_get_word_filter_list($start);
 

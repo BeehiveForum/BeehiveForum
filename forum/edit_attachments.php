@@ -325,12 +325,12 @@ if (isset($_POST['delete_confirm'])) {
 
             if (isset($_POST['delete_thumbs'])) {
 
-                html_draw_top("title={$lang['deletethumbnails']}", 'pm_popup_disabled');
+                html_draw_top("title={$lang['deletethumbnails']}", 'pm_popup_disabled', 'class=window_title');
                 echo "<h1>{$lang['deletethumbnails']}</h1>\n";
 
             }else {
 
-                html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled');
+                html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled', 'class=window_title');
                 echo "<h1>{$lang['deleteattachments']}</h1>\n";
             }
 
@@ -440,7 +440,7 @@ if (isset($_POST['delete_confirm'])) {
     }
 }
 
-html_draw_top("title={$lang['attachments']}", 'attachments.js', 'post.js', 'pm_popup_disabled');
+html_draw_top("title={$lang['attachments']}", 'attachments.js', 'post.js', 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 

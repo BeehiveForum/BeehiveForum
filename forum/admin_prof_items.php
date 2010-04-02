@@ -463,7 +463,7 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['addnewitem']}");
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['addnewitem']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
 
@@ -560,7 +560,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['edititem']} » {$profile_item['NAME']}");
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['edititem']} » {$profile_item['NAME']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</h1>\n";
 
@@ -639,7 +639,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['viewitems']}");
+    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » ". profile_section_get_name($psid). " » {$lang['viewitems']}", 'class=window_title');
 
     $profile_items = profile_items_get_by_page($psid, $start);
 

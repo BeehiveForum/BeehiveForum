@@ -206,7 +206,7 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}");
+                html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}", 'class=window_title');
 
                 $forum_path = dirname($_SERVER['PHP_SELF']);
                 $forum_path.= "/forums/$webtag/styles/$stylename";
@@ -281,7 +281,7 @@ if (isset($_POST['save'])) {
 
 // Start Here
 
-html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}");
+html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}", 'class=window_title');
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
 

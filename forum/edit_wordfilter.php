@@ -344,7 +344,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}");
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}", 'class=window_title');
 
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
@@ -446,7 +446,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}");
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}", 'class=window_title');
 
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
@@ -520,7 +520,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}");
+    html_draw_top("title={$lang['mycontrols']} » {$lang['editwordfilter']}", 'class=window_title');
 
     $word_filter_array = user_get_word_filter_list($start);
 

@@ -789,7 +789,7 @@ if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_P
     exit;
 }
 
-html_draw_top("title={$lang['createpoll']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js");
+html_draw_top("title={$lang['createpoll']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", 'class=window_title');
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
 

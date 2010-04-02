@@ -139,7 +139,7 @@ $user_count = user_count();
 
 // And off we go ...
 
-html_draw_top("title={$lang['admin']} » {$lang['forumstats']}");
+html_draw_top("title={$lang['admin']} » {$lang['forumstats']}", 'class=window_title');
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['forumstats']}</h1>\n";
 

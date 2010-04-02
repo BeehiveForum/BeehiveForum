@@ -154,7 +154,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", 'class=window_title');
     html_error_msg($lang['invalidmsgidornomessageidspecified']);
     html_draw_bottom();
     exit;
@@ -186,7 +186,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("title=$thread_title", "post.js", "basetarget=_blank");
+html_draw_top("title=$thread_title", "post.js", "basetarget=_blank", 'class=window_title');
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 

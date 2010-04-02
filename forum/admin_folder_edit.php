@@ -330,7 +330,7 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
                             FOLDER_ALLOW_POLL_THREAD   => $lang['pollthreadsonly'],
                             FOLDER_ALLOW_ALL_THREAD    => $lang['both']);
 
-html_draw_top("{$lang['admin']} » {$lang['managefolders']} » {$lang['editfolder']} » {$folder_data['TITLE']}");
+html_draw_top("{$lang['admin']} » {$lang['managefolders']} » {$lang['editfolder']} » {$folder_data['TITLE']}", 'class=window_title');
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['managefolders']} &raquo; {$lang['editfolder']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 

@@ -148,7 +148,7 @@ $emoticon_sets_array_keys = array_keys($emoticon_sets_array);
 
 // Output starts here
 
-html_draw_top("title={$lang['emoticons']}", "emoticons.js", 'pm_popup_disabled');
+html_draw_top("title={$lang['emoticons']}", "emoticons.js", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>{$lang['emoticons']}</h1>\n";
 echo "<br />\n";

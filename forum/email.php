@@ -217,14 +217,14 @@ if (isset($_POST['send'])) {
 
         if (email_send_message_to_user($to_uid, $uid, $subject, $message, $use_email_addr)) {
 
-            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
+            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled', 'class=window_title');
             html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
+            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled', 'class=window_title');
             html_error_msg($lang['mailsystemfailure'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
@@ -232,7 +232,7 @@ if (isset($_POST['send'])) {
     }
 }
 
-html_draw_top("title=". sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled');
+html_draw_top("title=". sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</h1>\n";
 echo "<br />";

@@ -311,7 +311,7 @@ $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0))
 
 $page_title = links_get_folder_page_title($link['FID'], $folders, $link['TITLE']);
 
-html_draw_top("title={$page_title}");
+html_draw_top("title={$page_title}", 'class=window_title');
 
 echo "<h1>{$lang['links']} &raquo; ", links_get_folder_path_links($link['FID'], $folders, true, true), " &raquo; <a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
 

@@ -109,7 +109,7 @@ if (isset($_GET['resend']) && isset($uid)) {
 
     if (email_send_user_confirmation($uid)) {
 
-        html_draw_top("title={$lang['emailconfirmation']}");
+        html_draw_top("title={$lang['emailconfirmation']}", 'class=window_title');
         html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationsent']);
         html_draw_bottom();
         exit;
@@ -135,7 +135,7 @@ if (($user = user_get_by_password($uid, $key))) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 
-        html_draw_top("title={$lang['emailconfirmation']}");
+        html_draw_top("title={$lang['emailconfirmation']}", 'class=window_title');
         html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationcomplete'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
         html_draw_bottom();
 

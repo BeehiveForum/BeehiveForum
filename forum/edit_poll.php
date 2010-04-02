@@ -506,7 +506,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "post.js");
+html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "post.js", 'class=window_title');
 
 if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;

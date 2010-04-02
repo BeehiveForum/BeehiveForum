@@ -150,7 +150,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 $folder_title = folder_get_title($fid);
 
-html_draw_top("title={$folder_title} » {$lang['moderatorlist']}", 'pm_popup_disabled');
+html_draw_top("title={$folder_title} » {$lang['moderatorlist']}", 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";

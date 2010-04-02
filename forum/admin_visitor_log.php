@@ -173,7 +173,7 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['visitorlog']}");
+html_draw_top("title={$lang['admin']} » {$lang['visitorlog']}", 'class=window_title');
 
 $admin_visitor_log_array = admin_get_visitor_log($start, 10);
 

@@ -259,7 +259,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 }else {
 
-                    html_draw_top("title={$lang['approvepost']}");
+                    html_draw_top("title={$lang['approvepost']}", 'class=window_title');
                     html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -287,7 +287,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 }else {
 
-                    html_draw_top("title={$lang['deleteposts']}");
+                    html_draw_top("title={$lang['deleteposts']}", 'class=window_title');
                     html_display_msg($lang['deleteposts'], sprintf($lang['successfullydeletedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -299,7 +299,7 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("title={$lang['admin']} » {$lang['approvepost']}", "post.js", "resize_width=720");
+        html_draw_top("title={$lang['admin']} » {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
 
         echo "<h1>{$lang['admin']} &raquo; {$lang['approvepost']}</h1>\n";
 
@@ -395,7 +395,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['postapprovalqueue']}");
+    html_draw_top("title={$lang['admin']} » {$lang['postapprovalqueue']}", 'class=window_title');
 
     $post_approval_array = admin_get_post_approval_queue($start);
 

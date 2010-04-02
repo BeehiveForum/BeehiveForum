@@ -463,7 +463,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['addnewfeed']}");
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['addnewfeed']}", 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
@@ -592,7 +592,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['editfeed']} » {$rss_feed['NAME']}", 'search_popup.js');
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['editfeed']} » {$rss_feed['NAME']}", 'search_popup.js', 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
 
@@ -698,7 +698,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']}", 'search.js');
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']}", 'search.js', 'class=window_title');
 
     $rss_feeds = rss_get_feeds($start);
 

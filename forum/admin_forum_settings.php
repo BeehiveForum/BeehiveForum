@@ -458,7 +458,7 @@ if (isset($_POST['changepermissions'])) {
 
 // Start Output Here
 
-html_draw_top("title={$lang['admin']} » {$lang['forumsettings']}", "onunload=clearFocus()", "emoticons.js", "htmltools.js");
+html_draw_top("title={$lang['admin']} » {$lang['forumsettings']}", 'class=window_title', "onunload=clearFocus()", "emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']}</h1>\n";
 

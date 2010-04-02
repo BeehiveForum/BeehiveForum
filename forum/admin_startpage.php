@@ -223,7 +223,7 @@ if (isset($_POST['save'])) {
     exit;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js");
+html_draw_top("title={$lang['admin']} » {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['editstartpage']}</h1>\n";
 

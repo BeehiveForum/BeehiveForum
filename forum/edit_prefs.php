@@ -555,7 +555,7 @@ if (isset($_POST['save'])) {
 
                             perm_user_apply_email_confirmation($uid);
 
-                            html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']} » {$lang['emailaddresschanged']}");
+                            html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']} » {$lang['emailaddresschanged']}", 'class=window_title');
                             html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
                             html_draw_bottom();
                             exit;
@@ -662,13 +662,13 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} » {$lang['userdetails']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js');
+    html_draw_top("title={$lang['admin']} » {$lang['userdetails']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js', 'class=window_title');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']}");
+    html_draw_top("title={$lang['mycontrols']} » {$lang['userdetails']}", 'class=window_title');
 
     echo "<h1>{$lang['userdetails']}</h1>\n";
 }

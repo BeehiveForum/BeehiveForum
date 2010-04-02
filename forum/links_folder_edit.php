@@ -210,7 +210,7 @@ if (isset($_POST['update'])) {
     exit;
 }
 
-html_draw_top("title={$lang['links']} » {$lang['editfolder']}");
+html_draw_top("title={$lang['links']} » {$lang['editfolder']}", 'class=window_title');
 
 echo "<h1>", links_get_folder_path_links($fid, $folders, false), " &raquo; {$lang['editfolder']}</h1>\n";
 

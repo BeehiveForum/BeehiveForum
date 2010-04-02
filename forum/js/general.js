@@ -199,5 +199,7 @@ $(beehive).bind('init', function() {
         $(this).css('border', '1px outset');
     });
     
-    top.document.title = document.title;
+    if ($('body').hasClass('window_title')) {
+        top.document.title = document.title;
+    }
 });

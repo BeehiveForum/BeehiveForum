@@ -280,7 +280,7 @@ if (isset($_POST['add'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageforumpermissions']}");
+html_draw_top("title={$lang['admin']} » {$lang['manageforumpermissions']}", 'class=window_title');
 
 $user_permissions_array = forum_get_permissions($forum_fid, $start_main);
 

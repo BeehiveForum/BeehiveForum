@@ -243,7 +243,7 @@ $user_prefs = user_get_prefs($uid);
 
 // Start output here
 
-html_draw_top("title={$lang['privatemessageoptions']}", "emoticons.js");
+html_draw_top("title={$lang['privatemessageoptions']}", "emoticons.js", 'class=window_title');
 
 echo "<h1>{$lang['privatemessageoptions']}</h1>\n";
 

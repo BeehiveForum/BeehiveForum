@@ -324,7 +324,7 @@ if (isset($_POST['upload'])) {
 
         if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
-            html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled');
+            html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled', 'class=window_title');
 
             echo "<h1>{$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
@@ -403,7 +403,7 @@ if (isset($_POST['upload'])) {
     }
 }
 
-html_draw_top("title={$lang['attachments']}", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled');
+html_draw_top("title={$lang['attachments']}", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 

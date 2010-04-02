@@ -505,7 +505,7 @@ $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['forumoptions']}", "emoticons.js");
+html_draw_top("title={$lang['mycontrols']} » {$lang['forumoptions']}", "emoticons.js", 'class=window_title');
 
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 

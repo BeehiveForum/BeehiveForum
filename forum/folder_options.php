@@ -220,7 +220,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['folderoptions']} » {$folder_data['TITLE']}", "basetarget=_blank");
+html_draw_top("title={$lang['folderoptions']} » {$folder_data['TITLE']}", "basetarget=_blank", 'class=window_title');
 
 echo "<h1>{$lang['folderoptions']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 

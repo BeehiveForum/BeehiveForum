@@ -332,7 +332,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
         }else {
 
-            html_draw_top("title={$lang['deletemessage']}");
+            html_draw_top("title={$lang['deletemessage']}", 'class=window_title');
             html_display_msg($lang['delete'], $lang['deletemessagesconfirmation'], "pm_messages.php", 'post', array('pm_option_submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_delete_messages' => $lang['delete'], 'pm_delete_confirm' => 'Y'), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -473,7 +473,7 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders();
 
-html_draw_top("title={$lang['privatemessages']} » {$pm_folder_names_array[$current_folder]}", "basetarget=_blank", "search.js", "pm.js", 'pm_popup_disabled');
+html_draw_top("title={$lang['privatemessages']} » {$pm_folder_names_array[$current_folder]}", "basetarget=_blank", "search.js", "pm.js", 'pm_popup_disabled', 'class=window_title');
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;

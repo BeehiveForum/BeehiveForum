@@ -168,7 +168,7 @@ if (isset($_POST['save'])) {
 
         if (user_change_password($uid, $pw, $key)) {
 
-            html_draw_top("title={$lang['passwdchanged']}");
+            html_draw_top("title={$lang['passwdchanged']}", 'class=window_title');
             html_display_msg($lang['passwdchanged'], $lang['passedchangedexp'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
             html_draw_bottom();
             exit;
@@ -207,7 +207,7 @@ if (!$user = user_get_by_password($uid, $key)) {
     exit;
 }
 
-html_draw_top("title={$lang['changepassword']}");
+html_draw_top("title={$lang['changepassword']}", 'class=window_title');
 
 echo "<h1>{$lang['changepassword']}</h1>";
 

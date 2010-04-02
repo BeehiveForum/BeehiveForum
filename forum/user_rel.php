@@ -273,7 +273,7 @@ if (isset($_POST['reset_nickname'])) {
 
 $peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
 
-html_draw_top("title={$lang['userrelationship']} » $peer_user_display");
+html_draw_top("title={$lang['userrelationship']} » $peer_user_display", 'class=window_title');
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 

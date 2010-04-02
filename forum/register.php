@@ -134,7 +134,7 @@ $webtag = get_webtag();
 
 if (forum_get_setting('allow_new_registrations', 'N')) {
 
-    html_draw_top("title={$lang['userregistration']}");
+    html_draw_top("title={$lang['error']}");
     html_error_msg($lang['newuserregistrationsarenotpermitted']);
     html_draw_bottom();
     exit;
@@ -572,7 +572,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top("title={$lang['userregistration']}", 'emoticons.js', 'register.js', "basetarget=$frame_top_target");
+html_draw_top("title={$lang['userregistration']}", 'emoticons.js', 'register.js', "basetarget=$frame_top_target", 'class=window_title');
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 

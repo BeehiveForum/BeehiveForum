@@ -122,7 +122,7 @@ if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(
 
 // Output starts here
 
-html_draw_top('frame_set_html', 'pm_popup_disabled');
+html_draw_top('class=window_title', 'frame_set_html', 'pm_popup_disabled');
 
 $frameset = new html_frameset_cols('admin', "250,*");
 

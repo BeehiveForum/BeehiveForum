@@ -228,7 +228,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$lang['addusergroup']}");
+html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$lang['addusergroup']}", 'class=window_title');
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['manageusergroups']} &raquo; {$lang['addusergroup']}</h1>\n";
 

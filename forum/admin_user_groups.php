@@ -206,7 +206,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['usergroups']}");
+html_draw_top("title={$lang['admin']} » {$lang['usergroups']}", 'class=window_title');
 
 $user_groups_array = perm_get_user_groups($start, $sort_by, $sort_dir);
 

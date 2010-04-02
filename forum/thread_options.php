@@ -539,7 +539,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
 
-                    html_draw_top("title={$lang['deletethread']}");
+                    html_draw_top("title={$lang['deletethread']}", 'class=window_title');
                     html_display_msg($lang['deletethread'], $lang['threadwassuccessfullydeleted'], 'discussion.php', 'get', array('continue' => $lang['continue']), false, html_get_frame_name('main'), 'center');
                     html_draw_bottom();
                     exit;
@@ -562,7 +562,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(UNDELETE_THREAD, array($tid, $thread_data['TITLE']));
 
-                    html_draw_top("title={$lang['undeletethread']}");
+                    html_draw_top("title={$lang['undeletethread']}", 'class=window_title');
                     html_display_msg($lang['undeletethread'], $lang['threadwassuccessfullyundeleted'], 'thread_options.php', 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -587,7 +587,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     $thread_title_display = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", 'search_popup.js');
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", 'search_popup.js', 'class=window_title');
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -1053,7 +1053,7 @@ if ($thread_data['DELETED'] == 'N') {
 
 }else if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank");
+    html_draw_top("title={$lang['threadoptions']} » $thread_title_display", "basetarget=_blank", 'class=window_title');
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 

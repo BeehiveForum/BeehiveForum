@@ -290,7 +290,7 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-html_draw_top("title={$lang['deletemessage']}", "post.js", "resize_width=720", "basetarget=_blank");
+html_draw_top("title={$lang['deletemessage']}", "post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
 
 echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
 

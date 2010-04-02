@@ -106,7 +106,7 @@ if (isset($_POST['request'])) {
 
         if (email_send_pw_reminder($logon)) {
 
-            html_draw_top("title={$lang['passwdresetemailsent']}");
+            html_draw_top("title={$lang['passwdresetemailsent']}", 'class=window_title');
             html_display_msg($lang['passwdresetemailsent'], $lang['passwdresetexp'], 'logon.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
             html_draw_bottom();
             exit;
@@ -122,7 +122,7 @@ if (isset($_POST['request'])) {
     }
 }
 
-html_draw_top("title={$lang['forgotpasswd']}");
+html_draw_top("title={$lang['forgotpasswd']}", 'class=window_title');
 
 echo "<h1>{$lang['forgotpasswd']}</h1>";
 

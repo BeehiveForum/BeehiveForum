@@ -249,7 +249,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['changepassword']}");
+html_draw_top("title={$lang['admin']} » {$lang['changepassword']}", 'class=window_title');
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['changepassword']}</h1>\n";
 

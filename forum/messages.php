@@ -274,7 +274,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("title=$thread_title", "post.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("title=$thread_title", "class=window_title", "post.js", "htmltools.js", "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 

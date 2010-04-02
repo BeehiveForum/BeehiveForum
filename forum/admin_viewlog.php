@@ -273,7 +273,7 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['adminaccesslog']}");
+html_draw_top("title={$lang['admin']} » {$lang['adminaccesslog']}", 'class=window_title');
 
 $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 

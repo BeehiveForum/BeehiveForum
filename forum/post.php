@@ -881,7 +881,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_c
     exit;
 }
 
-html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js');
+html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 

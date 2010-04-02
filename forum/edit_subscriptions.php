@@ -248,7 +248,7 @@ if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['threadsubscriptions']}", 'edit_subscriptions.js');
+html_draw_top("title={$lang['mycontrols']} » {$lang['threadsubscriptions']}", 'edit_subscriptions.js', 'class=window_title');
 
 echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
 

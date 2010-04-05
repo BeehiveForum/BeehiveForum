@@ -59,7 +59,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 * Prevents caching of a page by sending headers which indicate that the page
 * is always modified.
 *
-* @return void
+* @return boolean
 * @param void
 */
 
@@ -68,9 +68,12 @@ function cache_disable()
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT", true);               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);  // always modified
     header("Content-Type: text/html; charset=UTF-8", true);               // Internet Explorer Bug
-    header("Cache-Control: no-store, no-cache, must-revalidate", true);   // HTTP/1.1
-    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Cache-Control: no-store, private, no-cache, must-revalidate", true);   // HTTP/1.1
+    header("Cache-Control: proxy-revalidate, post-check=0, pre-check=0", false);
+    header("Cache-Control: max-age=0, s-maxage=0", false);
     header("Pragma: no-cache", true);
+    
+    return true;
 }
 
 /**
@@ -85,9 +88,28 @@ function cache_disable_aol()
 {
     if (!browser_check(BROWSER_AOL)) return;
     
-    header("Cache-Control: no-store, private, must-revalidate", true);
-    header("Cache-Control: proxy-revalidate, post-check=0,pre-check=0", false);
-    header("Cache-Control: max-age=0, s-maxage=0", false);
+    return cache_disable();
+}
+
+/**
+* cache_disable_proxy
+* 
+* Disable HTTP caching if a proxy server is detected.
+* 
+* @param void
+* @return void
+*/
+function cache_disable_proxy()
+{
+    $proxy_headers_array = get_proxy_cache_headers();
+
+    foreach($proxy_headers_array as $proxy_header) {
+        
+        if (isset($_SERVER[$proxy_header])) {
+            
+            return cache_disable();
+        }
+    }
 }
 
 /**

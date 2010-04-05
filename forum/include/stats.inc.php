@@ -90,7 +90,7 @@ function stats_update($session_count, $recent_post_count)
     return true;
 }
 
-function stats_output_xml()
+function stats_output_html()
 {
     // Check HTTP cache headers
 

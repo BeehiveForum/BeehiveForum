@@ -51,6 +51,10 @@ unregister_globals();
 
 cache_disable_aol();
 
+// Disable caching if proxy server detected.
+
+cache_disable_proxy();
+
 // Compress the output
 
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

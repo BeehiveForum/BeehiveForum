@@ -47,6 +47,10 @@ unregister_globals();
 
 cache_disable_aol();
 
+// Disable caching if proxy server detected.
+
+cache_disable_proxy();
+
 // Compress the output
 
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -139,7 +143,7 @@ if (!forum_check_access_level()) {
 
 if (isset($_GET['get_stats'])) {
 
-    stats_output_xml();
+    stats_output_html();
     exit;
 
 }else {

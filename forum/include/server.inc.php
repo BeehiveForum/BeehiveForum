@@ -181,7 +181,7 @@ function get_available_files()
 *
 * Returns an array of Beehive Forum PHP files (forum path only)
 *
-* @return string
+* @return array
 * @param void
 */
 
@@ -209,7 +209,7 @@ function get_available_admin_files()
 *
 * Returns an array of Beehive Forum PHP files (forum path only)
 *
-* @return string
+* @return array
 * @param void
 */
 
@@ -246,13 +246,31 @@ function get_available_js_popup_files_preg()
 * Returns an array of Beehive Forum PHP files that are used to
 * change font size, toggle stats display, etc.
 *
-* @return string
+* @return array
 * @param void
 */
 
 function get_available_support_files()
 {
     return array('font_size.php', 'user_font.php', 'user_stats.php');
+}
+
+/**
+* get_proxy_cache_headers
+* 
+* Get an array of headers used by caching proxy
+* servers.
+* 
+* @param void
+* @return array
+*/
+function get_proxy_cache_headers()
+{
+    return array('HTTP_VIA', 'HTTP_X_FORWARDED_FOR', 'HTTP_FORWARDED_FOR',
+                 'HTTP_X_FORWARDED', 'HTTP_FORWARDED', 'HTTP_CLIENT_IP',
+                 'HTTP_FORWARDED_FOR_IP', 'VIA', 'X_FORWARDED_FOR',
+                 'FORWARDED_FOR', 'X_FORWARDED', 'FORWARDED', 
+                 'CLIENT_IP', 'FORWARDED_FOR_IP', 'HTTP_PROXY_CONNECTION');
 }
 
 /**

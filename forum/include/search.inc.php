@@ -133,8 +133,8 @@ function search_execute($search_arguments, &$error)
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
-            $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
-            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, ";
+            $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, MIN(POST.PID), ";
+            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, ";
             $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
 
         }else {
@@ -225,8 +225,8 @@ function search_execute($search_arguments, &$error)
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
                 $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
-                $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
-                $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, THREAD.LENGTH, ";
+                $select_sql.= "THREAD.FID, POST_CONTENT.TID, MIN(POST_CONTENT.PID), THREAD.BY_UID, ";
+                $select_sql.= "POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, THREAD.LENGTH, ";
                 $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
 

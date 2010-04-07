@@ -135,7 +135,8 @@ if (isset($_GET['search'])) {
                            'unquote',
                            'quote',
                            'searchsuccessfullycompleted',
-                           'confirmmarkasread');
+                           'confirmmarkasread',
+                           'waitdotdot');
                            
     // Construct the Javascript / JSON array
 

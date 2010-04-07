@@ -53,6 +53,7 @@ $(beehive).bind('init', function() {
 
         $(this).addClass('button_disabled').attr('disabled', 'true');
         $('#search_reset').addClass('button_disabled').attr('disabled', 'true');
+        $('#search_form').submit();
     });
 
     $('div#search_success').each(function() {

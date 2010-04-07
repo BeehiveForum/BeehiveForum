@@ -632,7 +632,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 
-        message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0, $message);
+        message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0, $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
     }
 
@@ -642,7 +642,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
 
-            message_display_deleted($tid, $message['PID'], $message);
+            message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
             return;
         }
     }
@@ -659,7 +659,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
-        message_display_deleted($tid, $message['PID'], $message);
+        message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
     }
 
@@ -727,45 +727,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Little up/down arrows to the left of each message -----------------------
 
-    $up_arrow = "";
-    $down_arrow = "";
-
-    if ($in_list && !$is_preview) {
-
-        if ($message['PID'] != 1) {
-
-            if ($message['PID'] == $first_msg) {
-
-                $up_arrow = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] - 1). "\" target=\"_self\">";
-                $up_arrow.= "<img src=\"". style_image("message_up.png"). "\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a> ";
-
-            }else {
-
-                $up_arrow = "<a href=\"#a{$tid}_". ($message['PID'] - 1). "\" target=\"_self\">";
-                $up_arrow.= "<img src=\"". style_image("message_up.png"). "\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a> ";
-            }
-        }
-
-        if ($message['PID'] != $msg_count) {
-
-            if ((($first_msg + $posts_per_page) - 1) == $message['PID']) {
-
-                $down_arrow = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1). "\" target=\"_self\">";
-                $down_arrow.= "<img src=\"".style_image("message_down.png")."\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
-
-            }else {
-
-                $down_arrow = "<a href=\"#a{$tid}_". ($message['PID'] + 1). "\" target=\"_self\">";
-                $down_arrow.= "<img src=\"". style_image("message_down.png"). "\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
-            }
-        }
-    }
-
     if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $uid) {
 
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
 
-            message_display_approval_req($tid, $message['PID']);
+            message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
             return;
         }
     }
@@ -792,16 +758,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "<div align=\"center\">\n";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" width=\"2%\" valign=\"top\">\n";
-    echo "      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"center\">$up_arrow</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"center\">$down_arrow</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "    </td>\n";
+    
+    if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
+
     echo "    <td align=\"left\">\n";
     echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
@@ -1255,15 +1214,68 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</div>\n";
 }
 
-function message_display_deleted($tid, $pid, $message)
+function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page)
+{
+    $webtag = get_webtag();
+    
+    $lang = load_language_file();
+    
+    echo "    <td align=\"left\" width=\"2%\" valign=\"top\">\n";
+    echo "      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"center\">\n";    
+
+    if ($pid > 1) {
+
+        if ($pid == $first_msg) {
+
+            echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid - 1, "\" target=\"_self\">";
+            echo "<img src=\"", style_image("message_up.png"), "\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a>";
+
+        }else {
+
+            echo "<a href=\"#a{$tid}_", $pid - 1, "\" target=\"_self\">";
+            echo "<img src=\"", style_image("message_up.png"), "\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a>";
+        }
+    }
+    
+    echo "          </td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"center\">\n";
+    
+    if ($pid <> $msg_count) {
+
+        if ((($first_msg + $posts_per_page) - 1) == $pid) {
+
+            echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid + 1, "\" target=\"_self\">";
+            echo "<img src=\"", style_image("message_down.png"), "\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
+
+        }else {
+
+            echo "<a href=\"#a{$tid}_", $pid + 1, "\" target=\"_self\">";
+            echo "<img src=\"", style_image("message_down.png"), "\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
+        }
+    }
+    
+    echo "          </td>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+}
+
+function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page)
 {
     $lang = load_language_file();
 
     echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
+    
+    if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
+    
     echo "    <td align=\"left\">\n";
-    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
     echo "          <td align=\"left\">\n";
     echo "            <table class=\"posthead\" width=\"100%\">\n";
@@ -1297,15 +1309,18 @@ function message_display_deleted($tid, $pid, $message)
     echo "</div>\n";
 }
 
-function message_display_approval_req($tid, $pid)
+function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page)
 {
     $lang = load_language_file();
 
     echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
+    
+    if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
+    
     echo "    <td align=\"left\">\n";
-    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
     echo "          <td align=\"left\">\n";
     echo "            <table class=\"posthead\" width=\"100%\">\n";
@@ -1351,52 +1366,62 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
     $webtag = get_webtag();
 
-    // Less than 20 messages, no nav needed
-
     if ($pid < 2 && $length < $ppp) {
         return;
     }else if ($pid < 1) {
         $pid = 1;
     }
 
-    // Something.
     $c = 0;
 
-    // Modulus to get base for links, e.g. ppp = 20, pid = 28, base = 8
     $spid = $pid % $ppp;
 
-    // The first section, 1-x
     if ($spid > 1) {
+        
         if ($pid > 1) {
-            $navbits[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid-1). "</a>";
+            
+            $navbits[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid - 1). "</a>";
+            
         }else {
+            
             $c = 0;
-            $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
+            $navbits[0] = mess_nav_range(1,$spid-1);
         }
+        
         $i = 1;
+        
     }else {
+        
         $i = 0;
     }
 
-    // The middle section(s)
-    while ($spid + ($ppp - 1) < $length){
+    while ($spid + ($ppp - 1) < $length) {
+        
         if ($spid == $pid) {
+            
             $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
+            $navbits[$i] = mess_nav_range($spid, $spid + ($ppp - 1));
+            
         }else {
+            
             $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($spid == 0 ? 1 : $spid). "\" target=\"_self\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
         }
+        
         $spid += $ppp;
+        
         $i++;
     }
 
-    // The final section, x-n
     if ($spid <= $length) {
+        
         if ($spid == $pid) {
+            
             $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
+            $navbits[$i] = mess_nav_range($spid,$length);
+            
         }else {
-            $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$length) . "</a>";
+            
+            $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$spid\" target=\"_self\">". mess_nav_range($spid,$length). "</a>";
         }
     }
 
@@ -1405,23 +1430,22 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     $html = "{$lang['showmessages']}:";
 
     if ($length <= $ppp) {
-        $html .= " <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">{$lang['all']}</a>\n";
+        $html.= " <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">{$lang['all']}</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
 
         if (isset($navbits[$i])) {
 
-            // Only display first, last and those within 3 of the current section
-
             if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
-                $html .= "\n&nbsp;" . $navbits[$i];
+                
+                $html.= "\n&nbsp;". $navbits[$i];
+                
             }else if (abs($c - $i) == 4) {
-                $html .= "\n&nbsp;&hellip;";
+                
+                $html.= "\n&nbsp;&hellip;";
             }
-
         }
-
     }
 
     unset($navbits);

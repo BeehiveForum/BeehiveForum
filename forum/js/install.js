@@ -57,6 +57,8 @@ $(document).ready(function() {
         }
 
         $(this).attr('disabled', true);
+        
+        $('#install_form').submit();
 
         return true;
     });

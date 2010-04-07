@@ -75,17 +75,32 @@ $(beehive).bind('init', function() {
 
         if ($(this).attr('checked')) {
 
-            $('label[name="label_auto_logon"]').removeClass('bhinputcheckboxdisabled');
+            $('label[for="auto_logon"]').removeClass('bhinputcheckboxdisabled');
+            
             $('#auto_logon').attr('checked', $('#auto_logon').attr('defaultChecked'));
-            $('#auto_logon').attr('disabled', false);
+            
+            $('#auto_logon').removeAttr('disabled');
 
         } else {
 
-            $('label[name="label_auto_logon"]').addClass('bhinputcheckboxdisabled');
+            $('label[for="auto_logon"]').addClass('bhinputcheckboxdisabled');
+            
             $('#auto_logon').attr('checked', false);
+            
             $('#auto_logon').attr('disabled', true);
         }
     });
     
-    $('#auto_logon').attr('disabled', !$('#remember_user').attr('checked'));
+    if (!$('#remember_user').attr('checked')) {
+        
+        $('label[for="auto_logon"]').addClass('bhinputcheckboxdisabled');
+        
+        $('#auto_logon').attr('disabled', true);
+        
+    } else {
+        
+        $('label[for="auto_logon"]').removeClass('bhinputcheckboxdisabled');
+        
+        $('#auto_logon').removeAttr('disabled');
+    }
 });

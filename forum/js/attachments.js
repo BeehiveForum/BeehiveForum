@@ -32,6 +32,10 @@ $(beehive).bind('init', function() {
     });
 
     $('.upload_fields').css('display', 'block');
+    
+    $('input#upload').bind('click', function() {
+        $(this).val(beehive.lang.waitdotdot);
+    });
 
     $('input#complete').bind('click', function() {
 

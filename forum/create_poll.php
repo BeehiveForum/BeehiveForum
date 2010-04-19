@@ -399,7 +399,7 @@ if (isset($_POST['cancel'])) {
         $error_msg_array[] = $lang['pleaseselectfolder'];
         $valid = false;
     }
-
+    
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
 
         $t_answers_array = array_filter(stripslashes_array($_POST['answers']), "strlen");
@@ -1289,7 +1289,7 @@ if ($allow_html == true) {
 
     if (($tools->get_tinymce())) {
 
-        echo form_input_hidden("t_post_html", "enabled");
+        echo form_input_hidden("t_message_html", "enabled");
 
     }else {
 
@@ -1297,14 +1297,14 @@ if ($allow_html == true) {
 
         $tph_radio = $post->getHTML();
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
+        echo form_radio("t_message_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_message_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
+        echo form_radio("t_message_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
     }
 
 }else {
 
-    echo form_input_hidden("t_post_html", "disabled");
+    echo form_input_hidden("t_message_html", "disabled");
 }
 
 echo "                        </td>\n";
@@ -1342,10 +1342,12 @@ if ($allow_sig == true) {
 
     echo "                            </tr>\n";
     echo "                          </table>\n";
+    
     echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 }
 
-
+echo "                        </td>\n";
+echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";

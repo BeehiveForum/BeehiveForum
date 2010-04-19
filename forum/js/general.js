@@ -139,7 +139,7 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('button#close_popup').bind('click', function() {
+    $('input#close_popup').bind('click', function() {
         window.close();
     });
 

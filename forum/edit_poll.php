@@ -930,9 +930,11 @@ for ($i = 0; $i < $answer_count; $i++) {
 
             $parsed_text = new MessageTextParse($poll_results['OPTION_NAME'][$i], false);
 
-            $t_post_html = $parsed_text->getMessageHTML();
+            $t_answer_html = $parsed_text->getMessageHTML();
 
-            $t_answer = new MessageText($allow_html ? $t_post_html : false, $parsed_text->getMessage(), false, false);
+            $t_answer = new MessageText($allow_html ? $t_answer_html : false, $parsed_text->getMessage(), true, false);
+            
+            $t_post_html = $t_answer_html ? true : $t_post_html;
 
             echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer->getTidyContent(), 40, 255), "</td>\n";
 

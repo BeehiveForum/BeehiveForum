@@ -580,7 +580,7 @@ function html_include_css($script_filepath, $id, $media = 'screen')
         }
     }    
 
-    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s/%s%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $forum_path, $script_filepath, $seperator, @filemtime($script), $media);
+    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s/%s%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $forum_path, $script_filepath, $seperator, @filemtime($script_filepath), $media);
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags

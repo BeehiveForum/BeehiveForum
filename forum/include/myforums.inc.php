@@ -49,8 +49,6 @@ function get_forum_list($offset)
 
     $offset = abs($offset);
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     // Array to hold our forums in.
 
     $forums_array = array();
@@ -75,8 +73,6 @@ function get_forum_list($offset)
     if (db_num_rows($result_forums) > 0) {
 
         while (($forum_data = db_fetch_array($result_forums))) {
-
-            $forum_fid = $forum_data['FID'];
 
             // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
 

@@ -105,7 +105,7 @@ function db_enable_no_auto_value($connection_id)
     
     if (db_num_rows($result) < 1) return false;
     
-    list($variable, $value) = db_fetch_array($result, DB_RESULT_NUM);
+    list(, $value) = db_fetch_array($result, DB_RESULT_NUM);
     
     return ($value === 'NO_AUTO_VALUE_ON_ZERO');
 }

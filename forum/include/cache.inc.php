@@ -72,8 +72,6 @@ function cache_disable()
     header("Cache-Control: proxy-revalidate, post-check=0, pre-check=0", false);
     header("Cache-Control: max-age=0, s-maxage=0", false);
     header("Pragma: no-cache", true);
-    
-    return true;
 }
 
 /**

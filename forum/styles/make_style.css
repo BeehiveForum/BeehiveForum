@@ -3,10 +3,7 @@ body {
     color: #$text_colour[body];
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 10pt;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 05px;
-    margin-top: 10px;
+    margin: 10px 5px;
 }
 
 a {
@@ -925,15 +922,6 @@ p, h1, h2 {
     width: 190px;
 }
 
-.recipient_list {
-    background-color: #FFFFFF;
-    border: 0px;
-    color: #000000;
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
-    width: 169px;
-}
-
 .register_dropdown {
     width: 228px;
 }
@@ -1522,4 +1510,10 @@ p, h1, h2 {
     border-style: dashed;
     border-top-width: 0px;
     text-decoration: none;
+}
+
+body.top_banner {
+    background-color: #999999;
+    margin: 0px;
+    padding: 0px;
 }

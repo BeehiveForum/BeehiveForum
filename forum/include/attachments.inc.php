@@ -54,6 +54,7 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 /**
 * attachments_get_upload_tmp_dir

@@ -2,10 +2,13 @@ body {
     background-color: #FFCCCC;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 10pt;
-    margin-bottom: 10px;
-    margin-left: 05px;
-    margin-right: 05px;
-    margin-top: 10px;
+    margin: 10px 5px;
+}
+
+body.top_banner {
+    background-color: #999999;
+    margin: 0px;
+    padding: 0px;
 }
 
 a {
@@ -912,15 +915,6 @@ p, h1, h2 {
 
 .recipient_dropdown {
     width: 190px;
-}
-
-.recipient_list {
-    background-color: #FFFFFF;
-    border: 0px;
-    color: #000000;
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
-    width: 169px;
 }
 
 .register_dropdown {

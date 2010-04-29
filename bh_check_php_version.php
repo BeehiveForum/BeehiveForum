@@ -33,7 +33,7 @@ require_once 'PHP/CompatInfo.php';
 $options = array('debug'            => false,
                  'recurse_dir'      => true,
                  'ignore_files'     => array('forum\include\compat.inc.php'),
-                 'ignore_dirs'      => array('forum\include\db', 'forum\include\languages', 'forum\geshi', 'forum\tiny_mce'),
+                 'ignore_dirs'      => array('forum\include\db', 'forum\include\languages', 'forum\include\swift', 'forum\geshi', 'forum\tiny_mce'),
                  'ignore_functions' => array('mb_send_mail', 'mb_strlen', 'mb_strpos', 'mb_strrpos', 
                                              'mb_stripos', 'mb_substr', 'mb_strtolower', 'mb_strtoupper', 
                                              'mb_substr_count', 'mb_split', 'sys_get_temp_dir', 
@@ -41,7 +41,7 @@ $options = array('debug'            => false,
 
 // Tell the user what we're doing.
 
-echo "Please wait checking Minimum PHP Version...\n\n";
+echo "Please wait checking Minimum PHP Version...<br />\n<br />\n";
 
 // Check the version
 
@@ -61,6 +61,25 @@ if (version_compare($res['version'], "5.1.0", "<")) {
 
 // Output the results.
 
-echo sprintf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $res['version'], implode(", ", $res['extensions']));
+printf("PHP Minimum Version = %s<br />\nExtensions required : %s<br />\n\n", $res['version'], implode(", ", $res['extensions']));
+
+// Iterate over the result array. If the array value contains a subkey named 
+// version it is a file that we can display information about.
+
+foreach ($res as $script_filename => $version_info) {
+    if (isset($version_info['version'])) {
+        $versions_array[$version_info['version']][] = $script_filename;
+    }
+}
+
+ksort($versions_array);
+
+// Display the filenames grouped by version.
+
+foreach ($versions_array as $version => $script_filenames) {
+    if (sizeof($script_filename) > 0) {
+        printf("%s<br />%s<br />%s<br /><br />\n", $version, str_repeat('=', strlen($version)), implode("<br />\n", $script_filenames));
+    }
+}
 
 ?>

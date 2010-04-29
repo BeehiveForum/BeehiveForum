@@ -75,6 +75,8 @@ function get_files(&$files_array, $path, $ignore_files_array = array())
 
 @set_time_limit(0);
 
+header('Content-Type: text/plain');
+
 $unused_constants = get_defined_constants(true);
 
 $unused_constants = isset($unused_constants['user']) ? $unused_constants['user'] : array();
@@ -87,13 +89,13 @@ if (get_files($files_array, "forum")) {
 
         if (get_files($files_array, "forum/include/db")) {
 
-            echo "Please wait, checking files...\n\n";
+            echo "Please wait, checking files...<br />\n<br />\n";
 
             foreach ($files_array as $filename) {
 
                 if (($file_contents = file_get_contents($filename))) {
 
-                    echo "CHECKING: $filename\n";
+                    echo "CHECKING: $filename<br />\n";
 
                     foreach ($unused_langs as $lang_key => $lang_value) {
 
@@ -114,36 +116,36 @@ if (get_files($files_array, "forum")) {
 
                 }else {
 
-                    echo "FAILED TO LOAD: $filename\n";
+                    echo "FAILED TO LOAD: $filename<br />\n";
                 }
             }
 
             if (sizeof($unused_langs) > 0) {
 
-                echo "\nUnused language strings:\n\n";
+                echo "<br />\nUnused language strings:<br />\n<br />\n";
 
                 foreach ($unused_langs as $lang_key => $lang_value) {
 
-                    echo "\$lang['$lang_key'] = \"$lang_value\";\n";
+                    echo "\$lang['$lang_key'] = \"$lang_value\";<br />\n";
                 }
 
             }else {
 
-                echo "\nNo unused language strings detected!\n";
+                echo "<br />\nNo unused language strings detected!<br />\n";
             }
 
             if (sizeof($unused_constants) > 0) {
 
-                echo "\nUnused Constants:\n\n";
+                echo "<br />\nUnused Constants:<br />\n<br />\n";
 
                 foreach ($unused_constants as $const_key => $const_value) {
 
-                    echo "define(\"$const_key\", $const_value);\n";
+                    echo "define(\"$const_key\", $const_value);<br />\n";
                 }
 
             }else {
 
-                echo "\nNo unused constants detected!\n";
+                echo "<br />\nNo unused constants detected!<br />\n";
             }
         }
     }

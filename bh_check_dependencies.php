@@ -48,7 +48,7 @@ $ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_INSTALL_NOWARN', 'E_
 
 $source_files_dir_array = array('forum', 'forum\include');
 
-echo "Getting list of functions...\n";
+echo "Getting list of functions...<br />\n";
 
 foreach ($source_files_dir_array as $include_file_dir) {
 
@@ -134,7 +134,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
     }
 }
 
-echo "Processing files...\n\n";
+echo "Processing files...<br />\n<br />\n";
 
 foreach ($source_files_array as $source_file) {
 
@@ -142,7 +142,7 @@ foreach ($source_files_array as $source_file) {
 
     $source_file_contents = file_get_contents($source_file);
 
-    echo "$source_file(1): \n", str_repeat("-", strlen($source_file) + 4), "\n";
+    echo "$source_file(1): <br />\n", str_repeat("-", strlen($source_file) + 4), "<br />\n";
 
     foreach ($include_files_functions_array as $include_file => $function_names_array) {
 
@@ -189,8 +189,8 @@ foreach ($source_files_array as $source_file) {
         }
     }
 
-    echo implode(";\n", $include_files_required_array);
-    echo (sizeof($include_files_required_array) > 0) ? ";\n\n" : "\n";
+    echo implode(";<br />\n", $include_files_required_array);
+    echo (sizeof($include_files_required_array) > 0) ? ";<br />\n<br />\n" : "<br />\n";
 }
 
 ?>

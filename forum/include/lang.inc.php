@@ -53,7 +53,7 @@ function load_language_file()
         // using it in our forum. If we can't find it we'll bail out here.
 
         if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
-            trigger_error("<p>Could not load English language file (en.inc.php)</p>", E_USER_ERROR);
+            throw new Exception("<p>Could not load English language file (en.inc.php)</p>");
         }
 
         include(BH_INCLUDE_PATH. "languages/en.inc.php");

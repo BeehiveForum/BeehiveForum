@@ -86,7 +86,7 @@ if (strlen(trim($db_extension)) > 0) {
 }
 
 if (!function_exists('db_connect')) {
-    trigger_error("Could not load mysql or mysqli extension.", E_USER_ERROR);
+    throw new Exception("Could not load mysql or mysqli extension.");
 }
 
 ?>

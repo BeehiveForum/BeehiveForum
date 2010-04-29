@@ -42,7 +42,7 @@ $source_files_dir_array = array('forum\include');
 
 $ignore_files_array = array('dictionary.inc.ph', 'text_captcha.inc.php');
 
-echo "Getting list of functions...\n";
+echo "Getting list of functions...<br />\n";
 
 foreach ($source_files_dir_array as $include_file_dir) {
 
@@ -64,7 +64,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
                     
                         if (substr($function_match[1], 0, strlen($function_prefix)) != $function_prefix) {
                         
-                            echo $file, ": ", $function_match[0], "\n";
+                            echo $file, ": ", $function_match[0], "<br />\n";
                         }
                     }
                 }            

@@ -97,7 +97,7 @@ if (($lang = load_language_file('en.inc.php'))) {
 
                     if (!isset($lang[$lang_key])) {
 
-                        echo "\$lang['$lang_key'] = \"\";\n";
+                        echo "\$lang['$lang_key'] = \"\";<br />\n";
                     }
                 }
             }

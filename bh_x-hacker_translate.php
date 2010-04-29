@@ -210,7 +210,7 @@ if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
 }else {
 
-    echo "Could not open en.inc.php for reading.\n";
+    echo "Could not open en.inc.php for reading.<br />\n";
 }
 
 ?>

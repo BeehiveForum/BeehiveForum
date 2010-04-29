@@ -57,7 +57,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 $auth_ucookie = "X7C2U";
 
-// X7Chat Username Cookie
+// X7Chat Password Cookie
 
 $auth_pcookie = "X7C2P";
 

@@ -66,7 +66,7 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 
                 if (!is_array($slave_lang) || !isset($slave_lang[$master_lang_key])) {
 
-                    $master_lang_value = addcslashes($master_lang_value, "\n\t\"\$");
+                    $master_lang_value = addcslashes($master_lang_value, "<br />\n\t\"\$");
 
                     if (preg_match('/\+|\-/u', $compare_method) > 0) {
 
@@ -82,7 +82,7 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 
                 }else if (($slave_lang[$master_lang_key] == $master_lang_value) && $show_ut == true) {
 
-                    $master_lang_value = addcslashes($master_lang_value, "\n\t\"\$");
+                    $master_lang_value = addcslashes($master_lang_value, "<br />\n\t\"\$");
 
                     if ((preg_match("/^_/u", $master_lang_key) < 1) && (preg_match("/=/u", $compare_method) > 0)) {
 
@@ -122,7 +122,7 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
         $equal_value_results_array = array();
         $removed_key_results_array = array();
 
-        echo $lang_name, "\n", str_repeat("=", strlen($lang_name)), "\n\n";
+        echo $lang_name, "<br />\n", str_repeat("=", strlen($lang_name)), "<br />\n<br />\n";
 
         if (compare_languages($master_lang, $slave_lang['lang'], $slave_lang['showut'], '+', '$lang', $missing_key_results_array)) {
 
@@ -130,13 +130,13 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
 
                 foreach ($missing_key_results_array as $result_str) {
 
-                    echo "+$result_str\n";
+                    echo "+$result_str<br />\n";
                 }
             }
 
         }else {
 
-            echo "Failed to do missing key comparison for language $lang_name\n\n";
+            echo "Failed to do missing key comparison for language $lang_name<br />\n<br />\n";
         }
 
         if (compare_languages($master_lang, $slave_lang['lang'], $slave_lang['showut'], '=', '$lang', $equal_value_results_array)) {
@@ -145,13 +145,13 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
 
                 foreach ($equal_value_results_array as $result_str) {
 
-                    echo "=$result_str\n";
+                    echo "=$result_str<br />\n";
                 }
             }
 
         }else {
 
-            echo "Failed to do value comparison for language $lang_name\n\n";
+            echo "Failed to do value comparison for language $lang_name<br />\n<br />\n";
         }
 
         if (compare_languages($slave_lang['lang'], $master_lang, false, '-', '$lang', $removed_key_results_array)) {
@@ -160,22 +160,22 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
 
                 foreach ($removed_key_results_array as $result_str) {
 
-                    echo "-$result_str\n";
+                    echo "-$result_str<br />\n";
                 }
             }
 
         }else {
 
-            echo "Failed to do removed key comparison for language $lang_name\n\n";
+            echo "Failed to do removed key comparison for language $lang_name<br />\n<br />\n";
         }
 
         if (sizeof($missing_key_results_array) < 1 && sizeof($equal_value_results_array) < 1 && sizeof($removed_key_results_array) < 1) {
 
-            echo "No Errors Found!\n\n";
+            echo "No Errors Found!<br />\n<br />\n";
 
         }else {
 
-            echo "\n\n";
+            echo "<br />\n<br />\n";
         }
     }
 }

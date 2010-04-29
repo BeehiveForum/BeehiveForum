@@ -31,7 +31,7 @@ function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_
     $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
 }
 
-function db_connect($trigger_error = true)
+function db_connect($exception = true)
 {
     static $connection_id = false;
 
@@ -50,14 +50,16 @@ function db_connect($trigger_error = true)
                 db_enable_compat_mode($connection_id);
                 
                 if (!db_enable_no_auto_value($connection_id)) {
-                    trigger_error("Could not set MySQL Session Variable SQL_MODE to 'NO_AUTO_VALUE_ON_ZERO'", E_USER_ERROR);
+                    throw new Exception("Could not set MySQL Session Variable SQL_MODE to 'NO_AUTO_VALUE_ON_ZERO'");
                 }
 
                 return $connection_id;
             }
         }
 
-        if ($trigger_error === true) trigger_error(mysqli_connect_error(), E_USER_ERROR);
+        if ($exception === true) {
+            throw new Exception(mysqli_connect_error());
+        }
 
         return false;
     }
@@ -110,20 +112,20 @@ function db_enable_no_auto_value($connection_id)
     return ($value === 'NO_AUTO_VALUE_ON_ZERO');
 }
 
-function db_query($sql, $connection_id, $trigger_error = true)
+function db_query($sql, $connection_id, $exception = true)
 {
     if (($result = @mysqli_query($connection_id, $sql))) {
         return $result;
     }
 
-    if ($trigger_error === true) db_trigger_error($sql, $connection_id);
+    if ($exception === true) db_throw_exception($sql, $connection_id);
 
     return false;
 }
 
-function db_unbuffered_query($sql, $connection_id, $trigger_error = true)
+function db_unbuffered_query($sql, $connection_id, $exception = true)
 {
-    return db_query($sql, $connection_id, $trigger_error);
+    return db_query($sql, $connection_id, $exception);
 }
 
 function db_data_seek($result, $offset)
@@ -171,7 +173,7 @@ function db_insert_id($connection_id)
     return false;
 }
 
-function db_trigger_error($sql, $connection_id)
+function db_throw_exception($sql, $connection_id)
 {
     if (error_reporting()) {
 
@@ -180,7 +182,7 @@ function db_trigger_error($sql, $connection_id)
             $errno  = db_errno($connection_id);
             $errstr = db_error($connection_id);
 
-            bh_error_handler($errno, "<p>$errstr</p>\n<p>$sql</p>");
+            throw new Exception("<p>$errstr</p>\n<p>$sql</p>", $errono);
         }
     }
 }

@@ -608,7 +608,7 @@ function forum_save_settings($forum_settings_array)
 
         }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-            trigger_error("Unknown forum setting name '$setting_name'", E_USER_ERROR);
+            throw new Exception("Unknown forum setting name '$setting_name'");
         }
     }
 
@@ -636,7 +636,7 @@ function forum_save_default_settings($forum_settings_array)
 
         }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-            trigger_error("Unknown default forum setting name '$setting_name'", E_USER_ERROR);
+            throw new Exception("Unknown default forum setting name '$setting_name'");
         }
     }
 
@@ -1032,7 +1032,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1052,7 +1052,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1075,7 +1075,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1094,7 +1094,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1118,7 +1118,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1138,7 +1138,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1157,7 +1157,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1176,7 +1176,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1200,7 +1200,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1219,7 +1219,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1254,7 +1254,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1273,7 +1273,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1294,7 +1294,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1309,7 +1309,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1324,7 +1324,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1339,7 +1339,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1354,7 +1354,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1369,7 +1369,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1387,7 +1387,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1402,7 +1402,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1425,7 +1425,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1442,7 +1442,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1462,7 +1462,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1495,7 +1495,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1512,7 +1512,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1531,7 +1531,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1549,7 +1549,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1568,7 +1568,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1589,7 +1589,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1635,7 +1635,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1654,7 +1654,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1672,7 +1672,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1694,7 +1694,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1720,7 +1720,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1742,7 +1742,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1758,7 +1758,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete_tables($webtag, $database_name);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1778,7 +1778,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1796,7 +1796,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1812,7 +1812,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1826,7 +1826,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1840,7 +1840,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1853,7 +1853,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1871,7 +1871,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1884,7 +1884,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1903,7 +1903,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1916,7 +1916,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1932,7 +1932,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1948,7 +1948,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;
@@ -1993,7 +1993,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 forum_delete($forum_fid);
 
                 if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                    db_trigger_error($sql, $db_forum_create);
+                    db_throw_exception($sql, $db_forum_create);
                 }
 
                 return false;
@@ -2010,7 +2010,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             forum_delete($forum_fid);
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
+                db_throw_exception($sql, $db_forum_create);
             }
 
             return false;

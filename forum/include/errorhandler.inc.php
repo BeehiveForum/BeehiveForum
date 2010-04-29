@@ -495,7 +495,6 @@ function bh_exception_handler($exception)
 }
 
 set_error_handler('bh_error_handler');
-
 set_exception_handler('bh_exception_handler');
 
 ?>

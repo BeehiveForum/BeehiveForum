@@ -33,7 +33,7 @@ function word_spell_check($matches)
 
     $string_check = trim($matches[1]);
 
-    echo "Checking: $string_check...\n";
+    echo "Checking: $string_check...<br />\n";
 
     // Create new document and paste in string.
 
@@ -90,16 +90,16 @@ if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
         fclose($fp);
 
-        echo "Spell checking has completed successfully.\n";
+        echo "Spell checking has completed successfully.<br />\n";
 
     }else {
 
-        echo "Could not open en.inc.php for writing.\n";
+        echo "Could not open en.inc.php for writing.<br />\n";
     }
 
 }else {
 
-    echo "Could not open en.inc.php for reading.\n";
+    echo "Could not open en.inc.php for reading.<br />\n";
 }
 
 ?>

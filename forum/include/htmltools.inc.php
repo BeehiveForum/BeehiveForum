@@ -92,7 +92,7 @@ class TextAreaHTML
 
         $lang = load_language_file();
 
-        $this->toolbar_count++;
+        $this->toolbar_count = $this->toolbar_count + 1;
 
         $dictionary = new dictionary();
 
@@ -178,7 +178,7 @@ class TextAreaHTML
 
         $lang = load_language_file();
 
-        $this->toolbar_count++;
+        $this->toolbar_count = $this->toolbar_count + 1;
 
         $str = "<div id=\"bh_tb{$this->toolbar_count}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_reduced.png');\">\n";
 
@@ -209,7 +209,7 @@ class TextAreaHTML
 
             if ($this->toolbar_count < $this->allowed_toolbars) {
 
-                $this->toolbar_count++;
+                $this->toolbar_count = $this->toolbar_count + 1;
 
                 if ($rows < 7) $rows = 7;
 

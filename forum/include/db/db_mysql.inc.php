@@ -193,7 +193,7 @@ function db_throw_exception($sql, $connection_id)
             $errno  = db_errno($connection_id);
             $errstr = db_error($connection_id);
             
-            throw new Exception("<p>$errstr</p>\n<p>$sql</p>", $errono);
+            throw new Exception("<p>$errstr</p>\n<p>$sql</p>", $errno);
         }
     }
 }

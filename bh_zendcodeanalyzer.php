@@ -87,7 +87,7 @@ $cwd = getcwd();
 
 foreach ($file_list as $php_file) {
     
-    $command = sprintf('ZendCodeAnalyzer.exe %s', escapeshellarg($php_file));
+    $command = sprintf('%1$s\ZendCodeAnalyzer.exe "%1$s\%2$s"', $cwd, $php_file);
     
     $process = proc_open($command, $descriptor_spec, $pipes);
 
@@ -96,7 +96,7 @@ foreach ($file_list as $php_file) {
         stream_set_blocking($pipes[2], 0);
 
         $results_array = explode("<br />\n", trim(stream_get_contents($pipes[2])));
-
+        
         foreach ($results_array as $result) {
         
             if (preg_match('/([^\(]+)\(line ([^)]+)\): (.+)/', trim($result), $matches) > 0) {
@@ -107,6 +107,10 @@ foreach ($file_list as $php_file) {
         fclose($pipes[1]);
 
         proc_close($process);
+    
+    } else {
+        
+        echo "Failed to execute ZendCodeAnalyzer.exe. Are you sure the file exists?";
     }
 }
 

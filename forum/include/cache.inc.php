@@ -72,6 +72,8 @@ function cache_disable()
     header("Cache-Control: proxy-revalidate, post-check=0, pre-check=0", false);
     header("Cache-Control: max-age=0, s-maxage=0", false);
     header("Pragma: no-cache", true);
+    
+    return true;
 }
 
 /**
@@ -84,7 +86,7 @@ function cache_disable()
 */
 function cache_disable_aol()
 {
-    if (!browser_check(BROWSER_AOL)) return;
+    if (!browser_check(BROWSER_AOL)) return false;
     
     return cache_disable();
 }
@@ -108,6 +110,8 @@ function cache_disable_proxy()
             return cache_disable();
         }
     }
+    
+    return false;
 }
 
 /**

@@ -61,11 +61,7 @@ function get_forum_data()
 
     if (!$db_get_forum_data = db_connect()) return false;
 
-    if (isset($_GET['webtag']) && strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
-        $webtag = trim(stripslashes_array($_GET['webtag']));
-    }elseif (isset($_POST['webtag']) && strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
-        $webtag = trim(stripslashes_array($_POST['webtag']));
-    }
+    if (!($webtag = get_webtag())) return false;
 
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
@@ -119,9 +115,9 @@ function get_forum_data()
 
 function get_webtag()
 {
-    if (isset($_GET['webtag']) && strlen(trim(stripslashes_array($_GET['webtag']))) > 0) {
+    if (isset($_GET['webtag']) && preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", trim(stripslashes_array($_GET['webtag'])))) {
         return trim(stripslashes_array($_GET['webtag']));
-    }elseif (isset($_POST['webtag']) && strlen(trim(stripslashes_array($_POST['webtag']))) > 0) {
+    } else if (isset($_POST['webtag']) && preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", trim(stripslashes_array($_POST['webtag'])))) {
         return trim(stripslashes_array($_POST['webtag']));
     }
 
@@ -159,11 +155,11 @@ function forum_check_access_level()
 {
     static $forum_data = false;
 
-    if (!$db_forum_check_access_level = db_connect()) return false;
+    if (!($db_forum_check_access_level = db_connect())) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return true;
+    if (!($table_data = get_table_prefix())) return true;
 
     $forum_fid = $table_data['FID'];
 

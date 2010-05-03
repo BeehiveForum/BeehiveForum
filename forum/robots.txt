@@ -71,13 +71,15 @@ Disallow: /forum/edit_signature.php
 Disallow: /forum/edit_subscriptions.php
 Disallow: /forum/edit_wordfilter.php
 Disallow: /forum/email.php
+Disallow: /forum/folder_options.php
+Disallow: /forum/folder_subscriptions.php
 Disallow: /forum/font_size.php
 Disallow: /forum/forgot_pw.php
 Disallow: /forum/forums.php
 Disallow: /forum/forum_options.php
 Disallow: /forum/forum_password.php
 Disallow: /forum/get_attachment.php
-Disallow: /forum/install.php
+Disallow: /forum/json.php
 Disallow: /forum/ldelete.php
 Disallow: /forum/ledit.php
 Disallow: /forum/lforums.php
@@ -89,6 +91,9 @@ Disallow: /forum/llogon.php
 Disallow: /forum/llogout.php
 Disallow: /forum/logon.php
 Disallow: /forum/logout.php
+Disallow: /forum/lpm.php
+Disallow: /forum/lpm_edit.php
+Disallow: /forum/lpm_write.php
 Disallow: /forum/lpost.php
 Disallow: /forum/messages.php
 Disallow: /forum/mods_list.php
@@ -103,7 +108,6 @@ Disallow: /forum/poll_results.php
 Disallow: /forum/post.php
 Disallow: /forum/register.php
 Disallow: /forum/search.php
-Disallow: /forum/search_index.php
 Disallow: /forum/search_popup.php
 Disallow: /forum/start.php
 Disallow: /forum/start_left.php

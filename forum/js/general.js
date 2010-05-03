@@ -21,7 +21,7 @@ USA
 
 /* $Id$ */
 
-var beehive = {
+var beehive = $.extend({}, beehive, {
 
     window_options : [ 'toolbox=0',
                        'location=0',
@@ -77,7 +77,7 @@ var beehive = {
         var $head = $(this);
 
         $.ajax({
-            'url' : 'font_size.php',
+            'url' : beehive.forum_path + '/font_size.php',
             'data' : { 'webtag' : beehive.webtag },
             'cache' : false,
             'success' : function(data) {
@@ -104,7 +104,7 @@ var beehive = {
         
         return $('body').attr('clientWidth');
     }
-}
+});
 
 $.ajaxSetup({
     cache: true

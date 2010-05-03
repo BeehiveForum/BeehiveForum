@@ -54,7 +54,7 @@ $(beehive).bind('init', function() {
         
         if ($container.hasClass('search_logon')) {
         
-            $search_input.autocomplete('json.php', {
+            $search_input.autocomplete(beehive.forum_path + 'json.php', {
                 
                 selectFirst : false,
                 

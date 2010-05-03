@@ -199,25 +199,23 @@ function rss_fetch_feed()
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
-    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, RSS_FEEDS.UID, RSS_FEEDS.FID, ";
-    $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.LAST_RUN ";
-    $sql.= "FROM `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
-    $sql.= "WHERE CAST('$current_datetime' AS DATETIME) >= ";
-    $sql.= "DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL RSS_FEEDS.FREQUENCY MINUTE) ";
-    $sql.= "AND RSS_FEEDS.FREQUENCY > 0 ";
-    $sql.= "AND USER.UID IS NOT NULL LIMIT 0, 1";
-
+    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, RSS_FEEDS.UID, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
+    $sql.= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.LAST_RUN, RSS_FEEDS.MAX_ITEM_COUNT, ";
+    $sql.= "COALESCE(DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL RSS_FEEDS.FREQUENCY MINUTE), 0) AS NEXT_RUN ";
+    $sql.= "FROM `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql.= "WHERE RSS_FEEDS.FREQUENCY > 0 AND USER.UID IS NOT NULL ";
+    $sql.= "HAVING CAST('2010-05-02 15:23:00' AS DATETIME) > NEXT_RUN ";
+    $sql.= "LIMIT 0, 1";
+    
     if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
 
     if (db_num_rows($result) > 0) {
 
         $rss_feed = db_fetch_array($result, DB_RESULT_ASSOC);
-
+        
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` ";
         $sql.= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE RSSID = {$rss_feed['RSSID']} ";
-        $sql.= "AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
+        $sql.= "WHERE RSSID = {$rss_feed['RSSID']}";
 
         if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
 
@@ -274,12 +272,16 @@ function rss_check_feeds()
     $lang = load_language_file();
 
     $item_count = 0;
-
+    
     if (($rss_feed = rss_fetch_feed())) {
-
+        
         if (($rss_data = rss_read_database($rss_feed['URL']))) {
-
-            foreach ($rss_data as $rss_item) {
+            
+            $max_item_count = min(10, $rss_feed['MAX_ITEM_COUNT']);
+            
+            foreach ($rss_data as $item_index => $rss_item) {
+                
+                if (($item_index + 1) > $max_item_count) return;
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
@@ -330,9 +332,6 @@ function rss_check_feeds()
 
                     rss_create_history($rss_feed['RSSID'], $rss_item->link);
                 }
-
-                $item_count++;
-                if ($item_count == 10) break;
             }
         }
     }
@@ -354,9 +353,9 @@ function rss_get_feeds($offset)
 
     $rss_feed_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS RSS_FEEDS.RSSID, RSS_FEEDS.NAME, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, ";
-    $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
+    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
+    $sql.= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.MAX_ITEM_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
@@ -400,13 +399,14 @@ function rss_get_feeds($offset)
                  'rss_feed_count' => $rss_feed_count);
 }
 
-function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
+function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency, $max_item_count)
 {
     if (!$db_rss_add_feed = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($fid)) return false;
     if (!is_numeric($frequency)) return false;
+    if (!is_numeric($max_item_count)) return false;
 
     $name = db_escape_string($name);
     $url = db_escape_string($url);
@@ -416,15 +416,15 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN) ";
-    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME))";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN, MAX_ITEM_COUNT) ";
+    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME), $max_item_count)";
 
     if (!db_query($sql, $db_rss_add_feed)) return false;
 
     return true;
 }
 
-function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
+function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency, $max_item_count)
 {
     if (!$db_rss_feed_update = db_connect()) return false;
 
@@ -432,6 +432,7 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($fid)) return false;
     if (!is_numeric($frequency)) return false;
+    if (!is_numeric($max_item_count)) return false;
 
     $name = db_escape_string($name);
     $url = db_escape_string($url);
@@ -439,8 +440,9 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` SET NAME = '$name', UID = '$uid', ";
-    $sql.= "FID = '$fid', URL = '$url', PREFIX = '$prefix', FREQUENCY = '$frequency' ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` SET NAME = '$name', ";
+    $sql.= "UID = '$uid', FID = '$fid', URL = '$url', PREFIX = '$prefix', ";
+    $sql.= "FREQUENCY = '$frequency', MAX_ITEM_COUNT = '$max_item_count' ";
     $sql.= "WHERE RSSID = '$rssid'";
 
     if (!db_query($sql, $db_rss_feed_update)) return false;
@@ -460,9 +462,9 @@ function rss_get_feed($feed_id)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, ";
-    $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
+    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
+    $sql.= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.MAX_ITEM_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";

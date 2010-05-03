@@ -24,7 +24,7 @@ USA
 $(beehive).bind('init', function() {
 
     $.ajax({
-        'url' : 'user_stats.php',
+        'url' : beehive.forum_path + '/user_stats.php',
         'data' : { 'webtag' : beehive.webtag, 'get_stats' : true },
         'cache' : false,
         'success' : function(data) {

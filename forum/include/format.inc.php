@@ -869,4 +869,18 @@ function implode_assoc($array, $separator = ': ', $glue = ', ')
     return implode($glue, $result_array);
 }
 
+function path_info_query($path)
+{
+    if (!($path_parts = @pathinfo($path))) return false;
+    
+    if (($url_parts = @parse_url($path)) && isset($url_parts['query'])) {
+        
+        $path_parts['query'] = $url_parts['query'];
+        $path_parts['extension'] = str_replace("?{$path_parts['query']}", '', $path_parts['extension']);
+        $path_parts['basename'] = str_replace("?{$path_parts['query']}", '', $path_parts['basename']);
+    }
+    
+    return $path_parts;
+}
+
 ?>

@@ -320,10 +320,20 @@ if (isset($_POST['delete'])) {
         $valid = false;
         $error_msg_array[] = $lang['mustspecifyrssfeedupdatefrequency'];
     }
+    
+    if (isset($_POST['t_max_item_count_new']) && in_array($_POST['t_max_item_count_new'], range(1, 10))) {
+        
+        $t_max_item_count_new = $_POST['t_max_item_count_new'];
+        
+    } else {
+
+        $valid = false;
+        $error_msg_array[] = $lang['maxitemcountmustbebetween1and10'];
+    }
 
     if ($valid) {
 
-        if (rss_add_feed($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new)) {
+        if (rss_add_feed($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new, $t_max_item_count_new)) {
 
             admin_add_log_entry(ADDED_RSS_FEED, array($t_name_new, $t_url_new));
             header_redirect("admin_rss_feeds.php?webtag=$webtag&added=true");
@@ -431,14 +441,30 @@ if (isset($_POST['delete'])) {
         }else {
             $t_old_frequency = "";
         }
+        
+        if (isset($_POST['t_max_item_count']) && in_array($_POST['t_max_item_count'], range(1, 10))) {
+            
+            $t_max_item_count = $_POST['t_max_item_count'];
+            
+        } else {
 
-        if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency))) {
+            $valid = false;
+            $error_msg_array[] = $lang['maxitemcountmustbebetween1and10'];
+        }
+
+        if (isset($_POST['t_old_max_item_count']) && is_numeric($_POST['t_old_max_item_count'])) {
+            $t_old_max_item_count = $_POST['t_old_max_item_count'];
+        } else {
+            $t_old_max_item_count = 0;
+        }        
+
+        if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency) || ($t_max_item_count != $t_old_max_item_count))) {
 
             if (($t_user_array = user_get_by_logon($t_new_user))) {
 
                 $t_new_uid = $t_user_array['UID'];
-
-                if (rss_feed_update($feed_id, $t_new_name, $t_new_uid, $t_new_fid, $t_new_url, $t_new_prefix, $t_new_frequency)) {
+                
+                if (rss_feed_update($feed_id, $t_new_name, $t_new_uid, $t_new_fid, $t_new_url, $t_new_prefix, $t_new_frequency, $t_max_item_count)) {
 
                     $log_data = array($t_new_name, $t_old_name, $t_new_user, $t_old_user, $t_new_fid, $t_old_fid, $t_new_url, $t_old_url, $t_new_prefix, $t_old_prefix, $t_new_frequency, $t_old_frequency);
 
@@ -544,6 +570,10 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['updatefrequency']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_frequency_new", $update_frequencies_array, (isset($_POST['t_frequency_new']) ? htmlentities_array(stripslashes_array($_POST['t_frequency_new'])) : 1440)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['maxitemcount']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count_new'])) : 10), 6, 4), "&nbsp;<span class=\"smalltext\">{$lang['maxitemcounthint']}</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -674,6 +704,10 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['updatefrequency']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_frequency", $update_frequencies_array, (isset($_POST['t_frequency']) ? htmlentities_array(stripslashes_array($_POST['t_frequency'])) : (isset($rss_feed['FREQUENCY']) ? $rss_feed['FREQUENCY'] : 1440)), "", "post_folder_dropdown"), form_input_hidden("t_frequency_old", (isset($rss_feed['FREQUENCY']) ? htmlentities_array($rss_feed['FREQUENCY']) : "")), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['maxitemcount']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count'])) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span class=\"smalltext\">{$lang['maxitemcounthint']}</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

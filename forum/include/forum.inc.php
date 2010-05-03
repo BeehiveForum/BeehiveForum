@@ -61,31 +61,26 @@ function get_forum_data()
 
     if (!$db_get_forum_data = db_connect()) return false;
 
-    if (!($webtag = get_webtag())) return false;
-
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
-        if (isset($webtag) && is_string($webtag)) {
+        if (($webtag = get_webtag())) {
 
-            if (preg_match("/^[A-Z0-9_]+$/Du", $webtag) > 0) {
+            // Check #1: See if the webtag specified in GET/POST
+            // actually exists.
 
-                // Check #1: See if the webtag specified in GET/POST
-                // actually exists.
+            $webtag = db_escape_string($webtag);
 
-                $webtag = db_escape_string($webtag);
+            $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
+            $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
+            $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-                $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
-                $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
-                $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
+            if (($result = db_query($sql, $db_get_forum_data))) {
 
-                if (($result = db_query($sql, $db_get_forum_data))) {
+                if (db_num_rows($result) > 0) {
 
-                    if (db_num_rows($result) > 0) {
+                    $forum_data = db_fetch_array($result);
 
-                        $forum_data = db_fetch_array($result);
-
-                        if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                    }
+                    if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
                 }
             }
 
@@ -138,7 +133,7 @@ function get_table_prefix()
 function forum_check_webtag_available(&$webtag = false)
 {
     $forum_data = get_forum_data();
-
+    
     if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
 
         if (isset($forum_data['DEFAULT_FORUM']) && $webtag === false) {
@@ -681,7 +676,7 @@ function forum_check_global_setting_name($setting_name)
                                          'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled',
                                          'mail_function', 'sendmail_path', 'smtp_server', 'smtp_port', 'smtp_username',
-                                         'smtp_password');
+                                         'smtp_password', 'use_minified_scripts');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }

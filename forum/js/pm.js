@@ -45,7 +45,7 @@ $(beehive).bind('init', function() {
         return false;
     });
     
-    $.getJSON('pm.php', { 'webtag' : beehive.webtag, 'check_messages' : 'true' }, function(data) {
+    $.getJSON(beehive.forum_path + '/pm.php', { 'webtag' : beehive.webtag, 'check_messages' : 'true' }, function(data) {
 
         if (data.text) {
             $('#pm_message_count').html(data.text);

@@ -29,7 +29,11 @@ date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
 
-define("BH_INCLUDE_PATH", "include/");
+define("BH_INCLUDE_PATH", "../include/");
+
+// Constant to define where the main forum files are
+
+define("BH_FORUM_PATH", "../");
 
 // Server checking functions
 
@@ -105,12 +109,11 @@ if (!bh_session_user_approved()) {
     exit;
 }
 
-// Check we have a webtag
+// Check we have a valid webtag
 
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+forum_check_webtag_available($webtag);
+
+// Page output starts here
 
 html_draw_top('class=top_banner');
 

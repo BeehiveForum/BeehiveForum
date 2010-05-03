@@ -541,48 +541,38 @@ function html_include_javascript($script_filepath)
 {
     $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
     
-    $path_parts = pathinfo($script_filepath);
+    $path_parts = path_info_query($script_filepath);
     
-    $seperator = strstr($script_filepath, '?') ? '&amp;' : '?';
-
-    if ((preg_match('/\.min\.js$/', $script_filepath) < 1) && ($path_parts = pathinfo($script_filepath))) {
-
-        if (array_keys_exist($path_parts, 'filename', 'extension', 'dirname')) {
-
-            $script_min_filepath = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
-
-            if (file_exists("$forum_path/$script_min_filepath")) {
-
-                $script_filepath = $script_min_filepath;
-            }
-        }
+    if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return false;
+    
+    $seperator = isset($path_parts['query']) ? '&amp;' : '?';
+    
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
+    
+    if (forum_get_setting('use_minified_scripts', false, false)) {
+        $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
-
-    printf("<script type=\"text/javascript\" src=\"%s/%s%s%s\"></script>\n", $forum_path, $script_filepath, $seperator, @filemtime($script_filepath));
+    
+    $script_filepath = "$forum_path/{$path_parts['dirname']}/{$path_parts['basename']}";
+    
+    printf("<script type=\"text/javascript\" src=\"%s%s\"></script>\n", $script_filepath, $query_string);
 }
 
 function html_include_css($script_filepath, $id, $media = 'screen')
 {
     $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
-
-    $path_parts = pathinfo($script_filepath);
     
-    $seperator = strstr($script_filepath, '?') ? '&' : '?';
+    $path_parts = path_info_query($script_filepath);
     
-    if ((preg_match('/\.min\.js$/', $script_filepath) < 1) && ($path_parts = pathinfo($script_filepath))) {
-
-        if (array_keys_exist($path_parts, 'filename', 'extension', 'dirname')) {
-
-            $script_min_filepath = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
-
-            if (file_exists("$forum_path/$script_min_filepath")) {
-
-                $script_filepath = $script_min_filepath;
-            }
-        }
-    }    
-
-    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s/%s%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $forum_path, $script_filepath, $seperator, @filemtime($script_filepath), $media);
+    if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return false;
+    
+    if (forum_get_setting('use_minified_scripts', false, false)) {
+        $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
+    }
+    
+    $script_filepath = "$forum_path/{$path_parts['dirname']}/{$path_parts['basename']}";
+    
+    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $media);
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags
@@ -847,6 +837,10 @@ function html_draw_top()
     echo "<link rel=\"search\" type=\"application/opensearchdescription+xml\" href=\"$forum_path/search.php?webtag=$webtag&amp;opensearch\" title=\"{$title}\" />\n";
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
+    
+    echo "<script type=\"text/javascript\">\n";
+    echo "var beehive = ", json_encode(array('forum_path' => $forum_path)), ";\n";
+    echo "</script>\n";    
 
     html_include_javascript("js/jquery-1.4.1.js");
     html_include_javascript("js/jquery.autocomplete.js");
@@ -857,7 +851,7 @@ function html_draw_top()
     // Font size (not for Guests)
 
     if (!user_is_guest()) {
-        echo "<style type=\"text/css\" title=\"user_font\">@import \"font_size.php?webtag=$webtag\";</style>\n";
+        echo "<style type=\"text/css\" title=\"user_font\">@import \"$forum_path/font_size.php?webtag=$webtag\";</style>\n";
     }
     
     echo "<!--[if IE 6]>\n";

@@ -149,7 +149,7 @@ function svn_mysql_parse($svn_log_contents)
 * @param mixed $log_filename
 * @return mixed
 */
-function svn_mysql_output_log($log_filename)
+function svn_mysql_output_log($log_filename = null)
 {
     if (!$db_svn_mysql_output_log = db_connect()) return false;
 
@@ -162,8 +162,10 @@ function svn_mysql_output_log($log_filename)
 
         $svn_log_entry_author = '';
         $svn_log_entry_date = '';
+        
+        ob_start();
 
-        file_put_contents($log_filename, sprintf("Project Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s')));
+        printf("Project Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
 
         while (($svn_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
@@ -181,7 +183,11 @@ function svn_mysql_output_log($log_filename)
 
             $svn_log_entry.= "{$svn_log_entry_array['COMMENTS']}\r\n\r\n";
 
-            file_put_contents($log_filename, wordwrap($svn_log_entry, 75, "\r\n"), FILE_APPEND);
+            echo wordwrap($svn_log_entry, 85, "\r\n");
+        }
+        
+        if (isset($log_filename)) {
+            file_put_contents($log_filename, ob_get_clean());
         }
 
     }else {
@@ -192,25 +198,32 @@ function svn_mysql_output_log($log_filename)
     return true;
 }
 
-// Stop the script from timing out
+// Prevent time out
 
-@set_time_limit(0);
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
 
 // Check to see if we have a date on the command line and
-// that it is in the valid format YYYY-MM-DD. If we don't
-// we use Beehive's birthday.
+// that it is in the valid format YYYY-MM-DD.
 
 if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_SERVER['argv'][1]) > 0) {
-
     $modified_date = $_SERVER['argv'][1];
+} else if (isset($_GET['date']) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_GET['date']) > 0) {
+    $modified_date = $_GET['date'];
+}
+
+if (isset($modified_date)) {
 
     if (svn_mysql_prepare_table()) {
 
-        echo "Fetching SVN Log Data...\r\n";
+        if (!isset($_GET['output'])) echo "Fetching SVN Log Data...\r\n";
 
         if (($svn_log_contents = get_svn_log_data($modified_date))) {
 
-            echo "Parsing SVN Log Data...\r\n";
+            if (!isset($_GET['output'])) echo "Parsing SVN Log Data...\r\n";
 
             if (!svn_mysql_parse($svn_log_contents)) {
 
@@ -229,7 +242,10 @@ if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', 
             $output_log_filename = trim($_SERVER['argv'][2]);
             echo "Generating Change Log. Saving to $output_log_filename\r\n";
             svn_mysql_output_log($output_log_filename);
-            exit;
+        
+        } else if (isset($_GET['output'])) {
+    
+            svn_mysql_output_log();
         }
 
     }else {
@@ -252,16 +268,30 @@ if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', 
         echo "Error while preparing MySQL Database table";
         exit;
     }
+    
+}else if (isset($_GET['output'])) {
+    
+    if (svn_mysql_prepare_table(false)) {
+
+        svn_mysql_output_log();
+
+    }else {
+
+        echo "Error while preparing MySQL Database table";
+        exit;
+    }    
 
 }else {
 
     echo "Generate changelog.txt from SVN comments\r\n\r\n";
-    echo "Usage: php-bin bh_svn_log_parse.php [YYYY-MM-DD] [FILE]\r\n\r\n";
+    echo "Usage: php-bin bh_svn_log_parse.php [YYYY-MM-DD] [FILE]\r\n";
+    echo "   OR: bh_svn_log_parse.php?date=YYYY-MM-DD[&output]\r\n\r\n";
     echo "Examples:\r\n";
     echo "  php-bin bh_svn_log_parse.php 2007-01-01\r\n";
     echo "  php-bin bh_svn_log_parse.php 2007-01-01 changelog.txt\r\n";
     echo "  php-bin bh_svn_log_parse.php changelog.txt\r\n\r\n";
-    echo "[FILE] specifies the output filename for the changelog.\r\n\r\n";
+    echo "[FILE] specifies the output filename for the changelog.\r\n";
+    echo "       Only available when run from a shell.\r\n\r\n";
     echo "[YYYY-MM-DD] specifies the date the changelog should start from\r\n\r\n";
     echo "Both arguments can be combined or used separatly to achieve\r\n";
     echo "different results.\r\n\r\n";

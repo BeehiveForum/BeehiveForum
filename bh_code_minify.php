@@ -58,6 +58,14 @@ function get_file_list(&$file_list_array, $path, $extension)
     }
 }
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Get the JS files
 
 get_file_list($file_list, 'forum/js', '.js');

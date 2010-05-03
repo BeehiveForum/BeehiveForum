@@ -40,9 +40,17 @@ $source_files_dir_array = array('forum\include');
 
 // Ignore these files
 
-$ignore_files_array = array('dictionary.inc.ph', 'text_captcha.inc.php');
+$ignore_files_array = array('dictionary.inc.php', 'text_captcha.inc.php');
 
-echo "Getting list of functions...<br />\n";
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
+echo "Getting list of functions...\n";
 
 foreach ($source_files_dir_array as $include_file_dir) {
 
@@ -64,7 +72,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
                     
                         if (substr($function_match[1], 0, strlen($function_prefix)) != $function_prefix) {
                         
-                            echo $file, ": ", $function_match[0], "<br />\n";
+                            echo $file, ": ", $function_match[0], "\n";
                         }
                     }
                 }            

@@ -38,10 +38,18 @@ $options = array('debug'            => false,
                                              'mb_stripos', 'mb_substr', 'mb_strtolower', 'mb_strtoupper', 
                                              'mb_substr_count', 'mb_split', 'sys_get_temp_dir', 
                                              'file_put_contents', 'array_combine', 'date_default_timezone_set')); 
+                                             
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');                                             
 
 // Tell the user what we're doing.
 
-echo "Please wait checking Minimum PHP Version...<br />\n<br />\n";
+echo "Please wait checking Minimum PHP Version...\n\n";
 
 // Check the version
 
@@ -61,7 +69,7 @@ if (version_compare($res['version'], "5.1.0", "<")) {
 
 // Output the results.
 
-printf("PHP Minimum Version = %s<br />\nExtensions required : %s<br />\n\n", $res['version'], implode(", ", $res['extensions']));
+printf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $res['version'], implode(", ", $res['extensions']));
 
 // Iterate over the result array. If the array value contains a subkey named 
 // version it is a file that we can display information about.
@@ -78,7 +86,7 @@ ksort($versions_array);
 
 foreach ($versions_array as $version => $script_filenames) {
     if (sizeof($script_filename) > 0) {
-        printf("%s<br />%s<br />%s<br /><br />\n", $version, str_repeat('=', strlen($version)), implode("<br />\n", $script_filenames));
+        printf("%s\n%s\n%s\n\n", $version, str_repeat('=', strlen($version)), implode("\n", $script_filenames));
     }
 }
 

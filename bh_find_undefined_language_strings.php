@@ -65,6 +65,14 @@ function get_file_list(&$file_list_array, $path, $extension)
     }
 }
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Get the file list
 
 get_file_list($file_list, 'forum', '.php');
@@ -97,7 +105,7 @@ if (($lang = load_language_file('en.inc.php'))) {
 
                     if (!isset($lang[$lang_key])) {
 
-                        echo "\$lang['$lang_key'] = \"\";<br />\n";
+                        echo "\$lang['$lang_key'] = \"\";\n";
                     }
                 }
             }

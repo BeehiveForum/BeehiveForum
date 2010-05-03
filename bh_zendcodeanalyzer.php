@@ -69,6 +69,14 @@ function get_file_list(&$file_list_array, $path, $extension)
     }
 }
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Get the file list
 
 get_file_list($file_list, 'forum', '.php');
@@ -95,12 +103,12 @@ foreach ($file_list as $php_file) {
 
         stream_set_blocking($pipes[2], 0);
 
-        $results_array = explode("<br />\n", trim(stream_get_contents($pipes[2])));
+        $results_array = explode("\n", trim(stream_get_contents($pipes[2])));
         
         foreach ($results_array as $result) {
         
             if (preg_match('/([^\(]+)\(line ([^)]+)\): (.+)/', trim($result), $matches) > 0) {
-                printf("%s(%s): %s<br />\n", trim(str_replace($cwd, '', $matches[1]), DIRECTORY_SEPARATOR), $matches[2], $matches[3]);
+                printf("%s(%s): %s\n", trim(str_replace($cwd, '', $matches[1]), DIRECTORY_SEPARATOR), $matches[2], $matches[3]);
             }
         }
 

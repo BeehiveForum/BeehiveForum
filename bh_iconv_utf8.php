@@ -62,6 +62,14 @@ function get_file_list(&$file_list_array, $path, $extension = null)
     }
 }
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Get the files
 
 get_file_list($file_list, '.', array('.php', '.js', '.txt', '.css', '.htm', '.html'));

@@ -167,6 +167,14 @@ function array_diff_key_recursive($array1, $array2)
     
     return $result;
 }
+
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
     
 // Array to hold our CSS schemes.
 

@@ -1,6 +1,191 @@
-Project Beehive Forum Change Log (Generated: Fri, 26 Feb 2010 21:07:10)
+Project Beehive Forum Change Log (Generated: Mon, 03 May 2010 13:31:29)
 
 Author: decoyduck
+Date: Sat, 01 May 2010 09:09:31
+-----------------------
+Fixed bh_zendcodeanalyzer.php not working with Nusphere PhpEd's SRV
+Server.
+Fixed Return value on cache_disable, cache_disable_aol and
+cache_disable_proxy.
+Fixed Undefined variable $errono in db_mysql.inc.php
+and db_mysqli.inc.php.
+Fixed potential path injection via webtag in url
+query.
+Fixed ZendCodeAnalyzer errors.
+
+Date: Thu, 29 Apr 2010 21:16:03
+-----------------------
+Changed: Support files now use <br />\n in output where relevant.
+Changed:
+PHP version bumped to 5.2.0 for JSON support and to encourage upgrading for
+security reasons.
+Changed: Output of bh_check_php_version.php now includes
+breakdown of individual files.
+Changed: trigger_error calls are now throw
+new Exception. db_trigger_error is now db_throw_exception.
+
+Date: Mon, 26 Apr 2010 19:06:48
+-----------------------
+Fixed: Missing dependencies in include/*.php.
+Fixed: Missing dependencies
+in index.php and json.php.
+Changed: Updated stylesheets.
+
+Date: Sat, 24 Apr 2010 15:03:52
+-----------------------
+Fixed: Multiple return values in cache_disable_aol and
+cache_disable_proxy.
+Fixed: Unused variable in db_enable_no_auto_value
+function of db_mysql.inc.php and db_mysqli.inc.php
+Fixed: Unused variable
+$uid and $forum_fid in myforums.inc.php.
+Fixed: Undefined variable $script
+in html.inc.php.
+
+Date: Mon, 19 Apr 2010 19:35:14
+-----------------------
+Fixed: HTML checkbox for poll answers not working correctly in
+create_poll.php
+Fixed: Initial state of checkbox not working correctly if
+poll answers contain mix of HTML and non-HTML answers.
+Fixed: close_popup
+event handler not working (wrong selector)
+
+Date: Wed, 07 Apr 2010 13:33:47
+-----------------------
+Fixed: Group By Thread search was showing wrong author and date. Now shows
+thread creator and links to post 1.
+Fixed: Missing "Wait..." when clicking
+Upload button on attachements popup.
+Fixed: Installer not working in
+IE8.
+Fixed: Checkboxes not working correctly with attr('disabled', false)
+should be removeAttr('disabled');
+Changed: Capitalisation on waitdotdot
+text changed to "Wait..."
+Changed: Added waitdotdot to JSON output.
+
+Date: Wed, 07 Apr 2010 12:06:12
+-----------------------
+Fixed: Message navigation icons didn't show on deleted / pending approval
+messages.
+Fixed: Search form doesn't submit on IE8.
+
+Date: Mon, 05 Apr 2010 12:59:28
+-----------------------
+Added: cache_disable_proxy function to disable client side / proxy caching
+if common proxy headers are detected.
+
+Date: Fri, 02 Apr 2010 14:09:55
+-----------------------
+Changed: Added window_title pseudo class to body tag of pages that should
+update window title.
+
+Date: Thu, 01 Apr 2010 18:37:59
+-----------------------
+Fixed: Lightmode <title> tag appearing before doctype.
+
+Date: Tue, 30 Mar 2010 21:13:30
+-----------------------
+Fixed: Radio buttons on pm_write.php were not changing to match used
+element.
+
+Date: Mon, 29 Mar 2010 18:24:21
+-----------------------
+Changed: Put thread title first in title tags (most relevant content first)
+
+Date: Mon, 29 Mar 2010 18:18:03
+-----------------------
+Fixed: forum_check_webtag_available() not being called in light mode
+functions.
+Fixed: Double html_draw_top on lmessages.php output.
+Changed:
+Added function message_get_meta_content to messages.inc.php
+Changed: Added
+calls to message_get_meta_content to light_html_draw_top and
+html_draw_top.
+Changed: Added favicon and RSS feed links to light mode
+output.
+
+Date: Sat, 27 Mar 2010 13:11:20
+-----------------------
+Changed: Format filesizes as IEC standard for base-2 (KiB, MiB, etc.)
+
+Date: Sun, 14 Mar 2010 19:39:13
+-----------------------
+Changed: All files now have the same first few lines.
+
+Date: Sun, 14 Mar 2010 14:47:47
+-----------------------
+Fixed: Complete button not working on attachment popup.
+
+Date: Sun, 14 Mar 2010 13:23:30
+-----------------------
+Fixed: DELETE FROM USING with table aliases in the table names part of the
+query isn't permitted on MySQL 5.x
+
+Date: Sun, 14 Mar 2010 12:01:13
+-----------------------
+Fixed: Undefined variable $first_day in timezone.inc.php
+
+Date: Sat, 13 Mar 2010 18:23:19
+-----------------------
+Fixed: Incorrect filepath to JQuery in lightmode.
+
+Date: Fri, 12 Mar 2010 12:49:28
+-----------------------
+Changed - Spelling and grammar checks on en.inc.php.
+
+Date: Fri, 12 Mar 2010 11:04:47
+-----------------------
+Added: Option to allow sending an email with your real email address in the
+reply-to field.
+
+Date: Tue, 09 Mar 2010 18:41:56
+-----------------------
+Fixed: Webtag not be passed to top.php
+
+Date: Sun, 07 Mar 2010 20:25:10
+-----------------------
+Fixed: Reply to All link not working with Quote Unquote links.
+
+Date: Sun, 07 Mar 2010 18:31:57
+-----------------------
+Fixed: getting cookie domain from html_get_forum_uri
+
+Date: Tue, 02 Mar 2010 20:49:48
+-----------------------
+Added: forum_uri setting for when Beehive cannot reliably detect the URL or
+you want to change it to something else.
+Changed: html_get_forum_uri now
+defaults to null as it's first argument.
+
+Date: Sun, 28 Feb 2010 15:14:38
+-----------------------
+Fixed: Double encoded final_uri in guest error.
+Fixed: Missing &final_uri=
+query string param name
+Fixed: Button paddings are now consistent across
+all styles.
+
+Date: Sat, 27 Feb 2010 13:02:51
+-----------------------
+Fixed: Forum names not displaying on My Forums for Guests.
+Changed: Copied
+new logo to images from styles/default/images.
+
+Date: Sat, 27 Feb 2010 12:53:10
+-----------------------
+Fixed: Paths to JS and CSS now use forum_path constant correctly.
+Changed:
+Readded default styles/style.css
+Changed: Added forum path constant to
+top.php.
+
+Date: Sat, 27 Feb 2010 09:47:48
+-----------------------
+Fixed: Spoof redirect possible with login / out / register links.
+
 Date: Thu, 25 Feb 2010 20:50:34
 -----------------------
 Fixed: Maximum webtag length is 32 characters.
@@ -1032,4 +1217,8 @@ user_update_prefs function to require fewer loops to construct SQL.
 Date: Thu, 16 Jul 2009 12:06:29
 -----------------------
 Fixed: SQL error when saving folder name.
+
+Date: Tue, 14 Jul 2009 20:53:58
+-----------------------
+Changed: Updated documentation for pending 0.9.1 release.
 

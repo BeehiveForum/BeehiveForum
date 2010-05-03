@@ -106,6 +106,14 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
     }
 }
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Get the file list
 
 get_file_list($file_list, 'forum', '.php');

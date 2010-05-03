@@ -180,6 +180,14 @@ function translate($matches)
     return sprintf('"%s";', $string_result);
 }
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Start here
 
 if (($langfile = file('./forum/include/languages/en.inc.php'))) {
@@ -210,7 +218,7 @@ if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
 }else {
 
-    echo "Could not open en.inc.php for reading.<br />\n";
+    echo "Could not open en.inc.php for reading.\n";
 }
 
 ?>

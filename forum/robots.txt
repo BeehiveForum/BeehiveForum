@@ -21,7 +21,6 @@
 
 User-agent: *
 Disallow: /forum/admin.php
-Disallow: /forum/admin.php
 Disallow: /forum/admin_banned.php
 Disallow: /forum/admin_default_forum_settings.php
 Disallow: /forum/admin_folders.php

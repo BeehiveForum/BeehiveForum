@@ -29,6 +29,14 @@ define("BH_INCLUDE_PATH", "./forum/include/");
 
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 
+// Prevent time out
+
+set_time_limit(0);
+
+// Output the content as text.
+
+header('Content-Type: text/plain');
+
 // Get our target language file.
 
 if (isset($_SERVER['argv'][1]) && strlen(trim(stripslashes_array($_SERVER['argv'][1]))) > 0) {

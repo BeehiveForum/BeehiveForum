@@ -543,9 +543,7 @@ function html_include_javascript($script_filepath)
     
     $path_parts = path_info_query($script_filepath);
     
-    if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return false;
-    
-    $seperator = isset($path_parts['query']) ? '&amp;' : '?';
+    if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
     
     $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
     
@@ -564,7 +562,9 @@ function html_include_css($script_filepath, $id, $media = 'screen')
     
     $path_parts = path_info_query($script_filepath);
     
-    if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return false;
+    if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
+    
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
     
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
@@ -572,7 +572,7 @@ function html_include_css($script_filepath, $id, $media = 'screen')
     
     $script_filepath = "$forum_path/{$path_parts['dirname']}/{$path_parts['basename']}";
     
-    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $media);
+    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $query_string, $media);
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags

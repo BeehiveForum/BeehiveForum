@@ -271,8 +271,6 @@ function rss_check_feeds()
 {
     $lang = load_language_file();
 
-    $item_count = 0;
-    
     if (($rss_feed = rss_fetch_feed())) {
         
         if (($rss_data = rss_read_database($rss_feed['URL']))) {

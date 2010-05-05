@@ -493,7 +493,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['addnewfeed']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} » {$lang['rssfeeds']} » {$lang['addnewfeed']}", 'class=window_title', 'search_popup.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
@@ -557,7 +557,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array(stripslashes_array($_POST['t_user_new'])) : ""), 30, 15, SEARCH_LOGON, false), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array(stripslashes_array($_POST['t_user_new'])) : ""), 30, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
@@ -691,7 +691,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_user", (isset($_POST['t_user']) ? htmlentities_array(stripslashes_array($_POST['t_user'])) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15, SEARCH_LOGON, false), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_user", (isset($_POST['t_user']) ? htmlentities_array(stripslashes_array($_POST['t_user'])) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";

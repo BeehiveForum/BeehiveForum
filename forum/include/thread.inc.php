@@ -953,7 +953,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "LEFT `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
     $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
     $sql.= "WHERE POST.TID = '$new_tid'";
 

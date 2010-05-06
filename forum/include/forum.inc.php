@@ -2662,7 +2662,7 @@ function forum_check_maintenance()
 
     // XML requests shouldn't trigger forum self clean
 
-    if (!forum_self_clean_check_xml()) return false;
+    if (!forum_self_clean_check_xml()) return;
 
     // Get the scheduled forum maintenence start hour and minute.
 
@@ -2690,51 +2690,48 @@ function forum_check_maintenance()
 
     $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, false, 0);
 
-    // If the function hasn't been run in the last 24 hours we should run it.
+    // If the function has been run previously in the last 24 hours skip it.
 
-    if ((time() - $forum_maintenance_last_run) > DAY_IN_SECONDS) {
+    if ((time() - $forum_maintenance_last_run) < DAY_IN_SECONDS) return;
 
-        // Check that the scheduled start time has passed.
+    // Check that the scheduled start time has passed.
 
-        if (time() > mktime($maintenance_hour, $maintenance_minute)) {
+    if (time() < mktime($maintenance_hour, $maintenance_minute)) return;
 
-            // Check the function actually exists before we try and execute it.
+    // Check the function actually exists before we try and execute it.
 
-            if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {
+    if (!function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) return;
+    
+    // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
 
-                // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
+    ignore_user_abort(true);
 
-                ignore_user_abort(true);
+    // Register a shutdown function so PHP executes our function when everything is finished.
 
-                // Register a shutdown function so PHP executes our function when everything is finished.
+    register_shutdown_function('forum_perform_maintenance', $forum_maintenance_functions_array[$forum_maintenance_function]);
 
-                register_shutdown_function('forum_perform_maintenance', $forum_maintenance_functions_array[$forum_maintenance_function]);
+    // Update the time the function was last set to run
 
-                // Update the time the function was last set to run
+    $new_forum_settings[$forum_maintenance_date_var] = time();
 
-                $new_forum_settings[$forum_maintenance_date_var] = time();
+    // Update the last run forum_maintenance_function forum setting
 
-                // Update the last run forum_maintenance_function forum setting
+    $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
 
-                $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
+    // Save the settings to the database.
 
-                // Save the settings to the database.
-
-                forum_save_default_settings($new_forum_settings);
-            }
-        }
-    }
-
-    return true;
+    forum_save_default_settings($new_forum_settings);
 }
 
 function forum_perform_maintenance($function)
 {
     // Flushes the buffer to the client.
-
-    if (function_exists('ob_end_flush')) {
-        while (@ob_end_flush());
-    }
+    
+    while (@ob_end_flush());
+    
+    // Send Connection close header.
+    
+    header('Connection: close');
 
     // Execute our maintenance function.
 

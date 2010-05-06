@@ -198,11 +198,11 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
                     bh_update_visitor_log($user_sess['UID'], $forum_fid);
                     forum_update_last_visit($user_sess['UID']);
                 }
-
-                // Forum self-preservation
-
-                forum_check_maintenance();
             }
+            
+            // Forum self preservation
+            
+            forum_check_maintenance();
 
             // Return session data
 
@@ -387,10 +387,6 @@ function bh_guest_session_init()
 
                     bh_update_visitor_log(0, $forum_fid);
                 }
-
-                // Forum self-preservation
-
-                forum_check_maintenance();
             }
 
         }else {
@@ -446,6 +442,10 @@ function bh_guest_session_init()
 
             bh_update_visitor_log(0, $forum_fid);
         }
+        
+        // Forum self-preservation
+
+        forum_check_maintenance();
 
         // Check to see if the user's credentials match the
         // ban data set up on this forum.

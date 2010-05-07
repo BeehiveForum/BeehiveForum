@@ -2610,25 +2610,6 @@ function forums_get_available_count()
     return $forum_available_count;
 }
 
-function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute)
-{
-    $forum_maintenance_schedule = forum_get_setting('forum_maintenance_schedule', false, '02:00');
-
-    $matches_array = array();
-
-    if (preg_match('/^([0-9]{2}):([0-9]{2})$/Du', $forum_maintenance_schedule, $matches_array) > 0) {
-
-        list(,$maintenance_hour, $maintenance_minute) = $matches_array;
-
-    }else {
-
-        $maintenance_hour = 2;
-        $maintenance_minute = 0;
-    }
-
-    return true;
-}
-
 function forum_self_clean_check_xml()
 {
     if (isset($_SERVER['PHP_SELF']) && strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
@@ -2664,13 +2645,17 @@ function forum_check_maintenance()
 
     if (!forum_self_clean_check_xml()) return;
 
-    // Get the scheduled forum maintenence start hour and minute.
+    // Get the scheduled forum maintenance start hour (default 03:00)
 
-    forum_get_maintenance_schedule($maintenance_hour, $maintenance_minute);
+    $forum_maintenance_hour = forum_get_setting('forum_maintenance_hour', 'is_numeric', 3);
+    
+    // Get the forum maintenance duration (default 1 hour)
+
+    $forum_maintenance_duration = forum_get_setting('forum_maintenance_duration', 'is_numeric', 1);
 
     // Fetch index of the last function we ran.
 
-    $forum_maintenance_function = forum_get_setting('forum_maintenance_function', false, 0);
+    $forum_maintenance_function = forum_get_setting('forum_maintenance_function', 'is_numeric', 0);
 
     // Increment the $forum_maintenance_function variable
 
@@ -2688,15 +2673,19 @@ function forum_check_maintenance()
 
     // Get the functions last run time from the database.
 
-    $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, false, 0);
+    $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, 'is_numeric', 0);
 
     // If the function has been run previously in the last 24 hours skip it.
 
-    if ((time() - $forum_maintenance_last_run) < DAY_IN_SECONDS) return;
+    if (((time() - $forum_maintenance_last_run) < DAY_IN_SECONDS) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
 
     // Check that the scheduled start time has passed.
 
-    if (time() < mktime($maintenance_hour, $maintenance_minute)) return;
+    if ((time() < mktime($forum_maintenance_hour)) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
+
+    // Check that the maintenance window has not passed.
+
+    if ((time() > mktime($forum_maintenance_hour + $forum_maintenance_duration)) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
 
     // Check the function actually exists before we try and execute it.
 
@@ -2725,14 +2714,18 @@ function forum_check_maintenance()
 
 function forum_perform_maintenance($function)
 {
-    // Flushes the buffer to the client.
-    
-    while (@ob_end_flush());
-    
-    // Send Connection close header.
+    // Send Connection Close header.
     
     header('Connection: close');
-
+    
+    // Send correct Content-Length header
+    
+    header(sprintf('Content-Length: %s', ob_get_length()));
+    
+    // Flushes the buffer to the client.
+    
+    while(@ob_end_flush());
+    
     // Execute our maintenance function.
 
     if (function_exists($function)) {

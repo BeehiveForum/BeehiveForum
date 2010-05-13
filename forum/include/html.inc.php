@@ -778,6 +778,8 @@ function html_draw_top()
     
     if (strlen(trim($title)) > 0) {
         echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
+    }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        echo "<title>", htmlentities_array($meta_description), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
     }else {
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }

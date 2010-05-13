@@ -334,6 +334,8 @@ $frameset->output_html(false);
 echo "<noframes>\n";
 echo "<body>\n";
 
+$user_sess = bh_session_check(false);
+
 if (bh_getcookie('bh_logon') && user_is_guest()) {
 
     light_draw_logon_form();

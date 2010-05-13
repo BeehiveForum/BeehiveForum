@@ -337,7 +337,7 @@ function light_draw_messages($msg)
 
                 if ($tracking_data['TID'] == $tid) {
 
-                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
                     $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
 
                     echo "<p>", sprintf($lang['thisthreadhasmoved'], $thread_link), "</p>\n";
@@ -345,7 +345,7 @@ function light_draw_messages($msg)
 
                 if ($tracking_data['NEW_TID'] == $tid) {
 
-                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
                     $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
 
                     echo "<p>", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</p>\n";
@@ -355,7 +355,7 @@ function light_draw_messages($msg)
 
                 if ($tracking_data['TID'] == $tid) {
 
-                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
                     $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
 
                     echo "<p>", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</p>\n";
@@ -363,7 +363,7 @@ function light_draw_messages($msg)
 
                 if ($tracking_data['NEW_TID'] == $tid) {
 
-                    $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                    $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
                     $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
 
                     echo "<p>", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</p>\n";
@@ -547,7 +547,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         light_html_draw_top("title={$lang['couldnotretrievefolderinformation']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['couldnotretrievefolderinformation']);
         light_html_draw_bottom();
-        exit;
+        return;
     }
 
     // Get total number of messages for each folder

@@ -27,19 +27,19 @@ $(beehive).bind('init', function() {
 
         resize_images : function() {
 
-            $('td.postbody img').each(function() {
+            $('td.postcontent img').each(function() {
 
                 var max_width = beehive.get_resize_width.call(this);
                 
-                if ($(this).parent('span.resized_image').length > 0) {
+                if ($(this).parent('div.image_resize_container').length > 0) {
 
-                    $(this).parent('span.resized_image').css('width', max_width * 0.95);
+                    $(this).parent('div.image_resize_container').css('width', max_width * 0.95);
 
                 } else {
 
                     if ($(this).width() > max_width) {
 
-                        var $parent_div = $('<div>');
+                        var $parent_div = $('<div class="image_resize_container">');
 
                         var $resize_banner = $('<div class="image_resize_text">');
 
@@ -66,7 +66,7 @@ $(beehive).bind('init', function() {
 
         check_overflow : function() {
 
-            $('td.postbody').each(function() {
+            $('td.postcontent').each(function() {
 
                 var max_width = beehive.get_resize_width.call(this);
                 
@@ -94,8 +94,8 @@ $(beehive).bind('init', function() {
 
     $(window).bind('resize', function() {
 
-        beehive.resize_images();
-        beehive.check_overflow();
+        beehive.resize_images.call();
+        beehive.check_overflow.call();
     });
 
     beehive.resize_images();

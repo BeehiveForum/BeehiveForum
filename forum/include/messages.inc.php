@@ -931,7 +931,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "&nbsp;</span></td>\n";
         echo "              </tr>\n";
         echo "              <tr>\n";
-        echo "                <td class=\"postbody\" align=\"left\">{$message['CONTENT']}</td>\n";
+        echo "                <td class=\"postbody postcontent\" align=\"left\">{$message['CONTENT']}</td>\n";
         echo "              </tr>\n";
 
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {

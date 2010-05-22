@@ -1628,14 +1628,14 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
             if (!$result = db_query($sql, $db_message_update_read)) return false;
         }
-
-        // Mark posts as Viewed
-
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
-
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
     }
+
+    // Mark posts as Viewed
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
+    $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
+
+    if (!$result = db_query($sql, $db_message_update_read)) return false;
 
     // Update thread viewed counter
 

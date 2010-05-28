@@ -44,6 +44,10 @@ function geshi_error_handler ()
 if (@file_exists("geshi/geshi.php")) {
 
     include_once("geshi/geshi.php");
+    
+    if (!defined('GESHI_VERSION') || version_compare(GESHI_VERSION, '1.0.8.8', '<')) {
+        throw new Exception('Beehive Forum requires GeSHi 1.0.8.8 or newer');
+    }
 
 }else {
 

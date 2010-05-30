@@ -96,6 +96,10 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+// Don't cache this page - fixes problems with Opera.
+
+cache_disable();
+
 // Check we have a webtag
 
 $webtag = get_webtag();
@@ -104,12 +108,15 @@ $webtag = get_webtag();
 
 forum_check_webtag_available($webtag);
 
-// Load user session and see if we're a guest
+// See if we can try and logon automatically
 
-if (($user_sess = bh_session_check(false, false)) && !user_is_guest()) {
+if (logon_perform_auto(false)) {
     header_redirect("lthread_list.php?webtag=$webtag");
-    exit;
 }
+
+// Start user session
+
+$user_sess = bh_session_check(false, false);
 
 // Check to see if the user is banned.
 
@@ -118,6 +125,7 @@ if (bh_session_user_banned()) {
     html_user_banned();
     exit;
 }
+
 
 // Check to see if the user has been approved.
 

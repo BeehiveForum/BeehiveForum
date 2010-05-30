@@ -281,16 +281,16 @@ function logon_perform()
     return false;
 }
 
-function logon_perform_auto()
+function logon_perform_auto($redirect = true)
 {
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
-
+    
     if (!bh_getcookie('bh_logon') && bh_getcookie("bh_auto_logon", "Y") && !bh_session_check(false, false)) {
 
         logon_get_cookies($username_array, $password_array, $passhash_array);
-
+        
         if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
 
             if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
@@ -303,6 +303,9 @@ function logon_perform_auto()
                     if (($uid = user_logon($username, $passhash))) {
 
                         bh_session_init($uid);
+                        
+                        if (!$redirect) return true;
+                        
                         header_redirect(get_request_uri(true, false));
                         exit;
                     }

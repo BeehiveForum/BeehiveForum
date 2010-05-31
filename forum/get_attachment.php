@@ -103,7 +103,7 @@ $redirect = false;
 
 // Get the attachment hash
 
-$hash = get_attachment_query_hash($redirect);
+$hash = attachments_get_url_query_hash($redirect);
 
 // Check we're logged in correctly
 
@@ -168,7 +168,7 @@ if (!$attachment_dir = attachments_check_dir()) {
 
 // Get the array of allowed attachment mime-types
 
-$attachment_mime_types = attachment_get_mime_types();
+$attachment_mime_types = attachments_get_mime_types();
 
 // Check to see which method we are using to fetch the attachment.
 // The old method is to simply refer to the hash in the URL query
@@ -185,7 +185,7 @@ if (isset($hash) && is_md5($hash)) {
 
     // Get the attachment details.
 
-    if (($attachment_details = get_attachment_by_hash($hash))) {
+    if (($attachment_details = attachments_get_by_hash($hash))) {
 
         // If we're requesting an image attachment thumbnail then
         // we need to append .thumb to the filepath. If we're getting
@@ -207,7 +207,7 @@ if (isset($hash) && is_md5($hash)) {
                 // isn't being used as an avatar or profile picture.
 
                 if (!isset($_GET['profile_picture']) && !isset($_GET['avatar_picture'])) {
-                    attachment_inc_dload_count($hash);
+                    attachments_inc_download_count($hash);
                 }
             }
         }

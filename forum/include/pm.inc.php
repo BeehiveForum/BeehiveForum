@@ -1222,7 +1222,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         $attachments_array = array();
         $image_attachments_array = array();
 
-        if (get_attachments($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+        if (attachments_get($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             // Draw the attachment header at the bottom of the post
 
@@ -1235,7 +1235,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
                 foreach ($attachments_array as $attachment) {
 
-                    echo "                              ", attachment_make_link($attachment, true, false, $export_html), "<br />\n";
+                    echo "                              ", attachments_make_link($attachment, true, false, $export_html), "<br />\n";
                 }
 
                 echo "                              </p>\n";
@@ -1247,7 +1247,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
                 foreach ($image_attachments_array as $attachment) {
 
-                    echo "                              ", attachment_make_link($attachment, true, false, $export_html), "\n";
+                    echo "                              ", attachments_make_link($attachment, true, false, $export_html), "\n";
                 }
 
                 echo "                              </p>\n";
@@ -1758,7 +1758,7 @@ function pm_delete_message($mid)
         // delete the attachment as well.
 
         if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID'])) {
-            delete_attachment_by_aid($db_delete_pm_row['AID']);
+            attachments_delete_by_aid($db_delete_pm_row['AID']);
         }
 
         $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
@@ -2692,7 +2692,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
         $attachments_array = array();
         $image_attachments_array = array();
 
-        if (get_attachments($from_uid, $aid, $attachments_array, $image_attachments_array)) {
+        if (attachments_get($from_uid, $aid, $attachments_array, $image_attachments_array)) {
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 

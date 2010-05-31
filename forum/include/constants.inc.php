@@ -382,7 +382,7 @@ define('LOCKED_THREAD', 31);
 define('UNLOCKED_THREAD', 32);
 define('DELETE_USER_THREAD_POSTS', 33);
 define('DELETE_THREAD', 34);
-define('DELETE_ATTACHMENT', 35);
+define('attachments_delete', 35);
 define('EDIT_FORUM_LINKS', 36);
 define('APPROVED_POST', 37);
 define('CREATE_USER_GROUP', 38);

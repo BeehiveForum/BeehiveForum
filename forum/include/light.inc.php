@@ -1667,9 +1667,9 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
     if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
-        $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
+        $aid = isset($message['AID']) ? $message['AID'] : attachments_get_id($tid, $message['PID']);
 
-        if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+        if (attachments_get($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             // Draw the attachment header at the bottom of the post
 
@@ -1679,7 +1679,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
                 foreach ($attachments_array as $attachment) {
 
-                    if (($attachment_link = light_attachment_make_link($attachment))) {
+                    if (($attachment_link = light_attachments_make_link($attachment))) {
 
                         echo $attachment_link, "<br />\n";
                     }
@@ -1694,7 +1694,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
                 foreach ($image_attachments_array as $attachment) {
 
-                    if (($attachment_link = light_attachment_make_link($attachment))) {
+                    if (($attachment_link = light_attachments_make_link($attachment))) {
 
                         echo $attachment_link, "&nbsp;\n";
                     }
@@ -1965,7 +1965,7 @@ function light_html_message_type_error()
     light_html_draw_bottom();
 }
 
-function light_attachment_make_link($attachment)
+function light_attachments_make_link($attachment)
 {
     if (!is_array($attachment)) return false;
 
@@ -2349,7 +2349,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
         $attachments_array = array();
         $image_attachments_array = array();
 
-        if (get_attachments($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+        if (attachments_get($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
@@ -2357,7 +2357,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
                 foreach ($attachments_array as $attachment) {
 
-                    if (($attachment_link = light_attachment_make_link($attachment))) {
+                    if (($attachment_link = light_attachments_make_link($attachment))) {
 
                         echo $attachment_link, "<br />\n";
                     }
@@ -2372,7 +2372,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
                 foreach ($image_attachments_array as $attachment) {
 
-                    if (($attachment_link = light_attachment_make_link($attachment))) {
+                    if (($attachment_link = light_attachments_make_link($attachment))) {
 
                         echo $attachment_link, "<br />\n";
                     }

@@ -175,7 +175,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-}else if (!$aid = get_pm_attachment_id($mid)) {
+}else if (!$aid = attachments_get_pm_id($mid)) {
 
     $aid = md5(uniqid(mt_rand()));
 }

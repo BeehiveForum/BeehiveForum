@@ -962,12 +962,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
-            $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
+            $aid = isset($message['AID']) ? $message['AID'] : attachments_get_id($tid, $message['PID']);
 
             $attachments_array = array();
             $image_attachments_array = array();
 
-            if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+            if (attachments_get($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
                 echo "                <td class=\"postbody\" align=\"left\">\n";
@@ -978,7 +978,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     foreach ($attachments_array as $attachment) {
 
-                        echo "                  ", attachment_make_link($attachment), "<br />\n";
+                        echo "                  ", attachments_make_link($attachment), "<br />\n";
                     }
 
                     echo "                  </p>\n";
@@ -990,7 +990,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     foreach ($image_attachments_array as $key => $attachment) {
 
-                        echo "                  ", attachment_make_link($attachment), "\n";
+                        echo "                  ", attachments_make_link($attachment), "\n";
                     }
 
                     echo "                  </p>\n";

@@ -374,9 +374,9 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
         }elseif (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
-            $attachment = get_attachment_by_hash($recent_visitor['AVATAR_AID']);
+            $attachment = attachments_get_by_hash($recent_visitor['AVATAR_AID']);
 
-            if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
+            if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
                 echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 

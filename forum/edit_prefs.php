@@ -418,7 +418,7 @@ if (isset($_POST['save'])) {
 
             }elseif (($attachment_dir = attachments_check_dir())) {
 
-                if (($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID']))) {
+                if (($attachment_details = attachments_get_by_hash($user_prefs['PIC_AID']))) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
@@ -497,7 +497,7 @@ if (isset($_POST['save'])) {
 
             }elseif (($attachment_dir = attachments_check_dir())) {
 
-                if (($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID']))) {
+                if (($attachment_details = attachments_get_by_hash($user_prefs['AVATAR_AID']))) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
@@ -654,7 +654,7 @@ $image_attachments_array = array();
 
 // User's attachments for profile and avatar pictures
 
-$user_attachments = get_users_attachments($uid, $attachments_array, $image_attachments_array);
+$user_attachments = attachments_get_users($uid, $attachments_array, $image_attachments_array);
 
 // Prepare the attachments for use in a drop down.
 

@@ -181,15 +181,15 @@ $uid = bh_session_get_value('UID');
 
 // Maximum attachment space
 
-$max_attachment_space = get_max_attachment_space();
+$max_attachment_space = attachments_get_max_space();
 
 // Get user's free attachment space.
 
-$users_free_space = get_free_attachment_space($uid, $aid);
+$users_free_space = attachments_get_free_space($uid, $aid);
 
 // Get the array of allowed attachment mime-types
 
-$attachment_mime_types = attachment_get_mime_types();
+$attachment_mime_types = attachments_get_mime_types();
 
 // Accumlative attachment file size.
 
@@ -260,9 +260,9 @@ if (isset($_POST['upload'])) {
 
                         if (@move_uploaded_file($tempfile, $filepath)) {
 
-                            add_attachment($uid, $aid, $uniqfileid, $filename, $filetype);
+                            attachments_add($uid, $aid, $uniqfileid, $filename, $filetype);
 
-                            attachment_create_thumb($filepath);
+                            attachments_create_thumb($filepath);
 
                             if (($users_free_space > 0)) {
                                 $users_free_space -= $filesize;
@@ -288,13 +288,13 @@ if (isset($_POST['upload'])) {
 
     $valid = true;
 
-    if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
+    if (isset($_POST['attachments_delete_confirm']) && is_array($_POST['attachments_delete_confirm'])) {
 
-        foreach ($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
+        foreach ($_POST['attachments_delete_confirm'] as $hash => $del_attachment) {
 
-            if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
+            if ($del_attachment == "Y" && attachments_get_by_hash($hash)) {
 
-                if (!delete_attachment($hash)) {
+                if (!attachments_delete($hash)) {
 
                     $valid = false;
                     $error_msg_array[] = $lang['failedtodeleteallselectedattachments'];
@@ -313,8 +313,8 @@ if (isset($_POST['upload'])) {
 
     $hash_array = array();
 
-    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
-        $hash_array = array_merge($hash_array, array_keys($_POST['delete_attachment']));
+    if (isset($_POST['attachments_delete']) && is_array($_POST['attachments_delete'])) {
+        $hash_array = array_merge($hash_array, array_keys($_POST['attachments_delete']));
     }
 
     if (isset($_POST['delete_other_attachment']) && is_array($_POST['delete_other_attachment'])) {
@@ -326,7 +326,7 @@ if (isset($_POST['upload'])) {
         $attachments_array = array();
         $image_attachments_array = array();
 
-        if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
+        if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
             html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled', 'class=window_title');
 
@@ -361,8 +361,8 @@ if (isset($_POST['upload'])) {
 
                 foreach ($attachments_array as $attachment) {
 
-                    echo "                                ", attachment_make_link($attachment, false, false), "<br />\n";
-                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                    echo "                                ", attachments_make_link($attachment, false, false), "<br />\n";
+                    echo "                                ", form_input_hidden("attachments_delete_confirm[{$attachment['hash']}]", "Y"), "\n";
                 }
             }
 
@@ -370,8 +370,8 @@ if (isset($_POST['upload'])) {
 
                 foreach ($image_attachments_array as $key => $attachment) {
 
-                    echo "                                ", attachment_make_link($attachment, false, false), "<br />\n";
-                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                    echo "                                ", attachments_make_link($attachment, false, false), "<br />\n";
+                    echo "                                ", form_input_hidden("attachments_delete_confirm[{$attachment['hash']}]", "Y"), "\n";
                 }
             }
 
@@ -486,7 +486,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
+if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";
@@ -497,10 +497,10 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
         foreach ($attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if (($attachment_link = attachments_make_link($attachment, false))) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
@@ -515,10 +515,10 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
         foreach ($image_attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if (($attachment_link = attachments_make_link($attachment, false))) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
@@ -560,7 +560,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
+if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other"), "</td>\n";
@@ -571,13 +571,13 @@ if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array
 
         foreach ($attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if (($attachment_link = attachments_make_link($attachment, false))) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+                if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
@@ -599,13 +599,13 @@ if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array
 
         foreach ($image_attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if (($attachment_link = attachments_make_link($attachment, false))) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+                if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 

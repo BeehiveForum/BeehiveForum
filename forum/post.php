@@ -395,7 +395,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
-        if (($post_html > POST_HTML_DISABLED) && attachment_embed_check($t_content)) {
+        if (($post_html > POST_HTML_DISABLED) && attachments_embed_check($t_content)) {
 
             $error_msg_array[] = $lang['notallowedembedattachmentpost'];
             $valid = false;
@@ -411,7 +411,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
         $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
-        if ($sig_html && attachment_embed_check($t_sig)) {
+        if ($sig_html && attachments_embed_check($t_sig)) {
 
             $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
             $valid = false;
@@ -597,7 +597,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
@@ -633,7 +633,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;

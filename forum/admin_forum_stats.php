@@ -416,7 +416,7 @@ echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lan
 echo "                  <td align=\"left\">", (($attachment_count > 0) && ($total_post_count > 0)) ? number_format($attachment_count / $total_post_count, 2, ".", ",") : 0, "</td>\n";
 echo "                </tr>\n";
 
-if ((($most_downloaded_attachment = stats_get_most_downloaded_attachment()) !== false) && ($attachment_href = attachment_make_link($most_downloaded_attachment, false))) {
+if ((($most_downloaded_attachment = stats_get_most_downloaded_attachment()) !== false) && ($attachment_href = attachments_make_link($most_downloaded_attachment, false))) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['mostdownloadedattachment']}:&nbsp;</td>\n";

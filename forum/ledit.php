@@ -329,7 +329,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-}else if (!$aid = get_attachment_id($tid, $pid)) {
+}else if (!$aid = attachments_get_id($tid, $pid)) {
 
     $aid = md5(uniqid(mt_rand()));
 }
@@ -363,7 +363,7 @@ if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_conte
 
     $t_content = trim(stripslashes_array($_POST['t_content']));
 
-    if ($post_html && attachment_embed_check($t_content)) {
+    if ($post_html && attachments_embed_check($t_content)) {
 
         $error_msg_array[] = $lang['notallowedembedattachmentpost'];
         $valid = false;
@@ -383,7 +383,7 @@ if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) 
 
     $t_sig = trim(stripslashes_array($_POST['t_sig']));
 
-    if (attachment_embed_check($t_sig)) {
+    if (attachments_embed_check($t_sig)) {
 
         $error_msg_array[] = $lang['notallowedembedattachmentpost'];
         $valid = false;
@@ -435,7 +435,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
@@ -498,7 +498,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }

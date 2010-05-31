@@ -233,7 +233,7 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
 
-    if (attachment_embed_check($t_sig_content) && $t_t_post_html == "Y") {
+    if (attachments_embed_check($t_sig_content) && $t_t_post_html == "Y") {
 
         $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
         $valid = false;

@@ -356,9 +356,9 @@ if (isset($user_profile['PIC_URL'])) {
     echo "                              </td>\n";
     echo "                            </tr>\n";
 
-}elseif (isset($user_profile['PIC_AID']) && ($attachment = get_attachment_by_hash($user_profile['PIC_AID']))) {
+}elseif (isset($user_profile['PIC_AID']) && ($attachment = attachments_get_by_hash($user_profile['PIC_AID']))) {
 
-    if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
+    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
         echo "                            <tr>\n";
         echo "                              <td align=\"right\" class=\"subhead\">\n";

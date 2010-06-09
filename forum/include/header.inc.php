@@ -32,7 +32,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");

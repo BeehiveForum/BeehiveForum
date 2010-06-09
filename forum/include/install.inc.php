@@ -41,7 +41,6 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 }
 
 include_once(BH_INCLUDE_PATH. "browser.inc.php");
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -292,7 +291,7 @@ function install_check_mysql_version()
 
 function install_check_php_version()
 {
-    if (version_compare(phpversion(), "5.2.0", "<")) {
+    if (version_compare(phpversion(), "5.2.1", "<")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -320,7 +319,7 @@ function install_check_php_version()
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">PHP Version 5.2.0 or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
+        echo "                        <td align=\"left\">PHP Version 5.2.1 or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

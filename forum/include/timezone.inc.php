@@ -46,7 +46,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function get_available_timezones()

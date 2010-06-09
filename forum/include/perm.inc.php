@@ -47,7 +47,6 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
 }
 
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");

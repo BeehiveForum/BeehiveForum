@@ -36,7 +36,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 // against the user credentials.
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");

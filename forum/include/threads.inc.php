@@ -33,7 +33,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");

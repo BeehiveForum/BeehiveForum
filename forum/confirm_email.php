@@ -87,7 +87,6 @@ $lang = load_language_file();
 
 $webtag = get_webtag();
 
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");

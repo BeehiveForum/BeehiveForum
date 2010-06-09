@@ -58,6 +58,10 @@ cache_disable_aol();
 
 install_check_php_version();
 
+// Check the PHP extensions
+
+install_check_php_extensions();
+
 // Post Data handling.
 
 if (isset($_POST['install_method'])) {

@@ -69,7 +69,7 @@ function check_install()
             echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-            echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+            echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
             echo "<h1>Beehive Forum Installation Error</h1>\n";
             echo "<br />\n";
@@ -134,7 +134,7 @@ function install_incomplete()
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-    echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
     echo "</head>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
@@ -194,7 +194,7 @@ function install_missing_files()
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-    echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
     echo "</head>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
@@ -247,7 +247,7 @@ function install_check_mysql_version()
             echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-            echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+            echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
             echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
             echo "<br />\n";
@@ -289,6 +289,83 @@ function install_check_mysql_version()
     }
 }
 
+function install_check_php_extensions()
+{
+    $required_extensions = array('mbstring', 'pcre', 'gd', 'json');
+    
+    $loaded_extensions = get_loaded_extensions();
+    
+    if (array_diff($required_extensions, $loaded_extensions)) {
+
+        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+        echo "<head>\n";
+        echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+        echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+        echo "</head>\n";
+        echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
+        echo "<br />\n";
+        echo "<div align=\"center\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"500\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Minimum Requirements not met</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">Some PHP extensions required to run Beehive Forum are not installed. Please check your PHP installation.</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\"><b>Required Extensions:</b></td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"center\">\n";
+        echo "                          <table class=\"posthead\" width=\"95%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\">";
+        
+        foreach ($required_extensions as $extension_name) {
+            echo "                                <a href=\"http://www.php.net/", $extension_name, "\">", $extension_name, "</a><br />\n";
+        }
+        
+        echo "                              </td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";        
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</div>\n";
+        echo "</body>\n";
+        echo "</html>\n";
+        exit;
+    }
+}
+
 function install_check_php_version()
 {
     if (version_compare(phpversion(), "5.2.1", "<")) {
@@ -300,7 +377,7 @@ function install_check_php_version()
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-        echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
         echo "<br />\n";

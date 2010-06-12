@@ -633,7 +633,8 @@ if (!$new_thread) {
     }
 }
 
-echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpost.php\" method=\"post\">\n";
+echo form_input_hidden('webtag', htmlentities_array($webtag));
 echo form_input_hidden('t_dedupe', htmlentities_array($t_dedupe));
 
 if (!isset($t_threadtitle)) {

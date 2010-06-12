@@ -355,6 +355,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
     
+    // Last Search Sort By
+    
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_BY")) {
 
         // Add LAST_SEARCH_SORT_BY to USER_TRACK
@@ -368,6 +370,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
     
+    // Last Search Sort Dir
+    
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_DIR")) {
 
         // Add LAST_SEARCH_SORT_DIR to USER_TRACK
@@ -380,6 +384,21 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
+    
+    // RSS Feed Max Items
+    
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_RSS_FEEDS", "MAX_ITEM_COUNT")) {
+
+        // Better support for deleted threads.
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}_RSS_FEEDS` ADD MAX_ITEM_COUNT MEDIUMINT(8) NULL AFTER LAST_RUN";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }    
     
 }
 

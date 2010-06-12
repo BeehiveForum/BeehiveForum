@@ -36,6 +36,9 @@ $(beehive).bind('init', function() {
     $('.emoticon_preview .view_more').bind('click', function() {
 
         var popup_window_options = beehive.window_options;
+        
         window.open($(this).attr('href'), $(this).attr('id'), popup_window_options.join(','));
+        
+        return false;
     });
 });

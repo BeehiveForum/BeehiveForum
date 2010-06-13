@@ -404,8 +404,13 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
 // We got this far, that means we can now update the global forum tables.
 
-// GROUPS and GROUP_PERMS have changed to a schema which makes
-// a lot more sense and is more normalised.
+$sql = "DROP TABLE IF EXISTS GROUP_PERMS_NEW";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
 
 $sql = "CREATE TABLE GROUP_PERMS_NEW (";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -431,25 +436,28 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// Remove the unneccesary records from GROUPS.
+if (install_column_exists($table_data['DATABASE_NAME'], "GROUPS", "AUTO_GROUP")) {
 
-$sql = "DELETE FROM GROUPS WHERE AUTO_GROUP = 1";
+    // Remove the unneccesary records from GROUPS.
 
-if (!$result = @db_query($sql, $db_install)) {
+    $sql = "DELETE FROM GROUPS WHERE AUTO_GROUP = 1";
 
-    $valid = false;
-    return;
-}
+    if (!$result = @db_query($sql, $db_install)) {
 
-// AUTO_GROUP and FORUM have been depreceated in GROUPS.
-// GID is no longer the auto increment.
+        $valid = false;
+        return;
+    }
 
-$sql = "ALTER TABLE GROUPS DROP COLUMN FORUM, DROP COLUMN AUTO_GROUP, CHANGE GID GID MEDIUMINT(8) UNSIGNED NOT NULL";
+    // AUTO_GROUP and FORUM have been depreceated in GROUPS.
+    // GID is no longer the auto increment.
 
-if (!$result = @db_query($sql, $db_install)) {
+    $sql = "ALTER TABLE GROUPS DROP COLUMN FORUM, DROP COLUMN AUTO_GROUP, CHANGE GID GID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-    $valid = false;
-    return;
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 // Remove the old GROUP_PERMS table.

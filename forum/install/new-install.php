@@ -246,7 +246,7 @@ $sql.= "  APPROVED DATETIME DEFAULT NULL, ";
 $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  EDITED DATETIME DEFAULT NULL, ";
 $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '', ";
+$sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL, ";
 $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (TID, PID), ";
@@ -369,7 +369,6 @@ $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
 $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
 $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (TID), ";
-$sql.= "  KEY BY_UID (BY_UID), ";
 $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
 $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
 $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
@@ -622,15 +621,11 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE GROUPS (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL, ";
-$sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL, ";
-$sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PRIMARY KEY (GID), ";
-$sql.= "  KEY AUTO_GROUP (AUTO_GROUP), ";
-$sql.= "  KEY FORUM (FORUM)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (GID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -639,12 +634,12 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE GROUP_PERMS (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PRIMARY KEY (GID, FORUM, FID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (FORUM,FID,GID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -653,11 +648,11 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE GROUP_USERS (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
-$sql.= "  PRIMARY KEY (GID, UID), ";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (GID,UID),";
 $sql.= "  KEY UID (UID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1018,7 +1013,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 1, 6652)";
+$sql = "INSERT INTO GROUP_PERMS (FORUM, FID, GID, PERM) VALUES (1, 1, 1, 6652)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1026,7 +1021,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (2, 0, 0, 1536)";
+$sql = "INSERT INTO GROUP_PERMS (FORUM, FID, GID, PERM) VALUES (0, 0, 2, 1536)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1034,7 +1029,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (0, 1, 1, 14588)";
+$sql = "INSERT INTO GROUP_PERMS (FORUM, FID, GID, PERM) VALUES (1, 1, 0, 14588)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1042,7 +1037,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 0, 34560)";
+$sql = "INSERT INTO GROUP_PERMS (FORUM, FID, GID, PERM) VALUES (1, 0, 1, 34560)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1059,24 +1054,6 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO GROUP_USERS (GID, UID) VALUES (2, 1)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-$sql.= "VALUES (1, NULL, NULL, 1)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-$sql.= "VALUES (0, NULL, NULL, 1)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

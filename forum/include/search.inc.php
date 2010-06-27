@@ -950,9 +950,9 @@ function search_output_opensearch_xml()
 
     forum_check_webtag_available($webtag);
 
-    $forum_path = html_get_forum_uri();
-
     $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    
+    $forum_opensearch_uri = html_get_forum_uri("/search.php?webtag=$webtag&amp;search_string={searchTerms}");
 
     header('Content-type: text/xml; charset=UTF-8', true);
 
@@ -960,13 +960,16 @@ function search_output_opensearch_xml()
     echo "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\">\n";
     echo "<ShortName>$title</ShortName>\n";
     echo "<Description>$title</Description>\n";
+    echo "<InputEncoding>UTF-8</InputEncoding>\n";
 
-    if (@file_exists("forums/$webtag/favicon.ico")) {
-        echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">$forum_path/forums/$webtag/favicon.ico</Image>\n";
+    if (@file_exists(html_get_forum_file_path("forums/$webtag/favicon.ico"))) {
+        echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">", html_get_forum_uri("/forums/$webtag/favicon.ico"), "</Image>\n";
     }
 
-    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_path/search.php?webtag=$webtag&amp;search_string={searchTerms}\"/>\n";
+    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
     echo "</OpenSearchDescription>\n";
+    
+    exit;
 }
 
 function mysql_fulltext_callback(&$item, $key, $delimiter)

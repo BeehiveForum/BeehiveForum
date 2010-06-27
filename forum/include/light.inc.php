@@ -76,8 +76,6 @@ function light_html_draw_top()
 
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
     
-    $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
-    
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     foreach ($arg_array as $key => $func_args) {
@@ -149,17 +147,22 @@ function light_html_draw_top()
         }
     }
     
-    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s/threads_rss.php?webtag=%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $forum_path, $webtag);
+    $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
+    
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
 
     if (($folders_array = folder_get_available_details())) {
 
         foreach ($folders_array as $folder) {
-            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s/threads_rss.php?webtag=%s&amp;fid=%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $forum_path, $webtag, $folder['FID']);
+            
+            $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
+            
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $rss_feed_path);
         }
     }
     
-    if (@file_exists("$forum_path/forums/$webtag/favicon.ico")) {
-        echo "<link rel=\"shortcut icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
+    if (@file_exists(html_get_forum_file_path("forums/$webtag/favicon.ico"))) {
+        echo "<link rel=\"shortcut icon\" href=\"", html_get_forum_file_path("forums/$webtag/favicon.ico"), "\" type=\"image/ico\" />\n";
     }    
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";

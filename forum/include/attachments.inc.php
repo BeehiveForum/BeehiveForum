@@ -1247,7 +1247,7 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
 
     // Check that the specified imagemagick path exists and can be executed.
 
-    if (!file_exists($imagemagick_path) || !is_executable($imagemagick_path)) return false;
+    if (!@file_exists($imagemagick_path) || !is_executable($imagemagick_path)) return false;
 
     // Run imagemagick with it's -version command line to see if it
     // really is imagemagick. Not really an authoritative test, but it'll do.
@@ -1290,7 +1290,7 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
     // if imagemagick baulks, it won't create the final image, so we
     // test that exists before returning the result.
 
-    if (!file_exists(sprintf('%s.thumb', $filepath))) return false;
+    if (!@file_exists(sprintf('%s.thumb', $filepath))) return false;
 
     return true;
 }

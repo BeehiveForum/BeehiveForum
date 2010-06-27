@@ -52,7 +52,7 @@ function load_language_file()
         // The English language file must exist even if we're not going to be
         // using it in our forum. If we can't find it we'll bail out here.
 
-        if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
+        if (!@file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
             throw new Exception("<p>Could not load English language file (en.inc.php)</p>");
         }
 

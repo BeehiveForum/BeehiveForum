@@ -269,7 +269,7 @@ class captcha {
                 }
 
                 imagejpeg($image, $this->get_image_filename());
-                return file_exists($this->get_image_filename());
+                return @file_exists($this->get_image_filename());
             }
         }
 

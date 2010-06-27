@@ -138,8 +138,7 @@ $error_msg_array = array();
 
 // Path to the Forum folder for saving start page.
 
-$forum_path = dirname($_SERVER['PHP_SELF']);
-$forum_path.= "/forums/$webtag/";
+$forum_startpage_path = html_get_forum_file_path("forums/$webtag");
 
 // Make sure the directory structure exists
 
@@ -174,7 +173,7 @@ if (isset($_POST['save'])) {
     }else {
 
         html_draw_top("title={$lang['error']}");
-        html_error_msg(sprintf($lang['startpageerror'], $forum_path), 'admin_startpage.php', 'post', array('download' => $lang['download'], 'back' => $lang['back']), array('t_content' => $t_content), false, 'center');
+        html_error_msg(sprintf($lang['startpageerror'], $forum_startpage_path), 'admin_startpage.php', 'post', array('download' => $lang['download'], 'back' => $lang['back']), array('t_content' => $t_content), false, 'center');
         html_draw_bottom();
         exit;
     }
@@ -186,7 +185,7 @@ if (isset($_POST['save'])) {
         if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] > 0) {
 
             html_draw_top("title={$lang['error']}");
-            html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
+            html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_startpage_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
             html_draw_bottom();
             exit;
 
@@ -205,7 +204,7 @@ if (isset($_POST['save'])) {
                 }else {
 
                     html_draw_top("title={$lang['error']}");
-                    html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
+                    html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_startpage_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
                     html_draw_bottom();
                     exit;
                 }

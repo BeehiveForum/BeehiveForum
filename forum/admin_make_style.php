@@ -211,8 +211,7 @@ if (isset($_POST['save'])) {
 
                 html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}", 'class=window_title');
 
-                $forum_path = dirname($_SERVER['PHP_SELF']);
-                $forum_path.= "/forums/$webtag/styles/$stylename";
+                $forum_styles_path = html_get_forum_file_path("forums/$webtag/styles/$stylename");
 
                 echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
                 echo "<br />\n";
@@ -235,7 +234,7 @@ if (isset($_POST['save'])) {
                 echo "                  <td align=\"left\" class=\"subhead\">{$lang['createforumstyle']}</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $forum_path), "</td>\n";
+                echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $forum_styles_path), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";

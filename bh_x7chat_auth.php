@@ -27,7 +27,7 @@ USA
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "/beehiveforum/home/beehiveforum/forum/include/");
+define("BH_INCLUDE_PATH", "../forum/include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");

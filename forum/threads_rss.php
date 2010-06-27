@@ -96,6 +96,10 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 $webtag = get_webtag();
 
+// Check the webtag is valid
+
+forum_check_webtag_available($webtag);
+
 // Arrays for our cookie data
 
 $username_array = array();

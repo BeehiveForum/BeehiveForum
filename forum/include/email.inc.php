@@ -1141,7 +1141,7 @@ function email_get_language($to_uid)
     
         $pref_language = (isset($user_prefs['LANGUAGE']) && strlen(trim($user_prefs['LANGUAGE'])) > 0) ? $user_prefs['LANGUAGE'] : $default_language;
         
-        if (@is_dir(BH_INCLUDE_PATH. "languages/$pref_language") && @file_exists(BH_INCLUDE_PATH. "languages/$pref_language/email.inc.php")) {
+        if (@file_exists(BH_INCLUDE_PATH. "languages/$pref_language/email.inc.php")) {
 
             require(BH_INCLUDE_PATH. "languages/{$pref_language}/email.inc.php");
             return $lang;
@@ -1154,12 +1154,12 @@ function email_get_language($to_uid)
     
     }else {
     
-        if (@is_dir(BH_INCLUDE_PATH. "languages/{$default_language}") && @file_exists(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php")) {
+        if (@file_exists(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php")) {
         
             require(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php");
             return $lang;
 
-        }else if (file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
+        }else if (@file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
 
              require(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
              return $lang;

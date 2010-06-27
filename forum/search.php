@@ -102,11 +102,10 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 $webtag = get_webtag();
 
-// Open Search support (FireFox 2.0, etc.)
+// Open Search support (FireFox 2.0+, IE7+ etc.)
 
 if (isset($_GET['opensearch'])) {
     search_output_opensearch_xml();
-    exit;
 }
 
 // Check we're logged in correctly

@@ -121,13 +121,13 @@ function emoticons_initialise()
 
         }else {
 
-            if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/definitions.php")) {
+            if (@file_exists("emoticons/$user_emots/definitions.php")) {
                 include ("emoticons/$user_emots/definitions.php");
             }
 
             if (forum_check_webtag_available($webtag)) {
 
-                if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
+                if (@file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
                     include ("forums/$webtag/emoticons/$user_emots/definitions.php");
                 }
             }

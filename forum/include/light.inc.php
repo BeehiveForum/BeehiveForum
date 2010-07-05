@@ -122,6 +122,8 @@ function light_html_draw_top()
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$meta_description\" />\n";
+    echo "<meta name=\"MobileOptimized\" content=\"320\" />\n";
+    echo "<meta name=\"viewport\" content=\"width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
 
@@ -133,7 +135,7 @@ function light_html_draw_top()
     }
     
     if (($stylesheet = html_get_style_sheet())) {
-        echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen, handheld\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 
     if (isset($link_array) && is_array($link_array)) {
@@ -184,7 +186,8 @@ function light_html_draw_top()
     }
 
     echo "</head>\n";
-    echo "<body>\n";
+    echo "<body id=\"light-mode\">\n";
+    echo "<div id=\"content\">\n";
 
     if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
 
@@ -197,8 +200,8 @@ function light_html_draw_bottom()
 {
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
 
-    echo "<!--// Mouse and Kos fat have fat fingers //-->\n";
-    echo "<h6 align=\"right\">&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
+    echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
+    echo "</div>\n";
     echo "</body>\n";
     echo "</html>\n";
 }

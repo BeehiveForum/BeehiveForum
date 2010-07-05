@@ -391,7 +391,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
         // Better support for deleted threads.
 
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}_RSS_FEEDS` ADD MAX_ITEM_COUNT MEDIUMINT(8) NULL AFTER LAST_RUN";
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}RSS_FEEDS` ADD MAX_ITEM_COUNT MEDIUMINT(8) NULL AFTER LAST_RUN";
 
         if (!$result = @db_query($sql, $db_install)) {
 

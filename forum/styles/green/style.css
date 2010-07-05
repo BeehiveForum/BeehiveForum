@@ -1,7 +1,6 @@
 body {
     background-color: #E1FFD2;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
     margin: 10px 5px;
 }
 
@@ -9,6 +8,20 @@ body.top_banner {
     background-color: #999999;
     margin: 0px;
     padding: 0px;
+}
+
+body#light-mode {
+    font-size: 62.5%;
+}
+
+body#light-mode img {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+#content {
+    font-size: 125%;
+    line-height: 140%;
 }
 
 a {
@@ -66,7 +79,6 @@ h1 {
     margin: 0px;
     padding: 2px;
     text-decoration: none;
-    width: 100%;
 }
 
 h2 {

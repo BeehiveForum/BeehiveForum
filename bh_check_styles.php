@@ -45,7 +45,7 @@ include_once(BH_INCLUDE_PATH. "format.inc.php");
 
 // Array of files to exclude from the matches
 
-$exclude_files_array = array('start_main_additional.css', 'start_main.css', 'make_style.css');
+$exclude_files_array = array('start_main_additional.css', 'start_main.css', 'make_style.css', 'style_ie6.css');
 
 // Array of directories to exclude from the matches
 

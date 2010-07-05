@@ -540,7 +540,7 @@ function html_include_javascript($script_filepath)
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
     
-    $script_filepath = html_get_forum_file_path("{$path_parts['dirname']}/{$path_parts['basename']}");
+    $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
     
     printf("<script type=\"text/javascript\" src=\"%s%s\"></script>\n", $script_filepath, $query_string);
 }
@@ -557,7 +557,7 @@ function html_include_css($script_filepath, $id, $media = 'screen')
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
     
-    $script_filepath = html_get_forum_file_path("{$path_parts['dirname']}/{$path_parts['basename']}");
+    $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
     
     printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $query_string, $media);
 }
@@ -1604,7 +1604,7 @@ function html_get_forum_uri($append_path = null, $allow_https = true)
 function html_get_forum_file_path($file_path)
 {
     $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
-    return ltrim(sprintf('%s/%s', $forum_path, ltrim($file_path, '/')), './');
+    return preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
 }
 
 ?>

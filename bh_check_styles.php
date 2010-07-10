@@ -208,7 +208,18 @@ file_put_contents('forum/styles/Default/style.css', parse_array_to_css($default_
 
 // Debug output.
     
-foreach($css_rules_array as $css_filepath => &$css_rules_set) {
+foreach($css_rules_array as $css_filepath => $css_rules_set) {
+    
+    // Remove font-size rules
+    
+    foreach($css_rules_set as $selector => $rules_set) {
+        
+        if (isset($default_css_rules[$selector]['font-size'])) {
+            $css_rules_set[$selector]['font-size'] = $default_css_rules[$selector]['font-size'];
+        } else {
+            unset($css_rules_set[$selector]['font-size']);    
+        }
+    }
     
     // Remove depreceated selectors
     
@@ -245,7 +256,7 @@ foreach($css_rules_array as $css_filepath => &$css_rules_set) {
     
     // Backup the original file.
     
-    rename($css_filepath, sprintf("$css_filepath.%s", date('YmdHis')));
+    rename($css_filepath, sprintf("$css_filepath.%s.%s", date('YmdHis'), md5(uniqid(mt_rand()))));
     
     // Output the fixed style.
     

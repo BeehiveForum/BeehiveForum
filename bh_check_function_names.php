@@ -40,7 +40,7 @@ $source_files_dir_array = array('forum\include');
 
 // Ignore these files
 
-$ignore_files_array = array('dictionary.inc.php', 'text_captcha.inc.php');
+$ignore_files_array = array('dictionary.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'zip_lib.inc.php');
 
 // Prevent time out
 

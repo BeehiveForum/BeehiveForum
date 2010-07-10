@@ -1,6 +1,7 @@
 body {
     background-color: #EAEFF4;
     font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 80%;
     margin: 10px 5px;
 }
 
@@ -14,14 +15,14 @@ body#light-mode {
     font-size: 62.5%;
 }
 
-body#light-mode img {
-    max-width: 100%;
-    vertical-align: middle;
-}
-
-#content {
+body#light-mode #content {
     font-size: 125%;
     line-height: 140%;
+}
+
+body#light-mode #content img {
+    max-width: 90%;
+    vertical-align: middle;
 }
 
 a {
@@ -36,7 +37,7 @@ a.button {
     color: #FFFFFF;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     font-weight: bold;
     margin: 0px;
     outline: none;
@@ -74,19 +75,18 @@ h1 {
     background-color: #C8D7E6;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 110%;
     font-weight: bold;
     margin: 0px;
     padding: 2px;
     text-decoration: none;
-    width: 100%;
 }
 
 h2 {
     background-color: transparent;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 110%;
     font-weight: bold;
     margin-bottom: 05px;
     margin-left: 0px;
@@ -95,13 +95,21 @@ h2 {
     text-decoration: none;
 }
 
+h3 {
+    font-size: 100%;
+}
+
+h6 {
+    font-size: 80%;
+}
+
 img {
     vertical-align: middle;
 }
 
 p {
     color: #000000;
-    font-size: 10pt;
+    font-size: 100%;
 }
 
 p, h1, h2 {
@@ -136,7 +144,7 @@ p, h1, h2 {
     cursor: default;
     display: block;
     font: menu;
-    font-size: 12px;
+    font-size: 100%;
     line-height: 16px;
     margin: 0px;
     overflow: hidden;
@@ -156,7 +164,7 @@ p, h1, h2 {
 }
 
 .activeusers {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .add_upload_field {
@@ -174,7 +182,7 @@ p, h1, h2 {
 }
 
 .admin_settings_text {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .admin_startpage_textarea {
@@ -183,11 +191,11 @@ p, h1, h2 {
 }
 
 .adminipdisplay {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .approved_text {
-    font-size: 10px;
+    font-size: 90%;
 }
 
 .attachment_thumb {
@@ -204,7 +212,7 @@ p, h1, h2 {
 
 .bhinputcheckbox, .bhinputradio {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .bhinputcheckboxdisabled, .bhinputradiodisabled {
@@ -249,11 +257,13 @@ p, h1, h2 {
     border-top-width: 1px;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     padding-left: 2px;
 }
 
 .bhlightinput {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 100%;
     max-height: 40%;
     max-width: 90%;
 }
@@ -278,7 +288,7 @@ p, h1, h2 {
 
 .bhselectoptgroup {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
 }
 
 .box {
@@ -295,7 +305,7 @@ p, h1, h2 {
     color: #FFFFFF;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     font-weight: bold;
     margin: 0px;
     padding: 1px 6px;
@@ -312,7 +322,7 @@ p, h1, h2 {
     color: #808080;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     font-weight: bold;
     margin: 0px;
     padding: 1px 6px;
@@ -390,7 +400,7 @@ p, h1, h2 {
 }
 
 .edit_text {
-    font-size: 10px;
+    font-size: 90%;
 }
 
 .emoticon_preview {
@@ -421,7 +431,7 @@ p, h1, h2 {
     border-top-width: 1px;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     height: 200px;
     overflow: auto;
     padding: 0px 10px 0px 10px;
@@ -433,7 +443,7 @@ p, h1, h2 {
     background-color: #FDFC9F;
     border: 1px solid #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     margin: 10px 0px 10px 0px;
     max-width: 100%;
     padding: 10px;
@@ -467,14 +477,14 @@ p, h1, h2 {
 
 .folderinfo {
     float: left;
-    font-size: 8pt;
+    font-size: 90%;
     text-decoration: underline;
 }
 
 .foldername {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     font-weight: bold;
     padding-bottom: 2px;
@@ -486,7 +496,7 @@ p, h1, h2 {
 
 .folderpostnew {
     float: right;
-    font-size: 8pt;
+    font-size: 90%;
     text-align: right;
     text-decoration: underline;
 }
@@ -500,7 +510,7 @@ p, h1, h2 {
     border-top-width: 1px;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     height: 200px;
     overflow: auto;
     padding: 0px 10px 0px 10px;
@@ -516,7 +526,7 @@ p, h1, h2 {
 .google_adsense_register_note {
     background-color: #FFFFFF;
     color: #000000;
-    font-size: 7pt;
+    font-size: 80%;
     height: 15px;
     padding-left: 5px;
     text-align: center;
@@ -545,7 +555,7 @@ p, h1, h2 {
     background-image: url('../images/warningbg.png');
     border: 1px dashed #000000;
     cursor: pointer;
-    font-size: 8pt;
+    font-size: 90%;
     height: 30px;
     margin-top: 2px;
     overflow: hidden;
@@ -584,7 +594,7 @@ p, h1, h2 {
     border: 0px;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
 }
 
 .message_box {
@@ -595,7 +605,7 @@ p, h1, h2 {
     background-color: #C8D7E6;
     border-width: 0px;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
 }
 
@@ -660,7 +670,7 @@ p, h1, h2 {
     background-color: #5483B1;
     background-image: url('images/menu.png');
     color: #000000;
-    font-size: 10px;
+    font-size: 65%;
     font-weight: bold;
     margin: 0px;
     text-decoration: none;
@@ -676,7 +686,7 @@ p, h1, h2 {
 }
 
 .pagenum_text {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .pagenum_text a {
@@ -684,7 +694,7 @@ p, h1, h2 {
 }
 
 .pm_message_count {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .pmbar {
@@ -702,11 +712,11 @@ p, h1, h2 {
 }
 
 .pmbar_text {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .pmnewcount {
-    font-size: 8pt;
+    font-size: 90%;
 }
 
 .pollbar1 {
@@ -761,13 +771,13 @@ p, h1, h2 {
     border: 0px;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     width: 169px;
 }
 
 .postbody {
     border: none;
-    font-size: 10pt;
+    font-size: 100%;
     padding-bottom: 2px;
     padding-left: 2px;
     padding-right: 2px;
@@ -777,18 +787,18 @@ p, h1, h2 {
 .posthead {
     background-color: #C8D7E6;
     border: none;
-    font-size: 10pt;
+    font-size: 100%;
     padding: 0px;
 }
 
 .postinfo {
     float: right;
-    font-size: 10pt;
+    font-size: 100%;
     text-align: right;
 }
 
 .postnumber {
-    font-size: 10pt;
+    font-size: 100%;
     text-align: right;
 }
 
@@ -797,7 +807,7 @@ p, h1, h2 {
     border-top: 1px #C8D7E6 solid;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     padding-bottom: 1px;
     padding-top: 1px;
@@ -805,12 +815,12 @@ p, h1, h2 {
 }
 
 .posttofrom {
-    font-size: 10pt;
+    font-size: 100%;
     text-align: left;
 }
 
 .posttofromlabel {
-    font-size: 10pt;
+    font-size: 100%;
     text-align: right;
 }
 
@@ -842,7 +852,7 @@ p, h1, h2 {
 }
 
 .profile_item_name {
-    font-size: 9pt;
+    font-size: 100%;
 }
 
 .profile_item_overflow {
@@ -852,12 +862,12 @@ p, h1, h2 {
 
 .profile_item_value {
     border-left: 1px solid #000000;
-    font-size: 9pt;
+    font-size: 100%;
     padding: 2px 2px 2px 10px;
 }
 
 .profile_item_value a {
-    font-size: 9pt;
+    font-size: 100%;
 }
 
 .profile_items {
@@ -875,7 +885,7 @@ p, h1, h2 {
 .profile_logon {
     color: #000000;
     cursor: pointer;
-    font-size: 10pt;
+    font-size: 100%;
 }
 
 .profile_logon a {
@@ -917,7 +927,7 @@ p, h1, h2 {
 
 .quotetext {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 8pt;
+    font-size: 100%;
     margin-left: 40px;
     margin-right: 10px;
     margin-top: 5px;
@@ -955,7 +965,7 @@ p, h1, h2 {
     border: 0px;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
 }
 
 .search_keyword_highlight {
@@ -968,7 +978,7 @@ p, h1, h2 {
 }
 
 .small_optional_text {
-    font-size: 7pt;
+    font-size: 80%;
 }
 
 .smallbutton {
@@ -980,7 +990,7 @@ p, h1, h2 {
     color: #FFFFFF;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 8pt;
+    font-size: 90%;
     font-weight: bold;
     margin: 0px;
     padding: 1px 6px;
@@ -989,7 +999,7 @@ p, h1, h2 {
 }
 
 .smalltext {
-    font-size: 9pt;
+    font-size: 90%;
 }
 
 .spellcheckbodytext {
@@ -998,7 +1008,7 @@ p, h1, h2 {
     border-left: 1px solid buttonshadow;
     border-right: 1px solid buttonhighlight;
     border-top: 1px solid buttonshadow;
-    font-size: 10pt;
+    font-size: 100%;
     height: 85px;
     padding: 0px;
     width: 100%;
@@ -1056,7 +1066,7 @@ p, h1, h2 {
     border-top-width: 0px;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
     padding-left: 5px;
 }
 
@@ -1068,7 +1078,7 @@ p, h1, h2 {
     border-top-width: 0px;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
 }
 
 .subhead_sort_asc {
@@ -1082,7 +1092,7 @@ p, h1, h2 {
     border-top-width: 0px;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
     padding-left: 5px;
 }
 
@@ -1097,7 +1107,7 @@ p, h1, h2 {
     border-top-width: 0px;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 100%;
     padding-left: 5px;
 }
 
@@ -1105,7 +1115,7 @@ p, h1, h2 {
     background-color: #FDFC9F;
     border: 1px solid #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     margin: 10px 0px 10px 0px;
     max-width: 100%;
     padding: 10px;
@@ -1148,7 +1158,7 @@ p, h1, h2 {
     border-right-width: 01px;
     border-style: solid;
     border-top-width: 01px;
-    font-size: 10pt;
+    font-size: 100%;
     margin-left: 05px;
     margin-right: 05px;
 }
@@ -1173,7 +1183,7 @@ p, h1, h2 {
 }
 
 .threadname {
-    font-size: 10pt;
+    font-size: 100%;
     padding-left: 0px;
 }
 
@@ -1185,7 +1195,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 1px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1205,7 +1215,7 @@ p, h1, h2 {
     border-right-width: 0px;
     border-style: solid;
     border-top-width: 0px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1225,7 +1235,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 0px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1245,7 +1255,7 @@ p, h1, h2 {
     border-right-width: 0px;
     border-style: solid;
     border-top-width: 0px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1265,7 +1275,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 0px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1285,7 +1295,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 0px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1305,7 +1315,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 0px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1325,7 +1335,7 @@ p, h1, h2 {
     border-right-width: 0px;
     border-style: solid;
     border-top-width: 1px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1345,7 +1355,7 @@ p, h1, h2 {
     border-right-width: 0px;
     border-style: solid;
     border-top-width: 1px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1365,7 +1375,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 1px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1385,7 +1395,7 @@ p, h1, h2 {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 1px;
-    font-size: 10pt;
+    font-size: 100%;
     font-style: normal;
     margin-bottom: 4px;
     margin-left: 4px;
@@ -1398,12 +1408,12 @@ p, h1, h2 {
 }
 
 .threadtime {
-    font-size: 8pt;
+    font-size: 90%;
     padding-left: 0px;
 }
 
 .threadxnewofy {
-    font-size: 8pt;
+    font-size: 90%;
     padding-left: 0px;
     white-space: nowrap;
 }
@@ -1487,7 +1497,7 @@ p, h1, h2 {
     background-color: #FDFC9F;
     border: 1px solid #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 100%;
     margin: 10px 0px 10px 0px;
     max-width: 100%;
     padding: 10px;

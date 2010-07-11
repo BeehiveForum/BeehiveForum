@@ -66,6 +66,19 @@ function bh_error_handler($code, $message, $file = '', $line = 0)
     }
 }
 
+function bh_exception_arg_handler($arg)
+{
+    if (is_array($arg)) {
+        return array_map('bh_exception_arg_handler', $arg);
+    }
+    
+    if (is_bool($arg)) {
+        return $arg ? 'true' : 'false';
+    }
+    
+    return $arg;
+}
+
 // Beehive Exception Handler Function
 
 function bh_exception_handler($exception)
@@ -142,7 +155,7 @@ function bh_exception_handler($exception)
 
         // Stacktrace data.
 
-        $error_msg_array[] = sprintf('<pre>%s</pre>', print_r($exception->getTrace(), true));
+        $error_msg_array[] = sprintf('<pre>%s</pre>', print_r(array_map('bh_exception_arg_handler', $exception->getTrace()), true));
 
         // Get the Beehive Forum Version
 
@@ -204,7 +217,7 @@ function bh_exception_handler($exception)
 
                 $error_msg_array[] = '<p><b>$_GET:</b></p>';
 
-                $get_vars = htmlentities(print_r($_GET, true));
+                $get_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_GET), true));
 
                 $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
             }
@@ -215,7 +228,7 @@ function bh_exception_handler($exception)
 
                 $error_msg_array[] = '<p><b>$_POST:</b></p>';
 
-                $post_vars = htmlentities(print_r($_POST, true));
+                $post_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_POST), true));
 
                 $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
             }
@@ -226,7 +239,7 @@ function bh_exception_handler($exception)
 
                 $error_msg_array[] = '<p><b>$_ENV:</b></p>';
 
-                $environment_vars = htmlentities(print_r($_ENV, true));
+                $environment_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_ENV), true));
 
                 $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
             }
@@ -237,7 +250,7 @@ function bh_exception_handler($exception)
 
                 $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
 
-                $server_vars = htmlentities(print_r($_SERVER, true));
+                $server_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_SERVER), true));
 
                 $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
             }

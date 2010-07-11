@@ -413,11 +413,11 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE GROUP_PERMS_NEW (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY (FORUM, FID, GID)";
+$sql.= "  PRIMARY KEY (GID, FORUM, FID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -428,7 +428,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 // Copy the existing permissions to the new table.
 
-$sql = "INSERT INTO GROUP_PERMS_NEW (FORUM, FID, GID, PERM) SELECT FORUM, FID, GID, PERM FROM GROUP_PERMS";
+$sql = "INSERT INTO GROUP_PERMS_NEW (GID, FORUM, FID, PERM) SELECT GID, FORUM, FID, PERM FROM GROUP_PERMS";
 
 if (!$result = @db_query($sql, $db_install)) {
 

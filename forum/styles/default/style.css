@@ -439,6 +439,10 @@ p, h1, h2 {
     width: 560px;
 }
 
+.error_handler_details pre {
+    font-size: 120%;
+}
+
 .error_msg {
     background-color: #FDFC9F;
     border: 1px solid #000000;

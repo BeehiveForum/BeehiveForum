@@ -210,7 +210,7 @@ $user_perms = perm_get_forum_user_permissions($uid);
 
 // Page title
 
-$page_title = "{$lang['admin']} » {$lang['manageuser']} » ". word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME'])));
+$page_title = "{$lang['admin']} » {$lang['manageuser']} » ". htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']));
 
 // Do updates
 

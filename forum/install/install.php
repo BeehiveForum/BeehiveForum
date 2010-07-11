@@ -216,7 +216,7 @@ if (isset($_POST['install_method'])) {
 
         $sql = "";
 
-        if (($db_install = db_connect(false))) {
+        if (($db_install = db_connect())) {
 
             // Check the MySQL version
 

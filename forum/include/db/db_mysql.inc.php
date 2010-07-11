@@ -31,7 +31,7 @@ function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_
     $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
 }
 
-function db_connect($exception = true)
+function db_connect()
 {
     static $connection_id = false;
 
@@ -39,29 +39,29 @@ function db_connect($exception = true)
 
     if (!$connection_id) {
 
-        if (($connection_id = @mysql_connect($db_server, $db_username, $db_password))) {
-
-            if (@mysql_select_db($db_database, $connection_id)) {
-
-                db_set_utf8_charset($connection_id);
-                
-                db_set_time_zone_utc($connection_id);
-
-                db_enable_compat_mode($connection_id);
-                
-                if (!db_enable_no_auto_value($connection_id)) {
-                    throw new Exception("Could not set MySQL Session Variable SQL_MODE to 'NO_AUTO_VALUE_ON_ZERO'");
-                }
-
-                return $connection_id;
-            }
+        if (!($connection_id = mysql_connect($db_server, $db_username, $db_password))) {
+            throw new Exception('Could not connect to database server');
         }
 
-        if ($exception === true) {
-            throw new Exception(db_error());
+        if (!mysql_select_db($db_database, $connection_id)) {
+            throw new Exception('Unknown database');
+        }
+        
+        if (!db_set_utf8_charset($connection_id)) {
+            throw new Exception('Could not enable UTF-8 mode');
+        }
+        
+        if (!db_set_time_zone_utc($connection_id)) {
+            throw new Exception('Could not set MySQL timezone to UTC');
         }
 
-        return false;
+        if (!db_enable_compat_mode($connection_id)) {
+            throw new Exception('Could not change MYSQL compatbility options');
+        }
+                
+        if (!db_enable_no_auto_value($connection_id)) {
+            throw new Exception('Could not set MySQL Session Variable SQL_MODE');
+        }        
     }
 
     return $connection_id;
@@ -112,45 +112,31 @@ function db_enable_no_auto_value($connection_id)
     return ($value === 'NO_AUTO_VALUE_ON_ZERO');
 }
 
-function db_query($sql, $connection_id, $exception = true)
+function db_query($sql, $connection_id)
 {
-    if (($result = @mysql_query($sql, $connection_id))) {
-        return $result;
+    if (!($result = mysql_query($sql, $connection_id))) {
+        throw new Exception(db_error($connection_id));
     }
 
-    if ($exception === true) db_throw_exception($sql, $connection_id);
-
-    return false;
+    return $result;
 }
 
-function db_unbuffered_query($sql, $connection_id, $exception = true)
+function db_unbuffered_query($sql, $connection_id)
 {
-    if (function_exists("mysql_unbuffered_query")) {
-
-        $GLOBALS['query_array'][] = $sql;
-        
-        if (($result = @mysql_unbuffered_query($sql, $connection_id))) {
-            return $result;
-        }
-
-        if ($exception === true) db_throw_exception($sql, $connection_id);
+    if (!function_exists('mysql_unbuffered_query')) {
+        return db_query($sql, $connection_id);
     }
 
-    return db_query($sql, $connection_id, $exception);
-}
-
-function db_data_seek($result, $offset)
-{
-    if (@mysql_data_seek($result, $offset)) {
-        return true;
+    if (!($result = mysql_unbuffered_query($sql, $connection_id))) {
+        throw new Exception(db_errno($connection_id));
     }
-
-    return false;
+    
+    return $result;
 }
 
 function db_num_rows($result)
 {
-    if (($num_rows = @mysql_num_rows($result))) {
+    if (($num_rows = mysql_num_rows($result))) {
         return $num_rows;
     }
 
@@ -159,7 +145,7 @@ function db_num_rows($result)
 
 function db_affected_rows($connection_id)
 {
-    if (($affected_rows = @mysql_affected_rows($connection_id))) {
+    if (($affected_rows = mysql_affected_rows($connection_id))) {
         return $affected_rows;
     }
 
@@ -168,7 +154,7 @@ function db_affected_rows($connection_id)
 
 function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 {
-    if (($result_array = @mysql_fetch_array($result, $result_type))) {
+    if (($result_array = mysql_fetch_array($result, $result_type))) {
         return $result_array;
     }
 
@@ -177,38 +163,24 @@ function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 
 function db_insert_id($connection_id)
 {
-    if (($insert_id = @mysql_insert_id($connection_id))) {
+    if (($insert_id = mysql_insert_id($connection_id))) {
         return $insert_id;
     }
 
     return false;
 }
 
-function db_throw_exception($sql, $connection_id)
-{
-    if (error_reporting()) {
-
-        if (!db_query($sql, $connection_id, false)) {
-
-            $errno  = db_errno($connection_id);
-            $errstr = db_error($connection_id);
-            
-            throw new Exception("<p>$errstr</p>\n<p>$sql</p>", $errno);
-        }
-    }
-}
-
 function db_error($connection_id = false)
 {
     if ($connection_id !== false) {
 
-        if (($errstr = @mysql_error($connection_id))) {
+        if (($errstr = mysql_error($connection_id))) {
             return $errstr;
         }
 
     }else {
 
-        if (($errstr = @mysql_error())) {
+        if (($errstr = mysql_error())) {
             return $errstr;
         }
     }
@@ -220,13 +192,13 @@ function db_errno($connection_id = false)
 {
     if ($connection_id !== false) {
 
-        if (($errno = @mysql_errno($connection_id))) {
+        if (($errno = mysql_errno($connection_id))) {
             return $errno;
         }
 
     }else {
 
-        if (($errno = @mysql_errno())) {
+        if (($errno = mysql_errno())) {
             return $errno;
         }
     }
@@ -240,7 +212,7 @@ function db_fetch_mysql_version()
 
     if (!$mysql_version) {
     
-        if (!($db_fetch_mysql_version = db_connect(false))) return false;
+        if (!($db_fetch_mysql_version = db_connect())) return false;
 
         $sql = "SELECT VERSION() AS version";
 
@@ -278,12 +250,12 @@ function db_escape_string($str)
 {
     if (function_exists('mysql_real_escape_string')) {
         if (($db_escape_string = db_connect())) {
-            return @mysql_real_escape_string($str, $db_escape_string);
+            return mysql_real_escape_string($str, $db_escape_string);
         }
     }
 
     if (function_exists('mysql_escape_string')) {
-        return @mysql_escape_string($str);
+        return mysql_escape_string($str);
     }
 
     return addslashes($str);

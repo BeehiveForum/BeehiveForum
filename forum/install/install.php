@@ -32,6 +32,9 @@ define("BH_INCLUDE_PATH", "../include/");
 // Installer Detection
 define("BEEHIVEMODE_INSTALL", true);
 
+// Constant to define where the main forum files are
+define("BH_FORUM_PATH", "../");
+
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 

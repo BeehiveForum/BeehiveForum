@@ -998,7 +998,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Check for any conflicting tables.
 
-        if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true))) {
+        if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false))) {
 
             $error_str = $lang['selecteddatabasecontainsconflictingtables'];
             $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));

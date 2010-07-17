@@ -162,7 +162,7 @@ p, h1, h2 {
     font-size: 8pt;
 }
 
-.admin_startpage_textarea {
+.admin_tools_textarea {
     font-family: monospace;
     width: 550px;
 }
@@ -217,7 +217,7 @@ p, h1, h2 {
 .bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
 .bhinputlogon, .bhlogondropdown, .register_dropdown,
 .search_dropdown, .banned_dropdown, .links_dropdown,
-.timezone_dropdown, .admin_startpage_textarea,
+.timezone_dropdown, .admin_tools_textarea,
 .dictionary_word_display, .dictionary_best_selection,
 .dictionary_change_to, .post_folder_dropdown, .thread_title,
 .post_content, .signature_content, .edit_signature_content,

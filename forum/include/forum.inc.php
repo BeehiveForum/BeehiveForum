@@ -660,10 +660,10 @@ function forum_check_global_setting_name($setting_name)
                                          'attachments_allow_embed', 'attachments_enabled', 'attachment_thumbnails',
                                          'attachments_max_user_space', 'attachments_max_post_space', 'attachment_allow_guests',
                                          'attachment_dir', 'attachment_mime_types', 'attachment_use_old_method',
-                                         'bh_remove_stale_sessions_last_run', 'cache_dir', 'forum_desc',  'forum_email',
-                                         'forum_keywords', 'forum_name', 'forum_noreply_email', 'forum_rules_enabled',
-                                         'forum_rules_message', 'forum_maintenance_function', 'forum_maintenance_schedule',
-                                         'forum_timezone', 'forum_uri', 'pm_system_prune_folders_last_run', 
+                                         'bh_remove_stale_sessions_last_run', 'cache_dir', 'content_delivery_domains',
+                                         'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email', 
+                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function', 
+                                         'forum_maintenance_schedule', 'forum_timezone', 'forum_uri', 'pm_system_prune_folders_last_run', 
                                          'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run', 
                                          'sitemap_create_file_last_run', 'enable_google_analytics',
                                          'allow_forum_google_analytics', 'google_analytics_code', 'guest_account_enabled',
@@ -2607,6 +2607,35 @@ function forums_get_available_count()
     list($forum_available_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $forum_available_count;
+}
+
+function forum_get_cdn_domain()
+{
+    // Current array index
+    static $current_cdn = -1;
+    
+    // Get the content delivery domains as an array.
+    $cdn_domains_array = explode("\n", forum_get_setting('content_delivery_network_paths'));
+    
+    // Remove empty lines, trim the results, reindex the array.
+    $cdn_domains_array = array_values(array_filter(array_map('trim', $cdn_domains_array), 'strlen'));
+    
+    // Check we have something left to use.
+    if (sizeof($cdn_domains_array) < 1) return false;
+    
+    // Increment the array index.
+    $current_cdn++;
+    
+    // If the array index exists, return it.
+    if (isset($cdn_domains_array[$current_cdn])) {
+        return preg_replace('/^http(s)?:\/\//', '', $cdn_domains_array[$current_cdn]);
+    }
+    
+    // Reset the array index
+    $current_cdn = -1;
+    
+    // Call self.
+    return forum_get_cdn_domain();
 }
 
 function forum_self_clean_check_xml()

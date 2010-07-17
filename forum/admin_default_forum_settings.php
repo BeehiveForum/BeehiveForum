@@ -261,6 +261,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
     }
 
+    if (isset($_POST['content_delivery_network_paths']) && strlen(trim(stripslashes_array($_POST['content_delivery_network_paths']))) > 0) {
+        $new_forum_settings['content_delivery_network_paths'] = trim(stripslashes_array($_POST['content_delivery_network_paths']));
+    }else {
+        $new_forum_settings['content_delivery_network_paths'] = "";
+    }
+
     if (isset($_POST['messages_unread_cutoff']) && in_array($_POST['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
     }else {
@@ -823,6 +829,46 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['contentdeliverynetwork']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" valign=\"top\" width=\"270\">{$lang['contentdeliverynetworkpaths']}:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", form_textarea("content_delivery_network_paths", (isset($forum_global_settings['content_delivery_network_paths'])) ? htmlentities_array($forum_global_settings['content_delivery_network_paths']) : "", 6, 72, false, 'admin_tools_textarea'), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_71']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_72']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_73']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['postoptions']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -1259,7 +1305,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_rules_message->getTidyContent(), 10, 80, false, false, 'admin_startpage_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_rules_message->getTidyContent(), 10, 72, false, false, 'admin_tools_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

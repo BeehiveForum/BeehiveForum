@@ -476,7 +476,7 @@ if (isset($_POST['save'])) {
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        bh_setcookie("bh_{$webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+        bh_setcookie("bh_forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
         header_redirect("forum_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
         exit;
 

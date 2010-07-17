@@ -319,95 +319,34 @@ function html_get_top_page()
     $webtag = get_webtag();
 
     if (forum_check_webtag_available($webtag)) {
-
-        if (($user_style = bh_session_get_value('STYLE')) === false) {
-            $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
-        }   
-        
-        if ($user_style !== false) {
-
-            $user_style = basename($user_style);
-            
-            if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/$user_style/top.php"))) {
-                return html_get_forum_file_path("forums/$webtag/styles/$user_style/top.php?webtag=$webtag");
-            }
-
-            if (@file_exists(html_get_forum_file_path("styles/$user_style/top.php"))) {
-                return html_get_forum_file_path("styles/$user_style/top.php?webtag=$webtag");
-            } 
-        }
-
-        if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/top.php"))) {
-            return html_get_forum_file_path("forums/$webtag/styles/top.php?webtag=$webtag");
-        }
+        return html_get_forum_file_path(sprintf('forums/%1$s/top.php?webtag=%1$s', $webtag));
     }
 
-    return html_get_forum_file_path("styles/top.php");
+    return html_get_forum_file_path('styles/top.php');
 }
 
 function html_get_style_sheet()
 {
-    $webtag = get_webtag();
-
-    $script_filename = basename($_SERVER['PHP_SELF'], '.php');
-
-    if (forum_check_webtag_available($webtag)) {
-
-        if (($user_style = bh_session_get_value('STYLE')) === false) {
-            $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
-        }
-
-        if ($user_style !== false) {
-
-            $user_style = basename($user_style);
-
-            if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/$user_style/$script_filename.css"))) {
-                return html_get_forum_file_path("forums/$webtag/styles/$user_style/$script_filename.css");
-            }
-
-            if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/$user_style/style.css"))) {
-                return html_get_forum_file_path("forums/$webtag/styles/$user_style/style.css");
-            }
-            
-            if (@file_exists(html_get_forum_file_path("styles/$user_style/$script_filename.css"))) {
-                return html_get_forum_file_path("styles/$user_style/$script_filename.css");
-            }
-
-            if (@file_exists(html_get_forum_file_path("styles/$user_style/style.css"))) {
-                return html_get_forum_file_path("styles/$user_style/style.css");
-            }            
-        }
-
-        if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/$script_filename.css"))) {
-            return html_get_forum_file_path("forums/$webtag/styles/$script_filename.css");
-        }
-
-        if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/style.css"))) {
-            return html_get_forum_file_path("forums/$webtag/styles/style.css");
-        }
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
     }
 
-    return html_get_forum_file_path("styles/style.css");
+    if ($user_style !== false) {
+        return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
+    }
+
+    return html_get_forum_file_path('styles/style.css');
 }
 
 function html_get_emoticon_style_sheet()
 {
-    $webtag = get_webtag();
-
-    if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
-        $user_emots = forum_get_setting('default_emoticons');
+    if (($user_emoticons = bh_session_get_value('EMOTICONS')) === false) {
+        $user_emoticons = forum_get_setting('default_emoticons');
     }
 
-    if (forum_check_webtag_available($webtag) && ($user_emots !== false)) {
-
-        if (@file_exists(html_get_forum_file_path("forums/$webtag/emoticons/$user_emots/style.css"))) {
-            return html_get_forum_file_path("forums/$webtag/emoticons/$user_emots/style.css");
-        }
+    if ($user_emoticons !== false) {
+        return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticons)));
     }
-    
-    if (@file_exists(html_get_forum_file_path("emoticons/$user_emots/style.css"))) {
-        return html_get_forum_file_path("emoticons/$user_emots/style.css");
-    }            
 
     return false;
 }
@@ -417,31 +356,7 @@ function html_get_start_page_style_sheet()
     $webtag = get_webtag(true);
 
     if (forum_check_webtag_available($webtag)) {
-
-        if (($user_style = bh_session_get_value('STYLE')) === false) {
-            $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
-        }
-
-        if ($user_style !== false) {
-
-            $user_style = basename($user_style);
-
-            if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/$user_style/start_main_additional.css"))) {
-                return html_get_forum_file_path("forums/$webtag/styles/$user_style/start_main_additional.css");
-            }
-            
-            if (@file_exists(html_get_forum_file_path("styles/$user_style/start_main_additional.css"))) {
-                return html_get_forum_file_path("styles/$user_style/start_main_additional.css");
-            }            
-        }
-
-        if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/start_main_additional.css"))) {
-            return html_get_forum_file_path("forums/$webtag/styles/start_main_additional.css");
-        }
-    }
-
-    if (@file_exists(html_get_forum_file_path("styles/start_main_additional.css"))) {
-        return html_get_forum_file_path("styles/start_main_additional.css");
+        return html_get_forum_file_path(sprintf('forums/%s/start_main_additional.css', $webtag));
     }
 
     return false;
@@ -792,7 +707,6 @@ function html_draw_top()
     if ((basename($_SERVER['PHP_SELF']) == "index.php") && bh_session_check(false, false)) {
 
         $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
-        
         printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
 
         if (($folders_array = folder_get_available_details())) {
@@ -800,15 +714,12 @@ function html_draw_top()
             foreach ($folders_array as $folder) {
                 
                 $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
-                
                 printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $rss_feed_path);
             }
         }
     }
 
-    if (@file_exists(html_get_forum_file_path("forums/$webtag/favicon.ico"))) {
-        echo "<link rel=\"shortcut icon\" href=\"", html_get_forum_file_path("forums/$webtag/favicon.ico"), "\" type=\"image/ico\" />\n";
-    }
+    printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", html_get_forum_file_path(sprintf('forums/%s/favicon.ico', $webtag)));
 
     if (($stylesheet = html_get_style_sheet())) {
         html_include_css($stylesheet, 'user_style');
@@ -828,9 +739,9 @@ function html_draw_top()
         }
     }
     
-    $opensearch_path = html_get_forum_file_path("search.php?webtag=$webtag&amp;opensearch");
+    $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
 
-    echo "<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"$forum_name\" href=\"$opensearch_path\" />\n";
+    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
     
@@ -838,21 +749,21 @@ function html_draw_top()
     echo "var beehive = ", json_encode(array('forum_path' => $forum_path)), ";\n";
     echo "</script>\n";    
 
-    html_include_javascript("js/jquery-1.4.1.js");
-    html_include_javascript("js/jquery.autocomplete.js");
-    html_include_javascript("js/jquery.parsequery.js");
-    html_include_javascript("js/jquery.sprintf.js");
-    html_include_javascript("js/general.js");
+    html_include_javascript(html_get_forum_file_path('js/jquery-1.4.1.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
+    html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     // Font size (not for Guests)
 
     if (!user_is_guest()) {
         
-        $font_size_path = html_get_forum_file_path("font_size.php?webtag=$webtag");
-        echo "<style type=\"text/css\" title=\"user_font\">@import \"$font_size_path\";</style>\n";
+        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
+        printf("<style type=\"text/css\" title=\"user_font\">@import \"%s\";</style>\n", $font_size_path);
     }
     
-    $style_path_ie6 = html_get_forum_file_path("styles/style_ie6.css");
+    $style_path_ie6 = html_get_forum_file_path('styles/style_ie6.css');
     
     echo "<!--[if IE 6]>\n";
     echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
@@ -938,7 +849,7 @@ function html_draw_top()
 
     foreach ($arg_array as $func_args) {
 
-        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path("tiny_mce/tiny_mce.js"))) {
+        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js', false))) {
 
             $page_prefs = bh_session_get_post_page_prefs();
 
@@ -1232,44 +1143,15 @@ function html_js_safe_str($str)
 
 function style_image($img)
 {
-    $webtag = get_webtag();
-
-    if (forum_check_webtag_available($webtag)) {
-
-        if (($user_style = bh_session_get_value('STYLE')) === false) {
-            $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
-        }
-
-        if ($user_style !== false) {
-
-            $user_style = basename($user_style);
-
-            if (@file_exists(html_get_forum_file_path("forums/$webtag/styles/$user_style/images/$img"))) {
-                return html_get_forum_file_path("forums/$webtag/styles/$user_style/images/$img");
-            }
-
-        }else {
-
-            if (@file_exists(html_get_forum_file_path("forums/$webtag/images/$img"))) {
-                return html_get_forum_file_path("forums/$webtag/images/$img");
-            }
-        }
-    }
-
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
     }
 
     if ($user_style !== false) {
-
-        $user_style = basename($user_style);
-
-        if (@file_exists(html_get_forum_file_path("styles/$user_style/images/$img"))) {
-            return html_get_forum_file_path("styles/$user_style/images/$img");
-        }
+        return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img));
     }
 
-    return html_get_forum_file_path("images/$img");
+    return html_get_forum_file_path(sprintf('images/%s', $img));
 }
 
 function bh_setcookie($name, $value, $expires = 0)
@@ -1601,9 +1483,16 @@ function html_get_forum_uri($append_path = null, $allow_https = true)
     return $server_uri;
 }
 
-function html_get_forum_file_path($file_path)
+function html_get_forum_file_path($file_path, $allow_cdn = true)
 {
     $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+    
+    $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
+    
+    if (($allow_cdn === true) && (($cdn_domain = forum_get_cdn_domain()))) {
+        return sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
+    }
+    
     return preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
 }
 

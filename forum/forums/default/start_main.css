@@ -1067,8 +1067,7 @@ a {
     border-left: 1px solid #82827E;
     border-right: 1px solid #F9F9F6;
     border-bottom: 1px solid #F9F9F6;
-    height: 1.2em;
-    padding-left: 2px;
+        padding-left: 2px;
     background-color: #FFFFFF;
     float: left;
 }
@@ -1182,8 +1181,7 @@ a {
 
 .profile_item_overflow {
     overflow: hidden;
-    height: 1.2em;
-}
+    }
 
 .profile_options {
     cursor: pointer;

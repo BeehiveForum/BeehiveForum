@@ -75,7 +75,7 @@ h1 {
     background-color: #63CA31;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 110%;
+    font-size: 100%;
     font-weight: bold;
     margin: 0px;
     padding: 2px;
@@ -86,7 +86,7 @@ h2 {
     background-color: transparent;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 110%;
+    font-size: 100%;
     font-weight: bold;
     margin-bottom: 05px;
     margin-left: 0px;
@@ -164,7 +164,7 @@ p, h1, h2 {
 }
 
 .activeusers {
-    font-size: 90%;
+    font-size: 85%;
 }
 
 .add_upload_field {
@@ -477,7 +477,7 @@ p, h1, h2 {
 
 .folderinfo {
     float: left;
-    font-size: 90%;
+    font-size: 85%;
     text-decoration: underline;
 }
 
@@ -496,7 +496,7 @@ p, h1, h2 {
 
 .folderpostnew {
     float: right;
-    font-size: 90%;
+    font-size: 85%;
     text-align: right;
     text-decoration: underline;
 }
@@ -1406,12 +1406,12 @@ p, h1, h2 {
 }
 
 .threadtime {
-    font-size: 90%;
+    font-size: 80%;
     padding-left: 0px;
 }
 
 .threadxnewofy {
-    font-size: 90%;
+    font-size: 80%;
     padding-left: 0px;
     white-space: nowrap;
 }

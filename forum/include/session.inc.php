@@ -168,8 +168,8 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
 
             // Save a cookie for the forum style
 
-            if (($forum_webtag = forum_get_webtag($user_sess['FID'])) && isset($user_prefs['STYLE'])) {
-                bh_setcookie("bh_{$forum_webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+            if (isset($user_prefs['STYLE'])) {
+                bh_setcookie("bh_forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
             }
 
             // Check the session time. If it is higher than 'active_sess_cutoff'

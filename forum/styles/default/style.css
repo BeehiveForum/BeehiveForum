@@ -234,8 +234,7 @@ p, h1, h2 {
     border-right: 1px solid #F9F9F6;
     border-top: 1px solid #82827E;
     float: left;
-    height: 1.2em;
-    padding-left: 2px;
+        padding-left: 2px;
 }
 
 .bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
@@ -858,7 +857,6 @@ p, h1, h2 {
 }
 
 .profile_item_overflow {
-    height: 1.2em;
     overflow: hidden;
 }
 
@@ -1410,12 +1408,12 @@ p, h1, h2 {
 }
 
 .threadtime {
-    font-size: 80%;
+    font-size: 85%;
     padding-left: 0px;
 }
 
 .threadxnewofy {
-    font-size: 80%;
+    font-size: 85%;
     padding-left: 0px;
     white-space: nowrap;
 }

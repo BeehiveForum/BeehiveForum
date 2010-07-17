@@ -204,7 +204,7 @@ function cache_check_thread_list()
         }
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -291,7 +291,7 @@ function cache_check_start_page()
         }
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -391,7 +391,7 @@ function cache_check_messages()
         }
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -420,7 +420,7 @@ function cache_check_logon_hash()
 * Check cache config var
 *
 * Checks the cache config var in config.inc.php to see if the cache
-* has been forcefully disaled.
+* has been forcefully disabled.
 *
 * @return mixed
 * @param void

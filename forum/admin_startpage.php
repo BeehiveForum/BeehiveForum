@@ -195,7 +195,7 @@ if (isset($_POST['save'])) {
 
             if ((isset($path_parts['extension']) && $path_parts['extension'] == 'css')) {
 
-                if (@move_uploaded_file($_FILES['cssfile']['tmp_name'], "forums/$webtag/start_main_additional.css")) {
+                if (@move_uploaded_file($_FILES['cssfile']['tmp_name'], "forums/$webtag/start_main.css")) {
 
                     admin_add_log_entry(EDITED_START_PAGE);
                     header_redirect("admin_startpage.php?webtag=$webtag&uploaded=true");

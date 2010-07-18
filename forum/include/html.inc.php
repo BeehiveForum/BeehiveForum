@@ -356,7 +356,7 @@ function html_get_start_page_style_sheet()
     $webtag = get_webtag(true);
 
     if (forum_check_webtag_available($webtag)) {
-        return html_get_forum_file_path(sprintf('forums/%s/start_main_additional.css', $webtag));
+        return html_get_forum_file_path(sprintf('forums/%s/start_main.css', $webtag));
     }
 
     return false;

@@ -2723,12 +2723,12 @@ function forum_check_maintenance()
 
     ignore_user_abort(true);
 
-    // Register a shutdown function so PHP executes our function when everything is finished.
+    // Execute the shutdown function. If it fails return now.
 
-    register_shutdown_function('forum_perform_maintenance', $forum_maintenance_functions_array[$forum_maintenance_function]);
-
-    // Update the time the function was last set to run
-
+    if (!($forum_maintenance_functions_array[$forum_maintenance_function]())) return;
+    
+    // Update the last run time of the function.
+    
     $new_forum_settings[$forum_maintenance_date_var] = time();
 
     // Update the last run forum_maintenance_function forum setting
@@ -2738,27 +2738,6 @@ function forum_check_maintenance()
     // Save the settings to the database.
 
     forum_save_default_settings($new_forum_settings);
-}
-
-function forum_perform_maintenance($function)
-{
-    // Send Connection Close header.
-    
-    header('Connection: close');
-    
-    // Send correct Content-Length header
-    
-    header(sprintf('Content-Length: %s', ob_get_length()));
-    
-    // Flushes the buffer to the client.
-    
-    while(@ob_end_flush());
-    
-    // Execute our maintenance function.
-
-    if (function_exists($function)) {
-        $function();
-    }
 }
 
 ?>

@@ -73,7 +73,7 @@ class captcha {
 
     // PUBLIC //
 
-    function captcha($num_chars = 6, $min_char_size = 15, $max_char_size = 25, $noise_factor = 9, $max_rotation = 30)
+    public function __construct($num_chars = 6, $min_char_size = 15, $max_char_size = 25, $noise_factor = 9, $max_rotation = 30)
     {
         if (!is_numeric($num_chars)) $num_chars = 6;
         if (!is_numeric($min_char_size)) $min_char_size = 20;
@@ -104,13 +104,13 @@ class captcha {
         }
     }
 
-    function set_public_key($public_key)
+    public function set_public_key($public_key)
     {
         $this->public_key = $public_key;
         $this->pub_key_done = true;
     }
 
-    function generate_keys()
+    public function generate_keys()
     {
         if (!$this->generate_public_key() || !$this->generate_private_key()) {
             $this->error = TEXT_CAPTCHA_KEY_ERROR;
@@ -120,13 +120,13 @@ class captcha {
         return true;
     }
 
-    function verify_keys($private_key_check)
+    public function verify_keys($private_key_check)
     {
         $this->generate_private_key();
         return (mb_strtolower($private_key_check) == mb_strtolower($this->private_key));
     }
 
-    function get_image_filename()
+    public function get_image_filename()
     {
         if (!$this->check_working_dir()) {
             $this->error = TEXT_CAPTCHA_DIR_ERROR;
@@ -141,13 +141,12 @@ class captcha {
         return "text_captcha/images/{$this->public_key}.jpg";
     }
 
-
-    function get_num_chars()
+    public function get_num_chars()
     {
         return $this->num_chars;
     }
 
-    function get_private_key()
+    public function get_private_key()
     {
         if (!$this->check_keys()) {
             $this->error = TEXT_CAPTCHA_KEY_ERROR;
@@ -157,7 +156,7 @@ class captcha {
         return $this->private_key;
     }
 
-    function get_public_key()
+    public function get_public_key()
     {
         if (!$this->check_keys()) {
             $this->error = TEXT_CAPTCHA_KEY_ERROR;
@@ -167,12 +166,12 @@ class captcha {
         return $this->public_key;
     }
 
-    function get_error()
+    public function get_error()
     {
         return $this->error;
     }
 
-    function make_image()
+    public function make_image()
     {
         if (!$this->check_working_dir()) {
             $this->error = TEXT_CAPTCHA_DIR_ERROR;
@@ -277,16 +276,14 @@ class captcha {
         return false;
     }
 
-    function destroy_image()
+    public function destroy_image()
     {
         if (@file_exists($this->get_image_filename())) {
             @unlink($this->get_image_filename());
         }
     }
 
-    // PRIVATE //
-
-    function check_working_dir()
+    protected function check_working_dir()
     {
         $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
         $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
@@ -306,7 +303,7 @@ class captcha {
         return false;
     }
 
-    function load_fonts()
+    protected function load_fonts()
     {
         if (!$this->fonts_loaded) {
 
@@ -326,12 +323,12 @@ class captcha {
         return $this->fonts_loaded;
     }
 
-    function is_font($file)
+    protected function is_font($file)
     {
         return (mb_substr($file, -3) == 'ttf');
     }
 
-    function generate_public_key()
+    protected function generate_public_key()
     {
         $this->public_key = mb_substr(md5(uniqid(mt_rand(), true)), 0, $this->num_chars);
         $this->pub_key_done = true;
@@ -339,7 +336,7 @@ class captcha {
         return true;
     }
 
-    function generate_private_key()
+    protected function generate_private_key()
     {
         if (!$this->pub_key_done) {
             return false;
@@ -351,7 +348,7 @@ class captcha {
         return true;
     }
 
-    function check_keys()
+    protected function check_keys()
     {
         if (!$this->pub_key_done || !$this->prv_key_done) {
             return false;
@@ -360,7 +357,7 @@ class captcha {
         return true;
     }
 
-    function random_font()
+    protected function random_font()
     {
         if (!$this->load_fonts()) {
             $this->error = TEXT_CAPTCHA_NO_FONTS;
@@ -372,7 +369,7 @@ class captcha {
         return "{$this->text_captcha_dir}/fonts/{$this->current_font}";
     }
 
-    function get_current_font()
+    protected function get_current_font()
     {
         if (!$this->load_fonts()) {
             $this->error = TEXT_CAPTCHA_NO_FONTS;
@@ -382,7 +379,7 @@ class captcha {
         return "{$this->text_captcha_dir}/fonts/{$this->current_font}";
     }
 
-    function allocate_colours(&$image)
+    protected function allocate_colours(&$image)
     {
         for ($red = 0; $red <= 255; $red += 51) {
 
@@ -396,7 +393,7 @@ class captcha {
         }
     }
 
-    function random_color($min, $max)
+    protected function random_color($min, $max)
     {
         $this->color_red = intval(mt_rand($min ,$max));
 
@@ -414,24 +411,19 @@ function captcha_clean_up()
 
     $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
 
-    if ((@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. "images"))) {
+    if ((@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. 'images'))) {
 
-        while ((($file = @readdir($dir)) !== false) && $unlink_count < 10) {
+        while ((($file = @readdir($dir)) !== false) && ($unlink_count < 20)) {
+            
+            $captcha_image_file = "$text_captcha_dir/images/$file";
+            
+            if ($file[0] == '.' || is_dir($captcha_image_file)) continue;
+            
+            if ((time() - filemtime($captcha_image_file)) > DAY_IN_SECONDS) {
+                @unlink($captcha_image_file);
+            }
 
             $unlink_count++;
-
-            $captcha_image_file = "$text_captcha_dir/images/$file";
-
-            if (($file != "." && $file != ".." && !@is_dir($captcha_image_file))) {
-
-                if (($modified_time = @filemtime($captcha_image_file))) {
-
-                    if ($modified_time < (time() - DAY_IN_SECONDS)) {
-
-                        @unlink($captcha_image_file);
-                    }
-                }
-            }
         }
 
         return true;

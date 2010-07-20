@@ -135,27 +135,47 @@ if (!forum_check_access_level()) {
 
 // Get the start page
 
-if (($start_page = forum_get_setting('start_page'))) {
+if (($top_banner = forum_get_setting('top_banner'))) {
 
     // Get the start page CSS
     
-    if (($start_page_css = forum_get_setting('start_page_css'))) {
+    if (($top_banner_css = forum_get_setting('top_banner_css'))) {
 
-        html_draw_top("inline_css=$start_page_css");
-        echo message_apply_formatting($start_page);
+        html_draw_top("inline_css=$top_banner_css");
+        echo message_apply_formatting($top_banner);
         html_draw_bottom();
+        exit;
     
     } else {
         
         html_draw_top();
-        echo message_apply_formatting($start_page);
+        echo message_apply_formatting($top_banner);
         html_draw_bottom();
+        exit;
     }
 
 }else {
 
+    // Output the generic top banner
+    
     html_draw_top();
-    echo "<h1>{$lang['editstartpage_help']}</h1>\n";
+    
+    echo "<body style=\"margin: 0px 10px 0px 0px; background-color: rgb(36,55,74);\">\n";
+    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" valign=\"middle\">\n";
+    echo "      <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">\n";
+    echo "        <img src=\"", style_image('beehive_logo.png'), "\" border=\"0\" alt=\"Beehive Logo\" />\n";
+    echo "      </a>\n";
+    echo "    </td>\n";
+    echo "    <td align=\"right\" valign=\"middle\">\n";
+    echo "      <a href=\"http://sourceforge.net\" target=\"_top\">\n";
+    echo "        <img src=\"http://sourceforge.net/sflogo.php?group_id=50772&amp;type=2\" width=\"125\" height=\"37\" border=\"0\" alt=\"SourceForge.net Logo\" />\n";
+    echo "      </a>";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    
     html_draw_bottom();
 }
 

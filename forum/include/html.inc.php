@@ -314,15 +314,17 @@ function html_message_type_error()
     html_draw_bottom();
 }
 
-function html_get_top_page()
+function html_get_favicon()
 {
-    $webtag = get_webtag();
-
-    if (forum_check_webtag_available($webtag)) {
-        return html_get_forum_file_path(sprintf('forums/%1$s/top.php?webtag=%1$s', $webtag));
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
     }
 
-    return html_get_forum_file_path('styles/top.php');
+    if ($user_style !== false) {
+        return html_get_forum_file_path(sprintf('styles/%s/favicon.ico', basename($user_style)));
+    }
+
+    return html_get_forum_file_path('styles/favicon.ico');
 }
 
 function html_get_style_sheet()
@@ -346,17 +348,6 @@ function html_get_emoticon_style_sheet()
 
     if ($user_emoticons !== false) {
         return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticons)));
-    }
-
-    return false;
-}
-
-function html_get_start_page_style_sheet()
-{
-    $webtag = get_webtag(true);
-
-    if (forum_check_webtag_available($webtag)) {
-        return html_get_forum_file_path(sprintf('forums/%s/start_main.css', $webtag));
     }
 
     return false;
@@ -719,7 +710,7 @@ function html_draw_top()
         }
     }
 
-    printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", html_get_forum_file_path(sprintf('forums/%s/favicon.ico', $webtag)));
+    printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", html_get_favicon());
 
     if (($stylesheet = html_get_style_sheet())) {
         html_include_css($stylesheet, 'user_style');

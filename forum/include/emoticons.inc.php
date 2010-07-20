@@ -102,34 +102,10 @@ function emoticons_initialise()
                 }
             }
 
-            if (forum_check_webtag_available($webtag)) {
-
-                if (($dir = @opendir("forums/$webtag/emoticons"))) {
-
-                    while (($file = @readdir($dir)) !== false) {
-
-                        if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
-
-                            if (@file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
-
-                                include("forums/$webtag/emoticons/$file/definitions.php");
-                            }
-                        }
-                    }
-                }
-            }
-
         }else {
 
             if (@file_exists("emoticons/$user_emots/definitions.php")) {
                 include ("emoticons/$user_emots/definitions.php");
-            }
-
-            if (forum_check_webtag_available($webtag)) {
-
-                if (@file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
-                    include ("forums/$webtag/emoticons/$user_emots/definitions.php");
-                }
             }
         }
 
@@ -329,9 +305,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
 
         if (forum_check_webtag_available($webtag)) {
 
-            if (@file_exists("forums/$webtag/emoticons/$emoticon_set/definitions.php")) {
-                include ("forums/$webtag/emoticons/$emoticon_set/definitions.php");
-            }elseif (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+            if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
                 include("emoticons/$emoticon_set/definitions.php");
             }
 

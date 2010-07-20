@@ -961,11 +961,7 @@ function search_output_opensearch_xml()
     echo "<ShortName>$title</ShortName>\n";
     echo "<Description>$title</Description>\n";
     echo "<InputEncoding>UTF-8</InputEncoding>\n";
-
-    if (@file_exists(html_get_forum_file_path("forums/$webtag/favicon.ico"))) {
-        echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">", html_get_forum_uri("/forums/$webtag/favicon.ico"), "</Image>\n";
-    }
-
+    echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">", html_get_favicon(), "</Image>\n";
     echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
     echo "</OpenSearchDescription>\n";
     

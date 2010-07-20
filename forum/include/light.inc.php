@@ -163,10 +163,7 @@ function light_html_draw_top()
         }
     }
     
-    if (@file_exists(html_get_forum_file_path("forums/$webtag/favicon.ico"))) {
-        echo "<link rel=\"shortcut icon\" href=\"", html_get_forum_file_path("forums/$webtag/favicon.ico"), "\" type=\"image/ico\" />\n";
-    }    
-
+    echo "<link rel=\"shortcut icon\" href=\"", html_get_favicon(), "\" type=\"image/ico\" />\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";

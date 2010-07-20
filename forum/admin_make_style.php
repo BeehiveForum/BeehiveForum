@@ -211,7 +211,7 @@ if (isset($_POST['save'])) {
 
                 html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}", 'class=window_title');
 
-                $forum_styles_path = html_get_forum_file_path("forums/$webtag/styles/$stylename");
+                $forum_styles_path = html_get_forum_file_path("styles/$stylename");
 
                 echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
                 echo "<br />\n";

@@ -146,7 +146,6 @@ if (isset($_GET['search'])) {
                        'lang'       => array_intersect_key($lang, array_flip($lang_required)),
                        'images'     => array(),
                        'font_size'  => $font_size,
-                       'top_html'   => html_get_top_page(),
                        'user_style' => html_get_style_sheet(),
                        'emoticons'  => html_get_emoticon_style_sheet(),
                        'frames'     => array('index'       => html_get_frame_name('index'),

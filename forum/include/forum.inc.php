@@ -647,6 +647,7 @@ function forum_check_setting_name($setting_name)
                                   'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
                                   'restricted_message', 'searchbots_show_active', 'searchbots_show_recent',
                                   'send_new_user_email', 'session_cutoff', 'show_links', 'show_stats',
+                                  'start_page', 'start_page_css', 'top_banner', 'top_banner_css', 
                                   'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
@@ -925,34 +926,6 @@ function forum_update_unread_data($unread_cutoff_stamp)
     }
 
     return true;
-}
-
-function forum_load_start_page()
-{
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
-    if (@file_exists("forums/$webtag/start_main.php")) {
-
-        if (($content = @file_get_contents("forums/$webtag/start_main.php"))) {
-
-            return strlen($content) > 0 ? $content : false;
-        }
-    }
-
-    return false;
-}
-
-function forum_save_start_page($content)
-{
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
-    mkdir_recursive("forums/$webtag", 0755);
-
-    return @file_put_contents("forums/$webtag/start_main.php", $content);
 }
 
 function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str)

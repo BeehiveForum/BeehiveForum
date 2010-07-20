@@ -69,14 +69,6 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
 
     if (preg_match("/^[a-z0-9_]+$/Diu", $style_name) < 1) return false;
 
-    // Check to see if the style name is already in use in this forum
-
-    if (@file_exists("forums/$webtag/styles/$style_name/style.css")) {
-
-        $error = STYLE_ALREADY_EXISTS;
-        return false;
-    }
-
     // Check to see if the style name is already in use globally.
 
     if (@file_exists("styles/$style_name/style.css")) {
@@ -87,13 +79,13 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
 
     // Check that the directory structure exists
 
-    mkdir_recursive("forums/$webtag/styles/$style_name", 0755);
+    mkdir_recursive("styles/$style_name", 0755);
 
     // Save the style desc.txt file
 
-    if (@file_put_contents("forums/$webtag/styles/$style_name/desc.txt", $style_desc)) {
+    if (@file_put_contents("styles/$style_name/desc.txt", $style_desc)) {
 
-        if (@file_put_contents("forums/$webtag/styles/$style_name/style.css", $content)) {
+        if (@file_put_contents("styles/$style_name/style.css", $content)) {
 
             return true;
         }
@@ -101,7 +93,7 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
 
     // Undo the mkdir_recursive call above.
 
-    rmdir_recursive("forums/$webtag/styles/$style_name");
+    rmdir_recursive("styles/$style_name");
 
     // And we're out of here ...
 

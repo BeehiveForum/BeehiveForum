@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
+/* $Id: admin_top_banner.php 4484 2010-07-18 14:15:49Z decoyduck $ */
 
 // Set the default timezone
 
@@ -147,7 +147,7 @@ $error_msg_array = array();
 if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
     $t_content = trim(stripslashes_array($_POST['t_content']));
 }else {
-    $t_content = forum_get_setting('start_page', false, '');
+    $t_content = forum_get_setting('top_banner', false, '');
 }
 
 // Determine the toolbar type
@@ -162,28 +162,28 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 
 // Create a new instance of the Beehive editor.
 
-$startpage_editor_message = new MessageText(POST_HTML_AUTO, $t_content, true, true);
+$top_banner_editor_message = new MessageText(POST_HTML_AUTO, $t_content, true, true);
 
 // Submit code.
 
 if (isset($_POST['save'])) {
 
     // New array of forum settings.
-    $new_forum_settings = array('start_page' => $startpage_editor_message->getTidyContent());
+    $new_forum_settings = array('top_banner' => $top_banner_editor_message->getTidyContent());
     
     // Save the settings.
     if (forum_save_settings($new_forum_settings)) {
     
         // Update the admin log.
-        admin_add_log_entry(EDITED_START_PAGE);
+        admin_add_log_entry(EDITED_TOP_BANNER);
         
         // Redirect back to self.
-        header_redirect("admin_startpage.php?webtag=$webtag&updated=true");
+        header_redirect("admin_top_banner.php?webtag=$webtag&updated=true");
         exit;
     }
         
     // Save failed. Show error message.
-    $error_msg_array[] = $lang['startpageerror'];
+    $error_msg_array[] = $lang['topbannererror'];
 
 }elseif (isset($_POST['upload'])) {
 
@@ -206,19 +206,19 @@ if (isset($_POST['save'])) {
             if ((isset($path_parts['extension']) && $path_parts['extension'] == 'css')) {
 
                 // Read the contents of the file.
-                if (($start_page_css = @file_get_contents($_FILES['cssfile']['tmp_name']))) {
+                if (($top_banner_css = @file_get_contents($_FILES['cssfile']['tmp_name']))) {
                     
                     // New array of forum settings.
-                    $new_forum_settings = array('start_page_css' => $start_page_css);
+                    $new_forum_settings = array('top_banner_css' => $top_banner_css);
                     
                     // Save the settings.
                     if (forum_save_settings($new_forum_settings)) {
 
                         // Update admin log.
-                        admin_add_log_entry(EDITED_START_PAGE);
+                        admin_add_log_entry(EDITED_TOP_BANNER);
                         
                         // Redirect back to self.
-                        header_redirect("admin_startpage.php?webtag=$webtag&uploaded=true");
+                        header_redirect("admin_top_banner.php?webtag=$webtag&uploaded=true");
                         exit;
                     }
                 }
@@ -235,9 +235,9 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
+html_draw_top("title={$lang['admin']} » {$lang['edittopbanner']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['editstartpage']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['edittopbanner']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -245,20 +245,20 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (isset($_GET['updated'])) {
 
-    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
-    html_display_success_msg(sprintf($lang['startpageupdated'], $start_page_link), '600', 'center');
+    $top_banner_link = sprintf("<a href=\"top.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedtopbanner']);
+    html_display_success_msg(sprintf($lang['topbannerupdated'], $top_banner_link), '600', 'center');
 
 }elseif (isset($_GET['uploaded'])) {
 
-    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
-    html_display_success_msg(sprintf($lang['cssfileuploaded'], $start_page_link), '600', 'center');
+    $top_banner_link = sprintf("<a href=\"top.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedtopbanner']);
+    html_display_success_msg(sprintf($lang['cssfileuploaded'], $top_banner_link), '600', 'center');
 }
 
-$startpage_editor = new TextAreaHTML("startpage");
+$top_banner_editor = new TextAreaHTML("top_banner");
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form accept-charset=\"utf-8\" name=\"startpage\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"top_banner\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_top_banner.php\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -268,7 +268,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['topbanner']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -279,7 +279,7 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 if ($tool_type <> POST_TOOLBAR_DISABLED) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", $startpage_editor->toolbar(true), "</td>\n";
+    echo "                        <td align=\"left\">", $top_banner_editor->toolbar(true), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -288,7 +288,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $startpage_editor->textarea("t_content", $startpage_editor_message->getTidyContent(), 20, 85, false, false, 'admin_tools_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $top_banner_editor->textarea("t_content", $top_banner_editor_message->getTidyContent(), 20, 85, false, false, 'admin_tools_textarea'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -159,10 +159,6 @@ light_mode_check_noframes();
 
 $lang = load_language_file();
 
-// Top frame filename
-
-$top_html = html_get_top_page();
-
 // Are we being redirected somewhere?
 
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
@@ -210,7 +206,7 @@ if ($skip_logon_page === true) {
 
     $frameset = new html_frameset_rows('index', "60,22,*");
 
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+    $frameset->html_frame("top.php?webtag=$webtag", html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
@@ -240,7 +236,7 @@ if ($skip_logon_page === true) {
     }
 
     $frameset = new html_frameset_rows('index', "60,*");
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+    $frameset->html_frame("top.php?webtag=$webtag", html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
 }else {
@@ -323,7 +319,7 @@ if ($skip_logon_page === true) {
     }
 
     $frameset = new html_frameset_rows('index', "60,$navsize,*");
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+    $frameset->html_frame("top.php?webtag=$webtag", html_get_frame_name('ftop'), 0, 'no', 'noresize');
     $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
     $frameset->html_frame($final_uri, html_get_frame_name('main'));
 }

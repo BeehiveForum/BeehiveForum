@@ -169,7 +169,7 @@ $startpage_editor_message = new MessageText(POST_HTML_AUTO, $t_content, true, tr
 if (isset($_POST['save'])) {
 
     // New array of forum settings.
-    $new_forum_settings = array('start_page' => $startpage_editor_message->getTidyContent());
+    $new_forum_settings = array('start_page' => $startpage_editor_message->getContent());
     
     // Save the settings.
     if (forum_save_settings($new_forum_settings)) {
@@ -241,17 +241,17 @@ echo "<h1>{$lang['admin']} &raquo; {$lang['editstartpage']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '700', 'center');
 
 }elseif (isset($_GET['updated'])) {
 
     $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
-    html_display_success_msg(sprintf($lang['startpageupdated'], $start_page_link), '600', 'center');
+    html_display_success_msg(sprintf($lang['startpageupdated'], $start_page_link), '700', 'center');
 
 }elseif (isset($_GET['uploaded'])) {
 
     $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
-    html_display_success_msg(sprintf($lang['cssfileuploaded'], $start_page_link), '600', 'center');
+    html_display_success_msg(sprintf($lang['cssfileuploaded'], $start_page_link), '700', 'center');
 }
 
 $startpage_editor = new TextAreaHTML("startpage");
@@ -260,7 +260,7 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"startpage\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -284,11 +284,11 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 
 }else {
 
-    $closed_message->set_tinymce(false);
+    $startpage_editor->set_tinymce(false);
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $startpage_editor->textarea("t_content", $startpage_editor_message->getTidyContent(), 20, 85, false, false, 'admin_tools_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $startpage_editor->textarea("t_content", $startpage_editor_message->getTidyContent(), 20, 80, false, false, 'admin_tools_textarea_large'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -310,7 +310,7 @@ echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

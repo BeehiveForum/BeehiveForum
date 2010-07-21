@@ -150,6 +150,10 @@ if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_conte
     $t_content = forum_get_setting('top_banner', false, '');
 }
 
+// Banner HTML editor
+
+$top_banner_editor = new TextAreaHTML("top_banner");
+
 // Determine the toolbar type
 
 $tool_type = POST_TOOLBAR_DISABLED;
@@ -169,7 +173,7 @@ $top_banner_editor_message = new MessageText(POST_HTML_AUTO, $t_content, true, t
 if (isset($_POST['save'])) {
 
     // New array of forum settings.
-    $new_forum_settings = array('top_banner' => $top_banner_editor_message->getTidyContent());
+    $new_forum_settings = array('top_banner' => $top_banner_editor_message->getContent());
     
     // Save the settings.
     if (forum_save_settings($new_forum_settings)) {
@@ -241,26 +245,24 @@ echo "<h1>{$lang['admin']} &raquo; {$lang['edittopbanner']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '700', 'center');
 
 }elseif (isset($_GET['updated'])) {
 
     $top_banner_link = sprintf("<a href=\"top.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedtopbanner']);
-    html_display_success_msg(sprintf($lang['topbannerupdated'], $top_banner_link), '600', 'center');
+    html_display_success_msg(sprintf($lang['topbannerupdated'], $top_banner_link), '700', 'center');
 
 }elseif (isset($_GET['uploaded'])) {
 
     $top_banner_link = sprintf("<a href=\"top.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedtopbanner']);
-    html_display_success_msg(sprintf($lang['cssfileuploaded'], $top_banner_link), '600', 'center');
+    html_display_success_msg(sprintf($lang['cssfileuploaded'], $top_banner_link), '700', 'center');
 }
-
-$top_banner_editor = new TextAreaHTML("top_banner");
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"top_banner\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_top_banner.php\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -284,11 +286,11 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 
 }else {
 
-    $closed_message->set_tinymce(false);
+    $top_banner_editor->set_tinymce(false);
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $top_banner_editor->textarea("t_content", $top_banner_editor_message->getTidyContent(), 20, 85, false, false, 'admin_tools_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", $top_banner_editor->textarea("t_content", $top_banner_editor_message->getTidyContent(), 7, 80, false, false, 'admin_tools_textarea_large'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -310,7 +312,7 @@ echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

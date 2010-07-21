@@ -59,5 +59,8 @@ var htmltools = function()
 }();
 
 $(document).ready(function() {
-    tinyMCE.execCommand("mceAddControl", true, $('.tinymce_editor').get(0).id);
+    
+    $('.tinymce_editor').each(function() {
+        tinyMCE.execCommand("mceAddControl", true, this.id);
+    });
 });

@@ -649,6 +649,11 @@ function html_draw_top()
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
+        
+        if (preg_match('/^inline_css=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
+            if (isset($func_matches[1])) $inline_css = $func_matches[1];
+            unset($arg_array[$key]);
+        }
     }
 
     if (strlen(trim($body_class)) < 1) $body_class = false;
@@ -888,6 +893,15 @@ function html_draw_top()
     }
     
     html_include_javascript("json.php?webtag=$webtag");
+    
+    if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
+        
+        echo "<style type=\"text/css\">\n";
+        echo "<!--\n\n";
+        echo trim($inline_css), "\n\n";
+        echo "//-->\n";
+        echo "</style>\n";
+    }
 
     echo "</head>\n\n";
 

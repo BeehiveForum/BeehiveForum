@@ -340,6 +340,19 @@ function html_get_style_sheet()
     return html_get_forum_file_path('styles/style.css');
 }
 
+function html_get_top_page()
+{
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
+    }
+
+    if ($user_style !== false) {
+        return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)));
+    }
+
+    return false;
+}
+
 function html_get_emoticon_style_sheet()
 {
     if (($user_emoticons = bh_session_get_value('EMOTICONS')) === false) {

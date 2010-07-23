@@ -95,9 +95,9 @@ class TextAreaHTML
 
         $dictionary = new dictionary();
 
-        $toolbar_image = $dictionary->is_installed() ? 'images/html_toolbar.png' : 'images/html_toolbar_no_dict.png';
+        $toolbar_image = $dictionary->is_installed() ? 'html_toolbar.png' : 'html_toolbar_no_dict.png';
 
-        $str = "<div id=\"bh_tb{$this->toolbar_count}\" class=\"tools\" style=\"background-image: url('$toolbar_image');\">\n";
+        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, style_image($toolbar_image));
 
         $str.= $this->toolbar_img($lang['bold'], 'bold');
         $str.= $this->toolbar_img($lang['italic'], 'italic');

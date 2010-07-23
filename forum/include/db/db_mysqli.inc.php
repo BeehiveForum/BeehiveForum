@@ -31,7 +31,7 @@ function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_
     $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
 }
 
-function db_connect($exception = true)
+function db_connect()
 {
     static $connection_id = false;
 

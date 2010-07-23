@@ -38,10 +38,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function styles_get_available()
 {
-    $webtag = get_webtag();
-
-    $lang = load_language_file();
-
     $available_forum_styles  = array();
 
     if ((@$dir = opendir("styles"))) {
@@ -81,8 +77,6 @@ function styles_get_available()
 function style_exists($style_path)
 {
     if (!is_string($style_path)) return false;
-
-    $webtag = get_webtag();
 
     $style_path = basename($style_path);
 

@@ -163,7 +163,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     return true;
 }
 
-function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $closed = false)
+function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $closed = false, $deleted = false)
 {
     if (!is_numeric($fid)) return false;
 
@@ -176,6 +176,8 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';
 
     $closed = ($closed === true) ? sprintf("'%s'", date(MYSQL_DATETIME, time())) : 'NULL';
+    
+    $deleted = ($deleted === true) ? 'Y' : 'N';
 
     if (!$db_post_create_thread = db_connect()) return false;
 
@@ -186,8 +188,9 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
-    $sql.= "STICKY, CREATED, MODIFIED, CLOSED) VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', ";
-    $sql.= "CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), $closed)";
+    $sql.= "STICKY, CREATED, MODIFIED, CLOSED, DELETED) VALUES ('$fid', '$uid', '$title', 0, '$poll', ";
+    $sql.= "'$sticky', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "$closed, $deleted)";
 
     if (!db_query($sql, $db_post_create_thread)) return false;
 

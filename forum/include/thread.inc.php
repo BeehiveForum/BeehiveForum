@@ -636,9 +636,9 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     thread_set_closed($tidb, true);
 
-    // Create new thread
+    // Create new thread. Mark it as deleted so user's cannot see it.
 
-    if (!($new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], $threada['TITLE'], 'N', 'N', true))) {
+    if (!($new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], $threada['TITLE'], 'N', 'N', true, true))) {
 
         // Unlock the threads if they weren't originally locked.
 
@@ -668,29 +668,23 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
             $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
             $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) (SELECT '$new_tid', ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
             $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
             $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID = '$tidb' ORDER BY CREATED) UNION (SELECT TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, EDITED, ";
-            $sql.= "EDITED_BY, IPADDRESS, TID, PID FROM  `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID = '$tida' ORDER BY CREATED)";
+            $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY TID = '$tidb', CREATED";
             break;
 
         case THREAD_MERGE_END:
 
             $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
             $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) (SELECT '$new_tid', ";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
             $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
             $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID = '$tida' ORDER BY CREATED) UNION (SELECT TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, EDITED, ";
-            $sql.= "EDITED_BY, IPADDRESS, TID, PID FROM  `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID = '$tidb' ORDER BY CREATED)";
+            $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY TID = '$tida', CREATED";
             break;
     }
-
+    
     // Execute the query to copy the posts.
 
     if (!db_query($sql, $db_thread_merge)) {
@@ -735,7 +729,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
     $sql.= "WHERE TARGET_POST.TID = '$new_tid' ";
     $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
-
+    
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
@@ -802,20 +796,20 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     thread_set_moved($tidb, $new_tid);
 
-    // Unlock the threads if they weren't originally locked.
-
-    thread_set_closed($tida, ($threada['CLOSED'] > 0));
-
-    thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
-
     // Update the new thread so it's closed if either
-    // of it's source threads were closed.
+    // of it's source threads were originally closed.
 
     thread_set_closed($new_tid, ($threada['CLOSED'] > 0) | ($threadb['CLOSED'] > 0));
+    
+    // Undelete the thread.
+    
+    thread_undelete($new_tid);
 
     // Return the admin log data.
 
     return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
+    
+    exit;
 }
 
 function thread_merge_error($error_code, &$error_str)

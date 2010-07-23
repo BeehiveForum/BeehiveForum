@@ -470,7 +470,7 @@ if (isset($_POST['save'])) {
                             list($merge_thread) = explode('.', $merge_thread);
                         }
 
-                        if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
+                        if (($merge_result = thread_merge($tid, $merge_thread, $merge_type, $error_str))) {
 
                             post_add_edit_text($tid, 1);
 

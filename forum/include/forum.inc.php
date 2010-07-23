@@ -647,8 +647,7 @@ function forum_check_setting_name($setting_name)
                                   'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
                                   'restricted_message', 'searchbots_show_active', 'searchbots_show_recent',
                                   'send_new_user_email', 'session_cutoff', 'show_links', 'show_stats',
-                                  'start_page', 'start_page_css', 'top_banner', 'top_banner_css', 
-                                  'wiki_integration_uri');
+                                  'start_page', 'start_page_css', 'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
 }

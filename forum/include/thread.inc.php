@@ -808,8 +808,6 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     // Return the admin log data.
 
     return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
-    
-    exit;
 }
 
 function thread_merge_error($error_code, &$error_str)

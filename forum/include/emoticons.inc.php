@@ -64,8 +64,6 @@ function emoticons_initialise()
 {
     static $emoticons_array = false;
 
-    $webtag = get_webtag();
-
     if (!is_array($emoticons_array) || sizeof($emoticons_array) < 1) {
 
         // Get the user's emoticon set from their sesion.
@@ -303,17 +301,8 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
         $emoticon = array();
         $emoticon_text = array();
 
-        if (forum_check_webtag_available($webtag)) {
-
-            if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
-                include("emoticons/$emoticon_set/definitions.php");
-            }
-
-        }else {
-
-            if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
-                include("emoticons/$emoticon_set/definitions.php");
-            }
+        if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+            include("emoticons/$emoticon_set/definitions.php");
         }
 
         if (sizeof($emoticon) > 0) {

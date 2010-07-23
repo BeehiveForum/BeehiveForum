@@ -346,11 +346,11 @@ function html_get_top_page()
         $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
     }
 
-    if ($user_style !== false) {
+    if (($user_style !== false)) {
         return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)));
     }
 
-    return false;
+    return html_get_forum_file_path('styles/top.php');
 }
 
 function html_get_emoticon_style_sheet()

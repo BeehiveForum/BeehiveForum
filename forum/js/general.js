@@ -60,7 +60,7 @@ var beehive = $.extend({}, beehive, {
                 beehive.reload_style_sheets.call($(this.contentDocument).find('head').get(0));
                 
                 if ($(this).attr('name') === beehive.frames.ftop) {
-                    $(this).attr('src', beehive.top_html);
+                    $(this).attr('src', 'styles/' + beehive.user_style + '/top.php');
                 }
             }
         });
@@ -90,8 +90,18 @@ var beehive = $.extend({}, beehive, {
         
         var $head = $(this);
         
-        $head.find('link[id="user_style"]').attr('href', beehive.user_style).appendTo($head);
+        $head.find('link[id="user_style"]').attr('href', 'styles/' + beehive.user_style + '/style.css').appendTo($head);
         $head.find('link[id="emoticon_style"]').attr('href', beehive.emoticons).appendTo($head);
+    },
+    
+    reload_frame : function(frame_name) {
+        
+        beehive.process_frames(top.document.body, function() {
+            
+            if ((this.contentDocument) && ($(this).attr('name') === frame_name)) {
+                $(this).attr('src', $(this).attr('src'));
+            }
+        });
     },
     
     get_resize_width : function() {

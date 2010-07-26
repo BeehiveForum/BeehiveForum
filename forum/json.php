@@ -102,6 +102,12 @@ if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 
+// User style
+
+if (($user_style = bh_session_get_value('STYLE')) === false) {
+    $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
+}
+
 // Look for autocomplete search request
 
 if (isset($_GET['search'])) {
@@ -164,12 +170,17 @@ if (isset($_GET['search'])) {
 
 
 
-    // Get all the style images
-
-    foreach (glob("images/*.png") as $image_filename) {
+    // Check the user has a valid style.
+    
+    if ($user_style !== false) {
+    
+        // Get all the styles images.
         
-        $image_filename = basename($image_filename);
-        $json_data['images'][$image_filename] = style_image($image_filename);
+        foreach (glob("styles/$user_style/images/*.png") as $image_filename) {
+            
+            $image_filename = basename($image_filename);
+            $json_data['images'][$image_filename] = style_image($image_filename);
+        }
     }
 
     // If the data is requested via JSON send the 

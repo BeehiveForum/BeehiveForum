@@ -446,7 +446,7 @@ function bh_exception_handler($exception)
             echo "                          <div align=\"center\">\n";
             echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
             echo "                              <tr>\n";
-            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"images/warning.png\" width=\"15\" height=\"15\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" width=\"15\" height=\"15\" alt=\"Warning\" title=\"Warning\" /></td>\n";
             echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
             echo "                              </tr>\n";
             echo "                            </table>\n";
@@ -461,7 +461,7 @@ function bh_exception_handler($exception)
                 echo "                          <div align=\"center\">\n";
                 echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
                 echo "                              <tr>\n";
-                echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"images/warning.png\" width=\"15\" height=\"15\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+                echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" width=\"15\" height=\"15\" alt=\"Warning\" title=\"Warning\" /></td>\n";
                 echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
                 echo "                              </tr>\n";
                 echo "                            </table>\n";

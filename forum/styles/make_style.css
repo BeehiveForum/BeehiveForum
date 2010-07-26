@@ -211,7 +211,7 @@ p, h1, h2 {
     border-right: 1px solid #F9F9F6;
     border-top: 1px solid #82827E;
     float: left;
-        padding-left: 2px;
+    padding-left: 2px;
 }
 
 .bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
@@ -1531,4 +1531,8 @@ h3 {
 
 h6 {
     font-size: 80%;
+}
+
+.error_handler_details pre {
+    font-size: 120%;
 }

@@ -1006,17 +1006,30 @@ function perm_update_user_forum_permissions($forum_fid, $uid, $perm)
 
     if (!is_numeric($forum_fid)) return false;
     if (!is_numeric($uid)) return false;
+    
+    if (($gid = perm_get_user_gid($uid))) {
+        
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES ('$gid', '$forum_fid', '0', '$perm') ";
+        $sql.= "ON DUPLICATE KEY UPDATE PERM = PERM | VALUES(PERM)";
+        
+        if (!db_query($sql, $db_perm_update_user_forum_permissions)) return false;
 
-    $sql = "INSERT INTO GROUP_PERMS (FORUM, FID, PERM) ";
-    $sql.= "VALUES ('$forum_fid', '0', '$perm')";
+        return true;
+    
+    } else {
 
-    if (db_query($sql, $db_perm_update_user_forum_permissions)) {
+        $sql = "INSERT INTO GROUP_PERMS (FORUM, FID, PERM) ";
+        $sql.= "VALUES ('$forum_fid', '0', '$perm')";
 
-        $new_gid = db_insert_id($db_perm_update_user_forum_permissions);
-        return perm_add_user_to_group($uid, $new_gid);
+        if (db_query($sql, $db_perm_update_user_forum_permissions)) {
+
+            $new_gid = db_insert_id($db_perm_update_user_forum_permissions);
+            return perm_add_user_to_group($uid, $new_gid);
+        }
     }
 
-    return true;
+    return false;
 }
 
 function perm_folder_get_permissions($fid)

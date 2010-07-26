@@ -174,7 +174,7 @@ if (isset($_POST['delete'])) {
             }
         }
 
-        html_draw_top("title={$lang['admin']} » {$lang['manageforums']}", 'class=window_title');
+        html_draw_top("title={$lang['admin']} » {$lang['manageforums']}", 'class=window_title', 'admin.js');
 
         echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
         echo "<br />\n";
@@ -480,7 +480,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['addforum']}", 'class=window_title', 'search_popup.js');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['addforum']}", 'class=window_title', 'admin.js', 'search_popup.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['addforum']}</h1>\n";
 
@@ -597,7 +597,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['editforum']} » {$forum_data['WEBTAG']}", 'class=window_title', 'search_popup.js');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['editforum']} » {$forum_data['WEBTAG']}", 'class=window_title', 'admin.js', 'search_popup.js');
 
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
 
@@ -607,7 +607,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     }else if (isset($_GET['edited'])) {
 
-        html_display_success_msg($lang['successfullyupdatedforum'], '500', 'center');
+        html_display_success_msg($lang['successfullyupdatedforum'], '500', 'center', 'forum_updated');
     }
 
     echo "<br />\n";
@@ -699,7 +699,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} » {$lang['manageforums']}", 'class=window_title', 'admin.js');
 
     $forums_array = admin_get_forum_list($start);
 
@@ -711,15 +711,15 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     }else if (isset($_GET['added'])) {
 
-        html_display_success_msg($lang['successfullycreatednewforum'], '700', 'center');
+        html_display_success_msg($lang['successfullycreatednewforum'], '700', 'center', 'forum_created');
 
     }else if (isset($_GET['edited'])) {
 
-        html_display_success_msg($lang['successfullyupdatedforum'], '700', 'center');
+        html_display_success_msg($lang['successfullyupdatedforum'], '700', 'center', 'forum_updated');
 
     }else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg($lang['successfullyremovedselectedforums'], '700', 'center');
+        html_display_success_msg($lang['successfullyremovedselectedforums'], '700', 'center', 'forum_removed');
 
     }else if (sizeof($forums_array['forums_array']) < 1) {
 

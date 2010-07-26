@@ -46,4 +46,10 @@ $(beehive).bind('init', function() {
                 break;
         }
     });
+    
+    $('#forum_created,#forum_updated,#forum_removed').each(function() {
+
+        beehive.reload_frame(beehive.frames.fnav);
+        return false;
+    });
 });

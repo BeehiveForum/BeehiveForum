@@ -317,7 +317,7 @@ function html_message_type_error()
 function html_get_favicon()
 {
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
@@ -330,7 +330,7 @@ function html_get_favicon()
 function html_get_style_sheet()
 {
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
@@ -343,7 +343,7 @@ function html_get_style_sheet()
 function html_get_top_page()
 {
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if (($user_style !== false)) {
@@ -1162,7 +1162,7 @@ function html_js_safe_str($str)
 function style_image($img)
 {
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style'));
+        $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {

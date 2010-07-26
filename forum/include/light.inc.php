@@ -1283,7 +1283,7 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
 
 function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<input type=\"radio\" name=\"$name\" value=\"$value\"";
+    $html = "<label><input type=\"radio\" name=\"$name\" value=\"$value\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -1293,7 +1293,7 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
         $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />$text";
+    $html.= " />$text</label>";
 
     return $html;
 }
@@ -1913,7 +1913,7 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_h
 
 function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\" class=\"bhlightinput\"";
+    $html = "<label><input type=\"checkbox\" name=\"$name\" value=\"$value\" class=\"bhlightinput\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -1923,7 +1923,7 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
         $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />$text";
+    $html.= " />$text</label>";
 
     return $html;
 }

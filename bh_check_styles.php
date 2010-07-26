@@ -184,10 +184,6 @@ $css_rules_array = array();
 
 get_file_list($file_list, 'forum/styles', '.css');
 
-// Get the CSS files in the forums directory.
-
-get_file_list($file_list, 'forum/forums', '.css');
-
 // Iterate over each of the files.
 
 foreach($file_list as $css_filepath) {

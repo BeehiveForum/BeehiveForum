@@ -1045,7 +1045,6 @@ $lang['forum_settings_help_73'] = "Please Note: Your CDN paths should be to the 
 
 $lang['aidnotspecified'] = "AID not specified.";
 $lang['upload'] = "Upload";
-$lang['uploadnewattachment'] = "Upload New Attachment";
 $lang['waitdotdot'] = "Wait..";
 $lang['successfullyuploaded'] = "Successfully Uploaded: %s";
 $lang['failedtoupload'] = "Failed to upload: %s. Check free attachment space!";
@@ -1060,7 +1059,6 @@ $lang['totalsize'] = "Total Size";
 $lang['freespace'] = "Free Space";
 $lang['attachmentproblem'] = "There was a problem downloading this attachment. Please try again later.";
 $lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
-$lang['canonlyuploadmaximum'] = "You can only upload a maximum of 10 files at a time";
 $lang['deleteattachments'] = "Delete attachments";
 $lang['deleteattachmentsconfirm'] = "Are you sure you want to delete the selected attachments?";
 $lang['deletethumbnailsconfirm'] = "Are you sure you want to delete the selected attachments thumbnails?";
@@ -1207,9 +1205,6 @@ $lang['list'] = "List";
 $lang['folderhidden'] = "This folder is hidden";
 $lang['hide'] = "hide";
 $lang['unhide'] = "unhide";
-$lang['nosubfolders'] = "No subfolders in this category";
-$lang['1subfolder'] = "1 subfolder in this category";
-$lang['subfoldersinthiscategory'] = "subfolders in this category";
 $lang['linksdelexp'] = "Entries in a deleted folder will be moved to the parent folder. Only folders which do not contain subfolders may be deleted.";
 $lang['listview'] = "List View";
 $lang['listviewcannotaddfolders'] = "Cannot add folders in this view. Showing 20 entries at a time.";
@@ -1229,7 +1224,6 @@ $lang['addressurluri'] = "Address";
 $lang['addnewfolder'] = "Add a new folder";
 $lang['addnewfolderunder'] = "Adding new folder under";
 $lang['editfolder'] = "Edit Folder";
-$lang['editingfolder'] = "Editing folder";
 $lang['mustchooserating'] = "You must choose a rating!";
 $lang['commentadded'] = "Your comment was added.";
 $lang['commentdeleted'] = "Comment was deleted.";
@@ -1450,7 +1444,6 @@ $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
 $lang['saveselectedmessages'] = "Save Selected Messages";
-$lang['deleteselectedmessages'] = "Delete Selected Messages";
 $lang['exportselectedmessages'] = "Export Selected Messages";
 $lang['nosubject'] = "No Subject";
 $lang['norecipients'] = "No Recipients";
@@ -1516,7 +1509,6 @@ $lang['userexp_9'] = "<b>Relationships</b> lets you manage your relationship wit
 $lang['userexp_9'] = "<b>Word Filter</b> lets you edit your personal word filter.";
 $lang['userexp_10'] = "<b>Thread Subscriptions</b> allows you to manage your thread subscriptions.";
 $lang['userdetails'] = "User Details";
-$lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['norelationshipssetup'] = "You have no user relationships set up. Add a new user by searching below.";
@@ -1629,8 +1621,6 @@ $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items fol
 $lang['includepminreply'] = "Include message body when replying to PM";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 $lang['friendsonly'] = "Friends only?";
-$lang['globalstyles'] = "Global Styles";
-$lang['forumstyles'] = "Forum Styles";
 $lang['youmustenteryourcurrentpasswd'] = "You must enter your current password";
 $lang['youmustenteranewpasswd'] = "You must enter a new password";
 $lang['youmustconfirmyournewpasswd'] = "You must confirm your new password";
@@ -1867,12 +1857,8 @@ $lang['clickheretoviewresults'] = "Click here to view results.";
 // Search Popup (search_popup.php) -------------------------------------
 
 $lang['select'] = "Select";
-$lang['currentselection'] = "Current Selection";
-$lang['addtoselection'] = "Add to Selection";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
-$lang['unkownsearchtypespecified'] = "Unknown search type specified";
-$lang['maximumselectionoftenlimitreached'] = "Maximum selection limit of 10 has been reached";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -2141,7 +2127,6 @@ $lang['notindictionary'] = "Not in dictionary";
 $lang['changeto'] = "Change to";
 $lang['restartspellcheck'] = "Restart";
 $lang['cancelchanges'] = "Cancel Changes";
-$lang['initialisingdotdotdot'] = "Initialising...";
 $lang['spellcheckcomplete'] = "Spell check is complete. To restart spell check click restart button below.";
 $lang['spellcheck'] = "Spell check";
 $lang['noformobj'] = "No form object specified for return text";
@@ -2254,13 +2239,11 @@ $lang['couldnotretrieveforumdata'] = "Could not retrieve forum data";
 $lang['cannotmergepolls'] = "One or more threads is a poll. You cannot merge polls";
 $lang['couldnotretrievethreaddatamerge'] = "Could not retrieve thread data from one or more threads";
 $lang['couldnotretrievethreaddatasplit'] = "Could not retrieve thread data from source thread";
-$lang['couldnotretrievepostdatamerge'] = "Could not retrieve post data from one or more threads";
 $lang['couldnotretrievepostdatasplit'] = "Could not retrieve post data from source thread";
 $lang['failedtocreatenewthreadformerge'] = "Failed to create new thread for merge";
 $lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for split";
 $lang['nopermissiontomergethreads'] = "You are not permitted to merge the selected threads";
 $lang['failedtoexecutethreadmergequery'] = "Failed to execute thread merge query";
-$lang['failedtoexecutethreadsplitquery'] = "Failed to execute thread split query";
 
 // Thread subscriptions
 

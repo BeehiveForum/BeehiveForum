@@ -426,7 +426,7 @@ function install_check_php_extensions()
 function install_check_php_version()
 {
     // Get and compare the PHP version.
-    if (version_compare(phpversion(), "5.2.1", "<")) {
+    if (version_compare(phpversion(), "5.2.0", "<")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";

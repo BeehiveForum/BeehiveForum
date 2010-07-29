@@ -757,7 +757,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}\" title=\"", sprintf($lang['visitforum'], $forum_data['FORUM_NAME']), "\" target=\"_blank\">{$forum_data['FORUM_NAME']}</a></td>\n";
 
             if (isset($forum_data['MESSAGES'])) {
-                echo "                  <td align=\"left\">{$forum_data['MESSAGES']} {$lang['messages']}</td>\n";
+                echo "                  <td align=\"left\">", number_format($forum_data['MESSAGES'], 0), " ", ($forum_data['MESSAGES'] > 1) ? $lang['messages'] : $lang['message'], "</td>\n";
             }else {
                 echo "                  <td align=\"left\">{$lang['unknownmessagecount']}</td>\n";
             }
@@ -767,13 +767,16 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             }else {
                 echo "                  <td align=\"left\">{$lang['unknown']}</td>\n";
             }
+            
+            echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}&amp;final_uri=admin_forum_settings.php%3Fwebtag%3D{$forum_data['WEBTAG']}\" target=\"", html_get_top_frame_name(), "\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;";
 
             if (isset($forum_data['DEFAULT_FORUM']) && $forum_data['DEFAULT_FORUM'] == 1) {
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_forum_settings.php?webtag={$forum_data['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></a></td>\n";
+                echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></a>\n";
             }else {
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_forum_settings.php?webtag={$forum_data['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default={$forum_data['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></a></td>\n";
+                echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default={$forum_data['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></a>\n";
             }
-
+            
+            echo "                  </td>\n";
             echo "                </tr>\n";
         }
     }

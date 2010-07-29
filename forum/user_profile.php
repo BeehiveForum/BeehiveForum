@@ -198,7 +198,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\" width=\"95%\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\" id=\"profile_options\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" border=\"0\" /></h2>\n";
+echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\" id=\"profile_options\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "&nbsp;<img src=\"", style_image('post_options.png'), "\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" border=\"0\" /></h2>\n";
 echo "                          <div class=\"profile_options_container\" id=\"profile_options_container\">\n";
 echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                              <tr>\n";

@@ -140,12 +140,20 @@ if (($start_page = forum_get_setting('start_page'))) {
     // Get the start page CSS
     
     if (($start_page_css = forum_get_setting('start_page_css'))) {
+        
+        // Check for cached page.
+        
+        cache_check_etag(md5($start_page. $start_page_css));
 
         html_draw_top("inline_css=$start_page_css");
         echo message_apply_formatting($start_page);
         html_draw_bottom();
     
     } else {
+        
+        // Check for cached page.
+        
+        cache_check_etag(md5($start_page));
         
         html_draw_top();
         echo message_apply_formatting($start_page);

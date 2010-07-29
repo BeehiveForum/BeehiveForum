@@ -1262,7 +1262,7 @@ if (!$new_thread) {
     echo "  <br />\n";
     echo "  <table  width=\"720\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
+    echo "      <td align=\"center\"><img src=\"", style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 }

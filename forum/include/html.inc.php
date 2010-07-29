@@ -201,7 +201,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "      <td class=\"error_msg_text\">{$lang['thefollowingerrorswereencountered']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -229,7 +229,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
     echo "      <td valign=\"top\" class=\"success_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -250,7 +250,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "      <td valign=\"top\" class=\"error_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -271,7 +271,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
     echo "      <td valign=\"top\" class=\"warning_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";

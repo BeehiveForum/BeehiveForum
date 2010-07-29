@@ -369,7 +369,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
         if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" /></td>\n";
 
         }elseif (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
@@ -377,7 +377,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" /></td>\n";
 
             }else {
 

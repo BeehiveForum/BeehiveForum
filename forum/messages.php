@@ -607,7 +607,7 @@ echo "  </tr>\n";
 if (!user_is_guest()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" rel=\"$tid.0\" class=\"quick_reply_link\"><b>{$lang['quickreplyall']}</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". style_image('quickreplyall.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" rel=\"$tid.0\" class=\"quick_reply_link\"><b>{$lang['quickreplyall']}</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";

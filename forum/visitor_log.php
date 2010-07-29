@@ -412,7 +412,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" height=\"15\" width=\"15\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" /></td>\n";
 
         }elseif (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
 
@@ -420,7 +420,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" /></td>\n";
 
             }else {
 

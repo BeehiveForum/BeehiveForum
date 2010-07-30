@@ -84,16 +84,17 @@ $(beehive).bind('init', function() {
     $('#quick_reply_container #t_content').bind('keyup', function(e) {
 
         if ($(this).val().trim().length > 0 && e.ctrlKey && e.which == 13) {
-            $('#quick_reply_container button#post').click();
+            $('#quick_reply_container input#post').click();
         }
     });
 
-    $('#quick_reply_container button#post').bind('click', function() {
+    $('#quick_reply_container input#post').bind('click', function() {
         return $('#quick_reply_container #t_content').val().trim().length > 0;
     });
 
-    $('#quick_reply_container button#cancel').bind('click', function() {
+    $('#quick_reply_container input#cancel').bind('click', function() {
         $('#quick_reply_container').hide();
+        console.log('test');
     });
 
     $('.quick_reply_link').bind('click', function() {

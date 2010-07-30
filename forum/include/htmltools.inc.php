@@ -179,7 +179,7 @@ class TextAreaHTML
 
         $this->toolbar_count = $this->toolbar_count + 1;
 
-        $str = "<div id=\"bh_tb{$this->toolbar_count}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_reduced.png');\">\n";
+        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, style_image('html_toolbar_reduced.png'));
 
         $str.= $this->toolbar_img($lang['bold'], 'bold');
         $str.= $this->toolbar_img($lang['italic'], 'italic');

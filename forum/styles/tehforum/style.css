@@ -1430,7 +1430,6 @@ p, h1, h2 {
 }
 
 .tools {
-    background-image: url('../../images/html_toolbar.png');
     background-repeat: no-repeat;
     display: none;
     margin: 0;

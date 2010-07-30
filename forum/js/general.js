@@ -199,7 +199,7 @@ $(beehive).bind('init', function() {
         return false;
     });
     
-    $('button#print').bind('click', function() {
+    $('input#print').bind('click', function() {
         window.print();
     });
     

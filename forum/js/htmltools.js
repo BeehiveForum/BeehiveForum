@@ -1055,7 +1055,7 @@ $(beehive).bind('init', function() {
         $(this).attr('selectedIndex', 0);
     });
 
-    $('div.tools button').bind('click', function() {
+    $('div.tools input').bind('click', function() {
 
         if (htmltools.auto_spell_check()) {
             htmltools.clear_focus();

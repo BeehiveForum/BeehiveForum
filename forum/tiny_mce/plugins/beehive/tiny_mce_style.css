@@ -25,6 +25,7 @@ pre {
 
 .code {
     font-family: monospace;
+    font-size: 120%;
     border: 1px solid #CCCCCC;
     background-color: #EEEEEE;
     margin-top: 0px;

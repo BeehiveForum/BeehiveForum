@@ -85,6 +85,10 @@ a.button {
     font-size: 9pt;
 }
 
+.code {
+    font-size: 10pt;
+}
+
 .edit_text {
     font-size: 9pt;
 }
@@ -94,7 +98,7 @@ a.button {
 }
 
 .error_handler_details pre {
-    font-size: 12pt;
+    font-size: 10pt;
 }
 
 .error_msg {

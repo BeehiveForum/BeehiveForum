@@ -857,6 +857,7 @@ p, h1, h2 {
 
 .profile_item_name {
     font-size: 100%;
+    padding: 2px 10px 2px 2px;
 }
 
 .profile_item_overflow {

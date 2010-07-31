@@ -80,7 +80,7 @@ function formatname($filename)
 $lang = load_language_file();
 
 // Where are the images stored?
-$images_dir = "forumites";
+$images_dir = "../../../forumites";
 
 // Initialise the array to store the images in
 $images_array = array();

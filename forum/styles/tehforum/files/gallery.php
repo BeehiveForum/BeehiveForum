@@ -107,12 +107,12 @@ if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
 
                         $modified_time = filemtime($filepath);
 
-                        html_draw_top('openprofile.js', "stylesheet=gallery.css");
+                        html_draw_top('user_profile.js', "stylesheet=gallery.css");
 
                         echo "<h1>Uploaded Image</h1>\n";
                         echo "<div class=\"image\">\n";
-                        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\"><img src=\"$images_dir/", rawurlencode($logon), "?$modified_time\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
-                        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\">", formatname($logon), "</a></div></p>\n";
+                        echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($logon), "?$modified_time\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
+                        echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\">", formatname($logon), "</a></div></p>\n";
                         echo "<p><div align=\"center\">[<a href=\"{$_SERVER['PHP_SELF']}\">Random Image</a> | <a href=\"{$_SERVER['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
                         echo "</div>\n";
 
@@ -123,7 +123,7 @@ if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
             }
         }
 
-        html_draw_top('openprofile.js', "stylesheet=gallery.css");
+        html_draw_top('user_profile.js', "stylesheet=gallery.css");
         echo "<h1>Error</h1>\n";
         echo "<p>Something went wrong. You'll be needing to try again.</p>";
         html_draw_bottom();
@@ -152,7 +152,7 @@ if (@$dir = opendir($images_dir)) {
 sort($images_array);
 
 // Draw the HTML header
-html_draw_top('openprofile.js', "stylesheet=gallery.css");
+html_draw_top('user_profile.js', "stylesheet=gallery.css");
 
 // Delete a selected image
 if (isset($_GET['delete'])) {
@@ -166,8 +166,8 @@ if (isset($_GET['delete'])) {
 
         echo "<h1>Delete Image</h1>\n";
         echo "<div class=\"image\">\n";
-        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
-        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></div></p>\n";
         echo "<p><div align=\"center\">[<a href=\"{$_SERVER['PHP_SELF']}?confirm_delete=$image\">Delete</a> | <a href=\"{$_SERVER['PHP_SELF']}?gallery\">Cancel</a>]</div></p>\n";
         echo "</div>\n";
 
@@ -186,7 +186,7 @@ if (isset($_GET['delete'])) {
 
             if (!@unlink("forums/$webtag/$images_dir/$image")) {
 
-                html_draw_top('openprofile.js', "stylesheet=start_main.css");
+                html_draw_top('user_profile.js', "stylesheet=start_main.css");
                 echo "<h1>Error</h1>\n";
                 echo "<p>Something went wrong. You'll be needing to try again.</p>";
                 html_draw_bottom();
@@ -240,7 +240,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 
             echo "  <li>\n";
             echo "    <a href=\"{$_SERVER['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
-            echo "    <label><a href=\"/forum/user_profile.php?webtag={$webtag}&amp;logon=", rawurlencode($image), "\" onclick=\"openProfileByLogon('$image', '$webtag'); return false;\">", formatname($image), "</a></label>\n";
+            echo "    <label><a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></label>\n";
             echo "  </li>\n";
 
         }elseif (strlen(trim($image)) < 1) {
@@ -294,11 +294,11 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
     echo "<h1>Some random person</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a>\n";
+    echo "  <a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a>\n";
     echo "</div>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a>\n";
+    echo "  <a href=\"user_profile.php?webtag=$webtag&amp;uid=$logon\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a>\n";
     echo "</div>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";

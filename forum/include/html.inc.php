@@ -464,13 +464,15 @@ function html_include_javascript($script_filepath)
     printf("<script type=\"text/javascript\" src=\"%s%s\"></script>\n", $script_filepath, $query_string);
 }
 
-function html_include_css($script_filepath, $id, $media = 'screen')
+function html_include_css($script_filepath, $id = false, $media = 'screen')
 {
     $path_parts = path_info_query($script_filepath);
     
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
     
     $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
+    
+    $id = ($id !== false) ? $id : sprintf('style_%s', preg_replace('/[^a-zA-Z]+/', '', $script_filepath));
     
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
@@ -804,7 +806,7 @@ function html_draw_top()
                 // Check that we're not on one of the pages.
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
-                    html_include_javascript('js/pm.js');
+                    html_include_javascript(html_get_forum_file_path('js/pm.js'));
                 }
             }
 
@@ -820,7 +822,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                    html_include_javascript('js/overflow.js');
+                    html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
             }
 
@@ -836,7 +838,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    html_include_javascript('js/spoiler.js');
+                    html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
                 }
             }
         }
@@ -849,7 +851,7 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                html_include_javascript('js/stats.js');
+                html_include_javascript(html_get_forum_file_path('js/stats.js'));
             }
         }
     }
@@ -864,17 +866,17 @@ function html_draw_top()
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                html_include_javascript("tiny_mce/tiny_mce.js");
-                html_include_javascript('js/tiny_mce.js');
+                html_include_javascript(html_get_forum_file_path('tiny_mce/tiny_mce.js'));
+                html_include_javascript(html_get_forum_file_path('js/tiny_mce.js'));
 
             }else {
 
-                html_include_javascript("js/$func_args");
+                html_include_javascript(html_get_forum_file_path("js/$func_args"));
             }
 
         }else {
 
-            html_include_javascript("js/$func_args");
+            html_include_javascript(html_get_forum_file_path("js/$func_args"));
         }
     }
 
@@ -892,7 +894,7 @@ function html_draw_top()
         echo "</script>\n";
     }
     
-    html_include_javascript("json.php?webtag=$webtag");
+    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
     
     if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
         

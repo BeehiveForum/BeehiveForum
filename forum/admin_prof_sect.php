@@ -445,7 +445,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['sectionname']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
     echo "                  <td class=\"subhead\" align=\"center\">{$lang['items']}</td>\n";
     echo "                </tr>\n";
 
@@ -463,21 +464,22 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
             if ($profile_sections['profile_sections_count'] == 1) {
 
                 echo "                  <td valign=\"top\" align=\"left\" width=\"450\" colspan=\"2\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</a></td>\n";
+                echo "                  <td align=\"right\">&nbsp;</td>\n";
 
             }elseif ($profile_index == $profile_sections['profile_sections_count']) {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
                 echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</a></td>\n";
+                echo "                  <td align=\"right\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
 
             }elseif ($profile_index > 1) {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
                 echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</a></td>\n";
+                echo "                  <td align=\"right\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
             }else {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
                 echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</a></td>\n";
+                echo "                  <td align=\"right\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             }
 
             echo "                  <td valign=\"top\" align=\"center\" width=\"100\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">", htmlentities_array($profile_section['ITEM_COUNT']), "</a></td>\n";

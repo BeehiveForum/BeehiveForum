@@ -614,7 +614,7 @@ p, h1, h2 {
 }
 
 .move_down_ctrl {
-    background-color: #5A809F;
+    background-color: transparent;
     border: none;
     height: 18px;
     margin-right: 1px;
@@ -627,7 +627,7 @@ p, h1, h2 {
 }
 
 .move_down_ctrl_disabled {
-    background-color: #C8D7E6;
+    background-color: transparent;
     border: none;
     height: 18px;
     margin-right: 1px;
@@ -640,7 +640,7 @@ p, h1, h2 {
 }
 
 .move_up_ctrl {
-    background-color: #5A809F;
+    background-color: transparent;
     border: none;
     height: 18px;
     margin-right: 1px;
@@ -653,7 +653,7 @@ p, h1, h2 {
 }
 
 .move_up_ctrl_disabled {
-    background-color: #C8D7E6;
+    background-color: transparent;
     border: none;
     height: 18px;
     margin-right: 1px;

@@ -190,7 +190,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
     $sql.= "STICKY, CREATED, MODIFIED, CLOSED, DELETED) VALUES ('$fid', '$uid', '$title', 0, '$poll', ";
     $sql.= "'$sticky', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "$closed, $deleted)";
+    $sql.= "$closed, '$deleted')";
 
     if (!db_query($sql, $db_post_create_thread)) return false;
 

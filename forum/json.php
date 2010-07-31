@@ -172,10 +172,13 @@ if (isset($_GET['search'])) {
 
     // Get all the styles images.
     
-    foreach (glob("styles/$user_style/images/*.png") as $image_filename) {
-        
-        $image_filename = basename($image_filename);
-        $json_data['images'][$image_filename] = style_image($image_filename);
+    if (($images_array = glob("styles/$user_style/images/*.png"))) {
+    
+        foreach ($images_array as $image_filename) {
+            
+            $image_filename = basename($image_filename);
+            $json_data['images'][$image_filename] = style_image($image_filename);
+        }
     }
 
     // If the data is requested via JSON send the 

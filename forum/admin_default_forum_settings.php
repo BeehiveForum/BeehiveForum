@@ -261,10 +261,10 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
     }
 
-    if (isset($_POST['content_delivery_network_paths']) && strlen(trim(stripslashes_array($_POST['content_delivery_network_paths']))) > 0) {
-        $new_forum_settings['content_delivery_network_paths'] = trim(stripslashes_array($_POST['content_delivery_network_paths']));
+    if (isset($_POST['content_delivery_domains']) && strlen(trim(stripslashes_array($_POST['content_delivery_domains']))) > 0) {
+        $new_forum_settings['content_delivery_domains'] = trim(stripslashes_array($_POST['content_delivery_domains']));
     }else {
-        $new_forum_settings['content_delivery_network_paths'] = "";
+        $new_forum_settings['content_delivery_domains'] = "";
     }
 
     if (isset($_POST['messages_unread_cutoff']) && in_array($_POST['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) {
@@ -838,7 +838,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\" width=\"270\">{$lang['contentdeliverynetworkpaths']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_textarea("content_delivery_network_paths", (isset($forum_global_settings['content_delivery_network_paths'])) ? htmlentities_array($forum_global_settings['content_delivery_network_paths']) : "", 6, 72, false, 'admin_tools_textarea'), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_textarea("content_delivery_domains", (isset($forum_global_settings['content_delivery_domains'])) ? htmlentities_array($forum_global_settings['content_delivery_domains']) : "", 6, 72, false, 'admin_tools_textarea'), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";

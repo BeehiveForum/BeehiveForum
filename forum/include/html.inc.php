@@ -1509,7 +1509,7 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
     
     $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
     
-    if (($allow_cdn === true) && (($cdn_domain = forum_get_cdn_domain()))) {
+    if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_domain()))) {
         return sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
     }
     

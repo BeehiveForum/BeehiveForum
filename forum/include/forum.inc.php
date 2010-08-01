@@ -2224,33 +2224,33 @@ function forums_get_available_count()
     return $forum_available_count;
 }
 
-function forum_get_cdn_domain()
+function forum_get_content_delivery_domain()
 {
     // Current array index
-    static $current_cdn = -1;
+    static $current_index = -1;
     
     // Get the content delivery domains as an array.
-    $cdn_domains_array = explode("\n", forum_get_setting('content_delivery_network_paths'));
+    $content_delivery_domains_array = explode("\n", forum_get_setting('content_delivery_domains'));
     
     // Remove empty lines, trim the results, reindex the array.
-    $cdn_domains_array = array_values(array_filter(array_map('trim', $cdn_domains_array), 'strlen'));
+    $content_delivery_domains_array = array_values(array_filter(array_map('trim', $content_delivery_domains_array), 'strlen'));
     
     // Check we have something left to use.
-    if (sizeof($cdn_domains_array) < 1) return false;
+    if (sizeof($content_delivery_domains_array) < 1) return false;
     
     // Increment the array index.
-    $current_cdn++;
+    $current_index++;
     
     // If the array index exists, return it.
-    if (isset($cdn_domains_array[$current_cdn])) {
-        return preg_replace('/^http(s)?:\/\//', '', $cdn_domains_array[$current_cdn]);
+    if (isset($content_delivery_domains_array[$current_index])) {
+        return preg_replace('/^http(s)?:\/\//', '', $content_delivery_domains_array[$current_index]);
     }
     
     // Reset the array index
-    $current_cdn = -1;
+    $current_index = -1;
     
     // Call self.
-    return forum_get_cdn_domain();
+    return forum_get_content_delivery_domain();
 }
 
 function forum_self_clean_check_xml()

@@ -770,7 +770,7 @@ function html_draw_top()
 
     if (!user_is_guest()) {
         
-        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
+        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag), false);
         printf("<style type=\"text/css\" title=\"user_font\">@import \"%s\";</style>\n", $font_size_path);
     }
     
@@ -894,7 +894,7 @@ function html_draw_top()
         echo "</script>\n";
     }
     
-    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
+    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag", false));
     
     if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
         
@@ -1509,7 +1509,7 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
     
     $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
     
-    if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_domain()))) {
+    if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_path($file_path)))) {
         return sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
     }
     

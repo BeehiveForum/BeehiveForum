@@ -264,9 +264,9 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » {$lang['addnewprofilesection']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - {$lang['addnewprofilesection']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageprofilesections']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['addnewprofilesection']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -346,9 +346,9 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']} » {$profile_section['NAME']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - {$profile_section['NAME']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageprofilesections']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -404,11 +404,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageprofilesections']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']}", 'class=window_title');
 
     $profile_sections = profile_sections_get_by_page($start);
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageprofilesections']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageprofilesections']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

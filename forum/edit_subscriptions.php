@@ -251,9 +251,9 @@ if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['threadsubscriptions']}", 'edit_subscriptions.js', 'class=window_title');
+html_draw_top("title={$lang['mycontrols']} - {$lang['threadsubscriptions']}", 'edit_subscriptions.js', 'class=window_title');
 
-echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
+echo "<h1>{$lang['threadsubscriptions']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$header_text_array[$view_filter]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

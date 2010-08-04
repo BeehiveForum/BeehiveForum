@@ -250,9 +250,9 @@ if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['foldersubscriptions']} » {$header_text_array[$view_filter]}", 'edit_subscriptions.js', 'class=window_title');
+html_draw_top("title={$lang['mycontrols']} - {$lang['foldersubscriptions']} - {$header_text_array[$view_filter]}", 'edit_subscriptions.js', 'class=window_title');
 
-echo "<h1>{$lang['foldersubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
+echo "<h1>{$lang['foldersubscriptions']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$header_text_array[$view_filter]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

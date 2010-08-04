@@ -113,7 +113,7 @@ function light_html_draw_top()
     echo "<head>\n";
 
     if (strlen(trim($title)) > 0) {
-        echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", htmlentities_array($title), " <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", htmlentities_array($forum_name), "</title>\n";
     }else {
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }    
@@ -424,7 +424,7 @@ function light_draw_messages($msg)
     if ($last_pid < $thread_data['LENGTH']) {
 
         $npid = $last_pid + 1;
-        echo form_quick_button("lmessages.php", $lang['keepreading'], array('msg' => "$tid.$npid"));
+        echo form_quick_button("lmessages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$npid"));
     }
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
@@ -966,7 +966,7 @@ function light_draw_pm_inbox()
             exit;
         }
 
-        echo "<h1>{$lang['privatemessages']} &raquo; {$pm_folder_names_array[$message_folder]}</h1>\n";
+        echo "<h1>{$lang['privatemessages']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$pm_folder_names_array[$message_folder]}</h1>\n";
 
         if (isset($pm_message_array) && is_array($pm_message_array)) {
 

@@ -287,13 +287,13 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageuser']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['manageuser']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageuser']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} » {$lang['editsignature']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
+    html_draw_top("title={$lang['mycontrols']} - {$lang['editsignature']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
     echo "<h1>{$lang['editsignature']}</h1>\n";
 }

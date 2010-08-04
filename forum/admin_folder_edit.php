@@ -333,9 +333,9 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
                             FOLDER_ALLOW_POLL_THREAD   => $lang['pollthreadsonly'],
                             FOLDER_ALLOW_ALL_THREAD    => $lang['both']);
 
-html_draw_top("{$lang['admin']} » {$lang['managefolders']} » {$lang['editfolder']} » {$folder_data['TITLE']}", 'class=window_title');
+html_draw_top("{$lang['admin']} - {$lang['managefolders']} - {$lang['editfolder']} - {$folder_data['TITLE']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['managefolders']} &raquo; {$lang['editfolder']} &raquo; ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['managefolders']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['editfolder']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'center');

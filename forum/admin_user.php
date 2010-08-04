@@ -210,7 +210,7 @@ $user_perms = perm_get_forum_user_permissions($uid);
 
 // Page title
 
-$page_title = "{$lang['admin']} » {$lang['manageuser']} » ". htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']));
+$page_title = "{$lang['admin']} - {$lang['manageuser']} - ". htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']));
 
 // Do updates
 
@@ -613,7 +613,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageuser']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
         html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
 

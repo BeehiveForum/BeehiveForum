@@ -220,9 +220,9 @@ if (isset($_POST['update'])) {
     $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
 }
 
-html_draw_top("title={$lang['admin']} » ". sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), 'class=window_title');
+html_draw_top("title={$lang['admin']} - ". sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

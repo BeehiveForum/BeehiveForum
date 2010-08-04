@@ -174,9 +174,9 @@ if (isset($_POST['delete'])) {
             }
         }
 
-        html_draw_top("title={$lang['admin']} » {$lang['manageforums']}", 'class=window_title', 'admin.js');
+        html_draw_top("title={$lang['admin']} - {$lang['manageforums']}", 'class=window_title', 'admin.js');
 
-        echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
+        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']}</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
@@ -480,9 +480,9 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['addforum']}", 'class=window_title', 'admin.js', 'search_popup.js');
+    html_draw_top("title={$lang['admin']} - {$lang['manageforums']} - {$lang['addforum']}", 'class=window_title', 'admin.js', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['addforum']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['addforum']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -597,9 +597,9 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']} » {$lang['editforum']} » {$forum_data['WEBTAG']}", 'class=window_title', 'admin.js', 'search_popup.js');
+    html_draw_top("title={$lang['admin']} - {$lang['manageforums']} - {$lang['editforum']} - {$forum_data['WEBTAG']}", 'class=window_title', 'admin.js', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['editforum']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$forum_data['WEBTAG']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -699,11 +699,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['manageforums']}", 'class=window_title', 'admin.js');
+    html_draw_top("title={$lang['admin']} - {$lang['manageforums']}", 'class=window_title', 'admin.js');
 
     $forums_array = admin_get_forum_list($start);
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

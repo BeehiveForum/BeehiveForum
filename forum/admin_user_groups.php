@@ -209,11 +209,11 @@ if (isset($_POST['delete'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['usergroups']}", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['usergroups']}", 'class=window_title');
 
 $user_groups_array = perm_get_user_groups($start, $sort_by, $sort_dir);
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['usergroups']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['usergroups']}</h1>\n";
 
 if (isset($_GET['added'])) {
 

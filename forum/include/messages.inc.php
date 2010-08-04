@@ -585,12 +585,13 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     if ($frame_links) {
 
-        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title), "</a> ";
-        echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title), "</a>";
+        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title), "</a>";
+        echo "<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />";
+        echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title), "</a>";
 
     }else {
 
-        echo word_filter_add_ob_tags($folder_title), " &raquo; ", word_filter_add_ob_tags($thread_title);
+        echo word_filter_add_ob_tags($folder_title), " <img src=", style_image('separator.png'), " alt=\"\" /> ", word_filter_add_ob_tags($thread_title);
     }
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
@@ -1875,7 +1876,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     // Check font size is greater than 4
 
     if ($font_size > 5) {
-        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size\">&laquo; {$lang['smaller']}</a>";
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size\">{$lang['smaller']}</a>";
     }
 
     // Add the current font size.
@@ -1885,7 +1886,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     // Check the font size is lower than 16
 
     if ($font_size < 15) {
-        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size\">{$lang['larger']} &raquo;</a>\n";
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size\">{$lang['larger']}</a>\n";
     }
 
     // Check if we should return just the inner HTML

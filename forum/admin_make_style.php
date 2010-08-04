@@ -209,11 +209,11 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}", 'class=window_title');
+                html_draw_top("title={$lang['admin']} - {$lang['createforumstyle']}", 'class=window_title');
 
                 $forum_styles_path = html_get_forum_file_path("styles/$stylename");
 
-                echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
+                echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['createforumstyle']}</h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_make_style.php\">\n";
@@ -283,9 +283,9 @@ if (isset($_POST['save'])) {
 
 // Start Here
 
-html_draw_top("title={$lang['admin']} » {$lang['createforumstyle']}", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['createforumstyle']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['createforumstyle']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['createforumstyle']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

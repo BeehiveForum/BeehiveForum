@@ -235,9 +235,9 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['editstartpage']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['editstartpage']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

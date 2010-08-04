@@ -252,9 +252,9 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['changepassword']}", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['changepassword']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['changepassword']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['changepassword']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

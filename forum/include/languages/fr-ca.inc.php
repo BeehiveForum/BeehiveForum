@@ -1019,7 +1019,7 @@ $lang['forum_settings_help_66'] = "Votre forum Beehive supporte 2 tailles d'anno
 
 $lang['aidnotspecified'] = "Identification de fichier joint non indiquée.";
 $lang['upload'] = "Téléverser";
-$lang['waitdotdot'] = "Patienter..";
+$lang['waitdotdotdot'] = "Patienter&hellip;";
 $lang['successfullyuploaded'] = "Téléversement réussi: %s";
 $lang['failedtoupload'] = "Téléchargement non réussi: %s. Vérifiez votre montant d'espace libre pour pièces jointes!";
 $lang['complete'] = "Compléter";
@@ -1248,7 +1248,7 @@ $lang['forgottenpasswd'] = "Vous avez oublié votre mot de passe?";
 $lang['usingaPDA'] = "Vous utilisez un assistant personnel numérique (PDA)?";
 $lang['lightHTMLversion'] = "Version HTML légèr";
 $lang['logonbutton'] = "Ouvrir session";
-$lang['otherdotdotdot'] = "Autre...";
+$lang['otherdotdotdot'] = "Autre&hellip;";
 $lang['yoursessionhasexpired'] = "Votre session s'est terminée. Vous devez ouvrir une nouvelle session pour continuer.";
 
 // My Forums (forums.php) ---------------------------------------------------------
@@ -1342,7 +1342,7 @@ $lang['framesmustbereloaded'] = "Les cadres doivent être rafraîchit manuelleme
 $lang['threadcouldnotbefound'] = "Le fil de discussion demandé n'a pas pu être trouvé ou l'accès a été refusé.";
 $lang['mustselectpolloption'] = "Vous devez voter pour une option!";
 $lang['mustvoteforallgroups'] = "Vous devez voter dans chaque groupe.";
-$lang['keepreading'] = "Continuer lecture";
+$lang['keepreadingdotdotdot'] = "Continuer lecture&hellip;";
 $lang['backtothreadlist'] = "Retournez à la liste de fils de discussion";
 $lang['postdoesnotexist'] = "Ce message n'existe pas dans ce fil de discussion!";
 $lang['clicktochangevote'] = "Cliquez pour changer votre vote";

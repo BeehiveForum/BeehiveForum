@@ -278,13 +278,13 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         $user = user_get($uid);
 
-        html_draw_top("title={$lang['admin']} » {$lang['editprofile']} » ". format_user_name($user['LOGON'], $user['NICKNAME']), 'class=window_title');
+        html_draw_top("title={$lang['admin']} - {$lang['editprofile']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'class=window_title');
 
-        echo "<h1>{$lang['admin']} &raquo; {$lang['editprofile']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['editprofile']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
     }else {
 
-        html_draw_top("title={$lang['mycontrols']} » {$lang['editprofile']}", 'class=window_title');
+        html_draw_top("title={$lang['mycontrols']} - {$lang['editprofile']}", 'class=window_title');
 
         echo "<h1>{$lang['editprofile']}</h1>\n";
     }

@@ -1045,7 +1045,7 @@ $lang['forum_settings_help_73'] = "plE4se no+E: y0ur cdN p4+HS \$houLd 8E +0 TEh
 
 $lang['aidnotspecified'] = "a1d nO+ SP3cifi3D.";
 $lang['upload'] = "uPL0@D";
-$lang['waitdotdot'] = "w41+..";
+$lang['waitdotdotdot'] = "w41+&hellip;";
 $lang['successfullyuploaded'] = "sUCce5SPhully upL0@dED: %s";
 $lang['failedtoupload'] = "f4Il3d to upl04D: %s. CHeck pHR33 4+t@Chm3nt \$P4c3!";
 $lang['mimetypenotallowed'] = "f4il3d t0 uPLOAd: %s. FiLe +Ype i\$ N0+ 4LL0w3d!";
@@ -1277,7 +1277,7 @@ $lang['forgottenpasswd'] = "f0r9o+T3N your P@s\$worD?";
 $lang['usingaPDA'] = "u\$1N9 4 pd4?";
 $lang['lightHTMLversion'] = "liGHt hTMl vers10n";
 $lang['logonbutton'] = "l09oN";
-$lang['otherdotdotdot'] = "o+H3R...";
+$lang['otherdotdotdot'] = "o+H3R&hellip;";
 $lang['yoursessionhasexpired'] = "yOUR 5eSSi0N h4\$ expir3d. j00 w1LL neeD +0 l0g1n AG4IN to C0ntInu3.";
 
 // My Forums (forums.php) ---------------------------------------------------------
@@ -1371,7 +1371,7 @@ $lang['framesmustbereloaded'] = "fRame\$ must 83 REl04deD M@nu4LLy +0 \$EE ch4n9
 $lang['threadcouldnotbefound'] = "thE rEQUes+3d thr3aD c0Uld noT 83 FOund or 4cC3\$\$ w4s D3n1eD.";
 $lang['mustselectpolloption'] = "j00 Mu\$+ seleCt @N 0PTi0n t0 vO+e ph0r!";
 $lang['mustvoteforallgroups'] = "j00 mu\$T vote in 3veRY 9RoUP.";
-$lang['keepreading'] = "ke3p RE@D1Ng";
+$lang['keepreadingdotdotdot'] = "ke3p RE@D1Ng&hellip;";
 $lang['backtothreadlist'] = "b4CK tO +hr3@D L1\$+";
 $lang['postdoesnotexist'] = "th@T P05+ Doe\$ n0+ 3X1s+ 1n This +hre4d!";
 $lang['clicktochangevote'] = "cLiCk +O ch4n9e vOTe";

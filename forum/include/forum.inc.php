@@ -2224,10 +2224,18 @@ function forums_get_available_count()
     return $forum_available_count;
 }
 
-function forum_get_content_delivery_domain()
+function forum_get_content_delivery_path($file_path)
 {
     // Current array index
     static $current_index = -1;
+    
+    // Array to hold previously generated CDN paths.
+    static $content_delivery_path_cache = array();
+    
+    // Check if the file path has been previously requested.
+    if (isset($content_delivery_domains_array[$file_path])) {
+        return $content_delivery_domains_array[$file_path];
+    }
     
     // Get the content delivery domains as an array.
     $content_delivery_domains_array = explode("\n", forum_get_setting('content_delivery_domains'));
@@ -2250,7 +2258,7 @@ function forum_get_content_delivery_domain()
     $current_index = -1;
     
     // Call self.
-    return forum_get_content_delivery_domain();
+    return forum_get_content_delivery_path($file_path);
 }
 
 function forum_self_clean_check_xml()

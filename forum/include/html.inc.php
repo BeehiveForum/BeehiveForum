@@ -760,17 +760,17 @@ function html_draw_top()
     echo "var beehive = ", json_encode(array('forum_path' => $forum_path)), ";\n";
     echo "</script>\n";    
 
-    html_include_javascript(html_get_forum_file_path('js/jquery-1.4.1.js', false));
-    html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js', false));
-    html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js', false));
-    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js', false));
-    html_include_javascript(html_get_forum_file_path('js/general.js', false));
+    html_include_javascript(html_get_forum_file_path('js/jquery-1.4.1.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
+    html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     // Font size (not for Guests)
 
     if (!user_is_guest()) {
         
-        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag), false);
+        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
         printf("<style type=\"text/css\" title=\"user_font\">@import \"%s\";</style>\n", $font_size_path);
     }
     
@@ -806,7 +806,7 @@ function html_draw_top()
                 // Check that we're not on one of the pages.
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
-                    html_include_javascript(html_get_forum_file_path('js/pm.js', false));
+                    html_include_javascript(html_get_forum_file_path('js/pm.js'));
                 }
             }
 
@@ -822,7 +822,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                    html_include_javascript(html_get_forum_file_path('js/overflow.js', false));
+                    html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
             }
 
@@ -838,7 +838,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    html_include_javascript(html_get_forum_file_path('js/spoiler.js', false));
+                    html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
                 }
             }
         }
@@ -851,7 +851,7 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                html_include_javascript(html_get_forum_file_path('js/stats.js', false));
+                html_include_javascript(html_get_forum_file_path('js/stats.js'));
             }
         }
     }
@@ -860,23 +860,23 @@ function html_draw_top()
 
     foreach ($arg_array as $func_args) {
 
-        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js', false))) {
+        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js'))) {
 
             $page_prefs = bh_session_get_post_page_prefs();
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                html_include_javascript(html_get_forum_file_path('tiny_mce/tiny_mce.js', false));
-                html_include_javascript(html_get_forum_file_path('js/tiny_mce.js', false));
+                html_include_javascript(html_get_forum_file_path('tiny_mce/tiny_mce.js'));
+                html_include_javascript(html_get_forum_file_path('js/tiny_mce.js'));
 
             }else {
 
-                html_include_javascript(html_get_forum_file_path("js/$func_args", false));
+                html_include_javascript(html_get_forum_file_path("js/$func_args"));
             }
 
         }else {
 
-            html_include_javascript(html_get_forum_file_path("js/$func_args", false));
+            html_include_javascript(html_get_forum_file_path("js/$func_args"));
         }
     }
 
@@ -894,7 +894,7 @@ function html_draw_top()
         echo "</script>\n";
     }
     
-    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag", false));
+    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
     
     if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
         
@@ -1508,6 +1508,10 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
     $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
     
     $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
+    
+    if (($url_file_path = @parse_url($file_path, PHP_URL_PATH))) {
+        $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
+    }
     
     if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_path($file_path)))) {
         return sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));

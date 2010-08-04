@@ -111,8 +111,8 @@ if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
 
                         echo "<h1>Uploaded Image</h1>\n";
                         echo "<div class=\"image\">\n";
-                        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon", false), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($logon), "?$modified_time\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
-                        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon", false), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($logon), "</a></div></p>\n";
+                        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($logon), "?$modified_time\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
+                        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($logon), "</a></div></p>\n";
                         echo "<p><div align=\"center\">[<a href=\"gallery.php\">Random Image</a> | <a href=\"gallery.php?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
                         echo "</div>\n";
 
@@ -166,8 +166,8 @@ if (isset($_GET['delete'])) {
 
         echo "<h1>Delete Image</h1>\n";
         echo "<div class=\"image\">\n";
-        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon", false), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
-        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon", false), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></div></p>\n";
         echo "<p><div align=\"center\">[<a href=\"gallery.php?confirm_delete=$image\">Delete</a> | <a href=\"gallery.php?gallery\">Cancel</a>]</div></p>\n";
         echo "</div>\n";
 
@@ -240,7 +240,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 
             echo "  <li>\n";
             echo "    <a href=\"gallery.php?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
-            echo "    <label><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image", false), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></label>\n";
+            echo "    <label><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></label>\n";
             echo "  </li>\n";
 
         }elseif (strlen(trim($image)) < 1) {
@@ -294,11 +294,11 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
     echo "<h1>Some random person</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image", false), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a>\n";
+    echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a>\n";
     echo "</div>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image", false), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a>\n";
+    echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a>\n";
     echo "</div>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";

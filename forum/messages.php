@@ -595,7 +595,7 @@ if ($last_pid < $thread_data['LENGTH']) {
 
     $next_pid = $last_pid + 1;
 
-    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\" class=\"postbody\">", form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$next_pid")), "</td>\n";
+    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\" class=\"postbody\">", form_quick_button("messages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$next_pid")), "</td>\n";
 
 }else {
 

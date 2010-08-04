@@ -1019,7 +1019,7 @@ $lang['forum_settings_help_66'] = "Ihr Beehive Forum unterstuetzt 2 verschiedene
 
 $lang['aidnotspecified'] = "AID nicht bekannt.";
 $lang['upload'] = "Hochlanden";
-$lang['waitdotdot'] = "Warten..";
+$lang['waitdotdotdot'] = "Warten&hellip;";
 $lang['successfullyuploaded'] = "Erfolgreich hochgeladen: %s";
 $lang['failedtoupload'] = "Hochladen fehlgeschlagen: %s. Freien Anhang-Speicher pruefen!";
 $lang['complete'] = "Fertig";
@@ -1248,7 +1248,7 @@ $lang['forgottenpasswd'] = "Passwort vergessen";
 $lang['usingaPDA'] = "Benutzt Du einen PDA?";
 $lang['lightHTMLversion'] = "Light HTML Version";
 $lang['logonbutton'] = "Anmelden";
-$lang['otherdotdotdot'] = "Andere...";
+$lang['otherdotdotdot'] = "Andere&hellip;";
 $lang['yoursessionhasexpired'] = "Ihre Sitzung ist abgelaufen. Sie muessen sich wieder anmelden um fortzufahren.";
 
 // My Forums (forums.php) ---------------------------------------------------------
@@ -1342,7 +1342,7 @@ $lang['framesmustbereloaded'] = "Frames muessen manuell neu geladen werden um Ae
 $lang['threadcouldnotbefound'] = "Der angeforderte Eintrag wurde nicht gefunden oder der Zugriff wurde verweigert.";
 $lang['mustselectpolloption'] = "Du musst eine Option auswaehlen um abzustimmen!";
 $lang['mustvoteforallgroups'] = "Du musst in jeder Gruppe abstimmen.";
-$lang['keepreading'] = "Unterhaltmesswert";
+$lang['keepreadingdotdotdot'] = "Unterhaltmesswert&hellip;";
 $lang['backtothreadlist'] = "Zurueck zur Eintragsliste";
 $lang['postdoesnotexist'] = "Dieser Post existiert nicht in diesem Eintrag!";
 $lang['clicktochangevote'] = "Klicken um Stimme zu aendern";

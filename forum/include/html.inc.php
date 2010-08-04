@@ -690,9 +690,9 @@ function html_draw_top()
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     
     if (strlen(trim($title)) > 0) {
-        echo "<title>", htmlentities_array($title), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
     }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        echo "<title>", htmlentities_array($meta_description), " &raquo; ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", htmlentities_array($meta_description), " - ", htmlentities_array($forum_name), "</title>\n";
     }else {
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
@@ -1353,34 +1353,30 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
         }
 
         if ($start_page > 1) {
-
-            echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\">&laquo;&nbsp;First</a>&nbsp;&hellip;&nbsp;";
-        }
-
-        if ($current_page > 1) {
-
-            $prev_page = (($current_page - 1) > 0) ? ($current_page - 1) : 1;
-            echo "<a href=\"{$uri}{$sep}{$page_var}={$prev_page}\" target=\"_self\">&laquo;</a>&nbsp;";
+            
+            if (($start_page - 1) > 1) {
+                echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\">1</a>&nbsp;&hellip;&nbsp;";
+            } else {
+                echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\">1</a>&nbsp;";
+            }
         }
 
         for ($page = $start_page; $page <= $end_page; $page++) {
 
             if ($page == $current_page) {
-                echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\"><b>[$page]</b></a>&nbsp;";
+                echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\"><span class=\"pagenum_current\">$page</span></a>&nbsp;";
             }else {
                 echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\">{$page}</a>&nbsp;";
             }
         }
 
-        if ($current_page < $page_count) {
-
-            $next_page = (($current_page + 1) <= $page_count) ? ($current_page + 1) : $page_count;
-            echo "<a href=\"{$uri}{$sep}{$page_var}={$next_page}\" target=\"_self\">&raquo;</a>&nbsp;";
-        }
-
         if ($end_page < $page_count) {
 
-            echo "&nbsp;&hellip;&nbsp;<a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">Last&nbsp;&raquo;</a>&nbsp;";
+            if (($end_page + 1) < $page_count) {
+                echo "&hellip;&nbsp;<a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">{$page_count}</a>";
+            } else {
+                echo "<a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">{$page_count}</a>";
+            }            
         }
 
     }else {

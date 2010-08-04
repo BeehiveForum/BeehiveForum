@@ -1045,7 +1045,7 @@ $lang['forum_settings_help_73'] = "Please Note: Your CDN paths should be to the 
 
 $lang['aidnotspecified'] = "AID not specified.";
 $lang['upload'] = "Upload";
-$lang['waitdotdot'] = "Wait..";
+$lang['waitdotdotdot'] = "Wait&hellip;";
 $lang['successfullyuploaded'] = "Successfully Uploaded: %s";
 $lang['failedtoupload'] = "Failed to upload: %s. Check free attachment space!";
 $lang['mimetypenotallowed'] = "Failed to upload: %s. File type is not allowed!";
@@ -1277,7 +1277,7 @@ $lang['forgottenpasswd'] = "Forgotten your password?";
 $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
 $lang['logonbutton'] = "Logon";
-$lang['otherdotdotdot'] = "Other...";
+$lang['otherdotdotdot'] = "Other&hellip;";
 $lang['yoursessionhasexpired'] = "Your session has expired. You will need to login again to continue.";
 
 // My Forums (forums.php) ---------------------------------------------------------
@@ -1371,7 +1371,7 @@ $lang['framesmustbereloaded'] = "Frames must be reloaded manually to see changes
 $lang['threadcouldnotbefound'] = "The requested thread could not be found or access was denied.";
 $lang['mustselectpolloption'] = "You must select an option to vote for!";
 $lang['mustvoteforallgroups'] = "You must vote in every group.";
-$lang['keepreading'] = "Keep reading";
+$lang['keepreadingdotdotdot'] = "Keep reading&hellip;";
 $lang['backtothreadlist'] = "Back to thread list";
 $lang['postdoesnotexist'] = "That post does not exist in this thread!";
 $lang['clicktochangevote'] = "Click to change vote";

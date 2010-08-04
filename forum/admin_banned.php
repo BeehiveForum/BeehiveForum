@@ -541,7 +541,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     html_draw_top("title={$lang['error']}");
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['bancontrols']}</h1>\n";
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
         $add_new_ban_type = $_POST['newbantype'];
@@ -712,9 +712,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['bancontrols']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['bancontrols']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['bancontrols']}</h1>\n";
 
     if (isset($_POST['edit_check'])) {
 
@@ -856,11 +856,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
 }else {
 
-    html_draw_top("title={$lang['admin']} » {$lang['bancontrols']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['bancontrols']}", 'class=window_title');
 
     $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

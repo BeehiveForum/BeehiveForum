@@ -291,11 +291,11 @@ if (isset($_POST['save'])) {
     exit;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$group['GROUP_NAME']}", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$group['GROUP_NAME']}", 'class=window_title');
 
 $group_users_array = perm_group_get_users($gid, 0);
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['manageusergroups']} &raquo; {$group['GROUP_NAME']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageusergroups']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$group['GROUP_NAME']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

@@ -270,9 +270,9 @@ function links_get_folder_path_links($fid, $folders, $links = true, $link_last_t
         while (($val = array_pop($tree_array))) {
 
             if (($val != $fid && $links) || $link_last_too) {
-                $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
+                $html.= "&nbsp;<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" />&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
             } else {
-                $html.= "&nbsp;&raquo;&nbsp;". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
+                $html.= "&nbsp;<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" />&nbsp;". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
             }
         }
     }
@@ -302,12 +302,12 @@ function links_get_folder_page_title($fid, $folders, $link_title = false)
 
         while (($val = array_pop($tree_array))) {
             
-            $path.= " » ". $folders[$val]['NAME'];
+            $path.= " - ". $folders[$val]['NAME'];
         }
     }
     
     if ($link_title !== false) {
-        $path.= ' » '. $link_title;
+        $path.= ' - '. $link_title;
     }
     
     return $path;

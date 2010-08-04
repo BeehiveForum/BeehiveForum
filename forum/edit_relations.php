@@ -150,7 +150,7 @@ $error_msg_array = array();
 
 // Start output here
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['userrelationships']}", "basetarget=_blank", 'class=window_title');
+html_draw_top("title={$lang['mycontrols']} - {$lang['userrelationships']}", "basetarget=_blank", 'class=window_title');
 
 echo "<h1>{$lang['userrelationships']}</h1>\n";
 

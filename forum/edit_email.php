@@ -258,7 +258,7 @@ $user_prefs = user_get_prefs($uid);
 
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
-html_draw_top("title={$lang['mycontrols']} » {$lang['emailandprivacy']}", 'class=window_title');
+html_draw_top("title={$lang['mycontrols']} - {$lang['emailandprivacy']}", 'class=window_title');
 
 echo "<h1>", htmlentities_array($lang['emailandprivacy']), "</h1>\n";
 

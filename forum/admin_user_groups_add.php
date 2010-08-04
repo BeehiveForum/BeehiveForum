@@ -231,9 +231,9 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusergroups']} » {$lang['addusergroup']}", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$lang['addusergroup']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['manageusergroups']} &raquo; {$lang['addusergroup']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageusergroups']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['addusergroup']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '550', 'center');

@@ -222,9 +222,9 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = ADMIN_USER_FILTER_NONE;
 }
 
-html_draw_top("title={$lang['admin']} » {$lang['manageusers']}", 'class=window_title');
+html_draw_top("title={$lang['admin']} - {$lang['manageusers']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
+echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageusers']}</h1>\n";
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 

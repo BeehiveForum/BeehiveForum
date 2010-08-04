@@ -698,6 +698,10 @@ p, h1, h2 {
     text-decoration: none;
 }
 
+.pagenum_current {
+    font-weight: bold;
+}
+
 .pm_message_count {
     font-size: 90%;
 }

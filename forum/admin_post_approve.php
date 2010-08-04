@@ -302,9 +302,9 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("title={$lang['admin']} » {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
+        html_draw_top("title={$lang['admin']} - {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
 
-        echo "<h1>{$lang['admin']} &raquo; {$lang['approvepost']}</h1>\n";
+        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['approvepost']}</h1>\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
@@ -398,11 +398,11 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} » {$lang['postapprovalqueue']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['postapprovalqueue']}", 'class=window_title');
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
-    echo "<h1>{$lang['admin']} &raquo; {$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['postapprovalqueue']}</h1>\n";
 
     if (sizeof($post_approval_array['post_array']) < 1) {
         html_display_warning_msg($lang['nopostsawaitingapproval'], '720', 'center');

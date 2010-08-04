@@ -476,7 +476,7 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders();
 
-html_draw_top("title={$lang['privatemessages']} » {$pm_folder_names_array[$current_folder]}", "basetarget=_blank", "search.js", "pm.js", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title={$lang['privatemessages']} - {$pm_folder_names_array[$current_folder]}", "basetarget=_blank", "search.js", "pm.js", 'pm_popup_disabled', 'class=window_title');
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
@@ -506,7 +506,7 @@ if ($current_folder == PM_FOLDER_INBOX) {
     $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start);
 }
 
-echo "<h1>{$lang['privatemessages']} &raquo; {$pm_folder_names_array[$current_folder]}</h1>\n";
+echo "<h1>{$lang['privatemessages']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$pm_folder_names_array[$current_folder]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

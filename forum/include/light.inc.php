@@ -113,7 +113,7 @@ function light_html_draw_top()
     echo "<head>\n";
 
     if (strlen(trim($title)) > 0) {
-        echo "<title>", htmlentities_array($title), " <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
     }else {
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }    

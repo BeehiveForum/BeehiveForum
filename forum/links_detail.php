@@ -527,7 +527,7 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_textarea("comment", "", 6, 70), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("comment", "", 6, 62), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

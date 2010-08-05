@@ -499,10 +499,10 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"33%\">\n";
-echo "              <img src=\"", style_image("ct.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a><br />\n";
+echo "              <img src=\"", style_image("link_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a><br />\n";
 
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
-    echo "              <img src=\"", style_image("ct.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">{$lang['newfolder']}</a>\n";
+    echo "              <img src=\"", style_image("folder_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">{$lang['newfolder']}</a>\n";
 }
 
 echo "            </td>\n";

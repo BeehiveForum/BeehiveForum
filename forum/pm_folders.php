@@ -375,7 +375,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['privatemessageoptions']}\" title=\"{$lang['privatemessageoptions']}\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"{$lang['privatemessageoptions']}\">{$lang['privatemessageoptions']}</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('options.png'), "\" alt=\"{$lang['privatemessageoptions']}\" title=\"{$lang['privatemessageoptions']}\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"{$lang['privatemessageoptions']}\">{$lang['privatemessageoptions']}</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";

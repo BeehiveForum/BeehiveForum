@@ -292,7 +292,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("discussion.php", "{$lang['startreading']}  <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", false, html_get_frame_name('main')), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("discussion.php", $lang['startreading'], false, html_get_frame_name('main')), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
@@ -441,7 +441,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("visitor_log.php", "{$lang['morevisitors']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", array('profile_selection' => 'LAST_VISIT', 'hide_empty' => 'Y'), html_get_frame_name('right')), "</td>\n";
+echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("visitor_log.php", $lang['morevisitors'], array('profile_selection' => 'LAST_VISIT', 'hide_empty' => 'Y'), html_get_frame_name('right')), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
@@ -495,7 +495,7 @@ if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("visitor_log.php", "{$lang['more']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", array('profile_selection' => 'DOB,AGE', 'sort_by' => 'DOB', 'sort_dir' => 'ASC', 'hide_empty' => 'Y', 'hide_guests' => 'Y'), html_get_frame_name('right')), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("visitor_log.php", $lang['more'], array('profile_selection' => 'DOB,AGE', 'sort_by' => 'DOB', 'sort_dir' => 'ASC', 'hide_empty' => 'Y', 'hide_guests' => 'Y'), html_get_frame_name('right')), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";

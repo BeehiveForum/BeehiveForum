@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -97,18 +83,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -116,7 +99,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -124,18 +106,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
 
     $request_uri = rawurlencode(get_request_uri());
@@ -211,19 +190,15 @@ $poll_data    = poll_get($tid);
 $poll_results = poll_get_votes($tid);
 
 // Check if the user is viewing signatures.
-
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 // Form validation tracking
-
 $valid = true;
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Check for attachment AID
-
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
@@ -550,7 +525,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     // Poll answers and groups. If HTML is disabled we need to pass
     // the answers through htmlentities_array.
-
     if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
         $poll_preview_answers_array = htmlentities_array($t_answers_array);
     }else {
@@ -558,16 +532,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     }
 
     // Get the poll groups.
-
     $poll_preview_groups_array = $t_answer_groups;
 
     // Generate some random votes
-
     $poll_preview_votes_array = rand_array(0, sizeof($t_answers_array), 1, 10);
 
     // Construct the pollresults array that will be used to display the graph
     // Modified to handle the new Group ID.
-
     $poll_results = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
                          'OPTION_NAME' => array_values($poll_preview_answers_array),
                          'GROUP_ID'    => array_values($poll_preview_groups_array),
@@ -621,13 +592,11 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
     // Attachments preview
-
     $poll_data['AID'] = $aid;
 
 }elseif ($valid && isset($_POST['apply'])) {
 
     // Work out when the poll will close.
-
     if ($t_close_poll == POLL_CLOSE_ONE_DAY) {
 
         $t_poll_closes = time() + DAY_IN_SECONDS;
@@ -654,7 +623,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     }
 
     // Check HTML tick box, innit.
-
     $answers = array();
 
     $t_answers_array_html = POST_HTML_DISABLED;

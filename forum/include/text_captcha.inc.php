@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -75,7 +74,6 @@ class captcha {
     private $text_captcha_dir = "";
 
     // PUBLIC //
-
     public function __construct($num_chars = 6, $min_char_size = 15, $max_char_size = 25, $noise_factor = 9, $max_rotation = 30)
     {
         if (!is_numeric($num_chars)) $num_chars = 6;

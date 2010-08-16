@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -39,7 +38,6 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 // Create a form field
-
 function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false, $class = "bhinputtext")
 {
     $lang = load_language_file();
@@ -65,28 +63,24 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 }
 
 // Creates a text input field
-
 function form_input_text($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
 {
     return form_field($name, $value, $width, $maxchars, "text", $custom_html, $class);
 }
 
 // Creates a password input field
-
 function form_input_password($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
 {
     return form_field($name, $value, $width, $maxchars, "password", $custom_html, $class);
 }
 
 // Creates a file upload field
-
 function form_input_file($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
 {
     return form_field($name, $value, $width, $maxchars, "file", $custom_html, $class);
 }
 
 // Creates a hidden form field
-
 function form_input_hidden($name, $value = false, $custom_html = false)
 {
     return form_field($name, $value, 0, 0, "hidden", $custom_html);
@@ -132,7 +126,6 @@ function form_input_hidden_array($array)
 }
 
 // Create a textarea input field
-
 function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class = "bhtextarea")
 {
     $lang = load_language_file();
@@ -158,7 +151,6 @@ function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class
 }
 
 // Creates a dropdown with values from array(s)
-
 function form_dropdown_array($name, $options_array, $default = false, $custom_html = false, $class = "bhselect", $group_class = "bhselectoptgroup")
 {
     $id = form_unique_id($name);
@@ -205,7 +197,6 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
 }
 
 // Creates a optgroup to be used in a dropdown.
-
 function form_dropdown_objgroup_array($name, $options_array, $default = false, $class = "bhselectoptgroup")
 {
     if (is_array($options_array)) {
@@ -261,7 +252,6 @@ function form_unique_id($name)
 }
 
 // Creates a checkbox field
-
 function form_checkbox($name, $value, $text = '', $checked = false, $custom_html = false, $class = "bhinputcheckbox")
 {
     $id = form_unique_id($name);
@@ -308,7 +298,6 @@ function form_checkbox($name, $value, $text = '', $checked = false, $custom_html
 }
 
 // Create a radio field
-
 function form_radio($name, $value, $text = '', $checked = false, $custom_html = false, $class = "bhinputradio")
 {
     $id = form_unique_id($name);
@@ -355,7 +344,6 @@ function form_radio($name, $value, $text = '', $checked = false, $custom_html = 
 }
 
 // Create an array of radio fields.
-
 function form_radio_array($name, $options_array, $checked = false, $custom_html = false)
 {
     $html = "";
@@ -372,7 +360,6 @@ function form_radio_array($name, $options_array, $checked = false, $custom_html 
 }
 
 // Creates a form submit button
-
 function form_submit($name = "submit", $value = "Submit", $custom_html = "", $class = "button")
 {
     $id = form_unique_id($name);
@@ -387,7 +374,6 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = "", $cl
 }
 
 // Creates a form submit button using an image
-
 function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = "", $class = "button_image")
 {
     $id = form_unique_id($name);
@@ -402,7 +388,6 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
 }
 
 // Creates a button with custom HTML, for onclick methods, etc.
-
 function form_button($name, $value, $custom_html = "", $class="button")
 {
     $id = form_unique_id($name);
@@ -420,7 +405,6 @@ function form_button($name, $value, $custom_html = "", $class="button")
 // $var_array is an array (key, value pairs) containing names
 // and values to be used for hidden form fields. Multi-dimensional
 // arrays will be ignored.
-
 function form_quick_button($href, $label, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag();
@@ -448,7 +432,6 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 // create the date of birth dropdowns for prefs. $show_blank controls whether to show
 // a blank option in each box for backwards compatibility with 0.3 and below,
 // where the DOB was not required information
-
 function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = "", $class = "bhselect")
 {
     $lang = load_language_file();
@@ -475,14 +458,12 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
 // Creates a dropdown selectors for dates
 // including seperate fields for day, month and year.
-
 function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $start_year = 0)
 {
     $lang = load_language_file();
 
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
-
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
         $years = array('&nbsp;') + range_keys($start_year, 2037);

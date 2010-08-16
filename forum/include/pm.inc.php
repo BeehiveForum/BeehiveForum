@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -176,7 +175,6 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_pm_get_inbox)) return false;
@@ -270,7 +268,6 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_pm_get_outbox)) return false;
@@ -364,7 +361,6 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_pm_get_sent)) return false;
@@ -460,7 +456,6 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     if (!$result = db_query($sql, $db_pm_get_saved_items)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_pm_get_saved_items)) return false;
@@ -554,7 +549,6 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_pm_get_drafts)) return false;
@@ -709,7 +703,6 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     if (!$result = db_query($sql, $db_pm_fetch_search_results)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_pm_fetch_search_results)) return false;
@@ -1017,7 +1010,6 @@ function pm_message_get($mid)
     $pm_draft_items  = PM_DRAFT_ITEMS;
 
     // Fetch the single message as specified by the MID
-
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
     $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
@@ -1072,7 +1064,6 @@ function pm_get_content($mid)
     if (!is_numeric($mid)) return false;
 
     // Fetch the message content as specified by the MID
-
     $sql = "SELECT CONTENT FROM PM_CONTENT WHERE MID = '$mid'";
 
     if (!$result = db_query($sql, $db_pm_get_content)) return false;
@@ -1174,7 +1165,6 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     }
 
     // Add emoticons/wikilinks and word filter tags
-
     $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
     $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
 
@@ -1224,7 +1214,6 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         if (attachments_get($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             // Draw the attachment header at the bottom of the post
-
             echo "                      <tr>\n";
             echo "                        <td class=\"postbody\" align=\"left\">\n";
 
@@ -1336,13 +1325,11 @@ function pm_message_get_folder($mid, $type = 0)
     $pm_draft_items  = PM_DRAFT_ITEMS;
 
     // Check the passed type before doing a query.
-
     if (in_array($type, array_keys($pm_message_type_array), true)) {
         return $pm_message_type_array[$type];
     }
 
     // Fetch the message type as specified by the MID
-
     $sql = "SELECT TYPE FROM PM WHERE MID = '$mid' ";
     $sql.= "AND (((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
@@ -1424,18 +1411,15 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     if (!is_md5($aid)) return false;
 
     // Escape the subject and content for insertion into database.
-
     $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
 
     // PM_OUTBOX constant.
-
     $pm_outbox = PM_OUTBOX;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Insert the main PM Data into the database
-
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
     $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
     $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), 0)";
@@ -1445,14 +1429,12 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
         $new_mid = db_insert_id($db_pm_send_message);
 
         // Insert the PM Content into the database
-
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
         if (!db_query($sql, $db_pm_send_message)) return false;
 
         // Check to see if we should be adding a 'Sent Item'
-
         $user_prefs = user_get_prefs($from_uid);
 
         if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
@@ -1461,7 +1443,6 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
         }
 
         // Save the attachment ID.
-
         pm_save_attachment_id($new_mid, $aid);
 
         return $new_mid;
@@ -1495,20 +1476,16 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
     if (!is_md5($aid)) return false;
 
     // Escape the subject and content for insertion into database.
-
     $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
 
     // PM_SENT constant.
-
     $pm_sent = PM_SENT;
 
     // Current datetime
-
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Insert the main PM Data into the database
-
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
     $sql.= "CREATED, NOTIFIED, SMID) VALUES ('$pm_sent', '$to_uid', '$from_uid', ";
     $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), ";
@@ -1519,14 +1496,12 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
         $new_mid = db_insert_id($db_pm_add_sent_item);
 
         // Insert the PM Content into the database
-
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
         if (!db_query($sql, $db_pm_add_sent_item)) return false;
 
         // Save the attachment ID.
-
         pm_save_attachment_id($new_mid, $aid);
 
         return  $new_mid;
@@ -1567,7 +1542,6 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
     if (pm_get_free_space($uid) > 0) {
 
         // Insert the main PM Data into the database
-
         $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
         $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', '$uid', '$subject', ";
         $sql.= "'$recipient_list', CAST('$current_datetime' AS DATETIME), 0)";
@@ -1577,7 +1551,6 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
             $new_mid = db_insert_id($db_pm_save_message);
 
             // Insert the PM Content into the database
-
             $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
             $sql.= "VALUES ('$new_mid', '$content')";
 
@@ -1616,14 +1589,12 @@ function pm_update_saved_message($mid, $subject, $content, $to_uid, $recipient_l
     $recipient_list = db_escape_string($recipient_list);
 
     // Update the subject text
-
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$to_uid', ";
     $sql.= "RECIPIENTS = '$recipient_list' WHERE MID = '$mid'";
 
     if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the content
-
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
     if (!db_query($sql, $db_pm_edit_messages)) return false;
 
@@ -1651,12 +1622,10 @@ function pm_edit_message($mid, $subject, $content)
     $content_escaped = db_escape_string($content);
 
     // Update the subject text
-
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject_escaped' WHERE MID = '$mid'";
     if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the content
-
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content_escaped' WHERE MID = '$mid'";
     if (!db_query($sql, $db_pm_edit_messages)) return false;
 
@@ -1684,21 +1653,17 @@ function pm_update_sent_item($mid, $subject, $content)
     $content = db_escape_string($content);
 
     // Query the database for the sent item's MID
-
     $sql = "SELECT MID FROM PM WHERE SMID = '$mid'";
     if (!$result = db_query($sql, $db_pm_edit_messages)) return false;
 
     // Fetch the SMID.
-
     list($sent_item_mid) = db_fetch_array($result, DB_RESULT_NUM);
 
     // Update the sent items subject text
-
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$sent_item_mid'";
     if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the sent item content
-
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$sent_item_mid'";
     if (!db_query($sql, $db_pm_edit_messages)) return false;
 
@@ -1721,7 +1686,6 @@ function pm_delete_message($mid)
     if (!is_numeric($mid)) return false;
 
     // Constants required.
-
     $pm_inbox_items = PM_INBOX_ITEMS;
     $pm_outbox_items = PM_OUTBOX_ITEMS;
     $pm_sent_items = PM_SENT_ITEMS;
@@ -1730,11 +1694,9 @@ function pm_delete_message($mid)
     $pm_draft_items = PM_DRAFT_ITEMS;
 
     // User UID
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Verify the PM is 'owned' by the current user.
-
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
     $sql.= "PAF.FILENAME, AT.AID FROM PM PM ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
@@ -1755,7 +1717,6 @@ function pm_delete_message($mid)
 
         // If it is the author deleting his Sent Item then
         // delete the attachment as well.
-
         if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID'])) {
             attachments_delete_by_aid($db_delete_pm_row['AID']);
         }
@@ -1822,7 +1783,6 @@ function pm_archive_message($mid)
     $pm_sent_items  = PM_SENT_ITEMS;
 
     // Archive any PM that are in the User's Inbox
-
     $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_in' ";
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items > 0) ";
     $sql.= "AND TO_UID = '$uid'";
@@ -1830,7 +1790,6 @@ function pm_archive_message($mid)
     if (!db_query($sql, $db_pm_archive_message)) return false;
 
     // Archive any PM that are in the User's Sent Items
-
     $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_out' ";
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
     $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
@@ -1920,40 +1879,32 @@ function pm_get_new_messages($limit)
 function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_count)
 {
     // Default the variables to return 0 even on error.
-
     $pm_new_count = 0;
     $pm_outbox_count = 0;
     $pm_unread_count = 0;
 
     // Connect to the database.
-
     if (!$db_pm_get_message_count = db_connect()) return false;
 
     // Check the user UID.
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // PM folder types we'll be using.
-
     $pm_unread = PM_UNREAD;
     $pm_outbox = PM_OUTBOX;
     $pm_sent_item = PM_SENT;
 
     // Get the user's free space.
-
     $pm_free_space = pm_get_free_space($uid);
 
     // Get a list of messages we have received.
-
     if (($pm_messages_array = pm_get_new_messages($pm_free_space))) {
 
         // Convert the array keys into a comma separated list.
-
         $mid_list = implode(',', array_filter(array_keys($pm_messages_array), 'is_numeric'));
 
         // Mark the selected messages as unread / received and make the
         // sent items visible to the sender.
-
         $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
         $sql.= "AND TO_UID = '$uid'";
 
@@ -1965,12 +1916,10 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
         if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
 
         // Number of new messages we've received for popup.
-
         $pm_new_count = sizeof($pm_messages_array);
     }
 
     // Unread message count.
-
     $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
@@ -1979,7 +1928,6 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     // Check for any undelivered messages waiting for the user.
-
     $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
     $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
@@ -2004,19 +1952,15 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 function pm_check_messages()
 {
     // Outputting JSON
-
     header('Content-type: application/json; charset=UTF-8', true);
 
     // Load the Language file
-
     $lang = load_language_file();
 
     // Get the number of messages.
-
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
     // Format the message sent to the client.
-
     if ($pm_new_count == 1 && $pm_outbox_count == 0) {
 
         $pm_notification = $lang['youhave1newpm'];
@@ -2082,13 +2026,11 @@ function pm_get_unread_count()
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Guests don't do PMs.
-
     if (user_is_guest()) return false;
 
     $pm_unread = PM_UNREAD;
 
     // Check to see if the user has any new PMs
-
     $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 

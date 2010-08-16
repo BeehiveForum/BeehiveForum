@@ -22,7 +22,6 @@ USA
 ======================================================================*/
 
 // Define the emoticon patterns to be matched, and their associated names
-
 // Default emoticons
 $emoticon[':-)'] = "smile";
 $emoticon[':)'] = "smile";

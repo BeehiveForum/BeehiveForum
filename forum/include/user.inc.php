@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -115,7 +114,6 @@ function user_update($uid, $logon, $nickname, $email)
     if (!is_numeric($uid)) return false;
 
     // Encode HTML tags and db_escape_string for protection.
-
     $logon = db_escape_string($logon);
     $nickname = db_escape_string($nickname);
     $email = db_escape_string($email);
@@ -124,7 +122,6 @@ function user_update($uid, $logon, $nickname, $email)
 
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
-
     $sql = "SELECT LOGON, NICKNAME, EMAIL FROM USER_HISTORY ";
     $sql.= "WHERE UID = '$uid' ORDER BY MODIFIED DESC ";
     $sql.= "LIMIT 0, 1";
@@ -133,21 +130,17 @@ function user_update($uid, $logon, $nickname, $email)
 
     // If there is some existing data we need to retrieve the
     // data and compare it to the new details.
-
     if (db_num_rows($result_check) > 0) {
 
         // Get the old data from the database and escape it so the strcmp works.
-
         $user_history_array = array_map('db_escape_string', db_fetch_array($result_check));
 
         // Check the data against that passed to the function.
-
         if ((strcmp($user_history_array['LOGON'], $logon) <> 0) || (strcmp($user_history_array['NICKNAME'], $nickname) <> 0) || (strcmp($user_history_array['EMAIL'], $email) <> 0)) {
 
             // If there are any differences we need to save the changes.
             // We save everything so that future changes don't cause
             // additional matches (NULL != $logon, etc.)
-
             $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
             $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
 
@@ -157,7 +150,6 @@ function user_update($uid, $logon, $nickname, $email)
     }else {
 
         // No previous data so we just save what we have.
-
         $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
         $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
 
@@ -165,7 +157,6 @@ function user_update($uid, $logon, $nickname, $email)
     }
 
     // Update the user details
-
     $sql = "UPDATE LOW_PRIORITY USER SET LOGON = '$logon', NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = '$uid'";
 
@@ -568,18 +559,15 @@ function user_get_last_ip_address($uid)
 function user_get_prefs($uid)
 {
     // See user_update_prefs() below for an explanation of the prefs system.
-
     if (!$db_user_get_prefs = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
     // Arrays to hold the user preferences.
-
     $global_prefs_array = array();
     $forum_prefs_array  = array();
 
     // 2. The user's global prefs, in USER_PREFS:
-
     $sql = "SELECT USER_PREFS.FIRSTNAME, USER_PREFS.LASTNAME, USER_PREFS.DOB, ";
     $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.PIC_AID, ";
     $sql.= "USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, USER_PREFS.EMAIL_NOTIFY, ";
@@ -610,7 +598,6 @@ function user_get_prefs($uid)
     }
 
     // 3. The user's per-forum prefs, in GLOBAL USER_PREFS (not all prefs are set here e.g. name):
-
     if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
@@ -630,17 +617,14 @@ function user_get_prefs($uid)
 
     // Prune empty values from the arrays (to stop them overwriting valid values)
     // using strlen() as a callback function.
-
     $global_prefs_array = array_filter($global_prefs_array, "strlen");
     $forum_prefs_array = array_filter($forum_prefs_array, "strlen");
 
     // Get the array keys.
-
     $global_prefs_array_keys = array_keys($global_prefs_array);
     $forum_prefs_array_keys = array_keys($forum_prefs_array);
 
     // Add keys to indicate whether the preference is set globally or not
-
     foreach ($forum_prefs_array_keys as $key) {
         $forum_prefs_array[$key. '_GLOBAL'] = false;
     }
@@ -650,7 +634,6 @@ function user_get_prefs($uid)
     }
 
     // Merge them all together, with forum prefs overriding global prefs
-
     return array_merge($global_prefs_array, $forum_prefs_array);
 }
 
@@ -663,18 +646,15 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     if (!is_array($prefs_array)) return false;
 
     // Check that $prefs_global_setting_array is an array
-
     if (!is_array($prefs_global_setting_array)) {
         $prefs_global_setting_array = array();
     }
 
     // Arrays to hold preferences
-
     $global_prefs_array = array();
     $forum_prefs_array  = array();
 
     // names of preferences that can be set globally
-
     $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
                                'PIC_URL', 'PIC_AID', 'AVATAR_URL', 'AVATAR_AID',
                                'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
@@ -691,7 +671,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'USE_OVERFLOW_RESIZE', 'REPLY_QUICK', 'THREAD_LAST_PAGE');
 
     // names of preferences that can be set on a per-forum basis
-
     $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'PIC_AID', 'AVATAR_URL',
                                'AVATAR_AID', 'EMAIL_NOTIFY', 'MARK_AS_OF_INT',
                                'THREADS_BY_FOLDER', 'POSTS_PER_PAGE', 'FONT_SIZE',
@@ -705,7 +684,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
-
     foreach ($prefs_array as $pref_name => $pref_setting) {
 
         if (user_check_pref($pref_name, $pref_setting)) {
@@ -728,24 +706,19 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     }
 
     // Check to see we have some preferences to set globally.
-
     if (sizeof($global_prefs_array) > 0) {
 
         // Concat the column names together, escaping them and enclosing them in backticks.
-
         $column_names = implode("`, `", array_map('db_escape_string', array_keys($global_prefs_array)));
 
         // Concat the values together, escaping them and enclosing them in quotes.
-
         $column_insert_values = implode("', '", array_map('db_escape_string', array_values($global_prefs_array)));
 
         // Concat the column names together, pass them through user_update_prefs_helper
         // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
-
         $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($global_prefs_array)));
 
         // Construct the query and run it.
-
         $sql = "INSERT INTO USER_PREFS (`UID`, `$column_names`) VALUES('$uid', '$column_insert_values') ";
         $sql.= "ON DUPLICATE KEY UPDATE $column_update_values ";
 
@@ -754,11 +727,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         // If a pref is set globally, we need to remove it from all the
         // per-forum USER_PREFS tables. We use array_intersect to find
         // out which columns we need to update.
-
         $update_prefs_array = array_intersect($forum_pref_names, array_keys($global_prefs_array));
 
         // Only proceed if we have something to process.
-
         if (sizeof($update_prefs_array) > 0) {
 
             if (!$forum_prefix_array = forum_get_all_prefixes()) return false;
@@ -777,20 +748,16 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     if ((sizeof($forum_prefs_array) > 0) && ($table_data = get_table_prefix())) {
 
         // Concat the column names together, escaping them and enclosing them in backticks.
-
         $column_names = implode("`, `", array_map('db_escape_string', array_keys($forum_prefs_array)));
 
         // Concat the values together, escaping them and enclosing them in quotes.
-
         $column_insert_values = implode("', '", array_map('db_escape_string', array_values($forum_prefs_array)));
 
         // Concat the column names together, pass them through user_update_prefs_helper
         // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
-
         $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($forum_prefs_array)));
 
         // Construct the query and run it.
-
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PREFS` (`UID`, `$column_names`) ";
         $sql.= "VALUES('$uid', '$column_insert_values')ON DUPLICATE KEY UPDATE $column_update_values ";
 
@@ -813,7 +780,6 @@ function user_update_prefs_callback2($column)
 function user_check_pref($name, $value)
 {
     // Checks to ensure that a preference setting contains valid data
-
     if (strlen(trim($value)) == 0) return true;
 
     if ($name == "FIRSTNAME" || $name == "LASTNAME") {
@@ -907,7 +873,6 @@ function user_get_forthcoming_birthdays()
     $uid = bh_session_get_value('UID');
 
     // Constants for user relationship
-
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
@@ -972,7 +937,6 @@ function user_search($user_search)
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
     // Main query.
-
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
@@ -983,7 +947,6 @@ function user_search($user_search)
     if (!$result = db_query($sql, $db_user_search)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_search)) return false;
@@ -991,7 +954,6 @@ function user_search($user_search)
     list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-
     if (db_num_rows($result) > 0) {
 
         while (($user_data = db_fetch_array($result))) {
@@ -1024,7 +986,6 @@ function user_get_ip_addresses($uid)
     $user_ip_addresses_array = array();
 
     // Fetch the last 20 IP addresses from the POST table
-
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
@@ -1118,7 +1079,6 @@ function user_get_relationships($uid, $offset = 0)
     if (!$result = db_query($sql, $db_user_get_relationships)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_get_relationships)) return false;
@@ -1126,7 +1086,6 @@ function user_get_relationships($uid, $offset = 0)
     list($user_get_peers_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-
     if (db_num_rows($result) > 0) {
 
         while (($user_data = db_fetch_array($result))) {
@@ -1233,7 +1192,6 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     if (!$result = db_query($sql, $db_user_search)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_search)) return false;
@@ -1241,7 +1199,6 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     list($user_search_peers_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-
     if (db_num_rows($result) > 0) {
 
         while (($user_data = db_fetch_array($result))) {
@@ -1291,7 +1248,6 @@ function user_get_word_filter_list($offset)
     if (!$result = db_query($sql, $db_user_get_word_filter_list)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_get_word_filter_list)) return false;
@@ -1299,7 +1255,6 @@ function user_get_word_filter_list($offset)
     list($word_filter_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-
     if (db_num_rows($result) > 0) {
 
         while (($word_filter_data = db_fetch_array($result))) {

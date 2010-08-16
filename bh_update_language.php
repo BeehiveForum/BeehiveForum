@@ -24,21 +24,17 @@ USA
 /* $Id$ */
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "./forum/include/");
 
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Get our target language file.
-
 if (isset($_SERVER['argv'][1]) && strlen(trim(stripslashes_array($_SERVER['argv'][1]))) > 0) {
 
     $target_language_file = trim(stripslashes_array($_SERVER['argv'][1]));
@@ -56,7 +52,6 @@ if (isset($_SERVER['argv'][1]) && strlen(trim(stripslashes_array($_SERVER['argv'
 }
 
 // Get our optional updates file
-
 if (isset($_SERVER['argv'][2]) && strlen(trim(stripslashes_array($_SERVER['argv'][2]))) > 0) {
 
     $additions_file = trim(stripslashes_array($_SERVER['argv'][2]));

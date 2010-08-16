@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -66,7 +65,6 @@ function get_forum_data()
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
-
             $webtag = db_escape_string($webtag);
 
             $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
@@ -87,7 +85,6 @@ function get_forum_data()
 
             // Check #2: Try and select a default webtag from
             // the databse
-
             $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
             $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
@@ -324,7 +321,6 @@ function forum_check_password($forum_fid)
 
         // If we got this far then the password verification failed or
         // the user hasn't seen the password dialog before.
-
         $lang = load_language_file();
 
         html_draw_top("title={$lang['passwdprotectedforum']}");
@@ -415,7 +411,6 @@ function forum_get_settings()
     if (!is_array($forum_settings_array)) {
 
         // Get the named settings from FORUM_SETTINGS table.
-
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
@@ -423,7 +418,6 @@ function forum_get_settings()
         if (db_num_rows($result) > 0) {
 
             // Preset some of the settings, including GMT offset and DST offset.
-
             $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);
 
             while (($forum_data = db_fetch_array($result))) {
@@ -436,7 +430,6 @@ function forum_get_settings()
         }
 
         // Get the forum timezone, GMT offset and DST offset.
-
         if (isset($forum_settings_array['forum_timezone'])) {
 
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
@@ -454,7 +447,6 @@ function forum_get_settings()
         }
 
         // Get the WEBTAG, ACCESS_LEVEL and OWNER_UID
-
         $sql = "SELECT WEBTAG, ACCESS_LEVEL, OWNER_UID FROM FORUMS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
@@ -478,7 +470,6 @@ function forum_get_global_settings()
     if (!is_array($forum_global_settings_array)) {
 
         // Get the named settings from FORUM_SETTINGS table.
-
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
 
         if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
@@ -486,7 +477,6 @@ function forum_get_global_settings()
         if (db_num_rows($result) > 0) {
 
             // Preset some of the settings, including GMT offset and DST offset.
-
             $forum_global_settings_array = array('forum_gmt_offset' => 0, 'forum_dst_offset' => 1);
 
             while (($forum_data = db_fetch_array($result))) {
@@ -499,7 +489,6 @@ function forum_get_global_settings()
         }
 
         // Get the forum timezone, GMT offset and DST offset.
-
         if (isset($forum_global_settings_array['forum_timezone'])) {
 
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
@@ -531,7 +520,6 @@ function forum_get_settings_by_fid($forum_fid)
     if (!is_array($forum_settings_array)) {
 
         // Get the named settings from FORUM_SETTINGS table.
-
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
@@ -539,7 +527,6 @@ function forum_get_settings_by_fid($forum_fid)
         if (db_num_rows($result) > 0) {
 
             // Preset some of the settings, including GMT offset and DST offset.
-
             $forum_settings_array = array('fid' => $forum_fid, 'forum_gmt_offset' => 0, 'forum_dst_offset' => 1);
 
             while (($forum_data = db_fetch_array($result))) {
@@ -552,7 +539,6 @@ function forum_get_settings_by_fid($forum_fid)
         }
 
         // Get the forum timezone, GMT offset and DST offset.
-
         if (isset($forum_settings_array['forum_timezone'])) {
 
             $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
@@ -817,22 +803,18 @@ function forum_get_global_setting($setting_name, $callback = false, $default = f
 function forum_get_unread_cutoff()
 {
     // Array of valid Unread cutoff periods.
-
     $unread_cutoff_periods = array(THIRTY_DAYS_IN_SECONDS, SIXTY_DAYS_IN_SECONDS,
                                    NINETY_DAYS_IN_SECONDS, HUNDRED_EIGHTY_DAYS_IN_SECONDS,
                                    YEAR_IN_SECONDS);
 
     // Fetch the unread cutoff value
-
     $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff');
 
     // If unread message support is disabled we return false.
-
     if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
     // If unread message support isn't disabled we should check that
     // It is a valid value and return it or return the default of one year.
-
     return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
@@ -870,17 +852,14 @@ function forum_get_unread_cutoff_datetime()
 function forum_process_unread_cutoff($forum_settings)
 {
     // Check the $forum_settings array.
-
     if (!is_array($forum_settings)) return YEAR_IN_SECONDS;
 
     // Array of valid Unread cutoff periods.
-
     $unread_cutoff_periods = array(THIRTY_DAYS_IN_SECONDS, SIXTY_DAYS_IN_SECONDS,
                                    NINETY_DAYS_IN_SECONDS, HUNDRED_EIGHTY_DAYS_IN_SECONDS,
                                    YEAR_IN_SECONDS);
 
     // Fetch the unread cutoff value from the settings array
-
     if (isset($forum_settings['messages_unread_cutoff'])) {
         $messages_unread_cutoff = $forum_settings['messages_unread_cutoff'];
     }else {
@@ -888,12 +867,10 @@ function forum_process_unread_cutoff($forum_settings)
     }
 
     // If unread message support is disabled we return false.
-
     if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
     // If unread message support isn't disabled we should check that
     // It is a valid value and return it or return the default of one year.
-
     return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
@@ -930,15 +907,12 @@ function forum_update_unread_data($unread_cutoff_stamp)
 function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str)
 {
     // Load the language
-
     $lang = load_language_file();
 
     // If no owner UID specified or UID is 0 change it to current user.
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Ensure the variables we've been given are valid
-
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Du", $webtag)) return false;
 
     if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
@@ -947,17 +921,14 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Generate table prefix
-
     $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
 
     // Only users with acces to the forum tools can create / delete forums.
-
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         
         if (!$db_forum_create = db_connect()) return false;
 
         // Check that the WEBTAG is unique.
-
         $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'";
 
         if (!($result = db_query($sql, $db_forum_create))) return false;
@@ -969,7 +940,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         // Check for any conflicting tables.
-
         if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false))) {
 
             $error_str = $lang['selecteddatabasecontainsconflictingtables'];
@@ -979,11 +949,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
         
         // Catch SQL Exceptions
-        
         try {
 
             // Create the tables
-
             $sql = "CREATE TABLE `{$forum_table_prefix}ADMIN_LOG` (";
             $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
             $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1471,7 +1439,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Save Webtag, Database name and Access Level.
-
             $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
             $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
 
@@ -1480,13 +1447,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Get the new FID so we can save the settings
-
             if (!$forum_fid = db_insert_id($db_forum_create)) {
                 throw new Exception('Failed to get new forum fid');
             }
 
             // Create General Folder
-
             $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION) ";
             $sql.= "VALUES ('General', NOW(), NOW(), 3, 1)";
 
@@ -1499,7 +1464,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Create folder permissions
-
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
             $sql.= "VALUES (0, '$forum_fid', '$folder_fid', 14588);";
 
@@ -1508,36 +1472,30 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Add some default forum links
-
             $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
             $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
-
             if (!db_query($sql, $db_forum_create)) {
                 throw new Exception('Failed to create Beehive Forum link');
             }
 
             $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
             $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
-
             if (!db_query($sql, $db_forum_create)) {
                 throw new Exception('Failed to create Beehive Forum Facebook link');
             }
 
             $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
             $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
-
             if (!db_query($sql, $db_forum_create)) {
                 throw new Exception('Failed to create Teh Forum forum link');
             }
 
             // Create user permissions for forum leader
-
             if (!perm_update_user_forum_permissions($forum_fid, $owner_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE)) {
                 throw new Exception('Failed to set owner forum permissions');
             }
 
             // Create 'Welcome' Thread
-
             $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
             $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
             $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
@@ -1548,14 +1506,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Get the Thread ID. It should be 1, but just in case.
-
             if (!$new_tid = db_insert_id($db_forum_create)) {
                 throw new Exception('Failed to get first thread tid');
             }
 
             // Create the first post in the thread. Make it appear to be from
             // the Owner UID.
-
             $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, ";
             $sql.= "VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
             $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
@@ -1566,13 +1522,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Get the Post ID. Again should be 1, but trying to be tidy here.
-
             if (!$new_pid = db_insert_id($db_forum_create)) {
                 throw new Exception('Fauled to fetch new post pid');
             }    
 
             // First Post content.
-
             $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
             $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
 
@@ -1581,7 +1535,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Create Top Level Links Folder
-
             $sql = "INSERT INTO `{$forum_table_prefix}LINKS_FOLDERS` ";
             $sql.= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
 
@@ -1590,7 +1543,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             // Store Forum settings
-
             $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wiki/[WikiWord]',
                                     'enable_wiki_quick_links' => 'Y',
                                     'enable_wiki_integration' => 'N',
@@ -1630,7 +1582,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
             // Make sure at least the current user can access the forum
             // even if it's not protected.
-
             $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$uid', $forum_fid, 1)";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1724,12 +1675,10 @@ function forum_delete($fid)
 function forum_delete_tables($webtag, $database_name)
 {
     // Ensure the variables we've been given are valid
-
     if (!preg_match("/^[A-Z0-9_]+$/Du", $webtag)) return false;
     if (!preg_match("/^[A-Z0-9_]+$/Diu", $database_name)) return false;
 
     // Only users with acces to the forum tools can create / delete forums.
-
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (!$db_forum_delete_tables = db_connect()) return false;
@@ -1870,7 +1819,6 @@ function forum_get_permissions($fid, $offset = 0)
     if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_forum_get_permissions)) return false;
@@ -1948,7 +1896,6 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Array to hold our forums in.
-
     $forums_array = array();
 
     if (strlen(trim($forum_search)) > 0) {
@@ -1974,7 +1921,6 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
         if (!$result_forums = db_query($sql, $db_forum_search)) return false;
 
         // Fetch the number of total results
-
         $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
         if (!$result_count = db_query($sql, $db_forum_search)) return false;
@@ -1988,33 +1934,27 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                 $forum_fid = $forum_data['FID'];
 
                 // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
-
                 if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                     $forum_data['FORUM_NAME'] = "A Beehive Forum";
                 }
 
                 // Check the forum description is set.
-
                 if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                     $forum_data['FORUM_DESC'] = "";
                 }
 
                 // Check the LAST_VISIT column to make sure it's OK.
-
                 if (!isset($forum_data['LAST_VISIT']) || is_null($forum_data['LAST_VISIT'])) {
                     $forum_data['LAST_VISIT'] = 0;
                 }
 
                 // Unread cut-off stamp.
-
                 $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
                 // Get available folders for queries below
-
                 $folders = folder_get_available_by_forum($forum_fid);
 
                 // Get any unread messages
-
                 if ($unread_cutoff_datetime !== false) {
 
                     $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
@@ -2034,7 +1974,6 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                 }
 
                 // Total number of messages
-
                 $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
 
@@ -2049,7 +1988,6 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                 }
 
                 // Get unread to me message count
-
                 $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
                 $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
                 $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
@@ -2069,7 +2007,6 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                 // Sometimes the USER_THREAD table might have a higher count that the thread
                 // length due to table corruption. I've only seen this on the SF provided
                 // webspace but none the less we do this check here anyway.
-
                 if ($forum_data['NUM_MESSAGES'] < 0) $forum_data['NUM_MESSAGES'] = 0;
                 if ($forum_data['UNREAD_MESSAGES'] < 0) $forum_data['UNREAD_MESSAGES'] = 0;
                 if ($forum_data['UNREAD_TO_ME'] < 0) $forum_data['UNREAD_TO_ME'] = 0;
@@ -2277,11 +2214,9 @@ function forum_self_clean_check_xml()
 }
 
 // Forum self-preservation functions.
-
 function forum_check_maintenance()
 {
     // Array of functions that we run one at a time.
-
     $forum_maintenance_functions_array = array('pm_system_prune_folders',
                                                'bh_remove_stale_sessions',
                                                'thread_auto_prune_unread_data',
@@ -2289,77 +2224,59 @@ function forum_check_maintenance()
                                                'sitemap_create_file');
 
     // Array to hold the forum settings we need to update.
-
     $new_forum_settings = array();
 
     // XML requests shouldn't trigger forum self clean
-
     if (!forum_self_clean_check_xml()) return;
 
     // Get the scheduled forum maintenance start hour (default 03:00)
-
     $forum_maintenance_hour = forum_get_setting('forum_maintenance_hour', 'is_numeric', 3);
     
     // Get the forum maintenance duration (default 1 hour)
-
     $forum_maintenance_duration = forum_get_setting('forum_maintenance_duration', 'is_numeric', 1);
 
     // Fetch index of the last function we ran.
-
     $forum_maintenance_function = forum_get_setting('forum_maintenance_function', 'is_numeric', 0);
 
     // Increment the $forum_maintenance_function variable
-
     $forum_maintenance_function++;
 
     // Check that the $forum_maintenance_function points to a valid function.
-
     if (!isset($forum_maintenance_functions_array[$forum_maintenance_function])) {
         $forum_maintenance_function = 0;
     }
 
     // Generate the variable name for the function's last run date.
-
     $forum_maintenance_date_var = sprintf("%s_last_run", $forum_maintenance_functions_array[$forum_maintenance_function]);
 
     // Get the functions last run time from the database.
-
     $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, 'is_numeric', 0);
 
     // If the function has been run previously in the last 24 hours skip it.
-
     if (((time() - $forum_maintenance_last_run) < DAY_IN_SECONDS) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
 
     // Check that the scheduled start time has passed.
-
     if ((time() < mktime($forum_maintenance_hour)) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
 
     // Check that the maintenance window has not passed.
-
     if ((time() > mktime($forum_maintenance_hour + $forum_maintenance_duration)) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
 
     // Check the function actually exists before we try and execute it.
-
     if (!function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) return;
     
     // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
-
     ignore_user_abort(true);
 
     // Execute the shutdown function. If it fails return now.
-
     if (!($forum_maintenance_functions_array[$forum_maintenance_function]())) return;
     
     // Update the last run time of the function.
-    
     $new_forum_settings[$forum_maintenance_date_var] = time();
 
     // Update the last run forum_maintenance_function forum setting
-
     $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
 
     // Save the settings to the database.
-
     forum_save_default_settings($new_forum_settings);
 }
 

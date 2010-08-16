@@ -24,24 +24,19 @@ USA
 /* $Id$ */
 
 // Constant to define where the Beehive Forum include files are
-
 define("BH_INCLUDE_PATH", "../forum/include/");
 
 // Beehive Forum configuration.
-
 include_once(BH_INCLUDE_PATH. "config.inc.php");
 
 // Put Ewiki in protected mode and default to view / browse only
-
 define("EWIKI_PROTECTED_MODE", 1);
 define("EWIKI_AUTH_DEFAULT_RING", 3);
 
 // We need this script from EWiki as well
-
 include("plugins/auth/auth_perm_ring.php");
 
 // Set ourselves up with EWiki.
-
 $ewiki_plugins["auth_query"][] = "ewiki_auth_query_beehive";
 $ewiki_plugins["auth_userdb"][] = "ewiki_auth_userdb_beehive";
 
@@ -111,7 +106,6 @@ function ewiki_auth_query_beehive($data, $force_query = false)
 function ewiki_auth_userdb_beehive($username, $password)
 {
     // Beehive include files that we need.
-
     include_once(BH_INCLUDE_PATH. "db.inc.php");
     include_once(BH_INCLUDE_PATH. "logon.inc.php");
     include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -119,16 +113,13 @@ function ewiki_auth_userdb_beehive($username, $password)
     // Reset the PHP error reporting level and disable
     // Beehive's error handler - Ewiki isn't as well
     // written as Beehive ;)
-
     restore_error_handler();
     error_reporting(E_ALL ^ E_NOTICE);
 
     // MD5 hash the password.
-
     $passhash = md5($password);
 
     // Attempt user logon
-
     if (($uid = user_logon($username, $passhash))) {
 
         if (bh_session_init($uid)) {

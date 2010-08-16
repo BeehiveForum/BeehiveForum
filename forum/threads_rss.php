@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
@@ -93,34 +79,27 @@ include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check the webtag is valid
-
 forum_check_webtag_available($webtag);
 
 // Arrays for our cookie data
-
 $username_array = array();
 $password_array = array();
 $passhash_array = array();
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
-
 $forum_location = html_get_forum_uri(null, false);
 
 // Get the Forum Name
-
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 // Current date
-
 $build_date = gmdate("D, d M Y H:i:s O");
 
 // Check to see if the user wants a custom number of threads.
 // Maximum to display is 20. Minimum is 1. Default is 20.
-
 if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
 
     if ($_GET['limit'] > 20) {
@@ -142,11 +121,9 @@ if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
 }
 
 // Feed title is just the forum name by default
-
 $feed_title = $forum_name;
 
 // Default to showing all available folders
-
 $fid = false;
 
 // Check to see if the user wants threads ordered by created
@@ -154,7 +131,6 @@ $fid = false;
 // when it receives a reply. Created threads show the threads
 // in the order they were created and is more useful as a
 // RSS news feed within your forum.
-
 if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
     $sort_created = 'Y';
 }else {
@@ -162,15 +138,12 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
 }
 
 // See if we can try and logon automatically
-
 logon_perform_auto();
 
 // Load the user session
-
 $user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -178,7 +151,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -186,7 +158,6 @@ if (!bh_session_user_approved()) {
 }
 
 // Check that Guests are allowed
-
 if (user_is_guest() && !user_guest_enabled()) {
     html_guest_error();
 }
@@ -194,7 +165,6 @@ if (user_is_guest() && !user_guest_enabled()) {
 
 // Check to see if the user wants a specified list of folders
 // or the default to show all folders.
-
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
     if (($available_folders_array = folder_get_available_array())) {
@@ -212,15 +182,12 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }
 
 // Enable caching on RSS Feed
-
 cache_check_last_modified();
 
 // Language file
-
 $lang = load_language_file();
 
 // echo out the rss feed
-
 header('Content-type: text/xml; charset=UTF-8');
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -233,7 +200,6 @@ echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";
 echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
-
 if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y')))) {
 
     foreach ($threads_array as $thread) {
@@ -243,11 +209,9 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         // Make the date human readable and fetch the content of the last
         // post in the thread. Can easily change this if it isn't right
         // by making it fetch post 1.
-
         $modified_date = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 
         // Get the post content and author
-
         if ($sort_created == 'Y') {
 
             $t_content = message_get_content($thread['TID'], 1);
@@ -260,30 +224,24 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         }
 
         // Strip signatures from the RSS feed
-
         $t_content = message_apply_formatting($t_content, false, true);
 
         // Strip HTML and trim the content back.
-
         $t_content = strip_tags(trim(xml_strip_invalid_chars($t_content)));
 
         // Convert HTML special chars (& -> &amp;, etc);
-
         $t_content = htmlspecialchars($t_content);
         $t_title   = htmlspecialchars($t_title);
 
         // Check for double-encoded HTML chars (&amp;amp;, etc.)
-
         $t_content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $t_content);
         $t_title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $t_title);
 
         // Convert HTML entities to XML literals.
-
         $t_content = html_entity_to_decimal($t_content);
         $t_title   = html_entity_to_decimal($t_title);
 
         // Output the item.
-
         echo "<item>\n";
         echo "  <guid isPermaLink=\"true\">{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
         echo "  <pubDate>{$modified_date} UT</pubDate>\n";
@@ -291,7 +249,6 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         echo "  <link>{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
 
         // Get the author of the message.
-
         if (isset($t_user_array['LOGON'])) {
 
             $t_user = htmlentities_array(format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']));

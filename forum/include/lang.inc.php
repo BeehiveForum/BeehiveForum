@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -48,10 +47,8 @@ function load_language_file()
         // start out by including the English language file. This will allow
         // us to still use Beehive even if our language file isn't up to date
         // correctly.
-
         // The English language file must exist even if we're not going to be
         // using it in our forum. If we can't find it we'll bail out here.
-
         if (!@file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
             throw new Exception("<p>Could not load English language file (en.inc.php)</p>");
         }
@@ -62,7 +59,6 @@ function load_language_file()
 
          // if the user has expressed a preference for language,
          // ignore what the browser wants and use that if available
-
         if (($pref_language = bh_session_get_value("LANGUAGE"))) {
 
             if (@file_exists("include/languages/{$pref_language}.inc.php")) {
@@ -73,7 +69,6 @@ function load_language_file()
         }
 
          // if the browser doesn't send an Accept-Language header, give up.
-
         if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 
             include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
@@ -81,11 +76,9 @@ function load_language_file()
         }
 
         // split the provided Accept-Language string into individual languages
-
         $langs_array = preg_split('/\s*,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
          // work out what the q values associated with each language are
-
         foreach ($langs_array as $key => $value) {
 
             if (strstr($value, ";q=")) {
@@ -101,13 +94,11 @@ function load_language_file()
         }
 
         // sort the array in descending order of q value
-
         arsort($qvalue);
 
         // go through the array and use the first language installed that matches
         // if we've got to the stage where the user will accept any language,
         // default to what is specified in config.inc.php
-
         foreach ($qvalue as $key => $value) {
 
             if ($langs_array[$key] == "*") $langs_array[$key] = $default_language;

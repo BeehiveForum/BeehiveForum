@@ -29,7 +29,6 @@ define("BH_INCLUDE_PATH", "./forum/include/");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 
 // Load Language File Function
-
 function load_language_file($filename)
 {
     $lang = array();
@@ -74,11 +73,9 @@ function get_files(&$files_array, $path, $ignore_files_array = array())
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 $unused_constants = get_defined_constants(true);

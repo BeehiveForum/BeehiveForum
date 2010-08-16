@@ -24,14 +24,11 @@ USA
 /* $Id$ */
 
 // British English language file
-
 // Language character set and text direction options -------------------
-
 $lang['_isocode'] = "en-gb";
 $lang['_textdir'] = "ltr";
 
 // Months --------------------------------------------------------------
-
 $lang['month'][1]  = "j4nuary";
 $lang['month'][2]  = "fe8ru4Ry";
 $lang['month'][3]  = "m@rCH";
@@ -59,21 +56,16 @@ $lang['month_short'][11] = "n0V";
 $lang['month_short'][12] = "dec";
 
 // Dates ---------------------------------------------------------------
-
 // Various date and time formats as used by Beehive Forum. All times are
 // expressed as 24 hour time format.
-
 $lang['daymonthyear'] = "%s %s %s";                  // 1 Jan 2005
 $lang['monthyear'] = "%s %s";                        // Jan 2005
 $lang['daymonthyearhourminute'] = "%s %s %s %s:%s";  // 1 Jan 2005 12:00
 $lang['daymonthhourminute'] = "%s %s %s:%s";         // 1 Jan 12:00
 $lang['daymonth'] = "%s %s";                         // 1 Jan
 $lang['hourminute'] = "%s:%s";                       // 12:00
-
 // Periods -------------------------------------------------------------
-
 // Various time periods as used by Beehive Forum.
-
 $lang['date_periods']['year']   = "%s y3@r";
 $lang['date_periods']['month']  = "%s m0n+H";
 $lang['date_periods']['week']   = "%s wE3k";
@@ -83,7 +75,6 @@ $lang['date_periods']['minute'] = "%s m1Nut3";
 $lang['date_periods']['second'] = "%s \$3Cond";
 
 // As above but plurals (2 years vs. 1 year, etc.)
-
 $lang['date_periods_plural']['year']   = "%s y3@Rs";
 $lang['date_periods_plural']['month']  = "%s Mon+h5";
 $lang['date_periods_plural']['week']   = "%s w33kS";
@@ -93,7 +84,6 @@ $lang['date_periods_plural']['minute'] = "%s minuteS";
 $lang['date_periods_plural']['second'] = "%s \$Ec0nd\$";
 
 // Short hand periods (example: 1y, 2m, 3w, 4d, 5hr, 6min, 7sec)
-
 $lang['date_periods_short']['year']   = "%sy";    // 1y
 $lang['date_periods_short']['month']  = "%sm";    // 2m
 $lang['date_periods_short']['week']   = "%sW";    // 3w
@@ -101,9 +91,7 @@ $lang['date_periods_short']['day']    = "%sd";    // 4d
 $lang['date_periods_short']['hour']   = "%shR";   // 5hr
 $lang['date_periods_short']['minute'] = "%sm1n";  // 6min
 $lang['date_periods_short']['second'] = "%s5ec";  // 7sec
-
 // Common words --------------------------------------------------------
-
 $lang['percent'] = "p3RC3nt";
 $lang['average'] = "aVer4ge";
 $lang['approve'] = "apPRove";
@@ -230,7 +218,6 @@ $lang['referer'] = "reFER3R";
 $lang['thefollowingerrorswereencountered'] = "t3H phoLLow1NG eRROrs w3Re ENCOunt3r3D:";
 
 // Admin interface (admin*.php) ----------------------------------------
-
 $lang['admintools'] = "aDMin TO0ls";
 $lang['forummanagement'] = "foRUm m4N4gem3nt";
 $lang['accessdeniedexp'] = "j00 dO n0T h@Ve pERMi\$s10N +0 us3 +hIS s3ct10N.";
@@ -644,7 +631,6 @@ $lang['smtpmailserver'] = "u5E SM+P 53rV3R";
 $lang['sendmail'] = "u\$3 Sendm4iL";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
-
 $lang['changedstatusforuser'] = "cHaN93D u\$eR ST@tu\$ f0r '%s'";
 $lang['changedpasswordforuser'] = "cH4ng3D P@ssw0rD Ph0R '%s'";
 $lang['changedforumaccess'] = "ch4nGED foRUm 4cCes\$ p3rmi5\$Ions F0R '%s'";
@@ -830,7 +816,6 @@ $lang['failedtoprunevisitorlog'] = "f4il3D tO prune v1si+Or l0g";
 $lang['prunelog'] = "pruN3 L0G";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
-
 $lang['noexistingforums'] = "nO 3x1sTIN9 pH0RUm\$ FOUnd. T0 Cre4te @ n3W ph0RUM CLick teh '4dd NeW' bu+ToN b3l0W.";
 $lang['webtaginvalidchars'] = "w3B+4G C@n 0nly c0nT41N uPPErC@se @-Z, 0-9 @Nd unDeR\$COrE Ch4R4cT3RS";
 $lang['webtagmaxlength'] = "w3b+4g mUS+ n0 loN9er 32 cH4R4c+er\$ in lENGth";
@@ -856,11 +841,9 @@ $lang['defaultforum'] = "d3PH4UL+ pHOruM";
 $lang['forumdatabasewarning'] = "pL3@53 enSUR3 J00 S3lEC+ the cORreCT d4T484S3 wH3N cr3@TIn9 4 NEw pHOrum. 0nc3 crE4+ed 4 n3w PH0rum c4nn0+ B3 mOveD 8etW33n 4VA1L@8lE d4+48@se\$.";
 
 // Admin Global User Permissions
-
 $lang['globaluserpermissions'] = "gL0BAL User perm1\$\$1Ons";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
-
 $lang['mustsupplyforumwebtag'] = "j00 mUS+ \$uppLY @ phoRUm w38T49";
 $lang['mustsupplyforumname'] = "j00 mU\$+ SUPPLy A fOrUM N4ME";
 $lang['mustsupplyforumemail'] = "j00 MU\$t 5upplY 4 PHORuM 3mail 4DdrEs\$";
@@ -977,7 +960,6 @@ $lang['adsenseafterrandommessage'] = "aFTeR 4 r@nd0m M3\$\$@9e";
 $lang['registertoremoveadverts'] = "r39I5ter +o R3moVE thes3 4dv3r+S.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
-
 $lang['forum_settings_help_10'] = "<b>p0s+ Ed1+ +1M3Out</b> I\$ +HE +1M3 iN m1nut3S 4Phter PostINg +h@T 4 us3R C@n 3dit +HE1r P0St. iph 5e+ +0 0 +HER3 i5 N0 L1M1t.";
 $lang['forum_settings_help_11'] = "<b>maXimUm pOST len9th</b> 1\$ +hE m4ximum Num8Er OF cH4R4C+eRS th4+ W1lL bE D1spl@Y3d iN 4 pO5T. 1f @ P05t is l0NGeR TH@n THe num8Er 0PH CH4RActerS d3FIneD Her3 1T wiLl 83 Cu+ Sh0RT @Nd 4 l1NK addEd +O +3h 80tT0M to all0w US3rs T0 re@d teh wHol3 po\$+ oN 4 \$eP4r4t3 P493.";
 $lang['forum_settings_help_12'] = "iPh j00 D0n'+ w4nt y0ur U53rS tO Be @bL3 TO Cr3@T3 POll5 j00 c4n d1S48Le +3H ab0v3 0pTI0n.";
@@ -1042,7 +1024,6 @@ $lang['forum_settings_help_72'] = "j00 \$houlD 3NTer 4ny CDn P@tHS 1N tEH t3Xt b
 $lang['forum_settings_help_73'] = "plE4se no+E: y0ur cdN p4+HS \$houLd 8E +0 TEh rO0T 0ph tHE b3EHiv3 forUM CoN+3nt. for ex@MPlE, Iph j00 enter <i>cdn01.MY833h1vepH0rum.net</i>, REQuE\$tS foR +EH u5er'S cs\$ \$tyl3s wIll 83 m4DE TO <i>cdn01.my833H1vepHORUm.N3+/\$Tyl3s/[u\$3R_S+yl3]/s+YLE.cSS</i>";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
-
 $lang['aidnotspecified'] = "a1d nO+ SP3cifi3D.";
 $lang['upload'] = "uPL0@D";
 $lang['waitdotdotdot'] = "w41+&hellip;";
@@ -1066,7 +1047,6 @@ $lang['failedtodeleteallselectedattachments'] = "f41led to d3L3+e @Ll OPh +H3 se
 $lang['failedtodeleteallselectedattachmentthumbnails'] = "f@ILEd +0 Del3+3 4ll 0f THe 5el3c+ed 4+TAcHmen+ +HUmBN4ILS";
 
 // Changing passwords (change_pw.php) ----------------------------------
-
 $lang['passwdchanged'] = "p@\$swORd cH4n93d";
 $lang['passedchangedexp'] = "youR paS\$w0RD h@S B3en ch@nged.";
 $lang['updatefailed'] = "upd4te pH4iL3D";
@@ -1080,7 +1060,6 @@ $lang['invaliduseraccount'] = "iNV@L1d US3R 4Ccount Sp3C1phied. cheCk eM4il Phor
 $lang['invaliduserkeyprovided'] = "inV4lID useR kEy pROvideD. CheCk em@1l PH0r cORR3ct l1nK";
 
 // Deleting messages (delete.php) --------------------------------------
-
 $lang['nomessagespecifiedfordel'] = "nO M3\$S4g3 5P3C1phieD f0R d3L3+1oN";
 $lang['deletemessage'] = "dele+e m3sS4Ge";
 $lang['successfullydeletedpost'] = "sUccessPHuLLY DELE+3D poS+ %s";
@@ -1088,7 +1067,6 @@ $lang['errordelpost'] = "eRR0R del3+1Ng p0\$t";
 $lang['cannotdeletepostsinthisfolder'] = "j00 c4nno+ d3l3t3 p0\$T5 1N THis PhoLd3r";
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
-
 $lang['nomessagespecifiedforedit'] = "no M3\$S49E speCIF1eD f0r 3Di+In9";
 $lang['cannoteditpollsinlightmode'] = "c4Nn0+ eDit P0Ll5 1n l1gHT M0d3";
 $lang['editedbyuser'] = "eD1+3d: %s 8Y %s";
@@ -1109,7 +1087,6 @@ $lang['cannoteditpostsinthisfolder'] = "j00 c@NN0T EDiT po\$+s in +His F0lDEr";
 $lang['messagewasnotfound'] = "m3ss@GE %s W@S NOt PHouND";
 
 // Email (email.php) ---------------------------------------------------
-
 $lang['sendemailtouser'] = "s3ND Em@1l t0 %s";
 $lang['nouserspecifiedforemail'] = "no U\$ER sP3cif1eD PhoR em@1l1ng.";
 $lang['entersubjectformessage'] = "eN+ER 4 5u8jeC+ Ph0R tHE M3\$s49e";
@@ -1122,62 +1099,50 @@ $lang['userhasinvalidemailaddress'] = "%s H4S 4n InV@liD 3Mail @Ddr35s";
 $lang['useemailaddrtosendmsg'] = "u\$e mY r3@l 3m41L 4DDr3Ss +0 sEND TH1S m3\$Sa93";
 
 // Message nofificaiton ------------------------------------------------
-
 $lang['msgnotification_subject'] = "mEsS@GE no+1f1c4T1ON pHR0m %s";
 $lang['msgnotificationemail'] = "heLlO %s,\n\n%s PO5+ed 4 ME\$S4ge +O j00 ON %s.\n\n+h3 SU8JEc+ iS: %s.\n\nT0 re4D ThA+ mesS49E @ND o+H3R\$ 1n th3 S4M3 d1ScuS\$10n, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNo+e: 1F J00 do nO+ wISh to R3cEIVe eM@1l noT1pH1C4+10ns 0Ph pH0Rum m3\$\$@9eS p0\$+3d T0 Y0U, 9o t0: %s CLICk On mY c0n+RolS +H3n 3m4iL 4nd PRivacy, uNs3l3C+ +Eh 3M@1l NotiPHIC4TIoN check80x 4nd PR3sS SUBm1t.";
 
 // Thread Subscription notification ------------------------------------
-
 $lang['threadsubnotification_subject'] = "suBScR1PTiOn noTIf1c4t1on PHrOm %s";
 $lang['threadsubnotification'] = "hELLo %s,\n\n%s p0s+ed @ m3\$s4G3 iN 4 +Hr3@d j00 H4vE sU85Cri83D +O 0n %s.\n\n+h3 5U8j3Ct i\$: %s.\n\nTo r3ad Th4+ M3s5a93 ANd 0+H3rs 1N th3 54m3 D1scusS10n, 9O +0:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nn0t3: 1f j00 DO N0+ WI\$h +O r3c31v3 EM@1l No+1fIC4+iONS of NEW mEssa93\$ iN THi\$ Thr3AD, 9o +0: %s aNd @DJusT yoUr iN+3re\$t LEV3L 4t T3H BoT+0M opH +HE pAGE.";
 
 // Folder Subscription notification ------------------------------------
-
 $lang['foldersubnotification_subject'] = "su85CR1p+ION n0+1f1c4tiON froM %s";
 $lang['foldersubnotification'] = "h3Ll0 %s,\n\n%s p0\$+3D @ MesSA9e 1N A FoLD3R j00 4R3 \$UBscriBed +0 on %s.\n\nTh3 \$U8JEC+ i\$: %s.\n\n+0 r3@D Th@t m3ss4gE @nd o+h3r5 1n THE S@me d1scussI0n, 9o TO:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNo+e: 1f J00 DO N0+ WISH tO R3C31v3 em@1L N0+1f1c4tIONS 0pH NEw MEs54geS 1n TH15 tHr34D, Go T0: %s 4nD adJUS+ Y0UR IN+3re\$T lEV3l bY cl1ck1nG 0n +H3 PH0lder'\$ 1coN @t +H3 Top OF p4ge.";
 
 // PM notification -----------------------------------------------------
-
 $lang['pmnotification_subject'] = "pm N0+1fic4+1on phR0M %s";
 $lang['pmnotification'] = "hELlo %s,\n\n%s P05t3d 4 pm TO J00 ON %s.\n\ntHe subJ3C+ iS: %s.\n\nT0 re@d +3h messA9e G0 +0:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nN0+3: 1F j00 d0 no+ wish +0 recEiv3 Em@1l n0T1phiC@+iOnS OF N3w pm Me\$S4Ge\$ p0s+ed +0 you, Go tO: %s cL1ck MY C0ntr0ls +h3n EM@1l 4ND PR1vACy, unSEl3cT +H3 pm No+1FIc4+10N cH3Ck80x 4ND Pres5 \$Ubm1t.";
 
 // Password change notification ----------------------------------------
-
 $lang['passwdchangenotification'] = "p4sSW0Rd Chan9E n0+1ph1C4Ti0n phr0m %s";
 $lang['pwchangeemail'] = "h3lL0 %s,\n\n+his a no+1fiC4+1on 3MaiL +0 1NPh0RM j00 +h@t y0Ur P@ssw0rd ON %s h4S 833N CH4N93D.\n\nI+ h4S 8e3n Ch4n9Ed to: %s 4ND w45 Ch4ngeD by: %s.\n\n1ph j00 h4v3 recEIVEd +HIs emaIL in errOr OR w3r3 n0t 3XP3c+in9 4 ch4ng3 +0 your p@ssw0Rd ple4Se cont@ct TH3 FORum Own3r 0r 4 M0d3R@+Or oN %s 1MMed14tELy +0 corREc+ 1T.";
 
 // Email confirmation notification -------------------------------------
-
 $lang['emailconfirmationrequiredsubject'] = "eM41l confirma+1ON R3Qu1reD f0r %s";
 $lang['confirmemail'] = "h3ll0 %s,\n\ny0u r3c3n+ly cre4t3D 4 NEw us3r 4CC0unt On %s.\n\nB3f0r3 J00 C4n S+4r+ POst1NG We neEd +O CoNPh1rM youR eM4il @DDr3sS. Don'+ W0rrY +h1S is QU1t3 3@5y. 4Ll j00 neeD to Do 1s Cl1Ck tH3 L1nk 8eLOW (0r copy @Nd p4st3 IT 1n+0 YoUr Br0wSEr):\n\n%s\n\n0Nce C0npHIRM4+1oN is COmplE+e J00 M4Y lOg1n @nd sT@Rt pOS+1ng IMM3dI4teLy.\n\n1f j00 d1D noT cre4t3 @ u\$er ACcoun+ On %s ple4\$e 4CCep+ OUr 4P0l09ies 4Nd Ph0rw4Rd +hI5 3M41l +0 %s So ThA+ TEH 5oUrc3 OF 1t maY 83 1nV3sTI94+3d.";
 $lang['confirmchangedemail'] = "heLL0 %s,\n\nyOU r3cently chan9ed youR 3m4il On %s.\n\nb3f0R3 J00 c4n \$T4R+ P0\$+in9 4941n W3 NeEd t0 c0nfIRm your N3W EM@1l 4ddr3\$s. d0n't wORry +H1S I\$ Quit3 3A5y. 4ll j00 ne3D To D0 I\$ CLIck tH3 link 83L0w (0r cOpy ANd pA\$+e 1+ 1nT0 yOur br0wSEr):\n\n%s\n\nonC3 CONphIRm4t1oN i5 ComPl3T3 J00 mAY cOnt1nue t0 uS3 +h3 F0Rum 4s n0rM4l.\n\n1F j00 W3RE nOt 3Xp3c+1N9 THIs 3m4il FR0M %s PLeaSE @cCEP+ OuR 4pOLoG1e\$ 4Nd ph0RW4rd +hI\$ 3M4iL TO %s \$0 tHa+ +H3 S0Urc3 0F it m4Y b3 1nVE\$tig4+Ed.";
 
 // Forgotten password notification -------------------------------------
-
 $lang['forgotpwemail'] = "h3lLo %s,\n\nYOU r3qu3sT3D tHIs 3-m4il fr0M %s 8EC@use j00 h@VE PHORgo+T3N your P@\$\$word.\n\nClick TH3 l1NK 83L0w (0R c0PY ANd p4\$+3 1+ INt0 y0ur br0W5ER) +0 Re5et y0Ur p4sSWord:\n\n%s";
 
 // Admin New User Approval notification -----------------------------------------
-
 $lang['newuserapprovalsubject'] = "n3W u\$ER 4PPrOVal No+1F1c4+1ON ph0R %s";
 $lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\"OR clicK ThE l1nk b3L0w:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNo+e: o+h3r 4dm1N1\$+R4TOrs 0N +h1s f0RUM will alSO ReCeiVe tHIs N0+1f1Cat10n 4nd m4y h4ve @lre4dY @CTed Up0n thI5 Reque\$T.";
 
 // Admin New User notification -----------------------------------------
-
 $lang['newuserregistrationsubject'] = "n3W uSEr @cCount noTIf1c4T10n PHor %s";
 $lang['newuserregistrationemail'] = "h3LlO %s,\n\n@ N3W U\$3r 4CC0UN+ HA\$ B33n cRE4t3D ON %s.\n\ntO View tHiS Us3r 4cc0unt PL3@Se v1sI+ tH3 4dM1n UsERS SeC+1oN 4nD cL1ck 0n +h3 new u5eR 0R CL1ck the lINk B3l0w:\n\n%s";
 
 // User Approved notification ------------------------------------------
-
 $lang['useraccountapprovedsubject'] = "uSER 4pprOV@l N0+1fIC4+1oN for %s";
 $lang['useraccountapprovedemail'] = "h3Ll0 %s,\n\nYour UsER 4Cc0Un+ 4+ %s H4S B33N 4pPRoved. J00 c4n l091N 4ND \$tar+ p0s+Ing 1Mmed14tely bY cLICkIn9 +h3 l1nk 83L0W:\n\n%s\n\n1F j00 wer3 n0t 3XPeC+1N9 +H1\$ Em@1l PHr0M %s ple4s3 @ccEP+ our AP0l0G1ES @nD FOrwARd +h1s Em4Il to %s so Th@T tEH \$0Urc3 0pH i+ M4Y bE 1nvE\$tIG@TED.";
 
 // Admin Post Approval notification -----------------------------------------
-
 $lang['newpostapprovalsubject'] = "po\$+ 4ppR0v4l nOt1fIc4+ion Ph0r %s";
 $lang['newpostapprovalemail'] = "h3llo %s,\n\nA NeW Pos+ ha\$ B33n crea+ed 0n %s.\n\n@\$ J00 ar3 4 m0D3R@+0r 0N +hiS phoRUm j00 ar3 r3Qu1red To 4ppr0ve th1s P0\$t 83ph0re iT c@N 83 RE@d By O+h3r us3r\$.\n\ny0U C@N 4pPr0ve +h1s P0s+ 4nd 4NY 0+H3r5 p3Nd1N9 APpr0v@L 8Y VIsiT1N9 +HE @dmin PoS+ @ppR0v4l \$3C+1oN Of y0ur pH0rum oR 8y CL1ckIn9 T3h LINK B3lOw:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nn0+3: 0+H3R adM1niStR4TorS on th1\$ pH0ruM w1lL 4L\$0 R3C31Ve +hIs No+1PHic4tI0N 4Nd m4Y H4vE 4LReaDY Act3D UpOn +Hi5 reqUE\$T.";
 
 // Forgotten password form.
-
 $lang['passwdresetrequest'] = "y0uR p@\$SW0RD R3\$eT Reque\$t phrom %s";
 $lang['passwdresetemailsent'] = "p4\$SWORD ReS3+ e-M4IL \$En+";
 $lang['passwdresetexp'] = "j00 5h0uld \$horTLy R3ce1v3 @n 3-m41l c0nt41N1NG Ins+ruct1oNs f0r r3\$Et+1n9 Y0UR p45sword.";
@@ -1187,13 +1152,11 @@ $lang['couldnotsendpasswordreminder'] = "coULd nOT SENd p@s\$w0rd ReMinder. plE4
 $lang['request'] = "r3qU3\$t";
 
 // Email confirmation (confirm_email.php) ------------------------------
-
 $lang['emailconfirmation'] = "em41L c0nf1RM4+ION";
 $lang['emailconfirmationcomplete'] = "th4NK J00 f0r c0nFirmINg y0ur 3m4Il 4ddreS5. j00 m4y n0w LOg1n ANd s+4r+ p05TIng IMM3Di4teLY.";
 $lang['emailconfirmationfailed'] = "em4iL c0Nf1RM@t1on h@S F41LeD, pL3@Se +Ry ag4IN l4tEr. 1ph j00 encoUNT3r tHIs 3rr0R Mult1pl3 t1me\$ PL3@Se C0nTac+ Th3 forum OWn3R or @ Moder4+0R phoR 4s\$1\$+4Nce.";
 
 // Links database (links*.php) -----------------------------------------
-
 $lang['toplevel'] = "tOp L3v3l";
 $lang['maynotaccessthissection'] = "j00 m@y NOt Acc3\$s +h1S SEcti0n.";
 $lang['toplevel'] = "t0p LeV3L";
@@ -1259,7 +1222,6 @@ $lang['linkurltoolong'] = "linK url tO0 L0n9. m4XImUm iS %s ch4r4cT3r\$";
 $lang['linkfoldernametoolong'] = "foLd3R Name +00 lOn9. m4xImum Length i\$ %s Ch@r4C+eRS";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
-
 $lang['loggedinsuccessfully'] = "j00 l0g93d In SUCCes\$fully.";
 $lang['presscontinuetoresend'] = "preS\$ ContINU3 to r3senD fORm D@tA or c@nC3l to ReL04D P@Ge.";
 $lang['usernameorpasswdnotvalid'] = "tHE uSeRN@m3 or p4ssW0Rd j00 Suppl1ed 1S n0+ v@lId.";
@@ -1281,7 +1243,6 @@ $lang['otherdotdotdot'] = "o+H3R&hellip;";
 $lang['yoursessionhasexpired'] = "yOUR 5eSSi0N h4\$ expir3d. j00 w1LL neeD +0 l0g1n AG4IN to C0ntInu3.";
 
 // My Forums (forums.php) ---------------------------------------------------------
-
 $lang['myforums'] = "my F0rum\$";
 $lang['allavailableforums'] = "alL 4v@Il4Bl3 foRUm\$";
 $lang['favouriteforums'] = "f4Vour1t3 pH0RUms";
@@ -1307,7 +1268,6 @@ $lang['passwdprotectedforum'] = "p@\$SW0rd prOt3CT3D FOrum";
 $lang['passwdprotectedwarning'] = "tHI\$ forum 1S p@5\$word pr0+ect3D. +0 94in 4Cc3s\$ Ent3r +3h P4SsW0rD beLOw.";
 
 // Message composition (post.php, lpost.php) --------------------------------------
-
 $lang['postmessage'] = "pO\$t M3\$s4Ge";
 $lang['selectfolder'] = "sELEc+ F0lder";
 $lang['mustenterpostcontent'] = "j00 Mu\$T en+er S0ME C0Nt3n+ Ph0r +He p0st!";
@@ -1355,7 +1315,6 @@ $lang['reviewthread'] = "reV1EW Thre4d";
 $lang['reviewthreadinnewwindow'] = "r3VieW En+1re Thre@D 1n N3W w1nd0W";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
-
 $lang['inreplyto'] = "iN R3Ply +0";
 $lang['showmessages'] = "sH0w mes\$4Ge5";
 $lang['ratemyinterest'] = "r4+e My iN+er3\$t";
@@ -1412,7 +1371,6 @@ $lang['pressctrlentertoquicklysubmityourpost'] = "pr3SS c+RL+eNt3r TO Qu1CKlY su
 $lang['invalidmsgidornomessageidspecified'] = "iNv4l1D MEss@Ge iD or no MeSs@9e 1D 5p3CiPHiED.";
 
 // Moderators list (mods_list.php) -------------------------------------
-
 $lang['cantdisplaymods'] = "caNnO+ diSPL4y F0lder M0d3r@+0rS";
 $lang['moderatorlist'] = "mOdER@t0R liS+:";
 $lang['modsforfolder'] = "m0d3r@T0R\$ pH0r ph0ldEr";
@@ -1421,7 +1379,6 @@ $lang['forumleaders'] = "foRum l3Ad3Rs:";
 $lang['foldermods'] = "foLd3R MoDer@TOrs:";
 
 // Navigation strip (nav.php) ------------------------------------------
-
 $lang['start'] = "s+4r+";
 $lang['messages'] = "m3\$\$@9E\$";
 $lang['pminbox'] = "inboX";
@@ -1436,7 +1393,6 @@ $lang['login'] = "l0g1n";
 $lang['logout'] = "lo9OUt";
 
 // PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
-
 $lang['privatemessages'] = "pRIVATe M35s@9e\$";
 $lang['recipienttiptext'] = "s3P4RA+e r3cip1En+S By sem1-C0L0n OR cOmma";
 $lang['maximumtenrecipientspermessage'] = "tH3re 1\$ 4 LIMit 0f 10 R3C1PI3n+5 p3r mesS4G3. PL3aSe @MeNd your rec1P13n+ Lis+.";
@@ -1493,7 +1449,6 @@ $lang['youmustselectsomemessages'] = "j00 Mus+ s3lEc+ some m3ss@ge5 +0 proCes\$"
 $lang['successfullyrenamedfolder'] = "suCCEssfully REn4mED fOLdEr";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
-
 $lang['mycontrols'] = "mY ConTr0Ls";
 $lang['myforums'] = "mY f0rUMs";
 $lang['menu'] = "menu";
@@ -1628,7 +1583,6 @@ $lang['profileentriesmustnotincludehtml'] = "pr0F1l3 3ntRI3\$ muSt no+ 1ncLude h
 $lang['failedtoupdateuserprofile'] = "f41LeD to upda+e u\$Er PRof1l3";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
-
 $lang['mustprovideanswergroups'] = "j00 Mu\$t prov1dE soME @N\$WeR 9roUPS";
 $lang['mustprovidepolltype'] = "j00 Mus+ ProV1dE a POll +Yp3";
 $lang['mustprovidepollresultsdisplaytype'] = "j00 MUs+ PROV1de r3SUl+S disPL@y +yP3";
@@ -1707,7 +1661,6 @@ $lang['viewbypolloption'] = "v13w 8y pOLl 0p+1on";
 $lang['viewbyuser'] = "vi3W bY Us3r";
 
 // Profiles (profile.php) ----------------------------------------------
-
 $lang['editprofile'] = "ed1+ PRopH1LE";
 $lang['profileupdated'] = "pR0PH1l3 upda+eD.";
 $lang['profilesnotsetup'] = "t3h F0RUm 0wnER h@S n0t \$e+ up proFileS.";
@@ -1734,7 +1687,6 @@ $lang['profilenotavailable'] = "pr0fIL3 n0+ @V41lAbL3.";
 $lang['userprofileempty'] = "thIs uSEr ha5 not FIll3d 1n +H31r pr0f1le 0R i+ 1s 5E+ tO priV4+e.";
 
 // Registration (register.php) -----------------------------------------
-
 $lang['newuserregistrationsarenotpermitted'] = "sorRy, NEw uS3R rE9i5+ra+10Ns @Re n0t all0wEd r1gh+ n0w. Pl3@se cheCk b4Ck l4Ter.";
 $lang['usernametooshort'] = "us3rN4me Mus+ B3 @ minimum 0f 2 ch@r@c+3RS l0n9";
 $lang['usernametoolong'] = "us3RN4M3 mUS+ 83 4 m4ximum Of 15 ch@r@c+3R\$ Lon9";
@@ -1778,7 +1730,6 @@ $lang['forumrulescheckbox'] = "i h4ve ReAD, And @9RE3 +o 48Id3 By th3 FORum ruL3
 $lang['youmustagreetotheforumrules'] = "j00 muST @gr33 +o teh F0ruM rule\$ bEphoR3 j00 c4N Con+Inu3.";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
-
 $lang['member'] = "meMBer";
 $lang['searchforusernotinlist'] = "s3ArCH ph0r 4 u\$er nOT iN list";
 $lang['yoursearchdidnotreturnanymatches'] = "yOuR S34rCH d1D n0+ r3+uRN 4Ny ma+CHEs. TRy \$ImPLiFyin9 y0UR s34rch p4r4m3t3rs 4ND +ry 4g41N.";
@@ -1786,7 +1737,6 @@ $lang['hiderowswithemptyornullvalues'] = "hId3 roWs W1th emp+Y or NuLl V@lu35 1N
 $lang['showregisteredusersonly'] = "sh0w R3GiS+er3D USers oNLy (H1d3 9Ue\$Ts)";
 
 // Relationships (user_rel.php) ----------------------------------------
-
 $lang['relationships'] = "reL4+10NSH1Ps";
 $lang['userrelationship'] = "uSEr ReL4+IonSHip";
 $lang['userrelationships'] = "uS3r rel4+1onShips";
@@ -1807,7 +1757,6 @@ $lang['cannotignoremod'] = "j00 c4nn0+ 19N0r3 thi\$ U\$eR, a\$ THEy @RE @ m0D3r4
 $lang['previewsignature'] = "pr3VIEw S1Gn4+Ur3";
 
 // Search (search.php) -------------------------------------------------
-
 $lang['searchresults'] = "sE4RCh resuL+s";
 $lang['usernamenotfound'] = "th3 Usern4me j00 sp3C1phied IN th3 to Or fr0M Phi3ld wa\$ not fOUnd.";
 $lang['notexttosearchfor'] = "oNE or @lL 0PH y0ur 534rch KeywordS wEr3 1NV@lID. sE4rcH keYWords mus+ 83 N0 shoRT3r th4n %d Ch4r4CTerS, n0 LONgEr +h4n %d ChARAc+ER\$ aNd Must No+ ApPe4R 1N +H3 %s";
@@ -1855,13 +1804,11 @@ $lang['searchsuccessfullycompleted'] = "se4RcH 5ucc35spHUlLy C0mpl3+eD. %s";
 $lang['clickheretoviewresults'] = "cL1Ck h3r3 +o V13W rESUlt\$.";
 
 // Search Popup (search_popup.php) -------------------------------------
-
 $lang['select'] = "s3L3c+";
 $lang['searchforthread'] = "s34RcH for Thr3ad";
 $lang['mustspecifytypeofsearch'] = "j00 Mu5+ Sp3cIFY tYPE of \$34Rch +0 perphORm";
 
 // Start page (start_left.php) -----------------------------------------
-
 $lang['recentthreads'] = "receNT +hr3@ds";
 $lang['startreading'] = "s+@RT RE4dIn9";
 $lang['threadoptions'] = "tHre4d 0Pti0nS";
@@ -1870,11 +1817,9 @@ $lang['morevisitors'] = "mOr3 VIs1tOrS";
 $lang['forthcomingbirthdays'] = "f0rthcom1ng B1rthd@y5";
 
 // Start page (start_main.php) -----------------------------------------
-
 $lang['editstartpage_help'] = "j00 c@n edit +H1\$ Page frOM +3H 4DM1N int3rph4Ce";
 
 // Thread navigation (thread_list.php) ---------------------------------
-
 $lang['newdiscussion'] = "n3w Discu\$S10n";
 $lang['createpoll'] = "cr34+E PolL";
 $lang['search'] = "se4rch";
@@ -1974,7 +1919,6 @@ $lang['lightgreen'] = "lIGHt 9r3eN";
 $lang['lightblue'] = "li9ht 8luE";
 
 // Forum Stats --------------------------------
-
 $lang['forumstats'] = "fORUm \$t4+S";
 $lang['userstats'] = "u5eR sT@T5";
 
@@ -2083,7 +2027,6 @@ $lang['averagewordfilterentriesperuser'] = "av3r49E worD fiL+3R en+ries PeR uSEr
 $lang['mostuserseveronlinedetail'] = "%s On %s";
 
 // Thread Options (thread_options.php) ---------------------------------
-
 $lang['updatessavedsuccessfully'] = "uPD@t3\$ s4v3D SUCcEssFUlly";
 $lang['useroptions'] = "uS3r opti0NS";
 $lang['markedasread'] = "m4rK3d 4s R3ad";
@@ -2114,13 +2057,11 @@ $lang['failedtodeletethread'] = "f4iL3D to del3te thre@d.";
 $lang['failedtoundeletethread'] = "f41L3d TO un-Del3+e +HR3AD";
 
 // Folder Options (folder_options.php) ---------------------------------
-
 $lang['folderoptions'] = "fOLD3R 0P+I0n\$";
 $lang['foldercouldnotbefound'] = "tH3 reque\$+3d ph0lDer c0Uld N0+ B3 fouNd 0R 4Cc35S w45 D3N13D.";
 $lang['failedtoupdatefolderinterest'] = "f4il3D to UpdA+3 f0ld3R 1n+3rest";
 
 // Dictionary (dictionary.php) -----------------------------------------
-
 $lang['dictionary'] = "dic+10n@ry";
 $lang['spellcheck'] = "spEll ch3Ck";
 $lang['notindictionary'] = "no+ 1N D1Ct1oN4RY";
@@ -2141,7 +2082,6 @@ $lang['cancel'] = "c4NC3L";
 $lang['dictionarynotinstalled'] = "no Dic+iON@RY h@S B3eN 1n\$T4ll3D. Pl34S3 con+4c+ +hE foRUm 0wN3r to R3m3Dy Thi\$.";
 
 // Permissions keys ----------------------------------------------------
-
 $lang['postreadingallowed'] = "pOSt r3Adin9 @lloweD";
 $lang['postcreationallowed'] = "pOS+ cr3a+10n 4llOW3D";
 $lang['threadcreationallowed'] = "thre4d Cr3@t1oN @ll0w3D";
@@ -2154,7 +2094,6 @@ $lang['guestaccessallowed'] = "gU3s+ 4cce\$s All0wed";
 $lang['postapprovalrequired'] = "p0\$T @PPr0V4l r3qu1r3D";
 
 // RSS feeds gubbins
-
 $lang['rssfeed'] = "rs\$ ph3ed";
 $lang['every30mins'] = "eV3ry 30 minu+3\$";
 $lang['onceanhour'] = "once @n HouR";
@@ -2199,7 +2138,6 @@ $lang['rssstreamnotworkingcorrectly'] = "rs\$ S+re@m w4s 3MPty 0R cOuLD N0t B3 p
 $lang['invalidfeedidorfeednotfound'] = "invALid feeD 1D or ph33D nOT ph0und";
 
 // PM Export Options
-
 $lang['pmexportastype'] = "eXp0rt @S +YPE";
 $lang['pmexporthtml'] = "htML";
 $lang['pmexportxml'] = "xmL";
@@ -2213,7 +2151,6 @@ $lang['pmexportwordfilter'] = "aPpLY wORd pH1l+3R +0 M3S5493S";
 $lang['failedtoexportmessages'] = "faIL3d To exPOrt MeSs@Ge\$";
 
 // Thread merge / split options
-
 $lang['threadhasbeensplit'] = "tHr3@D H4S b3en \$Plit";
 $lang['threadhasbeenmerged'] = "tHRE@d h4\$ 8e3N M3R93d";
 $lang['mergesplitthread'] = "m3R9E / SPL1T thr34D";
@@ -2246,7 +2183,6 @@ $lang['nopermissiontomergethreads'] = "j00 4Re n0t P3RMit+3d TO mER9e teh sel3C+
 $lang['failedtoexecutethreadmergequery'] = "f41L3d TO EX3CU+e thre@d m3rgE query";
 
 // Thread subscriptions
-
 $lang['threadsubscriptions'] = "tHRE@d \$UB\$cR1p+i0n5";
 $lang['couldnotupdateinterestonthread'] = "coULD n0+ uPD@t3 INt3r3\$T 0n +hREAD '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "tHr34d int3ReSTs UpDa+eD SuCc3ssfULlY";
@@ -2260,7 +2196,6 @@ $lang['subscribedthreads'] = "su8sCRi8eD +hre@d\$";
 $lang['currentinterest'] = "cuRreN+ 1n+eres+";
 
 // Folder subscriptions
-
 $lang['foldersubscriptions'] = "folDEr Su8\$Cr1Pt10NS";
 $lang['couldnotupdateinterestonfolder'] = "could nOT upd4+E In+3re\$T 0n FoLd3r '%s'";
 $lang['folderinterestsupdatedsuccessfully'] = "f0Ld3R IN+3rES+s Upd4t3D succEs\$fullY";
@@ -2271,7 +2206,6 @@ $lang['ignoredfolders'] = "i9nOReD fOlders";
 $lang['subscribedfolders'] = "subSCri83D pHOLd3r\$";
 
 // Browseable user profiles
-
 $lang['youcanonlyaddthreecolumns'] = "j00 c4n OnLY aDd 3 C0lumn5. +0 4dd @ n3W coluMN Clo\$e 4n 3xiStiN9 ON3";
 $lang['columnalreadyadded'] = "j00 hAVe aLRe4DY @dd3d +H1S c0lumn. 1f j00 W4nt +0 r3M0ve 1+ CL1cK IT\$ cloSE 8utt0n";
 

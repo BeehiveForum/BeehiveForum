@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
@@ -99,18 +85,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -118,7 +101,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -126,37 +108,30 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Thread List Cache Control
-
 cache_check_thread_list();
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check the RSS feeds
-
 rss_check_feeds();
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Are we viewing a specific folder only?
-
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $folder = $_GET['folder'];
@@ -173,7 +148,6 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 }
 
 // View offset.
-
 if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
     $start_from = $_GET['start_from'];
 }else if (isset($_POST['start_from']) && is_numeric($_POST['start_from'])) {
@@ -183,7 +157,6 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 }
 
 // View mode
-
 if (isset($_GET['thread_mode']) && is_numeric($_GET['thread_mode'])) {
     $thread_mode = $_GET['thread_mode'];
 }else if (isset($_POST['thread_mode']) && is_numeric($_POST['thread_mode'])) {
@@ -191,7 +164,6 @@ if (isset($_GET['thread_mode']) && is_numeric($_GET['thread_mode'])) {
 }
 
 // Number of posts per page
-
 if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
@@ -203,17 +175,14 @@ if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
 }
 
 // Check that required variables are set
-
 if (user_is_guest()) {
 
     // default to UID 0 if no other UID specified
-
     $uid = 0;
 
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
-
     if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
         $thread_mode = ALL_DISCUSSIONS;
     }
@@ -324,11 +293,9 @@ if (user_is_guest()) {
 }
 
 // Output XHTML header
-
 html_draw_top('thread_list.js');
 
 // The tricky bit - displaying the right threads for whatever mode is selected
-
 if (isset($folder) && is_numeric($folder) && $folder > 0) {
     list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 }else {
@@ -400,9 +367,7 @@ if (isset($folder) && is_numeric($folder) && $folder > 0) {
 }
 
 // Now, the actual bit that displays the threads...
-
 // Get folder FIDs and titles
-
 if (!$folder_info = threads_get_folders()) {
 
     html_error_msg($lang['couldnotretrievefolderinformation']);
@@ -411,21 +376,17 @@ if (!$folder_info = threads_get_folders()) {
 }
 
 // Get total number of messages for each folder
-
 $folder_msgs = threads_get_folder_msgs();
 
 // Check that the folder order is a valid array.
-
 if (!is_array($folder_order)) $folder_order = array();
 
 // Check the folder display order.
-
 if (bh_session_get_value('THREADS_BY_FOLDER') == 'Y') {
     $folder_order = array_keys($folder_info);
 }
 
 // Check for a message to display and re-order the thread list.
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($selected_tid) = explode('.', $_GET['msg']);
@@ -435,28 +396,23 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
         // Check the folder display order / user is a guest.
-
         if ((bh_session_get_value('THREADS_BY_FOLDER') != 'Y') || user_is_guest()) {
 
             // Remove the folder from the list of folders.
-
             if (in_array($thread['FID'], $folder_order)) {
                 array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
             }
 
             // Re-add it at the top of the list.
-
             array_unshift($folder_order, $thread['FID']);
         }
 
         // Check $thread_info is an array.
-
         if (!is_array($thread_info)) $thread_info = array();
 
         // Check to see if the thread is already in the list.
         // If it is remove it, otherwise take the last thread
         // off the list so we always only have 50 threads on display.
-
         if (isset($thread_info[$selected_tid])) {
             unset($thread_info[$selected_tid]);
         }else {
@@ -464,7 +420,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         }
 
         // Add the requested thread to the top of the list of threads.
-
         array_unshift($thread_info, $thread);
     }
 }
@@ -474,7 +429,6 @@ if (bh_session_get_value('UID') > 0) {
     // Check to see if we have a folder selected and
     // ensure that is added to the list of folders
     // and NOT to the ignored folders.
-
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         list($selected_tid) = explode('.', $_GET['msg']);
@@ -493,14 +447,12 @@ if (bh_session_get_value('UID') > 0) {
     }
 
     // Array to hold our ignored folders in.
-
     $ignored_folders = array();
 
     // Loop through the list of folders and check their status.
     // If they're ignored and not already set to be on display
     // they need to be added to $ignored_folders so that they
     // appear at the bottom of the thread list.
-
     while (list($fid, $folder_data) = each($folder_info)) {
 
         if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
@@ -515,7 +467,6 @@ if (bh_session_get_value('UID') > 0) {
 
     // Append ignored folders onto the end of the folder list.
     // This will make them appear at the bottom of the thread list.
-
     $folder_order = array_merge($folder_order, $ignored_folders);
 
 }else {
@@ -526,11 +477,9 @@ if (bh_session_get_value('UID') > 0) {
 }
 
 // Draw discussion dropdown
-
 thread_list_draw_top($thread_mode);
 
 // If no threads are returned, say something to that effect
-
 if (isset($_GET['mark_read_success'])) {
 
     html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
@@ -562,15 +511,12 @@ if (($start_from > 0 && $thread_mode == ALL_DISCUSSIONS && !is_numeric($folder))
 }
 
 // Array to track visible threads for mark as read
-
 $visible_threads_array = array();
 
 // Variable to track first thread
-
 $first_thread = false;
 
 // Iterate through the information we've just got and display it in the right order
-
 foreach ($folder_order as $folder_number) {
 
     if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
@@ -836,7 +782,6 @@ foreach ($folder_order as $folder_number) {
             }elseif ($folder_info[$folder_number]['INTEREST'] != FOLDER_IGNORED) {
 
                 // Only display the additional folder info if the user DOESN'T have the folder on ignore
-
                 echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                 echo "              <tr>\n";
                 echo "                <td class=\"threads_top_left_bottom\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"{$lang['viewmessagesinthisfolderonly']}\">";

@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -38,11 +37,9 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
 
 // Include Swift Mailer
-
 include_once(BH_INCLUDE_PATH. "/swift/swift_required.php");
 
 // Swift Mailer Transport Factory
-
 abstract class Swift_TransportFactory
 {
     public static function get()
@@ -75,7 +72,6 @@ abstract class Swift_TransportFactory
 }
 
 // Swift Mailer SMTP Transport Singleton wrapper
-
 class Swift_SmtpTransportSingleton
 {
     private static $instance;
@@ -93,7 +89,6 @@ class Swift_SmtpTransportSingleton
 }
 
 // Swift Mailer Mail Transport Singleton wrapper
-
 class Swift_MailTransportSingleton
 {
     private static $instance;
@@ -124,7 +119,6 @@ class Swift_MailTransportSingleton
 }
 
 // Swift Mailer SendMail Transport Singleton wrapper
-
 class Swift_SendmailTransportSingleton
 {
     private static $instance;
@@ -144,17 +138,14 @@ class Swift_SendmailTransportSingleton
 }
 
 // Beehive Forum SwiftMessage wrapper.
-
 class Swift_MessageBeehive extends Swift_Message
 {
     public function __construct($subject = null, $body = null, $contentType = null, $charset = null)
     {
         // Call the parent constructor.
-        
         parent::__construct($subject, $body, $contentType, $charset);
 
         // Set the Beehive specific headers
-        
         $this->set_headers();
     }
 
@@ -166,47 +157,36 @@ class Swift_MessageBeehive extends Swift_Message
     private function set_headers()
     {
         // Get the forum name.
-        
         $forum_name  = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
         // Get the forum email address
-        
         $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
         // Mail function we're using.
-        
         $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
         
         // Get the Swift Headers set
-
         $headers = $this->getHeaders();
 
         // Add PHP version number to headers
-
         $headers->addTextHeader('X-Mailer', 'PHP/'. phpversion());
 
         // Add the Beehive version number to headers
-
         $headers->addTextHeader('X-Beehive-Forum', 'Beehive Forum '. BEEHIVE_VERSION);
 
         // Add header to identify Swift version
-
         $headers->addTextHeader('X-Swift-Mailer', 'Swift Mailer '. Swift::VERSION);
 
         // Add header to identify mail function
-
         $headers->addTextHeader('X-Swift-Transport', $mail_function);
 
         // Set the Message From Header
-
         $this->setFrom($forum_email, $forum_name);
 
         // Set the Message Reply-To Header
-
         $this->setReplyTo($forum_email, $forum_name);
 
         // Set the Message Return-path Header
-
         $this->setReturnPath($forum_email);
     }
 }

@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -51,48 +50,40 @@ function search_execute($search_arguments, &$error)
     $forum_fid = $table_data['FID'];
 
     // Ensure the date_from argument is set
-
     if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) {
          $search_arguments['date_from'] = SEARCH_FROM_ONE_MONTH_AGO;
     }
 
     // Ensure the date_to argument is set.
-
     if (!isset($search_arguments['date_to']) || !is_numeric($search_arguments['date_to'])) {
          $search_arguments['date_to'] = SEARCH_TO_TODAY;
     }
 
     // Ensure the sort_by argument is set.
-
     if (!isset($search_arguments['sort_by']) || !is_numeric($search_arguments['sort_by'])) {
         $search_arguments['sort_by'] = SEARCH_SORT_CREATED;
     }
 
     // Ensure the sort_dir argument is set.
-
     if (!isset($search_arguments['sort_dir']) || !is_numeric($search_arguments['sort_dir'])) {
         $search_arguments['sort_dir'] = SEARCH_SORT_DESC;
     }
 
     // Check the sort_dir is valid
-
     if (!in_array($search_arguments['sort_dir'], array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
         $search_arguments['sort_dir'] = SEARCH_SORT_DESC;
     }
 
     // Database connection.
-
     if (!$db_search_execute = db_connect()) return false;
 
     // Each user can only store one search result so we should
     // clean up their previous search if applicable.
-
     $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_search_execute)) return false;
 
     // Peer portion of the query for removing rows from ignored users - the same for all searches
-
     $peer_join_sql = "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $peer_join_sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
 
@@ -102,12 +93,10 @@ function search_execute($search_arguments, &$error)
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
     // Get available folders
-
     $folders = folder_get_available();
 
     // If the user has specified a folder within their viewable scope limit them
     // to that folder, otherwise limit them to their available folders.
-
     if (isset($search_arguments['fid']) && in_array($search_arguments['fid'], explode(",", $folders))) {
         $where_sql = "WHERE THREAD.FID = {$search_arguments['fid']} ";
     }else{
@@ -115,19 +104,15 @@ function search_execute($search_arguments, &$error)
     }
 
     // Can't search for deleted threads nor threads with no posts
-
     $where_sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
 
     // Where query needs to limit the search results to the user specified date range.
-
     $where_sql.= search_date_range($search_arguments['date_from'], $search_arguments['date_to']);
 
     // Username based search.
-
     if (isset($search_arguments['username']) && strlen(trim($search_arguments['username'])) > 0) {
 
         // Base query slightly different if you're not searching by keywords
-
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
@@ -146,23 +131,18 @@ function search_execute($search_arguments, &$error)
         }
 
         // Save the sort by and sort dir.
-
         search_save_arguments($search_arguments['sort_by'], $search_arguments['sort_dir']);
 
         // FROM query uses POST table if we're not using keyword searches.
-
         $from_sql = "FROM `{$table_data['PREFIX']}POST` POST ";
 
         // Join to the THREAD table for the TID
-
         $join_sql = "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
 
         // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
-
         $having_sql = "";
 
         // Username argument can be an semi-colon separated list.
-
         $search_arguments['username_array'] = explode(";", $search_arguments['username']);
 
         foreach ($search_arguments['username_array'] as $username) {
@@ -194,7 +174,6 @@ function search_execute($search_arguments, &$error)
     }
 
     /// Keyword based search.
-
     if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
 
         $search_string = trim(stripslashes_array($search_arguments['search_string']));
@@ -214,7 +193,6 @@ function search_execute($search_arguments, &$error)
             $having_sql = "HAVING RELEVANCE > 0.2";
 
             // Include the keyword matching portion of the where clause.
-
             $search_string = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
             search_save_arguments($search_arguments['sort_by'], $search_arguments['sort_dir'], $search_keywords_array['keywords']);
@@ -258,7 +236,6 @@ function search_execute($search_arguments, &$error)
     }
 
     // If the user wants results grouped by thread (TID) then do so.
-
     if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
         $group_sql = "GROUP BY THREAD.TID ";
     }else {
@@ -266,11 +243,9 @@ function search_execute($search_arguments, &$error)
     }
 
     // Get the correct sort dir
-
     $sort_dir = ($search_arguments['sort_dir'] == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
 
     // Construct the order by clause.
-
     switch($search_arguments['sort_by']) {
 
         case SEARCH_SORT_RELEVANCE:
@@ -300,17 +275,14 @@ function search_execute($search_arguments, &$error)
     }
 
     // Set a limit of 1000 results.
-
     $limit_sql = "LIMIT 0, 1000";
 
     // Build the final query.
-
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
     $sql.= "$where_sql $peer_where_sql $group_sql $having_sql ";
     $sql.= "$order_sql $limit_sql";
 
     // If the user has performed a search within the last x minutes bail out
-
     if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
@@ -318,15 +290,12 @@ function search_execute($search_arguments, &$error)
     }
 
     // Execute the query
-
     if (!db_query($sql, $db_search_execute)) return false;
 
     // Check the number of results
-
     if (db_affected_rows($db_search_execute) > 0) return true;
 
     // No results from search.
-
     $error = SEARCH_NO_MATCHES;
     return false;
 }
@@ -334,29 +303,24 @@ function search_execute($search_arguments, &$error)
 function search_strip_keywords($search_string, $strip_valid = false)
 {
     // Array to hold our MySQL stop words
-
     $mysql_fulltext_stopwords = array();
 
     // MySQL has a list of stop words for fulltext searches.
     // We'll save ourselves some server time by checking
     // them first.
-
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     // Filter the input so the user can't do anything dangerous with it
-
     $search_string = str_replace("%", "", $search_string);
 
     // Split the search string into boolean parts and clean out
     // the empty array values.
-
     $keyword_match = '([\+|-]?[\p{L}\']+)|([\+|-]?["][^"]+["])';
 
     $keywords_array = preg_split("/$keyword_match/u", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
     $keywords_array = array_filter(array_map('trim', $keywords_array), 'strlen');
 
     // Get the min and max word lengths that MySQL supports
-
     $min_length = 4;
     $max_length = 84;
 
@@ -364,18 +328,15 @@ function search_strip_keywords($search_string, $strip_valid = false)
 
     // The number of boolean parts the user is searching for before
     // we remove the bad ones.
-
     $keywords_array = array_values($keywords_array);
     $unfiltered_keyword_count = sizeof($keywords_array);
 
     // Prepare the MySQL Full-Text stop word list
-
     array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
     $mysql_fulltext_stopwords = implode('[\"]?$|^[\+|-]?[\"]?', $mysql_fulltext_stopwords);
 
     // Filter the boolean parts through the MySQL Full-Text stop word list
     // and by checking individual words lengths.
-
     if ($strip_valid === true) {
 
         $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\p{L}\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
@@ -393,7 +354,6 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // count the number of boolean parts we're left with.
     // If they're less than the number the user gave us we have
     // an error somewhere.
-
     $keywords_array = array_unique($keywords_array);
     $keywords_array = array_values($keywords_array);
 
@@ -410,14 +370,12 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
     if (!is_bool($remove_non_matches)) $remove_non_matches = true;
 
     // Get the min and max word lengths that MySQL supports
-
     $min_length = 4;
     $max_length = 84;
 
     search_get_word_lengths($min_length, $max_length);
 
     // Expression to match words prefixed with a hyphen (for do not match)
-
     if ($remove_non_matches === true) {
 
         $boolean_non_match = sprintf('/^-["]?([\p{L}\s\']){%d,%d}["]?$/Du', $min_length, $max_length);
@@ -431,7 +389,6 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
     }
 
     // return array
-
     return $keywords_array;
 }
 
@@ -607,7 +564,6 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
     if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_search_fetch_results)) return false;
@@ -712,57 +668,46 @@ function search_date_range($from, $to)
     switch($from) {
 
       case SEARCH_FROM_TODAY:  // Today
-
         $from_timestamp = mktime(0, 0, 0, $month, $day, $year);
         break;
 
       case SEARCH_FROM_YESTERDAY:  // Yesterday
-
         $from_timestamp = mktime(0, 0, 0, $month, $day - 1, $year);
         break;
 
       case SEARCH_FROM_DAYBEFORE:  // Day before yesterday
-
         $from_timestamp = mktime(0, 0, 0, $month, $day - 2, $year);
         break;
 
       case SEARCH_FROM_ONE_WEEK_AGO:  // 1 week ago
-
         $from_timestamp = mktime(0, 0, 0, $month, $day - 7, $year);
         break;
 
       case SEARCH_FROM_TWO_WEEKS_AGO:  // 2 weeks ago
-
         $from_timestamp = mktime(0, 0, 0, $month, $day - 14, $year);
         break;
 
       case SEARCH_FROM_THREE_WEEKS_AGO:  // 3 weeks ago
-
         $from_timestamp = mktime(0, 0, 0, $month, $day - 21, $year);
         break;
 
       case SEARCH_FROM_ONE_MONTH_AGO:  // 1 month ago
-
         $from_timestamp = mktime(0, 0, 0, $month - 1, $day, $year);
         break;
 
       case SEARCH_FROM_TWO_MONTHS_AGO:  // 2 months ago
-
         $from_timestamp = mktime(0, 0, 0, $month - 2, $day, $year);
         break;
 
       case SEARCH_FROM_THREE_MONTHS_AGO:  // 3 months ago
-
         $from_timestamp = mktime(0, 0, 0, $month - 3, $day, $year);
         break;
 
       case SEARCH_FROM_SIX_MONTHS_AGO: // 6 months ago
-
         $from_timestamp = mktime(0, 0, 0, $month - 6, $day, $year);
         break;
 
       case SEARCH_FROM_ONE_YEAR_AGO: // 1 year ago
-
         $from_timestamp = mktime(0, 0, 0, $month, $day, $year - 1);
         break;
 
@@ -771,62 +716,50 @@ function search_date_range($from, $to)
     switch($to) {
 
       case SEARCH_TO_NOW:  // Now
-
         $to_timestamp = time();
         break;
 
       case SEARCH_TO_TODAY:  // Today
-
         $to_timestamp = mktime(23, 59, 59, $month, $day, $year);
         break;
 
       case SEARCH_TO_YESTERDAY:  // Yesterday
-
         $to_timestamp = mktime(23, 59, 59, $month, $day - 1, $year);
         break;
 
       case SEARCH_TO_DAYBEFORE:  // Day before yesterday
-
         $to_timestamp = mktime(23, 59, 59, $month, $day - 2, $year);
         break;
 
       case SEARCH_TO_ONE_WEEK_AGO:  // 1 week ago
-
         $to_timestamp = mktime(23, 59, 59, $month, $day - 7, $year);
         break;
 
       case SEARCH_TO_TWO_WEEKS_AGO:  // 2 weeks ago
-
         $to_timestamp = mktime(23, 59, 59, $month, $day - 14, $year);
         break;
 
       case SEARCH_TO_THREE_WEEKS_AGO:  // 3 weeks ago
-
         $to_timestamp = mktime(23, 59, 59, $month, $day - 21, $year);
         break;
 
       case SEARCH_TO_ONE_MONTH_AGO:  // 1 month ago
-
         $to_timestamp = mktime(23, 59, 59, $month - 1, $day, $year);
         break;
 
       case SEARCH_TO_TWO_MONTHS_AGO:  // 2 months ago
-
         $to_timestamp = mktime(23, 59, 59, $month - 2, $day, $year);
         break;
 
       case SEARCH_TO_THREE_MONTHS_AGO: // 3 months ago
-
         $to_timestamp = mktime(23, 59, 59, $month - 3, $day, $year);
         break;
 
       case SEARCH_TO_SIX_MONTHS_AGO: // 6 months ago
-
         $to_timestamp = mktime(23, 59, 59, $month - 6, $day, $year);
         break;
 
       case SEARCH_TO_ONE_YEAR_AGO: // 1 year ago
-
         $to_timestamp = mktime(23, 59, 59, $month, $day, $year - 1);
         break;
 

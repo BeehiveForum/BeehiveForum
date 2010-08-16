@@ -24,63 +24,48 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
-
 define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -104,17 +89,14 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -122,7 +104,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -130,15 +111,12 @@ if (!bh_session_user_approved()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Get the user's UID
-
 $uid = bh_session_get_value('UID');
 
 // Guests can't access this page.
-
 if (user_is_guest()) {
 
     light_html_guest_error();
@@ -146,19 +124,15 @@ if (user_is_guest()) {
 }
 
 // Check that PM system is enabled
-
 light_pm_enabled();
 
 // Get the user's post page preferences.
-
 $page_prefs = bh_session_get_post_page_prefs();
 
 // Prune old messages for the current user
-
 pm_user_prune_folders();
 
 // Get the Message ID (MID) if any.
-
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 
     $t_reply_mid = $_GET['replyto'];
@@ -185,7 +159,6 @@ if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 }
 
 // Get the tid.pid if any.
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
@@ -207,7 +180,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // Default Folder
-
 $folder = PM_FOLDER_INBOX;
 
 if (isset($_GET['folder'])) {
@@ -232,7 +204,6 @@ if (isset($_GET['folder'])) {
 }
 
 // User clicked cancel
-
 if (isset($_POST['cancel'])) {
 
     if (isset($t_reply_mid) && is_numeric($t_reply_mid)  && $t_reply_mid > 0) {
@@ -256,20 +227,16 @@ if (isset($_POST['cancel'])) {
 }
 
 // Assume everything is correct (form input, etc)
-
 $valid = true;
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
 // Then just do something like $allow_html = forum_allow_html_pms() ? true : false
-
 $allow_html = true;
 
 // Some Options.
-
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
@@ -310,11 +277,9 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 $t_content = $post->getContent();
 
 // Submit handling code
-
 if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User clicked the send or preview button - check the data that was submitted
-
     if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
@@ -423,7 +388,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 }else if (isset($_POST['save'])) {
 
     // User click the save button - Check the data that was submitted.
-
     if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
@@ -501,7 +465,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             // Set the HTML mode to 'with automatic line breaks' so
             // the quote is handled correctly when the user previews
             // the message.
-
             $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
 
             $t_content = $post->getContent();
@@ -545,7 +508,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         // Set the HTML mode to 'with automatic line breaks' so
         // the quote is handled correctly when the user previews
         // the message.
-
         $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
 
         $t_content = $post->getContent();
@@ -598,7 +560,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 }
 
 // Check the message length.
-
 if (mb_strlen($t_content) >= 65535) {
 
     $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
@@ -606,7 +567,6 @@ if (mb_strlen($t_content) >= 65535) {
 }
 
 // Attachment Unique ID
-
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 }else if (!isset($aid)) {
@@ -614,7 +574,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 }
 
 // De-dupe key
-
 if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = $_POST['t_dedupe'];
 }else{
@@ -622,7 +581,6 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 }
 
 // Send the PM
-
 if ($valid && isset($_POST['send'])) {
 
     if (check_ddkey($t_dedupe)) {
@@ -686,7 +644,6 @@ if ($valid && isset($_POST['send'])) {
 light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow");
 
 // preview message
-
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h1>{$lang['messagepreview']}</h1>\n";

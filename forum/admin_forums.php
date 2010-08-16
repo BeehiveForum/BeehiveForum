@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -95,18 +81,15 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -114,7 +97,6 @@ if (bh_session_user_banned()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
@@ -137,7 +119,6 @@ $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
 // Array of valid forum states
-
 $forum_access_level_array = array(FORUM_DISABLED => $lang['disabled'],
                                   FORUM_CLOSED => $lang['closed'],
                                   FORUM_UNRESTRICTED => $lang['open'],
@@ -145,15 +126,12 @@ $forum_access_level_array = array(FORUM_DISABLED => $lang['disabled'],
                                   FORUM_PASSWD_PROTECTED => $lang['passwordprotected']);
 
 // Array of available databases
-
 $available_databases = forums_get_available_dbs();
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Cancel button clicked.
-
 if (isset($_POST['cancel'])) {
 
     header_redirect("admin_forums.php?webtag=$webtag&page=$page");
@@ -161,7 +139,6 @@ if (isset($_POST['cancel'])) {
 }
 
 // Confirm forum deletion.
-
 if (isset($_POST['delete'])) {
 
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
@@ -176,7 +153,7 @@ if (isset($_POST['delete'])) {
 
         html_draw_top("title={$lang['admin']} - {$lang['manageforums']}", 'class=window_title', 'admin.js');
 
-        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']}</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageforums']}</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
@@ -482,7 +459,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['manageforums']} - {$lang['addforum']}", 'class=window_title', 'admin.js', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['addforum']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageforums']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['addforum']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -599,7 +576,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['manageforums']} - {$lang['editforum']} - {$forum_data['WEBTAG']}", 'class=window_title', 'admin.js', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['editforum']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$forum_data['WEBTAG']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageforums']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['editforum']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$forum_data['WEBTAG']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -703,7 +680,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     $forums_array = admin_get_forum_list($start);
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageforums']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageforums']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

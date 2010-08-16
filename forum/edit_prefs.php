@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -97,18 +83,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -116,7 +99,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -124,18 +106,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -215,12 +194,10 @@ $user_info = user_get($uid);
 $error_msg_array = array();
 
 // List of allowed image types
-
 $allowed_image_types_array = array('jpg', 'jpeg', 'png', 'gif');
 $allowed_image_types = "*.". implode(", *.", $allowed_image_types_array);
 
 // Initialise the global prefs array
-
 $user_prefs_global = array();
 
 if (isset($_POST['save'])) {
@@ -228,11 +205,9 @@ if (isset($_POST['save'])) {
     $valid = true;
 
     // Duplicate the user_info array.
-
     $user_info_new = $user_info;
 
     // Required Fields
-
     if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
 
         if (forum_get_setting('allow_username_changes', 'Y') || (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
@@ -334,7 +309,6 @@ if (isset($_POST['save'])) {
         }
 
         // Optional fields
-
         if (isset($_POST['firstname'])) {
 
             $user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
@@ -366,7 +340,6 @@ if (isset($_POST['save'])) {
         if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
 
             if (preg_match('/^http:\/\//u', $user_prefs['HOMEPAGE_URL']) < 1) {
-
                 $error_msg_array[] = $lang['homepageurlmustincludeschema'];
                 $valid = false;
 
@@ -386,7 +359,6 @@ if (isset($_POST['save'])) {
         if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
             if (preg_match('/^http:\/\//u', $user_prefs['PIC_URL']) < 1) {
-
                 $error_msg_array[] = $lang['pictureurlmustincludeschema'];
                 $valid = false;
 
@@ -465,7 +437,6 @@ if (isset($_POST['save'])) {
         if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 
             if (preg_match('/^http:\/\//u', $user_prefs['AVATAR_URL']) < 1) {
-
                 $error_msg_array[] = $lang['avatarurlmustincludeschema'];
                 $valid = false;
 
@@ -539,17 +510,14 @@ if (isset($_POST['save'])) {
     if ($valid) {
 
         // Update User Preferences
-
         if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
             // Update basic settings in USER table
-
             if (user_update($uid, $user_info_new['LOGON'], $user_info_new['NICKNAME'], $user_info_new['EMAIL'])) {
 
                 // If email confirmation is requied and the user has changed
                 // their email address we need to get them to confirm the
                 // change by sending them another email.
-
                 if (($uid == bh_session_get_value('UID')) && $admin_edit === false) {
 
                     if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
@@ -573,21 +541,17 @@ if (isset($_POST['save'])) {
                     }
 
                     // If Forum permits username changes we need to change the user's cookie.
-
                     if (forum_get_setting('allow_username_changes', 'Y')) {
 
                         // Fetch current logon.
-
                         $logon = bh_session_get_value('LOGON');
 
                         // Update the logon that matches the current logged on user
-
                         logon_update_logon_cookie($logon, $user_info['LOGON']);
                     }
                 }
 
                 // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
-
                 if ($admin_edit === true) {
 
                     header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
@@ -614,7 +578,6 @@ if (isset($_POST['save'])) {
 }
 
 // Split the DOB into usable variables.
-
 if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_prefs['DOB'])) {
 
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
@@ -639,7 +602,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 }
 
 // Check to see if we should show the set for all forums checkboxes
-
 if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 }else {
@@ -647,27 +609,23 @@ if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($ui
 }
 
 // Arrays to hold our attachments
-
 $attachments_array = array();
 $image_attachments_array = array();
 
 // User's attachments for profile and avatar pictures
-
 $user_attachments = attachments_get_users($uid, $attachments_array, $image_attachments_array);
 
 // Prepare the attachments for use in a drop down.
-
 $image_attachments_array = user_prefs_prep_attachments($image_attachments_array);
 
 // Start Output Here
-
 if ($admin_edit === true) {
 
     $user = user_get($uid);
 
     html_draw_top("title={$lang['admin']} - {$lang['userdetails']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js', 'class=window_title');
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['userdetails']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['userdetails']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 

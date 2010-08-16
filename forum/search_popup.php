@@ -26,59 +26,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -94,18 +80,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -113,7 +96,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -121,18 +103,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -145,7 +124,6 @@ if (user_is_guest()) {
 }
 
 // Check if we're allowed multiple-select.
-
 if (isset($_POST['multi']) && $_POST['multi'] == 'Y') {
     $multi = 'Y';
 }elseif (isset($_GET['multi']) && $_GET['multi'] == 'Y') {
@@ -155,7 +133,6 @@ if (isset($_POST['multi']) && $_POST['multi'] == 'Y') {
 }
 
 // Search type
-
 if (isset($_GET['type']) && in_array($_GET['type'], array(SEARCH_LOGON, SEARCH_THREAD))) {
 
     $type = $_GET['type'];
@@ -173,11 +150,9 @@ if (isset($_GET['type']) && in_array($_GET['type'], array(SEARCH_LOGON, SEARCH_T
 }
 
 // Check the multi selection with the type
-
 if ($type == SEARCH_THREAD) $multi = 'N';
 
 // Form Object ID
-
 if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
 
     $obj_id = trim(stripslashes_array($_POST['obj_id']));
@@ -195,7 +170,6 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 }
 
 // Current selection
-
 if (isset($_POST['selected']) && is_array($_POST['selected'])) {
     $selected_array = array_unique($_POST['selected']);
 }else if (isset($_GET['selected']) && strlen(trim(stripslashes_array($_GET['selected']))) > 0) {
@@ -205,7 +179,6 @@ if (isset($_POST['selected']) && is_array($_POST['selected'])) {
 }
 
 // Make sure the selected_array is not greater than maxmium
-
 if (($type == SEARCH_LOGON) && $multi === 'Y') {
     $selected_array = array_splice($selected_array, 0, 10);
 } else {
@@ -213,7 +186,6 @@ if (($type == SEARCH_LOGON) && $multi === 'Y') {
 }
 
 // Check for search query
-
 if (isset($_GET['search_query']) && strlen(trim($_GET['search_query']))) {
 
     $search_query = trim(stripslashes_array($_GET['search_query']));
@@ -236,11 +208,9 @@ if (isset($_GET['search_query']) && strlen(trim($_GET['search_query']))) {
 }
 
 // Array to hold any error messages
-
 $error_msg_array = array();
 
 // Selection for page links
-
 if (is_array($selected_array) && sizeof($selected_array) > 0) {
     $selected = implode(';', $selected_array);
 }else {
@@ -248,11 +218,9 @@ if (is_array($selected_array) && sizeof($selected_array) > 0) {
 }
 
 // Empty array for storing the results of our search
-
 $search_results_array = array();
 
 // If everything is OK we can perform the search.
-
 if (isset($search_query) && strlen(trim($search_query)) > 0) {
 
     if ($type == SEARCH_LOGON) {

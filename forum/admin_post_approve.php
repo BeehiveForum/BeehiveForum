@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -100,7 +86,6 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
 
     $request_uri = rawurlencode(get_request_uri());
@@ -109,7 +94,6 @@ if (!$user_sess = bh_session_check()) {
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -117,22 +101,18 @@ if (bh_session_user_banned()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Page number
-
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
@@ -143,7 +123,6 @@ $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
 // Are we returning somewhere?
-
 if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
 }elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
@@ -153,7 +132,6 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 }
 
 // validate the return to page
-
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_files = array('admin_post_approve.php', 'messages.php');
@@ -169,7 +147,6 @@ if (isset($_POST['cancel'])) {
 }
 
 // Check POST and GET for message ID and check it is valid.
-
 if (isset($_POST['msg'])) {
 
     if (validate_msg($_POST['msg'])) {
@@ -304,7 +281,7 @@ if (isset($msg) && validate_msg($msg)) {
 
         html_draw_top("title={$lang['admin']} - {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
 
-        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['approvepost']}</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['approvepost']}</h1>\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
@@ -402,7 +379,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['postapprovalqueue']}</h1>\n";
 
     if (sizeof($post_approval_array['post_array']) < 1) {
         html_display_warning_msg($lang['nopostsawaitingapproval'], '720', 'center');

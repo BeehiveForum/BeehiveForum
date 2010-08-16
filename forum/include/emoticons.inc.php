@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -68,14 +67,12 @@ function emoticons_initialise()
 
         // Get the user's emoticon set from their sesion.
         // Fall back to using the forum default or Beehive default.
-
         if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
             $user_emots = forum_get_setting('default_emoticons', false, 'default');
         }
 
         // Initialize the array incase it's not been done in
         // the definitions.php file by the emoticon authors.
-
         $emoticon = array();
 
         // If the user has emoticons set to none (hides them completely)
@@ -83,7 +80,6 @@ function emoticons_initialise()
         // strip them out.
         //
         // If the user has a set specified we load only that set.
-
         if ($user_emots == 'none') {
 
             if (($dir = @opendir('emoticons'))) {
@@ -110,22 +106,18 @@ function emoticons_initialise()
         // Check that we have successfully loaded the emoticons.
         // If we have we need to process them a bit, otherwise
         // we bail out.
-
         if (sizeof($emoticon) > 0) {
 
             // Reverse the order of the keys and reset the
             // internal pointer.
-
             krsort($emoticon);
             reset($emoticon);
 
             // Set up our emoticon text array for display
             // of the selection box on post.php etc.
-
             $emoticon_text = array();
 
             // Group similar named emoticons together
-
             foreach ($emoticon as $key => $value) {
                 $emoticon_text[$value][] = $key;
             }
@@ -133,11 +125,9 @@ function emoticons_initialise()
             // Sort our array by key length so we don't have
             // the match text for emoticons inadvertantly matching
             // the wrong emoticon.
-
             uksort($emoticon, 'sort_by_length_callback');
 
             // Set our vars for the convert function
-
             $emoticons_array = $emoticon;
         }
     }
@@ -158,19 +148,15 @@ function emoticons_initialise()
 function emoticons_apply($content)
 {
     // Try and initialise the emoticons.
-
     if (!$emoticons_array = emoticons_initialise()) return $content;
 
     // PREG match for emoticons.
-
     $emoticon_preg_match = '/(?<=\s|^|>)%s(?=\s|$|<)/';
 
     // HTML code for emoticons.
-
     $emoticon_html_code = "<span class=\"e_%1\$s\" title=\"%2\$s\"><span class=\"e__\">%2\$s</span></span>";
 
     // Generate the HTML required for each emoticon.
-
     foreach ($emoticons_array as $key => $emoticon) {
 
         $key_encoded = htmlentities_array($key);
@@ -188,7 +174,6 @@ function emoticons_apply($content)
     $content = preg_replace($pattern_array, $replace_array, $content, 100);    
 
     // Return the content.
-
     return $content;
 }
 

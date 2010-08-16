@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -144,7 +143,6 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
     if (!is_numeric($offset)) $offset = 0;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -166,7 +164,6 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_log_entries)) return false;
@@ -215,7 +212,6 @@ function admin_get_word_filter_list($offset)
     if (!is_numeric($offset)) $offset = 0;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     $word_filter_array = array();
@@ -230,7 +226,6 @@ function admin_get_word_filter_list($offset)
     if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_word_filter)) return false;
@@ -429,7 +424,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     if (($table_data = get_table_prefix())) {
@@ -457,7 +451,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     switch ($filter) {
 
         case ADMIN_USER_FILTER_ONLINE: // Online Users
-
             $user_fetch_sql = "WHERE SESSIONS.HASH IS NOT NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
@@ -465,7 +458,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
             break;
 
         case ADMIN_USER_FILTER_OFFLINE: // Offline Users
-
             $user_fetch_sql = "WHERE SESSIONS.HASH IS NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
@@ -473,7 +465,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
             break;
 
         case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
-
             $user_fetch_sql = "WHERE USER.APPROVED IS NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
@@ -481,7 +472,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
             break;
 
         case ADMIN_USER_FILTER_BANNED: // Banned users
-
             $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0 ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
@@ -513,7 +503,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     if (!$result = db_query($sql, $db_admin_user_search)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_user_search)) return false;
@@ -563,7 +552,6 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     if (($table_data = get_table_prefix())) {
@@ -589,25 +577,21 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     switch ($filter) {
 
         case ADMIN_USER_FILTER_ONLINE: // Online Users
-
             $user_fetch_sql = "WHERE SESSIONS.HASH IS NOT NULL";
 
             break;
 
         case ADMIN_USER_FILTER_OFFLINE: // Offline Users
-
             $user_fetch_sql = "WHERE SESSIONS.HASH IS NULL";
 
             break;
 
         case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
-
             $user_fetch_sql = "WHERE USER.APPROVED IS NULL";
 
             break;
 
         case ADMIN_USER_FILTER_BANNED: // Banned users
-
             $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0";
 
             break;
@@ -635,7 +619,6 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     if (!$result = db_query($sql, $db_user_get_all)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_get_all)) return false;
@@ -825,7 +808,6 @@ function admin_get_forum_list($offset)
     $forums_array = array();
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.WEBTAG, FORUMS.DEFAULT_FORUM, ";
@@ -837,7 +819,6 @@ function admin_get_forum_list($offset)
     if (!$result = db_query($sql, $db_admin_get_forum_list)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_forum_list)) return false;
@@ -920,7 +901,6 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     if (!is_numeric($offset)) $offset = 0;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
@@ -935,7 +915,6 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_bandata)) return false;
@@ -1032,7 +1011,6 @@ function admin_get_post_approval_queue($offset = 0)
     if (!is_numeric($offset)) $offset = 0;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
@@ -1055,7 +1033,6 @@ function admin_get_post_approval_queue($offset = 0)
     if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_post_approval_queue)) return false;
@@ -1097,7 +1074,6 @@ function admin_get_visitor_log($offset)
     if (!is_numeric($offset)) $offset = 0;
 
     // Ensure offset is positive.
-
     $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
@@ -1127,7 +1103,6 @@ function admin_get_visitor_log($offset)
     if (!$result = db_query($sql, $db_admin_get_visitor_log)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_visitor_log)) return false;
@@ -1231,16 +1206,13 @@ function admin_get_user_ip_matches($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     // Initialise arrays
-
     $user_ip_address_array = array();
     $user_aliases_array = array();
 
     // Session UID
-
     $sess_uid = bh_session_get_value('UID');
 
     // Fetch the user's last 10 IP addresses from the POST table
-
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 0, 10";
 
@@ -1262,7 +1234,6 @@ function admin_get_user_ip_matches($uid)
     }
 
     // Search the POST table for any matches - limit 10 matches
-
     $user_ip_address_list = implode("', '", $user_ip_address_array);
 
     if (strlen($user_ip_address_list) > 0) {
@@ -1324,15 +1295,12 @@ function admin_get_user_email_matches($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     // Initialise array
-
     $user_email_aliases_array = array();
 
     // Session UID
-
     $sess_uid = bh_session_get_value('UID');
 
     // Get the user's email address
-
     $user_email_address = user_get_email($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -1385,15 +1353,12 @@ function admin_get_user_referer_matches($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     // Initialise array
-
     $user_referer_aliases_array = array();
 
     // Session UID
-
     $sess_uid = bh_session_get_value('UID');
 
     // Get the user's referer
-
     $user_http_referer = user_get_referer($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -1446,15 +1411,12 @@ function admin_get_user_passwd_matches($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     // Initialise array
-
     $user_passwd_aliases_array = array();
 
     // Session UID
-
     $sess_uid = bh_session_get_value('UID');
 
     // Get the user's email address
-
     $user_passwd = user_get_passwd($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -1629,7 +1591,6 @@ function admin_delete_user($uid, $delete_content = false)
     if (!is_bool($delete_content)) $delete_content = false;
 
     // Constants for deleting PM data
-
     $pm_inbox_items  = PM_INBOX_ITEMS;
     $pm_sent_items   = PM_SENT_ITEMS;
     $pm_outbox_items = PM_OUTBOX_ITEMS;
@@ -1640,107 +1601,88 @@ function admin_delete_user($uid, $delete_content = false)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // UID of current user
-
     $admin_uid = bh_session_get_value('UID');
 
     // Before we delete we verify the user account exists and that
     // the user is not the current user account.
-
     if (($user_logon = user_get_logon($uid)) && ($admin_uid != $uid)) {
 
         // Check to see if we're also deleting the user's content.
-
         if ($delete_content === true) {
 
             // Get a list of available forums
-
             if (($forum_table_prefix_array = forum_get_all_prefixes())) {
 
                 // Loop through all forums and delete all the user data from every forum.
-
                 foreach ($forum_table_prefix_array as $forum_table_prefix) {
 
                     // Delete log entries created by the user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}ADMIN_LOG` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Links created by the user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}LINKS` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Link Votes made by the user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}LINKS_VOTE` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Link Comments made by the user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}LINKS_COMMENT` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Poll Votes made by the user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_POLL_VOTES` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Relationship data for the user and relationships
                     // with this user made by other users.
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_PEER` WHERE UID = '$uid' OR PEER_UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete folder preferences set by the user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_FOLDER` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Preferences
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_PREFS` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Profile.
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_PROFILE` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Signature
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_SIG` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Thread Read Data
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_THREAD` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Tracking data (Post Count, etc.)
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}USER_TRACK` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Word Filter Entries made by user
-
                     $sql = "DELETE QUICK FROM `{$forum_table_prefix}WORD_FILTER` WHERE UID = '$uid'";
 
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Polls created by user
-
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET POLL_FLAG = 'N', ";
                     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid'";
 
@@ -1748,7 +1690,6 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Delete threads started by the user where
                     // the thread only contains a single post.
-
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y', ";
                     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid' ";
                     $sql.= "AND LENGTH = 1";
@@ -1756,7 +1697,6 @@ function admin_delete_user($uid, $delete_content = false)
                     if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete content of posts made by this user
-
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST_CONTENT` POST_CONTENT ";
                     $sql.= "LEFT JOIN `{$forum_table_prefix}POST` POST ON (POST.TID = POST_CONTENT.TID ";
                     $sql.= "AND POST.PID = POST_CONTENT.PID) SET POST_CONTENT.CONTENT = NULL ";
@@ -1766,7 +1706,6 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Mark posts made by this user as approved so they don't appear in the
                     // approval queue.
-
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` ";
                     $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
                     $sql.= "APPROVED_BY = '$admin_uid' WHERE FROM_UID = '$uid'";
@@ -1776,19 +1715,16 @@ function admin_delete_user($uid, $delete_content = false)
             }
 
             // Delete Dictionary entries added by user
-
             $sql = "DELETE QUICK FROM DICTIONARY WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User Group Entries related to this user.
-
             $sql = "DELETE QUICK FROM GROUP_USERS WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's PM Content
-
             $sql = "DELETE QUICK FROM PM_CONTENT USING PM_CONTENT ";
             $sql.= "LEFT JOIN PM ON (PM.MID = PM_CONTENT.MID) ";
             $sql.= "WHERE ((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
@@ -1801,7 +1737,6 @@ function admin_delete_user($uid, $delete_content = false)
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's PMs.
-
             $sql = "DELETE QUICK FROM PM WHERE ((TYPE & $pm_inbox_items > 0) ";
             $sql.= "AND TO_UID = '$uid') OR ((TYPE & $pm_sent_items > 0) ";
             $sql.= "AND FROM_UID = '$uid' AND SMID = 0) OR ((TYPE & $pm_outbox_items > 0) ";
@@ -1813,66 +1748,55 @@ function admin_delete_user($uid, $delete_content = false)
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's PM Search Results
-
             $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Attachments (doesn't remove the physical files).
-
             $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Search Results.
-
             $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Sessions
-
             $sql = "DELETE QUICK FROM SESSIONS WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Forum Preferences and Permissions
-
             $sql = "DELETE QUICK FROM USER_FORUM WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's History Data (Logon, Nickname, Email address changes)
-
             $sql = "DELETE QUICK FROM USER_HISTORY WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Global Preferences
-
             $sql = "DELETE QUICK FROM USER_PREFS WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Visitor Log Data
-
             $sql = "DELETE QUICK FROM VISITOR_LOG WHERE UID = '$uid'";
 
             if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Add a log entry to show what we've done.
-
             admin_add_log_entry(DELETE_USER_DATA, array($uid, $user_logon));
         }
 
         // Delete the User account.
-
         $sql = "DELETE QUICK FROM USER WHERE UID = '$uid'";
 
         if (!db_query($sql, $db_admin_delete_user)) return false;
 
         // Add a log entry to show what we've done.
-
         admin_add_log_entry(DELETE_USER, $user_logon);
 
         return true;

@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -95,18 +81,15 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -114,7 +97,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -122,15 +104,12 @@ if (!bh_session_user_approved()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Get the user's UID
-
 $uid = bh_session_get_value('UID');
 
 // Guests can't access PMs
-
 if (user_is_guest()) {
 
     html_guest_error();
@@ -138,21 +117,17 @@ if (user_is_guest()) {
 }
 
 // Check that PM system is enabled
-
 pm_enabled();
 
 // Variables to hold message counts
-
 $pm_new_count = 0;
 $pm_outbox_count = 0;
 $pm_unread_count = 0;
 
 // Check for new PMs
-
 pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
 // Get custom folder names array.
-
 if (!$pm_folder_names_array = pm_get_folder_names()) {
 
     $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
@@ -164,7 +139,6 @@ if (!$pm_folder_names_array = pm_get_folder_names()) {
 }
 
 // Default Folder
-
 $folder = PM_FOLDER_INBOX;
 
 if (isset($_GET['folder'])) {
@@ -250,20 +224,17 @@ if (isset($_POST['save'])) {
 }
 
 // Prune old messages for the current user
-
 pm_user_prune_folders();
 
 // Get the name of the pm_messages frame set.
-
 $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
-
 html_draw_top("title={$lang['privatemessages']}", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
-    echo "<h1>{$lang['privatemessages']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['managefolder']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$pm_folder_names_array[$manage_folder]}</h1>\n";
+    echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['managefolder']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
 
     if (isset($_GET['folder_renamed'])) {
 
@@ -383,7 +354,6 @@ echo "    </tr>\n";
 echo "  </table>\n";
 
 // Fetch the free PM space and calculate it as a percentage.
-
 $pm_free_space = pm_get_free_space();
 $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 

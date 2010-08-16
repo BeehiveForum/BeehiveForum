@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -62,6 +61,10 @@ function messages_get($tid, $pid = 1, $limit = 1)
     if (!$db_messages_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $current_timestamp = time();
+    
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
@@ -70,7 +73,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "POST.APPROVED_BY, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
     $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
+    $sql.= "($current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0))) < $active_sess_cutoff AS USER_ACTIVE ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
@@ -78,6 +82,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
     $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
+    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.FID = {$table_data['FID']} AND SESSIONS.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' ";
     $sql.= "AND POST.PID >= '$pid' ";
     $sql.= "ORDER BY POST.PID ";
@@ -86,7 +91,6 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $result = db_unbuffered_query($sql, $db_messages_get);
 
     // Loop through the results and construct an array to return
-
     if ($limit > 1) {
 
         $messages = false;
@@ -591,7 +595,7 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     }else {
 
-        echo word_filter_add_ob_tags($folder_title), " <img src=", style_image('separator.png'), " alt=\"\" /> ", word_filter_add_ob_tags($thread_title);
+        echo word_filter_add_ob_tags($folder_title), "<img src=", style_image('separator.png'), " alt=\"\" />", word_filter_add_ob_tags($thread_title);
     }
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
@@ -665,7 +669,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
-
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[href: <a\1href="\2"\3>\2</a>][img: <a\1href="\4"\3>\4</a>]', $message['CONTENT']);
@@ -678,7 +681,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Check length of post to see if we should truncate it for display --------
-
     if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
         $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
@@ -689,7 +691,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Check for words that should be filtered ---------------------------------
-
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
     }
@@ -699,7 +700,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Check for search words to highlight -------------------------------------
-
     if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 
         $highlight_pattern = array();
@@ -727,7 +727,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Little up/down arrows to the left of each message -----------------------
-
     if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $uid) {
 
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
@@ -738,7 +737,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
-
     if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
 
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
@@ -784,7 +782,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $temp_ignore = false;
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-
     if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
 
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
@@ -841,13 +838,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
 
-            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">", format_time($message['VIEWED'], 1), "</span>";
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\"><img src=\"", style_image('pmread.png'), "\" alt=\"\" title=\"", sprintf($lang['readtime'], format_time($message['VIEWED'], 1)), "\" /></span>";
 
         }else {
 
             if ($is_preview == false) {
 
-                echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">{$lang['unread']}</span>";
+                echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\"><img src=\"", style_image('pmunread.png'), "\" alt=\"\" title=\"{$lang['unreadmessage']}\" /></span>";
             }
         }
 
@@ -1007,7 +1004,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-            echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>\n";
+            echo "                <td width=\"25%\" align=\"left\">\n";
+            
+            if (isset($message['USER_ACTIVE'])) {
+            
+                if ($message['USER_ACTIVE'] == 1) {
+                    echo "                  <img src=\"", style_image('status_online.png'), "\" alt=\"\" title=\"{$lang['useractive']}\" />";
+                } else {
+                    echo "                  <img src=\"", style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
+                }
+            }
+            
+            echo "                </td>\n";
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
             if ($msg_count > 0) {
@@ -1584,21 +1592,17 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     if (!is_numeric($modified)) return false;
 
     // Check for existing entry in USER_THREAD
-
     if (!$table_data = get_table_prefix()) return false;
 
     // User UID
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Mark as read cut off
-
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     // Guest users' can't mark as read!
-
     if (!user_is_guest() && ($pid > $last_read)) {
 
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
@@ -1606,7 +1610,6 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
             // Get the last PID within the unread-cut-off.
-
             $sql = "SELECT COALESCE(MAX(POST.PID), 0) AS UNREAD_PID ";
             $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
             $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
@@ -1617,11 +1620,9 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             list($unread_pid) = db_fetch_array($result, DB_RESULT_NUM);
 
             // If the specified PID is lower than the cut-off set it to the cut-off.
-
             $pid = ($pid < $unread_pid) ? $unread_pid : $pid;
 
             // Update the unread data.
-
             $sql = "INSERT INTO `{$table_data['PREFIX']}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT) ";
             $sql.= "VALUES ('$uid', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
             $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = CAST('$current_datetime' AS DATETIME)";
@@ -1631,14 +1632,12 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     }
 
     // Mark posts as Viewed
-
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
     if (!$result = db_query($sql, $db_message_update_read)) return false;
 
     // Update thread viewed counter
-
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD_STATS` ";
     $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1) ON DUPLICATE KEY ";
     $sql.= "UPDATE VIEWCOUNT = VIEWCOUNT + 1";
@@ -1657,15 +1656,12 @@ function messages_set_read($tid, $pid, $uid, $modified)
     if (!is_numeric($uid)) return 4;
 
     // Check for existing entry in USER_THREAD
-
     if (!$table_data = get_table_prefix()) return 5;
 
     // Mark as read cut off
-
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
     // Guest can't mark as read
-
     if ($uid > 0) {
 
         if (($unread_cutoff_stamp !== false) && ($modified > $unread_cutoff_stamp)) {
@@ -1688,7 +1684,6 @@ function messages_set_read($tid, $pid, $uid, $modified)
     }
 
     // Mark posts as Viewed...
-
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
@@ -1856,12 +1851,10 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     $webtag = get_webtag();
 
     // Valid TID and PID.
-
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
     // Check to see if we've been passed a font size
-
     if (!is_numeric($font_size)) {
 
         if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
@@ -1870,31 +1863,25 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     }
 
     // Start of HTML.
-
     $font_size_html = array("{$lang['adjtextsize']}:");
 
     // Check font size is greater than 4
-
     if ($font_size > 5) {
         $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size\">{$lang['smaller']}</a>";
     }
 
     // Add the current font size.
-
     $font_size_html[] = $font_size;
 
     // Check the font size is lower than 16
-
     if ($font_size < 15) {
         $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size\">{$lang['larger']}</a>\n";
     }
 
     // Check if we should return just the inner HTML
-
     if ($return === true) return implode(' ', $font_size_html);
 
     // Construct rest of HTML.
-
     $html = "<table class=\"posthead\" width=\"100%\">\n";
     $html.= "  <tr>\n";
     $html.= "    <td align=\"center\">". implode(' ', $font_size_html). "</td>\n";

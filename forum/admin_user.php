@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -105,18 +91,15 @@ include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -124,7 +107,6 @@ if (bh_session_user_banned()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
@@ -160,7 +142,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // validate the return to page
-
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_files = get_available_files();
@@ -187,11 +168,9 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
 }
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Get the user details.
-
 if (!$user = admin_user_get($uid)) {
 
     html_draw_top("title={$lang['error']}");
@@ -201,19 +180,15 @@ if (!$user = admin_user_get($uid)) {
 }
 
 // Get the user's post count.
-
 $user['POST_COUNT'] = user_get_post_count($uid);
 
 // Get the user's permissions.
-
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Page title
-
 $page_title = "{$lang['admin']} - {$lang['manageuser']} - ". htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']));
 
 // Do updates
-
 if (isset($_POST['action_submit'])) {
 
     if (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
@@ -446,7 +421,6 @@ if (isset($_POST['action_submit'])) {
     if (forum_check_webtag_available($webtag)) {
 
         // Local user permissions
-
         $new_user_perms = (double) 0;
 
         $t_admintools  = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
@@ -476,7 +450,6 @@ if (isset($_POST['action_submit'])) {
     }
 
     // Global user permissions
-
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         $new_global_user_perms = (double) 0;
@@ -533,7 +506,6 @@ if (isset($_POST['action_submit'])) {
     }
 
     // Local folder permissions
-
     if (forum_check_webtag_available($webtag)) {
 
         if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
@@ -577,7 +549,6 @@ if (isset($_POST['action_submit'])) {
         }
 
         // Confirmation email
-
         if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] == 'resend') {
 
             if (!email_send_user_confirmation($uid)) {
@@ -613,7 +584,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageuser']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
         html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
 

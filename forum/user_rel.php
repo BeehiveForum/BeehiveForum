@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -95,18 +81,15 @@ include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -114,7 +97,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -122,22 +104,18 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // User's UID
-
 $uid = bh_session_get_value('UID');
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -150,7 +128,6 @@ if (user_is_guest()) {
 }
 
 // Are we returning somewhere?
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
@@ -162,7 +139,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // validate the return to page
-
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array('edit_relations.php', 'messages.php', 'user_profile.php');
@@ -174,13 +150,11 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
 }
 
 // Return to the page we came from.
-
 if (isset($_POST['cancel'])) {
     header_redirect($ret);
 }
 
 // Check the provided peer UID.
-
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $peer_uid = $_GET['uid'];
@@ -214,7 +188,6 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 // Cannot modify relationship settings for the current account
-
 if ($peer_uid == bh_session_get_value('UID')) {
 
     html_draw_top("title={$lang['error']}");
@@ -224,15 +197,12 @@ if ($peer_uid == bh_session_get_value('UID')) {
 }
 
 // Fetch the perms of the peer
-
 $peer_perms = perm_get_user_permissions($peer_uid);
 
 // Array to hold error messages.
-
 $error_msg_array = array();
 
 // Form submt code
-
 if (isset($_POST['save'])) {
 
     $peer_user_status = (double) (isset($_POST['peer_user_status'])) ? $_POST['peer_user_status'] : 0;
@@ -282,7 +252,7 @@ $peer_relationship = user_get_relationship($uid, $peer_uid);
 
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-echo "<h1>{$lang['userrelationship']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

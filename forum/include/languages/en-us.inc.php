@@ -24,14 +24,11 @@ USA
 /* $Id$ */
 
 // British English language file
-
 // Language character set and text direction options -------------------
-
 $lang['_isocode'] = "en-us";
 $lang['_textdir'] = "ltr";
 
 // Months --------------------------------------------------------------
-
 $lang['month'][1] = "January";
 $lang['month'][2] = "February";
 $lang['month'][3] = "March";
@@ -59,10 +56,8 @@ $lang['month_short'][11] = "Nov";
 $lang['month_short'][12] = "Dec";
 
 // Dates ---------------------------------------------------------------
-
 // Various date and time formats as used by Beehive Forum. All times are
 // expressed as 24 hour time format.
-
 $lang['daymonthyear'] = "%s %s %s";
 $lang['monthyear'] = "%s %s";
 $lang['daymonthyearhourminute'] = "%s %s %s %s:%s";
@@ -71,9 +66,7 @@ $lang['daymonth'] = "%s %s";
 $lang['hourminute'] = "%s:%s";
 
 // Periods -------------------------------------------------------------
-
 // Various time periods as used by Beehive Forum.
-
 $lang['date_periods']['year'] = "%s year";
 $lang['date_periods']['month'] = "%s month";
 $lang['date_periods']['week'] = "%s week";
@@ -83,7 +76,6 @@ $lang['date_periods']['minute'] = "%s minute";
 $lang['date_periods']['second'] = "%s second";
 
 // As above but plurals (2 years vs. 1 year, etc.)
-
 $lang['date_periods_plural']['year'] = "%s years";
 $lang['date_periods_plural']['month'] = "%s months";
 $lang['date_periods_plural']['week'] = "%s weeks";
@@ -93,7 +85,6 @@ $lang['date_periods_plural']['minute'] = "%s minutes";
 $lang['date_periods_plural']['second'] = "%s seconds";
 
 // Short hand periods (example: 1y, 2m, 3w, 4d, 5hr, 6min, 7sec)
-
 $lang['date_periods_short']['year'] = "%sy";
 $lang['date_periods_short']['month'] = "%sm";
 $lang['date_periods_short']['week'] = "%sw";
@@ -103,7 +94,6 @@ $lang['date_periods_short']['minute'] = "%smin";
 $lang['date_periods_short']['second'] = "%ssec";
 
 // Common words --------------------------------------------------------
-
 $lang['percent'] = "Percent";
 $lang['average'] = "Average";
 $lang['approve'] = "Approve";
@@ -230,7 +220,6 @@ $lang['referer'] = "Referer";
 $lang['thefollowingerrorswereencountered'] = "The following errors were encountered:";
 
 // Admin interface (admin*.php) ----------------------------------------
-
 $lang['admintools'] = "Admin Tools";
 $lang['forummanagement'] = "Forum Management";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
@@ -633,7 +622,6 @@ $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please 
 $lang['moreadminoptions'] = "More Admin Options";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
-
 $lang['changedstatusforuser'] = "Changed user status for '%s'";
 $lang['changedpasswordforuser'] = "Changed password for '%s'";
 $lang['changedforumaccess'] = "Changed forum access permissions for '%s'";
@@ -819,7 +807,6 @@ $lang['failedtoprunevisitorlog'] = "Failed To Prune Visitor Log";
 $lang['prunelog'] = "Prune Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
-
 $lang['noexistingforums'] = "No existing forums found. To create a new forum click the 'Add New' button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID or forum not found";
@@ -844,11 +831,9 @@ $lang['defaultforum'] = "Default Forum";
 $lang['forumdatabasewarning'] = "Please ensure you select the correct database when creating a new forum. Once created a new forum cannot be moved between available databases.";
 
 // Admin Global User Permissions
-
 $lang['globaluserpermissions'] = "Global user permissions";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
-
 $lang['mustsupplyforumwebtag'] = "You must supply a forum webtag";
 $lang['mustsupplyforumname'] = "You must supply a forum name";
 $lang['mustsupplyforumemail'] = "You must supply a forum email address";
@@ -960,7 +945,6 @@ $lang['adsenseafterrandommessage'] = "After a random message";
 $lang['registertoremoveadverts'] = "Register to remove these adverts.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
-
 $lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in minutes after posting that a user can edit their post. If set to 0 there is no limit.";
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page.";
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
@@ -1018,7 +1002,6 @@ $lang['forum_settings_help_65'] = "To change Google AdSense account details and 
 $lang['forum_settings_help_66'] = "Your Beehive Forum supports 2 different sizes of <b>Google AdSense</b> adverts. Enter the slot ids of the relevant sized ads into the boxes above and Beehive will automatically choose the correct ad for each page.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
-
 $lang['aidnotspecified'] = "AID not specified.";
 $lang['upload'] = "Upload";
 $lang['waitdotdotdot'] = "Wait&hellip;";
@@ -1040,7 +1023,6 @@ $lang['failedtodeleteallselectedattachments'] = "Failed to delete all of the sel
 $lang['failedtodeleteallselectedattachmentthumbnails'] = "Failed to delete all of the selected attachment thumbnails";
 
 // Changing passwords (change_pw.php) ----------------------------------
-
 $lang['passwdchanged'] = "Password changed";
 $lang['passedchangedexp'] = "Your password has been changed.";
 $lang['updatefailed'] = "Update failed";
@@ -1054,7 +1036,6 @@ $lang['invaliduseraccount'] = "Invalid user account specified. Check email for c
 $lang['invaliduserkeyprovided'] = "Invalid user key provided. Check email for correct link";
 
 // Deleting messages (delete.php) --------------------------------------
-
 $lang['nomessagespecifiedfordel'] = "No message specified for deletion";
 $lang['deletemessage'] = "Delete Message";
 $lang['successfullydeletedpost'] = "Successfully deleted post %s";
@@ -1062,7 +1043,6 @@ $lang['errordelpost'] = "Error deleting post";
 $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
-
 $lang['nomessagespecifiedforedit'] = "No message specified for editing";
 $lang['cannoteditpollsinlightmode'] = "Cannot edit polls in Light mode";
 $lang['editedbyuser'] = "EDITED: %s by %s";
@@ -1083,7 +1063,6 @@ $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
 $lang['messagewasnotfound'] = "Message %s was not found";
 
 // Email (email.php) ---------------------------------------------------
-
 $lang['sendemailtouser'] = "Send Email to %s";
 $lang['nouserspecifiedforemail'] = "No user specified for emailing.";
 $lang['entersubjectformessage'] = "Enter a subject for the message";
@@ -1095,62 +1074,50 @@ $lang['userhasoptedoutofemail'] = "%s has opted out of email contact";
 $lang['userhasinvalidemailaddress'] = "%s has an invalid email address";
 
 // Message nofificaiton ------------------------------------------------
-
 $lang['msgnotification_subject'] = "Message Notification from %s";
 $lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit.";
 
 // Thread Subscription notification ------------------------------------
-
 $lang['threadsubnotification_subject'] = "Subscription Notification from %s";
 $lang['threadsubnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
 
 // Folder Subscription notification ------------------------------------
-
 $lang['foldersubnotification_subject'] = "Subscription Notification from %s";
 $lang['foldersubnotification'] = "Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page.";
 
 // PM notification -----------------------------------------------------
-
 $lang['pmnotification_subject'] = "PM Notification from %s";
 $lang['pmnotification'] = "Hello %s,\n\n%s posted a PM to you on %s.\n\nThe subject is: %s.\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit.";
 
 // Password change notification ----------------------------------------
-
 $lang['passwdchangenotification'] = "Password change notification from %s";
 $lang['pwchangeemail'] = "Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s.\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.";
 
 // Email confirmation notification -------------------------------------
-
 $lang['emailconfirmationrequiredsubject'] = "Email confirmation required for %s";
 $lang['confirmemail'] = "Hello %s,\n\nYou recently created a new user account on %s.\n\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 $lang['confirmchangedemail'] = "Hello %s,\n\nYou recently changed your email on %s.\n\nBefore you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may continue to use the forum as normal.\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 
 // Forgotten password notification -------------------------------------
-
 $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
 
 // Admin New User Approval notification -----------------------------------------
-
 $lang['newuserapprovalsubject'] = "New User Approval Notification for %s";
 $lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Admin New User notification -----------------------------------------
-
 $lang['newuserregistrationsubject'] = "New User Account Notification for %s";
 $lang['newuserregistrationemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s";
 
 // User Approved notification ------------------------------------------
-
 $lang['useraccountapprovedsubject'] = "User approval notification for %s";
 $lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 
 // Admin Post Approval notification -----------------------------------------
-
 $lang['newpostapprovalsubject'] = "Post Approval Notification for %s";
 $lang['newpostapprovalemail'] = "Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Forgotten password form.
-
 $lang['passwdresetrequest'] = "Your password reset request from %s";
 $lang['passwdresetemailsent'] = "Password reset e-mail sent";
 $lang['passwdresetexp'] = "You should shortly receive an e-mail containing instructions for resetting your password.";
@@ -1160,13 +1127,11 @@ $lang['couldnotsendpasswordreminder'] = "Could not send password reminder. Pleas
 $lang['request'] = "Request";
 
 // Email confirmation (confirm_email.php) ------------------------------
-
 $lang['emailconfirmation'] = "Email confirmation";
 $lang['emailconfirmationcomplete'] = "Thank you for confirming your email address. You may now login and start posting immediately.";
 $lang['emailconfirmationfailed'] = "Email confirmation has failed, please try again later. If you encounter this error multiple times please contact the forum owner or a moderator for assistance.";
 
 // Links database (links*.php) -----------------------------------------
-
 $lang['toplevel'] = "Top Level";
 $lang['maynotaccessthissection'] = "You may not access this section.";
 $lang['toplevel'] = "Top Level";
@@ -1232,7 +1197,6 @@ $lang['linkurltoolong'] = "Link URL too long. Maximum is %s characters";
 $lang['linkfoldernametoolong'] = "Folder name too long. Maximum length is %s characters";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
-
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
@@ -1254,7 +1218,6 @@ $lang['otherdotdotdot'] = "Other&hellip;";
 $lang['yoursessionhasexpired'] = "Your session has expired. You will need to login again to continue.";
 
 // My Forums (forums.php) ---------------------------------------------------------
-
 $lang['myforums'] = "My Forums";
 $lang['allavailableforums'] = "All Available Forums";
 $lang['favouriteforums'] = "Favorite Forums";
@@ -1280,7 +1243,6 @@ $lang['passwdprotectedforum'] = "Password Protected Forum";
 $lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";
 
 // Message composition (post.php, lpost.php) --------------------------------------
-
 $lang['postmessage'] = "Post message";
 $lang['selectfolder'] = "Select folder";
 $lang['mustenterpostcontent'] = "You must enter some content for the post!";
@@ -1328,7 +1290,6 @@ $lang['reviewthread'] = "Review Thread";
 $lang['reviewthreadinnewwindow'] = "Review entire thread in new window";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
-
 $lang['inreplyto'] = "In reply to";
 $lang['showmessages'] = "Show messages";
 $lang['ratemyinterest'] = "Rate my interest";
@@ -1385,7 +1346,6 @@ $lang['pressctrlentertoquicklysubmityourpost'] = "Press Ctrl+Enter to quickly su
 $lang['invalidmsgidornomessageidspecified'] = "Invalid Message ID or no Message ID specified.";
 
 // Moderators list (mods_list.php) -------------------------------------
-
 $lang['cantdisplaymods'] = "Cannot display folder moderators";
 $lang['moderatorlist'] = "Moderator list:";
 $lang['modsforfolder'] = "Moderators for folder";
@@ -1394,7 +1354,6 @@ $lang['forumleaders'] = "Forum leaders:";
 $lang['foldermods'] = "Folder moderators:";
 
 // Navigation strip (nav.php) ------------------------------------------
-
 $lang['start'] = "Start";
 $lang['messages'] = "Messages";
 $lang['pminbox'] = "Inbox";
@@ -1409,7 +1368,6 @@ $lang['login'] = "Login";
 $lang['logout'] = "Logout";
 
 // PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
-
 $lang['privatemessages'] = "Private Messages";
 $lang['recipienttiptext'] = "Separate recipients by semi-colon or comma";
 $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per message. Please amend your recipient list.";
@@ -1466,7 +1424,6 @@ $lang['youmustselectsomemessages'] = "You must select some messages to process";
 $lang['successfullyrenamedfolder'] = "Successfully Renamed Folder";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
-
 $lang['mycontrols'] = "My Controls";
 $lang['myforums'] = "My Forums";
 $lang['menu'] = "Menu";
@@ -1599,7 +1556,6 @@ $lang['profileentriesmustnotincludehtml'] = "Profile Entries must not include HT
 $lang['failedtoupdateuserprofile'] = "Failed to update user profile";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
-
 $lang['mustprovideanswergroups'] = "You must provide some answer groups";
 $lang['mustprovidepolltype'] = "You must provide a poll type";
 $lang['mustprovidepollresultsdisplaytype'] = "You must provide results display type";
@@ -1678,7 +1634,6 @@ $lang['viewbypolloption'] = "View by poll option";
 $lang['viewbyuser'] = "View by user";
 
 // Profiles (profile.php) ----------------------------------------------
-
 $lang['editprofile'] = "Edit Profile";
 $lang['profileupdated'] = "Profile updated.";
 $lang['profilesnotsetup'] = "The forum owner has not set up Profiles.";
@@ -1705,7 +1660,6 @@ $lang['profilenotavailable'] = "Profile Not Available.";
 $lang['userprofileempty'] = "This user has not filled in their profile or it is set to private.";
 
 // Registration (register.php) -----------------------------------------
-
 $lang['newuserregistrationsarenotpermitted'] = "Sorry, new user registrations are not allowed right now. Please check back later.";
 $lang['usernametooshort'] = "Username must be a minimum of 2 characters long";
 $lang['usernametoolong'] = "Username must be a maximum of 15 characters long";
@@ -1749,7 +1703,6 @@ $lang['forumrulescheckbox'] = "I have read, and agree to abide by the forum rule
 $lang['youmustagreetotheforumrules'] = "You must agree to the forum rules before you can continue.";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
-
 $lang['member'] = "Member";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['yoursearchdidnotreturnanymatches'] = "Your search did not return any matches. Try simplifying your search parameters and try again.";
@@ -1757,7 +1710,6 @@ $lang['hiderowswithemptyornullvalues'] = "Hide rows with empty or null values in
 $lang['showregisteredusersonly'] = "Show Registered Users only (hide Guests)";
 
 // Relationships (user_rel.php) ----------------------------------------
-
 $lang['relationships'] = "Relationships";
 $lang['userrelationship'] = "User Relationship";
 $lang['userrelationships'] = "User Relationships";
@@ -1778,7 +1730,6 @@ $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator
 $lang['previewsignature'] = "Preview Signature";
 
 // Search (search.php) -------------------------------------------------
-
 $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor'] = "One or all of your search keywords were invalid. Search keywords must be no shorter than %d characters, no longer than %d characters and must not appear in the %s";
@@ -1826,13 +1777,11 @@ $lang['searchsuccessfullycompleted'] = "Search successfully completed. %s";
 $lang['clickheretoviewresults'] = "Click here to view results.";
 
 // Search Popup (search_popup.php) -------------------------------------
-
 $lang['select'] = "Select";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 
 // Start page (start_left.php) -----------------------------------------
-
 $lang['recentthreads'] = "Recent threads";
 $lang['startreading'] = "Start Reading";
 $lang['threadoptions'] = "Thread Options";
@@ -1841,11 +1790,9 @@ $lang['morevisitors'] = "More Visitors";
 $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 
 // Start page (start_main.php) -----------------------------------------
-
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
 
 // Thread navigation (thread_list.php) ---------------------------------
-
 $lang['newdiscussion'] = "New Discussion";
 $lang['createpoll'] = "Create Poll";
 $lang['search'] = "Search";
@@ -1945,7 +1892,6 @@ $lang['lightgreen'] = "Light green";
 $lang['lightblue'] = "Light blue";
 
 // Forum Stats --------------------------------
-
 $lang['forumstats'] = "Forum Stats";
 $lang['userstats'] = "User Stats";
 
@@ -2054,7 +2000,6 @@ $lang['averagewordfilterentriesperuser'] = "Average word filter entries per user
 $lang['mostuserseveronlinedetail'] = "%s on %s";
 
 // Thread Options (thread_options.php) ---------------------------------
-
 $lang['updatessavedsuccessfully'] = "Updates saved successfully";
 $lang['useroptions'] = "User Options";
 $lang['markedasread'] = "Marked as read";
@@ -2085,13 +2030,11 @@ $lang['failedtodeletethread'] = "Failed to delete thread.";
 $lang['failedtoundeletethread'] = "Failed to un-delete thread";
 
 // Folder Options (folder_options.php) ---------------------------------
-
 $lang['folderoptions'] = "Folder Options";
 $lang['foldercouldnotbefound'] = "The requested folder could not be found or access was denied.";
 $lang['failedtoupdatefolderinterest'] = "Failed to update folder interest";
 
 // Dictionary (dictionary.php) -----------------------------------------
-
 $lang['dictionary'] = "Dictionary";
 $lang['spellcheck'] = "Spell Check";
 $lang['notindictionary'] = "Not in dictionary";
@@ -2112,7 +2055,6 @@ $lang['cancel'] = "Cancel";
 $lang['dictionarynotinstalled'] = "No dictionary has been installed. Please contact the forum owner to remedy this.";
 
 // Permissions keys ----------------------------------------------------
-
 $lang['postreadingallowed'] = "Post reading allowed";
 $lang['postcreationallowed'] = "Post creation allowed";
 $lang['threadcreationallowed'] = "Thread creation allowed";
@@ -2125,7 +2067,6 @@ $lang['guestaccessallowed'] = "Guest access allowed";
 $lang['postapprovalrequired'] = "Post approval required";
 
 // RSS feeds gubbins
-
 $lang['rssfeed'] = "RSS Feed";
 $lang['every30mins'] = "Every 30 minutes";
 $lang['onceanhour'] = "Once an hour";
@@ -2167,7 +2108,6 @@ $lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be fo
 $lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
-
 $lang['pmexportastype'] = "Export as type";
 $lang['pmexporthtml'] = "HTML";
 $lang['pmexportxml'] = "XML";
@@ -2181,7 +2121,6 @@ $lang['pmexportwordfilter'] = "Apply word filter to messages";
 $lang['failedtoexportmessages'] = "Failed to export messages";
 
 // Thread merge / split options
-
 $lang['threadhasbeensplit'] = "Thread has been split";
 $lang['threadhasbeenmerged'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Merge / Split Thread";
@@ -2213,7 +2152,6 @@ $lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for spli
 $lang['nopermissiontomergethreads'] = "You are not permitted to merge the selected threads";
 
 // Thread subscriptions
-
 $lang['threadsubscriptions'] = "Thread Subscriptions";
 $lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
@@ -2227,7 +2165,6 @@ $lang['subscribedthreads'] = "Subscribed Threads";
 $lang['currentinterest'] = "Current Interest";
 
 // Folder subscriptions
-
 $lang['foldersubscriptions'] = "Folder Subscriptions";
 $lang['couldnotupdateinterestonfolder'] = "Could not update interest on folder '%s'";
 $lang['folderinterestsupdatedsuccessfully'] = "Folder interests updated successfully";
@@ -2238,7 +2175,6 @@ $lang['ignoredfolders'] = "Ignored Folders";
 $lang['subscribedfolders'] = "Subscribed Folders";
 
 // Browseable user profiles
-
 $lang['youcanonlyaddthreecolumns'] = "You can only add 3 columns. To add a new column close an existing one";
 $lang['columnalreadyadded'] = "You have already added this column. If you want to remove it click its close button";
 

@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -97,18 +83,15 @@ include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -116,15 +99,12 @@ if (bh_session_user_banned()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Get the user's post page preferences.
-
 $page_prefs = bh_session_get_post_page_prefs();
 
 // Check we can access this page.
-
 if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
@@ -134,20 +114,16 @@ if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 }
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Variable to track creation of text-captcha directories.
-
 $text_captcha_dir_created = false;
 
 // Text captcha class
-
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
 
 // Array of valid periods for the unread cutoff
-
 $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableunreadmessages'],
                                THIRTY_DAYS_IN_SECONDS         => $lang['thirtynumberdays'],
                                SIXTY_DAYS_IN_SECONDS          => $lang['sixtynumberdays'],
@@ -156,18 +132,15 @@ $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableu
                                YEAR_IN_SECONDS                => $lang['onenumberyear']);
 
 // Array of valid periods for the sitemap frequency
-
 $sitemap_freq_periods = array(DAY_IN_SECONDS  => $lang['onceaday'],
                               WEEK_IN_SECONDS => $lang['onceaweek']);
 
 // Array of valid Google Adsense ad user account types
-
 $adsense_user_type_array = array(ADSENSE_DISPLAY_NONE      => $lang['adsensenoone'],
                                  ADSENSE_DISPLAY_ALL_USERS => $lang['adsenseallusers'],
                                  ADSENSE_DISPLAY_GUESTS    => $lang['adsenseguestsonly']);
 
 // Array of valid Google Adsense ad page types
-
 $adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adsenseallpages'],
                                  ADSENSE_DISPLAY_TOP_OF_MESSAGES  => $lang['adsensetopofmessages'],
                                  ADSENSE_DISPLAY_AFTER_FIRST_MSG  => $lang['adsenseafterfirstmessage'],
@@ -181,7 +154,6 @@ $mail_functions_array = array(MAIL_FUNCTION_PHP      => $lang['phpmailfunction']
                               MAIL_FUNCTION_SENDMAIL => $lang['sendmail']);
 
 // Submit code.
-
 if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
 
     $valid = true;
@@ -666,10 +638,9 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 }
 
 // Start Output Here
-
 html_draw_top("title={$lang['admin']} - {$lang['globalforumsettings']}", 'class=window_title', "onunload=clearFocus()", "admin.js", "emoticons.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['globalforumsettings']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['globalforumsettings']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

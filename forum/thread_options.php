@@ -24,61 +24,46 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 //$forum_global_settings = forum_get_global_settings();
-
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "beehive.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -101,18 +86,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -120,7 +102,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -128,25 +109,21 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Guests can't use this
-
 if (user_is_guest()) {
 
     html_guest_error();
@@ -154,7 +131,6 @@ if (user_is_guest()) {
 }
 
 // Check that required variables are set
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -174,7 +150,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // Get the folder ID for the current message
-
 if (!$fid = thread_get_folder($tid)) {
 
     html_draw_top("title={$lang['threadcouldnotbefound']}");
@@ -184,11 +159,9 @@ if (!$fid = thread_get_folder($tid)) {
 }
 
 // UID of the current user.
-
 $uid = bh_session_get_value('UID');
 
 // Get the existing thread data.
-
 if (!$thread_data = thread_get($tid, true)) {
 
     html_draw_top("title={$lang['threadcouldnotbefound']}");
@@ -198,15 +171,12 @@ if (!$thread_data = thread_get($tid, true)) {
 }
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Array of valid thread deletion types
-
 $thread_delete_valid_types = array(THREAD_DELETE_PERMENANT, THREAD_DELETE_NON_PERMENANT);
 
 // Back button clicked.
-
 if (isset($_POST['back'])) {
 
     header_redirect("messages.php?webtag=$webtag&msg=$msg");
@@ -214,7 +184,6 @@ if (isset($_POST['back'])) {
 }
 
 // Code for handling functionality from messages.php
-
 if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
     if (in_range($_GET['markasread'], 0, $thread_data['LENGTH'])) {
@@ -246,7 +215,6 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 }
 
 // Submit Code
-
 if (isset($_POST['save'])) {
 
     $valid = true;
@@ -282,7 +250,6 @@ if (isset($_POST['save'])) {
     }
 
     // Admin Options
-
     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (isset($_POST['rename']) && strlen(trim(stripslashes_array($_POST['rename']))) > 0) {
@@ -592,7 +559,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top("title={$lang['threadoptions']} - $thread_title_display", "basetarget=_blank", 'search_popup.js', 'class=window_title');
 
-    echo "<h1>{$lang['threadoptions']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

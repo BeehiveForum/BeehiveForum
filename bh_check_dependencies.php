@@ -24,36 +24,29 @@ USA
 /* $Id$ */
 
 // Callback function to escape array of strings.
-
 function preg_quote_callback($str)
 {
     return preg_quote($str, "/");
 }
 
 // Array to hold source files
-
 $source_files_array = array();
 
 // Array of functions and constants
-
 $include_files_functions_array = array('lang.inc.php' => array('$lang'));
 $include_files_constants_array = array();
 
 // List of exceptions that we should ignore
-
 $ignore_functions_array = array();
 $ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_INSTALL_NOWARN', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT');
 
 // Path to source files.
-
 $source_files_dir_array = array('forum', 'forum\include');
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 echo "Getting list of functions...\n";

@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -55,7 +54,6 @@ function header_redirect($uri, $reason = false)
     $lang = load_language_file();
 
     // Microsoft-IIS bug prevents redirect at same time as setting cookies.
-
     if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
         header("Request-URI: $uri");

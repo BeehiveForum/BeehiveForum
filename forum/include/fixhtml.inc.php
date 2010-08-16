@@ -42,7 +42,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -364,7 +363,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
             if ($i % 2) {
 
                 if (substr($html_parts[$i],0,1) == '/') { // closing tag
-
                     $tag_bits = explode(' ', mb_substr($html_parts[$i],1));
 
                     if (substr($tag_bits[0], -1) == '/') {
@@ -382,7 +380,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                     $html_parts[$i] = '/'. $tag;
 
                     // filter 'bad' tags or single tags
-
                     if (in_array($tag, $bad_tags) || in_array($tag, $single_tags)) {
 
                         $html_parts[$i - 1].= $html_parts[$i + 1];
@@ -394,13 +391,11 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         $last_tag2 = array_pop($last_tag);
 
                         // tag is both opened/closed correctly
-
                         if ($opentags[$tag] > 0 && $last_tag2 == $tag) {
 
                             $opentags[$tag]--;
 
                         // tag hasn't been opened
-
                         }else if ($opentags[$tag] <= 0) {
 
                             $html_parts[$i - 1].= $html_parts[$i + 1];
@@ -410,11 +405,9 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             array_push($last_tag, $last_tag2);
 
                         // previous tag hasn't been closed
-
                         }else if ($last_tag2 != $tag) {
 
                             // wrap white-text
-
                             $ta = array('/'. $last_tag2, '');
                             
                             $ws = array();
@@ -458,7 +451,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                     }
 
                     // filter 'bad' tags
-
                     if (in_array($tag, $bad_tags)) {
 
                         $html_parts[$i - 1].= $html_parts[$i + 1];
@@ -540,7 +532,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         $opentags[$tag]++;
 
                         // make sure certain tags can't nest within themselves, e.g. <p><p>
-
                         if (in_array($tag, array_keys($no_nest))) {
 
                             $opencount = 0;
@@ -569,7 +560,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                                         array_splice($html_parts, $i, 0, array('/'. $last_tag[$j], ''));
 
                                         // wrap white-text
-
                                         if (preg_match("/( )?\\s+$/u", $html_parts[$i - 1], $ws) > 0) {
 
                                             $html_parts[$i - 1] = preg_replace("/( )?\\s+$/u", "$1", $html_parts[$i - 1]);
@@ -597,7 +587,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         }
 
                     // make XHTML single tag
-
                     }else if(substr($html_parts[$i], -2) != ' /') {
 
                         if (substr($html_parts[$i], -1) != '/') {
@@ -614,7 +603,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
         }
 
         // reconstruct the HTML
-
         $tag = '';
 
         $tag_code  = false;
@@ -910,7 +898,6 @@ function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
 
     // turn <br /> and <p>...</p> back into linebreaks
     // only if auto-linebreaks is enabled
-
     if ($linebreaks == true) {
 
         $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
@@ -919,7 +906,6 @@ function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
     }
 
     // turn autoconverted links back into text
-
     if ($links == true) {
 
         $html = preg_replace("/<a href=\"(http:\\/\\/)?([^\"]*)\">((http:\\/\\/)?\\2)<\\/a>/u", "$3", $html);
@@ -927,11 +913,9 @@ function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
     }
 
     // make <code>..</code> tag, and html_entity_decode
-
     $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code-([^\"]*)\">.*?<\\/div>.*?<pre class=\"code\">(.*?)<\\/pre>/isu", "tidy_html_code_tag_callback", $html);
 
     // make <quote source=".." url="..">..</quote> tag
-
     $html_left = '';
     $html_right = $html;
 
@@ -993,7 +977,6 @@ function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
     $html = $html_left. $html_right;
 
     // make <spoiler>..</spoiler> tag
-
     $html_left = '';
     $html_right = $html;
 
@@ -1090,15 +1073,12 @@ function tidy_html_pre_tag_callback($matches)
 function clean_styles($style)
 {
     // Prevent inline comments
-
     $style = preg_replace('/\*+\/+|\/+\*+/xu', '', $style);
 
     // Prevent XSS javascript hacks
-
     $style = preg_replace('/url\(|expression\(/ixu', '', $style);
 
     // Array of premitted CSS attributes
-
     $valid_attributes_array = array('font-family', 'font-style', 'font-variant', 'font-weight',
                                     'font-size', 'font', 'color', 'background-color', 'word-spacing',
                                     'letter-spacing', 'text-decoration', 'vertical-align',
@@ -1114,30 +1094,24 @@ function clean_styles($style)
                                     'list-style');
 
     // Convert arrays to strings for regular express matching
-
     $valid_attributes_preg = implode("$|^", array_map('preg_quote_callback', $valid_attributes_array));
 
     // Split the in-line style string into an array of attributes and values.
-
     $matches_array = array();
 
     if (preg_match_all('/(([^:]+):([^;]+));?/mu', trim($style), $matches_array) > 0) {
 
         // Clean up the attribute names and values (trim)
-
         $attribute_names_array  = array_map('trim', $matches_array[2]);
         $attribute_values_array = array_map('trim', $matches_array[3]);
 
         // Filter the attribute names by the valid list above.
-
         $attribute_names_array = preg_grep("/$valid_attributes_preg/u", $attribute_names_array);
 
         // Initialise our new array to store the permitted attributes and values.
-
         $clean_style_array = array();
 
         // Loop through the remaining and filter the restricted values.
-
         foreach ($attribute_names_array as $key => $attribute) {
 
             if (isset($attribute_values_array[$key]) && strlen($attribute_values_array[$key]) > 0) {
@@ -1568,7 +1542,6 @@ function make_links($html)
     // URL:
     $html = preg_replace("/(\\s|\\()(\\p{L}+:\\/\\/([^:\\s]+:?[^@\\s]+@)?[_\\.0-9a-z-]*(:\\d+)?([\\/?#]\\S*[^),\\.\\s])?)/iu", "$1<a href=\"$2\">$2</a>", $html);
     $html = preg_replace("/(\\s|\\()(www\\.[_\\.0-9a-z-]*(:\\d+)?([\\/?#]\\S*[^),\\.\\s])?)/iu", "$1<a href=\"http://$2\">$2</a>", $html);
-
     // MAIL:
     $html = preg_replace("/(\\s|\\()(mailto:)?([0-9a-z][_\\.0-9a-z-]*@[0-9a-z][_\\.0-9a-z-]*\\.[a-z]{2,})/iu", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
 

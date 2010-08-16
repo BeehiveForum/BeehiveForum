@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -161,7 +160,6 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     if (!$table_data = get_table_prefix()) return false;
 
     // Pre-defined profile options
-
     $profile_header_array = array('POST_COUNT'      => $lang['postcount'],
                                   'LAST_VISIT'      => $lang['lastvisit'],
                                   'REGISTERED'      => $lang['registered'],
@@ -173,11 +171,9 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
                                   'LOCAL_TIME'      => 'Local Time');
 
     // Add the pre-defined profile options to the top of the list
-
     $profile_dropdown_array[$lang['userdetails']]['subitems'] = $profile_header_array;
 
     // Query the database to get the profile items
-
     $sql = "SELECT PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
     $sql.= "FROM `{$table_data['PREFIX']}PROFILE_ITEM` PROFILE_ITEM ";
@@ -205,7 +201,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     if (!$db_visitor_log_browse_items = db_connect()) return false;
 
     // Check the function parameters are all correct.
-
     if (!is_numeric($offset)) return false;
 
     $offset = abs($offset);
@@ -213,45 +208,35 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     if (!is_array($profile_items_array)) return false;
 
     // Fetch the table prefix.
-
     if (!$table_data = get_table_prefix()) return false;
 
     // Forum FID which we'll need later.
-
     $forum_fid = $table_data['FID'];
 
     // Forum timezone ID for Guests
-
     $timezone_id = forum_get_setting('forum_timezone', false, 27);
 
     // Permitted columns to sort the results by
-
     $sort_by_array  = array_keys($profile_items_array);
 
     // Permitted sort directions.
-
     $sort_dir_array = array('ASC', 'DESC');
 
     // Check the specified sort by and sort directions. If they're
     // invalid default to LAST_VISIT DESC.
-
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'UID';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     // Load the language file.
-
     $lang = load_language_file();
 
     // Get the current session's UID.
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Constant for the relationship
-
     $user_friend = USER_FRIEND;
 
     // Named column NULL filtering
-
     $column_null_filter_having_array = array('POST_COUNT'      => '(POST_COUNT IS NOT NULL)',
                                              'LAST_VISIT'      => '(LAST_VISIT IS NOT NULL)',
                                              'REGISTERED'      => '(REGISTERED IS NOT NULL)',
@@ -263,15 +248,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                                              'LOCAL_TIME'      => '(LOCAL_TIME IS NOT NULL)');
 
     // Year, Month and Day for Age calculation
-
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
 
     // Current Date for User's local time
-
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     // Main Query
-
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $select_sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
     $select_sql.= "DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
@@ -287,24 +269,19 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $select_sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
 
     // User's Last Visit
-
     $last_visit_sql = "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT ";
 
     // Search Engine Bot Details
-
     $search_bot_sql = "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
 
     // Include the selected numeric (PIID) profile items
-
     $profile_entry_array = array();
 
     // Include the profile item types and options.
-
     $profile_item_type_array = array();
     $profile_item_options_array = array();
 
     // Iterate through them.
-
     $profile_items_array_keys = array_keys($profile_items_array);
 
     foreach ($profile_items_array_keys as $column) {
@@ -318,22 +295,18 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // From portion which selects users and guests from the VISITOR_LOG table.
-
     $from_sql = "FROM USER LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID AND VISITOR_LOG.FORUM = '$forum_fid') ";
 
     // Join to get the user's DOB.
-
     $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_DOB ON (USER_PREFS_DOB.UID = USER.UID ";
     $join_sql.= "AND USER_PREFS_DOB.DOB_DISPLAY > 1 AND USER_PREFS_DOB.DOB > 0) ";
 
     // Join to check the AGE display.
-
     $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
     $join_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
     $join_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 3) AND USER_PREFS_DOB.DOB > 0) ";
 
     // Joins to check the ANON_LOGON setting.
-
     $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
     $join_sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
 
@@ -341,32 +314,26 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $join_sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
 
     // Join to fetch the LAST_LOGON using the ANON_LOGON data
-
     $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.UID = USER.UID ";
     $join_sql.= "AND VISITOR_LOG_TIME.VID = VISITOR_LOG.VID AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL ";
     $join_sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
     $join_sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
 
     // Join for the POST_COUNT.
-
     $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
     $join_sql.= "ON (USER_TRACK.UID = USER.UID) ";
 
     // Join for user relationship
-
     $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $join_sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
 
     // Join for the search bot data
-
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
 
     // Join for the user timezone
-
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
 
     // Joins on the selected numeric (PIID) profile items.
-
     $profile_items_array_keys = array_keys($profile_items_array);
 
     foreach ($profile_items_array_keys as $column) {
@@ -385,20 +352,16 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // The Where clause
-
     $where_query_array = array();
     $having_query_array = array();
 
     // Where clause for UNION with VISITOR_LOG.
-
     $where_visitor_array = array("VISITOR_LOG.UID = '0'");
 
     // Null column filtering for Guests
-
     $having_visitor_array = array();
 
     // Filter by user name / search engine bot name
-
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
         $user_search = db_escape_string(str_replace('%', '', $user_search));
@@ -416,14 +379,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // Hide Guests
-
     if ($hide_guests === true) {
 
         $where_query_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
     }
 
     // Hide empty or NULL values
-
     if ($hide_empty === true) {
 
         $profile_items_array_keys = array_keys($profile_items_array);
@@ -444,7 +405,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // Main query NULL column filtering
-
     if (sizeof($having_query_array) > 0) {
         $having_sql = sprintf("HAVING %s", implode(" OR ", $having_query_array));
     }else {
@@ -458,7 +418,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // Guest NULL column filtering
-
     if (sizeof($where_visitor_array) > 0) {
         $where_visitor_sql = sprintf("WHERE %s", implode(" AND ", $where_visitor_array));
     }else {
@@ -472,19 +431,15 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // Sort direction specified?
-
     $order_sql = is_numeric($sort_by) ? "ORDER BY ENTRY_{$sort_by} $sort_dir " : "ORDER BY $sort_by $sort_dir ";
 
     // Limit the display to 10 per page.
-
     $limit_sql = "LIMIT $offset, 10";
 
     // Array to store our results in.
-
     $user_array = array();
 
     // Perform a different query if we're hiding guests.
-
     if ($hide_guests === true) {
 
         $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
@@ -536,7 +491,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_visitor_log_browse_items)) return false;
@@ -544,7 +498,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-
     if (db_num_rows($result) > 0) {
 
         while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
@@ -653,7 +606,6 @@ function visitor_log_clean_up()
     $forum_fid = $table_data['FID'];
 
     // Keep visitor log for 7 days.
-
     $visitor_cutoff_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - (DAY_IN_SECONDS * 7));
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";

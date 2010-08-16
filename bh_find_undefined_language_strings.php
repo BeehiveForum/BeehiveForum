@@ -24,11 +24,9 @@ USA
 /* $Id$ */
 
 // Array of files to exclude from the matches
-
 $exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hacker.inc.php');
 
 // Load Language File Function
-
 function load_language_file($filename)
 {
     $lang = array();
@@ -39,7 +37,6 @@ function load_language_file($filename)
 }
 
 // Get array of files in specified directory and sub-directories.
-
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -66,41 +63,32 @@ function get_file_list(&$file_list_array, $path, $extension)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Get the file list
-
 get_file_list($file_list, 'forum', '.php');
 
 // Load English language file
-
 if (($lang = load_language_file('en.inc.php'))) {
 
     // Check through each file individually.
-
     foreach ($file_list as $php_file) {
 
         // Load File Contents
-
         if ((@$php_file_contents = file_get_contents($php_file))) {
 
             // Look for language string usage.
-
             $lang_matches = array();
 
             if (preg_match_all('/\$lang\[\'([^\']+)\'\]/iu', $php_file_contents, $lang_matches) > 0) {
 
                 // Only want one of each found matches.
-
                 $lang_matches = array_unique($lang_matches[1]);
 
                 // Iterate through the matches check and display them if not defined.
-
                 foreach ($lang_matches as $lang_key) {
 
                     if (!isset($lang[$lang_key])) {

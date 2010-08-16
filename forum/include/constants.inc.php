@@ -33,15 +33,12 @@ USA
 */
 
 // Beehive Version
-
 define('BEEHIVE_VERSION', "0.9.1-CVS");
 
 // Beehive DOB (unixtimestamp)
-
 define('BEEHIVE_DOB', 1018220400);
 
 // Constants for date / time.
-
 define('YEAR_IN_SECONDS', 31536000);
 define('WEEK_IN_SECONDS', 604800);
 define('DAY_IN_SECONDS', 86400);
@@ -49,24 +46,20 @@ define('HOUR_IN_SECONDS', 3600);
 define('MINUTE_IN_SECONDS', 60);
 
 // Constants for unread cut off.
-
 define('THIRTY_DAYS_IN_SECONDS', 2592000);
 define('SIXTY_DAYS_IN_SECONDS', 5184000);
 define('NINETY_DAYS_IN_SECONDS', 7776000);
 define('HUNDRED_EIGHTY_DAYS_IN_SECONDS', 15552000);
 
 // Other constants for unread cut off.
-
 define('UNREAD_MESSAGES_DISABLED', -1);
 
 // Constants for database stuff
-
 define('DB_RESULT_ASSOC', 1);
 define('DB_RESULT_NUM',   2);
 define('DB_RESULT_BOTH',  3);
 
 // Thread list constants
-
 define('ALL_DISCUSSIONS', 0);
 define('UNREAD_DISCUSSIONS', 1);
 define('UNREAD_DISCUSSIONS_TO_ME', 2);
@@ -90,14 +83,12 @@ define('SEARCH_RESULTS', 19);
 define('DELETED_THREADS', 20);
 
 // Thread Mark as Read Constants
-
 define('THREAD_MARK_READ_ALL', 0);
 define('THREAD_MARK_READ_FIFTY', 1);
 define('THREAD_MARK_READ_VISIBLE', 2);
 define('THREAD_MARK_READ_FOLDER', 3);
 
 // Constants for user permissions
-
 define('USER_PERM_BANNED', 1);
 define('USER_PERM_WORMED', 2);
 define('USER_PERM_POST_READ', 4);
@@ -119,12 +110,10 @@ define('USER_PERM_CAN_IGNORE_ADMIN', 131072);
 define('USER_PERM_PILLORIED', 262144);
 
 // MySQL error codes
-
 define('MYSQL_ERROR_NO_SUCH_TABLE', 1146);
 define('MYSQL_ERROR_WRONG_COLUMN_NAME', 1166);
 
 // MySQL date, time and datetime formatting constants for PHP's date function
-
 define('MYSQL_DATE', 'Y-m-d');
 define('MYSQL_TIME', 'H:i:s');
 define('MYSQL_DATETIME', 'Y-m-d H:i:s');
@@ -132,7 +121,6 @@ define('MYSQL_DATE_HOUR_MIN', 'Y-m-d H:i:00');
 define('MYSQL_DATETIME_MIDNIGHT', 'Y-m-d 00:00:00');
 
 // Constants for relationship system
-
 define('USER_NORMAL', 0);
 define('USER_FRIEND', 1);
 define('USER_IGNORED', 2);
@@ -141,25 +129,21 @@ define('USER_IGNORED_COMPLETELY', 8);
 define('USER_BLOCK_PM', 16);
 
 // Profile Privacy Constants
-
 define('PROFILE_ITEM_PUBLIC', 0);
 define('PROFILE_ITEM_PRIVATE', 1);
 
 // Constants for DOB Display
-
 define('USER_DOB_DISPLAY_NONE', 0);
 define('USER_DOB_DISPLAY_AGE',  1);
 define('USER_DOB_DISPLAY_DATE', 2);
 define('USER_DOB_DISPLAY_BOTH', 3);
 
 // Constants for user anonymity
-
 define('USER_ANON_DISABLED', 0);
 define('USER_ANON_ENABLED', 1);
 define('USER_ANON_FRIENDS_ONLY', 2);
 
 // Constants for Search Dialog Errors
-
 define('SEARCH_NO_ERROR', 0);
 define('SEARCH_USER_NOT_FOUND', 1);
 define('SEARCH_NO_KEYWORDS', 2);
@@ -167,18 +151,15 @@ define('SEARCH_NO_MATCHES', 3);
 define('SEARCH_FREQUENCY_TOO_GREAT', 4);
 
 // Constants for style creation
-
 define('STYLE_MODE_NONE', 0);
 define('STYLE_MODE_RANDOM', 1);
 
 // Constants for style creation errors
-
 define('STYLE_NO_ERROR', 0);
 define('STYLE_ALREADY_EXISTS', 1);
 define('STYLE_WRITE_ERROR', 2);
 
 // Constants for post page preferences
-
 define('POST_TOOLBAR_DISPLAY', 1);
 define('POST_EMOTICONS_DISPLAY', 2);
 define('POST_TEXT_DEFAULT', 4);
@@ -191,54 +172,45 @@ define('POST_CHECK_SPELLING', 256);
 define('POST_TINYMCE_DISPLAY', 512);
 
 // Constants for post page HTML in message
-
 define('POST_HTML_DISABLED', 0);
 define('POST_HTML_AUTO', 1);
 define('POST_HTML_ENABLED', 2);
 
 // Constants for post toolbar display
-
 define('POST_TOOLBAR_DISABLED', 0);
 define('POST_TOOLBAR_SIMPLE', 1);
 define('POST_TOOLBAR_TINYMCE', 2);
 
 // Constants for recipient type
-
 define('POST_RADIO_FRIENDS', 0);
 define('POST_RADIO_OTHERS', 1);
 
 // Thread Interest Constants
-
 define('THREAD_IGNORED', -1);
 define('THREAD_NOINTEREST', 0);
 define('THREAD_INTERESTED', 1);
 define('THREAD_SUBSCRIBED', 2);
 
 // Folder Interest Constants
-
 define('FOLDER_IGNORED', -1);
 define('FOLDER_NOINTEREST', 0);
 define('FOLDER_SUBSCRIBED', 1);
 
 // Thread Admin Constants
-
 define('THREAD_ADMIN_LOCK_ENABLED', 1);
 
 // Forum Interest Constants
-
 define('FORUM_IGNORED', -1);
 define('FORUM_NOINTEREST', 0);
 define('FORUM_FAVOURITE', 1);
 
 // Forum Age Ratings
-
 define('FORUM_RATING_GENERAL', 0);
 define('FORUM_RATING_FOURTEEN', 1);
 define('FORUM_RATING_MATURE', 2);
 define('FORUM_RATING_RESTRICTED', 3);
 
 // Forum Access Level Constants
-
 define('FORUM_DISABLED', -2);
 define('FORUM_CLOSED', -1);
 define('FORUM_UNRESTRICTED', 0);
@@ -246,16 +218,13 @@ define('FORUM_RESTRICTED', 1);
 define('FORUM_PASSWD_PROTECTED', 2);
 
 // Forum Default Constants
-
 define('FORUM_DEFAULT', 1);
 
 // Forum User access constants
-
 define('FORUM_USER_DISALLOWED', 0);
 define('FORUM_USER_ALLOWED', 1);
 
 // Poll closting constants
-
 define('POLL_CLOSE_ONE_DAY', 0);
 define('POLL_CLOSE_THREE_DAYS', 1);
 define('POLL_CLOSE_SEVEN_DAYS', 2);
@@ -263,50 +232,41 @@ define('POLL_CLOSE_THIRTY_DAYS', 3);
 define('POLL_CLOSE_NEVER', 4);
 
 // Poll voting types
-
 define('POLL_VOTE_ANON', 0);
 define('POLL_VOTE_PUBLIC', 1);
 
 // Poll constants for vote changing
-
 define('POLL_VOTE_CANNOT_CHANGE', 0);
 define('POLL_VOTE_CAN_CHANGE', 1);
 define('POLL_VOTE_MULTI', 2);
 
 // Poll View constants
-
 define('POLL_VIEW_TYPE_OPTION', 0);
 define('POLL_VIEW_TYPE_USER', 1);
 
 // Poll type constants
-
 define('POLL_HORIZONTAL_GRAPH', 0);
 define('POLL_VERTICAL_GRAPH', 1);
 define('POLL_TABLE_GRAPH', 2);
 
 // Poll option types
-
 define('POLL_OPTIONS_RADIOS', 0);
 define('POLL_OPTIONS_DROPDOWN', 1);
 
 // Poll Guest options
-
 define('POLL_GUEST_ALLOWED', 1);
 define('POLL_GUEST_DENIED', 0);
 
 // Poll results showing
-
 define('POLL_SHOW_RESULTS', 1);
 define('POLL_HIDE_RESULTS', 0);
 
 // Attachment thumbnail sizes
-
 define('ATTACHMENT_THUMB_SMALL', 1);
 define('ATTACHMENT_THUMB_MEDIUM', 2);
 define('ATTACHMENT_THUMB_LARGE', 3);
 
 // PM Constants
-
 define('PM_OUTBOX', 1);       // PM located in Outbox
 define('PM_UNREAD', 2);       // Unread PM
 define('PM_READ', 4);         // Read PM
@@ -314,9 +274,7 @@ define('PM_SENT', 8);         // Sent PM
 define('PM_SAVED_IN', 16);    // Saved Received PM
 define('PM_SAVED_OUT', 32);   // Saved Sent PM
 define('PM_SAVED_DRAFT', 64); // Saved Draft
-
 // PM Folders - defines each folder / view type
-
 define('PM_FOLDER_NONE',    0);
 define('PM_FOLDER_INBOX',   1);
 define('PM_FOLDER_SENT',    2);
@@ -326,21 +284,17 @@ define('PM_FOLDER_DRAFTS',  5);
 define('PM_SEARCH_RESULTS', 6);
 
 // PM Item types - defines different types of messages
-
 define('PM_INBOX_ITEMS',  PM_UNREAD | PM_READ); // Inbox
 define('PM_SENT_ITEMS',   PM_SENT); // Sent Items
 define('PM_OUTBOX_ITEMS', PM_OUTBOX); // Outbox
 define('PM_SAVED_ITEMS',  PM_SAVED_IN | PM_SAVED_OUT); // Saved Items
 define('PM_DRAFT_ITEMS',  PM_SAVED_DRAFT); // Drafts.
-
 // Allowed thread types in folders
-
 define('FOLDER_ALLOW_NORMAL_THREAD', 1);
 define('FOLDER_ALLOW_POLL_THREAD', 2);
 define('FOLDER_ALLOW_ALL_THREAD', FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD);
 
 // Profile Item Types
-
 define('PROFILE_ITEM_LARGE_TEXT', 0);
 define('PROFILE_ITEM_MEDIUM_TEXT', 1);
 define('PROFILE_ITEM_SMALL_TEXT', 2);
@@ -350,7 +304,6 @@ define('PROFILE_ITEM_DROPDOWN', 5);
 define('PROFILE_ITEM_HYPERLINK', 6);
 
 // Admin log actions
-
 define('ALL_LOG_ENTIES', 0);
 define('CHANGE_USER_STATUS', 1);
 define('CHANGE_FORUM_ACCESS', 2);
@@ -422,7 +375,6 @@ define('USER_PERMS_CHANGED', 75);
 define('USER_FOLDER_PERMS_CHANGED', 76);
 
 // Link viewmode constants
-
 define('LINKS_VIEW_HIERARCHICAL', 0);
 define('LINKS_VIEW_LIST', 1);
 
@@ -430,7 +382,6 @@ define('LINKS_ADD_LINK', 0);
 define('LINKS_ADD_FOLDER', 1);
 
 // Error codes for Text Captcha
-
 define('TEXT_CAPTCHA_NO_FONTS', 1);
 define('TEXT_CAPTCHA_KEY_ERROR', 2);
 define('TEXT_CAPTCHA_DIR_ERROR', 3);
@@ -438,13 +389,11 @@ define('TEXT_CAPTCHA_GD_ERROR', 4);
 define('TEXT_CAPTCHA_FONT_ERROR', 5);
 
 // Return codes for Dictionary
-
 define('DICTIONARY_EXACT', 1);
 define('DICTIONARY_NOMATCH', 2);
 define('DICTIONARY_SUGGEST', 3);
 
 // PM Export constants
-
 define('PM_EXPORT_HTML', 0);
 define('PM_EXPORT_XML', 1);
 define('PM_EXPORT_PLAINTEXT', 2);
@@ -452,7 +401,6 @@ define('PM_EXPORT_SINGLE', 0);
 define('PM_EXPORT_MANY', 1);
 
 // Thread Merge and Split constants
-
 define('THREAD_MERGE_START', 0);
 define('THREAD_MERGE_END', 1);
 define('THREAD_MERGE_BY_CREATED', 2);
@@ -461,7 +409,6 @@ define('THREAD_SPLIT_REPLIES', 0);
 define('THREAD_SPLIT_FOLLOWING', 1);
 
 // Thread Merge and Split error constants
-
 define('THREAD_TYPE_SPLIT', 1);
 define('THREAD_TYPE_MERGE', 0);
 
@@ -481,12 +428,10 @@ define('THREAD_SPLIT_CREATE_ERROR', 5);
 define('THREAD_SPLIT_QUERY_ERROR', 6);
 
 // Thread Delete constants
-
 define('THREAD_DELETE_PERMENANT', 0);
 define('THREAD_DELETE_NON_PERMENANT', 1);
 
 // Ban type constants
-
 define('BAN_TYPE_NONE', 0);
 define('BAN_TYPE_IP', 1);
 define('BAN_TYPE_LOGON', 2);
@@ -495,12 +440,10 @@ define('BAN_TYPE_EMAIL', 4);
 define('BAN_TYPE_REF', 5);
 
 // Search Popup types
-
 define('SEARCH_LOGON', 1);
 define('SEARCH_THREAD', 2);
 
 // Search From Periods
-
 define('SEARCH_FROM_TODAY', 1);
 define('SEARCH_FROM_YESTERDAY', 2);
 define('SEARCH_FROM_DAYBEFORE', 3);
@@ -515,7 +458,6 @@ define('SEARCH_FROM_ONE_YEAR_AGO', 11);
 define('SEARCH_FROM_BEGINNING_OF_TIME', 12);
 
 // Search To Periods
-
 define('SEARCH_TO_NOW', 1);
 define('SEARCH_TO_TODAY', 2);
 define('SEARCH_TO_YESTERDAY', 3);
@@ -530,17 +472,14 @@ define('SEARCH_TO_SIX_MONTHS_AGO', 11);
 define('SEARCH_TO_ONE_YEAR_AGO', 12);
 
 // Search User include types
-
 define('SEARCH_FILTER_USER_THREADS', 1);
 define('SEARCH_FILTER_USER_POSTS', 2);
 
 // Search Thread Grouping
-
 define('SEARCH_GROUP_NONE', 0);
 define('SEARCH_GROUP_THREADS', 1);
 
 // Search Sorting
-
 define('SEARCH_SORT_CREATED', 0);
 define('SEARCH_SORT_NUM_REPLIES', 1);
 define('SEARCH_SORT_FOLDER_NAME', 2);
@@ -548,19 +487,16 @@ define('SEARCH_SORT_AUTHOR_NAME', 3);
 define('SEARCH_SORT_RELEVANCE', 4);
 
 // Search Sort Direction
-
 define('SEARCH_SORT_ASC', 0);
 define('SEARCH_SORT_DESC', 1);
 
 // My Forums view types
-
 define('FORUMS_SHOW_SEARCH', -2);
 define('FORUMS_SHOW_IGNORED', -1);
 define('FORUMS_SHOW_ALL', 0);
 define('FORUMS_SHOW_FAVS', 1);
 
 // Word Filter
-
 define('WORD_FILTER_TYPE_ALL', 0);
 define('WORD_FILTER_TYPE_WHOLE_WORD', 1);
 define('WORD_FILTER_TYPE_PREG', 2);
@@ -569,14 +505,12 @@ define('WORD_FILTER_DISABLED', 0);
 define('WORD_FILTER_ENABLED', 1);
 
 // Start Page
-
 define('START_PAGE_NORMAL', 0);
 define('START_PAGE_MESSAGES', 1);
 define('START_PAGE_INBOX', 2);
 define('START_PAGE_THREAD_LIST', 3);
 
 // Admin User Filter
-
 define('ADMIN_USER_FILTER_NONE', 0);
 define('ADMIN_USER_FILTER_ONLINE', 1);
 define('ADMIN_USER_FILTER_OFFLINE', 2);
@@ -584,12 +518,10 @@ define('ADMIN_USER_FILTER_BANNED', 3);
 define('ADMIN_USER_FILTER_APPROVAL', 4);
 
 // Admin User Options
-
 define('ADMIN_USER_OPTION_END_SESSION', 0);
 define('ADMIN_USER_OPTION_APPROVE', 1);
 
 // Admin RSS Feed Settings Frequencies
-
 define('RSS_FEED_UPDATE_NEVER', 0);
 define('RSS_FEED_UPDATE_THIRTY_MINS', 30);
 define('RSS_FEED_UPDATE_ONE_HOUR', 60);
@@ -599,21 +531,18 @@ define('RSS_FEED_UPDATE_ONCE_A_DAY', 1440);
 define('RSS_FEED_UPDATE_ONCE_A_WEEK', 10080);
 
 // Logon Form Constants
-
 define('LOGON_FORM_DEFAULT', 0);
 define('LOGON_FORM_HIDE_TICKBOX', 1);
 define('LOGON_FORM_SESSION_EXPIRED', 2);
 define('LOGON_FORM_HIDE_LINKS', 4);
 
 // Admin User Alias View Constants
-
 define('USER_ALIAS_IPADDRESS', 0);
 define('USER_ALIAS_EMAIL', 1);
 define('USER_ALIAS_PASSWD', 2);
 define('USER_ALIAS_REFERER', 3);
 
 // Google AdSense support
-
 define('ADSENSE_DISPLAY_NONE', 0);
 define('ADSENSE_DISPLAY_GUESTS', 1);
 define('ADSENSE_DISPLAY_ALL_USERS', 2);
@@ -627,13 +556,11 @@ define('ADSENSE_DISPLAY_AFTER_TENTH_MSG',  5);
 define('ADSENSE_DISPLAY_AFTER_RANDOM_MSG', 6);
 
 // Mail Functions
-
 define('MAIL_FUNCTION_PHP', 0);
 define('MAIL_FUNCTION_SMTP', 1);
 define('MAIL_FUNCTION_SENDMAIL', 2);
 
 // Browser detection
-
 define('BROWSER_UNKNOWN', 0);
 define('BROWSER_LYNX', 1);
 define('BROWSER_CHROME', 2);

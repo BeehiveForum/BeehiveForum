@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -43,7 +42,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 // Include files we need.
-
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -149,7 +147,6 @@ function cache_check_thread_list()
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Get the thread last modified date and user last read date.
-
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
@@ -164,7 +161,6 @@ function cache_check_thread_list()
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
 
     // If we're looking at a specific folder add it's ID to the query.
-
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
         $folder = db_escape_string($_GET['folder']);
@@ -176,15 +172,12 @@ function cache_check_thread_list()
     if (db_num_rows($result) > 0) {
 
         // Get the two modified dates from the query
-
         list($last_read, $created, $modified, $closed, $admin_lock, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
 
         // Work out which one is newer (higher).
-
         $local_cache_date = max($last_read, $created, $modified, $closed, $admin_lock, $folder_created, $folder_modified);
 
         // Last Modified Header for cache control
-
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
         $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
@@ -243,7 +236,6 @@ function cache_check_start_page()
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Get the thread last modified date and user last read date.
-
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
@@ -263,15 +255,12 @@ function cache_check_start_page()
     if (db_num_rows($result) > 0) {
 
         // Get the modified dates from the query
-
         list($last_read, $created, $modified, $closed, $last_logon, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
 
         // Work out which one is newer (higher).
-
         $local_cache_date = max($last_read, $created, $modified, $closed, $last_logon, $folder_created, $folder_modified);
 
         // Last Modified Header for cache control
-
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
         $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
@@ -322,7 +311,6 @@ function cache_check_messages()
     if (browser_check(BROWSER_AOL)) return false;
 
     // Disable cache on these URL queries.
-
     if (isset($_GET['delete_success'])) return false;
     if (isset($_GET['edit_success'])) return false;
     if (isset($_GET['font_resize'])) return false;
@@ -363,15 +351,12 @@ function cache_check_messages()
     if (db_num_rows($result) > 0) {
 
         // Get the two modified dates from the query
-
         list($created, $viewed, $approved, $edited, $poll_vote) = db_fetch_array($result, DB_RESULT_NUM);
 
         // Work out which one is newer (higher).
-
         $local_cache_date = max($created, $viewed, $approved, $edited, $poll_vote);
 
         // Last Modified Header for cache control
-
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
         $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
@@ -460,18 +445,15 @@ function cache_check_last_modified($seconds = 300)
     if (browser_check(BROWSER_AOL)) return false;
 
     // Generate our last-modified and expires date stamps
-
     $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
     $local_cache_expires = gmdate("D, d M Y H:i:s", time()). " GMT";
 
     // Check to see if the cache header exists.
-
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 
         $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
         // Check to see if the cache is older than 5 minutes.
-
         if ((time() - strtotime($remote_last_modified)) < $seconds) {
 
             header("Expires: $local_cache_expires", true);

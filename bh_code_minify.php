@@ -24,15 +24,12 @@ USA
 /* $Id$ */
 
 // Array of files to exclude from the matches
-
 $exclude_files_array = array('make_style.css');
 
 // Array of directories to exclude from the matches
-
 $exclude_dirs_array = array();
 
 // Get array of files in specified directory and sub-directories.
-
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -59,27 +56,21 @@ function get_file_list(&$file_list_array, $path, $extension)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Get the JS files
-
 get_file_list($file_list, 'forum/js', '.js');
 
 // Get the CSS files
-
 get_file_list($file_list, 'forum/styles', '.css');
 
 // Get the Emoticon CSS files
-
 get_file_list($file_list, 'forum/emoticons', '.css');
 
 // Minify all the files we've found.
-
 foreach ($file_list as $js_filepath) {
 
     $path_parts = pathinfo($js_filepath);

@@ -24,15 +24,12 @@ USA
 /* $Id$ */
 
 // Array of files to exclude from the matches
-
 $exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hacker.inc.php');
 
 // Array of directories to exclude from the matches
-
 $exclude_dirs_array = array('forum/geshi', 'forum/tiny_mce', 'forum/install', 'forum/include/languages', 'forum/include/swift');
 
 // Load Language File Function
-
 function load_language_file($filename)
 {
     $lang = array();
@@ -43,7 +40,6 @@ function load_language_file($filename)
 }
 
 // Get array of files in specified directory and sub-directories.
-
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -70,29 +66,23 @@ function get_file_list(&$file_list_array, $path, $extension)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Get the file list
-
 get_file_list($file_list, 'forum', '.php');
 
 // Set the pipes for proc_open.
-
 $descriptor_spec = array(0 => array("pipe", "r"),
                          1 => array("pipe", "w"),
                          2 => array("pipe", "w"));
 
 // Working directory
-
 $cwd = getcwd();
 
 // Check through each file individually.
-
 foreach ($file_list as $php_file) {
     
     $command = sprintf('%1$s\ZendCodeAnalyzer.exe "%1$s\%2$s"', $cwd, $php_file);

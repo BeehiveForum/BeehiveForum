@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -97,12 +96,10 @@ function light_html_draw_top()
     }
     
     // Default Meta keywords and description.
-    
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
 
     // Get the page meta keywords and description
-    
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
     }
@@ -302,13 +299,11 @@ function light_draw_messages($msg)
     }
 
     // Previous and Next page links
-
     $prev_page = ($pid - $posts_per_page > 0) ? $pid - $posts_per_page : 1;
 
     $next_page = ($pid + $posts_per_page < $thread_data['LENGTH']) ? $pid + $posts_per_page : $thread_data['LENGTH'];
 
     // SEF links.
-
     $contents_href = "lthread_list.php?webtag=$webtag";
 
     $first_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.1";
@@ -336,7 +331,6 @@ function light_draw_messages($msg)
         foreach ($tracking_data_array as $tracking_data) {
 
             if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_MERGE) { // Thread merged
-
                 if ($tracking_data['TID'] == $tid) {
 
                     $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
@@ -354,7 +348,6 @@ function light_draw_messages($msg)
                 }
 
             }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
-
                 if ($tracking_data['TID'] == $tid) {
 
                     $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
@@ -472,7 +465,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     echo "</form>\n";
 
     // The tricky bit - displaying the right threads for whatever mode is selected
-
     if (isset($folder) && is_numeric($folder) && $folder > 0) {
         list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
     }else {
@@ -541,9 +533,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     }
 
     // Now, the actual bit that displays the threads...
-
     // Get folder FIDs and titles
-
     if (!$folder_info = threads_get_folders()) {
 
         light_html_draw_top("title={$lang['couldnotretrievefolderinformation']}", "robots=noindex,nofollow");
@@ -553,19 +543,16 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     }
 
     // Get total number of messages for each folder
-
     $folder_msgs = threads_get_folder_msgs();
 
     // Check that the folder order is a valid array.
     // While we're here we can also check to see how the user
     // has decided to display the thread list.
-
     if (!is_array($folder_order) || (bh_session_get_value('THREADS_BY_FOLDER') == 'Y')) {
         $folder_order = array_keys($folder_info);
     }
 
     // Sort the folders and threads correctly as per the URL query for the TID
-
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         list($tid) = explode('.', $_GET['msg']);
@@ -597,7 +584,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     // Work out if any folders have no messages and add them.
     // Seperate them by INTEREST level
-
     if (bh_session_get_value('UID') > 0) {
 
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -629,7 +615,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         // Append ignored folders onto the end of the folder list.
         // This will make them appear at the bottom of the thread list.
-
         $folder_order = array_merge($folder_order, $ignored_folders);
 
     }else {
@@ -640,7 +625,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     }
 
     // If no threads are returned, say something to that effect
-
     if (isset($_GET['mark_read_success'])) {
 
         light_html_display_success_msg($lang['successfullymarkreadselectedthreads']);
@@ -658,7 +642,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
 
     // Iterate through the information we've just got and display it in the right order
-
     foreach ($folder_order as $folder_number) {
 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
@@ -854,7 +837,6 @@ function light_draw_pm_inbox()
     $lang = load_language_file();
 
     // Get custom folder names array.
-
     if (!$pm_folder_names_array = pm_get_folder_names()) {
 
         $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
@@ -865,7 +847,6 @@ function light_draw_pm_inbox()
     }
 
     // Check to see which page we should be on
-
     if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
         $start_from = $_GET['start_from'];
     }else if (isset($_POST['start_from']) && is_numeric($_POST['start_from'])) {
@@ -875,7 +856,6 @@ function light_draw_pm_inbox()
     }
 
     // Check to see if we're viewing a message and get the folder it is in.
-
     if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
         $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
@@ -966,7 +946,7 @@ function light_draw_pm_inbox()
             exit;
         }
 
-        echo "<h1>{$lang['privatemessages']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$pm_folder_names_array[$message_folder]}</h1>\n";
+        echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$pm_folder_names_array[$message_folder]}</h1>\n";
 
         if (isset($pm_message_array) && is_array($pm_message_array)) {
 
@@ -1110,7 +1090,6 @@ function light_draw_pm_inbox()
         echo "<p><b><a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\">{$lang['sendnewpm']}</a></b></p>\n";
 
         // Fetch the free PM space and calculate it as a percentage.
-
         $pm_free_space = pm_get_free_space();
         $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
@@ -1473,7 +1452,6 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
     }
 
     // Work out what relationship the user has to the user who posted the poll
-
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(bh_session_get_value('UID'), $poll_data['FROM_UID']);
 
     light_message_display($tid, $poll_data, $msg_count, $folder_fid, true, $closed, $limit_text, true, $is_preview);
@@ -1540,7 +1518,6 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
-
     if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
 
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
@@ -1572,7 +1549,6 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
-
     if (isset($message['PID'])) {
 
         echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</b> [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>]<br />";
@@ -1583,7 +1559,6 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
 
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
@@ -1643,15 +1618,12 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     }
 
     // Light mode never displays user signatures.
-
     $message['CONTENT'] = message_apply_formatting($message['CONTENT'], false, true);
 
     // Fix spoiler on light mode
-
     $message['CONTENT'] = light_spoiler_enable($message['CONTENT']);
 
     // Check for words that should be filtered ---------------------------------
-
     if ($is_poll !== true) $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
     echo $message['CONTENT'];
@@ -1674,7 +1646,6 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
         if (attachments_get($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             // Draw the attachment header at the bottom of the post
-
             if (sizeof($attachments_array) > 0) {
 
                 echo "<p><b>{$lang['attachments']}:</b><br />\n";
@@ -2031,7 +2002,6 @@ function light_threads_draw_discussions_dropdown($mode)
 
                 // Remove unread thread options (Unread Discussions, Unread Today,
                 // Unread High Interest, Unread Started By Friend, Most Unread Posts).
-
                 unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
                 unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
@@ -2039,14 +2009,12 @@ function light_threads_draw_discussions_dropdown($mode)
         }else {
 
             // Remove Admin Deleted Threads option.
-
             unset($available_views[DELETED_THREADS]);
 
             if ($unread_cutoff_stamp === false) {
 
                 // Remove unread thread options (Unread Discussions, Unread Today,
                 // Unread High Interest, Unread Started By Friend, Most Unread Posts).
-
                 unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
                 unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
@@ -2323,7 +2291,6 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     }
 
     // Add emoticons/wikilinks and word filter tags
-
     $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
     $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
 
@@ -2419,31 +2386,25 @@ function light_pm_check_messages()
     static $pm_checked = false;
 
     // Check if we've already displayed the notification once.
-
     if ($pm_checked === true) return;
 
     // Load the Language file
-
     $lang = load_language_file();
 
     // Get the webtag
-
     $webtag = get_webtag();
     
     forum_check_webtag_available($webtag);
 
     // Default the variables to return 0 even on error.
-
     $pm_new_count = 0;
     $pm_outbox_count = 0;
     $pm_unread_count = 0;
 
     // Get the number of messages.
-
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
     // Format the message sent to the client.
-
     if ($pm_new_count == 1 && $pm_outbox_count == 0) {
 
         $pm_notification = $lang['youhave1newpm'];
@@ -2480,11 +2441,9 @@ function light_pm_check_messages()
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
 
         // Wrap the notification in a hyperlink.
-
         $pm_notification = sprintf("<a href=\"lpm.php?webtag=$webtag\">%s</a>\n", $pm_notification);
 
         // Display the notification
-
         light_html_display_success_msg($pm_notification);
     }
 

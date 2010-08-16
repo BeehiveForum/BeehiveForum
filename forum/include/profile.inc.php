@@ -31,7 +31,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -166,7 +165,6 @@ function profile_sections_get_by_page($offset)
     if (!$result = db_query($sql, $db_profile_sections_get_by_page)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_profile_sections_get_by_page)) return false;
@@ -241,7 +239,6 @@ function profile_items_get_by_page($psid, $offset)
     if (!$result = db_query($sql, $db_profile_items_get_by_page)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_profile_items_get_by_page)) return false;

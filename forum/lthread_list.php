@@ -24,63 +24,48 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
-
 define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
@@ -99,27 +84,22 @@ include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // See if we can try and logon automatically
-
 logon_perform_auto();
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Light mode check to see if we should bounce to the logon screen.
-
 if (bh_getcookie('bh_logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -127,7 +107,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -135,28 +114,23 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Check thread list cache
-
 cache_check_thread_list();
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     header_redirect("lforums.php");
 }
 
 // Are we viewing a specific folder only?
-
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $folder = $_GET['folder'];
@@ -173,7 +147,6 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 }
 
 // View offset.
-
 if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
     $start_from = $_GET['start_from'];
 }else if (isset($_POST['start_from']) && is_numeric($_POST['start_from'])) {
@@ -183,7 +156,6 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 }
 
 // View mode
-
 if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
     $mode = $_GET['mode'];
 }else if (isset($_POST['mode']) && is_numeric($_POST['mode'])) {
@@ -191,17 +163,14 @@ if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
 }
 
 // Check that required variables are set
-
 if (user_is_guest()) {
 
     // default to UID 0 if no other UID specified
-
     $uid = 0;
 
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
-
     if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
         $mode = ALL_DISCUSSIONS;
     }

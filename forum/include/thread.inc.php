@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -351,7 +350,6 @@ function thread_set_interest($tid, $interest)
 
 // Same as thread_set_interest but this one won't
 // change the interest of a thread unless it is 'normal'
-
 function thread_set_high_interest($tid)
 {
     if (!$db_thread_set_high_interest = db_connect()) return false;
@@ -589,69 +587,56 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!$db_thread_merge = db_connect()) return false;
 
     // Get Forum Data
-
     if (!$table_data = get_table_prefix()) {
         return thread_merge_error(THREAD_MERGE_FORUM_ERROR, $error_str);
     }
     
     // Forum FID
-    
     $forum_fid = $table_data['FID'];
 
     // Get Thread A data
-
     if (!$threada = thread_get($tida)) {
         return thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
     }
 
     // Get Thread B data
-
     if (!$threadb = thread_get($tidb)) {
         return thread_merge_error(THREAD_MERGE_THREAD_ERROR, $error_str);
     }
 
     // Check the threads aren't polls.
-
     if (($threada['POLL_FLAG'] == 'Y') || ($threadb['POLL_FLAG'] == 'Y')) {
         return thread_merge_error(THREAD_MERGE_POLL_ERROR, $error_str);
     }
 
     // Check thread A permissions
-
     if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
         return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
     }
 
     // Check thread B permissions
-
     if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
         return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
     }
 
     // Close thread A
-
     thread_set_closed($tida, true);
 
     // Close thread B
-
     thread_set_closed($tidb, true);
 
     // Create new thread. Mark it as deleted so user's cannot see it.
-
     if (!($new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], $threada['TITLE'], 'N', 'N', true, true))) {
 
         // Unlock the threads if they weren't originally locked.
-
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
         thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_MERGE_CREATE_ERROR, $error_str);
     }
 
     // Construct query to correctly sort the posts in the new thread.
-
     switch ($merge_type) {
 
         case THREAD_MERGE_BY_CREATED:
@@ -686,21 +671,17 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
     
     // Execute the query to copy the posts.
-
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
-
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
         thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
     // Copy the post contents to the new thread
-
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
@@ -710,17 +691,14 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
-
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
         thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
     // Update the REPLY_TO_PIDs in the new thread
-
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, PID, REPLY_TO_PID) ";
     $sql.= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` TARGET_POST ";
@@ -733,17 +711,14 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
-
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
         thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
     // Link the attachments to the new thread.
-
     $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
     $sql.= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
     $sql.= "SOURCE_POST_ATTACHMENT_IDS.AID ";
@@ -759,54 +734,44 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
-
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
         thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
     // Now we unset the MOVED_TID and MOVED_PIDs for the new thread
     // so the posts appear in the new thread.
-
     $sql = "UPDATE `{$table_data['PREFIX']}POST` SET MOVED_TID = NULL, ";
     $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
 
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
-
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
         thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
     // Update the new thread length
-
     thread_set_length($new_tid, $threada['LENGTH'] + $threadb['LENGTH']);
 
     // Set the original threads as moved
-
     thread_set_moved($tida, $new_tid);
 
     thread_set_moved($tidb, $new_tid);
 
     // Update the new thread so it's closed if either
     // of it's source threads were originally closed.
-
     thread_set_closed($new_tid, ($threada['CLOSED'] > 0) | ($threadb['CLOSED'] > 0));
     
     // Undelete the thread.
-    
     thread_undelete($new_tid);
 
     // Return the admin log data.
-
     return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
 }
 
@@ -932,16 +897,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Copy the post contents to the new thread
-
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
@@ -951,16 +913,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
         
         // Return error message.
-
         return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Update the REPLY_TO_PIDs in the new thread
-
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, PID, REPLY_TO_PID) ";
     $sql.= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` TARGET_POST ";
@@ -973,32 +932,26 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Remove the first post in the thread's REPLY_TO_PID
-
     $sql = "UPDATE `{$table_data['PREFIX']}POST` POST SET REPLY_TO_PID = NULL ";
     $sql.= "WHERE POST.TID = '$new_tid' AND POST.PID = 1";
 
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Update the old thread's post MOVED_TID and MOVED_PID
-
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, PID, MOVED_TID, MOVED_PID) ";
     $sql.= "SELECT $tid, MOVED_PID, $new_tid, PID FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE POST.TID = $new_tid ON DUPLICATE KEY UPDATE MOVED_TID = VALUES(MOVED_TID), ";
@@ -1007,16 +960,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Link the attachments to the new thread.
-
     $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
     $sql.= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
     $sql.= "SOURCE_POST_ATTACHMENT_IDS.AID ";
@@ -1032,28 +982,23 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
     // Now we unset the MOVED_TID and MOVED_PIDs for the new thread
     // so the posts appear in the new thread.
-
     $sql = "UPDATE `{$table_data['PREFIX']}POST` SET MOVED_TID = NULL, ";
     $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
 
     if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
-
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
-
         return thread_merge_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
 
@@ -1260,7 +1205,6 @@ function thread_search($thread_search, $selected_array = array())
     if (!$result = db_query($sql, $db_thread_search)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_thread_search)) return false;

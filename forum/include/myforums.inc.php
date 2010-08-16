@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -49,7 +48,6 @@ function get_forum_list($offset)
     $offset = abs($offset);
 
     // Array to hold our forums in.
-
     $forums_array = array();
     
     $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
@@ -62,7 +60,6 @@ function get_forum_list($offset)
     if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_get_forum_list)) return false;
@@ -74,19 +71,16 @@ function get_forum_list($offset)
         while (($forum_data = db_fetch_array($result_forums))) {
 
             // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
-
             if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                 $forum_data['FORUM_NAME'] = "A Beehive Forum";
             }
 
             // Check the forum description variable is set.
-
             if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                 $forum_data['FORUM_DESC'] = "";
             }
 
             // Get number of messages on forum
-
             $sql = "SELECT COUNT(PID) AS POST_COUNT FROM `{$forum_data['PREFIX']}POST` POST ";
 
             if (!$result_post_count = db_query($sql, $db_get_forum_list)) return false;
@@ -130,11 +124,9 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Array to hold our forums in.
-
     $forums_array = array();
 
     // Fetch the forums
-
     if ($view_type == FORUMS_SHOW_ALL) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
@@ -172,7 +164,6 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
     if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_get_my_forums)) return false;
@@ -186,33 +177,27 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             $forum_fid = $forum_data['FID'];
 
             // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
-
             if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                 $forum_data['FORUM_NAME'] = "A Beehive Forum";
             }
 
             // Check the forum description variable is set.
-
             if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                 $forum_data['FORUM_DESC'] = "";
             }
 
             // Check the LAST_VISIT column to make sure it's OK.
-
             if (!isset($forum_data['LAST_VISIT']) || is_null($forum_data['LAST_VISIT'])) {
                 $forum_data['LAST_VISIT'] = 0;
             }
 
             // Unread cut-off stamp.
-
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
             // Get available folders for queries below
-
             $folders = folder_get_available_by_forum($forum_fid);
 
             // Get any unread messages
-
             if ($unread_cutoff_datetime !== false) {
 
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
@@ -232,7 +217,6 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             }
 
             // Total number of messages
-
             $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
 
@@ -247,7 +231,6 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             }
 
             // Get unread to me message count
-
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
             $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
             $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
@@ -267,7 +250,6 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             // Sometimes the USER_THREAD table might have a higher count that the thread
             // length due to table corruption. I've only seen this on the SF provided
             // webspace but none the less we do this check here anyway.
-
             if ($forum_data['NUM_MESSAGES'] < 0) $forum_data['NUM_MESSAGES'] = 0;
             if ($forum_data['UNREAD_MESSAGES'] < 0) $forum_data['UNREAD_MESSAGES'] = 0;
             if ($forum_data['UNREAD_TO_ME'] < 0) $forum_data['UNREAD_TO_ME'] = 0;

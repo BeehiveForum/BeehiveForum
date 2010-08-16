@@ -24,63 +24,48 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
-
 define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -100,21 +85,17 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 
 // See if we can try and logon automatically
-
 logon_perform_auto();
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -122,7 +103,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -130,11 +110,9 @@ if (!bh_session_user_approved()) {
 }
 
 // Get the user's UID
-
 $uid = bh_session_get_value('UID');
 
 // Guests can't access PMs
-
 if (user_is_guest()) {
 
     light_html_guest_error();
@@ -142,19 +120,15 @@ if (user_is_guest()) {
 }
 
 // Check that PM system is enabled
-
 light_pm_enabled();
 
 // Prune old messages for the current user
-
 pm_user_prune_folders();
 
 // Load language file
-
 $lang = load_language_file();
 
 // Draw the header.
-
 light_html_draw_top("title={$lang['pminbox']}");
 
 light_draw_pm_inbox();

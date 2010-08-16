@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -410,7 +409,6 @@ function folder_get_all_by_page($offset)
     if (!$result = db_query($sql, $db_folder_get_all_by_page)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_folder_get_all_by_page)) return false;
@@ -550,7 +548,6 @@ function folder_get_available_details()
 }
 
 // Checks that a $fid is a valid folder (i.e. it actually exists)
-
 function folder_is_valid($fid)
 {
     if (!$db_folder_get_available = db_connect()) return false;
@@ -623,7 +620,6 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 // Similar to folder_draw_dropdown() but simply returns
 // a list of folders or false on none, rather than draw
 // the drop down.
-
 function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     if (!$db_folder_get_by_type_allowed = db_connect()) return false;
@@ -675,11 +671,9 @@ function folder_move_up($fid)
     }
 
     // Search for our folder in the list of know folders.
-
     if (($folder_order_key = array_search($fid, $folder_order)) !== false) {
 
         // Move the folder above to the same location as our selected folder.
-
         $folder_order_key--;
         if ($folder_order_key < 0) $folder_order_key = 0;
 
@@ -691,7 +685,6 @@ function folder_move_up($fid)
         if (!$result = db_query($sql, $db_folder_move_up)) return false;
 
         // Move the selected folder to the old location of the other folder.
-
         $new_position = $folder_position[$folder_order[$folder_order_key]];
 
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}FOLDER` SET POSITION = '$new_position' ";
@@ -797,11 +790,9 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $off
     $folder_subscriptions_array = array();
 
     // Get the folders the user can see.
-
     $folders = folder_get_available();
 
     // User UID
-
     $uid = bh_session_get_value('UID');
 
     if ($interest_type <> FOLDER_NOINTEREST) {
@@ -829,7 +820,6 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $off
     if (!$result = db_query($sql, $db_folders_get_user_subscriptions)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_folders_get_user_subscriptions)) return false;
@@ -869,11 +859,9 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
     $folder_subscriptions_array = array();
 
     // Get the folders the user can see.
-
     $folders = folder_get_available();
 
     // User UID
-
     $uid = bh_session_get_value('UID');
 
     if ($interest_type <> FOLDER_NOINTEREST) {
@@ -903,7 +891,6 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
     if (!$result = db_query($sql, $db_folders_search_user_subscriptions)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_folders_search_user_subscriptions)) return false;

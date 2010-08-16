@@ -199,16 +199,13 @@ function svn_mysql_output_log($log_filename = null)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Check to see if we have a date on the command line and
 // that it is in the valid format YYYY-MM-DD.
-
 if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_SERVER['argv'][1]) > 0) {
     $modified_date = $_SERVER['argv'][1];
 } else if (isset($_GET['date']) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_GET['date']) > 0) {

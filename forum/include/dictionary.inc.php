@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -247,23 +246,18 @@ class dictionary {
         if (!isset($this->content_array[$this->current_word])) return;
 
         // Fetch the current word
-
         $word = db_escape_string($this->get_current_word());
 
         // Check it is valid.
-
         if (!$this->word_is_valid($word)) return;
 
         // The offset of the soundex results
-
         $offset = $this->offset_match;
 
         // The current user's UID
-
         if (($uid = bh_session_get_value('UID')) === false) return;
 
         // Exact match
-
         $sql = "SELECT WORD FROM DICTIONARY WHERE WORD = '$word' ";
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
@@ -271,7 +265,6 @@ class dictionary {
         if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
 
         // If we found an exact match then they spelt it right?
-
         if (db_num_rows($result) > 0) {
 
             $this->word_suggestion_result = DICTIONARY_EXACT;
@@ -279,7 +272,6 @@ class dictionary {
         }
 
         // Soundex match.
-
         $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = SOUNDEX('$word') ";
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";

@@ -26,9 +26,7 @@ USA
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
 // http://www.geocities.com/mnstr_2000/translate.html
-
 // Outputs to STDOUT.
-
 function htmlentities_decode($text)
 {
     $trans_tbl = get_html_translation_table (HTML_ENTITIES);
@@ -52,13 +50,11 @@ function translate($matches)
     $string_parts = preg_split('/([<|>])/u', $string_translate, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     // Initialize the variables we need.
-
     $str_translated = '';
     $str_new = '';
     $str_out = '';
 
     // Process Specific Words
-
     for ($i = 0; $i < sizeof($string_parts); $i++) {
 
         if (!($i % 4)) {
@@ -95,7 +91,6 @@ function translate($matches)
     $string_parts = preg_split('/([<|>])/u', $str_translated, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     //Process Individual Chars
-
     for ($i = 0; $i < sizeof($string_parts); $i++) {
 
         if (!($i % 4)) {
@@ -147,7 +142,6 @@ function translate($matches)
     }
 
     // Randomize case
-
     $string_parts = preg_split('/([<|>])/u', $str_new, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($i = 0; $i < sizeof($string_parts); $i++) {
@@ -181,15 +175,12 @@ function translate($matches)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Start here
-
 if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
     if (($fp = fopen('./forum/include/languages/x-hacker.inc.php', 'w'))) {

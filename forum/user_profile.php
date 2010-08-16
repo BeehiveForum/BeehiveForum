@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -95,18 +81,15 @@ include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -114,7 +97,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -122,18 +104,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -169,19 +148,15 @@ if (!isset($uid)) {
 }
 
 // Get the Profile Sections.
-
 $profile_sections = profile_sections_get();
 
 // Get the user's profile data.
-
 $user_profile = user_get_profile($uid);
 
 // User relationship.
-
 $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 // Popup title.
-
 $page_title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
 
 html_draw_top("title=$page_title", "user_profile.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');

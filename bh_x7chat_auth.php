@@ -42,11 +42,9 @@ check_install();
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -54,27 +52,21 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // X7Chat Username Cookie
-
 $auth_ucookie = "X7C2U";
 
 // X7Chat Password Cookie
-
 $auth_pcookie = "X7C2P";
 
 // Registration link
-
 $auth_register_link = "../register.php";
 
 // Disable Guest access to X7Chat
-
 $auth_disable_guest = true;
 
 // See if we can try and logon automatically
-
 logon_perform_auto();
 
 // Check the session is active
-
 if (($user_sess = bh_session_check())) {
 
     if ($user_data = user_get(bh_session_get_value('UID'))) {
@@ -102,14 +94,12 @@ if (($user_sess = bh_session_check())) {
 }
 
 // Authentication Encryption.
-
 function auth_encrypt($data)
 {
     return md5($data);
 }
 
 // Get password hash
-
 function auth_getpass($auth_ucookie)
 {
     if ($user_data = user_get_by_logon($_COOKIE[$auth_ucookie])) {
@@ -118,7 +108,6 @@ function auth_getpass($auth_ucookie)
 }
 
 // Change password
-
 function change_pass($user, $newpass)
 {
     if ($user_data = user_get_by_logon($user)) {

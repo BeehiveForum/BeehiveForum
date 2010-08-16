@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -96,18 +82,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -115,7 +98,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -123,18 +105,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -244,7 +223,6 @@ if (isset($_POST['save'])) {
     if ($valid) {
 
         // Update USER_SIG
-
         if (user_update_sig($uid, $t_sig_content, $t_t_post_html, ($t_sig_global == 'Y'))) {
 
             if ($admin_edit === true) {
@@ -270,11 +248,9 @@ if (isset($_POST['save'])) {
 }
 
 // Initialise the $user_sig array
-
 $user_sig = array('SIG_CONTENT' => '', 't_post_html' => 'N');
 
 // Get the User's Signature
-
 if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['t_post_html'])) {
 
     $user_sig['SIG_CONTENT'] = '';
@@ -282,14 +258,13 @@ if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['t_post_html'])) {
 }
 
 // Start Output Here
-
 if ($admin_edit === true) {
 
     $user = user_get($uid);
 
     html_draw_top("title={$lang['admin']} - {$lang['manageuser']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageuser']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 }else {
 
@@ -347,7 +322,6 @@ echo "<br />\n";
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
 // Check to see if we should show the set for all forums checkboxes
-
 if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 }else {

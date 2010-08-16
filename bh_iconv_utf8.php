@@ -24,15 +24,12 @@ USA
 /* $Id$ */
 
 // Array of files to exclude from the matches
-
 $exclude_files_array = array();
 
 // Array of directories to exclude from the matches
-
 $exclude_dirs_array = array('./forum/tiny_mce', './forum/include/swift');
 
 // Get array of files in specified directory and sub-directories.
-
 function get_file_list(&$file_list_array, $path, $extension = null)
 {
     if (is_array($extension)) {
@@ -63,19 +60,15 @@ function get_file_list(&$file_list_array, $path, $extension = null)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Get the files
-
 get_file_list($file_list, '.', array('.php', '.js', '.txt', '.css', '.htm', '.html'));
 
 // Parse all the files we found with iconv
-
 foreach ($file_list as $filepath) {
 
     exec(sprintf('iconv -f windows-1252 -t utf-8 %s > %s.fixed', escapeshellarg($filepath), escapeshellarg($filepath)));

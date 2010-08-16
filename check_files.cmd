@@ -35,5 +35,8 @@ echo Checking Files for errors. Please wait...
 if exist error_log.txt del error_log.txt
 echo BeehiveForum Parse Log - %date% %time% > error_log.txt
 echo. >> error_log.txt
-for /r %%a in (*.php) do php.exe -l %%a >> error_log.txt
+for /r %%a in (*.php) do (
+    php.exe -l %%a >> error_log.txt
+    echo. >> error_log.txt
+)
 start error_log.txt

@@ -24,63 +24,48 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
-
 define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "beehive.inc.php");
@@ -96,29 +81,23 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Don't cache this page - fixes problems with Opera.
-
 cache_disable();
 
 // Check we have a webtag
-
 $webtag = get_webtag();
 
 // Validate the webtag
-
 forum_check_webtag_available($webtag);
 
 // See if we can try and logon automatically
-
 if (logon_perform_auto(false)) {
     header_redirect("lthread_list.php?webtag=$webtag");
 }
 
 // Start user session
-
 $user_sess = bh_session_check(false, false);
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -127,7 +106,6 @@ if (bh_session_user_banned()) {
 
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -135,15 +113,12 @@ if (!bh_session_user_approved()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Error messages string
-
 $error_msg_array = array();
 
 // Check for logon post data
-
 if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (logon_perform()) {

@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -64,7 +63,6 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 
 // Checks the session and returns it as an array.
-
 /**
 * Checks the current user's session is valid.
 *
@@ -81,29 +79,23 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
     static $user_sess = false;
 
     // If the session is already started return it.
-
     if (is_array($user_sess)) return $user_sess;
 
     // Database connection.
-
     if (!$db_bh_session_check = db_connect()) return false;
 
     // Fetch the user's IP Address
-
     if (!$ipaddress = get_ip_address()) return false;
 
     // Session cut off timestamp
-
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we have a session cookie.
-
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5');
 
     $ipaddress = db_escape_string($ipaddress);
 
     // Check for a webtag and get the forum FID.
-
     if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
@@ -116,7 +108,6 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
     // data that Beehive relies on. If this data does not match what
     // we have stored in the database then the user gets logged out
     // automatically.
-
     if (isset($user_hash) && is_md5($user_hash)) {
 
         $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.REFERER, SESSIONS.FID, ";
@@ -130,11 +121,9 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
         if (db_num_rows($result) > 0) {
 
             // Fetch the session data from the database
-
             $user_sess = db_fetch_array($result, DB_RESULT_ASSOC);
 
             // If the session belongs to a guest pass control to bh_guest_session_init();
-
             if ($user_sess['UID'] == 0) {
 
                 $user_sess = bh_guest_session_init();
@@ -143,46 +132,37 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
 
             // check to see if the user's credentials match the
             // ban data set up on this forum.
-
             ban_check($user_sess);
 
             // Add preference settings
-
             if (($user_prefs = user_get_prefs($user_sess['UID']))) {
                 $user_sess = array_merge($user_sess, $user_prefs);
             }
 
             // Add user perms
-
             if (($user_perms = bh_session_get_perm_array($user_sess['UID']))) {
                 $user_sess['PERMS'] = $user_perms;
             }
 
             // A unique MD5 has for some purposes (word filter, etc)
-
             $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
 
             // Check the forum FID the user is currently visiting
-
             if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
 
             // Save a cookie for the forum style
-
             if (isset($user_prefs['STYLE'])) {
                 bh_setcookie("bh_forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
             }
 
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
-
             if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid)) {
 
                 // Update the user time stats before we update the session
-
                 bh_update_user_time($user_sess['UID']);
 
                 // Update the session time and forum FID.
-
                 $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
                 $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
@@ -191,7 +171,6 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
 
                 // If the user has changed forums we should call bh_update_visitor_log
                 // and forum_update_last_visit()
-
                 if ($user_sess['FID'] != $forum_fid) {
 
                     bh_update_visitor_log($user_sess['UID'], $forum_fid);
@@ -200,15 +179,12 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
             }
             
             // Forum self preservation
-            
             forum_check_maintenance();
 
             // Return session data
-
             return $user_sess;
 
         // Check if we're showing the session failed page.
-
         }else if ($show_session_fail) {
 
             bh_session_expired();
@@ -216,7 +192,6 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
     }
 
     // Only try to login as a guest if we're told to.
-
     if ($init_guest_session === true) {
         $user_sess = bh_guest_session_init();
     }
@@ -316,11 +291,9 @@ function bh_guest_session_init()
     if (!$ipaddress = get_ip_address()) return false;
 
     // Session cut off timestamp
-
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we have a session cookie.
-
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
 
     $ipaddress = db_escape_string($ipaddress);
@@ -335,7 +308,6 @@ function bh_guest_session_init()
         // address. Of course this means that the guest counter
         // will be out if there is more than one guest coming
         // from a single IP address.
-
         if (($table_data = get_table_prefix())) {
             $forum_fid = $table_data['FID'];
         }else {
@@ -353,26 +325,21 @@ function bh_guest_session_init()
             $user_sess = db_fetch_array($result);
 
             // Add user perms
-
             if (($user_perms = bh_session_get_perm_array($user_sess['UID']))) {
                 $user_sess['PERMS'] = $user_perms;
             }
 
             // A unique MD5 has for some purposes (word filter, etc)
-
             $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
 
             // Check the forum FID the user is currently visiting
-
             if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
 
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
-
             if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
 
                 // Update the session time and forum FID.
-
                 $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
                 $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
@@ -381,7 +348,6 @@ function bh_guest_session_init()
 
                 // If the user has changed forums we should call bh_update_visitor_log
                 // and forum_update_last_visit()
-
                 if ($user_sess['FID'] != $forum_fid) {
 
                     bh_update_visitor_log(0, $forum_fid);
@@ -391,11 +357,9 @@ function bh_guest_session_init()
         }else {
 
             // HTTP referer
-
             $http_referer = bh_session_get_referer();
 
             // Session array of default values.
-
             $user_sess = array('UID'         => 0,
                                'TIME'        => time(),
                                'SERVER_TIME' => time(),
@@ -407,17 +371,14 @@ function bh_guest_session_init()
                                'RAND_HASH'   => md5(uniqid(mt_rand())));
 
             // Add user perms
-
             if (($user_perms = bh_session_get_perm_array($user_sess['UID']))) {
                 $user_sess['PERMS'] = $user_perms;
             }
 
             // HTTP Referer.
-
             $http_referer = db_escape_string($http_referer);
 
             // Start a session for the new guest user
-
             if (($search_id = bh_session_is_search_engine()) !== false) {
 
                 $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
@@ -438,17 +399,14 @@ function bh_guest_session_init()
             }
 
             // Update visitor log.
-
             bh_update_visitor_log(0, $forum_fid);
         }
         
         // Forum self-preservation
-
         forum_check_maintenance();
 
         // Check to see if the user's credentials match the
         // ban data set up on this forum.
-
         ban_check($user_sess, true);
     }
 
@@ -664,13 +622,11 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     $ipaddress = db_escape_string($ipaddress);
 
     // Delete any guest sessions this user might have.
-
     $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
     if (!db_query($sql, $db_bh_session_init)) return false;
 
     // Check for an existing user session.
-
     $sql = "SELECT HASH FROM SESSIONS WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_bh_session_init)) return false;
@@ -734,12 +690,10 @@ function bh_session_remove_cookies()
     $webtag = get_webtag();
 
     // Unset the session cookies.
-
     bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
     // Unset the forum password cookie if any.
-
     if (forum_check_webtag_available($webtag)) {
         bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
     }
@@ -764,7 +718,6 @@ function bh_session_end($remove_cookies = true)
     if (!$ipaddress = get_ip_address()) return false;
 
     // Session cookie
-
     $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
 
     $ipaddress = db_escape_string($ipaddress);
@@ -773,15 +726,12 @@ function bh_session_end($remove_cookies = true)
 
         // If the user isn't a guest we should update how long
         // they have been actively logged in.
-
         if ($uid > 0) bh_update_user_time($uid);
 
         // Delete the user's cookie
-
         if ($remove_cookies === true) bh_session_remove_cookies();
 
         // Remove the user session.
-
         $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
         if (!db_query($sql, $db_bh_session_end)) return false;
@@ -1028,7 +978,6 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
     $folder_fid_array = array();
 
     // Global Permissions.
-
     if (isset($user_sess['PERMS'][$forum_fid][0])) {
         $global_user_perms = $user_sess['PERMS'][$forum_fid][0];
     }else {
@@ -1037,7 +986,6 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 
     // Test each folder against the provided perm at both the folder
     // user and global user permission levels.
-
     if (isset($user_sess['PERMS'][$forum_fid]) && is_array($user_sess['PERMS'][$forum_fid])) {
 
         foreach ($user_sess['PERMS'][$forum_fid] as $folder_fid => $folder_perm) {
@@ -1163,7 +1111,6 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
-
     return preg_replace('/\/\/+/u', '/', $request_uri);
 }
 

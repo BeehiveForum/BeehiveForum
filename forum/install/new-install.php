@@ -988,7 +988,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
 $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
-
 if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
@@ -997,7 +996,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
 $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
-
 if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
@@ -1006,7 +1004,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
 $sql.= "VALUES (3, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
-
 if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
@@ -1252,7 +1249,6 @@ $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'htt
                     'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
                     'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
                     'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
-
 foreach ($bots_array as $agent => $details) {
 
     $agent = db_escape_string($agent);
@@ -1333,7 +1329,6 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
         // SQL import method failed, now we need to resort to
         // loading the file in PHP and running queries to MySQL.
-
         if (!$result = @db_query($sql, $db_install)) {
 
             $dictionary_words_array = file($dictionary_path);
@@ -1353,7 +1348,6 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
         }
 
         // Generate the soundex values for the words.
-
         $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
 
         if (!$result = db_query($sql, $db_install)) {

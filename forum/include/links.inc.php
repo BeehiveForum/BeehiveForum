@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -84,7 +83,6 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_links_get_in_folder)) return false;
@@ -270,9 +268,9 @@ function links_get_folder_path_links($fid, $folders, $links = true, $link_last_t
         while (($val = array_pop($tree_array))) {
 
             if (($val != $fid && $links) || $link_last_too) {
-                $html.= "&nbsp;<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" />&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
+                $html.= "<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
             } else {
-                $html.= "&nbsp;<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" />&nbsp;". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
+                $html.= "<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
             }
         }
     }
@@ -451,7 +449,6 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_links_get_in_folder)) return false;

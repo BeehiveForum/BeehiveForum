@@ -31,7 +31,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -384,7 +383,6 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
     }else {
 
         // Get the results.
-
         $sql = "SELECT SQL_CALC_FOUND_ROWS USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
         $sql.= "USER_POLL_VOTES.UID, GROUP_CONCAT(POLL_VOTES.OPTION_NAME SEPARATOR ', ') AS OPTION_NAMES ";
         $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
@@ -401,7 +399,6 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
         if (!$result = db_query($sql, $poll_get_user_votes)) return false;
 
         // Fetch the number of total results
-
         $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
         if (!$result_count = db_query($sql, $poll_get_user_votes)) return false;

@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -91,18 +77,15 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -110,7 +93,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -118,18 +100,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // If attachments are disabled then no need to go any further.
-
 if (forum_get_setting('attachments_enabled', 'N')) {
 
     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
@@ -139,7 +118,6 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 }
 
 // If the attachments directory is undefined we can't go any further
-
 if (!$attachment_dir = attachments_check_dir()) {
 
     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
@@ -149,7 +127,6 @@ if (!$attachment_dir = attachments_check_dir()) {
 }
 
 // If no AID we must stop.
-
 if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
     $aid = $_GET['aid'];
@@ -167,7 +144,6 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 }
 
 // Guests can't do attachments.
-
 if (user_is_guest()) {
 
     html_guest_error();
@@ -175,43 +151,34 @@ if (user_is_guest()) {
 }
 
 // User's UID
-
 $uid = bh_session_get_value('UID');
 
 // Maximum attachment space
-
 $max_attachment_space = attachments_get_max_space();
 
 // Get user's free attachment space.
-
 $users_free_space = attachments_get_free_space($uid, $aid);
 
 // Get the array of allowed attachment mime-types
-
 $attachment_mime_types = attachments_get_mime_types();
 
 // Accumlative attachment file size.
-
 $total_attachment_size = 0;
 
 // Check that $attachment_dir does not have a slash on the end of it.
-
 if (mb_substr($attachment_dir, -1) == '/') {
     $attachment_dir = mb_substr($attachment_dir, 0, -1);
 }
 
 // Arrays to hold successfully / failed / not allowed filenames
-
 $upload_success = array();
 $upload_failure = array();
 $upload_not_allowed = array();
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Start Stuff
-
 if (isset($_POST['upload'])) {
 
     if (isset($_FILES['userfile']) && is_array($_FILES['userfile'])) {

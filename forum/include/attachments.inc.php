@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -94,15 +93,12 @@ function attachments_check_dir()
     if (($attachment_dir = forum_get_setting('attachment_dir'))) {
 
         // Check that the temporary upload directory is writable
-
         if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
 
         // Check to make sure the $attachment_dir exists and is writable.
-
         mkdir_recursive($attachment_dir, 0755);
 
         // Check that the directory is writable.
-
         if (@is_writable($attachment_dir)) return $attachment_dir;
     }
 
@@ -425,7 +421,6 @@ function attachments_delete_by_aid($aid)
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
-
     $sql = "SELECT PAF.HASH FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "WHERE PAF.AID = '$aid' AND PAF.UID = '$uid'";
 
@@ -460,7 +455,6 @@ function attachments_delete($hash)
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
-
     if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
@@ -488,7 +482,6 @@ function attachments_delete($hash)
         if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
             // Mark the related post as edited
-
             if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
                 post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
@@ -501,21 +494,18 @@ function attachments_delete($hash)
             }
 
             // Delete the attachment record from the database
-
             $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE HASH = '$hash'";
 
             if (!db_query($sql, $db_attachments_delete)) return false;
 
             // Check to see if there are anymore attachments with the same AID
-
             $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE AID = '{$attachment_data['AID']}'";
 
             if (!db_query($sql, $db_attachments_delete)) return false;
 
             // Finally delete the file (and it's thumbnail)
-
             @unlink("$attachment_dir/$hash");
             @unlink("$attachment_dir/$hash.thumb");
 
@@ -547,7 +537,6 @@ function attachments_delete_thumbnail($hash)
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
-
     if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
@@ -575,7 +564,6 @@ function attachments_delete_thumbnail($hash)
         if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
             // Mark the related post as edited
-
             if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
                 post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
@@ -588,7 +576,6 @@ function attachments_delete_thumbnail($hash)
             }
 
             // Delete the thumbnail.
-
             @unlink("$attachment_dir/$hash.thumb");
 
             return true;
@@ -611,18 +598,15 @@ function attachments_delete_thumbnail($hash)
 function attachments_get_free_space($uid, $aid)
 {
     // Get max settings for attachment space (default: 1MB)
-
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
     $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
 
     // Get the user's used attachment space (global and per-post)
-
     $user_attachment_space = attachments_get_user_space($uid);
     $post_attachment_space = attachments_get_post_space($aid);
 
     // If Max user attachment space > 0 use that to check the free space.
     // Checking that Max post attachment space > 0 and lower than max user space.
-
     if ($max_user_attachment_space > 0) {
 
         if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space)) {
@@ -636,13 +620,11 @@ function attachments_get_free_space($uid, $aid)
     }
 
     // If Max post attachment space > 0 use that to check against the used post attachment space.
-
     if ($max_post_attachment_space > 0) {
         return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
     }
 
     // All out of space?
-
     return 0;
 }
 
@@ -694,7 +676,6 @@ function attachments_get_free_post_space($aid)
 function attachments_get_max_space()
 {
     // Get max settings for attachment space (default: 1MB)
-
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
     $max_post_attachment_space = forum_get_setting('attachments_max_post_space', false, 1048576);
 
@@ -1234,42 +1215,33 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
     if (!is_numeric($max_height)) $max_height = 150;
     
     // Array to store the results from ImageMagick
-    
     $imagemagick_info = array();
 
     // Get the imagemagick path from settings.
-
     if (!($imagemagick_path = forum_get_global_setting('imagemagick_path'))) return false;
 
     // Check the image filepath exists
-
     if (!@file_exists($filepath) || (!@$image_info = getimagesize($filepath))) return false;
 
     // Check that the specified imagemagick path exists and can be executed.
-
     if (!@file_exists($imagemagick_path) || !is_executable($imagemagick_path)) return false;
 
     // Run imagemagick with it's -version command line to see if it
     // really is imagemagick. Not really an authoritative test, but it'll do.
-
     exec(sprintf('%s -version', escapeshellarg($imagemagick_path)), $imagemagick_info);
 
     // Convert result into a string.
-
     $imagemagick_info = trim(implode("\n", $imagemagick_info));
 
     // Check it contains the string "Version: ImageMagick"
-
     if (strstr($imagemagick_info, 'Version: ImageMagick') === false) return false;
 
     // If we're dealing with a GIF image, we need to
     // process it to correctly resize all the frames it
     // might contain - in the case of animated gifs.
-
     if (($image_info[2] == IMAGETYPE_GIF)) {
 
         // Resize the gif, dropping all but the first frame.
-
         exec(sprintf('%s %s[0] -resize "%dx%d>" %s', escapeshellarg($imagemagick_path),
                                                      escapeshellarg($filepath),
                                                      $max_width,
@@ -1279,7 +1251,6 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
     } else {
 
         // It's not a gif, so carry on and resize the image.
-
         exec(sprintf('%s %s -resize "%dx%d>" %s', escapeshellarg($imagemagick_path),
                                                   escapeshellarg($filepath),
                                                   $max_width,
@@ -1289,7 +1260,6 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
 
     // if imagemagick baulks, it won't create the final image, so we
     // test that exists before returning the result.
-
     if (!@file_exists(sprintf('%s.thumb', $filepath))) return false;
 
     return true;
@@ -1312,25 +1282,21 @@ function attachments_create_thumb_gd($filepath, $max_width, $max_height)
     if (!is_numeric($max_height)) $max_height = 150;
 
     // Required PHP image create from functions
-
     $required_read_functions  = array(1 => 'imagecreatefromgif',
                                       2 => 'imagecreatefromjpeg',
                                       3 => 'imagecreatefrompng');
 
     // Required PHP image output functions
-
     $required_write_functions = array(1 => 'imagegif',
                                       2 => 'imagejpeg',
                                       3 => 'imagepng');
 
     // Required GD read support
-
     $required_read_support = array(1 => 'GIF Read Support',
                                    2 => 'JPEG Support',
                                    3 => 'PNG Support');
 
     // Required GD write support
-
     $required_write_support = array(1 => 'GIF Create Support',
                                     2 => 'JPEG Support',
                                     3 => 'PNG Support');
@@ -1340,7 +1306,6 @@ function attachments_create_thumb_gd($filepath, $max_width, $max_height)
         if (function_exists('gd_info') && ($attachment_gd_info = gd_info())) {
 
             // Check 1: Does GD support reading and writing our image type?
-
             if (!isset($required_read_support[$image_info[2]])) return false;
             if (!isset($required_write_support[$image_info[2]])) return false;
 
@@ -1351,12 +1316,10 @@ function attachments_create_thumb_gd($filepath, $max_width, $max_height)
             if ($attachment_gd_info[$required_write_support[$image_info[2]]] != 1) return false;
 
             // Check 2: Even if GD says it supports the image format check the php functions actually exist!
-
             if (!function_exists($required_read_functions[$image_info[2]])) return false;
             if (!function_exists($required_write_functions[$image_info[2]])) return false;
 
             // Got this far, lets try reading the image.
-
             if ((@$src = $required_read_functions[$image_info[2]]($filepath))) {
 
                 $target_width  = $image_info[0];

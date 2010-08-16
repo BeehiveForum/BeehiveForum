@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -92,18 +78,15 @@ include_once(BH_INCLUDE_PATH. "make_style.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -111,14 +94,12 @@ if (bh_session_user_banned()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
@@ -130,11 +111,9 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Save the style
-
 if (isset($_POST['save'])) {
 
     $valid = true;
@@ -213,7 +192,7 @@ if (isset($_POST['save'])) {
 
                 $forum_styles_path = html_get_forum_file_path("styles/$stylename");
 
-                echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['createforumstyle']}</h1>\n";
+                echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['createforumstyle']}</h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_make_style.php\">\n";
@@ -282,10 +261,9 @@ if (isset($_POST['save'])) {
 }
 
 // Start Here
-
 html_draw_top("title={$lang['admin']} - {$lang['createforumstyle']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['createforumstyle']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['createforumstyle']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -301,13 +279,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 // Generate some random colours
-
 $red = mt_rand(0, 255);
 $green = mt_rand(0, 255);
 $blue = mt_rand(0, 255);
 
 // Check to see if user specified a seed to use.
-
 if (isset($_POST['go'])) {
 
     if (isset($_POST['seed']) && (preg_match('/[0-9A-F]{3,6}/u', trim(stripslashes_array($_POST['seed']))) > 0)) {
@@ -324,11 +300,9 @@ if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
 }
 
 //Maximum variance for the colours
-
 $max_var = 15;
 
 // An array of all the Beehive CSS elements.
-
 $elements = array ('navpage' => '', 'threads' => '', 'button' => '', 'subhead' => '', 'h1' => '', 'body' => '', 'box' => '');
 
 if ($mode == STYLE_MODE_RANDOM) {

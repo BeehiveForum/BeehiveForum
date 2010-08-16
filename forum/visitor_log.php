@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -94,18 +80,15 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get the webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -113,7 +96,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -121,42 +103,34 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Arrays to hold success and error messages
-
 $error_msg_array = array();
 
 // Arrays to hold header and dropdown text
-
 $profile_header_array = array();
 $profile_dropdown_array = array();
 
 // Get a list of available user_prefs and profile items for the user to browse.
-
 visitor_log_get_profile_items($profile_header_array, $profile_dropdown_array);
 
 // Empty array for columns
-
 $profile_items_selected_array = array();
 
 // Check for any custom columns
-
 if (isset($_POST['profile_selection'])) {
 
     if (strlen(trim(stripslashes_array($_POST['profile_selection']))) > 0) {
@@ -259,17 +233,14 @@ if (sizeof($profile_items_selected_array) > 0) {
 }
 
 // Permitted columns to sort the results by
-
 $sort_by_array = array_keys($profile_header_array);
 
 array_unshift($sort_by_array, 'LOGON');
 
 // Permitted sort directions.
-
 $sort_dir_array = array('ASC', 'DESC');
 
 // Sort column
-
 if (isset($_GET['sort_by']) && in_array($_GET['sort_by'], $sort_by_array)) {
 
     $sort_by = $_GET['sort_by'];
@@ -311,7 +282,6 @@ if (forum_get_setting('guest_show_recent', 'Y')) {
 }
 
 // Sort direction
-
 if (isset($_GET['sort_dir']) && in_array($_GET['sort_dir'], $sort_dir_array)) {
     $sort_dir = $_GET['sort_dir'];
 }elseif (isset($_POST['sort_dir']) && in_array($_POST['sort_dir'], $sort_dir_array)) {

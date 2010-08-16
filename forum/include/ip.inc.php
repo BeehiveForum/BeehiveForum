@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -59,7 +58,6 @@ function get_ip_address()
     // address may be reversed by the proxy server
     // (identifiable by -R in the proxy server's version
     // string.)
-
     $matches = array();
 
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -100,7 +98,6 @@ function get_ip_address()
 
     // No proxy server or client IP not accessible.
     // Resort to using the REMOTE_ADDR variable.
-
     if (isset($_SERVER['REMOTE_ADDR'])) {
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['REMOTE_ADDR'], $matches)) {
             return $matches[0];
@@ -109,7 +106,6 @@ function get_ip_address()
 
     // REMOTE_ADDR unavailable (not possible?)
     // IP Address detection of proxy or client not possible.
-
     return false;
 }
 

@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -98,18 +84,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -117,7 +100,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -125,15 +107,12 @@ if (!bh_session_user_approved()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Get the user's UID
-
 $uid = bh_session_get_value('UID');
 
 // Guests can't access this page.
-
 if (user_is_guest()) {
 
     html_guest_error();
@@ -141,19 +120,15 @@ if (user_is_guest()) {
 }
 
 // Check that PM system is enabled
-
 pm_enabled();
 
 // Get the user's post page preferences.
-
 $page_prefs = bh_session_get_post_page_prefs();
 
 // Prune old messages for the current user
-
 pm_user_prune_folders();
 
 // Get the Message ID (MID)
-
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
@@ -182,7 +157,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 pm_save_attachment_id($mid, $aid);
 
 // User clicked cancel
-
 if (isset($_POST['cancel'])) {
     header_redirect("pm.php?webtag=$webtag&mid=$mid");
 }
@@ -191,7 +165,6 @@ $valid = true;
 
 // For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
 // Then just do something like $allow_html = forum_allow_html_pms() ? true : false
-
 $allow_html = true;
 
 $t_content = "";
@@ -305,7 +278,6 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 }
 
 // Update the PM
-
 if ($valid && isset($_POST['preview'])) {
 
     $edit_html = ($_POST['t_post_html'] == "Y");
@@ -426,7 +398,7 @@ if ($valid && isset($_POST['preview'])) {
 
 html_draw_top("title={$lang['privatemessages']}", "onUnload=clearFocus()", "resize_width=720", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
-echo "<h1>{$lang['privatemessages']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['editpm']}</h1>\n";
+echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['editpm']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');

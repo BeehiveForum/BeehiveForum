@@ -31,7 +31,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -264,7 +263,6 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
     if (!$result = db_query($sql, $db_perm_get_user_groups)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_perm_get_user_groups)) return false;
@@ -1068,13 +1066,11 @@ function perm_folder_reset_user_permissions($fid)
     $forum_fid = $table_data['FID'];
 
     // Fetch the folder's permissions
-
     $folder_perms = perm_folder_get_permissions($fid);
 
     $upfm = USER_PERM_FOLDER_MODERATE;
 
     // Remove the permissions that don't apply at the folder level
-
     $remove_perms = (double) USER_PERM_BANNED | USER_PERM_WORMED;
     $remove_perms = (double) $remove_perms | USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
     $remove_perms = (double) $remove_perms | USER_PERM_LINKS_MODERATE | USER_PERM_EMAIL_CONFIRM;
@@ -1084,7 +1080,6 @@ function perm_folder_reset_user_permissions($fid)
 
     // Process the permissions without affecting the user's
     // moderation level on the forum or the groups they're in.
-
     $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $upfm) ";
     $sql.= "WHERE FID = '$fid' AND GID <> '0' AND FORUM = '$forum_fid'";
 
@@ -1118,7 +1113,6 @@ function perm_group_get_users($gid, $offset = 0)
         if (!$result = db_query($sql, $db_perm_group_get_users)) return false;
 
         // Fetch the number of total results
-
         $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
         if (!$result_count = db_query($sql, $db_perm_group_get_users)) return false;

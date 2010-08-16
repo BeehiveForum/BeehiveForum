@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -61,7 +60,6 @@ function rss_read_stream($filename)
 {
     // Try and use PHP's own fopen wrapper to save us
     // having to do our own HTTP connection.
-
     if (($rss_data = @file($filename))) {
         if (is_array($rss_data)) return implode(' ', $rss_data);
     }
@@ -69,31 +67,25 @@ function rss_read_stream($filename)
     $url_array = parse_url($filename);
 
     // We only do HTTP
-
     if (!isset($url_array['host'])) return false;
     if (!isset($url_array['scheme']) || $url_array['scheme'] != 'http') return false;
 
     // We don't do HTTP authentication.
-
     if (isset($url_array['user'])) return false;
     if (isset($url_array['pass'])) return false;
 
     // If we don't have a port we'll assume port 80.
-
     if (!isset($url_array['port']) || empty($url_array['port'])) $url_array['port'] = 80;
 
     // No URL query we still need to set the array index.
     // If we do have a URL query we need to prefix it with a ?
-
     if (!isset($url_array['query']) || empty($url_array['query'])) $url_array['query'] = "";
     if (strlen($url_array['query']) > 0) $url_array['query'] = "?{$url_array['query']}";
 
     // No path, we'll assume we're fetching from the root.
-
     if (!isset($url_array['path']) || empty($url_array['path'])) $url_array['path'] = "/";
 
     // We can't do much without socket functions
-
     $errno = 0;
     $errstr = '';
 
@@ -117,7 +109,6 @@ function rss_read_stream($filename)
         fclose($fp);
 
         // Split the header from the data (seperated by \r\n\r\n)
-
         if (($data_array = preg_split("/\r\n\r\n/u", $reply_data, 2))) {
 
             return $data_array[1];
@@ -147,7 +138,6 @@ function rss_read_database($filename)
    xml_parser_free($parser);
 
    // loop through the structures
-
    foreach ($tags as $key => $value) {
 
        if ($key == 'item') {
@@ -156,7 +146,6 @@ function rss_read_database($filename)
 
            // each contiguous pair of array entries are the
            // lower and upper range for each molecule definition
-
            for ($i = 0; $i < count($ranges); $i+=2) {
 
                if (isset($ranges[$i]) && isset($ranges[$i + 1])) {
@@ -363,7 +352,6 @@ function rss_get_feeds($offset)
     if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
 
     // Fetch the number of total results
-
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_rss_get_feeds)) return false;

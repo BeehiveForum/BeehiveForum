@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -33,7 +32,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 // This is a list of stop words that MySQL ignores in FULLTEXT searches.
-
 $mysql_fulltext_stopwords = array("a's", "able", "about", "above", "according", 
                                   "accordingly", "across", "actually", "after", 
                                   "afterwards", "again", "against", "ain't", "all", 

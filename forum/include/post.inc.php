@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -55,7 +54,6 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     // IP Address can be hidden by calling this function with $hide_ipaddress
     // set to true. Useful for automated functionality like the RSS Feeder.
-
     if ($hide_ipaddress === false) {
         if (!$ipaddress = get_ip_address()) return -1;
     }else {
@@ -73,7 +71,6 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     // Check that the post needs approval. If the user is a moderator
     // their posts are self-approved.
-
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
 
         $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
@@ -92,22 +89,18 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
         // Insert the post content. This query can take some time
         // because of the FULLTEXT indexing used for seatching
-
         $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
         if (db_query($sql, $db_post_create)) {
 
             // Update the thread length and unread pid
-
             post_update_thread_length($tid, $new_pid);
 
             // Update user's post count.
-
             user_increment_post_count($fuid);
 
             // If post approval is required send the notification to admins.
-
             if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
                 admin_send_post_approval_notification($fid);
             }
@@ -184,7 +177,6 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     if (!$table_data = get_table_prefix()) return false;
 
     // Current datetime
-
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";

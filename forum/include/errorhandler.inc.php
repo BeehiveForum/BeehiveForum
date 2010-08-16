@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -33,7 +32,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 // If the config file exists include it.
-
 if (@file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
@@ -43,7 +41,6 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 }
 
 // Other include files we need.
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -54,11 +51,9 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Set the error reporting level to report all
 // error messages and PHP5 strict mode.
-
 error_reporting(E_ALL | E_STRICT);
 
 // Beehive Error Handler to Exception Wrapper.
-
 function bh_error_handler($code, $message, $file = '', $line = 0)
 {
     if (error_reporting()) {
@@ -80,7 +75,6 @@ function bh_exception_arg_handler($arg)
 }
 
 // Beehive Exception Handler Function
-
 function bh_exception_handler($exception)
 {
     if (isset($GLOBALS['show_friendly_errors']) && $GLOBALS['show_friendly_errors'] == true) {
@@ -108,37 +102,29 @@ function bh_exception_handler($exception)
     }
 
     // The requested script's filename
-
     $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
 
     // Now we can carry on with any other errors.
-
     if (error_reporting()) {
 
         // Disable the HTTP cache.
-
         cache_disable();
 
         // Clean the output buffer
-
         while (@ob_end_clean());
         ob_start("bh_gzhandler");
         ob_implicit_flush(0);
 
         // Array to hold the error message strings.
-
         $error_msg_array = array();
 
         // Array to store our version strings.
-
         $version_strings = array();
 
         // Generate the error message itself.
-
         $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $exception->getMessage());
 
         // Add the file and line number to the error message array
-
         if (strlen(trim(basename($exception->getFile()))) > 0) {
 
             $error_msg_array[] = '<p><b>Error Message:</b></p>';
@@ -146,43 +132,35 @@ function bh_exception_handler($exception)
         }
 
         // Separator
-
         $error_msg_array[] = '<hr />';
         
         // Stacktrace header
-        
         $error_msg_array[] = '<p><b>Stack trace:</b></p>';
 
         // Stacktrace data.
-
         $error_msg_array[] = sprintf('<pre>%s</pre>', print_r(array_map('bh_exception_arg_handler', $exception->getTrace()), true));
 
         // Get the Beehive Forum Version
-
         if (defined('BEEHIVE_VERSION')) {
            $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
         }
 
         // Get PHP Version
-
         if (($php_version = phpversion())) {
             $version_strings[] = sprintf('on PHP/%s', $php_version);
         }
 
         // Get PHP OS (WINNT, Linux, etc)
-
         if (defined('PHP_OS')) {
             $version_strings[] = PHP_OS;
         }
 
         // Get PHP interface (CGI, APACHE, IIS, etc)
-
         if (($php_sapi = php_sapi_name())) {
             $version_strings[] = mb_strtoupper($php_sapi);
         }
 
         // Get MySQL version if available.
-
         $mysql_version = '';
 
         if (function_exists('db_fetch_mysql_version') && ($mysql_version = db_fetch_mysql_version())) {
@@ -192,7 +170,6 @@ function bh_exception_handler($exception)
         }
 
         // Format the version info into a string.
-
         if (isset($version_strings) && sizeof($version_strings) > 0) {
 
             $error_msg_array[] = '<p><b>Version Strings:</b></p>';
@@ -200,19 +177,15 @@ function bh_exception_handler($exception)
         }
 
         // Verbose Error Data.
-
         if (isset($error_report_verbose) && $error_report_verbose == true) {
 
             // HTTP Request that caused the error
-
             $error_msg_array[] = '<p><b>HTTP Request:</b></p>';
 
             // The requested file name.
-
             $error_msg_array[] =  $_SERVER['PHP_SELF'];
 
             // Output the URL Query variables.
-
             if (isset($_GET) && sizeof($_GET) > 0) {
 
                 $error_msg_array[] = '<p><b>$_GET:</b></p>';
@@ -223,7 +196,6 @@ function bh_exception_handler($exception)
             }
 
             // Output any Post Data
-
             if (isset($_POST) && sizeof($_POST) > 0) {
 
                 $error_msg_array[] = '<p><b>$_POST:</b></p>';
@@ -234,7 +206,6 @@ function bh_exception_handler($exception)
             }
 
             // Output environment variables.
-
             if (isset($_ENV) && sizeof($_ENV) > 0) {
 
                 $error_msg_array[] = '<p><b>$_ENV:</b></p>';
@@ -245,7 +216,6 @@ function bh_exception_handler($exception)
             }
 
             // Output Server variables.
-
             if (isset($_SERVER) && sizeof($_SERVER) > 0) {
 
                 $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
@@ -257,7 +227,6 @@ function bh_exception_handler($exception)
         }
 
         // Check to see if we need to send the error report by email
-
         if (strlen($error_report_email_addr_to) > 0) {
 
             $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
@@ -273,15 +242,12 @@ function bh_exception_handler($exception)
         }
 
         // Format the error array for adding to the system error log.
-
         $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
 
         // Add the error to the log.
-
         @error_log($error_log_message);
 
         // Check for an installation error.
-
         if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
             if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_incomplete')) {
@@ -291,7 +257,6 @@ function bh_exception_handler($exception)
         }
 
         // Check for file include errors
-
         if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
 
             if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
@@ -301,7 +266,6 @@ function bh_exception_handler($exception)
         }
 
         // If Ajax request force display of Lightmode error messages.
-
         if (in_array($script_filename, array('pm.php', 'user_stats.php'))) {
 
             if (isset($_GET['check_messages']) || isset($_GET['get_stats'])) {
@@ -315,7 +279,6 @@ function bh_exception_handler($exception)
         }
 
         // Light mode / basic error message display.
-
         if ((isset($show_friendly_errors) && $show_friendly_errors === false) || defined("BEEHIVEMODE_LIGHT")) {
 
             echo '<p>An error has occured. Please wait a few moments before trying again.</p>';
@@ -329,7 +292,6 @@ function bh_exception_handler($exception)
         }
 
         // Full mode error message display with Retry button.
-
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";

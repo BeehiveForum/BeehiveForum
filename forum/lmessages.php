@@ -24,63 +24,48 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
-
 define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "beehive.inc.php");
@@ -103,27 +88,22 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // See if we can try and logon automatically
-
 logon_perform_auto();
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Light mode check to see if we should bounce to the logon screen.
-
 if (bh_getcookie('bh_logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -131,7 +111,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -139,33 +118,27 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Message pane caching
-
 cache_check_messages();
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     header_redirect("lforums.php");
 }
 
 // User UID for fetching recent message
-
 $uid = bh_session_get_value('UID');
 
 // Check that required variables are set
 // default to display most recent discussion for user
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -184,7 +157,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // Poll stuff
-
 if (isset($_POST['pollsubmit'])) {
 
     if (isset($_POST['pollvote'])) {
@@ -202,7 +174,6 @@ if (isset($_POST['pollsubmit'])) {
 }
 
 // Display messages
-
 light_draw_messages($msg);
 
 ?>

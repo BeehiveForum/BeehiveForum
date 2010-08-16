@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -101,18 +87,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -120,18 +103,15 @@ if (bh_session_user_banned()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Are we returning somewhere?
-
 if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
 }elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
@@ -141,7 +121,6 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 }
 
 // validate the return to page
-
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array('admin_user_groups.php', 'admin_user.php');
@@ -153,7 +132,6 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
 }
 
 // Cancel button has been pressed.
-
 if (isset($_POST['cancel'])) {
 
     header_redirect($ret);
@@ -193,15 +171,12 @@ if (!$group = perm_get_group($gid)) {
 }
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Get Group Permissions
-
 $group_permissions = perm_get_group_permissions($gid);
 
 // Do updates
-
 if (isset($_POST['save'])) {
 
     $valid = true;
@@ -295,7 +270,7 @@ html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$group['G
 
 $group_users_array = perm_group_get_users($gid, 0);
 
-echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['manageusergroups']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$group['GROUP_NAME']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$group['GROUP_NAME']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

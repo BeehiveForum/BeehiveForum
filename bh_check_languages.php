@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // Compare two language files.
-
 function load_language_file($filename)
 {
     $lang = array();
@@ -104,19 +103,15 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Master Language File.
-
 $master_lang = load_language_file("en.inc.php");
 
 // Slave Language Files.
-
 $slave_langs = array("en-us.inc.php"    => array('lang' => load_language_file("en-us.inc.php"), 'showut' => false),
                      "x-hacker.inc.php" => array('lang' => load_language_file("x-hacker.inc.php"), 'showut' => false),
                      "fr-ca.inc.php"    => array('lang' => load_language_file("fr-ca.inc.php"), 'showut' => true),

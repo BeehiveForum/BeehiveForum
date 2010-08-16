@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -92,43 +91,33 @@ function stats_update($session_count, $recent_post_count)
 function stats_output_html()
 {
     // Check HTTP cache headers
-
     cache_check_last_modified();
 
     // Load Language file
-
     $lang = load_language_file();
 
     // Get webtag
-
     $webtag = get_webtag();
 
     // Current active user UID
-
     $uid = bh_session_get_value('UID');
 
     // Number of active users
-
     $session_count = stats_get_active_session_count();
 
     // Number of recent posts.
-
     $recent_post_count = stats_get_recent_post_count();
 
     // Update the stats records.
-
     stats_update($session_count, $recent_post_count);
 
     // User Profile link is used by Active users and Newest user stats
-
     $user_profile_link = "<a href=\"user_profile.php?webtag=%s&amp;uid=%s\" target=\"_blank\" class=\"popup 650x500\">%s</a>";
 
     // Search Engine Bot link
-
     $search_engine_bot_link = "<a href=\"%s\" target=\"_blank\"><span class=\"user_stats_normal\">%s</span></a>";
 
     // Output the HTML.
-
     if (($user_stats = stats_get_active_user_list())) {
 
         $active_user_list_array = array();
@@ -495,7 +484,6 @@ function stats_get_active_user_list()
     if (($uid = bh_session_get_value('UID')) === false) return $stats;
 
     // Current active number of guests
-
     $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
@@ -505,7 +493,6 @@ function stats_get_active_user_list()
     list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
 
     // Curent active users
-
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS.ANON_LOGON, ";
     $sql.= "USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, ";
@@ -648,11 +635,9 @@ function stats_get_longest_thread()
     if (!$table_data = get_table_prefix()) return false;
 
     // Get the folders the user can see.
-
     $folders = folder_get_available();
 
     // Find the longest thread.
-
     $sql = "SELECT MAX(LENGTH) FROM `{$table_data['PREFIX']}THREAD` ";
     $sql.= "WHERE FID IN ($folders)";
 
@@ -1273,27 +1258,21 @@ function stats_get_visitor_counts()
     $forum_fid = $table_data['FID'];
 
     // Year, Month, Week and Day
-
     list($year, $month, $week, $day) = explode('-', date('Y-m-w-d', time()));
 
     // Calculate the datetime for January 1st this year.
-
     $year_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, 1, 1, $year));
 
     // Calculate the datetime for 1st of the month
-
     $month_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, 1, $year));
 
     // Calculate the timestamps for start of this week.
-
     $week_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, ($day - $week), $year));
 
     // Calculate the datetime for start of today.
-
     $day_start_datetime = date(MYSQL_DATETIME_MIDNIGHT, mktime(0, 0, 0, $month, $day, $year));
 
     // Get visitors for today.
-
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
     $sql.= "WHERE LAST_LOGON >= CAST('$day_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
@@ -1337,7 +1316,6 @@ function stats_get_average_age()
     if (!$db_stats_get_average_age = db_connect()) return false;
 
     // Year, Month and Day
-
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
 
     $sql = "SELECT AVG($year - DATE_FORMAT(DOB, '%Y') - ";

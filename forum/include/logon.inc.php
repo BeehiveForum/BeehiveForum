@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -45,25 +44,21 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 function logon_get_cookies(&$username_array, &$password_array, &$passhash_array)
 {
     // Username array
-
     if (!$username_array = bh_getcookie('bh_remember_username', 'is_array')) {
         $username_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_username', 'strlen', '')));
     }
 
     // Password array
-
     if (!$password_array = bh_getcookie('bh_remember_password', 'is_array')) {
         $password_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_password', 'strlen', '')));
     }
 
     // Passhash array
-
     if (!$passhash_array = bh_getcookie('bh_remember_passhash', 'is_array')) {
         $passhash_array = explode(",", stripslashes_array(bh_getcookie('bh_remember_passhash', 'strlen', '')));
     }
 
     // Remove any invalid entries.
-
     $username_array = array_filter($username_array, 'strlen');
     $password_array = array_filter($password_array, 'strlen');
     $passhash_array = array_filter($passhash_array, 'strlen');
@@ -78,7 +73,6 @@ function logon_update_logon_cookie($old_logon, $new_logon)
         $username_array[$key] = $new_logon;
 
         // Remove old format cookies
-
         while (list($key) = each($username_array)) {
 
             bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
@@ -87,13 +81,11 @@ function logon_update_logon_cookie($old_logon, $new_logon)
         }
 
         // New format cookies for 0.8 for better compatibility with more browsers.
-
         $username_cookie = implode(",", $username_array);
         $password_cookie = implode(",", $password_array);
         $passhash_cookie = implode(",", $passhash_array);
 
         // Set the cookies.
-
         bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
@@ -110,7 +102,6 @@ function logon_update_password_cookie($logon, $password)
         $passhash_array[$key] = md5($password);
 
         // Remove old format cookies
-
         while (list($key) = each($username_array)) {
 
             bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
@@ -119,13 +110,11 @@ function logon_update_password_cookie($logon, $password)
         }
 
         // New format cookies for 0.8 for better compatibility with more browsers.
-
         $username_cookie = implode(",", $username_array);
         $password_cookie = implode(",", $password_array);
         $passhash_cookie = implode(",", $passhash_array);
 
         // Set the cookies.
-
         bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
         bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
@@ -135,12 +124,10 @@ function logon_update_password_cookie($logon, $password)
 function logon_update_cookies($logon, $password, $passhash, $save_password, $auto_logon)
 {
     // Retrieve the existing cookies
-
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
     // Search for the specified logon in the existing cookies
     // and remove it if it's found.
-
     if (($key = array_isearch($logon, $username_array)) !== false) {
 
         unset($username_array[$key]);
@@ -149,18 +136,15 @@ function logon_update_cookies($logon, $password, $passhash, $save_password, $aut
     }
 
     // Add the new logon to the top of the list.
-
     array_unshift($username_array, $logon);
 
     // Check to see if we're saving the password
-
     if ($save_password === true) {
 
         array_unshift($password_array, $password);
         array_unshift($passhash_array, $passhash);
 
         // Set the auto logon cookie if required.
-
         if ($auto_logon === true) {
             bh_setcookie("bh_auto_logon", 'Y', time() + YEAR_IN_SECONDS);
         }
@@ -172,7 +156,6 @@ function logon_update_cookies($logon, $password, $passhash, $save_password, $aut
     }
 
     // Remove old format cookies
-
     while (list($key) = each($username_array)) {
 
         bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
@@ -181,13 +164,11 @@ function logon_update_cookies($logon, $password, $passhash, $save_password, $aut
     }
 
     // New format cookies for 0.8 for better compatibility with more browsers.
-
     $username_cookie = implode(",", $username_array);
     $password_cookie = implode(",", $password_array);
     $passhash_cookie = implode(",", $passhash_array);
 
     // Set the cookies.
-
     bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
     bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
     bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
@@ -198,7 +179,6 @@ function logon_perform()
     $webtag = get_webtag();
 
     // Check to see if the user is logging in as a guest or a normal user.
-
     if (isset($_POST['guest_logon'])) {
 
         if (user_guest_enabled()) {
@@ -217,22 +197,18 @@ function logon_perform()
     }else if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
         // Prepare the form data.
-
         $logon    = stripslashes_array($_POST['user_logon']);
         $password = stripslashes_array($_POST['user_password']);
 
         // Check if the user wants to save their password.
-
         $save_password = isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y');
 
         // Check if the user wants to automatically logon.
-
         $auto_logon = isset($_POST['auto_logon']) && ($_POST['auto_logon'] == 'Y');
 
         // Check the password submitted by the user. If it's a string
         // which isn't all spaces (trim will make it's length 0) then
         // use that, otherwise check the user_passhash cookie.
-
         if (strlen(trim($password)) > 0) {
 
             $passhash = md5($password);
@@ -252,11 +228,9 @@ function logon_perform()
 
         // Try and login the user. If we're successful we need to
         // update their cookies.
-
         if (($luid = user_logon($logon, $passhash))) {
 
             // Remove any previously set cookies
-
             if (forum_check_webtag_available($webtag)) {
 
                 bh_setcookie("bh_{$webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
@@ -266,11 +240,9 @@ function logon_perform()
             bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
-
             bh_session_init($luid);
 
             // Update the cookies.
-
             logon_update_cookies($logon, $password, $passhash, $save_password, $auto_logon);
 
             return true;
@@ -323,25 +295,20 @@ function logon_draw_form($logon_options)
     $webtag = get_webtag();
 
     // Make sure logon form argument is valid.
-
     if (!is_numeric($logon_options)) $logon_options = LOGON_FORM_DEFAULT;
 
     // Clean the logon cookie so we don't bounce to the logon screen.
-
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
     // Retrieve existing cookie data if any
-
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
     // If the user clicked the 'Other' button we need to
     // hide the logon dropdown and replace it with a normal
     // text field to allow them to type their username.
-
     $other_logon = (isset($_GET['other_logon']) || isset($_POST['other_logon'])) ? true : false;
 
     // Check for previously failed logon.
-
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
         html_display_success_msg($lang['youhavesuccessfullyloggedout'], '500', 'center');
     }else if (isset($_GET['logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
@@ -349,12 +316,10 @@ function logon_draw_form($logon_options)
     }
 
     // Get the original requested page url.
-
     $request_uri = get_request_uri();
 
     // If the request is for logon.php then we are performing
     // a normal login, otherwise potentially a failed session.
-
     if (stristr($request_uri, 'logon.php')) {
 
         echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
@@ -365,7 +330,6 @@ function logon_draw_form($logon_options)
     }
 
     // Check for any post data that we need to include in the form.
-
     logon_unset_post_data();
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {

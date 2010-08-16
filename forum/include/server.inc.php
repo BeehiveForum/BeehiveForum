@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -40,16 +39,14 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
 }
 
-
 /**
-* Detects server OS
+* server_os_mswin
 *
 * Checks to see if the server is running MS Windows.
 *
 * @return boolean
 * @param void
 */
-
 function server_os_mswin()
 {
     if (defined('PHP_OS')) {
@@ -64,7 +61,7 @@ function server_os_mswin()
 }
 
 /**
-* Fetch the current CPU load
+* server_get_cpu_load
 *
 * Fetches the current server CPU load. Returns a percentage on Win32 and the
 * result of /proc/loadavg on *nix.
@@ -72,7 +69,6 @@ function server_os_mswin()
 * @return mixed
 * @param void
 */
-
 function server_get_cpu_load()
 {
     $cpu_load  = 0;
@@ -111,14 +107,13 @@ function server_get_cpu_load()
 }
 
 /**
-* Fetch a list of available forum files
+* get_available_files
 *
 * Returns an array of Beehive Forum PHP files (forum path only)
 *
 * @return string
 * @param void
 */
-
 function get_available_files()
 {
     return array('admin.php', 'admin_banned.php',
@@ -176,14 +171,13 @@ function get_available_files()
 }
 
 /**
-* Fetch a list of files accessible from 'Admin' section.
+* get_available_admin_files
 *
 * Returns an array of Beehive Forum PHP files (forum path only)
 *
 * @return array
 * @param void
 */
-
 function get_available_admin_files()
 {
     return array('admin_banned.php', 'admin_default_forum_settings.php',
@@ -203,14 +197,13 @@ function get_available_admin_files()
 }
 
 /**
-* Fetch a list of files accessible from 'My Controls' section.
+* get_available_user_control_files
 *
 * Returns an array of Beehive Forum PHP files (forum path only)
 *
 * @return array
 * @param void
 */
-
 function get_available_user_control_files()
 {
     return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php',
@@ -220,14 +213,13 @@ function get_available_user_control_files()
 }
 
 /**
-* Fetch a list of files accessed via a Javascript popup.
+* get_available_js_popup_files_preg
 *
 * Returns a regular expression to match Beehive's available popups URLs.
 *
 * @return string
 * @param void
 */
-
 function get_available_js_popup_files_preg()
 {
     $popup_files_preg_array = array('^attachments\.php', '^dictionary\.php', '^display_emoticons\.php',
@@ -239,7 +231,7 @@ function get_available_js_popup_files_preg()
 }
 
 /**
-* Fetch a list of files that handle fonts and stats support.
+* get_available_support_files
 *
 * Returns an array of Beehive Forum PHP files that are used to
 * change font size, toggle stats display, etc.
@@ -247,7 +239,6 @@ function get_available_js_popup_files_preg()
 * @return array
 * @param void
 */
-
 function get_available_support_files()
 {
     return array('font_size.php', 'user_font.php', 'user_stats.php');
@@ -272,16 +263,15 @@ function get_proxy_cache_headers()
 }
 
 /**
-* Create a directory structure from a path.
+* mkdir_recursive
 *
 * Checks for the existance of a directory structure and creates the path
 * if it doesn't exist.
 *
-* @return boolean
-* @param string $path_name - Path to create
-* @param integer $mode - Mode (chmod) of the directory.
+* @param string $path_name
+* @param integer $mode
+* @return bool
 */
-
 function mkdir_recursive($path_name, $mode)
 {
     if (!@is_dir(dirname($path_name))) mkdir_recursive(dirname($path_name), $mode);
@@ -290,48 +280,80 @@ function mkdir_recursive($path_name, $mode)
 }
 
 /**
-* Recursive directory removal.
+* rmdir_recursive
 *
 * Removes a directory and all the files it contains.
 *
-* @return boolean
-* @param string $pathname - Path to create
+* @param string $path
+* @return bool
 */
-
 function rmdir_recursive($path)
 {
     $path = rtrim($path, '/');
 
-    if ((@$dir = opendir($path))) {
+    if (!(@$dir = opendir($path))) return false;
 
-        while (($file = readdir($dir)) !== false) {
+    while (($file = readdir($dir)) !== false) {
 
-            if (@is_file("$path/$file") && !@is_link("$path/$file")) {
+        if (@is_file("$path/$file") && !@is_link("$path/$file")) {
 
-                unlink("$path/$file");
+            unlink("$path/$file");
 
-            }elseif (@is_dir("$path/$file") && $file != '.' && $file != '..') {
+        }elseif (@is_dir("$path/$file") && $file != '.' && $file != '..') {
 
-                rmdir_recursive("$path/$file");
-            }
+            if (!rmdir_recursive("$path/$file")) return false;
         }
-
-        closedir($dir);
     }
+    
+    closedir($dir);
 
-    @rmdir($path);
+    if (!@rmdir($path)) return false;
+    
+    return true;    
 }
 
 /**
-* Unregister Global variables.
+* copy_recursive
+* 
+* Copy a directory recursively from source to dest.
+* 
+* @param mixed $source
+* @param mixed $dest
+* @return bool.
+*/
+function copy_recursive($source, $dest)
+{
+    $source = rtrim($source, '/');
+    
+    $dest = rtrim($dest, '/');
+    
+    if (!($dir = @opendir($source))) return false;
+    
+    @mkdir_recursive($dest);
+    
+    while (($file = readdir($dir)) !== false) {
+        
+        if ($file == '.' || $file == '..') continue;
+            
+        if (is_dir("$source/$file")) {
+            copy_recursive("$source/$file", "$dest/$file");
+        } else {
+            copy("$source/$file", "$dest/$file");
+        }
+    }
+    
+    closedir($dir);
+} 
+
+/**
+* unregister_globals
 *
-* Undoes PHP's register_globals support by iterating through the $GLOBALS array
+* Unregister PHP's global variables by iterating through the $GLOBALS array
 * and removing all REQUEST (inc. GET and POST), SESSION, SERVER, ENV, FILES.
 *
-* @return boolean
 * @param string $pathname - Path to create
+* @return boolean
 */
-
 function unregister_globals()
 {
     if (ini_get('register_globals')) {

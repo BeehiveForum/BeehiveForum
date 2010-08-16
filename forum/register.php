@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -102,7 +88,6 @@ include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Where are we going after we've logged on?
-
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
     
     $available_files = get_available_files();
@@ -114,11 +99,9 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }
 
 // Load the user session
-
 $user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -126,15 +109,12 @@ if (bh_session_user_banned()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Make sure we have a webtag
-
 $webtag = get_webtag();
 
 // check to see if user registration is available
-
 if (forum_get_setting('allow_new_registrations', 'N')) {
 
     html_draw_top("title={$lang['error']}");
@@ -144,43 +124,34 @@ if (forum_get_setting('allow_new_registrations', 'N')) {
 }
 
 // Get an array of available emoticon sets
-
 $available_emoticons = emoticons_get_available();
 
 // Get an array of available languages
-
 $available_langs = lang_get_available();
 
 // Get an array of available timezones.
-
 $available_timezones = get_available_timezones();
 
 // Initialise the text captcha
-
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Top frame target
-
 $frame_top_target = html_get_top_frame_name();
 
 // Check to see if Forum Rules are enabled.
-
 if (isset($_GET['reload_captcha'])) {
 
     if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
 
         // Construct array to send as JSON response.
-
         $text_captcha_data = array('image' => $text_captcha->get_image_filename(),
                                    'chars' => $text_captcha->get_num_chars(),
                                    'key'   => $text_captcha->get_public_key());
 
         // Outputting JSON
-
         header('Content-type: application/json; charset=UTF-8', true);
 
         echo json_encode($text_captcha_data);
@@ -501,45 +472,36 @@ if (isset($_POST['register'])) {
         if (($new_uid = user_create($logon, $password, $nickname, $email))) {
 
             // Save the new user preferences and signature
-
             user_update_prefs($new_uid, $new_user_prefs, $new_user_prefs_global);
             user_update_sig($new_uid, $sig_content, $sig_html);
 
             // Initialise the new user session.
-
             bh_session_init($new_uid);
 
             // Check if the user wants to save their password.
-
             $save_password = isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y');
 
             // Generate the MD5 checksum of the user's password for saving in their cookie.
-
             $passhash = md5($password);
             $password = str_repeat(chr(32), mb_strlen($password));
 
             // Update the cookies.
-
             logon_update_cookies($logon, $password, $passhash, $save_password, false);
 
             // Check to see if the user is going somewhere after they have registered.
-
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
 
             // If User Confirmation is enabled send the forum owners an email.
-
             if (forum_get_setting('require_user_approval', 'Y')) {
                 admin_send_user_approval_notification();
             }
 
             // If New User Notification is enabled send the forum owners an email.
-
             if (forum_get_setting('send_new_user_email', 'Y')) {
                 admin_send_new_user_notification($new_uid);
             }
 
             // Display final success / confirmation page.
-
             if (forum_get_setting('require_email_confirmation', 'Y')) {
 
                 if (email_send_user_confirmation($new_uid)) {

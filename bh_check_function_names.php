@@ -24,30 +24,24 @@ USA
 /* $Id: bh_check_function_names.php 4448 2010-05-03 14:17:05Z decoyduck $ */
 
 // Callback function to escape array of strings.
-
 function preg_quote_callback($str)
 {
     return preg_quote($str, "/");
 }
 
 // Array to hold source files
-
 $source_files_array = array();
 
 // Path to source files.
-
 $source_files_dir_array = array('forum\include');
 
 // Ignore these files
-
 $ignore_files_array = array('dictionary.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'zip_lib.inc.php');
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 echo "Getting list of functions...\n";

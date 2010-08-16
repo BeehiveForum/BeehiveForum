@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -96,18 +82,15 @@ include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -115,7 +98,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -123,18 +105,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -147,11 +126,9 @@ if (user_is_guest()) {
 }
 
 // Array to store error messages.
-
 $error_msg_array = array();
 
 // User pressed Save button
-
 if (isset($_POST['save'])) {
 
     $valid = true;
@@ -180,7 +157,6 @@ if (isset($_POST['save'])) {
 }
 
 // Page links.
-
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
     $main_page = $_GET['main_page'];
     $start_main = floor($main_page - 1) * 20;
@@ -193,7 +169,6 @@ if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
 }
 
 // Search links.
-
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $search_page = $_GET['search_page'];
     $start_search = floor($search_page - 1) * 20;
@@ -206,7 +181,6 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 }
 
 // Thread search keywords.
-
 if (isset($_GET['thread_search']) && strlen(trim(stripslashes_array($_GET['thread_search']))) > 0) {
     $thread_search = trim(stripslashes_array($_GET['thread_search']));
 }else if (isset($_POST['thread_search']) && strlen(trim(stripslashes_array($_POST['thread_search']))) > 0) {
@@ -216,7 +190,6 @@ if (isset($_GET['thread_search']) && strlen(trim(stripslashes_array($_GET['threa
 }
 
 // View filter
-
 if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
     $view_filter = $_GET['view_filter'];
 }else if (isset($_POST['view_filter']) && is_numeric($_POST['view_filter'])) {
@@ -226,23 +199,19 @@ if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
 }
 
 // Clear search?
-
 if (isset($_POST['clear'])) {
     $thread_search = "";
 }
 
 // User UID
-
 $uid = bh_session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
-
 $header_text_array = array(THREAD_IGNORED => $lang['ignoredthreads'], THREAD_INTERESTED => $lang['highinterestthreads'], THREAD_SUBSCRIBED => $lang['subscribedthreads']);
 
 $interest_level_array = array(THREAD_IGNORED => $lang['ignored'], THREAD_INTERESTED  => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribe']);
 
 // Check if we're searching or displaying the existing subscriptions.
-
 if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
     $thread_subscriptions = threads_search_user_subscriptions($thread_search, $view_filter, $start_search);
 }else {
@@ -250,10 +219,9 @@ if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
 }
 
 // Start output here
-
 html_draw_top("title={$lang['mycontrols']} - {$lang['threadsubscriptions']}", 'edit_subscriptions.js', 'class=window_title');
 
-echo "<h1>{$lang['threadsubscriptions']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$header_text_array[$view_filter]}</h1>\n";
+echo "<h1>{$lang['threadsubscriptions']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$header_text_array[$view_filter]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

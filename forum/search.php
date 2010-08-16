@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -99,24 +85,20 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Open Search support (FireFox 2.0+, IE7+ etc.)
-
 if (isset($_GET['opensearch'])) {
     search_output_opensearch_xml();
 }
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -124,7 +106,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -132,18 +113,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -191,7 +169,6 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 }
 
 // Drop down date from options
-
 $search_date_from_array = array(SEARCH_FROM_TODAY             => $lang['today'],
                                 SEARCH_FROM_YESTERDAY         => $lang['yesterday'],
                                 SEARCH_FROM_DAYBEFORE         => $lang['daybeforeyesterday'],
@@ -206,7 +183,6 @@ $search_date_from_array = array(SEARCH_FROM_TODAY             => $lang['today'],
                                 SEARCH_FROM_BEGINNING_OF_TIME => $lang['beginningoftime']);
 
 // Drop down date to options
-
 $search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
                               SEARCH_TO_TODAY            => $lang['today'],
                               SEARCH_TO_YESTERDAY        => $lang['yesterday'],
@@ -221,7 +197,6 @@ $search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
                               SEARCH_TO_ONE_YEAR_AGO     => sprintf($lang['yearago'], 1));
 
 // Drop down sort by options
-
 $search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
                               SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'],
                               SEARCH_SORT_FOLDER_NAME => $lang['foldername'],
@@ -229,12 +204,10 @@ $search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
                               SEARCH_SORT_RELEVANCE   => $lang['relevancy']);
 
 // Drop down sort dir options
-
 $search_sort_dir_array = array(SEARCH_SORT_ASC  => $lang['ascendingorder'],
                                SEARCH_SORT_DESC => $lang['decendingorder']);
 
 // Get a list of available folders.
-
 if (!$folder_dropdown = folder_search_dropdown($search_folder_fid)) {
 
     html_draw_top();
@@ -506,7 +479,6 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
 
                     // Limit thread title to 20 characters.
-
                     if (mb_strlen($message['TITLE']) > 20) {
                         $message['TITLE'] = word_filter_add_ob_tags(mb_substr(htmlentities_array($message['TITLE']), 0, 20)). "&hellip;";
                     }else {
@@ -514,7 +486,6 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     }
 
                     // Limit displayed post content to 35 characters
-
                     if (mb_strlen($message['CONTENT']) > 35) {
                         $message['CONTENT'] = word_filter_add_ob_tags(mb_substr($message['CONTENT'], 0, 35)). "&hellip;";
                     }else {

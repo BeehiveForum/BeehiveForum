@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -114,7 +113,6 @@ function format_file_size($size)
 function format_time($time, $verbose = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
-
     $lang = load_language_file();
 
     if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
@@ -134,12 +132,10 @@ function format_time($time, $verbose = false)
     }
 
     // Calculate $time in local timezone and current local time
-
     $local_time = $time + ($gmt_offset * HOUR_IN_SECONDS);
     $local_time_now = time() + ($gmt_offset * HOUR_IN_SECONDS);
 
     // Amend times for daylight saving if necessary
-
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
 
         $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
@@ -147,12 +143,10 @@ function format_time($time, $verbose = false)
     }
 
     // Get the numerical for the dates to convert
-
     $date_string = gmdate("i G j n Y", $local_time);
     list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
 
     // We only ever use the month as a string
-
     $month_str = $lang['month_short'][$month];
 
     if (($year != gmdate("Y", $local_time_now))) {
@@ -216,12 +210,10 @@ function format_date($time)
     }
 
     // Calculate $time in local timezone and current local time
-
     $local_time = $time + ($gmt_offset * HOUR_IN_SECONDS);
     $local_time_now = time() + ($gmt_offset * HOUR_IN_SECONDS);
 
     // Amend times for daylight saving if necessary
-
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
 
         $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
@@ -229,18 +221,15 @@ function format_date($time)
     }
 
     // Get the numerical for the dates to convert
-
     $date_string = gmdate("j n Y", $local_time);
     list($day, $month, $year) = explode(" ", $date_string);
 
     // We only ever use the month as a string
-
     $month_str = $lang['month_short'][$month];
 
     if (($year != gmdate("Y", $local_time_now))) {
 
         $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
-
     }else {
 
         $fmt = sprintf($lang['daymonth'], $day, $month_str); // j M
@@ -750,7 +739,6 @@ function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = 
         if (!isset($url_parts['host'])) return false;
 
         $url_split = "{$url_parts['scheme']}://{$url_parts['host']}/";
-
         if ($inc_path === true) $url_split.= "{$url_parts['path']}";
         if ($inc_query === true) $url_split.= "{$url_parts['query']}";
         if ($inc_fragment === true) $url_split.= "{$url_parts['fragment']}";

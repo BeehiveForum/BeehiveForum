@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
@@ -89,30 +75,24 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Get the real path to the forum
-
 $forum_path = preg_replace('/\/get_attachment\.php\/[A-Fa-f0-9]{32}/iu', "", html_get_forum_uri());
 
 // Default to no redirect
-
 $redirect = false;
 
 // Get the attachment hash
-
 $hash = attachments_get_url_query_hash($redirect);
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = "get_attachment.php%3Fwebtag%3D$webtag%26hash%3D$hash";
     header_redirect("$forum_path/logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -120,7 +100,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -128,25 +107,21 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Check to see if attachments are actually enabled
-
 if (forum_get_setting('attachments_enabled', 'N')) {
 
     html_draw_top();
@@ -156,7 +131,6 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 }
 
 // If the attachments directory is undefined we can't go any further
-
 if (!$attachment_dir = attachments_check_dir()) {
 
     html_draw_top();
@@ -166,7 +140,6 @@ if (!$attachment_dir = attachments_check_dir()) {
 }
 
 // Get the array of allowed attachment mime-types
-
 $attachment_mime_types = attachments_get_mime_types();
 
 // Check to see which method we are using to fetch the attachment.
@@ -179,17 +152,14 @@ $attachment_mime_types = attachments_get_mime_types();
 // by fooling the browser into thinking it is downloading the
 // file directly however this doesn't work with all webservers
 // hence the option to disable it.
-
 if (isset($hash) && is_md5($hash)) {
 
     // Get the attachment details.
-
     if (($attachment_details = attachments_get_by_hash($hash))) {
 
         // If we're requesting an image attachment thumbnail then
         // we need to append .thumb to the filepath. If we're getting
         // the full image we increase the view count by one.
-
         if (isset($_GET['thumb']) && forum_get_setting('attachment_thumbnails', 'Y')) {
 
             $filepath = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
@@ -199,12 +169,10 @@ if (isset($hash) && is_md5($hash)) {
             if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
 
                 // Construct the attachment filepath.
-
                 $filepath = "{$attachment_dir}/{$attachment_details['hash']}";
 
                 // Increment the view count only if the attachment
                 // isn't being used as an avatar or profile picture.
-
                 if (!isset($_GET['profile_picture']) && !isset($_GET['avatar_picture'])) {
                     attachments_inc_download_count($hash);
                 }
@@ -212,23 +180,18 @@ if (isset($hash) && is_md5($hash)) {
         }
 
         // Check the mimetype is allowed.
-
         if (sizeof($attachment_mime_types) == 0 || in_array($attachment_details['mimetype'], $attachment_mime_types)) {
 
             // Use the filename quite a few times, so assign it to a variable to save some time.
-
             $filename = rawurldecode(basename($attachment_details['filename']));
 
             // Check the filepath is set and exists.
-
             if (isset($filepath) && @file_exists($filepath)) {
 
                 // Filesize for Content-Length header.
-
                 $length = filesize($filepath);
 
                 // Are we viewing or downloading the attachment?
-
                 if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
                     header("Content-Type: application/x-ms-download", true);
                 }else {
@@ -239,7 +202,6 @@ if (isset($hash) && is_md5($hash)) {
                 // in PHP CGI Mode. We need to do this check as
                 // we need to modify the HTTP Response header
                 // which is not permitted under PHP CGI Mode.
-
                 if (preg_match('/cgi/u', php_sapi_name()) < 1) {
 
                     // Etag Header for cache control

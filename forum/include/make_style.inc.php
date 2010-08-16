@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -66,11 +65,9 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
     if (!forum_check_webtag_available($webtag)) return false;
 
     // Check for invalid filename
-
     if (preg_match("/^[a-z0-9_]+$/Diu", $style_name) < 1) return false;
 
     // Check to see if the style name is already in use globally.
-
     if (@file_exists("styles/$style_name/style.css")) {
 
         $error = STYLE_ALREADY_EXISTS;
@@ -78,11 +75,9 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
     }
 
     // Check that the directory structure exists
-
     mkdir_recursive("styles/$style_name", 0755);
 
     // Save the style desc.txt file
-
     if (@file_put_contents("styles/$style_name/desc.txt", $style_desc)) {
 
         if (@file_put_contents("styles/$style_name/style.css", $content)) {
@@ -92,17 +87,14 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
     }
 
     // Undo the mkdir_recursive call above.
-
     rmdir_recursive("styles/$style_name");
 
     // And we're out of here ...
-
     $error = STYLE_WRITE_ERROR;
     return false;
 }
 
 // Function to convert decimal RGB values to their Hex equivelent.
-
 function decToHex ($r, $g, $b)
 {
     return (str_pad(dechex($r), 2, '0', STR_PAD_RIGHT).
@@ -112,7 +104,6 @@ function decToHex ($r, $g, $b)
 
 
 // Function to convert Hex colour value to decimal RGB components
-
 function hexToDec ($rgb)
 {
 
@@ -185,7 +176,6 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
 }
 
 // Random number shiznit
-
 function rand_sort()
 {
     return (mt_rand(0, 1));
@@ -194,7 +184,6 @@ function rand_sort()
 // calculates the luminance, saturation and hue of a supplied
 // background colour and uses the data to chooses between white
 // or black for the font colour of the supplied.
-
 function contrastFont($hex)
 {
 

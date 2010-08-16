@@ -24,7 +24,6 @@ USA
 /* $Id$ */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -417,15 +416,12 @@ function html_get_forum_email()
 function html_get_frame_name($basename)
 {
     // Forum URL
-
     $forum_uri = html_get_forum_uri();
 
     // Get the webtag
-
     $webtag = get_webtag();
 
     // If webtag available add that to the hash.
-
     if (forum_check_webtag_available($webtag)) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
@@ -433,7 +429,6 @@ function html_get_frame_name($basename)
     }
 
     // No webtag just use forum URL and frame basename.
-
     $frame_md5_hash = md5(sprintf('%s-%s', $forum_uri, $basename));
     return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));
 }
@@ -546,7 +541,6 @@ function html_include_css($script_filepath, $id = false, $media = 'screen')
 // ====================================================================*/
 //
 //      Stuck? Any questions? Ask Matt.
-
 
 function html_draw_top()
 {
@@ -664,12 +658,10 @@ function html_draw_top()
     if (!isset($resize_width)) $resize_width = 0;
     
     // Default Meta keywords and description.
-    
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
 
     // Get the page meta keywords and description
-    
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
     }    
@@ -767,7 +759,6 @@ function html_draw_top()
     html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     // Font size (not for Guests)
-
     if (!user_is_guest()) {
         
         $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
@@ -783,15 +774,12 @@ function html_draw_top()
     if ($frame_set_html === false) {
 
         // Check for any new PMs.
-
         if (!user_is_guest()) {
 
             // Check to see if the PM popup is disabled on the current page.
-
             if ($pm_popup_disabled === false) {
 
                 // Pages we don't want the popup to appear on
-
                 $pm_popup_disabled_pages = array('admin.php', 'attachments.php', 'change_pw.php',
                                                  'confirm_email.php', 'dictionary.php', 'discussion.php',
                                                  'display_emoticons.php', 'edit_attachments.php', 'email.php',
@@ -804,14 +792,12 @@ function html_draw_top()
                                                  'user_stats.php');
 
                 // Check that we're not on one of the pages.
-
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
                     html_include_javascript(html_get_forum_file_path('js/pm.js'));
                 }
             }
 
             // Overflow auto-resize functionality.
-
             $resize_images_page = array('admin_post_approve.php', 'create_poll.php',
                                         'delete.php', 'display.php', 'edit.php',
                                         'edit_poll.php', 'edit_signature.php',
@@ -827,7 +813,6 @@ function html_draw_top()
             }
 
             // Mouseover spoiler pages
-
             $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
                                            'delete.php', 'display.php', 'edit.php',
                                            'edit_poll.php', 'edit_signature.php',
@@ -844,7 +829,6 @@ function html_draw_top()
         }
 
         // Stats Display pages
-
         $stats_display_pages = array('messages.php');
 
         if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
@@ -1114,28 +1098,22 @@ function html_get_google_analytics_code()
 function html_output_adsense_settings()
 {
     // Check the required settings!
-
     if (($adsense_publisher_id = adsense_publisher_id())) {
 
         // No idea what format the client ID should be in
         // So we'll just assume it's right if it's a non-empty string.
-
         if (strlen(trim($adsense_publisher_id)) > 0) {
 
             // Default banner size and type
-
             $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
 
             // Get banner size and type
-
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
 
             // Get the slot id from the forum settings.
-
             $ad_slot_id = adsense_slot_id($ad_type);
 
             // Output the settings Javascript.
-
             echo "<script type=\"text/javascript\">\n";
             echo "<!--\n\n";
             echo "google_ad_client = \"$adsense_publisher_id\";\n";
@@ -1182,19 +1160,15 @@ function bh_setcookie($name, $value, $expires = 0)
     // Some versions of Opera don''t play well with cookie restrictions.
     // Because we don't have an exhaustive list of which don't work,
     // we disable cookie domain and path for them.
-
     // If we're also on Light mode we disable by default.
-
     if (!defined('BEEHIVEMODE_LIGHT') && !browser_check(BROWSER_OPERA)) {
 
         // Set the defaults.
-
         $cookie_domain = html_get_server_addr(true, false, false);
         $cookie_path = '/';
 
         // Try and parse the cookie_domain config.inc.php setting.
         // Only set the path if we can also get the hostname.
-
         if (($cookie_domain_array = @parse_url($cookie_domain))) {
 
             if (isset($cookie_domain_array['host'])) {
@@ -1244,7 +1218,6 @@ function bh_remove_all_cookies()
 
 // Remove named $keys from the query of a URI
 // $keys can be an array or a single key to remove
-
 function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;")
 {
     $uri_array = parse_url($uri);
@@ -1298,7 +1271,6 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
 }
 
 // Draws Page links (i.e.: Pages: [1] 2 3 4 ... >>)
-
 function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
 {
     $lang = load_language_file();

@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -88,18 +74,15 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Get the webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -107,7 +90,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -115,11 +97,9 @@ if (!bh_session_user_approved()) {
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // User clicked Cancel so we send them to the My Forums page.
-
 if (isset($_POST['cancel'])) {
 
     $redirect_uri = "index.php?webtag=$webtag&final_uri=forums.php%3Fwebtag%3D$webtag";
@@ -127,12 +107,10 @@ if (isset($_POST['cancel'])) {
 }
 
 // By default we have no password
-
 $forum_passhash = "";
 $forum_password = "";
 
 // Check we have the password in the POST data
-
 if (isset($_POST['forum_password'])) {
 
     $forum_password = stripslashes_array($_POST['forum_password']);
@@ -156,7 +134,6 @@ if (isset($_POST['forum_password'])) {
 }
 
 // Check for a returning page.
-
 if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_uri']))) > 0) {
 
     $final_uri = basename(trim(stripslashes_array($_POST['final_uri'])));
@@ -168,7 +145,6 @@ if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_u
 }
 
 // Validate the return to page
-
 if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 
     $available_files = get_available_files();
@@ -183,7 +159,6 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 // The check will be automatically be done again
 // and if the password matches they'll be able to
 // access the forum.
-
 if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
 
     bh_setcookie("bh_{$webtag}_password", $forum_password, time() + YEAR_IN_SECONDS);
@@ -197,11 +172,9 @@ if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
 
 // Log the user into the forum by setting a session cookie
 // containing the forum's password as an MD5 hash.
-
 bh_setcookie("bh_{$webtag}_sesshash", $forum_passhash);
 
 // Redirect the user back to where they came from.
-
 header_redirect($redirect_uri);
 
 ?>

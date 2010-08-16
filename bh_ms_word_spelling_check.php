@@ -26,17 +26,14 @@ USA
 function word_spell_check($matches)
 {
     // Our Word COM Object
-
     global $word_obj;
 
     // Our string to check
-
     $string_check = trim($matches[1]);
 
     echo "Checking: $string_check...\n";
 
     // Create new document and paste in string.
-
     $word_obj->Visible = 1;
     $word_obj->Documents->Add();
     $word_obj->Selection->TypeText($string_check);
@@ -61,19 +58,15 @@ function word_spell_check($matches)
 }
 
 // Prevent time out
-
 set_time_limit(0);
 
 // Output the content as text.
-
 header('Content-Type: text/plain');
 
 // Initialise new Word COM object
-
 $word_obj = new COM("word.application");
 
 // Load the language file.
-
 if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
     if (($fp = fopen('./forum/include/languages/en-new.inc.php', 'w'))) {

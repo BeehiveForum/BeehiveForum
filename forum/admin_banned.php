@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
@@ -102,18 +88,15 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -121,14 +104,12 @@ if (bh_session_user_banned()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
@@ -140,7 +121,6 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 // Column sorting stuff
-
 if (isset($_GET['sort_by'])) {
     if ($_GET['sort_by'] == "BANTYPE") {
         $sort_by = "BANTYPE";
@@ -177,15 +157,12 @@ $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
 // Form Validation
-
 $valid = true;
 
 // Array to hold error messages
-
 $error_msg_array = array();
 
 // Constant translation of adding and removing bans to log entries and string display for Ban Type column.
-
 $admin_log_add_types = array(BAN_TYPE_IP    => ADD_BANNED_IP,
                              BAN_TYPE_LOGON => ADD_BANNED_LOGON,
                              BAN_TYPE_NICK  => ADD_BANNED_NICKNAME,
@@ -212,7 +189,6 @@ $ban_types_list_array = array(BAN_TYPE_IP    => $lang['ipban'],
                               BAN_TYPE_REF   => $lang['refererban']);
 
 // Are we returning somewhere?
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
@@ -224,7 +200,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // validate the return to page
-
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array('admin_user.php', 'admin_users.php', 'admin_visitor_log.php', 'messages.php');
@@ -236,7 +211,6 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
 }
 
 // Cancel button has been pressed.
-
 if (isset($_POST['cancel'])) {
 
     header_redirect($ret);
@@ -244,7 +218,6 @@ if (isset($_POST['cancel'])) {
 }
 
 // Delete existing ban entry
-
 if (isset($_POST['delete'])) {
 
     $valid = true;
@@ -276,7 +249,6 @@ if (isset($_POST['delete'])) {
 }
 
 // Is there an URL query to process?
-
 if (isset($_GET['ban_ipaddress']) && strlen(trim(stripslashes_array($_GET['ban_ipaddress']))) > 0) {
 
     $add_new_ban_type = BAN_TYPE_IP;
@@ -541,7 +513,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     html_draw_top("title={$lang['error']}");
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['bancontrols']}</h1>\n";
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
         $add_new_ban_type = $_POST['newbantype'];
@@ -714,7 +686,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     html_draw_top("title={$lang['admin']} - {$lang['bancontrols']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['bancontrols']}</h1>\n";
 
     if (isset($_POST['edit_check'])) {
 
@@ -860,7 +832,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
 
-    echo "<h1>{$lang['admin']} <img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /> {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['bancontrols']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

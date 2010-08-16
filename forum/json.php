@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -85,31 +71,25 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Don't cache this page
-
 cache_disable();
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Start User Session.
-
 $user_sess = bh_session_check();
 
 // User font size
-
 if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 
 // User style
-
 if (($user_style = bh_session_get_value('STYLE')) === false) {
     $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style', false, 'default'));
 }
 
 // Look for autocomplete search request
-
 if (isset($_GET['search'])) {
     
     $search_results_array = array();
@@ -129,13 +109,11 @@ if (isset($_GET['search'])) {
 } else {
 
     // Load the language file.
-
     $lang = load_language_file();
 
     // Required language strings. Add here the keys
     // of the required language strings to be returned
     // as the JSON response.
-
     $lang_required = array('fixhtmlexplanation',
                            'imageresized',
                            'deletemessagesconfirmation',
@@ -146,7 +124,6 @@ if (isset($_GET['search'])) {
                            'waitdotdotdot');
                            
     // Construct the Javascript / JSON array
-
     $json_data = array('webtag'     => $webtag,
                        'uid'        => bh_session_get_value('UID'),
                        'lang'       => array_intersect_key($lang, array_flip($lang_required)),
@@ -171,7 +148,6 @@ if (isset($_GET['search'])) {
 
 
     // Get all the styles images.
-    
     if (($images_array = glob("styles/$user_style/images/*.png"))) {
     
         foreach ($images_array as $image_filename) {
@@ -183,15 +159,12 @@ if (isset($_GET['search'])) {
 
     // If the data is requested via JSON send the 
     // correct header and content.
-
     if (isset($_GET['json'])) {                       
 
         // JSON header
-
         header('Content-type: application/json; charset=UTF-8', true);
 
         // Output the JSON data.
-
         echo json_encode($json_data);
 
     } else {

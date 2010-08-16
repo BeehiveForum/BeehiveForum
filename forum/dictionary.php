@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -91,18 +77,15 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Get Webtag
-
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -110,7 +93,6 @@ if (bh_session_user_banned()) {
 }
 
 // Check to see if the user has been approved.
-
 if (!bh_session_user_approved()) {
 
     html_user_require_approval();
@@ -118,18 +100,15 @@ if (!bh_session_user_approved()) {
 }
 
 // Check we have a webtag
-
 if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
-
 $lang = load_language_file();
 
 // Check that we have access to this forum
-
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
@@ -142,7 +121,6 @@ if (user_is_guest()) {
 }
 
 // Form Object ID
-
 if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
 
     $obj_id = trim(stripslashes_array($_POST['obj_id']));
@@ -160,7 +138,6 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 }
 
 // Form content
-
 if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']))) > 0) {
 
     $t_content = trim(stripslashes_array($_POST['content']));
@@ -169,7 +146,6 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
 
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
-
     html_draw_top("title={$lang['dictionary']}", 'dictionary.js', 'pm_popup_disabled', 'class=window_title');
 
     echo "<form accept-charset=\"utf-8\" id=\"dictionary_init\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
@@ -183,7 +159,6 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
 }
 
 // Ignored words
-
 if (isset($_POST['ignored_words']) && is_array($_POST['ignored_words'])) {
     $t_ignored_words = stripslashes_array($_POST['ignored_words']);
 }else {
@@ -191,7 +166,6 @@ if (isset($_POST['ignored_words']) && is_array($_POST['ignored_words'])) {
 }
 
 // Fetch the current word
-
 if (isset($_POST['current_word']) && is_numeric($_POST['current_word'])) {
     $current_word = $_POST['current_word'];
 }else {
@@ -205,7 +179,6 @@ if (isset($_POST['offset_match']) && is_numeric($_POST['offset_match'])) {
 }
 
 // Restart the spell check
-
 if (isset($_POST['restart'])) {
 
     $current_word = -1;
@@ -214,11 +187,9 @@ if (isset($_POST['restart'])) {
 }
 
 // New instance of the dictionary
-
 $dictionary = new dictionary();
 
 // Check it's installed
-
 if (!$dictionary->is_installed()) {
 
     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
@@ -228,22 +199,18 @@ if (!$dictionary->is_installed()) {
 }
 
 // Initialise it
-
 $dictionary->initialise($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
 
 // Check for submit
-
 if (isset($_POST['ignoreall'])) {
 
     // User wants to ignore all references to the current word
-
     $dictionary->add_ignored_word($dictionary->get_current_word());
     $dictionary->find_next_word();
 
 }else if (isset($_POST['add'])) {
 
     // User wants to add the current word to his dictionary
-
     if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
 
         $t_custom_word = trim(stripslashes_array($_POST['word']));
@@ -255,7 +222,6 @@ if (isset($_POST['ignoreall'])) {
 }else if (isset($_POST['change'])) {
 
     // User has selected to change the current word
-
     if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
 
          $t_change_to = trim(stripslashes_array($_POST['change_to']));
@@ -267,7 +233,6 @@ if (isset($_POST['ignoreall'])) {
 }else if (isset($_POST['changeall'])) {
 
     // User has selected to change the current word
-
     if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
 
          $t_change_to = trim(stripslashes_array($_POST['change_to']));
@@ -279,13 +244,11 @@ if (isset($_POST['ignoreall'])) {
 }elseif (isset($_POST['suggest'])) {
 
     // Get more suggestions for the current word
-
     $dictionary->get_more_suggestions();
 
 }else {
 
     // We're moving to the next word;
-
     $dictionary->find_next_word();
 }
 

@@ -34,7 +34,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -186,7 +185,6 @@ function adsense_output_html()
             echo "<div class=\"google_adsense_container\" style=\"width: 100%; text-align: center\">\n";
             echo "  <div style=\"width: {$ad_width}px; margin: auto\">\n";
             echo "    <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
-
             if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
                 echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
             }

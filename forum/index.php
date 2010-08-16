@@ -24,59 +24,45 @@ USA
 /* $Id$ */
 
 // Set the default timezone
-
 date_default_timezone_set('UTC');
 
 // Constant to define where the include files are
-
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Caching functions
-
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 
 // Disable PHP's register_globals
-
 unregister_globals();
 
 // Disable caching if on AOL
-
 cache_disable_aol();
 
 // Disable caching if proxy server detected.
-
 cache_disable_proxy();
 
 // Compress the output
-
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
-
 check_install();
 
 // Multiple forum support
-
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch Forum Settings
-
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
@@ -92,23 +78,18 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Embedded light mode in this script.
-
 define('BEEHIVE_LIGHT_INCLUDE', true);
 
 // Don't cache this page - fixes problems with Opera.
-
 cache_disable();
 
 // See if we can try and logon automatically
-
 logon_perform_auto();
 
 // Start user session
-
 $user_sess = bh_session_check(false, false);
 
 // Check to see if the user is banned.
-
 if (bh_session_user_banned()) {
 
     html_user_banned();
@@ -116,15 +97,12 @@ if (bh_session_user_banned()) {
 }
 
 // Get webtag
-
 $webtag = get_webtag();
 
 // Check the webtag is valid. Don't redirect.
-
 forum_check_webtag_available($webtag);
 
 // Check for login failure.
-
 if (isset($_GET['logon_failed'])) {
     $logon_failed = '&amp;logon_failed=true';
 }else {
@@ -132,7 +110,6 @@ if (isset($_GET['logon_failed'])) {
 }
 
 // Check for log out notification.
-
 if (isset($_GET['logout_success'])) {
     $logout_success = '&amp;logout_success=true';
 }else {
@@ -140,7 +117,6 @@ if (isset($_GET['logout_success'])) {
 }
 
 // Check for other logon button click
-
 if (isset($_GET['other_logon'])) {
     $other_logon = '&amp;other_logon=true';
 }else {
@@ -148,23 +124,18 @@ if (isset($_GET['other_logon'])) {
 }
 
 // Check to see if the user is trying to change their password.
-
 $skip_logon_page = false;
 
 // Check to see if noframes URL query specified
-
 light_mode_check_noframes();
 
 // Load language file
-
 $lang = load_language_file();
 
 // Top frame filename
-
 $top_html = html_get_top_page();
 
 // Are we being redirected somewhere?
-
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
     $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
@@ -201,11 +172,9 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }
 
 // Output starts here
-
 html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
 // If user has requested password change show the form instead of the logon page.
-
 if ($skip_logon_page === true) {
 
     $frameset = new html_frameset_rows('index', "60,22,*");
@@ -217,7 +186,6 @@ if ($skip_logon_page === true) {
 }else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
 
     // Display the logon page.
-
     if (isset($final_uri) && strlen($final_uri) > 0) {
 
         $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
@@ -248,12 +216,10 @@ if ($skip_logon_page === true) {
     $user_sess = bh_session_check(false);
 
     // Calculate how tall the nav frameset should be based on the user's fontsize.
-
     $navsize = bh_session_get_value('FONT_SIZE');
     $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
     // Check for Forum webtag.
-
     if (forum_check_webtag_available($webtag)) {
 
         if (!isset($final_uri)) {
@@ -352,7 +318,6 @@ if (bh_getcookie('bh_logon') && user_is_guest()) {
         }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
             // Guests can't access PMs
-
             if (user_is_guest()) {
 
                 light_html_guest_error();
@@ -360,7 +325,6 @@ if (bh_getcookie('bh_logon') && user_is_guest()) {
             }
 
             // Check that PM system is enabled
-
             light_pm_enabled();
 
             pm_user_prune_folders();
@@ -381,7 +345,6 @@ if (bh_getcookie('bh_logon') && user_is_guest()) {
 }
 
 // Clear the logon cookie
-
 bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";

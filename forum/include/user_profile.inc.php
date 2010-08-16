@@ -31,7 +31,6 @@ USA
 */
 
 // We shouldn't be accessing this file directly.
-
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -90,7 +89,6 @@ function user_get_profile($uid)
     if (!is_numeric($uid)) return false;
 
     // UID of the user viewing the profile data
-
     $peer_uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;

@@ -838,13 +838,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
 
-            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\"><img src=\"", style_image('pmread.png'), "\" alt=\"\" title=\"", sprintf($lang['readtime'], format_time($message['VIEWED'], 1)), "\" /></span>";
+            echo "&nbsp;<span class=\"smalltext\"><img src=\"", style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf($lang['readtime'], format_time($message['VIEWED'], 1)), "\" /></span>";
 
         }else {
 
             if ($is_preview == false) {
 
-                echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\"><img src=\"", style_image('pmunread.png'), "\" alt=\"\" title=\"{$lang['unreadmessage']}\" /></span>";
+                echo "&nbsp;<span class=\"smalltext\"><img src=\"", style_image('post_unread.png'), "\" alt=\"\" title=\"{$lang['unreadmessage']}\" /></span>";
             }
         }
 

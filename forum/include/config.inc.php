@@ -32,7 +32,7 @@ define('BEEHIVE_INSTALL_NOWARN', 1);
 $db_server   = "localhost";     // The address of your MySQL server
 $db_username = "beehiveforum";  // Your MySQL username
 $db_password = "password";      // Your MySQL password
-$db_database = "hanginout";  // The name of your MySQL database
+$db_database = "beehiveforum";  // The name of your MySQL database
 
 // ---------------------------------------------------------------------
 

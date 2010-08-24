@@ -74,7 +74,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
     $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-    $sql.= "($current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0))) < $active_sess_cutoff AS USER_ACTIVE ";
+    $sql.= "($current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0))) < $active_sess_cutoff AS USER_ACTIVE, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS.ANON_LOGON ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
@@ -83,6 +84,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
     $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.FID = {$table_data['FID']} AND SESSIONS.UID = POST.FROM_UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "WHERE POST.TID = '$tid' ";
     $sql.= "AND POST.PID >= '$pid' ";
     $sql.= "ORDER BY POST.PID ";
@@ -829,11 +832,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
 
-            echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
+            echo "&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
 
         }else if ($message['TO_RELATIONSHIP'] & USER_IGNORED) {
 
-            echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
+            echo "&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
         }
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
@@ -1004,18 +1007,31 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-            echo "                <td width=\"25%\" align=\"left\">\n";
             
-            if (isset($message['USER_ACTIVE'])) {
+            if (isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) {
+                
+                echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
+                
+            }else if (isset($message['ANON_LOGON_GLOBAL']) && $message['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
+                
+                echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
+                
+            }else if (isset($message['USER_ACTIVE'])) {
             
                 if ($message['USER_ACTIVE'] == 1) {
+                    
+                    echo "                <td width=\"25%\" align=\"left\"></td>";
                     echo "                  <img src=\"", style_image('status_online.png'), "\" alt=\"\" title=\"{$lang['useractive']}\" />";
+                    echo "                </td>\n";
+                    
                 } else {
+                    
+                    echo "                <td width=\"25%\" align=\"left\"></td>";
                     echo "                  <img src=\"", style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
+                    echo "                </td>\n";
                 }
             }
             
-            echo "                </td>\n";
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
             if ($msg_count > 0) {

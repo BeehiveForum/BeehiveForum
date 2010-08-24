@@ -1020,13 +1020,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             
                 if ($message['USER_ACTIVE'] == 1) {
                     
-                    echo "                <td width=\"25%\" align=\"left\"></td>";
+                    echo "                <td width=\"25%\" align=\"left\">";
                     echo "                  <img src=\"", style_image('status_online.png'), "\" alt=\"\" title=\"{$lang['useractive']}\" />";
                     echo "                </td>\n";
                     
                 } else {
                     
-                    echo "                <td width=\"25%\" align=\"left\"></td>";
+                    echo "                <td width=\"25%\" align=\"left\">";
                     echo "                  <img src=\"", style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
                     echo "                </td>\n";
                 }

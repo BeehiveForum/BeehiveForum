@@ -1010,11 +1010,15 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             
             if (isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) {
                 
-                echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
+                echo "                <td width=\"25%\" align=\"left\">";
+                echo "                  <img src=\"", style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
+                echo "                </td>\n";
                 
             }else if (isset($message['ANON_LOGON_GLOBAL']) && $message['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
                 
-                echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
+                    echo "                <td width=\"25%\" align=\"left\">";
+                    echo "                  <img src=\"", style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
+                    echo "                </td>\n";
                 
             }else if (isset($message['USER_ACTIVE'])) {
             

@@ -630,7 +630,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($uid = bh_session_get_value('UID')) === false) return;
 
-    if (($posts_per_page = bh_session_get_value('POST_PER_PAGE')) === false) {
+    if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
+
+        if ($posts_per_page < 10) $posts_per_page = 10;
+        if ($posts_per_page > 30) $posts_per_page = 30;
+
+    }else {
+
         $posts_per_page = 20;
     }
 
@@ -1256,7 +1262,7 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
 
     if ($pid > 1) {
 
-        if ($pid == $first_msg) {
+        if (($pid - 1) < $first_msg) {
 
             echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid - 1, "\" target=\"_self\">";
             echo "<img src=\"", style_image("message_up.png"), "\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a>";
@@ -1273,9 +1279,9 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
     echo "        <tr>\n";
     echo "          <td align=\"center\">\n";
     
-    if ($pid <> $msg_count) {
-
-        if ((($first_msg + $posts_per_page) - 1) == $pid) {
+    if ($pid < $msg_count) {
+        
+        if (($pid + 1) > (($first_msg + $posts_per_page) - 1)) {
 
             echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid + 1, "\" target=\"_self\">";
             echo "<img src=\"", style_image("message_down.png"), "\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";

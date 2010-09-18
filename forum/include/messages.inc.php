@@ -1087,7 +1087,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "</td>\n";
             echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
-            echo "                  <a href=\"javascript:void(0)\" target=\"_self\" class=\"post_options_link\">{$lang['more']}&nbsp;<img src=\"", style_image('post_options.png'), "\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" id=\"post_options_{$message['PID']}\" border=\"0\" /></a>\n";
+            echo "                  <span class=\"post_options\"></span>\n";
             echo "                  <div class=\"post_options_container\">\n";
             echo "                    <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "                      <tr>\n";

@@ -24,61 +24,69 @@ USA
 $(beehive).bind('init', function() {
 
     beehive.quote_list = [];
+    
+    var hide_post_options_containers = function() {
 
-    $('.post_options_link').bind('click', function() {
+        $('.post_options_container').each(function() {
+            
+            var $post_options_container = $(this);
+            
+            var $link = $(this).prev('span.post_options');
+            
+            if ($link.length == 1) {
+            
+                var link_offset = $link.offset();
+                
+                $post_options_container.hide();
+                
+                $post_options_container.css('top', link_offset.top + $link.height());
+                
+                $post_options_container.find('*').css('margin-left', -9999);
+            }
+        });        
+    };
+    
+    $('span.post_options').each(function() {
 
         var $link = $(this);
         
-        var $post_options_container = $link.next('.post_options_container');
-
-        if ($post_options_container.length != 1) {
-             return;
-        }
+        $link.html(beehive.lang.more +'&nbsp;<img class="post_options" src="' + beehive.images['post_options.png'] + '" border="0" />');
         
-        if ($post_options_container.is(':visible')) {
-             return;
-        }
+        $link.bind('click', function() {
+        
+            hide_post_options_containers();
+            
+            var $post_options_container = $link.next('.post_options_container');
 
-        var link_offset = $link.offset();
+            if ($post_options_container.length != 1) {
+                 return;
+            }
+            
+            if ($post_options_container.is(':visible')) {
+                 return false;
+            }
 
-        $post_options_container.show();
+            var link_offset = $link.offset();
 
-        var container_offset = $post_options_container.offset();
+            $post_options_container.show();
 
-        if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
-            $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
-        } else {
-            $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
-        }
+            var container_offset = $post_options_container.offset();
 
-        $post_options_container.find('*').css('margin-left', 0);
-        $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
+            if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
+                $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
+            } else {
+                $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
+            }
 
-        return false;
+            $post_options_container.find('*').css('margin-left', 0);
+            $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
+            
+            return false;
+        });
     });
 
     $('body').bind('click', function(e) {
-
-        if ($(e.target).closest('div.post_options_container').length < 1) {
-
-            $('.post_options_container').each(function() {
-                
-                var $post_options_container = $(this);
-                
-                var $link = $(this).prev('a.post_options_link');
-                
-                if ($link.length == 1) {
-                
-                    var link_offset = $link.offset();
-                    
-                    $post_options_container.hide();
-                    
-                    $post_options_container.css('top', link_offset.top + $link.height());
-                    
-                    $post_options_container.find('*').css('margin-left', -9999);
-                }
-            });
-        }
+        hide_post_options_containers();
     });
 
     $('#quick_reply_container #t_content').bind('keyup', function(e) {
@@ -94,7 +102,6 @@ $(beehive).bind('init', function() {
 
     $('#quick_reply_container input#cancel').bind('click', function() {
         $('#quick_reply_container').hide();
-        console.log('test');
     });
 
     $('.quick_reply_link').bind('click', function() {

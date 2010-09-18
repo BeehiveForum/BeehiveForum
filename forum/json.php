@@ -121,7 +121,8 @@ if (isset($_GET['search'])) {
                            'quote',
                            'searchsuccessfullycompleted',
                            'confirmmarkasread',
-                           'waitdotdotdot');
+                           'waitdotdotdot',
+                           'more');
                            
     // Construct the Javascript / JSON array
     $json_data = array('webtag'     => $webtag,

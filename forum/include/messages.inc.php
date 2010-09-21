@@ -1627,10 +1627,10 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     // Mark as read cut off
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
-
+    
     // Guest users' can't mark as read!
     if (!user_is_guest() && ($pid > $last_read)) {
-
+        
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
 
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
@@ -1673,30 +1673,40 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     return true;
 }
 
-function messages_set_read($tid, $pid, $uid, $modified)
+function messages_set_read($tid, $pid, $modified)
 {
-    if (!$db_message_set_read = db_connect()) return 1;
+    if (!$db_message_set_read = db_connect()) return false;
 
-    if (!is_numeric($tid)) return 2;
-    if (!is_numeric($pid)) return 3;
-    if (!is_numeric($uid)) return 4;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_numeric($modified)) return false;
 
     // Check for existing entry in USER_THREAD
-    if (!$table_data = get_table_prefix()) return 5;
+    if (!$table_data = get_table_prefix()) return false;
+    
+    // User UID
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    // Current datetime.
+    $current_datetime = date(MYSQL_DATETIME, time());
 
     // Mark as read cut off
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
+    $unread_cutoff_timestamp = threads_get_unread_cutoff();
+    
+    // Guest users' can't mark as read!
+    if (!user_is_guest()) {
+        
+        if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
 
-    // Guest can't mark as read
-    if ($uid > 0) {
-
-        if (($unread_cutoff_stamp !== false) && ($modified > $unread_cutoff_stamp)) {
-
+            $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
+            
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+            
+            echo $modified, '<br>', $unread_cutoff_timestamp; exit;
 
-            if (!db_query($sql, $db_message_set_read)) return 6;
+            if (!db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
@@ -1704,7 +1714,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
-                if (!db_query($sql, $db_message_set_read)) return 7;
+                if (!db_query($sql, $db_message_set_read)) return false;
             }
         }
     }
@@ -1713,9 +1723,9 @@ function messages_set_read($tid, $pid, $uid, $modified)
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    if (!db_query($sql, $db_message_set_read)) return 8;
+    if (!db_query($sql, $db_message_set_read)) return false;
 
-    return 9;
+    return true;
 }
 
 function messages_get_most_recent($uid, $fid = false)

@@ -63,7 +63,8 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
-//$forum_global_settings = forum_get_global_settings();
+$forum_global_settings = forum_get_global_settings();
+
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "beehive.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -190,7 +191,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
         $mark_as_read = $_GET['markasread'];
 
-        if (messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
+        if (messages_set_read($tid, $mark_as_read, $thread_data['MODIFIED'])) {
 
             header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=1");
             exit;
@@ -225,7 +226,7 @@ if (isset($_POST['save'])) {
 
             $thread_data['LAST_READ'] = $_POST['markasread'];
 
-            if (!messages_set_read($tid, $thread_data['LAST_READ'], $uid, $thread_data['MODIFIED'])) {
+            if (!messages_set_read($tid, $thread_data['LAST_READ'], $thread_data['MODIFIED'])) {
 
                 $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
                 $valid = false;

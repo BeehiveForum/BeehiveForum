@@ -667,6 +667,8 @@ function html_draw_top()
     }    
 
     $forum_content_rating = html_get_forum_content_rating();
+    
+    $favicon_filepath = html_get_favicon();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -721,8 +723,8 @@ function html_draw_top()
             }
         }
     }
-
-    printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", html_get_favicon());
+    
+    printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
 
     if (($stylesheet = html_get_style_sheet())) {
         html_include_css($stylesheet, 'user_style');
@@ -888,6 +890,32 @@ function html_draw_top()
         echo "//-->\n";
         echo "</style>\n";
     }
+    
+    printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array($forum_name));
+    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array($meta_description));
+    
+    if (forum_check_webtag_available($webtag)) {
+        
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/unread_thread.ico'))));
+        
+        if (forum_get_setting('show_links', 'Y')) {
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/link.ico'))));
+        }
+    }
+    
+    if (forum_get_setting('show_pms', 'Y')) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/pmunread.ico'))));
+    }
+    
+    if (forum_check_webtag_available($webtag)) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/user_controls.ico'))));
+    }
+    
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) || bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/admintool.ico'))));
+    }
+    
+    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("/index.php?webtag=$webtag"));
 
     echo "</head>\n\n";
 

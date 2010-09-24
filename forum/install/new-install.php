@@ -1154,7 +1154,7 @@ $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wi
                         'forum_timezone'          => '27',
                         'default_language'        => 'en',
                         'default_emoticons'       => 'default',
-                        'default_style'           => 'Default',
+                        'default_style'           => 'default',
                         'forum_keywords'          => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
                         'forum_desc'              => 'A Beehive Forum',
                         'forum_email'             => 'admin@abeehiveforum.net',

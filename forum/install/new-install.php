@@ -1010,7 +1010,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, GID, PERM) VALUES (1, 1, 1, 6652)";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 1, 6652)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1018,7 +1018,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, GID, PERM) VALUES (2, 0, 0, 1536)";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (2, 0, 0, 1536)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1026,7 +1026,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, GID, PERM) VALUES (1, 1, 0, 33536)";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 0, 33536)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1034,7 +1034,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, GID, PERM) VALUES (0, 1, 1, 14588)";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (0, 1, 1, 14588)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

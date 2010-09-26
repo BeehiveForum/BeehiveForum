@@ -192,26 +192,28 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    if (!$db_message_get_content = db_connect()) return false;
+    static $message_content = array();
+    
+    if (!$db_message_get_content = db_connect()) return '';
+    
+    if (!is_numeric($tid)) return '';
+    if (!is_numeric($pid)) return '';
 
-    if (!is_numeric($tid)) return "";
-    if (!is_numeric($pid)) return "";
+    if (!$table_data = get_table_prefix()) return '';
+    
+    if (!isset($message_content["$tid.$pid"])) {
 
-    if (!$table_data = get_table_prefix()) return "";
+        $sql = "SELECT CONTENT FROM `{$table_data['PREFIX']}POST_CONTENT` ";
+        $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-    $sql = "SELECT CONTENT FROM `{$table_data['PREFIX']}POST_CONTENT` ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+        if (!$result = db_query($sql, $db_message_get_content)) return '';
 
-    if (!$result = db_query($sql, $db_message_get_content)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        list($message_content) = db_fetch_array($result, DB_RESULT_NUM);
-
-        return $message_content;
+        if (db_num_rows($result) < 1) return '';
+            
+        list($message_content["$tid.$pid"]) = db_fetch_array($result, DB_RESULT_NUM);
     }
 
-    return "";
+    return $message_content["$tid.$pid"];
 }
 
 function message_get_meta_content($msg, &$meta_keywords, &$meta_description)

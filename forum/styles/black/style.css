@@ -555,7 +555,7 @@ p, h1, h2 {
 }
 
 .image_resize_text {
-    background-image: url('../../images/warningbg.png');
+    background-image: url('images/warningbg.png');
     border: 1px dashed #000000;
     cursor: pointer;
     font-size: 90%;
@@ -706,7 +706,7 @@ p, h1, h2 {
 
 .pmbar {
     background-color: transparent;
-    background-image: url('../../images/pbar.png');
+    background-image: url('images/pbar.png');
     background-repeat: repeat-x;
     height: 11px;
 }
@@ -1093,7 +1093,7 @@ p, h1, h2 {
 
 .subhead_sort_asc {
     background-color: #3E3E3E;
-    background-image: url('../../images/sort_asc.png');
+    background-image: url('images/sort_asc.png');
     background-position: 98% 50%;
     background-repeat: no-repeat;
     border-bottom-width: 0px;
@@ -1108,7 +1108,7 @@ p, h1, h2 {
 
 .subhead_sort_desc {
     background-color: #3E3E3E;
-    background-image: url('../../images/sort_desc.png');
+    background-image: url('images/sort_desc.png');
     background-position: 98% 50%;
     background-repeat: no-repeat;
     border-bottom-width: 0px;

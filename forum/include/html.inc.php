@@ -708,6 +708,32 @@ function html_draw_top()
     if ($meta_refresh_delay && $meta_refresh_url) {
         echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url={$meta_refresh_url}\" />\n";
     }
+    
+    printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array($forum_name));
+    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array($meta_description));
+    
+    if (forum_check_webtag_available($webtag)) {
+        
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/unread_thread.ico'))));
+        
+        if (forum_get_setting('show_links', 'Y')) {
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/link.ico'))));
+        }
+    }
+    
+    if (forum_get_setting('show_pms', 'Y')) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/pmunread.ico'))));
+    }
+    
+    if (forum_check_webtag_available($webtag)) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/user_controls.ico'))));
+    }
+    
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) || bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/admintool.ico'))));
+    }
+    
+    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("/index.php?webtag=$webtag"));    
 
     if ((basename($_SERVER['PHP_SELF']) == "index.php") && bh_session_check(false, false)) {
 
@@ -726,6 +752,10 @@ function html_draw_top()
     
     printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
 
+    $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
+
+    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
+    
     if (($stylesheet = html_get_style_sheet())) {
         html_include_css($stylesheet, 'user_style');
     }
@@ -744,9 +774,27 @@ function html_draw_top()
         }
     }
     
-    $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
+    $style_path_ie6 = html_get_forum_file_path('styles/style_ie6.css');
+    
+    echo "<!--[if IE 6]>\n";
+    echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
+    echo "<![endif]-->\n";    
+    
+    if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
+        
+        echo "<style type=\"text/css\">\n";
+        echo "<!--\n\n";
+        echo trim($inline_css), "\n\n";
+        echo "//-->\n";
+        echo "</style>\n";
+    }    
 
-    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
+    // Font size (not for Guests)
+    if (!user_is_guest()) {
+        
+        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
+        printf("<style type=\"text/css\" title=\"user_font\">@import \"%s\";</style>\n", $font_size_path);
+    }    
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
     
@@ -759,19 +807,6 @@ function html_draw_top()
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
     html_include_javascript(html_get_forum_file_path('js/general.js'));
-
-    // Font size (not for Guests)
-    if (!user_is_guest()) {
-        
-        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
-        printf("<style type=\"text/css\" title=\"user_font\">@import \"%s\";</style>\n", $font_size_path);
-    }
-    
-    $style_path_ie6 = html_get_forum_file_path('styles/style_ie6.css');
-    
-    echo "<!--[if IE 6]>\n";
-    echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
-    echo "<![endif]-->\n";
 
     if ($frame_set_html === false) {
 
@@ -881,41 +916,6 @@ function html_draw_top()
     }
     
     html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
-    
-    if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
-        
-        echo "<style type=\"text/css\">\n";
-        echo "<!--\n\n";
-        echo trim($inline_css), "\n\n";
-        echo "//-->\n";
-        echo "</style>\n";
-    }
-    
-    printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array($forum_name));
-    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array($meta_description));
-    
-    if (forum_check_webtag_available($webtag)) {
-        
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/unread_thread.ico'))));
-        
-        if (forum_get_setting('show_links', 'Y')) {
-            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/link.ico'))));
-        }
-    }
-    
-    if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/pmunread.ico'))));
-    }
-    
-    if (forum_check_webtag_available($webtag)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/user_controls.ico'))));
-    }
-    
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) || bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/admintool.ico'))));
-    }
-    
-    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("/index.php?webtag=$webtag"));
 
     echo "</head>\n\n";
 
@@ -1501,19 +1501,36 @@ function html_get_forum_uri($append_path = null, $allow_https = true)
 
 function html_get_forum_file_path($file_path, $allow_cdn = true)
 {
-    $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+    // Cache of requested file paths.
+    static $file_path_cache_array = array();
     
-    $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
+    // Check if the path is in the cache.
+    if (!isset($file_path_cache_array[$file_path])) {
     
-    if (($url_file_path = @parse_url($file_path, PHP_URL_PATH))) {
-        $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
+        // Get the BH_FORUM_PATH prefix.
+        $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+        
+        // HTTP schema
+        $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
+        
+        // Disable CDN for everything but images, CSS and icons.
+        if (($url_file_path = @parse_url($file_path, PHP_URL_PATH))) {
+            $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
+        }
+        
+        // If CDN is allowed, get the CDN path including the domain.
+        if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_path($file_path)))) {
+            $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
+        } else {
+            $final_file_path = preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
+        }
     }
     
-    if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_path($file_path)))) {
-        return sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
-    }
+    // Add final file path to the cache.
+    $forum_file_paths_array[$file_path] = $final_file_path;
     
-    return preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
+    // Return the cached entry.
+    return $forum_file_paths_array[$file_path];
 }
 
 ?>

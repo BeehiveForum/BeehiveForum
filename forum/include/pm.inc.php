@@ -2154,13 +2154,13 @@ function pms_have_attachments(&$pm_array, $mid_array)
 
     $mid_list = implode(",", array_filter($mid_array, 'is_numeric'));
 
-    if (!$db_thread_has_attachments = db_connect()) return false;
+    if (!$db_pms_have_attachments = db_connect()) return false;
 
     $sql = "SELECT PMI.MID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
     $sql.= "WHERE PMI.MID IN ($mid_list) ";
 
-    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
+    if (!$result = db_query($sql, $db_pms_have_attachments)) return false;
 
     while (($pm_attachment_data = db_fetch_array($result))) {
         $pm_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
@@ -2183,11 +2183,11 @@ function pm_has_attachments($mid)
 {
     if (!is_numeric($mid)) return false;
 
-    if (!$db_thread_has_attachments = db_connect()) return false;
+    if (!$db_pm_has_attachments = db_connect()) return false;
 
     $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
 
-    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
+    if (!$result = db_query($sql, $db_pm_has_attachments)) return false;
 
     if (db_num_rows($result) > 0) {
 

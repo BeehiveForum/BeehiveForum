@@ -2166,9 +2166,6 @@ function forum_get_content_delivery_path($file_path)
     // Current array index
     static $current_index = -1;
     
-    // Array to hold previously generated CDN paths.
-    static $content_delivery_path_cache = array();
-    
     // Check if the file path has been previously requested.
     if (isset($content_delivery_domains_array[$file_path])) {
         return $content_delivery_domains_array[$file_path];

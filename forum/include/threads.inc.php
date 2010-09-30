@@ -1550,27 +1550,6 @@ function threads_have_attachments(&$threads_array)
     return true;
 }
 
-function thread_has_attachments($tid)
-{
-    if (!is_numeric($tid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    if (!$db_thread_has_attachments = db_connect()) return false;
-
-    $sql = "SELECT COUNT(PAF.AID) FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "INNER JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '$tid'";
-
-    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
-
-    list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    return ($attachment_count > 0);
-}
-
 function thread_auto_prune_unread_data()
 {
     if (!$db_thread_prune_unread_data = db_connect()) return false;

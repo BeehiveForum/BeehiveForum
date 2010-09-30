@@ -149,6 +149,8 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
         if (!isset($thread_data['LOGON'])) $thread_data['LOGON'] = $lang['unknownuser'];
         if (!isset($thread_data['NICKNAME'])) $thread_data['NICKNAME'] = "";
+        
+        thread_has_attachments($thread_data);
 
         return $thread_data;
     }
@@ -1241,6 +1243,31 @@ function thread_get_last_page_pid($length, $posts_per_page)
     }
 
     return $length;
+}
+
+function thread_has_attachments(&$thread_data)
+{
+    if (!isset($thread_data['TID'])) return false;
+    
+    if (!is_numeric($thread_data['TID'])) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    if (!$db_thread_has_attachments = db_connect()) return false;
+
+    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
+    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '{$thread_data['TID']}'";
+
+    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
+
+    while (($attachment_data = db_fetch_array($result))) {
+        $thread_data['AID'] = $attachment_data['AID'];
+    }
+
+    return true;
 }
 
 ?>

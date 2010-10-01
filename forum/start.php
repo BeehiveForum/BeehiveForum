@@ -110,9 +110,13 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
+$uid = bh_session_get_value('UID');
+
+$user_prefs = user_get_prefs($uid); 
+
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('start', '280,*');
+$frameset = new html_frameset_cols('start', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 

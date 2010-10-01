@@ -601,11 +601,11 @@ function user_get_prefs($uid)
     if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
-        $sql.= "MARK_AS_OF_INT, THREADS_BY_FOLDER, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, ";
-        $sql.= "START_PAGE, LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, ";
-        $sql.= "USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, USE_EMAIL_ADDR, ALLOW_PM, ";
-        $sql.= "SHOW_THUMBS, USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, ENABLE_WIKI_WORDS, ";
-        $sql.= "USE_OVERFLOW_RESIZE, REPLY_QUICK, THREAD_LAST_PAGE ";
+        $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, ";
+        $sql.= "LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, ";
+        $sql.= "USE_ADMIN_FILTER, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
+        $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, REPLY_QUICK, ";
+        $sql.= "THREADS_BY_FOLDER, THREAD_LAST_PAGE, USE_EMAIL_ADDR, LEFT_FRAME_WIDTH ";
         $sql.= "FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
@@ -680,8 +680,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'EMOTICONS', 'ALLOW_EMAIL', 'USE_EMAIL_ADDR', 'ALLOW_PM',
                                'SHOW_THUMBS', 'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
                                'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE',
-                               'REPLY_QUICK', 'THREAD_LAST_PAGE');
-
+                               'REPLY_QUICK', 'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH');
+    
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
     foreach ($prefs_array as $pref_name => $pref_setting) {
@@ -794,7 +794,7 @@ function user_check_pref($name, $value)
         return ($value == "Y" || $value == "N") ? true : false;
     } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
         return (is_md5($value) || $value == "");
-    } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE") {
+    } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE" || $name == "LEFT_FRAME_WIDTH") {
         return is_numeric($value);
     } else {
         return false;

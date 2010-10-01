@@ -58,8 +58,9 @@ $(beehive).bind('init', function() {
                 
                 selectFirst : false,
                 
-                extraParams : { 'ajax'   : true,
-                                'search' : true },
+                extraParams : { 
+                    'search' : true 
+                },
                 
                 formatItem : function(item) {
                     var data = JSON.parse(item);

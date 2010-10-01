@@ -173,6 +173,18 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "LEFT_FRAME_WIDTH")) {
+
+        // Add field for reply_quick
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280'";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "REPLY_QUICK")) {
 
         // Add field for reply_quick

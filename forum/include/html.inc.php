@@ -1524,13 +1524,13 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
         } else {
             $final_file_path = preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
         }
+        
+        // Add final file path to the cache.
+        $file_path_cache_array[$file_path] = $final_file_path;
     }
     
-    // Add final file path to the cache.
-    $forum_file_paths_array[$file_path] = $final_file_path;
-    
     // Return the cached entry.
-    return $forum_file_paths_array[$file_path];
+    return $file_path_cache_array[$file_path];
 }
 
 ?>

@@ -112,11 +112,14 @@ if (!forum_check_access_level()) {
 
 $uid = bh_session_get_value('UID');
 
-$user_prefs = user_get_prefs($uid); 
+// Get the user's saved left frame width.
+if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    $left_frame_width = 280;
+}
 
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('start', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+$frameset = new html_frameset_cols('start', "$left_frame_width,*");
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 

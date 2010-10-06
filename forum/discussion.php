@@ -120,7 +120,10 @@ if (!forum_check_access_level()) {
 
 $uid = bh_session_get_value('UID');
 
-$user_prefs = user_get_prefs($uid);
+// Get the user's saved left frame width.
+if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    $left_frame_width = 280;
+}
 
 if (!$folder_info = threads_get_folders()) {
 
@@ -150,7 +153,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+        $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid", html_get_frame_name('left'));
         $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$msg$edit_success$delete_success", html_get_frame_name('right'));
@@ -171,7 +174,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-    $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+    $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
     $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}", html_get_frame_name('left'));
     $frameset->html_frame("messages.php?webtag=$webtag&amp;msg={$_GET['msg']}$edit_success$delete_success", html_get_frame_name('right'));
@@ -193,7 +196,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+        $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
         $frameset->html_frame("search.php?webtag=$webtag&amp;search_error={$_GET['search_error']}", html_get_frame_name('right'));
@@ -206,7 +209,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+        $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
         $frameset->html_frame("search.php?webtag=$webtag", html_get_frame_name('right'));
@@ -229,7 +232,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+        $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("search.php?webtag=$webtag&amp;offset=0", html_get_frame_name('left'));
         $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$search_msg&amp;highlight=yes$edit_success$delete_success", html_get_frame_name('right'));
@@ -242,7 +245,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+        $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("search.php?webtag=$webtag&amp;offset=0", html_get_frame_name('left'));
         $frameset->html_frame("search.php?webtag=$webtag", html_get_frame_name('right'));
@@ -258,7 +261,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-        $frameset = new html_frameset_cols('discussion', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+        $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg=$msg", html_get_frame_name('left'));
         $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$msg$edit_success$delete_success", html_get_frame_name('right'));

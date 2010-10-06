@@ -112,15 +112,11 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Guests don't have access to this script.
-if (user_is_guest()) {
-
-    html_guest_error();
-    exit;
-}
-
 // Check if we're saving frame resize.
 if (isset($_GET['frame_resize']) && is_numeric($_GET['frame_resize'])) {
+    
+    // Guests can't save user preferences.
+    if (user_is_guest()) exit;
     
     // Get the User UID from the session.
     $uid = bh_session_get_value('UID');
@@ -137,6 +133,13 @@ if (isset($_GET['frame_resize']) && is_numeric($_GET['frame_resize'])) {
     // Save the preferences.
     user_update_prefs($uid, $user_prefs, $user_prefs_global);
     
+    exit;
+}
+
+// Guests don't have access to this script.
+if (user_is_guest()) {
+
+    html_guest_error();
     exit;
 }
 

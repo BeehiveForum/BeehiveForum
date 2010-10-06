@@ -124,12 +124,15 @@ $available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
                            
 $uid = bh_session_get_value('UID');
 
-$user_prefs = user_get_prefs($uid);                           
+// Get the user's saved left frame width.
+if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    $left_frame_width = 280;
+}
 
 // Output starts here
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('pm', "{$user_prefs['LEFT_FRAME_WIDTH']},*");
+$frameset = new html_frameset_cols('pm', "$left_frame_width,*");
 
 // If we're viewing a message we need to know the folder it is in.
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {

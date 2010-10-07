@@ -2025,35 +2025,6 @@ function light_threads_draw_discussions_dropdown($mode)
     return light_form_dropdown_array("mode", $available_views, $mode);
 }
 
-function light_mode_check_noframes()
-{
-    $webtag = get_webtag();
-    
-    forum_check_webtag_available($webtag);
-
-    if (isset($_GET['noframes'])) {
-
-        if (bh_session_check(false, false) && !isset($_GET['logon_failed'])) {
-
-            if (forum_check_webtag_available($webtag)) {
-
-                header_redirect("lthread_list.php?webtag=$webtag");
-                exit;
-
-            }else {
-
-                header_redirect("lforums.php?webtag=$webtag");
-                exit;
-            }
-
-        }else {
-
-            header_redirect("llogon.php");
-            exit;
-        }
-    }
-}
-
 function light_edit_refuse()
 {
     $lang = load_language_file();

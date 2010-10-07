@@ -201,7 +201,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
         if (!$lang = email_get_language($to_user['UID'])) continue;
         
         // Add the uid to exclude array
-        array_push($exclude_user_array, $to_user['UID'])        
+        array_push($exclude_user_array, $to_user['UID']);
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.

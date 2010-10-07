@@ -126,9 +126,6 @@ if (isset($_GET['other_logon'])) {
 // Check to see if the user is trying to change their password.
 $skip_logon_page = false;
 
-// Check to see if noframes URL query specified
-light_mode_check_noframes();
-
 // Load language file
 $lang = load_language_file();
 
@@ -171,150 +168,166 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     }
 }
 
-// Output starts here
-html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
+// Check for noframes display mode.
+if (!isset($_GET['noframes'])) {
 
-// If user has requested password change show the form instead of the logon page.
-if ($skip_logon_page === true) {
+    // Output starts here
+    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
-    $frameset = new html_frameset_rows('index', "60,22,*");
+    // If user has requested password change show the form instead of the logon page.
+    if ($skip_logon_page === true) {
 
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
-    $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
-    $frameset->html_frame($final_uri, html_get_frame_name('main'));
+        $frameset = new html_frameset_rows('index', "60,22,*");
 
-}else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
+        $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+        $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
+        $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-    // Display the logon page.
-    if (isset($final_uri) && strlen($final_uri) > 0) {
+    }else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
 
-        $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
+        // Display the logon page.
+        if (isset($final_uri) && strlen($final_uri) > 0) {
 
-    }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+            $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
+        }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+            $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg%3D{$_GET['msg']}";
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
+        }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+            $final_uri = "logon.php?webtag=$webtag$other_logon&amp;$logout_success$logon_failed&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder%3D{$_GET['folder']}";
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
+        }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+            $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=pm.php%3Fwebtag%3D$webtag%26mid={$_GET['pmid']}";
+
+        }else {
+
+            $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
+        }
+
+        $frameset = new html_frameset_rows('index', "60,*");
+        $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+        $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
     }else {
 
-        $final_uri = "logon.php?webtag=$webtag$other_logon$logout_success$logon_failed";
-    }
+        $user_sess = bh_session_check(false);
 
-    $frameset = new html_frameset_rows('index', "60,*");
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
-    $frameset->html_frame($final_uri, html_get_frame_name('main'));
+        // Calculate how tall the nav frameset should be based on the user's fontsize.
+        $navsize = bh_session_get_value('FONT_SIZE');
+        $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
-}else {
+        // Check for Forum webtag.
+        if (forum_check_webtag_available($webtag)) {
 
-    $user_sess = bh_session_check(false);
+            if (!isset($final_uri)) {
 
-    // Calculate how tall the nav frameset should be based on the user's fontsize.
-    $navsize = bh_session_get_value('FONT_SIZE');
-    $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
+                if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    // Check for Forum webtag.
-    if (forum_check_webtag_available($webtag)) {
+                    $final_uri = "discussion.php?webtag=$webtag&amp;msg={$_GET['msg']}";
 
-        if (!isset($final_uri)) {
+                }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-            if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                    $final_uri = "discussion.php?webtag=$webtag&amp;folder={$_GET['folder']}";
 
-                $final_uri = "discussion.php?webtag=$webtag&amp;msg={$_GET['msg']}";
+                }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-            }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
-                $final_uri = "discussion.php?webtag=$webtag&amp;folder={$_GET['folder']}";
-
-            }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
-                $final_uri = "pm.php?webtag=$webtag&amp;mid={$_GET['pmid']}";
-
-            }else {
-
-                if (($start_page = bh_session_get_value('START_PAGE'))) {
-
-                    if ($start_page == START_PAGE_MESSAGES) {
-                        $final_uri = "discussion.php?webtag=$webtag";
-                    }elseif ($start_page == START_PAGE_INBOX) {
-                        $final_uri = "pm.php?webtag=$webtag";
-                    }elseif ($start_page == START_PAGE_THREAD_LIST) {
-                        $final_uri = "start.php?webtag=$webtag&amp;left=threadlist";
-                    }else {
-                        $final_uri = "start.php?webtag=$webtag";
-                    }
+                    $final_uri = "pm.php?webtag=$webtag&amp;mid={$_GET['pmid']}";
 
                 }else {
 
-                    $final_uri = "start.php?webtag=$webtag";
+                    if (($start_page = bh_session_get_value('START_PAGE'))) {
+
+                        if ($start_page == START_PAGE_MESSAGES) {
+                            $final_uri = "discussion.php?webtag=$webtag";
+                        }elseif ($start_page == START_PAGE_INBOX) {
+                            $final_uri = "pm.php?webtag=$webtag";
+                        }elseif ($start_page == START_PAGE_THREAD_LIST) {
+                            $final_uri = "start.php?webtag=$webtag&amp;left=threadlist";
+                        }else {
+                            $final_uri = "start.php?webtag=$webtag";
+                        }
+
+                    }else {
+
+                        $final_uri = "start.php?webtag=$webtag";
+                    }
                 }
-            }
-        }
-
-    }else {
-
-        if (get_webtag()) {
-
-            if (isset($final_uri) && strlen(trim($final_uri)) > 0) {
-
-                $final_uri = sprintf("forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=%s", rawurlencode($final_uri));
-
-            }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-                $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=discussion.php%3Fmsg%3D{$_GET['msg']}";
-
-            }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
-                $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=discussion.php%3Ffolder%3D{$_GET['folder']}";
-
-            }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
-                $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=pm.php%3Fmid%3D{$_GET['pmid']}";
-
-            }else {
-
-                $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true";
             }
 
         }else {
 
-            $final_uri = "forums.php";
+            if (get_webtag()) {
+
+                if (isset($final_uri) && strlen(trim($final_uri)) > 0) {
+
+                    $final_uri = sprintf("forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=%s", rawurlencode($final_uri));
+
+                }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+                    $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=discussion.php%3Fmsg%3D{$_GET['msg']}";
+
+                }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+                    $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=discussion.php%3Ffolder%3D{$_GET['folder']}";
+
+                }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+                    $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=pm.php%3Fmid%3D{$_GET['pmid']}";
+
+                }else {
+
+                    $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true";
+                }
+
+            }else {
+
+                $final_uri = "forums.php";
+            }
         }
+
+        $frameset = new html_frameset_rows('index', "60,$navsize,*");
+        $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
+        $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
+        $frameset->html_frame($final_uri, html_get_frame_name('main'));
     }
 
-    $frameset = new html_frameset_rows('index', "60,$navsize,*");
-    $frameset->html_frame($top_html, html_get_frame_name('ftop'), 0, 'no', 'noresize');
-    $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
-    $frameset->html_frame($final_uri, html_get_frame_name('main'));
+    // Output the frame.
+    $frameset->output_html(false);
+
+    // Light mode embedded in <noframes> tags.
+    echo "<noframes>\n";
+    echo "<body>\n";
+
+} else {
+    
+    // No frames HTML header
+    html_draw_top('pm_popup_disabled', 'robots=index,follow');
 }
 
-$frameset->output_html(false);
-
-echo "<noframes>\n";
-echo "<body>\n";
-
+// Initialise the user session.
 $user_sess = bh_session_check(false);
 
-if (bh_getcookie('bh_logon') && user_is_guest()) {
+// Does the user want to login or have they got saved username and password
+if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
 
+    // Display the logon form.
     light_draw_logon_form();
 
 } else {
 
+    // Check the webtag is valid.
     if (forum_check_webtag_available($webtag)) {
 
+        // Check for message to display.
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-            $msg = $_GET['msg'];
+            // Display the request message.
+            light_draw_messages($_GET['msg']);
 
-            light_draw_messages($msg);
-
+        // Check for PM to display.
         }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
             // Guests can't access PMs
@@ -327,31 +340,43 @@ if (bh_getcookie('bh_logon') && user_is_guest()) {
             // Check that PM system is enabled
             light_pm_enabled();
 
+            // Prune the PM folders
             pm_user_prune_folders();
 
+            // Display the Inbox.
             light_draw_pm_inbox();
 
         }else {
 
+            // Display thread list.
             light_draw_thread_list();
         }
 
     }else {
 
+        // Draw forums page.
         light_draw_my_forums();
-
-        echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
     }
 }
 
 // Clear the logon cookie
 bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
+// Light mode footer.
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
-echo "</body>\n";
-echo "</noframes>\n";
-echo "</frameset>\n";
 
-html_draw_bottom(true);
+// Frames mode HTML
+if (!isset($_GET['noframes'])) {
+
+    echo "</body>\n";
+    echo "</noframes>\n";
+    echo "</frameset>\n";
+
+    html_draw_bottom(true);
+
+} else {
+    
+    html_draw_bottom();
+}
 
 ?>

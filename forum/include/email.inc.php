@@ -126,12 +126,11 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     return $mailer->send($message) > 0;
 }
 
-function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$exclude_user_array)
+function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_user_array)
 {
     // Validate the function arguments
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
-    if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
     if (!is_numeric($modified)) return false;
 
@@ -159,8 +158,8 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
     // Make sure $exclude_user_array is an array.
     if (!is_array($exclude_user_array)) $exclude_user_array = array();
 
-    // Add the $tuid and $fuid to it.
-    array_push($exclude_user_array, $tuid, $fuid);
+    // Add the $fuid to it.
+    array_push($exclude_user_array, $fuid);
 
     // Make sure it only contains numbers and implode it.
     $exclude_user_list = implode(",", array_filter($exclude_user_array, 'is_numeric'));
@@ -199,15 +198,18 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
         if (!email_address_valid($to_user['EMAIL'])) continue;
 
         // Get the right language for the email
-        if (!$lang = email_get_language($tuid)) continue;
+        if (!$lang = email_get_language($to_user['UID'])) continue;
+        
+        // Add the uid to exclude array
+        array_push($exclude_user_array, $to_user['UID'])        
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
-        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $tuid);
-        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID']);
+        $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $to_user['UID']);
+        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
+        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID']);
+        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $to_user['UID']);
 
         // Generate the message link.
         $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
@@ -231,10 +233,9 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
     return true;
 }
 
-function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modified, &$exclude_user_array)
+function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$exclude_user_array)
 {
     // Validate function arguments
-    if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
     if (!is_numeric($fid)) return false;
     if (!is_numeric($tid)) return false;
@@ -265,8 +266,8 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
     // Make sure $exclude_user_array is an array.
     if (!is_array($exclude_user_array)) $exclude_user_array = array();
 
-    // Add the $tuid and $fuid to it.
-    array_push($exclude_user_array, $tuid, $fuid);
+    // Add the $fuid to it.
+    array_push($exclude_user_array, $fuid);
 
     // Make sure it only contains numbers and implode it.
     $exclude_user_list = implode(",", array_filter($exclude_user_array, 'is_numeric'));
@@ -298,15 +299,18 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
         if (!email_address_valid($to_user['EMAIL'])) continue;
 
         // Get the right language for the email
-        if (!$lang = email_get_language($tuid)) continue;
+        if (!$lang = email_get_language($to_user['UID'])) continue;
+        
+        // Add the uid to exclude array
+        array_push($exclude_user_array, $to_user['UID']);        
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
-        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-        $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $tuid);
-        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID']);
+        $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $to_user['UID']);
+        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
+        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID']);
+        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $to_user['UID']);
 
         // Generate link to the forum itself
         $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid");

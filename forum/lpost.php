@@ -500,9 +500,9 @@ if ($valid && isset($_POST['post'])) {
 
                         email_sendnotification($t_to_uid, $uid, $t_tid, $new_pid);
 
-                        email_send_folder_subscription($t_to_uid, $uid, $t_fid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
+                        email_send_folder_subscription($uid, $t_fid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
 
-                        email_send_thread_subscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
+                        email_send_thread_subscription($uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
                     }
                 }
             }

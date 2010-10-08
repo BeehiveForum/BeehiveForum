@@ -130,8 +130,6 @@ $.ajaxSetup({
 });
 
 $(beehive).bind('init', function() {
-
-    var frame_resize_timeout;
     
     $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
         return false;
@@ -224,27 +222,38 @@ $(beehive).bind('init', function() {
         top.document.title = document.title;
     }
     
-    $(window).resize(function() {
+    if (!top.beehive.frame_poll_timeout) {
+    
+        var frame_resize_timeout;
         
-        if (!(this.frameElement)) return;
-        
-        var $frame = $(this.frameElement);
-        
-        if ($frame.attr('name') !== beehive.frames.left) return;
-        
-        window.clearTimeout(frame_resize_timeout);
-        
-        frame_resize_timeout = window.setTimeout(function() {
+        top.beehive.frame_poll_timeout = window.setInterval(function() {
             
-            $.ajax({
-                'url' : beehive.forum_path + '/user.php',
-                'cache' : false,
-                'data' : { 
-                    'webtag' : beehive.webtag,
-                    'frame_resize' : $frame.width()
-                }
+            beehive.process_frames(top.document.body, function() {
+                
+                if ((!this.contentWindow) || ($(this).attr('name') !== beehive.frames.left)) return;
+            
+                var $frame = $(this.contentWindow);
+                
+                if (beehive.left_frame_width == $frame.attr('innerWidth')) return;
+                
+                beehive.left_frame_width = $frame.attr('innerWidth');
+                
+                window.clearTimeout(frame_resize_timeout);
+                
+                frame_resize_timeout = window.setTimeout(function() {
+                    
+                    $.ajax({
+                        'url' : beehive.forum_path + '/user.php',
+                        'cache' : false,
+                        'data' : { 
+                            'webtag' : beehive.webtag,
+                            'frame_resize' : $frame.attr('innerWidth')
+                        }
+                    });
+                    
+                }, 1000);
             });
-            
-        }, 1000);
-    });
+        
+        }, 100);    
+    }
 });

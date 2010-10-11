@@ -241,7 +241,7 @@ html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$group['G
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 
-echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['addremoveusers']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addremoveusers']}</h1>\n";
 
 if (isset($_GET['added'])) {
 

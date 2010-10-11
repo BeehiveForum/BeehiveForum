@@ -19,37 +19,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
+/* $Id: admin.js 4499 2010-07-26 19:52:36Z decoyduck $ */
 
 $(beehive).bind('init', function() {
-
+    
     var $beehive_top = top.$(top.beehive);
     
-    $('select#mail_function').bind('change', function() {
-
-        switch($(this).val()) {
-
-            case "0":
-
-                $('#smtp_settings').hide();
-                $('#sendmail_settings').hide();
-                break;
-
-            case "1":
-
-                $('#smtp_settings').show();
-                $('#sendmail_settings').hide();
-                break;
-
-            case "2":
-
-                $('#smtp_settings').hide();
-                $('#sendmail_settings').show();
-                break;
-        }
-    });
-    
-    $('#forum_created,#forum_updated,#forum_removed').each(function() {
-        $beehive_top.trigger('reload_frame', [beehive.frames.fnav]);
+    $beehive_top.bind('reload_top_frame', function(event, src) {
+        
+        $('frame').each(function() {
+            
+            if ($(this).attr('name') == top.beehive.frames.ftop) {
+                $(this).attr('src', src);
+            }
+        });        
     });
 });

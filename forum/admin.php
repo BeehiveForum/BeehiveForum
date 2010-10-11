@@ -104,10 +104,15 @@ if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(
     exit;
 }
 
+// Get the user's saved left frame width.
+if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    $left_frame_width = 280;
+}
+
 // Output starts here
 html_draw_top('class=window_title', 'frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('admin', "250,*");
+$frameset = new html_frameset_cols('admin', "$left_frame_width,*");
 
 if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0) {
 

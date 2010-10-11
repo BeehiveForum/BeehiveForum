@@ -640,7 +640,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 // Start Output Here
 html_draw_top("title={$lang['admin']} - {$lang['globalforumsettings']}", 'class=window_title', "onunload=clearFocus()", "admin.js", "emoticons.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['globalforumsettings']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['globalforumsettings']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

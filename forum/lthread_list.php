@@ -183,11 +183,11 @@ if (user_is_guest()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        bh_setcookie("bh_{$webtag}_light_thread_mode", $mode);
+        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
     }else {
 
-        $mode = bh_getcookie("bh_{$webtag}_light_thread_mode", false, UNREAD_DISCUSSIONS);
+        $mode = bh_getcookie("bh_{$webtag}_thread_mode", false, UNREAD_DISCUSSIONS);
 
         if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $mode = ALL_DISCUSSIONS;
@@ -274,7 +274,7 @@ if (user_is_guest()) {
     }
 }
 
-bh_setcookie("bh_{$webtag}_light_thread_mode", $mode);
+bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
 light_html_draw_top();
 

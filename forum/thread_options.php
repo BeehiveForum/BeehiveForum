@@ -560,7 +560,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top("title={$lang['threadoptions']} - $thread_title_display", "basetarget=_blank", 'search_popup.js', 'class=window_title');
 
-    echo "<h1>{$lang['threadoptions']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

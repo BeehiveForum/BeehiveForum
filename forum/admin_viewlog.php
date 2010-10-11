@@ -257,7 +257,7 @@ html_draw_top("title={$lang['admin']} - {$lang['adminaccesslog']}", 'class=windo
 
 $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 
-echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['adminaccesslog']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['adminaccesslog']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

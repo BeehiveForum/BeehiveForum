@@ -832,6 +832,12 @@ function perm_get_user_gid($uid)
             
             $user_gids_list = implode(', ', $user_gids_array);
             
+            $sql = "INSERT IGNORE INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+            $sql.= "SELECT $user_gid, FORUM, FID, PERM FROM GROUP_PERMS ";
+            $sql.= "WHERE GID IN ($user_gids_list)";
+                                                                               
+            if (!$result = db_query($sql, $db_perm_get_user_gid)) return false;
+            
             $sql = "DELETE QUICK FROM GROUP_PERMS, GROUP_USERS USING GROUP_PERMS ";
             $sql.= "INNER JOIN GROUP_USERS USING (GID) WHERE GROUP_PERMS.GID IN ($user_gids_list)";
             

@@ -155,21 +155,6 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
     }
 }
 
-// Now we just set a cookie and bounce the user back.
-// The check will be automatically be done again
-// and if the password matches they'll be able to
-// access the forum.
-if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
-
-    bh_setcookie("bh_{$webtag}_password", $forum_password, time() + YEAR_IN_SECONDS);
-    bh_setcookie("bh_{$webtag}_passhash", $forum_passhash, time() + YEAR_IN_SECONDS);
-
-}else {
-
-    bh_setcookie("bh_{$webtag}_password", '', time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_{$webtag}_passhash", '', time() - YEAR_IN_SECONDS);
-}
-
 // Log the user into the forum by setting a session cookie
 // containing the forum's password as an MD5 hash.
 bh_setcookie("bh_{$webtag}_sesshash", $forum_passhash);

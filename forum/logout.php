@@ -103,7 +103,10 @@ if (isset($_REQUEST['register'])) {
 }
 
 bh_setcookie("bh_logon", "1");
-bh_setcookie("bh_auto_logon", "", time() - YEAR_IN_SECONDS);
+
+bh_setcookie("user_logon", "", time() - YEAR_IN_SECONDS);
+
+bh_setcookie("user_passhash", "", time() - YEAR_IN_SECONDS);
 
 if (user_is_guest()) {
 

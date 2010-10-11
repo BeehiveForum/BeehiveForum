@@ -159,7 +159,7 @@ html_draw_top("title={$lang['admin']} - {$lang['visitorlog']}", 'class=window_ti
 
 $admin_visitor_log_array = admin_get_visitor_log($start, 10);
 
-echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['visitorlog']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['visitorlog']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

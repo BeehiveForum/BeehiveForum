@@ -220,7 +220,18 @@ p, h1, h2 {
 }
 
 .bhinputlogon {
-    width: 165px;
+    width: 220px;
+}
+
+.bhseparatorlogon {
+    border-color: #63CA31;
+    border-style: solid;
+    border-width: 1px 0px 0px;
+    margin: 10px 0px 5px;
+}
+
+.bhinputlogon_warning {
+    font-size: 10px;
 }
 
 .bhinputprofileitem {

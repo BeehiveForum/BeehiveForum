@@ -445,7 +445,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - ". profile_section_get_name($psid). " - {$lang['addnewitem']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['addnewitem']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewitem']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -542,7 +542,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - ". profile_section_get_name($psid). " - {$lang['edititem']} - {$profile_item['NAME']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['edititem']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['edititem']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -623,7 +623,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     $profile_items = profile_items_get_by_page($psid, $start);
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['viewitems']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['viewitems']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

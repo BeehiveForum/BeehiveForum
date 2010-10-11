@@ -783,7 +783,7 @@ if ($valid && isset($_POST['send'])) {
 
 html_draw_top("title={$lang['privatemessages']} - {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['sendnewpm']}</h1>\n";
+echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['sendnewpm']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');

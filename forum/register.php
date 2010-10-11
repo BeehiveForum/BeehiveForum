@@ -471,22 +471,14 @@ if (isset($_POST['register'])) {
 
         if (($new_uid = user_create($logon, $password, $nickname, $email))) {
 
-            // Save the new user preferences and signature
+            // Save the new user preferences
             user_update_prefs($new_uid, $new_user_prefs, $new_user_prefs_global);
+            
+            // Save the new user signature
             user_update_sig($new_uid, $sig_content, $sig_html);
 
             // Initialise the new user session.
             bh_session_init($new_uid);
-
-            // Check if the user wants to save their password.
-            $save_password = isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y');
-
-            // Generate the MD5 checksum of the user's password for saving in their cookie.
-            $passhash = md5($password);
-            $password = str_repeat(chr(32), mb_strlen($password));
-
-            // Update the cookies.
-            logon_update_cookies($logon, $password, $passhash, $save_password, false);
 
             // Check to see if the user is going somewhere after they have registered.
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
@@ -591,10 +583,6 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">{$lang['dateofbirth']}:</td>\n";
     echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? htmlentities_array($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? htmlentities_array($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? htmlentities_array($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($_POST['remember_user']) && $_POST['remember_user'] == "Y")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

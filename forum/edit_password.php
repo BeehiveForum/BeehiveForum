@@ -203,9 +203,6 @@ if (isset($_POST['save'])) {
             // Update the password and cookie
             if (user_change_password($uid, $t_new_pass, $t_old_pass_hash)) {
 
-                // Update the password that matches the current logged on user
-                logon_update_password_cookie($logon, $t_new_pass);
-
                 // Force redirect to prevent refreshing the page
                 // prompting to user to resubmit form data.
                 header_redirect("edit_password.php?webtag=$webtag&updated=true", $lang['passwdchanged']);

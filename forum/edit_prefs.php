@@ -539,16 +539,6 @@ if (isset($_POST['save'])) {
                             exit;
                         }
                     }
-
-                    // If Forum permits username changes we need to change the user's cookie.
-                    if (forum_get_setting('allow_username_changes', 'Y')) {
-
-                        // Fetch current logon.
-                        $logon = bh_session_get_value('LOGON');
-
-                        // Update the logon that matches the current logged on user
-                        logon_update_logon_cookie($logon, $user_info['LOGON']);
-                    }
                 }
 
                 // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
@@ -625,7 +615,7 @@ if ($admin_edit === true) {
 
     html_draw_top("title={$lang['admin']} - {$lang['userdetails']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js', 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['userdetails']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['userdetails']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 

@@ -219,7 +219,7 @@ function bh_session_expired()
 
         if (logon_perform()) {
 
-            logon_unset_post_data();
+            unset($_POST['user_logon'], $_POST['user_password'], $_POST['logon'], $_POST['webtag'], $_POST['register']);
 
             $request_uri = get_request_uri(true, false);
 
@@ -532,7 +532,7 @@ function bh_update_visitor_log($uid, $forum_fid)
 
             if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
-        }else if (!user_cookies_set() || isset($_POST['guest_logon'])) {
+        }else if (isset($_POST['guest_logon'])) {
 
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
             $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer')";

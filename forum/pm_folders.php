@@ -234,7 +234,7 @@ html_draw_top("title={$lang['privatemessages']}", "basetarget=$pm_messages_frame
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
-    echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['managefolder']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
+    echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolder']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
 
     if (isset($_GET['folder_renamed'])) {
 

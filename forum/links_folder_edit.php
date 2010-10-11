@@ -194,7 +194,7 @@ if (isset($_POST['update'])) {
 
 html_draw_top("title={$lang['links']} - {$lang['editfolder']}", 'class=window_title');
 
-echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['editfolder']}</h1>\n";
+echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfolder']}</h1>\n";
 
 echo "<br />\n";
 

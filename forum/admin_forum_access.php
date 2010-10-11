@@ -267,7 +267,7 @@ html_draw_top("title={$lang['admin']} - {$lang['manageforumpermissions']}", 'cla
 
 $user_permissions_array = forum_get_permissions($forum_fid, $start_main);
 
-echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['manageforumpermissions']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageforumpermissions']}</h1>\n";
 
 if (isset($_GET['added'])) {
 

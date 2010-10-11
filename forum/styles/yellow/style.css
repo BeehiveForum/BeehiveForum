@@ -223,6 +223,17 @@ p, h1, h2 {
     width: 165px;
 }
 
+.bhseparatorlogon {
+    border-color: #FFA41A;
+    border-style: solid;
+    border-width: 1px 0px 0px;
+    margin: 10px 0px 5px;
+}
+
+.bhinputlogon_warning {
+    font-size: 75%;
+}
+
 .bhinputprofileitem {
     width: 300px;
 }

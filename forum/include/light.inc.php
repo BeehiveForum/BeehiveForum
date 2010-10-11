@@ -222,32 +222,24 @@ function light_draw_logon_form($error_msg_array = array())
     $password_array = array();
     $passhash_array = array();
 
-    logon_get_cookies($username_array, $password_array, $passhash_array);
-
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, "autocomplete=\"off\""). "</p>\n";
+    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</p>\n";
 
     if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
 
         if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-
-            echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</p>\n";
-            echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], true, "autocomplete=\"off\""), "</p>\n";
-
+            echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, ''), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</p>\n";
         }else {
-
-            echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</p>\n";
-            echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], false, "autocomplete=\"off\""), "</p>\n";
+            echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</p>\n";
         }
 
     }else {
 
-        echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</p>\n";
-        echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], false, "autocomplete=\"off\""), "</p>\n";
+        echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</p>\n";
     }
 
-    echo "  <p>", light_form_checkbox("auto_logon", "Y", $lang['logmeinautomatically'], false, "autocomplete=\"off\""), "</p>\n";
+    echo "  <p>", light_form_checkbox("user_remember", "Y", $lang['rememberme'], false, ''), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
 }
@@ -946,7 +938,7 @@ function light_draw_pm_inbox()
             exit;
         }
 
-        echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$pm_folder_names_array[$message_folder]}</h1>\n";
+        echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$message_folder]}</h1>\n";
 
         if (isset($pm_message_array) && is_array($pm_message_array)) {
 

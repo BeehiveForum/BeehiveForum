@@ -223,6 +223,10 @@ p, h1, h2 {
     width: 165px;
 }
 
+.bhinputlogon_warning {
+    font-size: 75%;
+}
+
 .bhinputprofileitem {
     width: 300px;
 }

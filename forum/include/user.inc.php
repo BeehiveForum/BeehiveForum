@@ -857,13 +857,6 @@ function user_guest_enabled()
     return true;
 }
 
-function user_cookies_set()
-{
-    if (bh_getcookie('bh_sess_hash')) return false;
-    if (bh_getcookie('bh_remember_username')) return true;
-    return false;
-}
-
 function user_get_forthcoming_birthdays()
 {
     if (!$db_user_get_forthcoming_birthdays = db_connect()) return false;

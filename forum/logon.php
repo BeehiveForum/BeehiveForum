@@ -115,16 +115,8 @@ if (bh_session_user_banned()) {
     exit;
 }
 
-// Arrays to hold our cookie data
-$username_array = array();
-$password_array = array();
-$passhash_array = array();
-
-// Retrieve existing cookie data if any
-logon_get_cookies($username_array, $password_array, $passhash_array);
-
 // Delete the user's cookie as requested and send them back to the login form.
-if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
+if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
     bh_remove_all_cookies();
 

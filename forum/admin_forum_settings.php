@@ -433,7 +433,7 @@ if (isset($_POST['changepermissions'])) {
 // Start Output Here
 html_draw_top("title={$lang['admin']} - {$lang['forumsettings']}", 'class=window_title', "onunload=clearFocus()", "emoticons.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['forumsettings']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['forumsettings']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

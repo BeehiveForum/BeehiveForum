@@ -143,10 +143,15 @@ if (user_is_guest()) {
     exit;
 }
 
+// Get the user's saved left frame width.
+if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    $left_frame_width = 280;
+}
+
 // Output starts here
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-$frameset = new html_frameset_cols('user', '250,*');
+$frameset = new html_frameset_cols('user', "$left_frame_width,*");
 
 if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0) {
 

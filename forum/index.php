@@ -172,7 +172,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 if (!isset($_GET['noframes'])) {
 
     // Output starts here
-    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
+    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow', 'index.js');
 
     // If user has requested password change show the form instead of the logon page.
     if ($skip_logon_page === true) {
@@ -183,7 +183,7 @@ if (!isset($_GET['noframes'])) {
         $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
         $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-    }else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
+    }else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false))) {
 
         // Display the logon page.
         if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -304,14 +304,14 @@ if (!isset($_GET['noframes'])) {
 } else {
     
     // No frames HTML header
-    html_draw_top('pm_popup_disabled', 'robots=index,follow');
+    html_draw_top('pm_popup_disabled', 'robots=index,follow', 'index.js');
 }
 
 // Initialise the user session.
 $user_sess = bh_session_check(false);
 
 // Does the user want to login or have they got saved username and password
-if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false) && user_cookies_set())) {
+if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false))) {
 
     // Display the logon form.
     light_draw_logon_form();

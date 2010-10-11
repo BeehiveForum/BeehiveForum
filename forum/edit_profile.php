@@ -256,7 +256,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         html_draw_top("title={$lang['admin']} - {$lang['editprofile']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'class=window_title');
 
-        echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['editprofile']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editprofile']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
     }else {
 

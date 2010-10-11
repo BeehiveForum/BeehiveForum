@@ -473,7 +473,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']} - {$lang['addnewfeed']}", 'class=window_title', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['addnewfeed']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfeed']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -606,7 +606,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']} - {$lang['editfeed']} - {$rss_feed['NAME']}", 'search_popup.js', 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['editfeed']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfeed']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -718,7 +718,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     $rss_feeds = rss_get_feeds($start);
 
-    echo "<h1>{$lang['admin']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$lang['rssfeeds']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

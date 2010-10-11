@@ -471,7 +471,7 @@ if ($current_folder == PM_FOLDER_INBOX) {
     $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start);
 }
 
-echo "<h1>{$lang['privatemessages']}<img src=", style_image('separator.png'), " alt=\"\" border=\"0\" />{$pm_folder_names_array[$current_folder]}</h1>\n";
+echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$current_folder]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

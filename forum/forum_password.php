@@ -157,7 +157,7 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 
 // Log the user into the forum by setting a session cookie
 // containing the forum's password as an MD5 hash.
-bh_setcookie("bh_{$webtag}_sesshash", $forum_passhash);
+bh_setcookie("sess_hash_{$webtag}", $forum_passhash);
 
 // Redirect the user back to where they came from.
 header_redirect($redirect_uri);

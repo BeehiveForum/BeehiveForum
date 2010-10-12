@@ -93,7 +93,7 @@ if (!$user_sess = bh_session_check()) {
 }
 
 // Light mode check to see if we should bounce to the logon screen.
-if (bh_getcookie('bh_logon')) {
+if (bh_getcookie('logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 

@@ -208,7 +208,7 @@ function light_draw_logon_form($error_msg_array = array())
 
     forum_check_webtag_available($webtag);
 
-    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
 
     echo "<h1>{$lang['logon']}</h1>\n";
 

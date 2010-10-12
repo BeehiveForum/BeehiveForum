@@ -393,11 +393,11 @@ function cache_check_logon_hash()
 {
     $logon_hash_check = md5(bh_session_get_value('LOGON'));
 
-    if (($logon_hash = bh_getcookie('bh_cache_hash', 'strlen', ''))) {
+    if (($logon_hash = bh_getcookie('cache_hash', 'strlen', ''))) {
         if ($logon_hash === $logon_hash_check) return true;
     }
 
-    bh_setcookie('bh_cache_hash', $logon_hash_check);
+    bh_setcookie('cache_hash', $logon_hash_check);
     return false;
 }
 

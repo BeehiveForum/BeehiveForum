@@ -86,7 +86,7 @@ if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
 
 // User style
 if (($user_style = bh_session_get_value('STYLE')) === false) {
-    $user_style = bh_getcookie("bh_forum_style", false, forum_get_setting('default_style', false, 'default'));
+    $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
 }
 
 // Look for autocomplete search request

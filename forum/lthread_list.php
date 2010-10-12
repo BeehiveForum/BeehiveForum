@@ -95,7 +95,7 @@ if (!$user_sess = bh_session_check()) {
 }
 
 // Light mode check to see if we should bounce to the logon screen.
-if (bh_getcookie('bh_logon')) {
+if (bh_getcookie('logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
@@ -183,11 +183,11 @@ if (user_is_guest()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
+        bh_setcookie("thread_mode_{$webtag}", $mode);
 
     }else {
 
-        $mode = bh_getcookie("bh_{$webtag}_thread_mode", false, UNREAD_DISCUSSIONS);
+        $mode = bh_getcookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
 
         if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $mode = ALL_DISCUSSIONS;
@@ -274,7 +274,7 @@ if (user_is_guest()) {
     }
 }
 
-bh_setcookie("bh_{$webtag}_thread_mode", $mode);
+bh_setcookie("thread_mode_{$webtag}", $mode);
 
 light_html_draw_top();
 

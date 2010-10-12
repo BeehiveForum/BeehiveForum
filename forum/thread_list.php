@@ -195,7 +195,7 @@ if (user_is_guest()) {
 
     if (isset($thread_mode) && is_numeric($thread_mode)) {
 
-        bh_setcookie("bh_{$webtag}_thread_mode", $thread_mode);
+        bh_setcookie("thread_mode_{$webtag}", $thread_mode);
 
         if ($thread_mode == SEARCH_RESULTS) {
 
@@ -205,7 +205,7 @@ if (user_is_guest()) {
 
     }else {
 
-        $thread_mode = bh_getcookie("bh_{$webtag}_thread_mode", false, UNREAD_DISCUSSIONS);
+        $thread_mode = bh_getcookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
 
         if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $thread_mode = ALL_DISCUSSIONS;

@@ -91,7 +91,7 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we have a session cookie.
-    $user_hash = bh_getcookie('bh_sess_hash', 'is_md5');
+    $user_hash = bh_getcookie('sess_hash', 'is_md5');
 
     $ipaddress = db_escape_string($ipaddress);
 
@@ -152,7 +152,7 @@ function bh_session_check($show_session_fail = true, $init_guest_session = true)
 
             // Save a cookie for the forum style
             if (isset($user_prefs['STYLE'])) {
-                bh_setcookie("bh_forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+                bh_setcookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
             }
 
             // Check the session time. If it is higher than 'active_sess_cutoff'
@@ -294,7 +294,7 @@ function bh_guest_session_init()
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we have a session cookie.
-    $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
+    $user_hash = bh_getcookie('sess_hash', 'is_md5', md5($ipaddress));
 
     $ipaddress = db_escape_string($ipaddress);
 
@@ -670,7 +670,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         forum_update_last_visit($uid);
     }
 
-    if ($skip_cookie === false) bh_setcookie("bh_sess_hash", $user_hash);
+    if ($skip_cookie === false) bh_setcookie("sess_hash", $user_hash);
 
     return $user_hash;
 }
@@ -690,12 +690,12 @@ function bh_session_remove_cookies()
     $webtag = get_webtag();
 
     // Unset the session cookies.
-    bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("sess_hash", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
 
     // Unset the forum password cookie if any.
     if (forum_check_webtag_available($webtag)) {
-        bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
+        bh_setcookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
     }
 }
 
@@ -718,7 +718,7 @@ function bh_session_end($remove_cookies = true)
     if (!$ipaddress = get_ip_address()) return false;
 
     // Session cookie
-    $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
+    $user_hash = bh_getcookie('sess_hash', 'is_md5', md5($ipaddress));
 
     $ipaddress = db_escape_string($ipaddress);
 

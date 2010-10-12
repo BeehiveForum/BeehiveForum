@@ -183,7 +183,7 @@ if (!isset($_GET['noframes'])) {
         $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
         $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-    }else if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false))) {
+    }else if ((bh_getcookie('logon') && user_is_guest()) || (!bh_session_check(false, false))) {
 
         // Display the logon page.
         if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -311,7 +311,7 @@ if (!isset($_GET['noframes'])) {
 $user_sess = bh_session_check(false);
 
 // Does the user want to login or have they got saved username and password
-if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, false))) {
+if ((bh_getcookie('logon') && user_is_guest()) || (!bh_session_check(false, false))) {
 
     // Display the logon form.
     light_draw_logon_form();
@@ -360,7 +360,7 @@ if ((bh_getcookie('bh_logon') && user_is_guest()) || (!bh_session_check(false, f
 }
 
 // Clear the logon cookie
-bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
 
 // Light mode footer.
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";

@@ -267,24 +267,24 @@ if (forum_get_password($forum_settings['fid'])) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['currentpasswd']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("current_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("current_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
 
 }else {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['passwd']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['confirmpasswd']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("confirm_passwd", "", 37, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("confirm_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

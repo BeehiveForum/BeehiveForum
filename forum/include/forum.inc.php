@@ -292,19 +292,6 @@ function forum_get_password($forum_fid)
     return false;
 }
 
-function forum_get_saved_password(&$password, &$passhash, &$sesshash)
-{
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
-    $password = bh_getcookie("bh_{$webtag}_password", 'strlen', '');
-    $passhash = bh_getcookie("bh_{$webtag}_passhash", 'strlen', '');
-    $sesshash = bh_getcookie("bh_{$webtag}_sesshash", 'strlen', '');
-
-    return true;
-}
-
 function forum_check_password($forum_fid)
 {
     $webtag = get_webtag();
@@ -313,85 +300,82 @@ function forum_check_password($forum_fid)
 
     if (!is_numeric($forum_fid)) return false;
 
-    if (($forum_passhash = forum_get_password($forum_fid))) {
+    // Get the forum's password hash.
+    if (!($forum_passhash = forum_get_password($forum_fid))) return true;
+    
+    // Check the stored cookie against the known hash of the forum password.
+    if (bh_getcookie("sess_hash_{$webtag}") == $forum_passhash) return true;
 
-        forum_get_saved_password($password, $passhash, $sesshash);
+    // Load language file.
+    $lang = load_language_file();
 
-        if ($sesshash == $forum_passhash) return true;
+    html_draw_top("title={$lang['passwdprotectedforum']}");
 
-        // If we got this far then the password verification failed or
-        // the user hasn't seen the password dialog before.
-        $lang = load_language_file();
+    echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
 
-        html_draw_top("title={$lang['passwdprotectedforum']}");
+    if (bh_getcookie("sess_hash_{$webtag}", 'strlen')) {
 
-        echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
-
-        if (bh_getcookie("bh_{$webtag}_sesshash", 'strlen')) {
-
-            bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
-            html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');
-        }
-
-        if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
-
-            echo fix_html($password_protected_message);
-
-        }else {
-
-            html_display_warning_msg($lang['passwdprotectedwarning'], '400', 'center');
-        }
-
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
-        echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-        echo "    ", form_input_hidden('final_uri', htmlentities_array(get_request_uri())), "\n";
-        echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
-        echo "      <tr>\n";
-        echo "        <td align=\"left\">\n";
-        echo "          <table class=\"box\" width=\"400\">\n";
-        echo "            <tr>\n";
-        echo "              <td class=\"posthead\" align=\"center\">\n";
-        echo "                <table class=\"posthead\" width=\"100%\">\n";
-        echo "                  <tr>\n";
-        echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
-        echo "                  </tr>\n";
-        echo "                </table>\n";
-        echo "                <table class=\"posthead\" width=\"90%\">\n";
-        echo "                  <tr>\n";
-        echo "                    <td align=\"left\">{$lang['passwd']}:</td>\n";
-        echo "                    <td align=\"left\">", form_input_password('forum_password', htmlentities_array($password), 40, false, ''), form_input_hidden("forum_passhash", htmlentities_array($passhash)), "</td>\n";
-        echo "                  </tr>\n";
-        echo "                  <tr>\n";
-        echo "                    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-        echo "                  </tr>\n";
-        echo "                </table>\n";
-        echo "              </td>\n";
-        echo "            </tr>\n";
-        echo "          </table>\n";
-        echo "        </td>\n";
-        echo "      </tr>\n";
-        echo "      <tr>\n";
-        echo "        <td align=\"left\">&nbsp;</td>\n";
-        echo "      </tr>\n";
-        echo "      <tr>\n";
-        echo "        <td align=\"center\">", form_submit("logon", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-        echo "      </tr>\n";
-        echo "    </table>\n";
-
-        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-            html_display_warning_msg($lang['adminforumclosedtip'], '400', 'center');
-        }
-
-        echo "  </form>\n";
-        echo "</div>\n";
-
-        html_draw_bottom();
-        exit;
+        bh_setcookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
+        html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');
     }
 
-    return true;
+    if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
+
+        echo fix_html($password_protected_message);
+
+    }else {
+
+        html_display_warning_msg($lang['passwdprotectedwarning'], '400', 'center');
+    }
+
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
+    echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "    ", form_input_hidden('final_uri', htmlentities_array(get_request_uri())), "\n";
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"left\">\n";
+    echo "          <table class=\"box\" width=\"400\">\n";
+    echo "            <tr>\n";
+    echo "              <td class=\"posthead\" align=\"center\">\n";
+    echo "                <table class=\"posthead\" width=\"100%\">\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
+    echo "                  </tr>\n";
+    echo "                </table>\n";
+    echo "                <table class=\"posthead\" width=\"90%\">\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"left\">{$lang['passwd']}:</td>\n";
+    echo "                    <td align=\"left\">", form_input_password('forum_password', '', 40, false, ''), "</td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                  </tr>\n";
+    echo "                </table>\n";
+    echo "              </td>\n";
+    echo "            </tr>\n";
+    echo "          </table>\n";
+    echo "        </td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"left\">&nbsp;</td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"center\">", form_submit("logon", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      </tr>\n";
+    echo "    </table>\n";
+
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+        html_display_warning_msg($lang['adminforumclosedtip'], '400', 'center');
+    }
+
+    echo "  </form>\n";
+    echo "</div>\n";
+
+    html_draw_bottom();
+    
+    exit;
 }
 
 function forum_get_settings()

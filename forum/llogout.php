@@ -87,7 +87,7 @@ $user_sess = bh_session_check();
 
 bh_session_end();
 
-bh_setcookie("bh_logon", "1");
+bh_setcookie("logon", "1");
 
 bh_setcookie("user_logon", "", time() - YEAR_IN_SECONDS);
 

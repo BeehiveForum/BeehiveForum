@@ -120,7 +120,7 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
     bh_remove_all_cookies();
 
-    bh_setcookie("bh_logon", "1");
+    bh_setcookie("logon", "1");
 
     if (isset($final_uri)) {
 
@@ -148,7 +148,7 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
     }else {
 
-        bh_setcookie("bh_logon", "1");
+        bh_setcookie("logon", "1");
         
         if (isset($final_uri)) {
 

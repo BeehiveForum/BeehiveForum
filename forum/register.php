@@ -189,7 +189,7 @@ if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
 if (isset($_POST['cancel'])) {
 
-    bh_setcookie("bh_logon", "1");
+    bh_setcookie("logon", "1");
     header_redirect("logon.php?webtag=$webtag");
     exit;
 }

@@ -265,8 +265,8 @@ if (sizeof($folder_array['folder_array']) > 0) {
 
         if ($folder_array['folder_count'] == 1) {
 
-            echo "                  <td align=\"left\" colspan=\"2\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
-            echo "                  <td align=\"right\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"right\" width=\"40\">&nbsp;</td>\n";
 
         }elseif ($folder_index == $folder_array['folder_count']) {
 

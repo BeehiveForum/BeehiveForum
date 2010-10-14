@@ -442,8 +442,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
             if ($profile_sections['profile_sections_count'] == 1) {
 
-                echo "                  <td valign=\"top\" align=\"left\" width=\"450\" colspan=\"2\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</a></td>\n";
-                echo "                  <td align=\"right\">&nbsp;</td>\n";
+                echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(htmlentities_array($profile_section['NAME'])), "</a></td>\n";
+                echo "                  <td align=\"right\" width=\"40\">&nbsp;</td>\n";
 
             }elseif ($profile_index == $profile_sections['profile_sections_count']) {
 

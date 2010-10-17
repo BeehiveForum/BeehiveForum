@@ -87,7 +87,7 @@ cache_disable();
 logon_perform_auto();
 
 // Start user session
-$user_sess = bh_session_check(false, false);
+$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 if (bh_session_user_banned()) {
@@ -183,7 +183,7 @@ if (!isset($_GET['noframes'])) {
         $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
         $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-    }else if ((bh_getcookie('logon') && user_is_guest()) || (!bh_session_check(false, false))) {
+    }else if (bh_getcookie('logon') && user_is_guest()) {
 
         // Display the logon page.
         if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -212,8 +212,6 @@ if (!isset($_GET['noframes'])) {
         $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
     }else {
-
-        $user_sess = bh_session_check(false);
 
         // Calculate how tall the nav frameset should be based on the user's fontsize.
         $navsize = bh_session_get_value('FONT_SIZE');
@@ -307,11 +305,8 @@ if (!isset($_GET['noframes'])) {
     html_draw_top('pm_popup_disabled', 'robots=index,follow', 'index.js');
 }
 
-// Initialise the user session.
-$user_sess = bh_session_check(false);
-
 // Does the user want to login or have they got saved username and password
-if ((bh_getcookie('logon') && user_is_guest()) || (!bh_session_check(false, false))) {
+if (bh_getcookie('logon') && user_is_guest()) {
 
     // Display the logon form.
     light_draw_logon_form();

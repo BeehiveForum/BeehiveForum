@@ -95,7 +95,7 @@ if (logon_perform_auto(false)) {
 }
 
 // Start user session
-$user_sess = bh_session_check(false, false);
+$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 if (bh_session_user_banned()) {

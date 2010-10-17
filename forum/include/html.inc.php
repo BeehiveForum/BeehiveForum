@@ -696,6 +696,12 @@ function html_draw_top()
     echo "<meta name=\"description\" content=\"$meta_description\" />\n";
     echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
+	if (basename($_SERVER['PHP_SELF']) == "index.php") {
+    
+		echo "<meta name=\"MobileOptimized\" content=\"320\" />\n";
+    	echo "<meta name=\"viewport\" content=\"width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" />\n";
+	}
+
     if (forum_get_setting('allow_search_spidering', 'N')) {
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
@@ -902,16 +908,16 @@ function html_draw_top()
     }
 
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
-
-        echo "<script type=\"text/javascript\">\n";
-        echo "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
-        echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
-        echo "</script>\n";
-        echo "<script type=\"text/javascript\">\n";
-        echo "if (typeof(_gat) == 'object' || typeof(_gat) == 'function') {\n";
-        echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
-        echo "pageTracker._trackPageview();\n";
-        echo "}\n";
+        
+        echo "<script type=\"text/javascript\">\n\n";
+        echo "  var _gaq = _gaq || [];\n";
+        echo "  _gaq.push(['_setAccount', '$google_analytics_code']);\n";
+        echo "  _gaq.push(['_trackPageview']);\n\n";
+        echo "  (function() {\n";
+        echo "    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\n";
+        echo "    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n";
+        echo "    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n";
+        echo "  })();\n\n";
         echo "</script>\n";
     }
     
@@ -943,15 +949,15 @@ function html_draw_bottom($frame_set_html = false)
 
         if (($google_analytics_code = html_get_google_analytics_code())) {
 
-            echo "<script type=\"text/javascript\">\n";
-            echo "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
-            echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
-            echo "</script>\n";
-            echo "<script type=\"text/javascript\">\n";
-            echo "if (typeof(_gat) == 'object' || typeof(_gat) == 'function') {\n";
-            echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
-            echo "pageTracker._trackPageview();\n";
-            echo "}\n";
+            echo "<script type=\"text/javascript\">\n\n";
+            echo "  var _gaq = _gaq || [];\n";
+            echo "  _gaq.push(['_setAccount', '$google_analytics_code']);\n";
+            echo "  _gaq.push(['_trackPageview']);\n\n";
+            echo "  (function() {\n";
+            echo "    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\n";
+            echo "    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n";
+            echo "    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n";
+            echo "  })();\n\n";
             echo "</script>\n";
         }
 

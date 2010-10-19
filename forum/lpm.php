@@ -128,11 +128,6 @@ pm_user_prune_folders();
 // Load language file
 $lang = load_language_file();
 
-// Draw the header.
-light_html_draw_top("title={$lang['pminbox']}");
-
 light_draw_pm_inbox();
-
-light_html_draw_bottom();
 
 ?>

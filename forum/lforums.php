@@ -102,10 +102,6 @@ if (!bh_session_user_approved()) {
 // Load language file
 $lang = load_language_file();
 
-light_html_draw_top("title={$lang['myforums']}");
-
 light_draw_my_forums();
-
-light_html_draw_bottom();
 
 ?>

@@ -1263,7 +1263,7 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
     
     forum_check_webtag_available($webtag);
 
-    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
+    echo "<h1>{$lang['fullversion']}: <a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$msg"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";

@@ -209,6 +209,8 @@ function light_draw_logon_form($error_msg_array = array())
     forum_check_webtag_available($webtag);
 
     bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
+    
+    light_html_draw_top("robots=noindex,nofollow");    
 
     echo "<h1>{$lang['logon']}</h1>\n";
 
@@ -221,7 +223,7 @@ function light_draw_logon_form($error_msg_array = array())
     $username_array = array();
     $password_array = array();
     $passhash_array = array();
-
+    
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</p>\n";
@@ -242,6 +244,8 @@ function light_draw_logon_form($error_msg_array = array())
     echo "  <p>", light_form_checkbox("user_remember", "Y", $lang['rememberme'], false, ''), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
+    
+    light_html_draw_bottom();
 }
 
 function light_draw_messages($msg)
@@ -444,6 +448,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     $visible_threads_array = array();
 
     if (($uid = bh_session_get_value('UID')) === false) return;
+    
+    light_html_draw_top();
 
     echo "<h1>{$lang['threadlist']}</h1>\n";
     echo "<br />\n";
@@ -818,6 +824,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     }
 
     echo "</h4>\n";
+    
+    light_html_draw_bottom();
 }
 
 function light_draw_pm_inbox()
@@ -937,6 +945,9 @@ function light_draw_pm_inbox()
             light_html_draw_bottom();
             exit;
         }
+        
+        // Draw the header.
+        light_html_draw_top("title={$lang['pminbox']}");
 
         echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$message_folder]}</h1>\n";
 
@@ -956,8 +967,13 @@ function light_draw_pm_inbox()
 
             echo "<h4><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\">{$lang['back']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
         }
+        
+        light_html_draw_bottom();
 
     }else {
+        
+        // Draw the header.
+        light_html_draw_top("title={$lang['pminbox']}");
 
         echo "<h1>{$lang['privatemessages']}</h1>\n";
 
@@ -1093,7 +1109,9 @@ function light_draw_pm_inbox()
             echo "<p>{$lang['pmfolderpruningisenabled']}</p>\n";
         }
 
-                    echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+        echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+        
+        light_html_draw_bottom();
     }
 }
 
@@ -1112,6 +1130,8 @@ function light_draw_my_forums()
         $page = 1;
         $start = 0;
     }
+    
+    light_html_draw_top("title={$lang['myforums']}");
 
     echo "<h1>{$lang['myforums']}</h1>\n";
     echo "<br />\n";
@@ -1196,6 +1216,8 @@ function light_draw_my_forums()
     }else {
         echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>";
     }
+    
+    light_html_draw_bottom();
 }
 
 function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)

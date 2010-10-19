@@ -696,12 +696,6 @@ function html_draw_top()
     echo "<meta name=\"description\" content=\"$meta_description\" />\n";
     echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
-	if (basename($_SERVER['PHP_SELF']) == "index.php") {
-    
-		echo "<meta name=\"MobileOptimized\" content=\"320\" />\n";
-    	echo "<meta name=\"viewport\" content=\"width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" />\n";
-	}
-
     if (forum_get_setting('allow_search_spidering', 'N')) {
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";

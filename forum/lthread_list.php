@@ -276,10 +276,6 @@ if (user_is_guest()) {
 
 bh_setcookie("thread_mode_{$webtag}", $mode);
 
-light_html_draw_top();
-
 light_draw_thread_list($mode, $folder, $start_from);
-
-light_html_draw_bottom();
 
 ?>

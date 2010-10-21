@@ -553,7 +553,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
                 html_draw_top("title={$lang['admin']} - {$lang['globalforumsettings']}", 'class=window_title');
 
-                echo "<h1></h1>\n";
+                echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['globalforumsettings']}</h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";

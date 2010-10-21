@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 */
 function get_svn_log_data($date)
 {
-    $svn_log_cmd = sprintf("svn log --xml -r {%s}:{%s}", $date, date('Y-m-d'));
+    $svn_log_cmd = sprintf("svn log --xml -r {%s}:{%s}", $date, date('Y-m-d', time() + 86400));
     
     if (($log_handle = popen($svn_log_cmd, 'r'))) {
 
@@ -183,7 +183,7 @@ function svn_mysql_output_log($log_filename = null)
 
             $svn_log_entry.= "{$svn_log_entry_array['COMMENTS']}\r\n\r\n";
 
-            echo wordwrap($svn_log_entry, 85, "\r\n");
+            echo wordwrap(preg_replace("/(\r\n|\n|\r)/", "\r\n", $svn_log_entry), 100, "\r\n");
         }
         
         if (isset($log_filename)) {

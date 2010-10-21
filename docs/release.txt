@@ -1,5 +1,42 @@
 Beehive Forum Release Notes
 
+What's new in 0.10 (Released 22nd October 2010)
+==================
+
+- Notes
+
+	- Beehive Forum 0.10 changes how forum styles
+	  and start page are stored. Styles are now
+	  stored only in the main styles directory and
+	  start pages are saved to the database.
+
+	  The Beehive Forum installer will NOT move the
+	  forum styles for you, it will however attempt
+	  to import the forum start pages. After you have
+	  upgraded please copy any styles you wish to keep
+	  to the main styles directory.
+
+- Changes from 0.9.1
+
+	- Beehive Forum now uses JQuery as it's Javascript
+	  library, which allows for more compatibility and
+	  extra features.
+
+        - New icons. Beehive Forum now ships with the famfamfam 
+          silkicon set.
+
+        - New logon page allows the browser to save user
+	  credentials and helps cut down on the number of
+	  cookies that Beehive Forum uses.
+
+	- IE9 Beta Jumplist support (Windows 7 only). You can
+	  now pin your Beehive Forum to your Windows Superbar
+	  and make use of quick shortcuts to various sections
+	  including Messages, PM Inbox and Admin Tools.
+
+- For comprehensive list of changes please see the change log.        
+
+
 What's new in 0.9.1 (Released 15th July 2009)
 ===================
 

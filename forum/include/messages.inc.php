@@ -1706,8 +1706,6 @@ function messages_set_read($tid, $pid, $modified)
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
             
-            echo $modified, '<br>', $unread_cutoff_timestamp; exit;
-
             if (!db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {

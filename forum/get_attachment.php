@@ -223,7 +223,7 @@ if (isset($hash) && is_md5($hash)) {
                     }
 
                     if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-                        header("HTTP/1.1 304 Not Modified");
+                        header("Status: 304 Not Modified");
                         exit;
                     }
 

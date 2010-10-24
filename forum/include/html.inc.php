@@ -279,7 +279,8 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 
 function html_user_banned()
 {
-    header_server_error();
+    header("Status: 500 Internal Server Error");
+    exit;
 }
 
 function html_user_require_approval()

@@ -143,7 +143,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
             if (defined("BEEHIVE_INSTALL_NOWARN")) return true;
 
-            header_server_error();
+            header("Status: 500 Internal Server Error");
             exit;
         }
     }

@@ -191,7 +191,7 @@ function cache_check_thread_list()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header("HTTP/1.1 304 Not Modified");
+                header("Status: 304 Not Modified");
                 exit;
             }
         }
@@ -274,7 +274,7 @@ function cache_check_start_page()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header("HTTP/1.1 304 Not Modified");
+                header("Status: 304 Not Modified");
                 exit;
             }
         }
@@ -370,7 +370,7 @@ function cache_check_messages()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header("HTTP/1.1 304 Not Modified");
+                header("Status: 304 Not Modified");
                 exit;
             }
         }
@@ -460,7 +460,7 @@ function cache_check_last_modified($seconds = 300)
             header("Last-Modified: $remote_last_modified", true);
             header('Cache-Control: private, must-revalidate', true);
 
-            header("HTTP/1.1 304 Not Modified");
+            header("Status: 304 Not Modified");
             exit;
         }
     }
@@ -496,7 +496,7 @@ function cache_check_etag($local_etag)
     if (strcmp($remote_etag, $local_etag) == "0") {
 
         header("Etag: \"$local_etag\"", true);
-        header("HTTP/1.1 304 Not Modified");
+        header("Status: 304 Not Modified");
         exit;
     }
 

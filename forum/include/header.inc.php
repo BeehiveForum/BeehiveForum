@@ -88,27 +88,4 @@ function header_redirect($uri, $reason = false)
     }
 }
 
-/**
-* Send Server Error
-*
-* Sends Server Error (HTTP/1.0 500) error to client and ends execution.
-*
-* @return none - Functions exits code execution.
-* @param void
-*/
-
-function header_server_error()
-{
-    if (preg_match('/cgi/u', php_sapi_name())) {
-
-        header('Status: 500 Internal Server Error');
-        exit;
-
-    }else {
-
-        header("HTTP/1.0 500 Internal Server Error");
-        exit;
-    }
-}
-
 ?>

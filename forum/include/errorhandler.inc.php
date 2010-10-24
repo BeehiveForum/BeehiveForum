@@ -290,6 +290,9 @@ function bh_exception_handler($exception)
 
             exit;
         }
+        
+        // Status error header
+        header("Status: 500 Internal Server Error");
 
         // Full mode error message display with Retry button.
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";

@@ -124,8 +124,6 @@ function cache_disable_proxy()
 
 function cache_check_thread_list()
 {
-    if (strstr(php_sapi_name(), 'cgi')) return false;
-
     if (!$db_thread_list_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -213,8 +211,6 @@ function cache_check_thread_list()
 
 function cache_check_start_page()
 {
-    if (strstr(php_sapi_name(), 'cgi')) return false;
-
     if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -296,8 +292,6 @@ function cache_check_start_page()
 
 function cache_check_messages()
 {
-    if (strstr(php_sapi_name(), 'cgi')) return false;
-
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;

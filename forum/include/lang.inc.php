@@ -69,7 +69,7 @@ function load_language_file()
         }
 
          // if the browser doesn't send an Accept-Language header, give up.
-        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) || strlen(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])) == 0) {
 
             include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
             return $lang;

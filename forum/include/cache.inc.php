@@ -102,7 +102,7 @@ function cache_disable_proxy()
 
     foreach($proxy_headers_array as $proxy_header) {
         
-        if (isset($_SERVER[$proxy_header])) {
+        if (isset($_SERVER[$proxy_header]) && strlen(trim($_SERVER[$proxy_header])) > 0) {
             
             return cache_disable();
         }
@@ -183,7 +183,7 @@ function cache_check_thread_list()
         header("Last-Modified: $local_last_modified", true);
         header('Cache-Control: private, must-revalidate', true);
 
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
             $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
@@ -264,7 +264,7 @@ function cache_check_start_page()
         header("Last-Modified: $local_last_modified", true);
         header('Cache-Control: private, must-revalidate', true);
 
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
             $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
@@ -358,7 +358,7 @@ function cache_check_messages()
         header("Last-Modified: $local_last_modified", true);
         header('Cache-Control: private, must-revalidate', true);
 
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
             $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
@@ -443,7 +443,7 @@ function cache_check_last_modified($seconds = 300)
     $local_cache_expires = gmdate("D, d M Y H:i:s", time()). " GMT";
 
     // Check to see if the cache header exists.
-    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
         $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
@@ -481,7 +481,7 @@ function cache_check_etag($local_etag)
     
     if (browser_check(BROWSER_AOL)) return false;
 
-    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
         $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
     }else {
         $remote_etag = false;

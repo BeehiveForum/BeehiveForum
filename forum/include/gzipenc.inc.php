@@ -55,15 +55,14 @@ function bh_check_gzip()
 
     // Only enable gzip compression for HTTP/1.1 and
     // browsers that aren't coming via a proxy server.
-    if (isset($_SERVER['HTTP_VIA'])) return false;
+    if (isset($_SERVER['HTTP_VIA']) && strlen(trim($_SERVER['HTTP_VIA'])) > 0) return false;
 
     if (isset($_SERVER['SERVER_PROTOCOL'])) {
         if (mb_strpos($_SERVER['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
     }
 
-    // determine which gzip encoding the client asked for
-    // (x-gzip = IE; gzip = everything else).
-    if (!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) return false;
+    // determine which gzip encoding the client asked for (x-gzip = IE; gzip = everything else).
+    if (!isset($_SERVER['HTTP_ACCEPT_ENCODING']) || strlen(trim($_SERVER['HTTP_ACCEPT_ENCODING'])) == 0) return false;
 
     if (mb_strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
     if (mb_strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";

@@ -207,7 +207,7 @@ if (isset($hash) && is_md5($hash)) {
                     // Etag Header for cache control
                     $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
 
-                    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+                    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
                         $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
                     }else {
                         $remote_etag = false;
@@ -216,7 +216,7 @@ if (isset($hash) && is_md5($hash)) {
                     // Last Modified Header for cache control
                     $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
 
-                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
                         $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
                     }else {
                         $remote_last_modified = false;

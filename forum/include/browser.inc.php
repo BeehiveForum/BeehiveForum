@@ -47,7 +47,7 @@ function browser_check($browser_check)
 {
     $browser = BROWSER_UNKNOWN;
 
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+    if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 
         if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'aol') !== false) {
             

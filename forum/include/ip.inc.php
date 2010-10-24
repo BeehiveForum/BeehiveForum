@@ -60,33 +60,48 @@ function get_ip_address()
     // string.)
     $matches = array();
 
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && strlen(trim($_SERVER['HTTP_X_FORWARDED_FOR'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+        
+    }else if (isset($_SERVER['HTTP_X_FORWARDED']) && strlen(trim($_SERVER['HTTP_X_FORWARDED'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_X_FORWARDED'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+    
+    }else if (isset($_SERVER['HTTP_FORWARDED_FOR']) && strlen(trim($_SERVER['HTTP_FORWARDED_FOR'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_FORWARDED_FOR'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+        
+    }else if (isset($_SERVER['HTTP_FORWARDED']) && strlen(trim($_SERVER['HTTP_FORWARDED'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_FORWARDED'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($_SERVER['HTTP_X_COMING_FROM'])) {
+    
+    }else if (isset($_SERVER['HTTP_X_COMING_FROM']) && strlen(trim($_SERVER['HTTP_X_COMING_FROM'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_X_COMING_FROM'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($_SERVER['HTTP_COMING_FROM'])) {
+    
+    }else if (isset($_SERVER['HTTP_COMING_FROM']) && strlen(trim($_SERVER['HTTP_COMING_FROM'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_COMING_FROM'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($_SERVER['HTTP_VIA'])) {
-        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        
+    }else if (isset($_SERVER['HTTP_VIA']) && strlen(trim($_SERVER['HTTP_VIA'])) > 0) {
+        
+        if (isset($_SERVER['HTTP_CLIENT_IP']) && strlen(trim($_SERVER['HTTP_CLIENT_IP'])) > 0) {
+            
             if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['HTTP_CLIENT_IP'], $matches)) {
+                
                 if (strstr($_SERVER['HTTP_VIA'], "-R")) {
                     return join('.', array_reverse(explode('.', $matches[0])));
                 }else {
@@ -98,7 +113,8 @@ function get_ip_address()
 
     // No proxy server or client IP not accessible.
     // Resort to using the REMOTE_ADDR variable.
-    if (isset($_SERVER['REMOTE_ADDR'])) {
+    if (isset($_SERVER['REMOTE_ADDR']) && strlen(trim($_SERVER['REMOTE_ADDR'])) > 0) {
+        
         if (preg_match('/^([0-9]{1,3}\.){3,3}[0-9]{1,3}$/u', $_SERVER['REMOTE_ADDR'], $matches)) {
             return $matches[0];
         }

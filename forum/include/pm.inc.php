@@ -1957,42 +1957,46 @@ function pm_check_messages()
 
     // Load the Language file
     $lang = load_language_file();
-
+    
     // Get the number of messages.
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
+    
+    // Check if the user wants Javascript notifcation.
+    if (bh_session_get_value('PM_NOTIFY') == 'Y') {
 
-    // Format the message sent to the client.
-    if ($pm_new_count == 1 && $pm_outbox_count == 0) {
+        // Format the message sent to the client.
+        if ($pm_new_count == 1 && $pm_outbox_count == 0) {
 
-        $pm_notification = $lang['youhave1newpm'];
+            $pm_notification = $lang['youhave1newpm'];
 
-    }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
+        }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
 
-        $pm_notification = $lang['youhave1newpmand1waiting'];
+            $pm_notification = $lang['youhave1newpmand1waiting'];
 
-    }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
+        }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
 
-        $pm_notification = $lang['youhave1pmwaiting'];
+            $pm_notification = $lang['youhave1pmwaiting'];
 
-    }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
+        }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
 
-        $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+            $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
 
-    }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
+        }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
 
-        $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
+            $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
 
-    }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
+        }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
+            $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
 
-    }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
+        }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
+            $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
 
-    }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
+        }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+            $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+        }
     }
 
     $pm_notification_data = array();

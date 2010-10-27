@@ -165,12 +165,15 @@ $(beehive).bind('init', function() {
         frame_resize_timeout = window.setTimeout(function() {
             
             $.ajax({
-                'url' : beehive.forum_path + '/user.php',
+                
                 'cache' : false,
+                
                 'data' : { 
                     'webtag' : beehive.webtag,
                     'frame_resize' : this.innerWidth
-                }
+                },
+                
+                'url' : beehive.forum_path + '/user.php'                
             });
             
         }, 500);    

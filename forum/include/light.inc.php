@@ -2368,11 +2368,15 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
 function light_pm_check_messages()
 {
-    static $pm_checked = false;
+    // Disable if we're including light mode functionality.
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
+
+    // Check if this function has be called multiple times in one request.
+    static $light_pm_check_messages_done = false;
 
     // Check if we've already displayed the notification once.
-    if ($pm_checked === true) return;
-
+    if ($light_pm_check_messages_done === true) return;
+    
     // Load the Language file
     $lang = load_language_file();
 
@@ -2432,7 +2436,8 @@ function light_pm_check_messages()
         light_html_display_success_msg($pm_notification);
     }
 
-    $pm_checked = true;
+    // Prevent checking again.
+    $light_pm_check_messages_done = true;
 }
 
 ?>

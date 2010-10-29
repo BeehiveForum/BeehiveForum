@@ -53,19 +53,15 @@ $(beehive).bind('init', function() {
         $link.html(beehive.lang.more +'&nbsp;<img class="post_options" src="' + beehive.images['post_options.png'] + '" border="0" />');
         
         $link.bind('click', function() {
-        
+            
             hide_post_options_containers();
             
             var $post_options_container = $link.next('.post_options_container');
-
+            
             if ($post_options_container.length != 1) {
                  return;
             }
             
-            if ($post_options_container.is(':visible')) {
-                 return false;
-            }
-
             var link_offset = $link.offset();
 
             $post_options_container.show();

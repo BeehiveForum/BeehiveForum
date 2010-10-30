@@ -23,8 +23,6 @@ USA
 
 $(beehive).bind('init', function() {
 
-    var $beehive_top = top.$(top.beehive);
-    
     $('select#mail_function').bind('change', function() {
 
         switch($(this).val()) {
@@ -50,6 +48,6 @@ $(beehive).bind('init', function() {
     });
     
     $('#forum_created,#forum_updated,#forum_removed').each(function() {
-        $beehive_top.trigger('reload_frame', [beehive.frames.fnav]);
+        beehive.reload_frame(top.document, beehive.frames.fnav);
     });
 });

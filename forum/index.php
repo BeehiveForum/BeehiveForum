@@ -172,7 +172,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 if (!isset($_GET['noframes'])) {
 
     // Output starts here
-    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow', 'index.js');
+    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
     // If user has requested password change show the form instead of the logon page.
     if ($skip_logon_page === true) {
@@ -302,7 +302,7 @@ if (!isset($_GET['noframes'])) {
 } else {
     
     // No frames HTML header
-    html_draw_top('pm_popup_disabled', 'robots=index,follow', 'index.js');
+    html_draw_top('pm_popup_disabled', 'robots=index,follow');
 }
 
 // Does the user want to login or have they got saved username and password

@@ -47,6 +47,30 @@ var beehive = $.extend({}, beehive, {
         for(var key in beehive.frames) {
             if (beehive.frames[key] == frame_name) return key;
         }
+    },
+    
+    reload_frame : function(context, frame_name) {
+        
+        $(context).find('frame').each(function() {
+            
+            if ($(this).attr('name') == frame_name) {
+                $(this).attr('src', $(this).attr('src'));
+            }
+            
+            beehive.reload_frame(this.contentDocument, frame_name);
+        });        
+    },
+    
+    reload_top_frame : function(context, src) {
+        
+        $(context).find('frame').each(function() {
+            
+            if ($(this).attr('name') == beehive.frames.ftop) {
+                $(this).attr('src', src);
+            }
+            
+            beehive.reload_top_frame(this.contentDocument, src);
+        });
     }
 });
 
@@ -56,10 +80,6 @@ $.ajaxSetup({
 
 $(beehive).bind('init', function() {
     
-    var $top = top.$;
-   
-    var $beehive_top = $top(top.beehive);
-
     var frame_resize_timeout;
     
     $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
@@ -127,9 +147,9 @@ $(beehive).bind('init', function() {
 
             beehive.font_size = data.font_size;
             
-            $beehive_top.trigger('reload_frame', [beehive.frames.ftop]);
-            $beehive_top.trigger('reload_frame', [beehive.frames.fnav]);
-            $beehive_top.trigger('reload_frame', [beehive.frames.left]);
+            beehive.reload_frame(top.document, beehive.frames.fnav);
+            beehive.reload_frame(top.document, beehive.frames.left);
+            beehive.reload_top_frame(top.document, beehive.top_frame);
         });
 
         return false;
@@ -137,9 +157,9 @@ $(beehive).bind('init', function() {
 
     $('#preferences_updated').each(function() {
         
-        $beehive_top.trigger('reload_top_frame', [beehive.top_frame]);
-        $beehive_top.trigger('reload_frame', [beehive.frames.fnav]);
-        $beehive_top.trigger('reload_frame', [beehive.frames.left]);
+        beehive.reload_frame(top.document, beehive.frames.fnav);
+        beehive.reload_frame(top.document, beehive.frames.left);
+        beehive.reload_top_frame(top.document, beehive.top_frame);
     });
     
     $('input#print').bind('click', function() {
@@ -177,12 +197,5 @@ $(beehive).bind('init', function() {
             });
             
         }, 500);    
-    });
-    
-    $beehive_top.bind('reload_frame', function(event, frame_name) {
-        
-        if (frame_name == $top(window).attr('name')) {
-            window.location.reload();
-        }
     });
 });

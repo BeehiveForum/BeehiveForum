@@ -189,7 +189,7 @@ function cache_check_thread_list()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header("Status: 304 Not Modified");
+                header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
                 exit;
             }
         }
@@ -270,7 +270,7 @@ function cache_check_start_page()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header("Status: 304 Not Modified");
+                header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
                 exit;
             }
         }
@@ -364,7 +364,7 @@ function cache_check_messages()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header("Status: 304 Not Modified");
+                header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
                 exit;
             }
         }
@@ -454,7 +454,7 @@ function cache_check_last_modified($seconds = 300)
             header("Last-Modified: $remote_last_modified", true);
             header('Cache-Control: private, must-revalidate', true);
 
-            header("Status: 304 Not Modified");
+            header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
             exit;
         }
     }
@@ -489,8 +489,8 @@ function cache_check_etag($local_etag)
 
     if (strcmp($remote_etag, $local_etag) == "0") {
 
-        header("Etag: \"$local_etag\"", true);
-        header("Status: 304 Not Modified");
+        header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
+        header("Etag: \"$local_etag\"");
         exit;
     }
 

@@ -292,7 +292,7 @@ function bh_exception_handler($exception)
         }
         
         // Status error header
-        header("Status: 500 Internal Server Error");
+        header(sprintf("%s 500 Internal Server Error", $_SERVER['SERVER_PROTOCOL']));
 
         // Full mode error message display with Retry button.
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";

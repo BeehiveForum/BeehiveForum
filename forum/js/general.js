@@ -54,7 +54,9 @@ var beehive = $.extend({}, beehive, {
         $(context).find('frame').each(function() {
             
             if ($(this).attr('name') == frame_name) {
+                
                 $(this).attr('src', $(this).attr('src'));
+                return false;
             }
             
             beehive.reload_frame(this.contentDocument, frame_name);
@@ -66,10 +68,28 @@ var beehive = $.extend({}, beehive, {
         $(context).find('frame').each(function() {
             
             if ($(this).attr('name') == beehive.frames.ftop) {
+                
                 $(this).attr('src', src);
+                return false;
             }
             
             beehive.reload_top_frame(this.contentDocument, src);
+        });
+    }, 
+    
+    reload_user_font : function(context) {
+        
+        $(context).find('frame').each(function() {
+            
+            if (!$.inArray($(this).attr('name'), beehive.frames)) return true;
+                
+            var $head = $(this.contentDocument).find('head');
+            
+            var $user_font = $head.find('link#user_font');
+            
+            $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
+            
+            beehive.reload_user_font(this.contentDocument);
         });
     }
 });
@@ -139,17 +159,26 @@ $(beehive).bind('init', function() {
         
         if (beehive.uid == 0) return true;
 
-        $.getJSON($(this).attr('href'), { 'json' : true }, function(data) {
-
-            if (!data.success) return false;
-
-            $parent.html(data.html);
-
-            beehive.font_size = data.font_size;
+        $.ajax({
             
-            beehive.reload_frame(top.document, beehive.frames.fnav);
-            beehive.reload_frame(top.document, beehive.frames.left);
-            beehive.reload_top_frame(top.document, beehive.top_frame);
+            'cache': false,
+            'url' : $(this).attr('href'),
+            'data' : {
+                'webtag' : beehive.webtag,
+                'json' : 'true'
+            },
+            'success' : function(data) {
+                
+                if (!data.success) return false;
+                
+                $parent.html(data.html);
+
+                beehive.font_size = data.font_size;
+                
+                beehive.reload_user_font(top.document);
+                
+                $(top.document).find('frameset#index').attr('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
+            }
         });
 
         return false;

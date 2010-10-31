@@ -38,6 +38,9 @@ include_once(BH_INCLUDE_PATH. "cache.inc.php");
 // Disable PHP's register_globals
 unregister_globals();
 
+// Correctly set server protocol
+set_server_protocol();
+
 // Disable caching if on AOL
 cache_disable_aol();
 
@@ -119,7 +122,7 @@ $css_selectors = array('body' => 0.8, '.navpage' => 0.65);
 
 // Output the CSS
 foreach ($css_selectors as $css_selector => $css_font_ratio) {
-    printf("%s { font-size: %d%%; }\n", $css_selector, $font_size * $css_font_ratio * 10);
+    printf("%s {\n    font-size: %d%%;\n}\n\n", $css_selector, $font_size * $css_font_ratio * 10);
 }
 
 ?>

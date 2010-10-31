@@ -376,4 +376,21 @@ function unregister_globals()
     }
 }
 
+/**
+* set_server_protocol
+* 
+* Set the $_SERVER['SERVER_PROTOCOL'] to allow CGI
+* compliant Status headers to be sent instead of
+* RFC2616 compliant HTTP/1.1 header
+* 
+* @param void
+* @return void 
+*/
+function set_server_protocol()
+{
+    if (!isset($_SERVER['SERVER_PROTOCOL']) || ($_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.0' && $_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.1')) {
+        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
+    }
+}
+
 ?>

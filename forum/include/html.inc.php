@@ -279,7 +279,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 
 function html_user_banned()
 {
-    header("Status: 500 Internal Server Error");
+    header(sprintf("%s 500 Internal Server Error", $_SERVER['SERVER_PROTOCOL']));
     exit;
 }
 
@@ -792,9 +792,7 @@ function html_draw_top()
 
     // Font size (not for Guests)
     if (!user_is_guest()) {
-        
-        $font_size_path = html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag));
-        printf("<style type=\"text/css\" title=\"user_font\">@import \"%s\";</style>\n", $font_size_path);
+        html_include_css(html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag)), 'user_font', 'screen');
     }    
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";

@@ -38,6 +38,9 @@ include_once(BH_INCLUDE_PATH. "cache.inc.php");
 // Disable PHP's register_globals
 unregister_globals();
 
+// Correctly set server protocol
+set_server_protocol();
+
 // Disable caching if on AOL
 cache_disable_aol();
 

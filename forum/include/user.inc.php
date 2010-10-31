@@ -638,7 +638,7 @@ function user_get_prefs($uid)
 function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)
 {
     if (!$db_user_update_prefs = db_connect()) return false;
-
+    
     if (!is_numeric($uid)) return false;
 
     if (!is_array($prefs_array)) return false;
@@ -685,18 +685,18 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
     foreach ($prefs_array as $pref_name => $pref_setting) {
-
+        
         if (user_check_pref($pref_name, $pref_setting)) {
-
+            
             if (!isset($prefs_global_setting_array[$pref_name]) || $prefs_global_setting_array[$pref_name] == true) {
-
+                
                 if (in_array($pref_name, $global_pref_names)) {
 
                     $global_prefs_array[$pref_name] = $pref_setting;
                 }
 
             }else {
-
+                
                 if (in_array($pref_name, $forum_pref_names)) {
 
                     $forum_prefs_array[$pref_name] = $pref_setting;
@@ -781,24 +781,89 @@ function user_check_pref($name, $value)
 {
     // Checks to ensure that a preference setting contains valid data
     if (strlen(trim($value)) == 0) return true;
+    
+    // Different cases for different fields
+    switch ($name) {
 
-    if ($name == "FIRSTNAME" || $name == "LASTNAME") {
-        return preg_match("/^[a-z0-9 ]*$/Diu", $value);
-    } elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
-        return preg_match("/^[a-z0-9_-]*$/Diu", $value);
-    } elseif ($name ==  "DOB") {
-        return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/Du", $value);
-    } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
-        return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/iu', $value) || $value == "");
-    } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "USE_EMAIL_ADDR" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK" || $name == "THREADS_BY_FOLDER" || $name == "THREAD_LAST_PAGE" || $name = "SHOW_AVATARS") {
-        return ($value == "Y" || $value == "N") ? true : false;
-    } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
-        return (is_md5($value) || $value == "");
-    } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE" || $name == "LEFT_FRAME_WIDTH") {
-        return is_numeric($value);
-    } else {
-        return false;
+        case "FIRSTNAME":
+        case "LASTNAME":
+            
+            return preg_match("/^[a-z0-9 ]*$/Diu", $value);
+            break;
+        
+        case "STYLE":
+        case "EMOTICONS":
+        case "LANGUAGE":
+            
+            return preg_match("/^[a-z0-9_-]*$/Diu", $value);
+            break;
+        
+        case "DOB":
+        
+            return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/Du", $value);
+            break;
+        
+        case "HOMEPAGE_URL":
+        case "PIC_URL":
+        case "AVATAR_URL":
+            
+            return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/iu', $value) || $value == "");
+            break;
+            
+        case "EMAIL_NOTIFY":
+        case "DL_SAVING":
+        case "MARK_AS_OF_INT":
+        case "VIEW_SIGS":
+        case "PM_NOTIFY":
+        case "PM_NOTIFY_EMAIL":
+        case "PM_INCLUDE_REPLY": 
+        case "PM_SAVE_SENT_ITEM": 
+        case "PM_EXPORT_ATTACHMENTS":
+        case "PM_EXPORT_STYLE":
+        case "PM_EXPORT_WORDFILTER":
+        case "IMAGES_TO_LINKS":
+        case "SHOW_STATS":
+        case "USE_WORD_FILTER":
+        case "USE_ADMIN_FILTER":
+        case "ALLOW_EMAIL":
+        case "USE_EMAIL_ADDR":
+        case "ALLOW_PM":
+        case "ENABLE_WIKI_WORDS":
+        case "USE_MOVER_SPOILER":
+        case "USE_LIGHT_MODE_SPOILER":
+        case "USE_OVERFLOW_RESIZE":
+        case "REPLY_QUICK":
+        case "THREADS_BY_FOLDER":
+        case "THREAD_LAST_PAGE":
+        case "SHOW_AVATARS":
+        
+            return ($value == "Y" || $value == "N") ? true : false;
+            break;
+        
+        case "PIC_AID":
+        case "AVATAR_AID":
+        
+            return (is_md5($value) || $value == "");
+            break;
+        
+        case "ANON_LOGON":
+        case "TIMEZONE":
+        case "POSTS_PER_PAGE":
+        case "FONT_SIZE":
+        case "START_PAGE": 
+        case "DOB_DISPLAY": 
+        case "POST_PAGE":
+        case "SHOW_THUMBS":
+        case "PM_AUTO_PRUNE":
+        case "PM_EXPORT_FILE":
+        case "PM_EXPORT_TYPE":
+        case "LEFT_FRAME_WIDTH":
+        
+            return is_numeric($value);
+            break;
     }
+    
+    return false;
 }
 
 function user_update_sig($uid, $content, $html, $global_update = false)

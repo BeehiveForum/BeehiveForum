@@ -38,6 +38,9 @@ include_once(BH_INCLUDE_PATH. "cache.inc.php");
 // Disable PHP's register_globals
 unregister_globals();
 
+// Correctly set server protocol
+set_server_protocol();
+
 // Disable caching if on AOL
 cache_disable_aol();
 
@@ -98,18 +101,18 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
 
     // Load the user prefs
     $user_prefs = user_get_prefs($uid);
-
+    
     // Calculate the new font size.
     switch ($_GET['fontsize']) {
 
         case 'smaller':
 
-            $user_prefs['FONT_SIZE'] = $user_prefs['FONT_SIZE'] - 1;
+            $user_prefs = array('FONT_SIZE' => $user_prefs['FONT_SIZE'] - 1);
             break;
 
         case 'larger':
 
-            $user_prefs['FONT_SIZE'] = $user_prefs['FONT_SIZE'] + 1;
+            $user_prefs = array('FONT_SIZE' => $user_prefs['FONT_SIZE'] + 1);
             break;
     }
 
@@ -120,11 +123,11 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
     if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
 
     // Apply the font size to this forum only.
-    $user_prefs_global['FONT_SIZE'] = false;
-
+    $user_prefs_global = array('FONT_SIZE' => false);
+    
     // Update the user prefs.
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-
+        
         // If we have a JSON request respond with the replacement
         // HTML for the fontsize links, otherwise redirect back
         // to messages.php

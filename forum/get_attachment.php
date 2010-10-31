@@ -38,6 +38,9 @@ include_once(BH_INCLUDE_PATH. "cache.inc.php");
 // Disable PHP's register_globals
 unregister_globals();
 
+// Correctly set server protocol
+set_server_protocol();
+
 // Disable caching if on AOL
 cache_disable_aol();
 
@@ -223,7 +226,8 @@ if (isset($hash) && is_md5($hash)) {
                     }
 
                     if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-                        header("Status: 304 Not Modified");
+                        
+                        header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
                         exit;
                     }
 

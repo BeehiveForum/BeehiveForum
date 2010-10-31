@@ -379,24 +379,31 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     foreach ($user_profile_array['user_array'] as $user_array) {
 
         echo "                 <tr>\n";
+        
+        if (bh_session_get_value('SHOW_AVATARS') == 'Y') {
 
-        if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
+            if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
-        }elseif (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
+            }elseif (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
 
-            $attachment = attachments_get_by_hash($user_array['AVATAR_AID']);
+                $attachment = attachments_get_by_hash($user_array['AVATAR_AID']);
 
-            if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+                if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+
+                }else {
+
+                    echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+                }
 
             }else {
 
                 echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
-
+            
         }else {
 
             echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";

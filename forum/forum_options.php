@@ -227,30 +227,19 @@ if (isset($_POST['save'])) {
         $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
-    // This is a bit hacky. Rather than have 2 columns to
-    // remember the state of the tickbox and the drop down
-    // independently the SHOW_THUMBS column stores the
-    // value of the dropdown as a negative number for
-    // disabled and positive number for enabled.
     if (isset($_POST['show_thumbs_enabled']) && $_POST['show_thumbs_enabled'] == "Y") {
 
         if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
-
             $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'];
-
         }else {
-
             $user_prefs['SHOW_THUMBS'] = 2;
         }
 
     }else {
 
         if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
-
             $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'] * -1;
-
         }else {
-
             $user_prefs['SHOW_THUMBS'] = -2;
         }
     }
@@ -303,10 +292,34 @@ if (isset($_POST['save'])) {
         $user_prefs['REPLY_QUICK'] = 'N';
     }
 
+    if (isset($_POST['reply_quick_global'])) {
+        $user_prefs_global['REPLY_QUICK'] = ($_POST['reply_quick_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['REPLY_QUICK'] = false;
+    }
+
     if (isset($_POST['thread_last_page']) && ($_POST['thread_last_page'] == "Y")) {
         $user_prefs['THREAD_LAST_PAGE'] = 'Y';
     }else {
         $user_prefs['THREAD_LAST_PAGE'] = 'N';
+    }
+
+    if (isset($_POST['thread_last_page_global'])) {
+        $user_prefs_global['THREAD_LAST_PAGE'] = ($_POST['thread_last_page_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['THREAD_LAST_PAGE'] = false;
+    }
+
+    if (isset($_POST['show_avatars']) && ($_POST['show_avatars'] == "Y")) {
+        $user_prefs['SHOW_AVATARS'] = 'Y';
+    }else {
+        $user_prefs['SHOW_AVATARS'] = 'N';
+    }
+
+    if (isset($_POST['show_avatars_global'])) {
+        $user_prefs_global['SHOW_AVATARS'] = ($_POST['show_avatars_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['SHOW_AVATARS'] = false;
     }
 
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
@@ -460,7 +473,7 @@ if (!isset($uid)) $uid = bh_session_get_value('UID');
 
 // Get User Prefs
 $user_prefs = user_get_prefs($uid);
-
+   
 // Set the default POST_PAGE options if none set
 if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
 
@@ -573,7 +586,7 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"14\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"15\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("threads_by_folder", "Y", $lang['sortthreadlistbyfolders'], (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
@@ -625,7 +638,11 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all)
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("thread_last_page", "Y", $lang['threadlinksgotolastpage'], (isset($user_prefs['THREAD_LAST_PAGE']) && $user_prefs['THREAD_LAST_PAGE'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("thread_last_page_global", "Y", '', (isset($user_prefs['thread_last_page_global']) ? $user_prefs['thread_last_page_global'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("thread_last_page_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("thread_last_page_global", "Y", '', (isset($user_prefs['THREAD_LAST_PAGE_GLOBAL']) ? $user_prefs['THREAD_LAST_PAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("thread_last_page_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_avatars", "Y", $lang['showuseravatars'], (isset($user_prefs['SHOW_AVATARS']) && $user_prefs['SHOW_AVATARS'] == "Y")), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_avatars_global", "Y", '', (isset($user_prefs['SHOW_AVATARS_GLOBAL']) ? $user_prefs['SHOW_AVATARS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

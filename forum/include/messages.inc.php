@@ -75,16 +75,16 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
     $sql.= "($current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0))) < $active_sess_cutoff AS USER_ACTIVE, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS.ANON_LOGON ";
-    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-    $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_TO ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS_FORUM.ANON_LOGON, ";
+    $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
     $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.FID = {$table_data['FID']} AND SESSIONS.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "WHERE POST.TID = '$tid' ";
     $sql.= "AND POST.PID >= '$pid' ";
@@ -136,6 +136,18 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
             if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
             if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
+            
+            if (isset($message['AVATAR_URL_FORUM']) && strlen($message['AVATAR_URL_FORUM']) > 0) {
+                $message['AVATAR_URL'] = $message['AVATAR_URL_FORUM'];
+            }elseif (isset($message['AVATAR_URL_GLOBAL']) && strlen($message['AVATAR_URL_GLOBAL']) > 0) {
+                $message['AVATAR_URL'] = $message['AVATAR_URL_GLOBAL'];
+            }
+
+            if (isset($message['AVATAR_AID_FORUM']) && is_md5($message['AVATAR_AID_FORUM'])) {
+                $message['AVATAR_AID'] = $message['AVATAR_AID_FORUM'];
+            }elseif (isset($message['AVATAR_AID_GLOBAL']) && is_md5($message['AVATAR_AID_GLOBAL'])) {
+                $message['AVATAR_AID'] = $message['AVATAR_AID_GLOBAL'];
+            }            
 
             if (!is_array($messages)) $messages = array();
 
@@ -788,6 +800,23 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }else {
 
         echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>";
+    }
+    
+    if (bh_session_get_value('SHOW_AVATARS') == 'Y') {
+    
+        if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
+
+            echo "&nbsp;&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />";
+
+        }elseif (isset($message['AVATAR_AID']) && is_md5($message['AVATAR_AID'])) {
+
+            $attachment = attachments_get_by_hash($message['AVATAR_AID']);
+
+            if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+
+                echo "&nbsp;&nbsp;<img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
+            }
+        }
     }
 
     $temp_ignore = false;

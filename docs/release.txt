@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 0.10 (Released 22nd October 2010)
+What's new in 1.0 (Released 1st November 2010)
 ==================
 
 - Notes
@@ -33,6 +33,8 @@ What's new in 0.10 (Released 22nd October 2010)
 	  now pin your Beehive Forum to your Windows Superbar
 	  and make use of quick shortcuts to various sections
 	  including Messages, PM Inbox and Admin Tools.
+
+        - Lots and lots of bugs fixed!
 
 - For comprehensive list of changes please see the change log.        
 

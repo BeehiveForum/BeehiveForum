@@ -112,10 +112,10 @@ function stats_output_html()
     stats_update($session_count, $recent_post_count);
 
     // User Profile link is used by Active users and Newest user stats
-    $user_profile_link = "<a href=\"user_profile.php?webtag=%s&amp;uid=%s\" target=\"_blank\" class=\"popup 650x500\">%s</a>";
+    $user_profile_link = '%s<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500"><span class="%s" title="%s">%s</span></a>';
 
     // Search Engine Bot link
-    $search_engine_bot_link = "<a href=\"%s\" target=\"_blank\"><span class=\"user_stats_normal\">%s</span></a>";
+    $search_engine_bot_link = '<a href="%s" target="_blank"><span class="user_stats_normal">%s</span></a>';
 
     // Output the HTML.
     if (($user_stats = stats_get_active_user_list())) {
@@ -169,6 +169,9 @@ function stats_output_html()
             $active_users_array = array();
 
             foreach ($user_stats['USERS'] as $user) {
+                
+                $active_user_title = '';
+                $active_user_class = '';
 
                 if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
 
@@ -178,30 +181,54 @@ function stats_output_html()
                     $active_users_array[] = $active_user_display;
 
                 }else {
+                    
+                    $active_user_logon = format_user_name($user['LOGON'], $user['NICKNAME']);
 
-                    $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])));
+                    $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($active_user_logon));
 
                     if ($user['UID'] == $uid) {
 
                         if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
 
-                            $active_user_display = sprintf("<span class=\"user_stats_curuser\" title=\"%s\">%s</span>", $lang['youinvisible'], $active_user_display);
+                            $active_user_title = $lang['youinvisible'];
+                            $active_user_class = 'user_stats_curuser';
 
                         }else {
-
-                            $active_user_display = sprintf("<span class=\"user_stats_curuser\" title=\"%s\">%s</span>", $lang['younormal'], $active_user_display);
+                            
+                            $active_user_title = $lang['younormal'];
+                            $active_user_class = 'user_stats_curuser';
                         }
 
                     }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
-
-                        $active_user_display = sprintf("<span class=\"user_stats_friend\" title=\"%s\">%s</span>", $lang['friend'], $active_user_display);
+                        
+                        $active_user_title = $lang['friend'];
+                        $active_user_class = 'user_stats_friend';
 
                     }else {
+                        
+                        $active_user_class = 'user_stats_normal';
+                    }                    
+                    
+                    if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
+                        
+                        $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
+                                                         <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
+                                                       </a>', $webtag, $user['UID'], $user['AVATAR_URL'], $active_user_title);                        
+                        
+                    }else if (isset($user['AVATAR_AID']) && is_md5($user['AVATAR_AID'])) {
+                        
+                        $attachment = attachments_get_by_hash($recent_visitor['AVATAR_AID']);
 
-                        $active_user_display = sprintf("<span class=\"user_stats_normal\">%s</span>", $active_user_display);
+                        if (!($user_avatar_image = attachments_make_link($attachment, false, false, false, false))) {
+                            
+                            $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
+                                                             <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
+                                                           </a>', $webtag, $user['UID'], $user_avatar_image, $active_user_title);
+                          
+                        }
                     }
-
-                    $active_users_array[] = sprintf($user_profile_link, $webtag, $user['UID'], $active_user_display);
+                    
+                    $active_users_array[] = sprintf($user_profile_link, $active_user_avatar, $webtag, $user['UID'], $active_user_class, $active_user_title, $active_user_display);
                 }
             }
 
@@ -494,16 +521,18 @@ function stats_get_active_user_list()
 
     // Curent active users
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS.ANON_LOGON, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS_FORUM.ANON_LOGON, ";
     $sql.= "USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, ";
     $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL AS BOT_URL, SEARCH_ENGINE_BOTS.NAME AS BOT_NAME, ";
+    $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL, ";
     $sql.= "COALESCE(USER_PEER2.PEER_NICKNAME, USER.NICKNAME, SEARCH_ENGINE_BOTS.NAME) AS SORT_COLUMN ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER2 ";
     $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = '$uid') ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
@@ -535,6 +564,18 @@ function stats_get_active_user_list()
                 $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
+        
+        if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
+        }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
+        }
+
+        if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
+            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
+        }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
+            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
+        }        
 
         if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
@@ -568,6 +609,9 @@ function stats_get_active_user_list()
                                                            'NICKNAME'     => $user_data['NICKNAME'],
                                                            'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
                                                            'ANON_LOGON'   => $anon_logon);
+                
+                if (isset($user_data['AVATAR_URL'])) $stats['USERS'][$user_data['UID']]['AVATAR_URL'] = $user_data['AVATAR_URL'];
+                if (isset($user_data['AVATAR_AID'])) $stats['USERS'][$user_data['UID']]['AVATAR_AID'] = $user_data['AVATAR_AID'];
             }
 
         }else {

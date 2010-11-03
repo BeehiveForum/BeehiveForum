@@ -111,8 +111,11 @@ function stats_output_html()
     // Update the stats records.
     stats_update($session_count, $recent_post_count);
 
-    // User Profile link is used by Active users and Newest user stats
+    // User Profile link
     $user_profile_link = '%s<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500"><span class="%s" title="%s">%s</span></a>';
+
+    // Newest ser Profile link
+    $new_user_profile_link = '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">%s</a>';
 
     // Search Engine Bot link
     $search_engine_bot_link = '<a href="%s" target="_blank"><span class="user_stats_normal">%s</span></a>';
@@ -216,7 +219,7 @@ function stats_output_html()
                         
                         $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
                                                          <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
-                                                       </a>', $webtag, $user['UID'], $user['AVATAR_URL'], $active_user_title);                        
+                                                       </a>', $webtag, $user['UID'], $user['AVATAR_URL'], htmlentities_array($active_user_title));
                         
                     }else if (isset($user['AVATAR_AID']) && is_md5($user['AVATAR_AID'])) {
                         
@@ -226,7 +229,7 @@ function stats_output_html()
                             
                             $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
                                                              <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
-                                                           </a>', $webtag, $user['UID'], $user_avatar_image, $active_user_title);
+                                                           </a>', $webtag, $user['UID'], $user_avatar_image, htmlentities_array($active_user_title));
                           
                         }
                     }
@@ -366,7 +369,7 @@ function stats_output_html()
             if (($newest_member = stats_get_newest_user())) {
 
                 $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']));
-                $user_newest_profile_link = sprintf($user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
+                $user_newest_profile_link = sprintf($new_user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
 
                 echo sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);
 

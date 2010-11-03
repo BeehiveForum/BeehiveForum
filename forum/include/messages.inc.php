@@ -1071,6 +1071,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "                  <img src=\"", style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
                     echo "                </td>\n";
                 }
+            
+            } else {
+                
+                echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
             }
             
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";

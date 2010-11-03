@@ -806,7 +806,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
-            echo "&nbsp;&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />";
+            echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />";
 
         }elseif (isset($message['AVATAR_AID']) && is_md5($message['AVATAR_AID'])) {
 
@@ -814,7 +814,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                echo "&nbsp;&nbsp;<img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
+                echo "&nbsp;<img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
             }
         }
     }
@@ -830,11 +830,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
 
-        echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
+        echo "&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
 
     }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
 
-        echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
+        echo "&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
     }
 
     echo "</td>\n";

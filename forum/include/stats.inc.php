@@ -171,7 +171,10 @@ function stats_output_html()
             foreach ($user_stats['USERS'] as $user) {
                 
                 $active_user_title = '';
+                
                 $active_user_class = '';
+                
+                $active_user_avatar = '';
 
                 if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
 

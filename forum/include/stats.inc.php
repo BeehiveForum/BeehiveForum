@@ -223,7 +223,7 @@ function stats_output_html()
                         
                     }else if (isset($user['AVATAR_AID']) && is_md5($user['AVATAR_AID'])) {
                         
-                        $attachment = attachments_get_by_hash($recent_visitor['AVATAR_AID']);
+                        $attachment = attachments_get_by_hash($user['AVATAR_AID']);
 
                         if (!($user_avatar_image = attachments_make_link($attachment, false, false, false, false))) {
                             

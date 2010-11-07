@@ -1316,67 +1316,88 @@ function attachments_create_thumb_gd($filehash, $max_width, $max_height)
                                       3 => 'imagepng');
 
     // Required GD read support
-    $required_read_support = array(1 => 'GIF Read Support',
-                                   2 => 'JPG Support',
-                                   3 => 'PNG Support');
+    $required_read_support = array(1 => array('GIF Read Support'),
+                                   2 => array('JPG Support', 'JPEG Support'),
+                                   3 => array('PNG Support'));
 
     // Required GD write support
-    $required_write_support = array(1 => 'GIF Create Support',
-                                    2 => 'JPG Support',
-                                    3 => 'PNG Support');
+    $required_write_support = array(1 => array('GIF Create Support'),
+                                    2 => array('JPG Support', 'JPEG Support'),
+                                    3 => array('PNG Support'));
 
-    if (@file_exists($file_path) && @$image_info = getimagesize($file_path)) {
+    // Check the file exists and we can get some image data from it.
+    if (!file_exists($file_path) || !($image_info = @getimagesize($file_path))) return false;
+    
+    // Check the gd_info function exists
+    if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;    
 
-        if (function_exists('gd_info') && ($attachment_gd_info = gd_info())) {
+    // Check 1: Is the image format in our list of supported image types.
+    if (!isset($required_read_support[$image_info[2]])) return false;
+    if (!isset($required_write_support[$image_info[2]])) return false;
+    
+    // Check 2: Check gd_info function indicates support for the image type.
+    if (!attachments_get_gd_info_key($required_read_support[$image_info[2]])) return false;
+    if (!attachments_get_gd_info_key($required_write_support[$image_info[2]])) return false;
 
-            // Check 1: Does GD support reading and writing our image type?
-            if (!isset($required_read_support[$image_info[2]])) return false;
-            if (!isset($required_write_support[$image_info[2]])) return false;
+    // Check 3: Even if GD says it supports the image format check the php functions actually exist!
+    if (!function_exists($required_read_functions[$image_info[2]])) return false;
+    if (!function_exists($required_write_functions[$image_info[2]])) return false;
 
-            if (!isset($attachment_gd_info[$required_read_support[$image_info[2]]])) return false;
-            if (!isset($attachment_gd_info[$required_write_support[$image_info[2]]])) return false;
+    // Got this far, lets try reading the image.
+    if (!($src = @$required_read_functions[$image_info[2]]($file_path))) return false;
 
-            if ($attachment_gd_info[$required_read_support[$image_info[2]]] != 1) return false;
-            if ($attachment_gd_info[$required_write_support[$image_info[2]]] != 1) return false;
+    $target_width  = $image_info[0];
+    $target_height = $image_info[1];
 
-            // Check 2: Even if GD says it supports the image format check the php functions actually exist!
-            if (!function_exists($required_read_functions[$image_info[2]])) return false;
-            if (!function_exists($required_write_functions[$image_info[2]])) return false;
+    while ($target_width > $max_width || $target_height > $max_height) {
 
-            // Got this far, lets try reading the image.
-            if ((@$src = $required_read_functions[$image_info[2]]($file_path))) {
-
-                $target_width  = $image_info[0];
-                $target_height = $image_info[1];
-
-                while ($target_width > $max_width || $target_height > $max_height) {
-
-                    $target_width--;
-                    $target_height = $target_width * ($image_info[1] / $image_info[0]);
-                }
-
-                if (strcmp($attachment_gd_info['GD Version'], '2.0') > -1) {
-
-                    $dst = imagecreatetruecolor($target_width, $target_height);
-                    $dst = attachments_thumb_transparency($dst);
-
-                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
-                                       $target_height, $image_info[0], $image_info[1]);
-
-                }else {
-
-                    $dst = imagecreate($target_width, $target_height);
-                    $dst = attachments_thumb_transparency($dst);
-
-                    imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
-                                     $target_height, $image_info[0], $image_info[1]);
-                }
-
-                return $required_write_functions[$image_info[2]]($dst, "$file_path.thumb");
-            }
-        }
+        $target_width--;
+        $target_height = $target_width * ($image_info[1] / $image_info[0]);
     }
 
+    if (strcmp($gd_info['GD Version'], '2.0') > -1) {
+
+        $dst = imagecreatetruecolor($target_width, $target_height);
+        $dst = attachments_thumb_transparency($dst);
+
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
+                           $target_height, $image_info[0], $image_info[1]);
+
+    }else {
+
+        $dst = imagecreate($target_width, $target_height);
+        $dst = attachments_thumb_transparency($dst);
+
+        imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
+                         $target_height, $image_info[0], $image_info[1]);
+    }
+
+    return $required_write_functions[$image_info[2]]($dst, "$file_path.thumb");
+}
+
+/**
+* attachments_get_gd_info_key
+* 
+* Check that the result from gd_info contains at least one
+* of the keys specified in the array $image_types_array.
+*  
+* @param array $image_types_array
+* @return boolean.
+*/
+function attachments_get_gd_info_key($image_types_array)
+{
+    if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
+    
+    if (!is_array($image_types_array)) return false;
+    
+    // Iterate over the keys we're looking for
+    foreach ($image_types_array as $gd_info_key) {
+        
+        // Check the gd_info_key exists in the gd_info result and it evaluates to true.
+        if (isset($gd_info[$gd_info_key]) && ($gd_info[$gd_info_key])) return true;
+    }
+    
+    // Failed to find a match.
     return false;
 }
 

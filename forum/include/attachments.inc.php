@@ -1188,12 +1188,12 @@ function attachments_thumb_transparency($im)
 * @param mixed $max_height
 * @return bool
 */
-function attachments_create_thumb($filepath, $max_width = 150, $max_height = 150)
+function attachments_create_thumb($filehash, $max_width = 150, $max_height = 150)
 {
     if (forum_get_setting('attachment_thumbnails', 'N')) return false;
 
-    if (!attachments_create_thumb_im($filepath, $max_width, $max_height)) {
-        return attachments_create_thumb_gd($filepath, $max_width, $max_height);
+    if (!attachments_create_thumb_im($filehash, $max_width, $max_height)) {
+        return attachments_create_thumb_gd($filehash, $max_width, $max_height);
     }
 
     return true;
@@ -1209,33 +1209,51 @@ function attachments_create_thumb($filepath, $max_width = 150, $max_height = 150
 * @param mixed $max_width
 * @param mixed $max_height
 */
-function attachments_create_thumb_im($filepath, $max_width, $max_height)
+function attachments_create_thumb_im($filehash, $max_width, $max_height)
 {
     if (!is_numeric($max_width)) $max_width = 150;
     if (!is_numeric($max_height)) $max_height = 150;
     
+    // Check the attachments dir is available.
+    if (!$attachment_dir = attachments_check_dir()) return false;
+    
     // Array to store the results from ImageMagick
     $imagemagick_info = array();
+    
+    // Get the real path to the attachments directory.
+    if (!($attachment_real_path = realpath($attachment_dir))) return false;
+    
+    // Convert Windows directory separators to unix style.
+    $attachment_real_path = str_replace(DIRECTORY_SEPARATOR, "/", $attachment_real_path);
+    
+    // Full attachment file path.
+    $file_full_path = "$attachment_real_path/$filehash";
+    
+    // Relative attachment file path.
+    $file_relative_path = "$attachment_dir/$filehash";
 
     // Get the imagemagick path from settings.
     if (!($imagemagick_path = forum_get_global_setting('imagemagick_path'))) return false;
-
+    
     // Check the image filepath exists
-    if (!@file_exists($filepath) || (!@$image_info = getimagesize($filepath))) return false;
-
+    if (!file_exists($file_relative_path)) return false;
+    
+    // Check it looks like something we can use.
+    if (!($image_info = @getimagesize($file_relative_path))) return false;
+    
     // Check that the specified imagemagick path exists and can be executed.
-    if (!@file_exists($imagemagick_path) || !is_executable($imagemagick_path)) return false;
-
+    if (!file_exists($imagemagick_path) || !is_executable($imagemagick_path)) return false;
+    
     // Run imagemagick with it's -version command line to see if it
     // really is imagemagick. Not really an authoritative test, but it'll do.
     exec(sprintf('%s -version', escapeshellarg($imagemagick_path)), $imagemagick_info);
-
+    
     // Convert result into a string.
     $imagemagick_info = trim(implode("\n", $imagemagick_info));
 
     // Check it contains the string "Version: ImageMagick"
     if (strstr($imagemagick_info, 'Version: ImageMagick') === false) return false;
-
+    
     // If we're dealing with a GIF image, we need to
     // process it to correctly resize all the frames it
     // might contain - in the case of animated gifs.
@@ -1243,25 +1261,25 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
 
         // Resize the gif, dropping all but the first frame.
         exec(sprintf('%s %s[0] -resize "%dx%d>" %s', escapeshellarg($imagemagick_path),
-                                                     escapeshellarg($filepath),
+                                                     escapeshellarg($file_full_path),
                                                      $max_width,
                                                      $max_height,
-                                                     escapeshellarg("$filepath.thumb")));
-
+                                                     escapeshellarg("$file_full_path.thumb")));
+        
     } else {
 
         // It's not a gif, so carry on and resize the image.
         exec(sprintf('%s %s -resize "%dx%d>" %s', escapeshellarg($imagemagick_path),
-                                                  escapeshellarg($filepath),
+                                                  escapeshellarg($file_full_path),
                                                   $max_width,
                                                   $max_height,
-                                                  escapeshellarg("$filepath.thumb")));
+                                                  escapeshellarg("$file_full_path.thumb")));
     }
 
     // if imagemagick baulks, it won't create the final image, so we
     // test that exists before returning the result.
-    if (!@file_exists(sprintf('%s.thumb', $filepath))) return false;
-
+    if (!file_exists(sprintf('%s.thumb', $file_relative_path))) return false;
+    
     return true;
 }
 
@@ -1276,10 +1294,16 @@ function attachments_create_thumb_im($filepath, $max_width, $max_height)
 * @param string $filepath - path to the file attachment on the server
 * @return bool.
 */
-function attachments_create_thumb_gd($filepath, $max_width, $max_height)
+function attachments_create_thumb_gd($filehash, $max_width, $max_height)
 {
     if (!is_numeric($max_width)) $max_width = 150;
     if (!is_numeric($max_height)) $max_height = 150;
+    
+    // Check the attachments dir is available.
+    if (!$attachment_dir = attachments_check_dir()) return false;
+    
+    // Relative attachment file path.
+    $file_path = "$attachment_dir/$filehash";   
 
     // Required PHP image create from functions
     $required_read_functions  = array(1 => 'imagecreatefromgif',
@@ -1293,15 +1317,15 @@ function attachments_create_thumb_gd($filepath, $max_width, $max_height)
 
     // Required GD read support
     $required_read_support = array(1 => 'GIF Read Support',
-                                   2 => 'JPEG Support',
+                                   2 => 'JPG Support',
                                    3 => 'PNG Support');
 
     // Required GD write support
     $required_write_support = array(1 => 'GIF Create Support',
-                                    2 => 'JPEG Support',
+                                    2 => 'JPG Support',
                                     3 => 'PNG Support');
 
-    if (@file_exists($filepath) && @$image_info = getimagesize($filepath)) {
+    if (@file_exists($file_path) && @$image_info = getimagesize($file_path)) {
 
         if (function_exists('gd_info') && ($attachment_gd_info = gd_info())) {
 
@@ -1320,7 +1344,7 @@ function attachments_create_thumb_gd($filepath, $max_width, $max_height)
             if (!function_exists($required_write_functions[$image_info[2]])) return false;
 
             // Got this far, lets try reading the image.
-            if ((@$src = $required_read_functions[$image_info[2]]($filepath))) {
+            if ((@$src = $required_read_functions[$image_info[2]]($file_path))) {
 
                 $target_width  = $image_info[0];
                 $target_height = $image_info[1];
@@ -1348,7 +1372,7 @@ function attachments_create_thumb_gd($filepath, $max_width, $max_height)
                                      $target_height, $image_info[0], $image_info[1]);
                 }
 
-                return $required_write_functions[$image_info[2]]($dst, "$filepath.thumb");
+                return $required_write_functions[$image_info[2]]($dst, "$file_path.thumb");
             }
         }
     }

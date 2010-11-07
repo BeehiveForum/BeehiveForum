@@ -231,7 +231,7 @@ if (isset($_POST['upload'])) {
 
                             attachments_add($uid, $aid, $uniqfileid, $filename, $filetype);
 
-                            attachments_create_thumb($filepath);
+                            attachments_create_thumb($filehash);
 
                             if (($users_free_space > 0)) {
                                 $users_free_space -= $filesize;

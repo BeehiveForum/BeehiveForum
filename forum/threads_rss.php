@@ -93,7 +93,7 @@ $password_array = array();
 $passhash_array = array();
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
-$forum_location = html_get_forum_uri(null, false);
+$forum_location = html_get_forum_uri();
 
 // Get the Forum Name
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');

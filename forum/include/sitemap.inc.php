@@ -208,8 +208,8 @@ function sitemap_create_file()
     $sitemap_file_count = 1;
 
     // Forum URL
-    $forum_location = html_get_forum_uri(null, false);
-
+    $forum_location = html_get_forum_uri();
+    
     // Check that search engine spidering is enabled
     if (forum_get_setting('allow_search_spidering', 'N')) return false;
 

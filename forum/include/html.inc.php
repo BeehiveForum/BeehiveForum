@@ -1191,7 +1191,7 @@ function bh_setcookie($name, $value, $expires = 0)
     if (!defined('BEEHIVEMODE_LIGHT') && !browser_check(BROWSER_OPERA)) {
         
         // Set default cookie path.
-        $cookie_path = '/';
+        $cookie_path = '';
 
         // Try and parse the cookie_domain config.inc.php setting.
         // Only set the path if we can also get the hostname.
@@ -1206,10 +1206,10 @@ function bh_setcookie($name, $value, $expires = 0)
                 }
             }
         }
-
+        
         return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $cookie_secure);
     }
-
+    
     return setcookie($name, $value, $expires, '', '', $cookie_secure);
 }
 

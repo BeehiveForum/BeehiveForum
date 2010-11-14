@@ -26,6 +26,8 @@ $(beehive).bind('init', function() {
     $('div.bhinputsearch').each(function() {
 
         var $container = $(this);
+        
+        var container_width = $container.width();
 
         var $search_input = $container.find('input:text');
 
@@ -49,7 +51,7 @@ $(beehive).bind('init', function() {
         $search_button.appendTo($container);
         
         $search_button.load(function() {
-            $search_input.css('width', $container.width() - $(this).width());
+            $search_input.css('width', container_width - $(this).width());
         });
         
         if ($container.hasClass('search_logon')) {
@@ -63,12 +65,12 @@ $(beehive).bind('init', function() {
                 },
                 
                 formatItem : function(item) {
-                    var data = JSON.parse(item);
+                    var data = $.parseJSON(item);
                     return $.sprintf('%s (%s)', data.NICKNAME, data.LOGON);
                 },
                 
                 formatResult : function(item) {
-                    var data = JSON.parse(item);
+                    var data = $.parseJSON(item);
                     return data.LOGON;
                 }
             });

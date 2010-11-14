@@ -1991,7 +1991,7 @@ function messages_forum_stats($tid, $pid)
         if (bh_session_get_value("SHOW_STATS") == "Y" || user_is_guest()) {
 
             if (!user_is_guest()) {
-                echo "                  <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=N&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\" alt=\"{$lang['hide_stats']}\" title=\"{$lang['hide_stats']}\" /></a></td>\n";
+                echo "                  <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=N&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('hide.png'), "\" border=\"0\" alt=\"{$lang['hide_stats']}\" title=\"{$lang['hide_stats']}\" /></a></td>\n";
             }else {
                 echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
             }
@@ -2065,7 +2065,7 @@ function messages_forum_stats($tid, $pid)
 
         }else {
 
-            echo "                  <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=Y&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\" alt=\"{$lang['show_stats']}\" title=\"{$lang['show_stats']}\" /></a></td>\n";
+            echo "                  <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=Y&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('show.png'), "\" border=\"0\" alt=\"{$lang['show_stats']}\" title=\"{$lang['show_stats']}\" /></a></td>\n";
         }
 
         echo "                </tr>\n";

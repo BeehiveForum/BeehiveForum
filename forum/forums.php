@@ -507,16 +507,16 @@ if (!user_is_guest()) {
 
                     if ($forum['INTEREST'] == FORUM_IGNORED) {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -720,16 +720,16 @@ if (!user_is_guest()) {
 
                     if ($forum['INTEREST'] == FORUM_IGNORED) {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -857,7 +857,7 @@ if (!user_is_guest()) {
             }
 
             echo "                  <td align=\"left\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=discussion.php%3Fwebtag%3D{$forum['WEBTAG']}\">", sprintf($lang['forummessages'], number_format($forum['MESSAGES'], 0, ".", ",")), "</a></td>\n";
-            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
             echo "                </tr>\n";
         }
     }

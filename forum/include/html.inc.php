@@ -682,10 +682,6 @@ function html_draw_top()
 
     $forum_content_rating = html_get_forum_content_rating();
     
-    $favicon_filepath = html_get_favicon();
-    
-    $apple_touch_icon_filepath = html_get_apple_touch_icon();
-
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     if ($frame_set_html === false) {
@@ -766,8 +762,13 @@ function html_draw_top()
         }
     }
     
-    printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
-    printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);
+    if (($favicon_filepath = html_get_favicon()) {
+        printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
+    }
+    
+    if (($apple_touch_icon_filepath = html_get_apple_touch_icon())) {
+        printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);    
+    }
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
 

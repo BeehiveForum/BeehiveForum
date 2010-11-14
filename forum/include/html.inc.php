@@ -321,10 +321,23 @@ function html_get_favicon()
     }
 
     if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/favicon.ico', basename($user_style)));
+        return html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', basename($user_style)));
     }
 
-    return html_get_forum_file_path('styles/favicon.ico');
+    return false;
+}
+
+function html_get_apple_touch_icon()
+{
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
+        $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    }
+
+    if ($user_style !== false) {
+        return html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon.png', basename($user_style)));
+    }
+
+    return false;
 }
 
 function html_get_style_sheet()
@@ -670,6 +683,8 @@ function html_draw_top()
     $forum_content_rating = html_get_forum_content_rating();
     
     $favicon_filepath = html_get_favicon();
+    
+    $apple_touch_icon_filepath = html_get_apple_touch_icon();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -752,6 +767,7 @@ function html_draw_top()
     }
     
     printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
+    printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
 

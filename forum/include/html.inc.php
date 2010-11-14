@@ -762,7 +762,7 @@ function html_draw_top()
         }
     }
     
-    if (($favicon_filepath = html_get_favicon()) {
+    if (($favicon_filepath = html_get_favicon())) {
         printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
     }
     

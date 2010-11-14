@@ -738,24 +738,30 @@ if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
-    echo "                        <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-    echo "                          <tr>\n";
-    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+    echo "                    <br />\n";
+    echo "                    <table width=\"190\" class=\"messagefoot\" cellspacing=\"0\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-
-        echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "</td>\n";
-        echo "                          </tr>\n";
-        echo "                          <tr>\n";
-        echo "                            <td align=\"left\" colspan=\"2\">{$emoticon_preview_html}</td>\n";
-
-    }else {
-
-        echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "</td>\n";
+        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
+    } else {
+        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
     }
 
-    echo "                          </tr>\n";
-    echo "                        </table>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">\n";
+    
+    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+        echo "                          <div class=\"emots_toggle\">{$emoticon_preview_html}</div>\n";
+    } else {
+        echo "                          <div class=\"emots_toggle\" style=\"display: none\">{$emoticon_preview_html}</div>\n";
+    }
+    
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
 }
 
 echo "                      </td>\n";
@@ -836,32 +842,36 @@ if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_
 }
 
 if ($allow_sig == true) {
-
-    echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    
+    echo "<br /><br /><table class=\"messagefoot\" width=\"480\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
+    if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
+    } else {
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
+    }
+    
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" colspan=\"2\">\n";
+    echo "      <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
+    
     $t_sig = $sig->getTidyContent();
 
-    if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, false, 'tabindex="7"', 'signature_content'), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
-
-        if ($sig->isDiff()) {
-
-            echo $tools->compare_original("t_sig", $sig);
-        }
-
-    }else {
-
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'hide'), form_input_hidden("t_sig", $t_sig), "</td>\n";
+    echo $tools->textarea("t_sig", $t_sig, 5, 75, false, 'tabindex="7"', 'signature_content');
+    
+    if ($sig->isDiff() && !$fetched_sig) {
+        echo $tools->compare_original("t_sig", $sig);
     }
-
+    
+    echo "      </div>\n";
+    echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
+    
+    echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";    
 }
 
 echo "</td></tr>\n";

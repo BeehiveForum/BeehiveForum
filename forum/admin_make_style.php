@@ -530,7 +530,7 @@ echo "                <td colspan=\"2\" align=\"left\">\n";
 echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" class=\"foldername\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /><a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">General</a></td>\n";
-echo "                      <td align=\"left\" class=\"folderpostnew\" width=\"15\"><a href=\"javascript:void(0)\"><img src=\"images/folder_hide.png\" border=\"0\" alt=\"{$lang['folderinterest']}\" title=\"{$lang['folderinterest']}\" /></a></td>\n";
+echo "                      <td align=\"left\" class=\"folderpostnew\" width=\"15\"><a href=\"javascript:void(0)\"><img src=\"images/hide.png\" border=\"0\" alt=\"{$lang['folderinterest']}\" title=\"{$lang['folderinterest']}\" /></a></td>\n";
 echo "                    </tr>\n";
 echo "                  </table>\n";
 echo "                </td>\n";

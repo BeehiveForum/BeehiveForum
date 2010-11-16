@@ -90,20 +90,20 @@ $redirect = false;
 $hash = attachments_get_url_query_hash($redirect);
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = "get_attachment.php%3Fwebtag%3D$webtag%26hash%3D$hash";
     header_redirect("$forum_path/logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;

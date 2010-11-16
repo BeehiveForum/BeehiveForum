@@ -121,7 +121,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'LAST_VISIT';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Array to hold our forums in.
     $forums_array = array();
@@ -271,7 +271,7 @@ function user_set_forum_interest($fid, $interest)
 {
     if (!$db_user_set_forum_interest = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
@@ -292,7 +292,7 @@ function forums_any_favourites()
 {
     if (!$db_forums_any_favourites = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM ";
     $sql.= "WHERE INTEREST = 1 AND UID = '$uid'";

@@ -86,20 +86,20 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -196,13 +196,13 @@ if (isset($_POST['save'])) {
     }
 
     // User's UID for updating with.
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     // Update USER_PREFS
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
         // Reinitialize the User's Session to save them having to logout and back in
-        bh_session_init($uid, false);
+        session_init($uid, false);
 
         // Redirect back to the page so we correctly reload the user's preferences.
         header_redirect("pm_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
@@ -215,7 +215,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if (!isset($uid)) $uid = bh_session_get_value('UID');
+if (!isset($uid)) $uid = session_get_value('UID');
 
 // Get User Prefs
 $user_prefs = user_get_prefs($uid);

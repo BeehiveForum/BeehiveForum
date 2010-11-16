@@ -59,7 +59,7 @@ function load_language_file()
 
          // if the user has expressed a preference for language,
          // ignore what the browser wants and use that if available
-        if (($pref_language = bh_session_get_value("LANGUAGE"))) {
+        if (($pref_language = session_get_value("LANGUAGE"))) {
 
             if (@file_exists("include/languages/{$pref_language}.inc.php")) {
 

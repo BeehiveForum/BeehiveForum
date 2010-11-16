@@ -55,14 +55,14 @@ function logon_perform()
         if (forum_check_webtag_available($webtag)) {
 
             // Clear thread_mode cookie
-            bh_setcookie("thread_mode_{$webtag}", '', time() - YEAR_IN_SECONDS);
+            html_set_cookie("thread_mode_{$webtag}", '', time() - YEAR_IN_SECONDS);
         }
 
         // Remove cookie that shows the logon screen.
-        bh_setcookie('logon', '', time() - YEAR_IN_SECONDS);
+        html_set_cookie('logon', '', time() - YEAR_IN_SECONDS);
         
         // Initialise Guest user session.
-        bh_session_init(0);
+        session_init(0);
         
         // Success
         return true;
@@ -79,21 +79,21 @@ function logon_perform()
         if (($uid = user_logon($user_logon, $user_passhash))) {
 
             // Remove the cookie which shows the logon page.
-            bh_setcookie('logon', "", time() - YEAR_IN_SECONDS);
+            html_set_cookie('logon', "", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
-            bh_session_init($uid);
+            session_init($uid);
 
             // Check if we should save the passhash to allow auto logon,
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {
                 
-                bh_setcookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-                bh_setcookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
+                html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
+                html_set_cookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
                 
             } else {
                 
-                bh_setcookie('user_logon', '', time() - YEAR_IN_SECONDS);
-                bh_setcookie('user_passhash', '', time() - YEAR_IN_SECONDS);
+                html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
+                html_set_cookie('user_passhash', '', time() - YEAR_IN_SECONDS);
             }
 
             // Success
@@ -114,26 +114,26 @@ function logon_perform_auto($redirect = true)
     forum_check_webtag_available($webtag);
     
     // If we're logging in we don't want to try this.
-    if (bh_getcookie('logon')) return false;
+    if (html_get_cookie('logon')) return false;
     
     // Check if we're already logged in.
-    if (bh_session_check(false, false)) return false;
+    if (session_check(false, false)) return false;
     
     // Get the user_logon cookie
-    if (!($user_logon = bh_getcookie('user_logon'))) return false;
+    if (!($user_logon = html_get_cookie('user_logon'))) return false;
     
     // Get the passhash cookie value
-    if (!($user_passhash = bh_getcookie('user_passhash'))) return false;
+    if (!($user_passhash = html_get_cookie('user_passhash'))) return false;
     
     // Try and login the user.
     if (!($uid = user_logon($user_logon, $user_passhash))) return false;
         
     // Reset the user_logon and user_passhash cookies
-    bh_setcookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-    bh_setcookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
+    html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
+    html_set_cookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
     
     // Initialise user session
-    bh_session_init($uid);
+    session_init($uid);
     
     // Check if we're automatically redirecting
     if (!$redirect) return true;
@@ -155,7 +155,7 @@ function logon_draw_form($logon_options)
     if (!is_numeric($logon_options)) $logon_options = LOGON_FORM_DEFAULT;
 
     // Clean the logon cookie so we don't bounce to the logon screen.
-    bh_setcookie('logon', "", time() - YEAR_IN_SECONDS);
+    html_set_cookie('logon', "", time() - YEAR_IN_SECONDS);
 
     // Check for previously failed logon.
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
@@ -217,7 +217,7 @@ function logon_draw_form($logon_options)
         echo "                    </table>\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', '', (bh_getcookie('user_logon') && bh_getcookie('user_passhash'))), "</td>\n";
+        echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', '', (html_get_cookie('user_logon') && html_get_cookie('user_passhash'))), "</td>\n";
         echo "                        <td align=\"left\"><label for=\"user_remember\">{$lang['rememberme']}</label></td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";

@@ -80,16 +80,16 @@ cache_disable();
 $webtag = get_webtag();
 
 // Start User Session.
-$user_sess = bh_session_check();
+$user_sess = session_check();
 
 // User font size
-if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
+if (($font_size = session_get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 
 // User style
-if (($user_style = bh_session_get_value('STYLE')) === false) {
-    $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+if (($user_style = session_get_value('STYLE')) === false) {
+    $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
 }
 
 // Look for autocomplete search request
@@ -128,13 +128,13 @@ if (isset($_GET['search'])) {
                            'more');
 
     // Get the user's saved left frame width.
-    if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
         $left_frame_width = 280;
     }
                            
     // Construct the Javascript / JSON array
     $json_data = array('webtag'           => $webtag,
-                       'uid'              => bh_session_get_value('UID'),
+                       'uid'              => session_get_value('UID'),
                        'lang'             => array_intersect_key($lang, array_flip($lang_required)),
                        'images'           => array(),
                        'font_size'        => $font_size,
@@ -162,7 +162,7 @@ if (isset($_GET['search'])) {
         foreach ($images_array as $image_filename) {
             
             $image_filename = basename($image_filename);
-            $json_data['images'][$image_filename] = style_image($image_filename);
+            $json_data['images'][$image_filename] = html_style_image($image_filename);
         }
     }
 

@@ -96,20 +96,20 @@ if (isset($_GET['opensearch'])) {
 }
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -462,10 +462,10 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         echo "<br />\n";
         echo "<h1>{$lang['searchresults']}</h1>\n";
-        echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
+        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
         if ($offset >= 20) {
-            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['prevpage']}</a>\n";
+            echo "<img src=\"".html_style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['prevpage']}</a>\n";
         }
 
         echo "<ol start=\"", $offset + 1, "\">\n";
@@ -512,7 +512,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['findmore']}</a><br />\n";
+            echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['findmore']}</a><br />\n";
         }
 
         echo "<br />\n";
@@ -544,7 +544,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         echo "<br />\n";
         echo "<h1>{$lang['error']}</h1>\n";
-        echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br /><br />\n";
+        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br /><br />\n";
     }
 
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";

@@ -89,7 +89,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
 
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag();
@@ -97,7 +97,7 @@ if (!$user_sess = bh_session_check()) {
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -193,7 +193,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
+    if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
@@ -201,7 +201,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (!session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
@@ -259,7 +259,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 post_add_edit_text($tid, $pid);
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session_get_value('UID')) {
                     admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
                 }
 
@@ -284,7 +284,7 @@ if (isset($msg) && validate_msg($msg)) {
 
         html_draw_top("title={$lang['admin']} - {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
 
-        echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['approvepost']}</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['approvepost']}</h1>\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
@@ -303,7 +303,7 @@ if (isset($msg) && validate_msg($msg)) {
         $preview_message['FLOGON'] = $preview_tuser['LOGON'];
         $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
-        $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
+        $show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             html_display_error_array($error_msg_array, '720', 'left');
@@ -370,7 +370,7 @@ if (isset($msg) && validate_msg($msg)) {
 
 }else {
 
-    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp']);
@@ -382,7 +382,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['postapprovalqueue']}</h1>\n";
 
     if (sizeof($post_approval_array['post_array']) < 1) {
         html_display_warning_msg($lang['nopostsawaitingapproval'], '720', 'center');

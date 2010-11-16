@@ -84,7 +84,7 @@ function user_create($logon, $password, $nickname, $email)
     $email     = db_escape_string($email);
     $md5pass   = md5($password);
 
-    if (($http_referer = bh_session_get_value('REFERER'))) {
+    if (($http_referer = session_get_value('REFERER'))) {
         $http_referer = db_escape_string($http_referer);
     }else {
         $http_referer = "";
@@ -254,7 +254,7 @@ function user_change_password($user_uid, $password, $old_passhash = false)
 
     $passhash = db_escape_string(md5($password));
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
         $sql.= "WHERE UID = '$user_uid'";
@@ -342,7 +342,7 @@ function user_get($uid)
 
     if (!is_numeric($uid)) return false;
 
-    $sess_uid = bh_session_get_value('UID');
+    $sess_uid = session_get_value('UID');
 
     if ((!$table_data = get_table_prefix()) || ($uid == $sess_uid)) {
 
@@ -910,7 +910,7 @@ function user_update_global_sig($uid, $value, $global = true)
 
 function user_is_guest()
 {
-    return (bh_session_get_value('UID') == 0);
+    return (session_get_value('UID') == 0);
 }
 
 function user_guest_enabled()
@@ -928,7 +928,7 @@ function user_get_forthcoming_birthdays()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     // Constants for user relationship
     $user_ignored = USER_IGNORED;
@@ -986,7 +986,7 @@ function user_search($user_search)
 
     $user_array = array();
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
@@ -1075,7 +1075,7 @@ function user_get_friends($uid)
 
     $user_rel = USER_FRIEND;
 
-    $sess_uid = bh_session_get_value('UID');
+    $sess_uid = session_get_value('UID');
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
@@ -1231,7 +1231,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     $user_search_peers_array = array();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
@@ -1295,7 +1295,7 @@ function user_get_word_filter_list($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, ";
     $sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED ";
@@ -1336,7 +1336,7 @@ function user_get_word_filter($filter_id)
 
     if (!is_numeric($filter_id)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1360,7 +1360,7 @@ function user_get_word_filter_count()
 {
     if (!$db_user_get_word_filter_count = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1381,7 +1381,7 @@ function user_clear_word_filter()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` WHERE UID = '$uid'";
 
@@ -1403,7 +1403,7 @@ function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
@@ -1429,7 +1429,7 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
@@ -1449,7 +1449,7 @@ function user_delete_word_filter($filter_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
@@ -1543,19 +1543,19 @@ function user_prefs_prep_attachments($image_attachments_array)
 
 function user_get_local_time()
 {
-    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
+    if (($timezone_id = session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
+    if (($gmt_offset = session_get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
+    if (($dst_offset = session_get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
+    if (($dl_saving = session_get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
@@ -1566,6 +1566,34 @@ function user_get_local_time()
     }
 
     return $local_time;
+}
+
+function user_get_posts($uid)
+{
+    if (!$db_user_get_posts = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT TID, PID FROM `{$table_data['PREFIX']}POST` WHERE FROM_UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_user_get_posts)) return false;
+
+    if (db_num_rows($result)) {
+
+        $user_post_array = array();
+
+        while (($post_data = db_fetch_array($result))) {
+
+            $user_post_array[] = $post_data;
+        }
+
+        return $user_post_array;
+
+    }
+
+    return false;
 }
 
 ?>

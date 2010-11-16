@@ -85,13 +85,13 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -114,7 +114,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -196,7 +196,7 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
 
 html_draw_top("title={$lang['admin']} - {$lang['managefolders']} - {$lang['addnewfolder']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolders']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfolder']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolders']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfolder']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'center');

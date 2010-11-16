@@ -200,7 +200,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "      <td class=\"error_msg_text\">{$lang['thefollowingerrorswereencountered']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -228,7 +228,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
     echo "      <td valign=\"top\" class=\"success_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -249,7 +249,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "      <td valign=\"top\" class=\"error_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -270,7 +270,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
     echo "      <td valign=\"top\" class=\"warning_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -296,7 +296,7 @@ function html_email_confirmation_error()
 {
     $lang = load_language_file();
 
-    if (($uid = bh_session_get_value('UID')) === false) return;
+    if (($uid = session_get_value('UID')) === false) return;
 
     $user_array = user_get($uid);
 
@@ -316,8 +316,8 @@ function html_message_type_error()
 
 function html_get_favicon()
 {
-    if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (($user_style = session_get_value('STYLE')) === false) {
+        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
@@ -329,8 +329,8 @@ function html_get_favicon()
 
 function html_get_apple_touch_icon()
 {
-    if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (($user_style = session_get_value('STYLE')) === false) {
+        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
@@ -342,8 +342,8 @@ function html_get_apple_touch_icon()
 
 function html_get_style_sheet()
 {
-    if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (($user_style = session_get_value('STYLE')) === false) {
+        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
@@ -355,8 +355,8 @@ function html_get_style_sheet()
 
 function html_get_top_page()
 {
-    if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (($user_style = session_get_value('STYLE')) === false) {
+        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if (($user_style !== false)) {
@@ -368,7 +368,7 @@ function html_get_top_page()
 
 function html_get_emoticon_style_sheet()
 {
-    if (($user_emoticons = bh_session_get_value('EMOTICONS')) === false) {
+    if (($user_emoticons = session_get_value('EMOTICONS')) === false) {
         $user_emoticons = forum_get_setting('default_emoticons');
     }
 
@@ -726,28 +726,28 @@ function html_draw_top()
     
     if (forum_check_webtag_available($webtag)) {
         
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/unread_thread.ico'))));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/unread_thread.ico'))));
         
         if (forum_get_setting('show_links', 'Y')) {
-            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/link.ico'))));
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/link.ico'))));
         }
     }
     
     if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/pmunread.ico'))));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/pmunread.ico'))));
     }
     
     if (forum_check_webtag_available($webtag)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/user_controls.ico'))));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/user_controls.ico'))));
     }
     
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) || bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', style_image('msie/admintool.ico'))));
+    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/admintool.ico'))));
     }
     
     printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("/index.php?webtag=$webtag"));    
 
-    if ((basename($_SERVER['PHP_SELF']) == "index.php") && bh_session_check(false, false)) {
+    if ((basename($_SERVER['PHP_SELF']) == "index.php") && session_check(false, false)) {
 
         $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
         printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
@@ -859,7 +859,7 @@ function html_draw_top()
 
             if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
-                if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
+                if (session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
                     html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
@@ -874,7 +874,7 @@ function html_draw_top()
 
             if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
-                if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
+                if (session_get_value('USE_MOVER_SPOILER') == "Y") {
 
                     html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
                 }
@@ -886,7 +886,7 @@ function html_draw_top()
 
         if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
 
-            if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
+            if ((session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
                 html_include_javascript(html_get_forum_file_path('js/stats.js'));
             }
@@ -899,7 +899,7 @@ function html_draw_top()
 
         if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js'))) {
 
-            $page_prefs = bh_session_get_post_page_prefs();
+            $page_prefs = session_get_post_page_prefs();
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
@@ -1183,10 +1183,10 @@ function html_js_safe_str($str)
     return strtr($str, $unsafe_chars_tbl);
 }
 
-function style_image($img)
+function html_style_image($img)
 {
-    if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = bh_getcookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (($user_style = session_get_value('STYLE')) === false) {
+        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
@@ -1196,10 +1196,10 @@ function style_image($img)
     return html_get_forum_file_path(sprintf('images/%s', $img));
 }
 
-function bh_setcookie($name, $value, $expires = 0)
+function html_set_cookie($name, $value, $expires = 0)
 {
-    $cookie_domain = (isset($GLOBALS['cookie_domain'])) ? $GLOBALS['cookie_domain'] : "";
-    $cookie_secure = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on');
+    // Set the secure state of the cookie
+    $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
 
     // Some versions of Opera don''t play well with cookie restrictions.
     // Because we don't have an exhaustive list of which don't work,
@@ -1207,30 +1207,29 @@ function bh_setcookie($name, $value, $expires = 0)
     // If we're also on Light mode we disable by default.
     if (!defined('BEEHIVEMODE_LIGHT') && !browser_check(BROWSER_OPERA)) {
         
-        // Set default cookie path.
-        $cookie_path = '';
-
-        // Try and parse the cookie_domain config.inc.php setting.
-        // Only set the path if we can also get the hostname.
-        if (($cookie_domain_array = @parse_url($cookie_domain))) {
-
-            if (isset($cookie_domain_array['host'])) {
-
-                $cookie_domain = $cookie_domain_array['host'];
-
-                if (isset($cookie_domain_array['path'])) {
-                    $cookie_path = $cookie_domain_array['path'];
-                }
-            }
+        // Get the cookie domain from config.inc.php or html_get_forum_uri
+        if (isset($GLOBALS['cookie_domain']) && strlen(trim($GLOBALS['cookie_domain'])) > 0) {
+            $cookie_domain = trim($GLOBALS['cookie_domain']);
+        } else {
+            $cookie_domain = html_get_forum_uri(null, false);
         }
         
-        return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $cookie_secure);
+        // Try and parse the cookie_domain config.inc.php setting.
+        if (($cookie_domain_array = @parse_url($cookie_domain))) {
+            
+            // Check we have a hostname and path.
+            if (isset($cookie_domain_array['host']) && isset($cookie_domain_array['path'])) {
+            
+                // Set the cookie with hostname and path.
+                return setcookie($name, $value, $expires, $cookie_domain_array['path'], ".{$cookie_domain_array['host']}", $cookie_secure);
+            }
+        }
     }
     
     return setcookie($name, $value, $expires, '', '', $cookie_secure);
 }
 
-function bh_getcookie($cookie_name, $callback = false, $default = false)
+function html_get_cookie($cookie_name, $callback = false, $default = false)
 {
     if (isset($_COOKIE[$cookie_name])) {
 
@@ -1252,10 +1251,10 @@ function bh_getcookie($cookie_name, $callback = false, $default = false)
     return $default;
 }
 
-function bh_remove_all_cookies()
+function html_remove_all_cookies()
 {
     foreach (array_keys($_COOKIE) as $name) {
-        bh_setcookie($name, '', time() - YEAR_IN_SECONDS);
+        html_set_cookie($name, '', time() - YEAR_IN_SECONDS);
     }
 }
 
@@ -1402,18 +1401,18 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_forum_uri($append_path = null)
+function html_get_forum_uri($append_path = null, $use_forum_uri = true)
 {
-    $uri_array = array('scheme'    => null,
-                       'host'      => null,
-                       'port'      => null,
-                       'user'      => null,
-                       'pass'      => null,
-                       'path'      => null,
-                       'query'     => null,
-                       'fragement' => null);
+    $uri_array = array('scheme'   => null,
+                       'host'     => null,
+                       'port'     => null,
+                       'user'     => null,
+                       'pass'     => null,
+                       'path'     => null,
+                       'query'    => null,
+                       'fragment' => null);
 
-    if (($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
+    if (($use_forum_uri === true) && ($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
         
         $uri_array = array_merge($uri_array, @parse_url($forum_uri));
     
@@ -1467,7 +1466,7 @@ function html_get_forum_uri($append_path = null)
             }
         }
     }
-
+    
     if (!isset($uri_array['path'])) {
 
         if (isset($_SERVER['PATH_INFO']) && strlen(trim($_SERVER['PATH_INFO'])) > 0) {

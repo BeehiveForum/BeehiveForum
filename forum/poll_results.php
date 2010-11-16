@@ -86,20 +86,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -151,7 +151,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
     exit;
 }
 
-if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
@@ -211,7 +211,7 @@ echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">\n";
 
-if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
+if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
 
     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 

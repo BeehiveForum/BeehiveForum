@@ -85,20 +85,20 @@ cache_disable();
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -125,10 +125,10 @@ $error_msg_array = array();
 $available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
                            PM_FOLDER_SAVED, PM_FOLDER_DRAFTS, PM_SEARCH_RESULTS);
                            
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Get the user's saved left frame width.
-if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 

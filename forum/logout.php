@@ -78,7 +78,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Load the user session
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Fetch the forum webtag
 $webtag = get_webtag();
@@ -96,7 +96,7 @@ if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['f
     } 
 }
 
-bh_session_end();
+session_end();
 
 if (isset($_REQUEST['register'])) {
     
@@ -105,10 +105,10 @@ if (isset($_REQUEST['register'])) {
     exit;
 }
 
-bh_setcookie("logon", "1");
+html_set_cookie("logon", "1");
 
-bh_setcookie("user_logon", "", time() - YEAR_IN_SECONDS);
-bh_setcookie("user_passhash", "", time() - YEAR_IN_SECONDS);
+html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
+html_set_cookie("user_passhash", "", time() - YEAR_IN_SECONDS);
 
 if (user_is_guest()) {
 

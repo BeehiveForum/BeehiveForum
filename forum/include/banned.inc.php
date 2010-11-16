@@ -439,7 +439,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
     
     $current_datetime = time();
 

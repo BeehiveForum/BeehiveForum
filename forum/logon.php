@@ -109,10 +109,10 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 cache_disable();
 
 // Logon script doesn't redirect if the session isn't created
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -121,9 +121,9 @@ if (bh_session_user_banned()) {
 // Delete the user's cookie as requested and send them back to the login form.
 if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
-    bh_remove_all_cookies();
+    html_remove_all_cookies();
 
-    bh_setcookie("logon", "1");
+    html_set_cookie("logon", "1");
 
     if (isset($final_uri)) {
 
@@ -151,7 +151,7 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
     }else {
 
-        bh_setcookie("logon", "1");
+        html_set_cookie("logon", "1");
         
         if (isset($final_uri)) {
 

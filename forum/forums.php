@@ -81,17 +81,17 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Load the user session
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -372,7 +372,7 @@ if (!user_is_guest()) {
 
     if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
-        echo "<h1>{$lang['myforums']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['searchresults']}</h1>\n";
+        echo "<h1>{$lang['myforums']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['searchresults']}</h1>\n";
 
         $forums_array = forum_search($webtag_search, $start, $sort_by, $sort_dir);
 
@@ -558,7 +558,7 @@ if (!user_is_guest()) {
 
         $forums_array = get_my_forums($view_type, $start, $sort_by, $sort_dir);
 
-        echo "<h1>{$lang['myforums']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$forum_header_array[$view_type]}</h1>\n";
+        echo "<h1>{$lang['myforums']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$forum_header_array[$view_type]}</h1>\n";
 
         if (isset($_GET['webtag_error'])) {
 

@@ -81,13 +81,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-$user_sess = bh_session_check();
+$user_sess = session_check();
 
 // Load language file
 $lang = load_language_file();
 
 // User's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Check we have a valid request
 if (!user_is_guest() && isset($_GET['fontsize'])) {

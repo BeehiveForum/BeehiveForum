@@ -89,7 +89,7 @@ function user_get_profile($uid)
     if (!is_numeric($uid)) return false;
 
     // UID of the user viewing the profile data
-    $peer_uid = bh_session_get_value('UID');
+    $peer_uid = session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -314,7 +314,7 @@ function user_get_profile_entries($uid)
 
     $user_profile_array = array();
 
-    $session_uid = bh_session_get_value('UID');
+    $session_uid = session_get_value('UID');
 
     $peer_relationship = user_get_relationship($uid, $session_uid);
 

@@ -94,19 +94,19 @@ include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -152,10 +152,10 @@ if (isset($_POST['cancel'])) {
 }
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 // Get the user's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Assume everything is A-OK!
 $valid = true;
@@ -224,7 +224,7 @@ if (isset($_POST['t_newthread'])) {
     }
 }
 
-if (($high_interest = bh_session_get_value('MARK_AS_OF_INT')) === false) {
+if (($high_interest = session_get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }
 
@@ -313,13 +313,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+    if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
+    if (!session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['cannotcreatepostinfolder']);
@@ -342,13 +342,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+    if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
+    if (!session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['cannotcreatepostinfolder']);
@@ -374,13 +374,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+    if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
+    if (isset($t_fid) && !session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['cannotcreatethreadinfolder']);
@@ -409,11 +409,11 @@ if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -449,7 +449,7 @@ if (!$new_thread) {
 
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
-    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         $error_msg_array[] = $lang['messagehasbeendeleted'];
         $valid = false;
@@ -465,9 +465,9 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 
 if ($valid && isset($_POST['post'])) {
 
-    if (check_post_frequency()) {
+    if (post_check_frequency()) {
 
-        if (check_ddkey($t_dedupe)) {
+        if (post_check_ddkey($t_dedupe)) {
 
             if ($new_thread) {
 
@@ -495,7 +495,7 @@ if ($valid && isset($_POST['post'])) {
 
                     if ($high_interest == "Y") thread_set_high_interest($t_tid);
 
-                    if (!bh_session_check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
+                    if (!session_check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
 
                         $exclude_user_array = array($t_to_uid, $uid);
 
@@ -576,7 +576,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['TO_UID'] = $preview_tuser['UID'];
     }
 
-    $preview_tuser = user_get(bh_session_get_value('UID'));
+    $preview_tuser = user_get(session_get_value('UID'));
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
@@ -596,7 +596,7 @@ if (!$new_thread) {
 
     if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0) {
 
-        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             echo "<h2>{$lang['moderatorthreadclosed']}</h2>\n";
 

@@ -100,24 +100,24 @@ logon_perform_auto();
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Light mode check to see if we should bounce to the logon screen.
-if (bh_getcookie('logon')) {
+if (html_get_cookie('logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -133,10 +133,10 @@ if (!forum_check_webtag_available($webtag)) {
 $lang = load_language_file();
 
 // User UID for fetching recent message
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Does the user want to login or have they got saved username and password
-if (bh_getcookie('logon') && user_is_guest()) {
+if (html_get_cookie('logon') && user_is_guest()) {
 
     // Display the logon form.
     light_draw_logon_form();
@@ -185,6 +185,6 @@ if (bh_getcookie('logon') && user_is_guest()) {
 }
 
 // Clear the logon cookie
-bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
+html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
   
 ?>

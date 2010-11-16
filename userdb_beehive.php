@@ -122,10 +122,10 @@ function ewiki_auth_userdb_beehive($username, $password)
     // Attempt user logon
     if (($uid = user_logon($username, $passhash))) {
 
-        if (bh_session_init($uid)) {
+        if (session_init($uid)) {
 
-            if (bh_session_user_banned()) return false;
-            if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS, 0)) return array($password, 0);
+            if (session_user_banned()) return false;
+            if (session_check_perm(USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS, 0)) return array($password, 0);
 
             return array($password, 2);
         }

@@ -88,11 +88,11 @@ function word_filter_get($uid, &$word_filter_array)
 
 function word_filter_get_by_sess_uid()
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $word_filter_array = array();
 
-    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
+    if (session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
 
         if (!word_filter_get(0, $word_filter_array)) {
 
@@ -100,7 +100,7 @@ function word_filter_get_by_sess_uid()
         }
     }
 
-    if (bh_session_get_value('USE_WORD_FILTER') == "Y") {
+    if (session_get_value('USE_WORD_FILTER') == "Y") {
 
         if (!word_filter_get($uid, $word_filter_array)) {
 
@@ -225,7 +225,7 @@ function word_filter_prepare($word_filter_array)
 
 function word_filter_add_ob_tags($content)
 {
-    if (($rand_hash = bh_session_get_value('RAND_HASH')) === false) {
+    if (($rand_hash = session_get_value('RAND_HASH')) === false) {
         return $content;
     }
 
@@ -245,7 +245,7 @@ function word_filter_add_ob_tags($content)
 
 function word_filter_rem_ob_tags($content)
 {
-    if (($rand_hash = bh_session_get_value('RAND_HASH')) === false) {
+    if (($rand_hash = session_get_value('RAND_HASH')) === false) {
         return $content;
     }
 
@@ -267,7 +267,7 @@ function word_filter_rem_ob_tags($content)
 
 function word_filter_obstart($content)
 {
-    if (($rand_hash = bh_session_get_value('RAND_HASH')) === false) {
+    if (($rand_hash = session_get_value('RAND_HASH')) === false) {
         return $content;
     }
 

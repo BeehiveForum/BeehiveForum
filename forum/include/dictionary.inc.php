@@ -172,7 +172,7 @@ class dictionary {
 
         $word = db_escape_string(trim($word));
 
-        if (($uid = bh_session_get_value('UID')) === false) return false;
+        if (($uid = session_get_value('UID')) === false) return false;
 
         $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
         $sql.= "VALUES ('$word', SOUNDEX('$word'), '$uid')";
@@ -255,7 +255,7 @@ class dictionary {
         $offset = $this->offset_match;
 
         // The current user's UID
-        if (($uid = bh_session_get_value('UID')) === false) return;
+        if (($uid = session_get_value('UID')) === false) return;
 
         // Exact match
         $sql = "SELECT WORD FROM DICTIONARY WHERE WORD = '$word' ";

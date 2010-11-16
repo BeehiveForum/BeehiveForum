@@ -148,7 +148,7 @@ function forum_check_access_level()
 
     if (!($db_forum_check_access_level = db_connect())) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!($table_data = get_table_prefix())) return true;
 
@@ -207,7 +207,7 @@ function forum_closed_message()
         html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], htmlentities_array($forum_name)), '600', 'center');
     }
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         html_display_warning_msg($lang['adminforumclosedtip'], '600', 'center');
     }
@@ -255,7 +255,7 @@ function forum_restricted_message()
             html_draw_top("title={$lang['restricted']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
             html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), $apply_for_access_text));
 
-            if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+            if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
                 html_display_warning_msg($lang['adminforumclosedtip'], '600', 'left');
             }
 
@@ -304,7 +304,7 @@ function forum_check_password($forum_fid)
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
     
     // Check the stored cookie against the known hash of the forum password.
-    if (bh_getcookie("sess_hash_{$webtag}") == $forum_passhash) return true;
+    if (html_get_cookie("sess_hash_{$webtag}") == $forum_passhash) return true;
 
     // Load language file.
     $lang = load_language_file();
@@ -313,9 +313,9 @@ function forum_check_password($forum_fid)
 
     echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
 
-    if (bh_getcookie("sess_hash_{$webtag}", 'strlen')) {
+    if (html_get_cookie("sess_hash_{$webtag}", 'strlen')) {
 
-        bh_setcookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
+        html_set_cookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
         html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');
     }
 
@@ -366,7 +366,7 @@ function forum_check_password($forum_fid)
     echo "      </tr>\n";
     echo "    </table>\n";
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         html_display_warning_msg($lang['adminforumclosedtip'], '400', 'center');
     }
 
@@ -626,7 +626,7 @@ function forum_check_global_setting_name($setting_name)
                                          'attachments_allow_embed', 'attachments_enabled', 'attachment_thumbnails',
                                          'attachments_max_user_space', 'attachments_max_post_space', 'attachment_allow_guests',
                                          'attachment_dir', 'attachment_mime_types', 'attachment_use_old_method',
-                                         'bh_remove_stale_sessions_last_run', 'cache_dir', 'content_delivery_domains',
+                                         'remove_stale_sessions_last_run', 'cache_dir', 'content_delivery_domains',
                                          'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email', 
                                          'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function', 
                                          'forum_maintenance_schedule', 'forum_timezone', 'forum_uri', 'pm_system_prune_folders_last_run', 
@@ -890,7 +890,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     $lang = load_language_file();
 
     // If no owner UID specified or UID is 0 change it to current user.
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Ensure the variables we've been given are valid
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Du", $webtag)) return false;
@@ -904,7 +904,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
 
     // Only users with acces to the forum tools can create / delete forums.
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         
         if (!$db_forum_create = db_connect()) return false;
 
@@ -1597,7 +1597,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
 
     $forum_name = db_escape_string($forum_name);
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access_level', ";
         $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
@@ -1618,7 +1618,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
 
 function forum_delete($fid)
 {
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (!$db_forum_delete = db_connect()) return false;
 
@@ -1659,7 +1659,7 @@ function forum_delete_tables($webtag, $database_name)
     if (!preg_match("/^[A-Z0-9_]+$/Diu", $database_name)) return false;
 
     // Only users with acces to the forum tools can create / delete forums.
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (!$db_forum_delete_tables = db_connect()) return false;
 
@@ -1695,9 +1695,9 @@ function forum_update_access($fid, $access)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($access)) return false;
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        if (($uid = bh_session_get_value('UID')) === false) return false;
+        if (($uid = session_get_value('UID')) === false) return false;
 
         if (!$db_forum_update_access = db_connect()) return false;
 
@@ -1724,7 +1724,7 @@ function forum_update_password($fid, $password)
 
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $password = db_escape_string(md5($password));
 
@@ -1743,7 +1743,7 @@ function forum_get($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (!$db_forum_get = db_connect()) return false;
 
@@ -1835,7 +1835,7 @@ function forum_update_default($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (!$db_forum_get_permissions = db_connect()) return false;
 
@@ -1873,7 +1873,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'LAST_VISIT';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Array to hold our forums in.
     $forums_array = array();
@@ -2126,7 +2126,7 @@ function forums_get_available_count()
 {
     if (!$db_forums_get_available_count = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return 0;
+    if (($uid = session_get_value('UID')) === false) return 0;
 
     $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
@@ -2195,7 +2195,7 @@ function forum_check_maintenance()
 {
     // Array of functions that we run one at a time.
     $forum_maintenance_functions_array = array('pm_system_prune_folders',
-                                               'bh_remove_stale_sessions',
+                                               'remove_stale_sessions',
                                                'thread_auto_prune_unread_data',
                                                'captcha_clean_up',
                                                'sitemap_create_file');

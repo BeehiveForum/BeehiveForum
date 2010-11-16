@@ -96,20 +96,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -155,13 +155,13 @@ if (isset($_POST['cancel'])) {
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 // Get the user's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Assume everything is A-OK!
 $valid = true;
@@ -314,7 +314,7 @@ if (isset($_POST['t_post_html'])) {
         $spelling_enabled = false;
     }
 
-    if (($high_interest = bh_session_get_value('MARK_AS_OF_INT')) === false) {
+    if (($high_interest = session_get_value('MARK_AS_OF_INT')) === false) {
         $high_interest = "N";
     }
 }
@@ -486,13 +486,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+    if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
+    if (!session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top("title={$lang['cannotcreatepostinfolder']}");
         html_error_msg($lang['cannotcreatepostinfolder']);
@@ -558,13 +558,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+    if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
+    if (!session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top("title={$lang['cannotcreatepostinfolder']}");
         html_error_msg($lang['cannotcreatepostinfolder']);
@@ -572,7 +572,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
@@ -596,19 +596,19 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+    if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
+    if (isset($t_fid) && !session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotcreatethreadinfolder'];
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
@@ -669,11 +669,11 @@ if ($to_radio == 'others') {
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -709,7 +709,7 @@ if (!$new_thread) {
 
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
-    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         html_draw_top("title={$lang['messagehasbeendeleted']}");
         html_error_msg($lang['messagehasbeendeleted'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
@@ -720,13 +720,13 @@ if (!$new_thread) {
 
 if ($valid && isset($_POST['post'])) {
 
-    if (check_post_frequency()) {
+    if (post_check_frequency()) {
 
-        if (check_ddkey($t_dedupe)) {
+        if (post_check_ddkey($t_dedupe)) {
 
             if ($new_thread) {
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                     $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
                     $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
@@ -745,7 +745,7 @@ if ($valid && isset($_POST['post'])) {
                 $t_tid  = (isset($_POST['t_tid']) && is_numeric($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
                 $t_rpid = (isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
 
-                if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+                if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
                     html_draw_top("title={$lang['threadisclosedforposting']}");
                     html_error_msg($lang['threadisclosedforposting'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => "$t_tid.$t_rpid"));
@@ -753,7 +753,7 @@ if ($valid && isset($_POST['post'])) {
                     exit;
                 }
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                     $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
                     $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
@@ -786,7 +786,7 @@ if ($valid && isset($_POST['post'])) {
 
                     if ($high_interest == "Y") thread_set_high_interest($t_tid);
 
-                    if (!bh_session_check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
+                    if (!session_check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
 
                         $exclude_user_array = array($t_to_uid, $uid);
 
@@ -852,7 +852,7 @@ if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", ""
     exit;
 }
 
-if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     html_draw_top("title={$lang['threadisclosedforposting']}");
     html_error_msg($lang['threadisclosedforposting']);
@@ -868,7 +868,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
 }
 
-if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     html_display_warning_msg($lang['moderatorthreadclosed'], '720', 'left');
 }
 
@@ -1026,7 +1026,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y"), "</td>\n";
 echo "                      </tr>\n";
 
-if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -1042,7 +1042,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     echo "                      </tr>\n";
 }
 
-if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
+if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
@@ -1053,14 +1053,14 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";
-    echo "                          <table width=\"190\" class=\"messagefoot\" cellspacing=\"0\">\n";
+    echo "                          <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -1151,7 +1151,7 @@ echo form_submit("post", $lang['post'], "tabindex=\"2\"");
 echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\"");
 echo "&nbsp;", form_submit("cancel", $lang['cancel'], "tabindex=\"4\"");
 
-if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
+if (forum_get_setting('attachments_enabled', 'Y') && (session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
     echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo form_input_hidden("aid", htmlentities_array($aid));
@@ -1160,14 +1160,14 @@ if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER
 if ($allow_sig == true) {
 
     echo "                          <br /><br />\n";
-    echo "                          <table class=\"messagefoot\" width=\"485\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     }
     
     echo "                            </tr>\n";
@@ -1247,7 +1247,7 @@ if (!$new_thread) {
     echo "  <br />\n";
     echo "  <table  width=\"720\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><img src=\"", style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
+    echo "      <td align=\"center\"><img src=\"", html_style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 }

@@ -87,20 +87,20 @@ include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -110,7 +110,7 @@ if (!bh_session_user_approved()) {
 $lang = load_language_file();
 
 // Get the user's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Guests can't access PMs
 if (user_is_guest()) {
@@ -237,7 +237,7 @@ html_draw_top("title={$lang['privatemessages']}", "basetarget=$pm_messages_frame
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
-    echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolder']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
+    echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolder']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
 
     if (isset($_GET['folder_renamed'])) {
 
@@ -314,7 +314,7 @@ foreach ($pm_folder_names_array as $folder_type => $folder_name) {
         echo "      <td align=\"left\">\n";
         echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['managefolder']}\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf($lang['pmtooltipxmessages'], $pm_message_count_array[$folder_type]) : $lang['pmtooltip1message'], "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
+        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", html_style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['managefolder']}\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf($lang['pmtooltipxmessages'], $pm_message_count_array[$folder_type]) : $lang['pmtooltip1message'], "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";
@@ -338,7 +338,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"", html_get_frame_name('main'), "\">{$lang['sendnewpm']}</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"", html_get_frame_name('main'), "\">{$lang['sendnewpm']}</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -349,7 +349,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('options.png'), "\" alt=\"{$lang['privatemessageoptions']}\" title=\"{$lang['privatemessageoptions']}\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"{$lang['privatemessageoptions']}\">{$lang['privatemessageoptions']}</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('options.png'), "\" alt=\"{$lang['privatemessageoptions']}\" title=\"{$lang['privatemessageoptions']}\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"{$lang['privatemessageoptions']}\">{$lang['privatemessageoptions']}</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -392,7 +392,7 @@ if (pm_auto_prune_enabled()) {
     echo "            <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['pmfolderpruningisenabled']}\" title=\"{$lang['pmfolderpruningisenabled']}\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a class=\"help_popup\" title=\"{$lang['pmpruneexplanation']}\">?</a>]</td>\n";
+    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", html_style_image('warning.png'), "\" alt=\"{$lang['pmfolderpruningisenabled']}\" title=\"{$lang['pmfolderpruningisenabled']}\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a class=\"help_popup\" title=\"{$lang['pmpruneexplanation']}\">?</a>]</td>\n";
     echo "          </tr>\n";
 }
 

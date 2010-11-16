@@ -43,7 +43,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function search_execute($search_arguments, &$error)
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -426,7 +426,7 @@ function search_save_arguments($sort_by, $sort_dir, $keywords_array = array())
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_array($keywords_array)) $keywords_array = array();
 
@@ -453,7 +453,7 @@ function search_get_keywords()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
@@ -481,7 +481,7 @@ function search_get_sort(&$sort_by, &$sort_dir)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT LAST_SEARCH_SORT_BY, LAST_SEARCH_SORT_DIR ";
     $sql.= "FROM `{$table_data['PREFIX']}USER_TRACK` ";
@@ -511,7 +511,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $search_keywords = search_get_keywords();
 
@@ -606,7 +606,7 @@ function search_get_first_result_msg()
 {
     if (!$db_search_fetch_results = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     search_get_sort($sort_by, $sort_dir);
 
@@ -805,14 +805,14 @@ function folder_search_dropdown($selected_folder)
 
             if (user_is_guest()) {
 
-                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+                if (session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
                     $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
                 }
 
             }else {
 
-                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
+                if (session_check_perm($access_allowed, $folder_data['FID'])) {
 
                     $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
                 }
@@ -833,7 +833,7 @@ function check_search_frequency()
 {
     if (!$db_check_search_frequency = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

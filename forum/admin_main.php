@@ -80,13 +80,13 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -95,7 +95,7 @@ if (bh_session_user_banned()) {
 // Load language file
 $lang = load_language_file();
 
-if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
+if ((!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
@@ -111,7 +111,7 @@ if (!forum_check_webtag_available()) {
     html_display_warning_msg("To see additional Admin options click 'My Forums', select a forum and then click the Admin link to return here", '600px', 'left');
 }
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "<p>{$lang['adminexp_1']}</p>\n";
     echo "<p>{$lang['adminexp_2']}</p>\n";
@@ -131,19 +131,19 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         echo "<p>{$lang['adminexp_13']}</p>\n";
         echo "<p>{$lang['adminexp_14']}</p>\n";
 
-        if (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+        if (session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
             echo "<p>{$lang['adminexp_17']}</p>\n";
         }
 
         echo "<p>{$lang['adminexp_18']}</p>\n";
     }
 
-}elseif (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+}elseif (session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
     echo "<p>{$lang['adminexp_17']}</p>\n";
 }
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+if (session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
     echo "<p>{$lang['adminexp_15']}</p>\n";
     echo "<p>{$lang['adminexp_16']}</p>\n";

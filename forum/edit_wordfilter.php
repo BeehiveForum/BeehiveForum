@@ -85,13 +85,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -188,7 +188,7 @@ if (isset($_POST['delete'])) {
         $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
@@ -591,13 +591,13 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], bh_session_get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], session_get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
     echo "                      </tr>\n";
 
     if (!forum_get_setting('force_word_filter', 'Y')) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], bh_session_get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], session_get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
         echo "                      </tr>\n";
     }
 

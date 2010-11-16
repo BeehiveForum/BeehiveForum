@@ -417,7 +417,7 @@ function attachments_delete_by_aid($aid)
 
     if (!$db_attachments_delete_by_aid = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
@@ -449,7 +449,7 @@ function attachments_delete($hash)
 
     if (!$db_attachments_delete = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -479,14 +479,14 @@ function attachments_delete($hash)
 
         if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
-        if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
+        if (($attachment_data['UID'] == $uid) || session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
             // Mark the related post as edited
             if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
                 post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
                     $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
                     admin_add_log_entry(attachments_delete, $log_data);
@@ -531,7 +531,7 @@ function attachments_delete_thumbnail($hash)
 
     if (!$db_attachments_delete_thumbnail = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -561,14 +561,14 @@ function attachments_delete_thumbnail($hash)
 
         if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
-        if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
+        if (($attachment_data['UID'] == $uid) || session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
             // Mark the related post as edited
             if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
                 post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
                     $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
                     admin_add_log_entry(attachments_delete, $log_data);
@@ -1047,7 +1047,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     $lang = load_language_file();
 
-    if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = bh_session_get_value('SHOW_THUMBS')) > 0) || user_is_guest())) {
+    if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session_get_value('SHOW_THUMBS')) > 0) || user_is_guest())) {
 
         $thumbnail_size = array(1 => 50, 2 => 100, 3 => 150);
         $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs])
@@ -1130,7 +1130,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
         $title = implode(", ", $title_array);
 
         $attachment_link = "<img src=\"";
-        $attachment_link.= style_image('attach.png');
+        $attachment_link.= html_style_image('attach.png');
         $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
         $attachment_link.= "alt=\"{$lang['attachment']}\" ";
         $attachment_link.= "title=\"{$lang['attachment']}\" />";

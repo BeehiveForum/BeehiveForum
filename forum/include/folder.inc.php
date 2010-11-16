@@ -62,14 +62,14 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
             if (user_is_guest()) {
 
-                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
+                if (session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
 
             }else {
 
-                if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
+                if (session_check_perm($access_allowed, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
@@ -271,13 +271,13 @@ function folder_get_available()
 {
     if (user_is_guest()) {
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
             return implode(',', array_filter($folder_list, 'is_numeric'));
         }
 
     }else {
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ))) {
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_POST_READ))) {
             return implode(',', array_filter($folder_list, 'is_numeric'));
         }
     }
@@ -321,13 +321,13 @@ function folder_get_available_array()
 {
     if (user_is_guest()) {
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
             return array_filter($folder_list, 'is_numeric');
         }
 
     }else {
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ))) {
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_POST_READ))) {
             return array_filter($folder_list, 'is_numeric');
         }
     }
@@ -339,13 +339,13 @@ function folder_get_available_array_by_forum($forum_fid)
 {
     if (user_is_guest()) {
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
             return array_filter($folder_list, 'is_numeric');
         }
 
     }else {
 
-        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
             return array_filter($folder_list, 'is_numeric');
         }
     }
@@ -486,7 +486,7 @@ function folder_get($fid)
 
     $forum_fid = $table_data['FID'];
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
     $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, USER_FOLDER.INTEREST ";
@@ -520,7 +520,7 @@ function folder_get_available_details()
 
     $forum_fid = $table_data['FID'];
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
     $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, USER_FOLDER.INTEREST ";
@@ -569,12 +569,12 @@ function folder_is_accessible($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    return bh_session_check_perm(USER_PERM_POST_READ, $fid);
+    return session_check_perm(USER_PERM_POST_READ, $fid);
 }
 
 function user_set_folder_interest($fid, $interest)
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$db_user_set_folder_interest = db_connect()) return false;
 
@@ -793,7 +793,7 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $off
     $folders = folder_get_available();
 
     // User UID
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if ($interest_type <> FOLDER_NOINTEREST) {
 
@@ -862,7 +862,7 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
     $folders = folder_get_available();
 
     // User UID
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if ($interest_type <> FOLDER_NOINTEREST) {
 

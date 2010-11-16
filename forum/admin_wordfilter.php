@@ -85,13 +85,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -106,7 +106,7 @@ if (!forum_check_webtag_available($webtag)) {
 // Load language file
 $lang = load_language_file();
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -316,7 +316,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['wordfilter']} - {$lang['addwordfilter']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['wordfilter']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addwordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['wordfilter']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addwordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '450', 'center');
@@ -415,7 +415,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['wordfilter']} - {$lang['editwordfilter']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['wordfilter']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editwordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['wordfilter']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editwordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '450', 'center');
@@ -493,7 +493,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     $word_filter_array = admin_get_word_filter_list($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['wordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['wordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

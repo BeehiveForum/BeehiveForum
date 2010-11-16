@@ -89,20 +89,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -193,7 +193,7 @@ $poll_data    = poll_get($tid);
 $poll_results = poll_get_votes($tid);
 
 // Check if the user is viewing signatures.
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+$show_sigs = !(session_get_value('VIEW_SIGS'));
 
 // Form validation tracking
 $valid = true;
@@ -219,13 +219,13 @@ if (isset($_POST['cancel'])) {
 
 post_save_attachment_id($tid, $pid, $aid);
 
-if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_email_confirmation_error();
     exit;
 }
 
-if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
+if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannoteditpostsinthisfolder']);
@@ -401,7 +401,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $t_close_poll = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
@@ -489,7 +489,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
 html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "post.js", 'class=window_title');
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
@@ -498,7 +498,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['TLOGON'] = $lang['allcaps'];
     $poll_data['TNICK'] = $lang['allcaps'];
 
-    $preview_tuser = user_get(bh_session_get_value('UID'));
+    $preview_tuser = user_get(session_get_value('UID'));
 
     $poll_data['FLOGON']   = $preview_tuser['LOGON'];
     $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
@@ -751,9 +751,9 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['CONTENT'].= "</div>\n";
     $poll_data['CONTENT'].= "<br />\n";
 
-    if (bh_session_get_value('UID') != $poll_data['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (session_get_value('UID') != $poll_data['FROM_UID'] && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        edit_refuse($tid, $pid);
+        post_edit_refuse($tid, $pid);
         exit;
     }
 }
@@ -1103,7 +1103,7 @@ echo "                    </table>\n";
 
 echo form_submit("apply", $lang['apply']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
-if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+if (forum_get_setting('attachments_enabled', 'Y') && session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));

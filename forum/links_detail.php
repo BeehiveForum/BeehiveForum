@@ -84,20 +84,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -150,7 +150,7 @@ if (isset($_POST['parent_fid'])) {
     $parent_fid = 1;
 }
 
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 $creator_uid = links_get_creator_uid($lid);
 
@@ -202,7 +202,7 @@ if (!user_is_guest()) {
         }
     }
 
-    if (isset($_POST['update']) && (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator_uid == $uid)) {
+    if (isset($_POST['update']) && (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator_uid == $uid)) {
 
         if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
@@ -270,7 +270,7 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
     $comment_id = $_GET['delete_comment'];
     $comment_uid = links_get_comment_uid($comment_id);
 
-    if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) {
+    if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) {
 
         if (links_delete_comment($comment_id)) {
 
@@ -292,13 +292,13 @@ if (!$link = links_get_single($lid)) {
     exit;
 }
 
-$folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 $page_title = links_get_folder_page_title($link['FID'], $folders, $link['TITLE']);
 
 html_draw_top("title={$page_title}", 'class=window_title');
 
-echo "<h1>{$lang['links']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", links_get_folder_path_links($link['FID'], $folders, true, true), "<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
+echo "<h1>{$lang['links']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", links_get_folder_path_links($link['FID'], $folders, true, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -451,7 +451,7 @@ if (($comments_array = links_get_comments($lid))) {
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         $profile_link.= word_filter_add_ob_tags(htmlentities_array(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";
 
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
+        if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
@@ -534,7 +534,7 @@ if (!user_is_guest()) {
     echo "</form>\n";
 }
 
-if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
+if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";

@@ -94,19 +94,19 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -116,7 +116,7 @@ if (!bh_session_user_approved()) {
 $lang = load_language_file();
 
 // Get the user's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Guests can't access this page.
 if (user_is_guest()) {
@@ -129,7 +129,7 @@ if (user_is_guest()) {
 light_pm_enabled();
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 // Prune old messages for the current user
 pm_user_prune_folders();
@@ -259,7 +259,7 @@ if ($valid && isset($_POST['preview'])) {
     }else {
 
         light_html_draw_top("title={$lang['error']}");
-        light_pm_edit_refuse();
+        light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
@@ -284,7 +284,7 @@ if ($valid && isset($_POST['preview'])) {
     }else {
 
         light_html_draw_top("title={$lang['error']}");
-        light_pm_edit_refuse();
+        light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
@@ -334,7 +334,7 @@ if ($valid && isset($_POST['preview'])) {
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
             light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-            light_pm_edit_refuse();
+            light_pm_post_edit_refuse();
             light_html_draw_bottom();
             exit;
         }
@@ -357,7 +357,7 @@ if ($valid && isset($_POST['preview'])) {
     }else {
 
         light_html_draw_top("title={$lang['error']}");
-        light_pm_edit_refuse();
+        light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
@@ -378,7 +378,7 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_edit.php\" met
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
 
-echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editpm']}</h1>\n";
+echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editpm']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array, '720', 'left');

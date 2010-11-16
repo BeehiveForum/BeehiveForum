@@ -91,20 +91,20 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -135,7 +135,7 @@ if (user_is_guest()) {
 $error_msg_array = array();
 
 // Check if the user is viewing signatures.
-$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Form validation
 $valid = true;
@@ -183,13 +183,13 @@ if (isset($_POST['cancel'])) {
     exit;
 }
 
-if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_email_confirmation_error();
     exit;
 }
 
-if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
+if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannotdeletepostsinthisfolder']);
@@ -214,23 +214,23 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
         if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
             html_draw_top("title={$lang['error']}");
-            edit_refuse($tid, $pid);
+            post_edit_refuse($tid, $pid);
             html_draw_bottom();
             exit;
         }
 
-        if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if ((session_get_value('UID') != $preview_message['FROM_UID'] || session_check_perm(USER_PERM_PILLORIED, 0)) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             html_draw_top("title={$lang['error']}");
-            edit_refuse($tid, $pid);
+            post_edit_refuse($tid, $pid);
             html_draw_bottom();
             exit;
         }
 
-        if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             html_draw_top("title={$lang['error']}");
-            edit_refuse($tid, $pid);
+            post_edit_refuse($tid, $pid);
             html_draw_bottom();
             exit;
         }
@@ -250,7 +250,7 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
 
         post_add_edit_text($tid, $pid);
 
-        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+        if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session_get_value('UID')) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
 

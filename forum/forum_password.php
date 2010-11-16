@@ -80,20 +80,20 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -160,7 +160,7 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 
 // Log the user into the forum by setting a session cookie
 // containing the forum's password as an MD5 hash.
-bh_setcookie("sess_hash_{$webtag}", $forum_passhash);
+html_set_cookie("sess_hash_{$webtag}", $forum_passhash);
 
 // Redirect the user back to where they came from.
 header_redirect($redirect_uri);

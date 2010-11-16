@@ -82,20 +82,20 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -169,7 +169,7 @@ if (isset($user_emoticon_pack) && $user_emoticon_pack != 'user') {
 
 }else {
 
-    if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
+    if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
 
         $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
     }

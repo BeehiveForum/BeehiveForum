@@ -93,24 +93,24 @@ logon_perform_auto();
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Light mode check to see if we should bounce to the logon screen.
-if (bh_getcookie('logon')) {
+if (html_get_cookie('logon')) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -180,17 +180,17 @@ if (user_is_guest()) {
 
 }else {
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     $threads_any_unread = threads_any_unread();
 
     if (isset($mode) && is_numeric($mode)) {
 
-        bh_setcookie("thread_mode_{$webtag}", $mode);
+        html_set_cookie("thread_mode_{$webtag}", $mode);
 
     }else {
 
-        $mode = bh_getcookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+        $mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
 
         if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $mode = ALL_DISCUSSIONS;
@@ -277,7 +277,7 @@ if (user_is_guest()) {
     }
 }
 
-bh_setcookie("thread_mode_{$webtag}", $mode);
+html_set_cookie("thread_mode_{$webtag}", $mode);
 
 light_draw_thread_list($mode, $folder, $start_from);
 

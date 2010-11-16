@@ -88,13 +88,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -110,10 +110,10 @@ if (!forum_check_webtag_available($webtag)) {
 $lang = load_language_file();
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 // Check to see if the user can access this page.
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -256,7 +256,7 @@ if (isset($_POST['changepermissions'])) {
         }
     }
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (isset($_POST['adsense_display_users']) && in_array($_POST['adsense_display_users'], array_keys($adsense_user_type_array))) {
             $new_forum_settings['adsense_display_users'] = $_POST['adsense_display_users'];
@@ -436,7 +436,7 @@ if (isset($_POST['changepermissions'])) {
 // Start Output Here
 html_draw_top("title={$lang['admin']} - {$lang['forumsettings']}", 'class=window_title', "onunload=clearFocus()", "emoticons.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['forumsettings']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['forumsettings']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -913,7 +913,7 @@ if (forum_get_global_setting('allow_forum_google_analytics', 'Y')) {
     echo "  <br />\n";
 }
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

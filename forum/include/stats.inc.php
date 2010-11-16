@@ -100,7 +100,7 @@ function stats_output_html()
     $webtag = get_webtag();
 
     // Current active user UID
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     // Number of active users
     $session_count = stats_get_active_session_count();
@@ -514,7 +514,7 @@ function stats_get_active_user_list()
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
 
-    if (($uid = bh_session_get_value('UID')) === false) return $stats;
+    if (($uid = session_get_value('UID')) === false) return $stats;
 
     // Current active number of guests
     $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
@@ -775,7 +775,7 @@ function stats_get_newest_user()
 
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     $sql = "SELECT MAX(UID) FROM USER";
 
@@ -822,7 +822,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
 
     $post_tallys = array('user_stats' => array(), 'post_count' => 0);
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     $post_start_datetime = date(MYSQL_DATETIME, $start_timestamp);
     $post_end_datetime = date(MYSQL_DATETIME, $end_timestamp);

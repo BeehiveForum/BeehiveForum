@@ -50,7 +50,7 @@ function visitor_log_get_recent()
 
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
@@ -231,7 +231,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $lang = load_language_file();
 
     // Get the current session's UID.
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Constant for the relationship
     $user_friend = USER_FRIEND;

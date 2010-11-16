@@ -86,20 +86,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -383,7 +383,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         
-        if (bh_session_get_value('SHOW_AVATARS') == 'Y') {
+        if (session_get_value('SHOW_AVATARS') == 'Y') {
 
             if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
@@ -399,17 +399,17 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 }else {
 
-                    echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+                    echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
                 }
 
             }else {
 
-                echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+                echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
             
         }else {
 
-            echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+            echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         }
 
         if (isset($user_array['SID']) && !is_null($user_array['SID'])) {

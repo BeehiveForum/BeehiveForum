@@ -89,20 +89,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -131,7 +131,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['profileuid'])) {
 
@@ -165,7 +165,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     }else {
 
-        $uid = bh_session_get_value('UID');
+        $uid = session_get_value('UID');
     }
 
     if (isset($_POST['cancel'])) {
@@ -176,10 +176,10 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 }else {
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session_get_value('UID'))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -211,9 +211,9 @@ if (isset($_POST['save'])) {
     $user_info_new = $user_info;
 
     // Required Fields
-    if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+    if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session_get_value('UID')) && $admin_edit === false)) {
 
-        if (forum_get_setting('allow_username_changes', 'Y') || (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
+        if (forum_get_setting('allow_username_changes', 'Y') || (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
             if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
 
@@ -521,7 +521,7 @@ if (isset($_POST['save'])) {
                 // If email confirmation is requied and the user has changed
                 // their email address we need to get them to confirm the
                 // change by sending them another email.
-                if (($uid == bh_session_get_value('UID')) && $admin_edit === false) {
+                if (($uid == session_get_value('UID')) && $admin_edit === false) {
 
                     if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
 
@@ -595,7 +595,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 }
 
 // Check to see if we should show the set for all forums checkboxes
-if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session_get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 }else {
     $show_set_all = false;
@@ -618,7 +618,7 @@ if ($admin_edit === true) {
 
     html_draw_top("title={$lang['admin']} - {$lang['userdetails']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js', 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['userdetails']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['userdetails']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
 }else {
 
@@ -675,9 +675,9 @@ echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['memberno']}
 echo "                  <td align=\"left\">#{$user_info['UID']}&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session_get_value('UID')) && $admin_edit === false)) {
 
-    if (forum_get_setting('allow_username_changes', 'Y') || (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
+    if (forum_get_setting('allow_username_changes', 'Y') || (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";

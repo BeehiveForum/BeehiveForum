@@ -115,19 +115,19 @@ function format_time($time, $verbose = false)
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
     $lang = load_language_file();
 
-    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
+    if (($timezone_id = session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
+    if (($gmt_offset = session_get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
+    if (($dst_offset = session_get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
+    if (($dl_saving = session_get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
@@ -193,19 +193,19 @@ function format_date($time)
 {
     $lang = load_language_file();
 
-    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
+    if (($timezone_id = session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
+    if (($gmt_offset = session_get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
+    if (($dst_offset = session_get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
+    if (($dl_saving = session_get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
@@ -868,6 +868,120 @@ function path_info_query($path)
     }
     
     return $path_parts;
+}
+
+/**
+* Parse an array into a string
+*
+* Parses an [multi-dimensional] array specified in $array into a string seperated by $sep.
+*
+* @return bool
+* @param array $array - Array to parse
+* @param string $sep - seperator to use to seperate array key and value pairs.
+* @param string $result_var - By reference result variable which the result is appended to.
+*/
+
+function parse_array($array, $sep, &$result_var)
+{
+    if (!is_array($array)) return false;
+
+    if (!is_string($result_var)) $result_var = "";
+    if (!is_string($sep) || strlen($sep) < 1) $sep = "&";
+
+    $array_keys = array();
+    $array_values = array();
+
+    flatten_array($array, $array_keys, $array_values);
+
+    $result_array = array();
+
+    foreach ($array_keys as $key => $key_name) {
+
+        if (($key_name != 'webtag') && isset($array_values[$key])) {
+
+            if (strlen($array_values[$key]) > 0) {
+
+                $result_array[] = sprintf("%s=%s", $key_name, urlencode($array_values[$key]));
+
+            }else {
+
+                $result_array[] = $key_name;
+            }
+        }
+    }
+
+    $result_var.= implode($sep, $result_array);
+
+    return true;
+}
+
+/**
+* Return request URI
+*
+* IIS doesn't support the REQUEST_URI server var so we use this function to generate our own.
+*
+* @return string
+* @param bool $encoded_uri_query - Specify whether or not we want URL encoded seperator in the URL (& vs. &amp;)
+*/
+
+function get_request_uri($include_webtag = true, $encoded_uri_query = true)
+{
+    if (!is_bool($include_webtag)) $include_webtag = true;
+    if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
+
+    $webtag = get_webtag();
+
+    $query_string = "";
+
+    forum_check_webtag_available($webtag);
+
+    if ($encoded_uri_query) {
+
+        if ($include_webtag) {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag";
+            parse_array($_GET, "&amp;", $query_string);
+
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "&amp;$query_string";
+            }
+
+        }else {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}";
+            parse_array($_GET, "&amp;", $query_string);
+
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "?$query_string";
+            }
+        }
+
+    }else {
+
+        if ($include_webtag) {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag";
+            parse_array($_GET, "&", $query_string);
+
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "&$query_string";
+            }
+
+        }else {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}";
+            parse_array($_GET, "&", $query_string);
+
+            if (strlen(trim($query_string)) > 0) {
+                $request_uri.= "?$query_string";
+            }
+        }
+    }
+
+    // Fix the slashes for forum running from sub-domain.
+    // Rather dirty hack this, but it's the only idea I've got.
+    // Any suggestions are welcome on how to handle this better.
+    return preg_replace('/\/\/+/u', '/', $request_uri);
 }
 
 ?>

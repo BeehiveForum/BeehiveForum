@@ -67,7 +67,7 @@ function emoticons_initialise()
 
         // Get the user's emoticon set from their sesion.
         // Fall back to using the forum default or Beehive default.
-        if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
+        if (($user_emots = session_get_value('EMOTICONS')) === false) {
             $user_emots = forum_get_setting('default_emoticons', false, 'default');
         }
 

@@ -47,7 +47,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function threads_get_folders()
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$db_threads_get_folders = db_connect()) return false;
 
@@ -71,9 +71,9 @@ function threads_get_folders()
 
             if (user_is_guest()) {
 
-                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+                if (session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
-                    $folder_data['STATUS'] = bh_session_get_perm($folder_data['FID']);
+                    $folder_data['STATUS'] = session_get_perm($folder_data['FID']);
 
                     if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
                     if (!isset($folder_data['INTEREST'])) $folder_data['INTEREST'] = 0;
@@ -87,9 +87,9 @@ function threads_get_folders()
 
             }else {
 
-                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
+                if (session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $folder_data['STATUS'] = bh_session_get_perm($folder_data['FID']);
+                    $folder_data['STATUS'] = session_get_perm($folder_data['FID']);
 
                     if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
                     if (!isset($folder_data['INTEREST'])) $folder_data['INTEREST'] = 0;
@@ -925,7 +925,7 @@ function threads_get_deleted($uid)
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
     // Only Admins can view deleted threads.
-    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0);
+    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0);
 
     // Get the folders the user can see.
     if (!$folders = folder_get_available()) return array(0, 0);
@@ -1073,7 +1073,7 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // User UID
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Unread cutoff
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
@@ -1261,7 +1261,7 @@ function threads_any_unread()
 {
     if (!$db_threads_any_unread = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1300,7 +1300,7 @@ function threads_any_unread()
 
 function threads_mark_all_read()
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$db_threads_mark_all_read = db_connect()) return false;
 
@@ -1324,7 +1324,7 @@ function threads_mark_all_read()
 
 function threads_mark_50_read()
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$db_threads_mark_50_read = db_connect()) return false;
 
@@ -1356,7 +1356,7 @@ function threads_mark_folder_read($fid)
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
@@ -1381,7 +1381,7 @@ function threads_mark_read($tid_array)
 
     if (!is_array($tid_array)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
@@ -1441,21 +1441,21 @@ function thread_list_draw_top($thread_mode)
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
     echo "  </tr>\n";
 
     if (forum_get_setting('allow_polls', 'Y')) {
 
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
         echo "  </tr>\n";
     }
 
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['search']}</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('search.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['search']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";
@@ -1491,7 +1491,7 @@ function thread_list_draw_top($thread_mode)
                                  SEARCH_RESULTS           => $lang['searchresults'],
                                  DELETED_THREADS          => $lang['deletedthreads']);
 
-        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+        if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             if ($unread_cutoff_stamp === false) {
 
@@ -1586,7 +1586,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
 
     $thread_subscriptions_array = array();
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if ($interest_type <> THREAD_NOINTEREST) {
 
@@ -1654,7 +1654,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 
     $thread_subscriptions_array = array();
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if ($interest_type <> THREAD_NOINTEREST) {
 

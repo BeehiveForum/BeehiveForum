@@ -86,20 +86,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -134,7 +134,7 @@ html_draw_top("title={$lang['mycontrols']} - {$lang['userrelationships']}", "bas
 
 echo "<h1>{$lang['userrelationships']}</h1>\n";
 
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
     $main_page = $_GET['main_page'];
@@ -256,15 +256,15 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></td>\n";
 
         }elseif ($user_peer['RELATIONSHIP'] & USER_IGNORED) {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
 
         }elseif ($user_peer['RELATIONSHIP'] & USER_IGNORED_COMPLETELY) {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /></td>\n";
 
         }else {
 
@@ -273,20 +273,20 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
         if ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG) {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
         }
 
         if ($user_peer['RELATIONSHIP'] & USER_BLOCK_PM) {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['block']}\" title=\"{$lang['block']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['block']}\" title=\"{$lang['block']}\" /></td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
         }
 
         echo "                </tr>\n";

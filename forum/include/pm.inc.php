@@ -82,7 +82,7 @@ function pm_mark_as_read($mid)
 {
     if (!$db_pm_mark_as_read = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -106,7 +106,7 @@ function pm_mark_as_read($mid)
 * @param void
 */
 
-function pm_edit_refuse()
+function pm_post_edit_refuse()
 {
     $lang = load_language_file();
     html_error_msg($lang['cannoteditpm'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => PM_FOLDER_OUTBOX));
@@ -155,7 +155,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_inbox_array = array();
     $mid_array = array();
@@ -244,7 +244,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
     $mid_array = array();
@@ -337,7 +337,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_sent_array = array();
     $mid_array = array();
@@ -430,7 +430,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_saved_items_array = array();
     $mid_array = array();
@@ -525,7 +525,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_drafts_array = array();
     $mid_array = array();
@@ -606,7 +606,7 @@ function pm_search_execute($search_string, &$error)
 {
     if (!$db_pm_search_execute = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
@@ -684,7 +684,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_search_results_array = array();
     $mid_array = array();
@@ -762,7 +762,7 @@ function pm_get_folder_message_counts()
 {
     if (!$db_pm_get_folder_message_counts = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $message_count_array = array(PM_FOLDER_INBOX  => 0, PM_FOLDER_SENT   => 0,
                                  PM_FOLDER_OUTBOX => 0, PM_FOLDER_SAVED  => 0,
@@ -839,7 +839,7 @@ function pm_get_free_space($uid = false)
     if (!$db_pm_get_free_space = db_connect()) return false;
 
     if ($uid === false) {
-        if (($uid = bh_session_get_value('UID')) === false) return false;
+        if (($uid = session_get_value('UID')) === false) return false;
     }
 
     $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
@@ -914,7 +914,7 @@ function pm_user_get_friends()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $user_rel = USER_FRIEND;
 
@@ -999,7 +999,7 @@ function pm_message_get($mid)
 {
     if (!$db_pm_message_get = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1255,19 +1255,19 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
         if ($folder == PM_FOLDER_INBOX) {
 
-            echo "                        <td align=\"center\"><img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['reply']}</a>&nbsp;&nbsp;<img src=\"", style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
+            echo "                        <td align=\"center\"><img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['reply']}</a>&nbsp;&nbsp;<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
 
         }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-            echo "                        <td align=\"center\"><img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['edit']}</a>&nbsp;&nbsp;<img src=\"", style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
+            echo "                        <td align=\"center\"><img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['edit']}</a>&nbsp;&nbsp;<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
 
         }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-            echo "                        <td align=\"center\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['edit']}</a></td>\n";
+            echo "                        <td align=\"center\"><img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['edit']}</a></td>\n";
 
         }else {
 
-            echo "                        <td align=\"center\"><img src=\"", style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
+            echo "                        <td align=\"center\"><img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
         }
 
     }else {
@@ -1308,7 +1308,7 @@ function pm_message_get_folder($mid, $type = 0)
 
     if (!is_numeric($mid)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_message_type_array = array(1  => PM_FOLDER_OUTBOX,
                                    2  => PM_FOLDER_INBOX,
@@ -1528,7 +1528,7 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
 {
     if (!$db_pm_save_message = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($to_uid)) return false;
 
@@ -1695,7 +1695,7 @@ function pm_delete_message($mid)
     $pm_draft_items = PM_DRAFT_ITEMS;
 
     // User UID
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Verify the PM is 'owned' by the current user.
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
@@ -1775,7 +1775,7 @@ function pm_archive_message($mid)
 
     if (!is_numeric($mid)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_saved_in  = PM_SAVED_IN;
     $pm_saved_out = PM_SAVED_OUT;
@@ -1841,7 +1841,7 @@ function pm_get_new_messages($limit)
 
     $limit = abs($limit);
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_outbox = PM_OUTBOX;
 
@@ -1888,7 +1888,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     if (!$db_pm_get_message_count = db_connect()) return false;
 
     // Check the user UID.
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // PM folder types we'll be using.
     $pm_unread = PM_UNREAD;
@@ -1962,7 +1962,7 @@ function pm_check_messages()
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
     
     // Check if the user wants Javascript notifcation.
-    if (bh_session_get_value('PM_NOTIFY') == 'Y') {
+    if (session_get_value('PM_NOTIFY') == 'Y') {
 
         // Format the message sent to the client.
         if ($pm_new_count == 1 && $pm_outbox_count == 0) {
@@ -2028,7 +2028,7 @@ function pm_get_unread_count()
 {
     if (!$db_pm_get_unread_count = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Guests don't do PMs.
     if (user_is_guest()) return false;
@@ -2061,7 +2061,7 @@ function pm_user_prune_folders($uid = false)
     if (!$db_pm_prune_folders = db_connect()) return false;
 
     if ($uid === false) {
-        if (($uid = bh_session_get_value('UID')) === false) return false;
+        if (($uid = session_get_value('UID')) === false) return false;
     }
 
     $user_prefs = user_get_prefs($uid);
@@ -2130,7 +2130,7 @@ function pm_system_prune_folders()
 
 function pm_auto_prune_enabled()
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $user_prefs = user_get_prefs($uid);
 
@@ -2293,7 +2293,7 @@ function pm_export_html_bottom()
 
 function pm_export_messages($mid_array, $folder = PM_FOLDER_NONE)
 {
-    $logon = mb_strtolower(bh_session_get_value('LOGON'));
+    $logon = mb_strtolower(session_get_value('LOGON'));
 
     switch ($folder) {
 
@@ -2328,8 +2328,8 @@ function pm_export_messages($mid_array, $folder = PM_FOLDER_NONE)
             break;
     }
 
-    $pm_export_type = bh_session_get_value('PM_EXPORT_TYPE');
-    $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
+    $pm_export_type = session_get_value('PM_EXPORT_TYPE');
+    $pm_export_style = session_get_value('PM_EXPORT_STYLE');
 
     $zip_file = new zip_file();
 
@@ -2383,9 +2383,9 @@ function pm_export_html($mid_array, &$zip_file)
     if (!is_array($mid_array)) return false;
     if (!is_object($zip_file)) return false;
 
-    $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
-    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
-    $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
+    $pm_export_file = session_get_value('PM_EXPORT_FILE');
+    $pm_export_attachments = session_get_value('PM_EXPORT_ATTACHMENTS');
+    $pm_export_wordfilter = session_get_value('PM_EXPORT_WORDFILTER');
 
     $pm_display = pm_export_html_top(false);
 
@@ -2453,9 +2453,9 @@ function pm_export_xml($mid_array, &$zip_file)
     if (!is_array($mid_array)) return false;
     if (!is_object($zip_file)) return false;
 
-    $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
-    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
-    $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
+    $pm_export_file = session_get_value('PM_EXPORT_FILE');
+    $pm_export_attachments = session_get_value('PM_EXPORT_ATTACHMENTS');
+    $pm_export_wordfilter = session_get_value('PM_EXPORT_WORDFILTER');
 
     $beehive_version = BEEHIVE_VERSION;
 
@@ -2541,9 +2541,9 @@ function pm_export_plaintext($mid_array, &$zip_file)
     if (!is_array($mid_array)) return false;
     if (!is_object($zip_file)) return false;
 
-    $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
-    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
-    $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
+    $pm_export_file = session_get_value('PM_EXPORT_FILE');
+    $pm_export_attachments = session_get_value('PM_EXPORT_ATTACHMENTS');
+    $pm_export_wordfilter = session_get_value('PM_EXPORT_WORDFILTER');
 
     $pm_display = "";
 
@@ -2610,7 +2610,7 @@ function pm_export_plaintext($mid_array, &$zip_file)
 
 function pm_export_word_filter_apply($content)
 {
-    if (($uid = bh_session_get_value('UID')) === false) return $content;
+    if (($uid = session_get_value('UID')) === false) return $content;
     return word_filter_apply($content, $uid);
 }
 
@@ -2672,7 +2672,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
                 }
             }
 
-            if ($attachments_added_success == true && $attach_img = style_image('attach.png', true)) {
+            if ($attachments_added_success == true && $attach_img = html_style_image('attach.png', true)) {
 
                 $attach_img_contents = implode("", file($attach_img));
                 $zip_file->add_file($attach_img_contents, $attach_img);
@@ -2687,7 +2687,7 @@ function pm_get_folder_names()
 {
     if (!$db_pm_get_folder_names = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $lang = load_language_file();
 
@@ -2732,7 +2732,7 @@ function pm_update_folder_name($folder, $folder_name)
 
     if (!is_numeric($folder)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $folder_name = db_escape_string($folder_name);
 
@@ -2750,7 +2750,7 @@ function pm_reset_folder_name($folder)
 
     if (!is_numeric($folder)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "DELETE FROM PM_FOLDERS WHERE UID = '$uid' AND FID = '$folder'";
 

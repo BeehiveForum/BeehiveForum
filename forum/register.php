@@ -102,10 +102,10 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }
 
 // Load the user session
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -192,7 +192,7 @@ if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
 if (isset($_POST['cancel'])) {
 
-    bh_setcookie("logon", "1");
+    html_set_cookie("logon", "1");
     header_redirect("logon.php?webtag=$webtag");
     exit;
 }
@@ -481,7 +481,7 @@ if (isset($_POST['register'])) {
             user_update_sig($new_uid, $sig_content, $sig_html);
 
             // Initialise the new user session.
-            bh_session_init($new_uid);
+            session_init($new_uid);
 
             // Check to see if the user is going somewhere after they have registered.
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
@@ -806,7 +806,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf($lang['textcaptchaexplain'], $forum_owner_link), "</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
-            echo "                        <td align=\"left\" valign=\"top\"><img src=\"", style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><img src=\"", html_style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", "", 20, htmlentities_array($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key())), "</td>\n";

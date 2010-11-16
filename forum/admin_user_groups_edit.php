@@ -93,13 +93,13 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -141,7 +141,7 @@ if (isset($_POST['cancel'])) {
     exit;
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -208,7 +208,7 @@ if (isset($_POST['save'])) {
 
     $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         $new_group_perms = (double) $new_group_perms | $t_admintools;
 
@@ -273,7 +273,7 @@ html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$group['G
 
 $group_users_array = perm_group_get_users($gid, 0);
 
-echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -334,7 +334,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['groupcanaccessadmintools'], $group_permissions & USER_PERM_ADMIN_TOOLS), "</td>\n";

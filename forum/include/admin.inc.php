@@ -68,7 +68,7 @@ function admin_add_log_entry($action, $data = "")
 {
     if (!$db_admin_add_log_entry = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($action)) return false;
 
@@ -150,7 +150,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -1015,7 +1015,7 @@ function admin_get_post_approval_queue($offset = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
+    if (($folder_list = session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
         $fidlist = implode(',', $folder_list);
     }
 
@@ -1082,7 +1082,7 @@ function admin_get_visitor_log($offset)
 
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     $forum_fid = $table_data['FID'];
 
@@ -1210,7 +1210,7 @@ function admin_get_user_ip_matches($uid)
     $user_aliases_array = array();
 
     // Session UID
-    $sess_uid = bh_session_get_value('UID');
+    $sess_uid = session_get_value('UID');
 
     // Fetch the user's last 10 IP addresses from the POST table
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
@@ -1298,7 +1298,7 @@ function admin_get_user_email_matches($uid)
     $user_email_aliases_array = array();
 
     // Session UID
-    $sess_uid = bh_session_get_value('UID');
+    $sess_uid = session_get_value('UID');
 
     // Get the user's email address
     $user_email_address = user_get_email($uid);
@@ -1356,7 +1356,7 @@ function admin_get_user_referer_matches($uid)
     $user_referer_aliases_array = array();
 
     // Session UID
-    $sess_uid = bh_session_get_value('UID');
+    $sess_uid = session_get_value('UID');
 
     // Get the user's referer
     $user_http_referer = user_get_referer($uid);
@@ -1414,7 +1414,7 @@ function admin_get_user_passwd_matches($uid)
     $user_passwd_aliases_array = array();
 
     // Session UID
-    $sess_uid = bh_session_get_value('UID');
+    $sess_uid = session_get_value('UID');
 
     // Get the user's email address
     $user_passwd = user_get_passwd($uid);
@@ -1601,7 +1601,7 @@ function admin_delete_user($uid, $delete_content = false)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // UID of current user
-    $admin_uid = bh_session_get_value('UID');
+    $admin_uid = session_get_value('UID');
 
     // Before we delete we verify the user account exists and that
     // the user is not the current user account.

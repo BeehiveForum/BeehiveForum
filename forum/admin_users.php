@@ -86,13 +86,13 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -105,7 +105,7 @@ $lang = load_language_file();
 $error_msg_array = array();
 
 // Check we have permission to access this page.
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -205,9 +205,9 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
 
 html_draw_top("title={$lang['admin']} - {$lang['manageusers']}", 'class=window_title');
 
-echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusers']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusers']}</h1>\n";
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     if (isset($_POST['select_action'])) {
 
@@ -429,7 +429,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
 
-if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
+if (forum_get_setting('require_user_approval', 'Y') && (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
 
     echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
 
@@ -444,7 +444,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array['user_array']) > 0) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array['user_array']) > 0) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";

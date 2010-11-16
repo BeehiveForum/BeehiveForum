@@ -173,7 +173,7 @@ function light_html_draw_top()
 
     if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
-        if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
+        if (session_get_value('USE_MOVER_SPOILER') == "Y") {
 
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
         }
@@ -208,7 +208,7 @@ function light_draw_logon_form($error_msg_array = array())
 
     forum_check_webtag_available($webtag);
 
-    bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
+    html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
     
     light_html_draw_top("robots=noindex,nofollow");    
 
@@ -260,7 +260,7 @@ function light_draw_messages($msg)
 
     list($tid, $pid) = explode('.', $msg);
 
-    if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
+    if (($posts_per_page = session_get_value('POSTS_PER_PAGE'))) {
 
         if ($posts_per_page < 10) $posts_per_page = 10;
         if ($posts_per_page > 30) $posts_per_page = 30;
@@ -270,7 +270,7 @@ function light_draw_messages($msg)
         $posts_per_page = 20;
     }
 
-    if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
         light_html_draw_top("title={$lang['threadcouldnotbefound']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
@@ -418,7 +418,7 @@ function light_draw_messages($msg)
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
 
-    if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
+    if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
         echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
     }
 
@@ -447,7 +447,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     $visible_threads_array = array();
 
-    if (($uid = bh_session_get_value('UID')) === false) return;
+    if (($uid = session_get_value('UID')) === false) return;
     
     light_html_draw_top();
 
@@ -546,7 +546,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     // Check that the folder order is a valid array.
     // While we're here we can also check to see how the user
     // has decided to display the thread list.
-    if (!is_array($folder_order) || (bh_session_get_value('THREADS_BY_FOLDER') == 'Y')) {
+    if (!is_array($folder_order) || (session_get_value('THREADS_BY_FOLDER') == 'Y')) {
         $folder_order = array_keys($folder_info);
     }
 
@@ -559,7 +559,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if ((bh_session_get_value('THREADS_BY_FOLDER') == 'N') || user_is_guest()) {
+            if ((session_get_value('THREADS_BY_FOLDER') == 'N') || user_is_guest()) {
 
                 if (in_array($thread['FID'], $folder_order)) {
                     array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
@@ -582,7 +582,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     // Work out if any folders have no messages and add them.
     // Seperate them by INTEREST level
-    if (bh_session_get_value('UID') > 0) {
+    if (session_get_value('UID') > 0) {
 
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -949,7 +949,7 @@ function light_draw_pm_inbox()
         // Draw the header.
         light_html_draw_top("title={$lang['pminbox']}");
 
-        echo "<h1>{$lang['privatemessages']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$message_folder]}</h1>\n";
+        echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$message_folder]}</h1>\n";
 
         if (isset($pm_message_array) && is_array($pm_message_array)) {
 
@@ -1316,7 +1316,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
     $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
     $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
 
-    if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time())) {
+    if ((!is_array($user_poll_votes_array) && session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time())) {
 
         $poll_previous_group = false;
 
@@ -1456,7 +1456,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
                 $poll_data['CONTENT'].= sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true));
 
-            }elseif (bh_session_get_value('UID') > 0) {
+            }elseif (session_get_value('UID') > 0) {
 
                 $poll_data['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>\n";
             }
@@ -1466,7 +1466,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
     }
 
     // Work out what relationship the user has to the user who posted the poll
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(bh_session_get_value('UID'), $poll_data['FROM_UID']);
+    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
     light_message_display($tid, $poll_data, $msg_count, $folder_fid, true, $closed, $limit_text, true, $is_preview);
 }
@@ -1475,7 +1475,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 {
     $lang = load_language_file();
 
-    $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
+    $perm_is_moderator = session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
@@ -1487,7 +1487,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     $attachments_array = array();
     $image_attachments_array = array();
 
-    if (($uid = bh_session_get_value('UID')) === false) return;
+    if (($uid = session_get_value('UID')) === false) return;
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 
@@ -1541,7 +1541,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
         return;
     }
 
-    if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
+    if (session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
@@ -1696,17 +1696,17 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
         $links_array = array();
 
-        if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
+        if (!$closed && session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
             $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
         }
 
-        if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !bh_session_check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
+        if (($uid == $message['FROM_UID'] && session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session_check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
             $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['delete']}</a>";
         }
 
-        if ((!(bh_session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+        if ((!(session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
             if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
@@ -1725,7 +1725,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
 function light_spoiler_enable($message)
 {
-    if (bh_session_get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
+    if (session_get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
         return str_replace("<div class=\"spoiler\">", "<div class=\"spoiler_light\">", $message);
     }
 
@@ -1861,14 +1861,14 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
             if (user_is_guest()) {
 
-                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
+                if (session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
 
             }else {
 
-                if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
+                if (session_check_perm($access_allowed, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
@@ -1967,7 +1967,7 @@ function light_attachments_make_link($attachment)
     $href.= "&amp;filename={$attachment['filename']}";
 
     $attachment_link = "<img src=\"";
-    $attachment_link.= style_image('attach.png');
+    $attachment_link.= html_style_image('attach.png');
     $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" />";
     $attachment_link.= "<a href=\"$href\" target=\"_blank\">{$attachment['filename']}</a>";
 
@@ -2010,7 +2010,7 @@ function light_threads_draw_discussions_dropdown($mode)
                                  MOST_UNREAD_POSTS        => $lang['mostunreadposts'],
                                  DELETED_THREADS          => $lang['deletedthreads']);
 
-        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+        if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             if ($unread_cutoff_stamp === false) {
 
@@ -2039,7 +2039,7 @@ function light_threads_draw_discussions_dropdown($mode)
     return light_form_dropdown_array("mode", $available_views, $mode);
 }
 
-function light_edit_refuse()
+function light_post_edit_refuse()
 {
     $lang = load_language_file();
 
@@ -2140,7 +2140,7 @@ function light_html_display_error_array($error_list_array)
 
     echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"error_msg\">\n";
     echo "  <tr>\n";
-    echo "    <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "    <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "    <td class=\"error_msg_icon\">{$lang['thefollowingerrorswereencountered']}</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
@@ -2161,7 +2161,7 @@ function light_html_display_success_msg($string_msg)
 
     echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"success_msg\">\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "    <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
     echo "    <td valign=\"top\" class=\"success_msg_icon\">$string_msg</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
@@ -2175,7 +2175,7 @@ function light_html_display_warning_msg($string_msg)
 
     echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"warning_msg\">\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "    <td valign=\"top\" class=\"warning_msg_icon\">$string_msg</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
@@ -2189,7 +2189,7 @@ function light_html_display_error_msg($string_msg)
 
     echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"error_msg\">\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "    <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "    <td valign=\"top\" class=\"error_msg_icon\">$string_msg</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
@@ -2210,7 +2210,7 @@ function light_pm_error_refuse()
     light_html_display_error_msg($lang['cannotviewpm']);
 }
 
-function light_pm_edit_refuse()
+function light_pm_post_edit_refuse()
 {
     $lang = load_language_file();
     light_html_display_error_msg($lang['cannoteditpm']);

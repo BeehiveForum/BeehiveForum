@@ -87,20 +87,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -116,7 +116,7 @@ if (!forum_check_webtag_available($webtag)) {
 $lang = load_language_file();
 
 // User's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -191,7 +191,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 // Cannot modify relationship settings for the current account
-if ($peer_uid == bh_session_get_value('UID')) {
+if ($peer_uid == session_get_value('UID')) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['youcannotchangeuserrelationshipforownaccount']);
@@ -223,7 +223,7 @@ if (isset($_POST['save'])) {
         if (!$peer_nickname = user_get_nickname($peer_uid)) $peer_nickname = "";
     }
 
-    if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(bh_session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
+    if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
         $peer_relationship = ($peer_relationship & USER_IGNORED) ? USER_NORMAL : $peer_relationship;
     }
 
@@ -255,13 +255,13 @@ $peer_relationship = user_get_relationship($uid, $peer_uid);
 
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-echo "<h1>{$lang['userrelationship']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array($peer_user_display)), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'left');
 
-}else if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(bh_session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
+}else if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
 
     html_display_warning_msg($lang['cannotignoremod'], '600', 'left');
 }
@@ -394,7 +394,7 @@ echo "                        <td align=\"left\" width=\"150\">", form_radio('pe
 echo "                        <td align=\"left\" width=\"400\">: {$lang['normal_exp']}</td>\n";
 echo "                      </tr>\n";
 
-if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (bh_session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
+if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED, $lang['ignored'], $peer_relationship & USER_IGNORED ? true : false), "</td>\n";

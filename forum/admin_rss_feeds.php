@@ -89,13 +89,13 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -110,7 +110,7 @@ if (!forum_check_webtag_available($webtag)) {
 // Load language file
 $lang = load_language_file();
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -155,9 +155,9 @@ if (isset($_POST['delete'])) {
 
         foreach ($_POST['t_delete'] as $feed_id => $delete_feed) {
 
-            if ($valid && $delete_feed == "Y" && $rss_feed = rss_get_feed($feed_id)) {
+            if ($valid && $delete_feed == "Y" && $rss_feed = rss_feed_get($feed_id)) {
 
-                if (rss_remove_feed($feed_id)) {
+                if (rss_feed_remove($feed_id)) {
 
                     admin_add_log_entry(DELETED_RSS_FEED, $rss_feed['NAME']);
 
@@ -196,9 +196,9 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (($rss_items = rss_read_database($t_url))) {
+        if (($rss_feed_items = rss_feed_read_database($t_url))) {
 
-            if (is_array($rss_items) && sizeof($rss_items) > 0) {
+            if (is_array($rss_feed_items) && sizeof($rss_feed_items) > 0) {
 
                 $rss_stream_success = $lang['rssstreamworkingcorrectly'];
 
@@ -314,7 +314,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (rss_add_feed($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new, $t_max_item_count_new)) {
+        if (rss_feed_add($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new, $t_max_item_count_new)) {
 
             admin_add_log_entry(ADDED_RSS_FEED, array($t_name_new, $t_url_new));
             header_redirect("admin_rss_feeds.php?webtag=$webtag&added=true");
@@ -476,7 +476,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']} - {$lang['addnewfeed']}", 'class=window_title', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfeed']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfeed']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -599,7 +599,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         exit;
     }
 
-    if (!$rss_feed = rss_get_feed($feed_id)) {
+    if (!$rss_feed = rss_feed_get($feed_id)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
@@ -609,7 +609,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']} - {$lang['editfeed']} - {$rss_feed['NAME']}", 'search_popup.js', 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfeed']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfeed']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($rss_feed['NAME'])), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -719,9 +719,9 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']}", 'search.js', 'class=window_title');
 
-    $rss_feeds = rss_get_feeds($start);
+    $rss_feeds = rss_feed_get_feeds($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

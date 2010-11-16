@@ -142,7 +142,7 @@ function cache_check_thread_list()
         return false;
     }
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Get the thread last modified date and user last read date.
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
@@ -229,7 +229,7 @@ function cache_check_start_page()
         return false;
     }
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     // Get the thread last modified date and user last read date.
     $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
@@ -385,13 +385,13 @@ function cache_check_messages()
 
 function cache_check_logon_hash()
 {
-    $logon_hash_check = md5(bh_session_get_value('LOGON'));
+    $logon_hash_check = md5(session_get_value('LOGON'));
 
-    if (($logon_hash = bh_getcookie('cache_hash', 'strlen', ''))) {
+    if (($logon_hash = html_get_cookie('cache_hash', 'strlen', ''))) {
         if ($logon_hash === $logon_hash_check) return true;
     }
 
-    bh_setcookie('cache_hash', $logon_hash_check);
+    html_set_cookie('cache_hash', $logon_hash_check);
     return false;
 }
 

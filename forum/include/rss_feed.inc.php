@@ -41,14 +41,14 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-class rss_item
+class rss_feed_item
 {
     public $title;
     public $link;
     public $description;
     public $pubDate;
 
-    function rss_item($aa)
+    function rss_feed_item($aa)
     {
         foreach ($aa as $key => $value) {
             $this->$key = $value;
@@ -56,7 +56,7 @@ class rss_item
     }
 }
 
-function rss_read_stream($filename)
+function rss_feed_read_stream($filename)
 {
     // Try and use PHP's own fopen wrapper to save us
     // having to do our own HTTP connection.
@@ -118,9 +118,9 @@ function rss_read_stream($filename)
     return false;
 }
 
-function rss_read_database($filename)
+function rss_feed_read_database($filename)
 {
-   if (!$data = rss_read_stream($filename)) return false;
+   if (!$data = rss_feed_read_stream($filename)) return false;
 
    $data = html_entity_to_decimal($data);
 
@@ -152,7 +152,7 @@ function rss_read_database($filename)
 
                    $offset = $ranges[$i] + 1;
                    $len = $ranges[$i + 1] - $offset;
-                   $rss_data[] = rss_parse_item(array_slice($values, $offset, $len));
+                   $rss_data[] = rss_feed_parse_item(array_slice($values, $offset, $len));
                }
            }
 
@@ -165,7 +165,7 @@ function rss_read_database($filename)
    return $rss_data;
 }
 
-function rss_parse_item($ivalues)
+function rss_feed_parse_item($ivalues)
 {
    for ($i = 0; $i < count($ivalues); $i++) {
 
@@ -176,10 +176,10 @@ function rss_parse_item($ivalues)
        }
    }
 
-   return new rss_item($item);
+   return new rss_feed_item($item);
 }
 
-function rss_fetch_feed()
+function rss_feed_fetch()
 {
     if (!$db_fetch_rss_feed = db_connect()) return false;
 
@@ -216,9 +216,9 @@ function rss_fetch_feed()
     return false;
 }
 
-function rss_thread_exist($rss_id, $link)
+function rss_feed_thread_exist($rss_id, $link)
 {
-    if (!$db_rss_thread_exist = db_connect()) return false;
+    if (!$db_rss_feed_thread_exist = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -230,16 +230,16 @@ function rss_thread_exist($rss_id, $link)
     $sql.= "FROM `{$table_data['PREFIX']}RSS_HISTORY` ";
     $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
 
-    if (!$result = db_query($sql, $db_rss_thread_exist)) return false;
+    if (!$result = db_query($sql, $db_rss_feed_thread_exist)) return false;
 
     list($rss_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return ($rss_thread_count > 0);
 }
 
-function rss_create_history($rss_id, $link)
+function rss_feed_create_history($rss_id, $link)
 {
-    if (!$db_rss_create_history = db_connect()) return false;
+    if (!$db_rss_feed_create_history = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -250,28 +250,28 @@ function rss_create_history($rss_id, $link)
     $sql = "INSERT IGNORE INTO `{$table_data['PREFIX']}RSS_HISTORY` (RSSID, LINK) ";
     $sql.= "VALUES ($rss_id, '$link')";
 
-    if (!db_query($sql, $db_rss_create_history)) return false;
+    if (!db_query($sql, $db_rss_feed_create_history)) return false;
 
     return true;
 }
 
-function rss_check_feeds()
+function rss_feed_check_feeds()
 {
     $lang = load_language_file();
 
-    if (($rss_feed = rss_fetch_feed())) {
+    if (($rss_feed = rss_feed_fetch())) {
         
-        if (($rss_data = rss_read_database($rss_feed['URL']))) {
+        if (($rss_data = rss_feed_read_database($rss_feed['URL']))) {
             
             $max_item_count = min(10, $rss_feed['MAX_ITEM_COUNT']);
             
-            foreach ($rss_data as $item_index => $rss_item) {
+            foreach ($rss_data as $item_index => $rss_feed_item) {
                 
                 if (($item_index + 1) > $max_item_count) return;
 
-                if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
+                if (!rss_feed_thread_exist($rss_feed['RSSID'], $rss_feed_item->link)) {
 
-                    $rss_title = htmlentities_decode_array($rss_item->title);
+                    $rss_title = htmlentities_decode_array($rss_feed_item->title);
 
                     $rss_title = htmlentities_array(strip_tags($rss_title));
 
@@ -296,36 +296,36 @@ function rss_check_feeds()
                         $rss_title.= " ...";
                     }
 
-                    if (strlen($rss_item->description) > 1) {
+                    if (strlen($rss_feed_item->description) > 1) {
 
-                        $rss_item_description = htmlentities_decode_array($rss_item->description);
+                        $rss_feed_item_description = htmlentities_decode_array($rss_feed_item->description);
 
-                        $rss_item_post = new MessageText(true, $rss_item_description);
-                        $rss_item_post->setHTML(POST_HTML_AUTO);
+                        $rss_feed_item_post = new MessageText(true, $rss_feed_item_description);
+                        $rss_feed_item_post->setHTML(POST_HTML_AUTO);
 
-                        $rss_content = $rss_item_post->getContent();
+                        $rss_content = $rss_feed_item_post->getContent();
 
-                        $rss_content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_item->link}\">$rss_content</quote>");
+                        $rss_content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_feed_item->link}\">$rss_content</quote>");
 
                     }else {
 
-                        $rss_content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
+                        $rss_content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_feed_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
                     }
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
 
                     post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], 0, $rss_content, true);
 
-                    rss_create_history($rss_feed['RSSID'], $rss_item->link);
+                    rss_feed_create_history($rss_feed['RSSID'], $rss_feed_item->link);
                 }
             }
         }
     }
 }
 
-function rss_get_feeds($offset)
+function rss_feed_get_feeds($offset)
 {
-    if (!$db_rss_get_feeds = db_connect()) return false;
+    if (!$db_rss_feed_get_feeds = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -335,7 +335,7 @@ function rss_get_feeds($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $rss_feed_array = array();
 
@@ -349,12 +349,12 @@ function rss_get_feeds($offset)
     $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
+    if (!$result = db_query($sql, $db_rss_feed_get_feeds)) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_rss_get_feeds)) return false;
+    if (!$result_count = db_query($sql, $db_rss_feed_get_feeds)) return false;
 
     list($rss_feed_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
@@ -377,16 +377,16 @@ function rss_get_feeds($offset)
     }else if ($rss_feed_count > 0) {
 
         $offset = floor(($rss_feed_count - 1) / 10) * 10;
-        return rss_get_feeds($offset);
+        return rss_feed_get_feeds($offset);
     }
 
     return array('rss_feed_array' => $rss_feed_array,
                  'rss_feed_count' => $rss_feed_count);
 }
 
-function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency, $max_item_count)
+function rss_feed_add($name, $uid, $fid, $url, $prefix, $frequency, $max_item_count)
 {
-    if (!$db_rss_add_feed = db_connect()) return false;
+    if (!$db_rss_feed_add = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($fid)) return false;
@@ -404,7 +404,7 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency, $max_item_co
     $sql = "INSERT INTO `{$table_data['PREFIX']}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN, MAX_ITEM_COUNT) ";
     $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME), $max_item_count)";
 
-    if (!db_query($sql, $db_rss_add_feed)) return false;
+    if (!db_query($sql, $db_rss_feed_add)) return false;
 
     return true;
 }
@@ -435,9 +435,9 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency, $
     return true;
 }
 
-function rss_get_feed($feed_id)
+function rss_feed_get($feed_id)
 {
-    if (!$db_rss_get_feeds = db_connect()) return false;
+    if (!$db_rss_feed_get_feeds = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -445,7 +445,7 @@ function rss_get_feed($feed_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
@@ -457,7 +457,7 @@ function rss_get_feed($feed_id)
     $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
 
-    if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
+    if (!$result = db_query($sql, $db_rss_feed_get_feeds)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -478,9 +478,9 @@ function rss_get_feed($feed_id)
     return false;
 }
 
-function rss_remove_feed($rssid)
+function rss_feed_remove($rssid)
 {
-    if (!$db_rss_remove_feed = db_connect()) return false;
+    if (!$db_rss_feed_remove = db_connect()) return false;
 
     if (!is_numeric($rssid)) return false;
 
@@ -488,9 +488,9 @@ function rss_remove_feed($rssid)
 
     $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}RSS_FEEDS` WHERE RSSID = '$rssid'";
 
-    if (!db_query($sql, $db_rss_remove_feed)) return false;
+    if (!db_query($sql, $db_rss_feed_remove)) return false;
 
-    return (db_affected_rows($db_rss_remove_feed) > 0);
+    return (db_affected_rows($db_rss_feed_remove) > 0);
 }
 
 ?>

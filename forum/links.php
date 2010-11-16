@@ -84,20 +84,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -127,7 +127,7 @@ if (!forum_get_setting('show_links', 'Y')) {
     exit;
 }
 
-$folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
@@ -145,7 +145,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 if (isset($_GET['action'])) {
 
-    if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderhide") {
+    if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderhide") {
 
         links_folder_change_visibility($fid, false);
 
@@ -157,7 +157,7 @@ if (isset($_GET['action'])) {
 
         header_redirect("links.php?webtag=$webtag&fid=$fid");
 
-    }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "foldershow") {
+    }elseif (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "foldershow") {
 
         links_folder_change_visibility($fid, true);
 
@@ -169,9 +169,9 @@ if (isset($_GET['action'])) {
 
         header_redirect("links.php?webtag=$webtag&fid=$fid");
 
-    }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderdel") {
+    }elseif (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderdel") {
 
-        $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+        $folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
         if (count(links_get_subfolders($fid, $folders)) == 0) links_folder_delete($fid);
 
         if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
@@ -268,19 +268,19 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         while (list($key, $val) = each($subfolders)) {
 
             echo "                          <tr>\n";
-            echo "                            <td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td>\n";
+            echo "                            <td class=\"postbody\"><img src=\"" . html_style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td>\n";
             echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])), "</a>";
 
-            if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
+            if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
 
                 echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['hide']}]</a>\n";
 
-            }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "N") {
+            }elseif (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "N") {
 
                 echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['unhide']}]</a>\n";
             }
 
-            if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+            if (session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
                 echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$val\" class=\"threadtime\">[{$lang['edit']}]</a>\n";
 
@@ -302,7 +302,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         echo "              </td>\n";
         echo "            </tr>\n";
 
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+        if (session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
             echo "            <tr>\n";
             echo "              <td>&nbsp;</td>\n";
@@ -397,9 +397,9 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
-    $links = links_get_in_folder($fid, bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);
+    $links = links_get_in_folder($fid, session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);
 }else {
-    $links = links_get_all(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);
+    $links = links_get_all(session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);
 }
 
 if (sizeof($links['links_array']) < 1) {
@@ -480,10 +480,10 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"33%\">\n";
-echo "              <img src=\"", style_image("link_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a><br />\n";
+echo "              <img src=\"", html_style_image("link_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a><br />\n";
 
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
-    echo "              <img src=\"", style_image("folder_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">{$lang['newfolder']}</a>\n";
+    echo "              <img src=\"", html_style_image("folder_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">{$lang['newfolder']}</a>\n";
 }
 
 echo "            </td>\n";

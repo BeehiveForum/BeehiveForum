@@ -92,20 +92,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -160,7 +160,7 @@ if (!$folder_data = folder_get($fid)) {
 }
 
 // UID of the current user.
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Get the existing thread data.
 if (!folder_is_accessible($fid)) {
@@ -199,7 +199,7 @@ if (isset($_POST['save'])) {
 
 html_draw_top("title={$lang['folderoptions']} - {$folder_data['TITLE']}", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>{$lang['folderoptions']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
+echo "<h1>{$lang['folderoptions']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($folder_data['TITLE'])), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

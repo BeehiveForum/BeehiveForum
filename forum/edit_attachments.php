@@ -83,20 +83,20 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -160,7 +160,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 }else {
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 }
 
 if (isset($_GET['popup']) && is_numeric($_GET['popup'])) {
@@ -210,7 +210,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // Check that the UID we have belongs to the current user
 // or that it is an admin if we're viewing another user's
 // attachments.
-if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+if (($uid != session_get_value('UID')) && !(session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     html_error_msg($lang['accessdeniedexp']);
@@ -554,7 +554,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
+if ($uid == session_get_value('UID') && is_md5($aid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -564,7 +564,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-    if (attachments_get_all(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
+    if (attachments_get_all(session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other"), "</td>\n";
@@ -696,7 +696,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
-if ($uid == bh_session_get_value('UID')) {
+if ($uid == session_get_value('UID')) {
 
     if (!is_md5($aid)) $aid = md5(uniqid(mt_rand()));
 
@@ -719,7 +719,7 @@ if ($uid == bh_session_get_value('UID')) {
         echo "    </tr>\n";
     }
 
-}elseif (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+}elseif (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     if ($popup == 1) {
 

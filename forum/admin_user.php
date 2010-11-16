@@ -97,13 +97,13 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -112,7 +112,7 @@ if (bh_session_user_banned()) {
 // Load language file
 $lang = load_language_file();
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -309,7 +309,7 @@ if (isset($_POST['action_submit'])) {
 
 }else if (isset($_POST['user_history_submit'])) {
 
-    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
@@ -337,7 +337,7 @@ if (isset($_POST['action_submit'])) {
 
 }elseif (isset($_POST['reset_passwd_submit'])) {
 
-    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
@@ -349,7 +349,7 @@ if (isset($_POST['action_submit'])) {
 
         $t_new_password = trim(stripslashes_array($_POST['t_new_password']));
 
-        if (($user_logon = user_get_logon($uid) && $fuid = bh_session_get_value('UID'))) {
+        if (($user_logon = user_get_logon($uid) && $fuid = session_get_value('UID'))) {
 
             if (user_change_password($uid, $t_new_password)) {
 
@@ -370,7 +370,7 @@ if (isset($_POST['action_submit'])) {
 
 }elseif (isset($_POST['delete_user_confirm'])) {
 
-    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
@@ -453,7 +453,7 @@ if (isset($_POST['action_submit'])) {
     }
 
     // Global user permissions
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         $new_global_user_perms = (double) 0;
 
@@ -577,7 +577,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     if ($action == 'reset_passwd') {
 
-        if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+        if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
             html_draw_top("title={$lang['error']}");
             html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
@@ -587,7 +587,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
         html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
 
@@ -711,7 +711,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             echo "                  </td>\n";
             echo "                </tr>\n";
 
-            if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+            if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -891,11 +891,11 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                     if (email_is_banned($user_alias['EMAIL'])) {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
                     }else {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;</td>\n";
                     }
 
                 }else if ($user_alias_view == USER_ALIAS_PASSWD) {
@@ -917,11 +917,11 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                     if (referer_is_banned($user_alias['REFERER'])) {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
                     }else {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;</td>\n";
                     }
                 }
 
@@ -997,7 +997,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     }else if ($action == 'delete_user') {
 
-        if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+        if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
             html_draw_top("title={$lang['error']}");
             html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
@@ -1200,7 +1200,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
 echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1230,14 +1230,14 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
             echo "                      </tr>\n";
 
         }else {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
             echo "                      </tr>\n";
         }
 
@@ -1268,14 +1268,14 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
                 echo "                      </tr>\n";
 
             }else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
 
@@ -1304,14 +1304,14 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['sessionreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
                 echo "                      </tr>\n";
 
             }else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['sessionreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
 
@@ -1357,7 +1357,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         if (forum_check_webtag_available($webtag)) {
 
@@ -1451,7 +1451,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
@@ -1496,7 +1496,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "  <br />\n";
 }
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     $global_user_perm = perm_get_global_user_permissions($uid);
 

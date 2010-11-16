@@ -94,20 +94,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -184,13 +184,13 @@ if (isset($_POST['cancel'])) {
     exit;
 }
 
-if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_email_confirmation_error();
     exit;
 }
 
-if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
+if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannoteditpostsinthisfolder']);
@@ -210,13 +210,13 @@ if (!$threaddata = thread_get($tid)) {
 $error_msg_array = array();
 
 // Check if the user is viewing signatures.
-$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // User UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 // Form validation
 $valid = true;
@@ -326,11 +326,11 @@ $sig = new MessageText($sig_html, "", true, false);
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
+if (isset($t_fid) && !session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -419,7 +419,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
@@ -491,13 +491,13 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
 
-    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -505,7 +505,7 @@ if (isset($_POST['preview'])) {
         exit;
     }
 
-    if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -532,7 +532,7 @@ if (isset($_POST['preview'])) {
 
             post_save_attachment_id($tid, $pid, $aid);
 
-            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $uid) {
+            if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $uid) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
@@ -603,7 +603,7 @@ if (isset($_POST['preview'])) {
 
         if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
 
-            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 html_draw_top("title={$lang['error']}");
                 html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -611,7 +611,7 @@ if (isset($_POST['preview'])) {
                 exit;
             }
 
-            if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+            if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 html_draw_top("title={$lang['error']}");
                 html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -732,21 +732,21 @@ echo "                        ", form_checkbox("t_post_links", "enabled", $lang[
 echo "                        ", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled), "<br />\n";
 echo "                        ", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "<br /><br />\n";
 
-if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
+if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
     echo "                    <br />\n";
-    echo "                    <table width=\"190\" class=\"messagefoot\" cellspacing=\"0\">\n";
+    echo "                    <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
+        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
+        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                      </tr>\n";
@@ -835,7 +835,7 @@ echo form_submit('apply',$lang['apply'], "tabindex=\"2\"");
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\"");
 
-if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+if (forum_get_setting('attachments_enabled', 'Y') && session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));
@@ -843,14 +843,14 @@ if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_
 
 if ($allow_sig == true) {
     
-    echo "<br /><br /><table class=\"messagefoot\" width=\"480\" cellspacing=\"0\">\n";
+    echo "<br /><br /><table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     }
     
     echo "  </tr>\n";

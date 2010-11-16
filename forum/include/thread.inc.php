@@ -72,7 +72,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -304,7 +304,7 @@ function thread_set_split($old_tid, $new_tid)
 
 function thread_get_interest($tid)
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$db_thread_get_interest = db_connect()) return false;
 
@@ -330,7 +330,7 @@ function thread_set_interest($tid, $interest)
 {
     if (!$db_thread_set_interest = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;
@@ -356,7 +356,7 @@ function thread_set_high_interest($tid)
 {
     if (!$db_thread_set_high_interest = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -612,12 +612,12 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
 
     // Check thread A permissions
-    if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
+    if (!session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
         return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
     }
 
     // Check thread B permissions
-    if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
+    if (!session_check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
         return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
     }
 
@@ -1236,7 +1236,7 @@ function thread_format_prefix($prefix, $thread_title)
 
 function thread_get_last_page_pid($length, $posts_per_page)
 {
-    if (bh_session_get_value('THREAD_LAST_PAGE') == 'Y') {
+    if (session_get_value('THREAD_LAST_PAGE') == 'Y') {
 
         $last_page_pid = $length - ($length % $posts_per_page);
         return ($last_page_pid > 1) ? $last_page_pid : 1;

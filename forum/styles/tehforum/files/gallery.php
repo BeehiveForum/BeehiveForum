@@ -59,7 +59,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawrawurlencode(get_request_uri());
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
 }
@@ -86,11 +86,11 @@ $images_dir = "../../../forumites";
 $images_array = array();
 
 // Uploading an image?
-if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
+if ((isset($_POST['upload'])) && (session_get_value('UID') > 0)) {
 
     if (isset($_FILES['userimage']['tmp_name']) && @is_readable($_FILES['userimage']['tmp_name'])) {
 
-        $logon = bh_session_get_value('LOGON');
+        $logon = session_get_value('LOGON');
 
         $tempfile = $_FILES['userimage']['tmp_name'];
         $filepath = "$images_dir/$logon";
@@ -158,9 +158,9 @@ html_draw_top('user_profile.js', "stylesheet=gallery.css");
 if (isset($_GET['delete'])) {
 
     $image = basename($_GET['delete']);
-    $logon = bh_session_get_value('LOGON');
+    $logon = session_get_value('LOGON');
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
 
         $modified_time = filemtime("$images_dir/$image");
 
@@ -178,9 +178,9 @@ if (isset($_GET['delete'])) {
 }elseif (isset($_GET['confirm_delete'])) {
 
     $image = basename($_GET['confirm_delete']);
-    $logon = bh_session_get_value('LOGON');
+    $logon = session_get_value('LOGON');
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
 
         if (@file_exists("forums/$webtag/$images_dir/$image")) {
 
@@ -197,7 +197,7 @@ if (isset($_GET['delete'])) {
 }
 
 // Upload / Show Gallery / Random image
-if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
+if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
 
     echo "<h1>Upload Image</h1>\n";
     echo "<br />\n";
@@ -252,7 +252,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
     echo "</ul>\n";
     echo "<div class=\"page_footer\">\n";
 
-    if (bh_session_get_value('UID') > 0) {
+    if (session_get_value('UID') > 0) {
 
         echo "  <a href=\"gallery.php\">Random Image</a>&nbsp;|&nbsp;\n";
         echo "  <a href=\"gallery.php?gallery\">Gallery</a>&nbsp;|&nbsp;\n";
@@ -268,7 +268,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 
 }elseif (is_array($images_array) && sizeof($images_array) > 0) {
 
-    $logon = bh_session_get_value('LOGON');
+    $logon = session_get_value('LOGON');
 
     if (isset($_GET['view_image'])) {
 
@@ -303,13 +303,13 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
 
-    if (bh_session_get_value('UID') > 0) {
+    if (session_get_value('UID') > 0) {
 
         echo "  <a href=\"gallery.php\">Random Image</a>&nbsp;|&nbsp;\n";
         echo "  <a href=\"gallery.php?gallery\">Gallery</a>&nbsp;|&nbsp;\n";
         echo "  <a href=\"?upload\">Upload an image</a>";
 
-        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
+        if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
 
             echo "&nbsp;|&nbsp;\n<a href=\"?delete=$image\">Delete</a>\n";
         }
@@ -326,7 +326,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 
     echo "<h1>Convicts Gallery</h1>\n";
 
-    if (bh_session_get_value('UID') > 0) {
+    if (session_get_value('UID') > 0) {
         echo "<div align=\"center\"><p>[<a href=\"?upload\">Upload an image</a>]</p></div>\n";
     }else {
         echo "<div align=\"center\"><p>Gallery is empty</p></div>\n";

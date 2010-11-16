@@ -79,28 +79,28 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) exit;
+if (session_user_banned()) exit;
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) exit;
+if (!session_user_approved()) exit;
 
 // Guests can't do different font sizes.
 if (user_is_guest()) exit;
 
 // User's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // User's MD5 Session Hash
-$sess_hash = bh_session_get_value('HASH');
+$sess_hash = session_get_value('HASH');
 
 // User's font size.
-if (($font_size = bh_session_get_value('FONT_SIZE')) === false) {
+if (($font_size = session_get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 

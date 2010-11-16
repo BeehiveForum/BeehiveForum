@@ -88,20 +88,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -130,7 +130,7 @@ if (user_is_guest()) {
 
 $admin_edit = false;
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['siguid'])) {
 
@@ -164,7 +164,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     }else {
 
-        $uid = bh_session_get_value('UID');
+        $uid = session_get_value('UID');
     }
 
     if (isset($_POST['cancel'])) {
@@ -175,10 +175,10 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 }else {
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 }
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session_get_value('UID'))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -212,7 +212,7 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if ($t_t_post_html == "Y") $t_sig_content = fix_html($t_sig_content);
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
+    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
 
     if (attachments_embed_check($t_sig_content) && $t_t_post_html == "Y") {
 
@@ -267,7 +267,7 @@ if ($admin_edit === true) {
 
     html_draw_top("title={$lang['admin']} - {$lang['manageuser']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 }else {
 
@@ -325,7 +325,7 @@ echo "<br />\n";
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
 // Check to see if we should show the set for all forums checkboxes
-if ((bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == bh_session_get_value('UID')) && $admin_edit === false)) {
+if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session_get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 }else {
     $show_set_all = false;
@@ -410,7 +410,7 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 $tool_type = POST_TOOLBAR_DISABLED;
 

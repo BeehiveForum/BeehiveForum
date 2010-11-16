@@ -83,20 +83,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -147,7 +147,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     exit;
 }
 
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 $to_user = user_get($to_uid);
 
@@ -254,7 +254,7 @@ echo "                        <td align=\"left\">", form_textarea("t_message", (
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', $lang['useemailaddrtosendmsg'], (isset($use_email_addr) ? $use_email_addr : bh_session_get_value('USE_EMAIL_ADDR') == 'Y')), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', $lang['useemailaddrtosendmsg'], (isset($use_email_addr) ? $use_email_addr : session_get_value('USE_EMAIL_ADDR') == 'Y')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

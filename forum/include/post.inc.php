@@ -119,7 +119,7 @@ function post_approve($tid, $pid)
 
     if (!$db_post_approve = db_connect()) return false;
 
-    $approve_uid = bh_session_get_value('UID');
+    $approve_uid = session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -236,7 +236,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     $forum_fid = $table_data['FID'];
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if (isset($default_uid) && $default_uid != 0) {
 
@@ -312,7 +312,7 @@ function post_draw_to_dropdown_recent($default_uid)
 
     $forum_fid = $table_data['FID'];
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if (isset($default_uid) && $default_uid != 0) {
 
@@ -386,7 +386,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if (!$table_data = get_table_prefix()) return "";
 
-    $uid = bh_session_get_value('UID');
+    $uid = session_get_value('UID');
 
     if (isset($default_uid) && $default_uid != 0) {
 
@@ -455,50 +455,22 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     return $html;
 }
 
-function get_user_posts($uid)
+function post_check_ddkey($ddkey)
 {
-    if (!$db_get_user_posts = db_connect()) return false;
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT TID, PID FROM `{$table_data['PREFIX']}POST` WHERE FROM_UID = '$uid'";
-
-    if (!$result = db_query($sql, $db_get_user_posts)) return false;
-
-    if (db_num_rows($result)) {
-
-        $user_post_array = array();
-
-        while (($post_data = db_fetch_array($result))) {
-
-            $user_post_array[] = $post_data;
-        }
-
-        return $user_post_array;
-
-    }
-
-    return false;
-}
-
-function check_ddkey($ddkey)
-{
-    if (!$db_check_ddkey = db_connect()) return false;
+    if (!$db_post_check_ddkey = db_connect()) return false;
 
     if (!is_numeric($ddkey)) return false;
 
     $ddkey_datetime = date(MYSQL_DATETIME, $ddkey);
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DDKEY FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_check_ddkey)) return false;
+    if (!$result = db_query($sql, $db_post_check_ddkey)) return false;
 
     if (db_num_rows($result)) {
 
@@ -507,7 +479,7 @@ function check_ddkey($ddkey)
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
         $sql.= "SET DDKEY = CAST('$ddkey_datetime' AS DATETIME) WHERE UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_check_ddkey)) return false;
+        if (!$result = db_query($sql, $db_post_check_ddkey)) return false;
 
     }else{
 
@@ -516,17 +488,17 @@ function check_ddkey($ddkey)
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', CAST('$ddkey_datetime' AS DATETIME))";
 
-        if (!$result = db_query($sql, $db_check_ddkey)) return false;
+        if (!$result = db_query($sql, $db_post_check_ddkey)) return false;
     }
 
     return !($ddkey_datetime == $ddkey_datetime_check);
 }
 
-function check_post_frequency()
+function post_check_frequency()
 {
-    if (!$db_check_post_frequency = db_connect()) return false;
+    if (!$db_post_check_frequency = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -540,7 +512,7 @@ function check_post_frequency()
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_check_post_frequency)) return false;
+    if (!$result = db_query($sql, $db_post_check_frequency)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -552,7 +524,7 @@ function check_post_frequency()
             $sql.= "SET LAST_POST = CAST('$current_datetime' AS DATETIME) ";
             $sql.= "WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_check_post_frequency)) return false;
+            if (!$result = db_query($sql, $db_post_check_frequency)) return false;
 
             return true;
         }
@@ -562,12 +534,108 @@ function check_post_frequency()
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, LAST_POST) ";
         $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
-        if (!$result = db_query($sql, $db_check_post_frequency)) return false;
+        if (!$result = db_query($sql, $db_post_check_frequency)) return false;
 
         return true;
     }
 
     return false;
+}
+
+function post_update($fid, $tid, $pid, $content)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!$db_post_update = db_connect()) return false;
+
+    $content = db_escape_string($content);
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST_CONTENT` SET CONTENT = '$content' ";
+    $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
+
+    if (!db_query($sql, $db_post_update)) return false;
+
+    if (session_check_perm(USER_PERM_POST_APPROVAL, $fid) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` SET APPROVED = 0, APPROVED_BY = 0 ";
+        $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
+
+        if (!db_query($sql, $db_post_update)) return false;
+    }
+
+    return true;
+}
+
+function post_add_edit_text($tid, $pid)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!$db_post_add_edit_text = db_connect()) return false;
+
+    if (($edit_uid = session_get_value('UID')) === false) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
+    $sql.= "SET EDITED = CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "EDITED_BY = '$edit_uid' WHERE TID = '$tid' AND PID = '$pid'";
+
+    if (!db_query($sql, $db_post_add_edit_text)) return false;
+
+    return true;
+}
+
+function post_delete($tid, $pid)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!$db_post_delete = db_connect()) return false;
+
+    if (($approve_uid = session_get_value('UID')) === false) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    if (thread_is_poll($tid) && $pid == 1) {
+
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET POLL_FLAG = 'N', ";
+        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+
+        if (!db_query($sql, $db_post_delete)) return false;
+    }
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
+    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid' AND LENGTH = 1";
+
+    if (!db_query($sql, $db_post_delete)) return false;
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST_CONTENT` SET CONTENT = NULL ";
+    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+
+    if (!db_query($sql, $db_post_delete)) return false;
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
+    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' ";
+    $sql.= "AND PID = '$pid'";
+
+    if (!db_query($sql, $db_post_delete)) return false;
+
+    return true;
+}
+
+function post_edit_refuse($tid, $pid)
+{
+    $lang = load_language_file();
+    html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
 }
 
 class MessageText {
@@ -583,7 +651,7 @@ class MessageText {
 
     function MessageText ($html = 0, $content = "", $emoticons = true, $links = true)
     {
-        $post_prefs = bh_session_get_post_page_prefs();
+        $post_prefs = session_get_post_page_prefs();
 
         if (($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
             $this->tiny_mce = true;
@@ -718,7 +786,7 @@ class MessageTextParse {
     {
         $this->original = $message;
 
-        $post_prefs = bh_session_get_post_page_prefs();
+        $post_prefs = session_get_post_page_prefs();
 
         if (($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
             $this->tiny_mce = true;

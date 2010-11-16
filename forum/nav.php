@@ -83,10 +83,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Don't want to redirect the nav.php - frame is too small!
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -124,7 +124,7 @@ if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) 
     echo "<a href=\"forums.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
 }
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) || bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+if (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
     echo "<a href=\"admin.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 }
 
@@ -135,7 +135,7 @@ if (user_is_guest()) {
 
 }else {
 
-    $logon = bh_session_get_value('LOGON');
+    $logon = session_get_value('LOGON');
     echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['logout']} : $logon</a>\n";
 }
 

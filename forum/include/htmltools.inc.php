@@ -59,7 +59,7 @@ class TextAreaHTML
     {
         if (@file_exists("tiny_mce/tiny_mce.js")) {
 
-            $page_prefs = bh_session_get_post_page_prefs();
+            $page_prefs = session_get_post_page_prefs();
 
             if (($page_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
                 $this->tinymce = true;
@@ -96,7 +96,7 @@ class TextAreaHTML
 
         $toolbar_image = $dictionary->is_installed() ? 'html_toolbar.png' : 'html_toolbar_no_dict.png';
 
-        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, style_image($toolbar_image));
+        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, html_style_image($toolbar_image));
 
         $str.= $this->toolbar_img($lang['bold'], 'bold');
         $str.= $this->toolbar_img($lang['italic'], 'italic');
@@ -178,7 +178,7 @@ class TextAreaHTML
 
         $this->toolbar_count = $this->toolbar_count + 1;
 
-        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, style_image('html_toolbar_reduced.png'));
+        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, html_style_image('html_toolbar_reduced.png'));
 
         $str.= $this->toolbar_img($lang['bold'], 'bold');
         $str.= $this->toolbar_img($lang['italic'], 'italic');
@@ -241,7 +241,7 @@ class TextAreaHTML
 
     protected function toolbar_img($title, $action, $image_name = "blank.png")
     {
-        return "<a rel=\"$action\"><img src=\"". style_image($image_name). "\" alt=\"{$title}\" title=\"{$title}\" class=\"tools_up\" /></a>";
+        return "<a rel=\"$action\"><img src=\"". html_style_image($image_name). "\" alt=\"{$title}\" title=\"{$title}\" class=\"tools_up\" /></a>";
     }
 }
 

@@ -67,9 +67,9 @@ $auth_disable_guest = true;
 logon_perform_auto();
 
 // Check the session is active
-if (($user_sess = bh_session_check())) {
+if (($user_sess = session_check())) {
 
-    if ($user_data = user_get(bh_session_get_value('UID'))) {
+    if ($user_data = user_get(session_get_value('UID'))) {
         
         $_COOKIE[$auth_ucookie] = db_escape_string($user_data['LOGON']);
         $_COOKIE[$auth_pcookie] = db_escape_string($user_data['PASSWD']);
@@ -84,7 +84,7 @@ if (($user_sess = bh_session_check())) {
             
             $ip = db_escape_string($_SERVER['REMOTE_ADDR']);
             
-            $activated = bh_session_user_approved() ? '1' : '0';
+            $activated = session_user_approved() ? '1' : '0';
             
             $email = db_escape_string($user_data['EMAIL']);
             

@@ -86,15 +86,15 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Load the user session
-$user_sess = bh_session_check();
+$user_sess = session_check();
 
-bh_session_end();
+session_end();
 
-bh_setcookie("logon", "1");
+html_set_cookie("logon", "1");
 
-bh_setcookie("user_logon", "", time() - YEAR_IN_SECONDS);
+html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
 
-bh_setcookie("user_passhash", "", time() - YEAR_IN_SECONDS);
+html_set_cookie("user_passhash", "", time() - YEAR_IN_SECONDS);
 
 if (user_is_guest()) {
 

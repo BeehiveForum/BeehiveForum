@@ -84,13 +84,13 @@ cache_disable();
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -99,7 +99,7 @@ if (bh_session_user_banned()) {
 // Load language file
 $lang = load_language_file();
 
-if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
+if ((!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
 
     html_draw_top();
     html_error_msg($lang['accessdeniedexp']);
@@ -108,7 +108,7 @@ if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(
 }
 
 // Get the user's saved left frame width.
-if (($left_frame_width = bh_session_get_value('LEFT_FRAME_WIDTH')) === false) {
+if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 
@@ -140,7 +140,7 @@ if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0)
 
 $frameset->html_frame("admin_menu.php?webtag=$webtag", html_get_frame_name('left'));
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     $frameset->html_frame("admin_users.php?webtag=$webtag", html_get_frame_name('right'));
 }else {
     $frameset->html_frame("admin_forums.php?webtag=$webtag", html_get_frame_name('right'));

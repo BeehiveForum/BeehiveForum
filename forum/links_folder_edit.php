@@ -83,20 +83,20 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -125,7 +125,7 @@ if (!forum_get_setting('show_links', 'Y')) {
     exit;
 }
 
-$folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 if (user_is_guest()) {
 
@@ -133,7 +133,7 @@ if (user_is_guest()) {
     exit;
 }
 
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 $error_msg_array = array();
 
@@ -197,7 +197,7 @@ if (isset($_POST['update'])) {
 
 html_draw_top("title={$lang['links']} - {$lang['editfolder']}", 'class=window_title');
 
-echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfolder']}</h1>\n";
+echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfolder']}</h1>\n";
 
 echo "<br />\n";
 

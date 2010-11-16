@@ -95,19 +95,19 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -117,7 +117,7 @@ if (!bh_session_user_approved()) {
 $lang = load_language_file();
 
 // Get the user's UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Guests can't access this page.
 if (user_is_guest()) {
@@ -130,7 +130,7 @@ if (user_is_guest()) {
 light_pm_enabled();
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_post_page_prefs();
+$page_prefs = session_get_post_page_prefs();
 
 // Prune old messages for the current user
 pm_user_prune_folders();
@@ -345,7 +345,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
                     $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                 }
 
-                if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
                     pm_user_prune_folders();
 
@@ -448,7 +448,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
-        if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
+        if (session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
@@ -586,7 +586,7 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 // Send the PM
 if ($valid && isset($_POST['send'])) {
 
-    if (check_ddkey($t_dedupe)) {
+    if (post_check_ddkey($t_dedupe)) {
 
         foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 

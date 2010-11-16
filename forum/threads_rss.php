@@ -144,17 +144,17 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
 logon_perform_auto();
 
 // Load the user session
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;

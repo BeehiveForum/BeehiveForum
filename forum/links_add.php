@@ -83,20 +83,20 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -132,7 +132,7 @@ if (user_is_guest()) {
 }
 
 // User's UID for later.
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -145,7 +145,7 @@ if (isset($_POST['cancel'])) {
 }
 
 // Get the Links Folders.
-$folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 // Check the mode.
 if (isset($_GET['mode'])) {
@@ -310,7 +310,7 @@ if ($mode == LINKS_ADD_LINK) {
 
     html_draw_top("title={$lang['links']} - {$lang['addlink']}", 'class=window_title');
 
-    echo "<h1>{$lang['links']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addlink']}</h1>\n";
+    echo "<h1>{$lang['links']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -373,7 +373,7 @@ if ($mode == LINKS_ADD_LINK) {
 
     html_draw_top("title={$lang['links']} - {$lang['addnewfolder']}", 'class=window_title');
 
-    echo "<h1>{$lang['links']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfolder']}</h1>\n";
+    echo "<h1>{$lang['links']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

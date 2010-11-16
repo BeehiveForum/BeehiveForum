@@ -268,9 +268,9 @@ function links_get_folder_path_links($fid, $folders, $links = true, $link_last_t
         while (($val = array_pop($tree_array))) {
 
             if (($val != $fid && $links) || $link_last_too) {
-                $html.= "<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
+                $html.= "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
             } else {
-                $html.= "<img src=". style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
+                $html.= "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
             }
         }
     }
@@ -502,7 +502,7 @@ function links_folder_delete($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+    $folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
     if (!$db_links_folder_delete = db_connect()) return false;
 

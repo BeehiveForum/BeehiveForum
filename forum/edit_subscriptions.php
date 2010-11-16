@@ -88,20 +88,20 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!bh_session_user_approved()) {
+if (!session_user_approved()) {
 
     html_user_require_approval();
     exit;
@@ -207,7 +207,7 @@ if (isset($_POST['clear'])) {
 }
 
 // User UID
-$uid = bh_session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
 $header_text_array = array(THREAD_IGNORED => $lang['ignoredthreads'], THREAD_INTERESTED => $lang['highinterestthreads'], THREAD_SUBSCRIBED => $lang['subscribedthreads']);
@@ -224,7 +224,7 @@ if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
 // Start output here
 html_draw_top("title={$lang['mycontrols']} - {$lang['threadsubscriptions']}", 'edit_subscriptions.js', 'class=window_title');
 
-echo "<h1>{$lang['threadsubscriptions']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$header_text_array[$view_filter]}</h1>\n";
+echo "<h1>{$lang['threadsubscriptions']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$header_text_array[$view_filter]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

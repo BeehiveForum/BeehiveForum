@@ -90,10 +90,10 @@ cache_disable();
 logon_perform_auto();
 
 // Start user session
-$user_sess = bh_session_check(false);
+$user_sess = session_check(false);
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -186,7 +186,7 @@ if (!isset($_GET['noframes'])) {
         $frameset->html_frame("nav.php?webtag=$webtag", html_get_frame_name('fnav'), 0, 'no', 'noresize');
         $frameset->html_frame($final_uri, html_get_frame_name('main'));
 
-    }else if (bh_getcookie('logon') && user_is_guest()) {
+    }else if (html_get_cookie('logon') && user_is_guest()) {
 
         // Display the logon page.
         if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -217,7 +217,7 @@ if (!isset($_GET['noframes'])) {
     }else {
 
         // Calculate how tall the nav frameset should be based on the user's fontsize.
-        $navsize = bh_session_get_value('FONT_SIZE');
+        $navsize = session_get_value('FONT_SIZE');
         $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
         // Check for Forum webtag.
@@ -239,7 +239,7 @@ if (!isset($_GET['noframes'])) {
 
                 }else {
 
-                    if (($start_page = bh_session_get_value('START_PAGE'))) {
+                    if (($start_page = session_get_value('START_PAGE'))) {
 
                         if ($start_page == START_PAGE_MESSAGES) {
                             $final_uri = "discussion.php?webtag=$webtag";
@@ -309,7 +309,7 @@ if (!isset($_GET['noframes'])) {
 }
 
 // Does the user want to login or have they got saved username and password
-if (bh_getcookie('logon') && user_is_guest()) {
+if (html_get_cookie('logon') && user_is_guest()) {
 
     // Display the logon form.
     light_draw_logon_form();
@@ -358,7 +358,7 @@ if (bh_getcookie('logon') && user_is_guest()) {
 }
 
 // Clear the logon cookie
-bh_setcookie("logon", "", time() - YEAR_IN_SECONDS);
+html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
 // Light mode footer.
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";

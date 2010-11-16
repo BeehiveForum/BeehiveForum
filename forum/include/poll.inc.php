@@ -203,7 +203,7 @@ function poll_get($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
@@ -359,7 +359,7 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 
     if (!is_numeric($view_style)) $view_style = POLL_VIEW_TYPE_OPTION;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     $lang = load_language_file();
 
@@ -444,7 +444,7 @@ function poll_get_user_vote($tid)
 
     if (!$db_poll_get_user_vote = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -508,7 +508,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
     $poll_group_count = 1;
 
-    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (bh_session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
+    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         $poll_data['CONTENT'].= "                          <tr>\n";
         $poll_data['CONTENT'].= "                            <td align=\"left\">\n";
@@ -764,7 +764,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
-                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
@@ -777,7 +777,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                     }
                 }
 
-                if (bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     $poll_data['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
                 }
@@ -802,7 +802,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                     $poll_data['CONTENT'].= "                          </tr>\n";
                 }
 
-            }else if (bh_session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
+            }else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
@@ -810,7 +810,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
-                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
@@ -822,7 +822,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                     }
                 }
 
-                if (bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     $poll_data['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
 
@@ -852,7 +852,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
     $poll_data['CONTENT'].= "                </div>\n";
     $poll_data['CONTENT'].= "                <br />\n";
 
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(bh_session_get_value('UID'), $poll_data['FROM_UID']);
+    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
     message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
 }
@@ -2029,19 +2029,19 @@ function poll_confirm_close($tid)
 
     if (!$preview_message = messages_get($tid, 1, 1)) {
 
-        edit_refuse($tid, 1);
+        post_edit_refuse($tid, 1);
         return;
     }
 
     if (!$threaddata = thread_get($tid)) {
 
-        edit_refuse($tid, 1);
+        post_edit_refuse($tid, 1);
         return;
     }
 
-    if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
+    if (session_get_value('UID') != $preview_message['FROM_UID'] && !session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
 
-        edit_refuse($tid, 1);
+        post_edit_refuse($tid, 1);
         return;
     }
 
@@ -2061,7 +2061,7 @@ function poll_confirm_close($tid)
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
 
-    $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+    $show_sigs = !(session_get_value('VIEW_SIGS'));
 
     echo "<h1>{$lang['endpoll']}</h1>\n";
 
@@ -2093,7 +2093,7 @@ function poll_close($tid)
 
         $poll_data = db_fetch_array($result);
 
-        if (bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             $closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
@@ -2131,7 +2131,7 @@ function poll_is_closed($tid)
 
 function poll_vote($tid, $vote_array)
 {
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_array($vote_array)) return false;
@@ -2167,7 +2167,7 @@ function poll_delete_vote($tid)
 
     if (!is_numeric($tid)) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

@@ -93,13 +93,13 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 $webtag = get_webtag();
 
 // Check we're logged in correctly
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
-if (bh_session_user_banned()) {
+if (session_user_banned()) {
 
     html_user_banned();
     exit;
@@ -115,7 +115,7 @@ if (!forum_check_webtag_available($webtag)) {
 $lang = load_language_file();
 
 // Check we have permission to access this page.
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['accessdeniedexp']);
@@ -244,7 +244,7 @@ html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$group['G
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 
-echo "<h1>{$lang['admin']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=\"", style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addremoveusers']}</h1>\n";
+echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addremoveusers']}</h1>\n";
 
 if (isset($_GET['added'])) {
 

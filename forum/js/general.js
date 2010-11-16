@@ -227,4 +227,52 @@ $(beehive).bind('init', function() {
             
         }, 500);    
     });
+    
+    $('.toggle_button').bind('click', function() {
+        
+        var $button = $(this);
+        
+        var $element = $('.' + $button.attr('id'));
+        
+        if ($element.is(':visible')) {
+            
+            $element.slideUp(150, function() {
+                
+                $button.attr('src', beehive.images['show.png']);
+                
+                $.ajax({
+                    
+                    'cache' : false,
+                    
+                    'data' : { 
+                        'webtag' : beehive.webtag,
+                        'hide' : $button.attr('id')
+                    },
+                    
+                    'url' : beehive.forum_path + '/ajax.php'                
+                });
+            });
+        
+        } else {
+            
+            $element.slideDown(150, function() {
+                
+                $button.attr('src', beehive.images['hide.png']);
+                
+                $.ajax({
+                    
+                    'cache' : false,
+                    
+                    'data' : { 
+                        'webtag' : beehive.webtag,
+                        'show' : $button.attr('id')
+                    },
+                    
+                    'url' : beehive.forum_path + '/ajax.php'                
+                });
+            });
+        }
+        
+        return false;    
+    });    
 });

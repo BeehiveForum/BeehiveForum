@@ -822,6 +822,7 @@ function html_draw_top()
     html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
+    html_include_javascript(html_get_forum_file_path('js/json2.js'));
     html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     if ($frame_set_html === false) {

@@ -56,21 +56,23 @@ $(beehive).bind('init', function() {
         
         if ($container.hasClass('search_logon')) {
         
-            $search_input.autocomplete(beehive.forum_path + '/json.php', {
+            $search_input.autocomplete(beehive.forum_path + '/ajax.php', {
                 
                 selectFirst : false,
                 
                 extraParams : { 
-                    'search' : true 
+                    'webtag' : beehive.webtag,
+                    'ajax'   : true,
+                    'action' : 'user_autocomplete'
                 },
                 
                 formatItem : function(item) {
-                    var data = $.parseJSON(item);
+                    var data = JSON.parse(item);
                     return $.sprintf('%s (%s)', data.NICKNAME, data.LOGON);
                 },
                 
                 formatResult : function(item) {
-                    var data = $.parseJSON(item);
+                    var data = JSON.parse(item);
                     return data.LOGON;
                 }
             });

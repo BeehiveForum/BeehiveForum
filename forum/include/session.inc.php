@@ -1004,8 +1004,16 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 * Fetches user's post page preference
 *
 * Fetches the user's post page (POST_PAGE) setting from their user preferences.
-* If no user preference is available it returns a default value or toolbar in
-* plain text mode with emoticons, auto URL linking and signature display enabled.
+* If no user preference is available it returns a default value of 3271 which
+* includes:
+* 
+* POST_TOOLBAR_DISPLAY
+* POST_EMOTICONS_DISPLAY
+* POST_TEXT_DEFAULT
+* POST_AUTO_LINKS
+* POST_SIGNATURE_DISPLAY
+* POLL_ADVANCED_DISPLAY
+* POLL_ADDITIONAL_MESSAGE_DISPLAY
 *
 * @return integer(32)
 * @param void
@@ -1014,7 +1022,9 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 function session_get_post_page_prefs()
 {
     if (!$page_prefs = session_get_value('POST_PAGE')) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
+        
+        $page_prefs = (double)POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
+        $page_prefs = (double)$page_prefs | POST_SIGNATURE_DISPLAY | POLL_ADVANCED_DISPLAY | POLL_ADDITIONAL_MESSAGE_DISPLAY;
     }
 
     return $page_prefs;

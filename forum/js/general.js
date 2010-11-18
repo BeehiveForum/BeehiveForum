@@ -219,10 +219,12 @@ $(beehive).bind('init', function() {
                 
                 'data' : { 
                     'webtag' : beehive.webtag,
-                    'frame_resize' : this.innerWidth
+                    'ajax'   : true,
+                    'action' : 'frame_resize',
+                    'size'   : this.innerWidth
                 },
                 
-                'url' : beehive.forum_path + '/user.php'                
+                'url' : beehive.forum_path + '/ajax.php'                
             });
             
         }, 500);    
@@ -245,8 +247,10 @@ $(beehive).bind('init', function() {
                     'cache' : false,
                     
                     'data' : { 
-                        'webtag' : beehive.webtag,
-                        'hide' : $button.attr('id')
+                        'webtag'  : beehive.webtag,
+                        'ajax'    : true,
+                        'action'  : $button.attr('id'),
+                        'display' : 'false'
                     },
                     
                     'url' : beehive.forum_path + '/ajax.php'                
@@ -264,8 +268,10 @@ $(beehive).bind('init', function() {
                     'cache' : false,
                     
                     'data' : { 
-                        'webtag' : beehive.webtag,
-                        'show' : $button.attr('id')
+                        'webtag'  : beehive.webtag,
+                        'ajax'    : true,
+                        'action'  : $button.attr('id'),
+                        'display' : 'true'
                     },
                     
                     'url' : beehive.forum_path + '/ajax.php'                

@@ -727,7 +727,7 @@ if ($valid && isset($_POST['post'])) {
                     $t_message_text.= "<div class=\"sig\">$t_sig</div>";
                 }
 
-                post_create($t_fid, $t_tid, 1,          $uid,  $uid, $t_message_text);
+                post_create($t_fid, $t_tid, 1, $uid, $uid, $t_message_text);
             }
 
             if ($high_interest == "Y") thread_set_high_interest($t_tid);
@@ -763,13 +763,17 @@ if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_P
     exit;
 }
 
-html_draw_top("title={$lang['createpoll']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "poll.js", 'class=window_title');
+html_draw_top("title={$lang['createpoll']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", 'class=window_title');
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '785', 'left');
 }
+            
+$t_message_text = $post->getTidyContent();
+
+$t_sig = $sig->getTidyContent();
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
@@ -896,7 +900,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     
     echo "                  </td>\n";
     echo "                </tr>\n";
-
+            
     if (strlen($t_message_text) > 0) {
 
         $polldata['CONTENT'] = $t_message_text;
@@ -1096,14 +1100,26 @@ echo "                              <td>\n";
 echo "                                <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                  <tr>\n";
 echo "                                    <td align=\"left\" class=\"subhead\">{$lang['advancedoptions']}</td>\n";
-echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'poll_advanced_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+
+if (($page_prefs & POLL_ADVANCED_DISPLAY) > 0) {
+    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'poll_advanced_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+} else {
+    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'poll_advanced_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+}
+
 echo "                                  </tr>";
 echo "                                </table>\n";
 echo "                              </td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>\n";
-echo "                                <div class=\"poll_advanced_toggle\">\n";
+
+if (($page_prefs & POLL_ADVANCED_DISPLAY) > 0) {
+    echo "                                <div class=\"poll_advanced_toggle\">\n";
+} else {
+    echo "                                <div class=\"poll_advanced_toggle\" style=\"display: none\">\n";
+}
+
 echo "                                  <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                    <tr>\n";
 echo "                                      <td align=\"left\" colspan=\"2\">\n";
@@ -1251,14 +1267,26 @@ echo "                              <td>\n";
 echo "                                <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                  <tr>\n";
 echo "                                    <td align=\"left\" class=\"subhead\">{$lang['polladditionalmessage']}</td>\n";
-echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'poll_additional_message_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+
+if (($page_prefs & POLL_ADDITIONAL_MESSAGE_DISPLAY) > 0) {
+    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'poll_additional_message_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+} else {
+    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'poll_additional_message_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+}
+
 echo "                                  </tr>";
 echo "                                </table>\n";
 echo "                              </td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>\n";
-echo "                                <div class=\"poll_additional_message_toggle\">\n";
+
+if (($page_prefs & POLL_ADDITIONAL_MESSAGE_DISPLAY) > 0) {
+    echo "                                <div class=\"poll_additional_message_toggle\">\n";
+} else {
+    echo "                                <div class=\"poll_additional_message_toggle\" style=\"display: none\">\n";
+}
+
 echo "                                  <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                    <tr>\n";
 echo "                                      <td align=\"left\" colspan=\"2\">\n";
@@ -1267,8 +1295,6 @@ echo "                                          <tr>\n";
 echo "                                            <td rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                                            <td align=\"left\">{$lang['polladditionalmessageexp']}</td>\n";
 echo "                                          </tr>\n";
-
-$t_message_text = $post->getTidyContent();
 
 $tool_type = POST_TOOLBAR_DISABLED;
 

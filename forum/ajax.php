@@ -82,6 +82,9 @@ $webtag = get_webtag();
 // Start User Session.
 $user_sess = session_check();;
 
+// Get the User's UID
+$uid = session_get_value('UID');
+
 // Check this is an ajax request and we have an action.
 if (!isset($_GET['ajax']) || !isset($_GET['action'])) {
     header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
@@ -113,6 +116,118 @@ switch ($_GET['action']) {
         
         break;
         
+    case 'sig_toggle':
+    
+        // Get the user's post page preferences.
+        $page_prefs = session_get_post_page_prefs();
+        
+        // Get the hide state from the request.
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+        
+        // Don't rely on switching the bit, always check the client
+        // request in case the interface is out of sync with the database.
+        if ($_GET['display'] === 'true') {
+            $page_prefs = (double)$page_prefs | POST_SIGNATURE_DISPLAY;
+        } else {
+            $page_prefs = (double)$page_prefs ^ ($page_prefs & POST_SIGNATURE_DISPLAY);
+        }
+        
+        // Set the user_prefs array entry to pass to user_update_prefs
+        $user_prefs = array('POST_PAGE' => $page_prefs);
+
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        break;            
+        
+    case 'emots_toggle':
+    
+        // Get the user's post page preferences.
+        $page_prefs = session_get_post_page_prefs();
+        
+        // Get the hide state from the request.
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+        
+        // Don't rely on switching the bit, always check the client
+        // request in case the interface is out of sync with the database.
+        if ($_GET['display'] === 'true') {
+            $page_prefs = (double)$page_prefs | POST_EMOTICONS_DISPLAY;
+        } else {
+            $page_prefs = (double)$page_prefs ^ ($page_prefs & POST_EMOTICONS_DISPLAY);
+        }        
+        
+        // Set the user_prefs array entry to pass to user_update_prefs
+        $user_prefs = array('POST_PAGE' => $page_prefs);
+
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        break;        
+        
+    case 'poll_advanced_toggle':
+    
+        // Get the user's post page preferences.
+        $page_prefs = session_get_post_page_prefs();
+        
+        // Get the hide state from the request.
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+        
+        // Don't rely on switching the bit, always check the client
+        // request in case the interface is out of sync with the database.
+        if ($_GET['display'] === 'true') {
+            $page_prefs = (double)$page_prefs | POLL_ADVANCED_DISPLAY;
+        } else {
+            $page_prefs = (double)$page_prefs ^ ($page_prefs & POLL_ADVANCED_DISPLAY);
+        }        
+        
+        // Set the user_prefs array entry to pass to user_update_prefs
+        $user_prefs = array('POST_PAGE' => $page_prefs);
+
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        break;
+                
+    case 'poll_additional_message_toggle':
+    
+        // Get the user's post page preferences.
+        $page_prefs = session_get_post_page_prefs();
+        
+        // Get the hide state from the request.
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+        
+        // Don't rely on switching the bit, always check the client
+        // request in case the interface is out of sync with the database.
+        if ($_GET['display'] === 'true') {
+            $page_prefs = (double)$page_prefs | POLL_ADDITIONAL_MESSAGE_DISPLAY;
+        } else {
+            $page_prefs = (double)$page_prefs ^ ($page_prefs & POLL_ADDITIONAL_MESSAGE_DISPLAY);
+        }        
+        
+        // Set the user_prefs array entry to pass to user_update_prefs
+        $user_prefs = array('POST_PAGE' => $page_prefs);
+
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        break;            
+    
     // Unknown action
     default:
     

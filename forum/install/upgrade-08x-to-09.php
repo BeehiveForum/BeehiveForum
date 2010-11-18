@@ -241,6 +241,15 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
+    
+    // POST_PAGE needs to change from a varchar(3) to a smallint. Change default to 3271 (see constants.inc.php)
+    $sql = "ALTER TABLE `USER_PREFS` CHANGE `POST_PAGE` `POST_PAGE` SMALLINT(4) DEFAULT '3271' NOT NULL";
+    
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }    
 
     // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, FID, BY_UID, TITLE, LENGTH, ";

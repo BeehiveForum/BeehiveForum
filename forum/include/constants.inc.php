@@ -170,6 +170,8 @@ define('POST_AUTO_LINKS', 64);
 define('POST_SIGNATURE_DISPLAY', 128);
 define('POST_CHECK_SPELLING', 256);
 define('POST_TINYMCE_DISPLAY', 512);
+define('POLL_ADVANCED_DISPLAY', 1024);
+define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 2048);
 
 // Constants for post page HTML in message
 define('POST_HTML_DISABLED', 0);

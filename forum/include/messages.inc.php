@@ -1976,106 +1976,125 @@ function messages_forum_stats($tid, $pid)
 
     if (forum_get_setting('show_stats', 'Y')) {
 
+        echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\" cellspacing=\"0\">\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">{$lang['forumstats']}</td>\n";
-
-        if (session_get_value("SHOW_STATS") == "Y" || user_is_guest()) {
-
-            if (!user_is_guest()) {
-                echo "                  <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=N&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", html_style_image('hide.png'), "\" border=\"0\" alt=\"{$lang['hide_stats']}\" title=\"{$lang['hide_stats']}\" /></a></td>\n";
-            }else {
-                echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
-            }
-
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td colspan=\"2\" align=\"left\" id=\"forum_stats\">\n";
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" id=\"active_user_counts\"></td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"activeusers\" id=\"active_user_list\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" id=\"thread_stats\">&nbsp;<br />&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" id=\"post_stats\">&nbsp;<br />&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" id=\"user_stats\">&nbsp;<br />&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-
-        }else {
-
-            echo "                  <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=Y&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", html_style_image('show.png'), "\" border=\"0\" alt=\"{$lang['show_stats']}\" title=\"{$lang['show_stats']}\" /></a></td>\n";
+        echo "  <form action=\"user_stats.php\" method=\"get\" target=\"_self\">\n";
+        echo "    ", form_input_hidden('webtag', $webtag), "\n";
+        echo "    ", form_input_hidden('msg', "$tid.$pid"), "\n";
+        echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+        echo "      <tr>\n";
+        echo "        <td align=\"center\">\n";
+        echo "          <table class=\"box\" width=\"100%\">\n";
+        echo "            <tr>\n";
+        echo "              <td align=\"left\" class=\"posthead\">\n";
+        echo "                <table class=\"posthead\" width=\"100%\" cellspacing=\"0\">\n";
+        echo "                  <tr>\n";
+        echo "                    <td>\n";
+        echo "                      <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+        echo "                        <tr>\n";
+        echo "                          <td align=\"left\" class=\"subhead\">{$lang['forumstats']}</td>\n";        
+        echo "                          <td align=\"right\" class=\"subhead\">\n";
+        
+        if (user_is_guest()) {
+            
+            echo "                            &nbsp;";
+        
+        } else if (session_get_value("SHOW_STATS") == "Y") {
+            
+            echo "                            ", form_submit_image('hide.png', 'forum_stats_toggle', 'hide', '', 'button_image toggle_button'), "\n";
+        
+        } else {
+            
+            echo "                            ", form_submit_image('show.png', 'forum_stats_toggle', 'show', '', 'button_image toggle_button'), "\n";
         }
-
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
+        
+        echo "                          </td>\n";
+        echo "                        </tr>";
+        echo "                      </table>\n";
+        echo "                    </td>\n";
+        echo "                  </tr>\n";
+        echo "                  <tr>\n";
+        echo "                    <td>\n";
+        
+        if (user_is_guest() || (session_get_value("SHOW_STATS") == "Y")) {
+            echo "                      <div id=\"forum_stats\" class=\"forum_stats_toggle\">\n";
+        } else {
+            echo "                      <div id=\"forum_stats\" class=\"forum_stats_toggle\" style=\"display: none\">\n";
+        }
+        
+        echo "                        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" id=\"active_user_counts\"></td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" class=\"activeusers\" id=\"active_user_list\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" id=\"thread_stats\">&nbsp;<br />&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" id=\"post_stats\">&nbsp;<br />&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" id=\"user_stats\">&nbsp;<br />&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                        </table>\n";
+        echo "                      </div>\n";
+        echo "                    </td>\n";
+        echo "                  </tr>\n";
+        echo "                </table>\n";
+        echo "              </td>\n";
+        echo "            </tr>\n";
+        echo "          </table>\n";
+        echo "        </td>\n";
+        echo "      </tr>\n";
+        echo "    </table>\n";
+        echo "  </form>\n";
         echo "</div>\n";
     }
 }

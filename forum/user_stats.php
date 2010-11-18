@@ -126,7 +126,7 @@ if (isset($_GET['get_stats'])) {
     exit;
 
 }else {
-
+    
     if (user_is_guest()) {
 
         html_guest_error();
@@ -137,7 +137,7 @@ if (isset($_GET['get_stats'])) {
 
         $msg = $_GET['msg'];
 
-        if (isset($_GET['show_stats']) && $_GET['show_stats'] == "Y") {
+        if (isset($_GET['forum_stats_toggle']) && $_GET['forum_stats_toggle'] == "show") {
 
             $user_prefs['SHOW_STATS'] = "Y";
             $user_prefs_global['SHOW_STATS'] = false;

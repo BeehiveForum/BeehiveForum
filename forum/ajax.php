@@ -226,7 +226,34 @@ switch ($_GET['action']) {
             header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
         }
 
-        break;            
+        break;
+        
+    case 'forum_stats_toggle':
+    
+        // Get the hide state from the request.
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+        
+        // Don't rely on toggling the stats, always check the client
+        // request in case the interface is out of sync with the database.        
+        if ($_GET['display'] === 'true') {
+
+            $user_prefs = array('SHOW_STATS' => 'Y');
+            $user_prefs_global = array('SHOW_STATS' => false);
+
+        } else {
+
+            $user_prefs = array('SHOW_STATS' => 'N');
+            $user_prefs_global = array('SHOW_STATS' => false);
+        }        
+
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        break;    
     
     // Unknown action
     default:

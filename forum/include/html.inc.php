@@ -886,11 +886,7 @@ function html_draw_top()
         $stats_display_pages = array('messages.php');
 
         if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
-
-            if ((session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
-
-                html_include_javascript(html_get_forum_file_path('js/stats.js'));
-            }
+            html_include_javascript(html_get_forum_file_path('js/stats.js'));
         }
     }
 

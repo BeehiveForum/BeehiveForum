@@ -92,99 +92,79 @@ if (($user_style = session_get_value('STYLE')) === false) {
     $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
 }
 
-// Look for autocomplete search request
-if (isset($_GET['search'])) {
-    
-    $search_results_array = array();
-    
-    if (isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
+// Load the language file.
+$lang = load_language_file();
+
+// Required language strings. Add here the keys
+// of the required language strings to be returned
+// as the JSON response.
+$lang_required = array('fixhtmlexplanation',
+                       'imageresized',
+                       'deletemessagesconfirmation',
+                       'unquote',
+                       'quote',
+                       'searchsuccessfullycompleted',
+                       'confirmmarkasread',
+                       'waitdotdotdot',
+                       'more');
+
+// Get the user's saved left frame width.
+if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
+    $left_frame_width = 280;
+}
+                       
+// Construct the Javascript / JSON array
+$json_data = array('webtag'           => $webtag,
+                   'uid'              => session_get_value('UID'),
+                   'lang'             => array_intersect_key($lang, array_flip($lang_required)),
+                   'images'           => array(),
+                   'font_size'        => $font_size,
+                   'user_style'       => html_get_style_sheet(),
+                   'emoticons'        => html_get_emoticon_style_sheet(),
+                   'top_frame'        => html_get_top_page(),
+                   'left_frame_width' => $left_frame_width,
+                   'frames'           => array('index'       => html_get_frame_name('index'),
+                                               'admin'       => html_get_frame_name('admin'),
+                                               'start'       => html_get_frame_name('start'),
+                                               'discussion'  => html_get_frame_name('discussion'),
+                                               'user'        => html_get_frame_name('user'),
+                                               'pm'          => html_get_frame_name('pm'),
+                                               'main'        => html_get_frame_name('main'),
+                                               'ftop'        => html_get_frame_name('ftop'),
+                                               'fnav'        => html_get_frame_name('fnav'),
+                                               'left'        => html_get_frame_name('left'),
+                                               'right'       => html_get_frame_name('right'),
+                                               'pm_folders'  => html_get_frame_name('pm_folders'),
+                                               'pm_messages' => html_get_frame_name('pm_messages')));
+
+// Get all the styles images.
+if (($images_array = glob("styles/$user_style/images/*.png"))) {
+
+    foreach ($images_array as $image_filename) {
         
-        $query = trim(stripslashes_array($_GET['q']));
-        
-        $search_results_array = user_search($query);
-        
-        foreach ($search_results_array['results_array'] as $search_result) {
-            
-            echo json_encode(array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))), "\n";
-        } 
+        $image_filename = basename($image_filename);
+        $json_data['images'][$image_filename] = html_style_image($image_filename);
     }
+}
+
+// If the data is requested via JSON send the 
+// correct header and content.
+if (isset($_GET['json'])) {                       
+
+    // JSON header
+    header('Content-type: application/json; charset=UTF-8', true);
+
+    // Output the JSON data.
+    echo json_encode($json_data);
 
 } else {
-
-    // Load the language file.
-    $lang = load_language_file();
-
-    // Required language strings. Add here the keys
-    // of the required language strings to be returned
-    // as the JSON response.
-    $lang_required = array('fixhtmlexplanation',
-                           'imageresized',
-                           'deletemessagesconfirmation',
-                           'unquote',
-                           'quote',
-                           'searchsuccessfullycompleted',
-                           'confirmmarkasread',
-                           'waitdotdotdot',
-                           'more');
-
-    // Get the user's saved left frame width.
-    if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
-        $left_frame_width = 280;
-    }
-                           
-    // Construct the Javascript / JSON array
-    $json_data = array('webtag'           => $webtag,
-                       'uid'              => session_get_value('UID'),
-                       'lang'             => array_intersect_key($lang, array_flip($lang_required)),
-                       'images'           => array(),
-                       'font_size'        => $font_size,
-                       'user_style'       => html_get_style_sheet(),
-                       'emoticons'        => html_get_emoticon_style_sheet(),
-                       'top_frame'        => html_get_top_page(),
-                       'left_frame_width' => $left_frame_width,
-                       'frames'           => array('index'       => html_get_frame_name('index'),
-                                                   'admin'       => html_get_frame_name('admin'),
-                                                   'start'       => html_get_frame_name('start'),
-                                                   'discussion'  => html_get_frame_name('discussion'),
-                                                   'user'        => html_get_frame_name('user'),
-                                                   'pm'          => html_get_frame_name('pm'),
-                                                   'main'        => html_get_frame_name('main'),
-                                                   'ftop'        => html_get_frame_name('ftop'),
-                                                   'fnav'        => html_get_frame_name('fnav'),
-                                                   'left'        => html_get_frame_name('left'),
-                                                   'right'       => html_get_frame_name('right'),
-                                                   'pm_folders'  => html_get_frame_name('pm_folders'),
-                                                   'pm_messages' => html_get_frame_name('pm_messages')));
-
-    // Get all the styles images.
-    if (($images_array = glob("styles/$user_style/images/*.png"))) {
     
-        foreach ($images_array as $image_filename) {
-            
-            $image_filename = basename($image_filename);
-            $json_data['images'][$image_filename] = html_style_image($image_filename);
-        }
-    }
-
-    // If the data is requested via JSON send the 
-    // correct header and content.
-    if (isset($_GET['json'])) {                       
-
-        // JSON header
-        header('Content-type: application/json; charset=UTF-8', true);
-
-        // Output the JSON data.
-        echo json_encode($json_data);
-
-    } else {
-        
-        header('Content-type: text/javascript; charset=UTF-8', true);
-        
-        echo "beehive = $.extend({}, beehive, ", json_encode($json_data), ");\n";
-        echo "$(document).ready(function() {\n";
-        echo "  $(beehive).trigger('init');\n";
-        echo "});";
-    }
+    header('Content-type: text/javascript; charset=UTF-8', true);
+    
+    echo "beehive = $.extend({}, beehive, ", json_encode($json_data), ");\n";
+    echo "$(document).ready(function() {\n";
+    echo "  $(beehive).trigger('init');\n";
+    echo "});";
 }
 
 ?>

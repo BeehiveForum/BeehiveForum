@@ -484,6 +484,7 @@ $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280',";
+$sql.= "  SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -936,8 +937,9 @@ $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y', ";
+$sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y', ";
-$sql.= "  POST_PAGE CHAR(3) NOT NULL DEFAULT '0', ";
+$sql.= "  POST_PAGE SMALLINT(4) NOT NULL DEFAULT '3271', ";
 $sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2', ";
 $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
@@ -946,7 +948,7 @@ $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
-$sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY DOB (DOB), ";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";
@@ -1320,18 +1322,25 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
-
+    
+    // Construct full path to the dictionary file.
     $dictionary_path = str_replace('\\', '/', rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR));
 
-    if (@file_exists("$dictionary_path/english.dic")) {
+    // Check the file exists and is readable by PHP.
+    if (@file_exists("$dictionary_path/english.dic") && is_readable("$dictionary_path/english.dic")) {
+        
+        try {
 
-        $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
-        $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
+            // Try importing the file using MySQL's LOAD DATA INFILE
+            $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
+            $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
 
-        // SQL import method failed, now we need to resort to
-        // loading the file in PHP and running queries to MySQL.
-        if (!$result = @db_query($sql, $db_install)) {
+            $result = db_query($sql, $db_install);
+            
+        } catch (Exception $e) {
 
+            // MySQL LOAD DATA INFILE failed. Try reading the file
+            // using PHP.
             $dictionary_words_array = file($dictionary_path);
 
             foreach ($dictionary_words_array as $word) {
@@ -1347,15 +1356,15 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
                 }
             }
         }
+    }
 
-        // Generate the soundex values for the words.
-        $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
+    // Generate the soundex values for the words.
+    $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
 
-        if (!$result = db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
-            $valid = false;
-            return;
-        }
+        $valid = false;
+        return;
     }
 }
 

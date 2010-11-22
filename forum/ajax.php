@@ -254,6 +254,26 @@ switch ($_GET['action']) {
         }
 
         break;    
+        
+    case 'frame_resize':
+        
+        // Get the size from the request
+        if (!isset($_GET['size']) || !is_numeric($_GET['size'])) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }    
+        
+        // Set the LEFT_FRAME_WIDTH preference
+        $user_prefs = array('LEFT_FRAME_WIDTH' => abs($_GET['size']));
+        
+        // Per-forum preference
+        $user_prefs_global = array('LEFT_FRAME_WIDTH' => false);
+        
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+                
+        break;
     
     // Unknown action
     default:

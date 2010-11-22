@@ -115,30 +115,6 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Check if we're saving frame resize.
-if (isset($_GET['frame_resize']) && is_numeric($_GET['frame_resize'])) {
-    
-    // Guests can't save user preferences.
-    if (user_is_guest()) exit;
-    
-    // Get the User UID from the session.
-    $uid = session_get_value('UID');
-    
-    // Get user prefs
-    $user_prefs = user_get_prefs($uid);
-    
-    // Set the LEFT_FRAME_WIDTH preference
-    $user_prefs['LEFT_FRAME_WIDTH'] = $_GET['frame_resize'];
-    
-    // Per-forum preference
-    $user_prefs_global['LEFT_FRAME_WIDTH'] = false;
-    
-    // Save the preferences.
-    user_update_prefs($uid, $user_prefs, $user_prefs_global);
-    
-    exit;
-}
-
 // Guests don't have access to this script.
 if (user_is_guest()) {
 

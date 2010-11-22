@@ -207,7 +207,9 @@ $(beehive).bind('init', function() {
     
     $(window).bind('resize', function() {
         
-        if ($(this).attr('name') != beehive.frames.left) return;
+        var frame_name = $(this).attr('name');
+        
+        if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) return;
         
         window.clearTimeout(frame_resize_timeout);
         

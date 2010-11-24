@@ -76,6 +76,82 @@ function formatname($filename)
     return ucfirst(strtolower($filename));
 }
 
+// Function to resize uploaded image.
+function resize_image($image_file_path, $max_width, $max_height)
+{
+    if (!is_numeric($max_width)) $max_width = 150;
+    if (!is_numeric($max_height)) $max_height = 150;
+
+    // Required PHP image create from functions
+    $required_read_functions  = array(1 => 'imagecreatefromgif',
+                                      2 => 'imagecreatefromjpeg',
+                                      3 => 'imagecreatefrompng');
+
+    // Required PHP image output functions
+    $required_write_functions = array(1 => 'imagegif',
+                                      2 => 'imagejpeg',
+                                      3 => 'imagepng');
+
+    // Required GD read support
+    $required_read_support = array(1 => array('GIF Read Support'),
+                                   2 => array('JPG Support', 'JPEG Support'),
+                                   3 => array('PNG Support'));
+
+    // Required GD write support
+    $required_write_support = array(1 => array('GIF Create Support'),
+                                    2 => array('JPG Support', 'JPEG Support'),
+                                    3 => array('PNG Support'));
+
+    // Check the file exists and we can get some image data from it.
+    if (!file_exists($image_file_path) || !($image_info = @getimagesize($image_file_path))) return false;
+    
+    // Check the gd_info function exists
+    if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;    
+
+    // Check 1: Is the image format in our list of supported image types.
+    if (!isset($required_read_support[$image_info[2]])) return false;
+    if (!isset($required_write_support[$image_info[2]])) return false;
+    
+    // Check 2: Check gd_info function indicates support for the image type.
+    if (!attachments_get_gd_info_key($required_read_support[$image_info[2]])) return false;
+    if (!attachments_get_gd_info_key($required_write_support[$image_info[2]])) return false;
+
+    // Check 3: Even if GD says it supports the image format check the php functions actually exist!
+    if (!function_exists($required_read_functions[$image_info[2]])) return false;
+    if (!function_exists($required_write_functions[$image_info[2]])) return false;
+
+    // Got this far, lets try reading the image.
+    if (!($src = @$required_read_functions[$image_info[2]]($image_file_path))) return false;
+
+    $target_width  = $image_info[0];
+    $target_height = $image_info[1];
+
+    while ($target_width > $max_width || $target_height > $max_height) {
+
+        $target_width--;
+        $target_height = $target_width * ($image_info[1] / $image_info[0]);
+    }
+
+    if (strcmp($gd_info['GD Version'], '2.0') > -1) {
+
+        $dst = imagecreatetruecolor($target_width, $target_height);
+        $dst = attachments_thumb_transparency($dst);
+
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
+                           $target_height, $image_info[0], $image_info[1]);
+
+    }else {
+
+        $dst = imagecreate($target_width, $target_height);
+        $dst = attachments_thumb_transparency($dst);
+
+        imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
+                         $target_height, $image_info[0], $image_info[1]);
+    }
+
+    return $required_write_functions[$image_info[2]]($dst, $image_file_path);
+}
+
 // Load language file
 $lang = load_language_file();
 
@@ -92,40 +168,38 @@ if ((isset($_POST['upload'])) && (session_get_value('UID') > 0)) {
 
         $logon = session_get_value('LOGON');
 
-        $tempfile = $_FILES['userimage']['tmp_name'];
-        $filepath = "$images_dir/$logon";
+        $temp_file = $_FILES['userimage']['tmp_name'];
+        
+        $image_file_path = "$images_dir/$logon";
 
-        if (@$image_data = getimagesize($tempfile)) {
+        if (@$image_data = getimagesize($temp_file)) {
 
-            if (@move_uploaded_file($tempfile, $filepath)) {
+            if (@move_uploaded_file($temp_file, $image_file_path)) {
 
-                if (attachment_create_thumb($filepath, 300, 300)) {
+                if (resize_image($image_file_path, $image_file_path, 300, 300)) {
 
-                    if (@unlink($filepath)) {
+                    $modified_time = filemtime($image_file_path);
 
-                        rename("$filepath.thumb", $filepath);
+                    html_draw_top('user_profile.js', "stylesheet=gallery.css");
 
-                        $modified_time = filemtime($filepath);
+                    echo "<h1>Uploaded Image</h1>\n";
+                    echo "<div class=\"image\">\n";
+                    echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($logon), "?$modified_time\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
+                    echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($logon), "</a></div></p>\n";
+                    echo "<p><div align=\"center\">[<a href=\"gallery.php\">Random Image</a> | <a href=\"gallery.php?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
+                    echo "</div>\n";
 
-                        html_draw_top('user_profile.js', "stylesheet=gallery.css");
-
-                        echo "<h1>Uploaded Image</h1>\n";
-                        echo "<div class=\"image\">\n";
-                        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($logon), "?$modified_time\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
-                        echo "<p><div align=\"center\"><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$logon"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($logon), "</a></div></p>\n";
-                        echo "<p><div align=\"center\">[<a href=\"gallery.php\">Random Image</a> | <a href=\"gallery.php?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
-                        echo "</div>\n";
-
-                        html_draw_bottom();
-                        exit;
-                    }
+                    html_draw_bottom();
+                    exit;
                 }
             }
         }
 
         html_draw_top('user_profile.js', "stylesheet=gallery.css");
+        
         echo "<h1>Error</h1>\n";
         echo "<p>Something went wrong. You'll be needing to try again.</p>";
+        
         html_draw_bottom();
         exit;
     }
@@ -202,7 +276,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
     echo "<h1>Upload Image</h1>\n";
     echo "<br />\n";
     echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"gallery.php\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_file("userimage", "", 40, 0), "\n";
     echo "  ", form_submit("upload", $lang['upload']), "\n";
     echo "  ", form_submit("cancel", $lang['cancel']), "\n";

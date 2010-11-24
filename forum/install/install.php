@@ -118,15 +118,9 @@ if (isset($_POST['install_method'])) {
 
         $db_database = trim(stripslashes_array($_POST['db_database']));
 
-        if (mb_strlen(trim($db_database)) > 64) {
-
-            $error_array[] = "Database name must be between 1 and 64 characters in length.\n";
-            $valid = false;
-        }
-
     }else {
 
-        $error_array[] = "Database name must be between 1 and 64 characters in length.\n";
+        $error_array[] = "You must supply a database name.\n";
         $valid = false;
     }
 
@@ -280,9 +274,9 @@ if (isset($_POST['install_method'])) {
 
                     if ($config_saved) {
 
-                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
                         echo "  <tr>\n";
-                        echo "    <td align=\"left\" width=\"600\">\n";
+                        echo "    <td align=\"left\" width=\"525\">\n";
                         echo "      <table class=\"box\" width=\"100%\">\n";
                         echo "        <tr>\n";
                         echo "          <td align=\"left\" class=\"posthead\">\n";
@@ -292,7 +286,7 @@ if (isset($_POST['install_method'])) {
                         echo "              </tr>\n";
                         echo "              <tr>\n";
                         echo "                <td align=\"center\" colspan=\"2\">\n";
-                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
                         echo "                    <tr>\n";
                         echo "                      <td align=\"left\" class=\"postbody\">Installation of your Beehive Forum has completed successfully, but before you can use it you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
                         echo "                    </tr>\n";
@@ -318,9 +312,9 @@ if (isset($_POST['install_method'])) {
 
                     }else {
 
-                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
                         echo "  <tr>\n";
-                        echo "    <td align=\"left\" width=\"600\">\n";
+                        echo "    <td align=\"left\" width=\"525\">\n";
                         echo "      <table class=\"box\" width=\"100%\">\n";
                         echo "        <tr>\n";
                         echo "          <td align=\"left\" class=\"posthead\">\n";
@@ -330,7 +324,7 @@ if (isset($_POST['install_method'])) {
                         echo "              </tr>\n";
                         echo "              <tr>\n";
                         echo "                <td align=\"center\" colspan=\"2\">\n";
-                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
                         echo "                    <tr>\n";
                         echo "                      <td align=\"left\" class=\"postbody\">Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
                         echo "                    </tr>\n";
@@ -357,7 +351,7 @@ if (isset($_POST['install_method'])) {
                         echo "  </tr>\n";
                         echo "  <tr>\n";
                         echo "    <td align=\"center\">\n";
-                        echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                        echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
                         echo "        <tr>\n";
                         echo "          <td width=\"55%\" align=\"right\">\n";
                         echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"install.php\">\n";
@@ -463,9 +457,9 @@ if (isset($_POST['install_method'])) {
             echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
             echo "<br />\n";
             echo "<div align=\"center\">\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
             echo "    <tr>\n";
-            echo "      <td align=\"left\" width=\"600\">\n";
+            echo "      <td align=\"left\" width=\"525\">\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
             echo "          <tr>\n";
             echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -475,7 +469,7 @@ if (isset($_POST['install_method'])) {
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\" colspan=\"2\">\n";
-            echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+            echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"postbody\">Oops! It would appear that we don't have enough information to be able to send you your config.inc.php. This would only have happened if the previous page didn't send us the right information.</td>\n";
             echo "                      </tr>\n";
@@ -520,9 +514,9 @@ if (isset($_POST['install_method'])) {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
             echo "    <tr>\n";
-            echo "      <td align=\"left\" width=\"600\">&nbsp;</td>\n";
+            echo "      <td align=\"left\" width=\"525\">&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
@@ -558,7 +552,7 @@ echo "<body>\n";
 echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"install.php\">\n";
 echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"2\">\n";
 echo "        <p>Welcome to the Beehive Forum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
@@ -586,9 +580,9 @@ if (isset($error_array) && sizeof($error_array) > 0) {
 
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"600\">\n";
+echo "      <td align=\"left\" width=\"525\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -599,7 +593,7 @@ echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\">
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
-echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Installation Method:</td>\n";
 echo "                        <td align=\"left\" class=\"postbody\">\n";
@@ -614,7 +608,7 @@ echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" valign=\"top\" class=\"postbody\">Default Forum Webtag:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) && strlen($forum_webtag) > 0 ? htmlentities_array($forum_webtag) : ''), "\" size=\"30\" maxlength=\"64\" tabindex=\"2\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) && strlen($forum_webtag) > 0 ? htmlentities_array($forum_webtag) : ''), "\" size=\"28\" maxlength=\"32\" tabindex=\"2\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -630,9 +624,9 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"600\">\n";
+echo "      <td align=\"left\" width=\"525\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -643,26 +637,26 @@ echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\">
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
-echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) && strlen($db_server) > 0 ? htmlentities_array($db_server) : ''), "\" size=\"30\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) && strlen($db_server) > 0 ? htmlentities_array($db_server) : ''), "\" size=\"28\" tabindex=\"3\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) && strlen($db_database) > 0 ? htmlentities_array($db_database) : ''), "\" size=\"20\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) && strlen($db_database) > 0 ? htmlentities_array($db_database) : ''), "\" size=\"28\" tabindex=\"4\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Username:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) && strlen($db_username) > 0 ? htmlentities_array($db_username) : ''), "\" size=\"24\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) && strlen($db_username) > 0 ? htmlentities_array($db_username) : ''), "\" size=\"28\" tabindex=\"5\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"28\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"28\" tabindex=\"6\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"28\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"28\" tabindex=\"7\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -678,9 +672,9 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"600\">\n";
+echo "      <td align=\"left\" width=\"525\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -691,14 +685,14 @@ echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\">
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
-echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Username:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) && strlen($admin_username) > 0 ? htmlentities_array($admin_username) : ''), "\" size=\"20\" maxlength=\"32\" tabindex=\"8\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) && strlen($admin_username) > 0 ? htmlentities_array($admin_username) : ''), "\" size=\"28\" maxlength=\"32\" tabindex=\"8\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Email Address:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) && strlen($admin_email) > 0 ? htmlentities_array($admin_email) : ''), "\" size=\"26\" maxlength=\"80\" tabindex=\"9\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) && strlen($admin_email) > 0 ? htmlentities_array($admin_email) : ''), "\" size=\"28\" maxlength=\"80\" tabindex=\"9\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
@@ -722,9 +716,9 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"600\">\n";
+echo "      <td align=\"left\" width=\"525\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -735,7 +729,7 @@ echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\">
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
-echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"90%\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\"", (isset($remove_conflicts) && $remove_conflicts == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
 echo "                      </tr>\n";

@@ -138,9 +138,6 @@ if (forum_check_webtag_available($webtag)) {
         echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_startpage.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['startpage']}</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_make_style.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['forumstyle']}</a></td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['wordfilter']}</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";

@@ -24,7 +24,7 @@ USA
 /* $Id$ */
 
 // Array of files to exclude from the matches
-$exclude_files_array = array('make_style.css');
+$exclude_files_array = array();
 
 // Array of directories to exclude from the matches
 $exclude_dirs_array = array();

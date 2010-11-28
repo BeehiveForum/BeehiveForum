@@ -91,6 +91,7 @@ $lang['date_periods_short']['day']    = "%sd";    // 4d
 $lang['date_periods_short']['hour']   = "%shr";   // 5hr
 $lang['date_periods_short']['minute'] = "%smin";  // 6min
 $lang['date_periods_short']['second'] = "%ssec";  // 7sec
+
 // Common words --------------------------------------------------------
 $lang['percent'] = "Percent";
 $lang['average'] = "Average";
@@ -288,8 +289,6 @@ $lang['startpageerror'] = "Start page could not be saved. Please try again.";
 $lang['uploadcssfile'] = "Upload CSS style sheet";
 $lang['uploadcssfilefailed'] = "CSS style sheet could not be uploaded. Please try again.";
 $lang['invalidfiletypeerror'] = "Invalid file type, you can only upload CSS style sheet files";
-$lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
-$lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied.</p><p>To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unavailable.";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
 $lang['forumlinks'] = "Forum Links";
@@ -1881,6 +1880,7 @@ $lang['shownext50threads'] = "Show next 50 threads";
 $lang['showprev50threads'] = "Show previous 50 threads";
 $lang['createnewdiscussioninthisfolder'] = "Create new discussion in this folder";
 $lang['nomessages'] = "No Messages";
+$lang['viewmoderators'] = "View moderators";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";

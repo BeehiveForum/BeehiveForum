@@ -39,7 +39,7 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 
 // Array of files to exclude from the matches
-$exclude_files_array = array('start_main.css', 'make_style.css', 'style_ie6.css');
+$exclude_files_array = array('start_main.css', 'style_ie6.css');
 
 // Array of directories to exclude from the matches
 $exclude_dirs_array = array('forum/styles/Default');
@@ -233,41 +233,5 @@ foreach($css_rules_array as $css_filepath => $css_rules_set) {
     // Output the fixed style.
     file_put_contents($css_filepath, parse_array_to_css($css_rules_set));
 }
-
-// Load the make_style.css
-$make_style_css_rules = parse_css_to_array(file_get_contents('forum/styles/make_style.css'));
-
-// Remove depreceated selectors
-$make_style_css_rules = array_diff_key($make_style_css_rules, array_diff_key($make_style_css_rules, $default_css_rules));
-
-// Add the missing selectors
-$make_style_css_rules = array_merge($make_style_css_rules, array_diff_key($default_css_rules, $make_style_css_rules));
-
-// Copy the missing rules to the selectors
-foreach(array_diff_key_recursive($default_css_rules, $make_style_css_rules) as $selector => $missing_rules_set) {
-    
-    foreach($missing_rules_set as $rule_name => $value) {
-        
-        $make_style_css_rules[$selector][$rule_name] = $value;
-    }
-}
-
-// Remove the extra rules from selectors, taking care not 
-// to remove those with the word color in them.
-foreach(array_diff_key_recursive($make_style_css_rules, $default_css_rules) as $selector => $additional_rules_set) {
-    
-    foreach($additional_rules_set as $rule_name => $value) {
-        
-        if (preg_match('/color|background-image/', $rule_name) < 1) {
-            unset($make_style_css_rules[$selector][$rule_name]);
-        }
-    }
-}
-
-// Backup the original file.
-rename('forum/styles/make_style.css', sprintf('forum/styles/make_style.css.%s', date('YmdHis')));
-
-// Output the fixed style.
-file_put_contents('forum/styles/make_style.css', parse_array_to_css($make_style_css_rules));
 
 ?>

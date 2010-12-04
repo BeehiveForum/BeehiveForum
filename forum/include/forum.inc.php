@@ -2144,47 +2144,62 @@ function forums_get_available_count()
 function forum_get_content_delivery_path($file_path)
 {
     // Current array index
-    static $current_index = -1;
+    static $content_delivery_domain_index = -1;
     
-    // Check if the file path has been previously requested.
-    if (isset($content_delivery_domains_array[$file_path])) {
-        return $content_delivery_domains_array[$file_path];
+    // Static to hold content delivery domains
+    static $content_delivery_domains_array = false;
+    
+    // Static array to hold files so we don't duplicate filenames to different domains.
+    static $content_delivery_files_array = array();
+    
+    // Check we haven't already loaded the list
+    if (!is_array($content_delivery_domains_array)) {
+    
+        // Get the content delivery domains as an array.
+        $content_delivery_domains_array = explode("\n", forum_get_setting('content_delivery_domains'));
+        
+        // Trim each entry in the array.
+        $content_delivery_domains_array = array_map('trim', $content_delivery_domains_array);
+        
+        // Remove empty lines and reindex the array.
+        $content_delivery_domains_array = array_values(array_filter($content_delivery_domains_array));
     }
-    
-    // Get the content delivery domains as an array.
-    $content_delivery_domains_array = explode("\n", forum_get_setting('content_delivery_domains'));
-    
-    // Remove empty lines, trim the results, reindex the array.
-    $content_delivery_domains_array = array_values(array_filter(array_map('trim', $content_delivery_domains_array), 'strlen'));
     
     // Check we have something left to use.
     if (sizeof($content_delivery_domains_array) < 1) return false;
     
+    // Check if the file path has been previously requested.
+    if (isset($content_delivery_files_array[$file_path])) {
+        return $content_delivery_files_array[$file_path];
+    }
+    
     // Increment the array index.
-    $current_index++;
+    $content_delivery_domain_index++;
     
     // If the array index exists, return it.
-    if (isset($content_delivery_domains_array[$current_index])) {
-        return preg_replace('/^http(s)?:\/\//', '', $content_delivery_domains_array[$current_index]);
+    if (isset($content_delivery_domains_array[$content_delivery_domain_index])) {
+        
+        // Cache the selected content delivery domain
+        $content_delivery_files_array[$file_path] = $content_delivery_domains_array[$content_delivery_domain_index];
+        
+        // Return the selected domain.
+        return preg_replace('/^http(s)?:\/\//', '', $content_delivery_files_array[$file_path]);
     }
     
     // Reset the array index
-    $current_index = -1;
+    $content_delivery_domain_index = -1;
     
     // Call self.
     return forum_get_content_delivery_path($file_path);
 }
 
-function forum_self_clean_check_xml()
+function forum_self_clean_check_ajax()
 {
     if (isset($_SERVER['PHP_SELF']) && strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
 
         $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
 
-        if (in_array($script_filename, array('pm.php', 'user_stats.php'))) {
-
-            if (isset($_GET['check_messages']) || isset($_GET['get_stats'])) return false;
-        }
+        if (in_array($script_filename, array('ajax.php', 'json.php'))) return false;
     }
 
     return true;
@@ -2203,8 +2218,8 @@ function forum_check_maintenance()
     // Array to hold the forum settings we need to update.
     $new_forum_settings = array();
 
-    // XML requests shouldn't trigger forum self clean
-    if (!forum_self_clean_check_xml()) return;
+    // Ajax and JSON requests shouldn't trigger forum self clean
+    if (!forum_self_clean_check_ajax()) return;
 
     // Get the scheduled forum maintenance start hour (default 03:00)
     $forum_maintenance_hour = forum_get_setting('forum_maintenance_hour', 'is_numeric', 3);

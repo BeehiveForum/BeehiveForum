@@ -144,24 +144,6 @@ $error_msg_array = array();
 // Top frame target
 $frame_top_target = html_get_top_frame_name();
 
-// Check to see if Forum Rules are enabled.
-if (isset($_GET['reload_captcha'])) {
-
-    if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
-
-        // Construct array to send as JSON response.
-        $text_captcha_data = array('image' => $text_captcha->get_image_filename(),
-                                   'chars' => $text_captcha->get_num_chars(),
-                                   'key'   => $text_captcha->get_public_key());
-
-        // Outputting JSON
-        header('Content-type: application/json; charset=UTF-8', true);
-
-        echo json_encode($text_captcha_data);
-        exit;
-    }
-}
-
 if (isset($_GET['private_key']) && strlen(trim(stripslashes_array($_GET['private_key']))) > 0) {
     $text_captcha_private_key = trim(stripslashes_array($_GET['private_key']));
 }else {

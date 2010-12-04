@@ -45,14 +45,34 @@ $(beehive).bind('init', function() {
         return false;
     });
     
-    $.getJSON(beehive.forum_path + '/pm.php', { 'webtag' : beehive.webtag, 'check_messages' : 'true' }, function(data) {
-
-        if (data.text) {
-            $('#pm_message_count').html(data.text);
-        }
-
-        if (data.notification && window.confirm(data.notification)) {
-            top.frames[beehive.frames.main].location.replace('pm.php?webtag=' + beehive.webtag);
+    $.ajax({
+        
+        'cache' : false,
+        
+        'data' : {
+            'webtag' : beehive.webtag,
+            'ajax'   : true,
+            'action' : 'pm_check_messages'
+        },
+        
+        'url' : beehive.forum_path + '/ajax.php',
+        
+        'success' : function(data) {
+            
+            try {
+                
+                var data = JSON.parse(data);
+                
+                $('#pm_message_count').html(data.text);
+                
+                if (data.notification && window.confirm(data.notification)) {
+                    top.frames[beehive.frames.main].location.replace('pm.php?webtag=' + beehive.webtag);
+                }
+                
+            } catch (exception) {
+                
+                beehive.ajax_error(exception);
+            }
         }
     });
 });

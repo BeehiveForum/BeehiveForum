@@ -1936,7 +1936,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 
     // Check font size is greater than 4
     if ($font_size > 5) {
-        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size\">{$lang['smaller']}</a>";
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size_smaller\" rel=\"$tid.$pid\">{$lang['smaller']}</a>";
     }
 
     // Add the current font size.
@@ -1944,7 +1944,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 
     // Check the font size is lower than 16
     if ($font_size < 15) {
-        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size\">{$lang['larger']}</a>\n";
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size_larger\" rel=\"$tid.$pid\">{$lang['larger']}</a>\n";
     }
 
     // Check if we should return just the inner HTML

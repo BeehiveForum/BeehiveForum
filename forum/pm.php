@@ -111,13 +111,6 @@ if (user_is_guest()) {
     exit;
 }
 
-// Check to see if we're looking for new messages.
-if (isset($_GET['check_messages'])) {
-
-    pm_check_messages();
-    exit;
-}
-
 // Array to hold error messages
 $error_msg_array = array();
 

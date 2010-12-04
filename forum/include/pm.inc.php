@@ -1952,9 +1952,6 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
 function pm_check_messages()
 {
-    // Outputting JSON
-    header('Content-type: application/json; charset=UTF-8', true);
-
     // Load the Language file
     $lang = load_language_file();
     
@@ -1998,7 +1995,7 @@ function pm_check_messages()
             $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
         }
     }
-
+    
     $pm_notification_data = array();
 
     if ($pm_new_count > 0) {
@@ -2011,8 +2008,7 @@ function pm_check_messages()
         $pm_notification_data['notification'] = wordwrap($pm_notification, 65, "\n");
     }
 
-    echo json_encode($pm_notification_data);
-    exit;
+    return $pm_notification_data;
 }
 
 /**

@@ -116,6 +116,7 @@ switch ($_GET['action']) {
         
         break;
         
+    // Signature input toggle
     case 'sig_toggle':
     
         // Get the user's post page preferences.
@@ -144,6 +145,7 @@ switch ($_GET['action']) {
 
         break;            
         
+    // Emoticons box toggle.
     case 'emots_toggle':
     
         // Get the user's post page preferences.
@@ -172,6 +174,7 @@ switch ($_GET['action']) {
 
         break;        
         
+    // Poll Advanced Options toggle
     case 'poll_advanced_toggle':
     
         // Get the user's post page preferences.
@@ -200,6 +203,7 @@ switch ($_GET['action']) {
 
         break;
                 
+    // Poll Additional message toggle
     case 'poll_additional_message_toggle':
     
         // Get the user's post page preferences.
@@ -228,6 +232,7 @@ switch ($_GET['action']) {
 
         break;
         
+    // Forum stats toggle
     case 'forum_stats_toggle':
     
         // Get the hide state from the request.
@@ -255,6 +260,7 @@ switch ($_GET['action']) {
 
         break;    
         
+    // Left frame resize
     case 'frame_resize':
         
         // Get the size from the request
@@ -273,6 +279,102 @@ switch ($_GET['action']) {
             header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
         }
                 
+        break;
+        
+    // PM Notifications
+    case 'pm_check_messages':
+    
+        // Get the PM notification data.
+        if (($pm_notification_data = pm_check_messages()) !== false) {
+            
+            // Send JSON encoded data.
+            echo json_encode($pm_notification_data);
+        }
+        
+        break;
+        
+    // Forum stats
+    case 'get_forum_stats':
+    
+        // Get the forum stats HTML
+        if (($forum_stats_html = stats_get_html()) !== false) {
+            
+            // Send the vanilla HTML
+            echo $forum_stats_html;
+        }
+        
+        break;
+        
+    case 'reload_captcha':
+    
+        // Return empty array by default
+        $text_captcha_data = array();
+        
+        // Initialise the text captcha
+        $text_captcha = new captcha(6, 15, 25, 9, 30);
+        
+        // Generate keys and image.
+        if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
+
+            // Construct array to send as JSON response.
+            $text_captcha_data = array('image' => $text_captcha->get_image_filename(),
+                                       'chars' => $text_captcha->get_num_chars(),
+                                       'key'   => $text_captcha->get_public_key());
+
+            // Send the JSON encoded array.
+            echo json_encode($text_captcha_data);
+        }    
+        
+        break;
+        
+    case 'font_size_larger':
+    case 'font_size_smaller':
+    
+        // Get the current message TID.PID
+        if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+        
+        // Spli the msg into separate TID and PID variables.
+        list($tid, $pid) = explode('.', $_GET['msg']);
+    
+        // Load the user prefs
+        $user_prefs = user_get_prefs($uid);
+        
+        // Calculate the new font size.
+        switch ($_GET['action']) {
+
+            // 'Smaller' link clicked
+            case 'font_size_smaller':
+
+                $user_prefs = array('FONT_SIZE' => $user_prefs['FONT_SIZE'] - 1);
+                break;
+
+            // 'Larger' link clicked
+            case 'font_size_larger':
+
+                $user_prefs = array('FONT_SIZE' => $user_prefs['FONT_SIZE'] + 1);
+                break;
+        }
+        
+        // Check the font size is not lower than 5
+        if ($user_prefs['FONT_SIZE'] < 5) $user_prefs['FONT_SIZE'] = 5;
+
+        // Check the font size is not greater than 15
+        if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
+
+        // Apply the font size to this forum only.
+        $user_prefs_global = array('FONT_SIZE' => false);
+        
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+            
+        echo json_encode(array('success'   => true,
+                               'font_size' => $user_prefs['FONT_SIZE'],
+                               'html'      => messages_fontsize_form($tid, $pid, true, $user_prefs['FONT_SIZE'])));        
+        
         break;
     
     // Unknown action

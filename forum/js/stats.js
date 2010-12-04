@@ -29,10 +29,11 @@ $(beehive).bind('init', function() {
         
         'data' : { 
             'webtag' : beehive.webtag, 
-            'get_stats' : true 
+            'ajax'   : 'true',
+            'action' : 'get_forum_stats'
         },
         
-        'url' : beehive.forum_path + '/user_stats.php',        
+        'url' : beehive.forum_path + '/ajax.php',        
         
         'success' : function(data) {
             

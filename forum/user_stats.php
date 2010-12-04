@@ -119,53 +119,44 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Check if we're fetching the stats.
-if (isset($_GET['get_stats'])) {
+if (user_is_guest()) {
 
-    stats_output_html();
+    html_guest_error();
     exit;
+}
 
-}else {
-    
-    if (user_is_guest()) {
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        html_guest_error();
-        exit;
+    $msg = $_GET['msg'];
+
+    if (isset($_GET['forum_stats_toggle']) && $_GET['forum_stats_toggle'] == "show") {
+
+        $user_prefs['SHOW_STATS'] = "Y";
+        $user_prefs_global['SHOW_STATS'] = false;
+
+    }else {
+
+        $user_prefs['SHOW_STATS'] = "N";
+        $user_prefs_global['SHOW_STATS'] = false;
     }
 
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        $msg = $_GET['msg'];
-
-        if (isset($_GET['forum_stats_toggle']) && $_GET['forum_stats_toggle'] == "show") {
-
-            $user_prefs['SHOW_STATS'] = "Y";
-            $user_prefs_global['SHOW_STATS'] = false;
-
-        }else {
-
-            $user_prefs['SHOW_STATS'] = "N";
-            $user_prefs_global['SHOW_STATS'] = false;
-        }
-
-        if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-
-            header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", $lang['statsdisplaychanged']);
-            exit;
-
-        }else {
-
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
-            html_draw_bottom();
-        }
+        header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", $lang['statsdisplaychanged']);
+        exit;
 
     }else {
 
         html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidmsgidornomessageidspecified']);
+        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
         html_draw_bottom();
     }
+
+}else {
+
+    html_draw_top("title={$lang['error']}");
+    html_error_msg($lang['invalidmsgidornomessageidspecified']);
+    html_draw_bottom();
 }
 
 ?>

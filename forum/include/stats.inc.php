@@ -88,7 +88,7 @@ function stats_update($session_count, $recent_post_count)
     return true;
 }
 
-function stats_output_html()
+function stats_get_html()
 {
     // Check HTTP cache headers
     cache_check_last_modified();
@@ -125,15 +125,15 @@ function stats_output_html()
 
         $active_user_list_array = array();
 
-        echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-        echo "  <tr>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "    <td>";
+        $html = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        $html.= "  <tr>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "    <td>&nbsp;</td>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "  </tr>\n";
+        $html.= "  <tr>\n";
+        $html.= "    <td>&nbsp;</td>\n";
+        $html.= "    <td>";
 
         if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
@@ -160,12 +160,12 @@ function stats_output_html()
 
         $active_user_time = format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false);
 
-        echo sprintf($lang['usersactiveinthepasttimeperiod'], $active_user_list, $active_user_time);
+        $html.= sprintf($lang['usersactiveinthepasttimeperiod'], $active_user_list, $active_user_time);
 
-        echo " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"", html_get_frame_name('main'), "\">{$lang['viewcompletelist']}</a> ]\n";
-        echo "    </td>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "  </tr>\n";
+        $html.= " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"". html_get_frame_name('main'). "\">{$lang['viewcompletelist']}</a> ]\n";
+        $html.= "    </td>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "  </tr>\n";
 
         if (sizeof($user_stats['USERS']) > 0) {
 
@@ -238,35 +238,35 @@ function stats_output_html()
                 }
             }
 
-            echo "  <tr>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "    <td>&nbsp;</td>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>";
-            echo "    <td>&nbsp;</td>\n";
-            echo "    <td class=\"activeusers\">\n";
-            echo "      ", implode(", ", $active_users_array), "\n";
-            echo "    </td>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "  </tr>\n";
+            $html.= "  <tr>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "    <td>&nbsp;</td>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "  </tr>\n";
+            $html.= "  <tr>";
+            $html.= "    <td>&nbsp;</td>\n";
+            $html.= "    <td class=\"activeusers\">\n";
+            $html.= "      ". implode(", ", $active_users_array). "\n";
+            $html.= "    </td>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "  </tr>\n";
         }
 
-        echo "  <tr>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
+        $html.= "  <tr>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "    <td>&nbsp;</td>\n";
+        $html.= "  </tr>\n";
+        $html.= "</table>\n";
     }
 
     $thread_count = stats_get_thread_count();
 
     $post_count = stats_get_post_count();
 
-    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "  <tr>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "    <td>";
+    $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    $html.= "  <tr>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "    <td>";
 
     if ($thread_count <> 1) {
         $num_threads_display = sprintf($lang['numthreadscreated'], number_format($thread_count, 0, ".", ","));
@@ -280,89 +280,89 @@ function stats_output_html()
         $num_posts_display = $lang['onepostcreated'];
     }
 
-    echo sprintf($lang['ourmembershavemadeatotalofnumthreadsandnumposts'], $num_threads_display, $num_posts_display), '<br />';
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    $html.= sprintf($lang['ourmembershavemadeatotalofnumthreadsandnumposts'], $num_threads_display, $num_posts_display). '<br />';
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "  </tr>\n";
+    $html.= "</table>\n";
 
     if (($longest_thread = stats_get_longest_thread())) {
 
-        echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-        echo "  <tr>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "    <td>";
+        $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        $html.= "  <tr>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "    <td>";
 
         $longest_thread_title = word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
 
         $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
         $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], $longest_thread['LENGTH']) : $lang['onepostcreated'];
 
-        echo sprintf($lang['longestthreadisthreadnamewithnumposts'], $longest_thread_link, $longest_thread_post_count);
+        $html.= sprintf($lang['longestthreadisthreadnamewithnumposts'], $longest_thread_link, $longest_thread_post_count);
 
-        echo "    </td>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
+        $html.= "    </td>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "  </tr>\n";
+        $html.= "</table>\n";
     }
 
-    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "  <tr>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "  <tr>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "    <td>";
+    $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    $html.= "  <tr>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "    <td>&nbsp;</td>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "  </tr>\n";
+    $html.= "</table>\n";
+    $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    $html.= "  <tr>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "    <td>";
 
     if ($recent_post_count <> 1) {
 
         $recent_post_count = number_format($recent_post_count, 0, ",", ",");
-        echo sprintf($lang['therehavebeenxpostsmadeinthelastsixtyminutes'], $recent_post_count);
+        $html.= sprintf($lang['therehavebeenxpostsmadeinthelastsixtyminutes'], $recent_post_count);
 
     }else {
 
-        echo $lang['therehasbeenonepostmadeinthelastsixtyminutes'];
+        $html.= $lang['therehasbeenonepostmadeinthelastsixtyminutes'];
     }
 
-    echo "    </td>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    $html.= "    </td>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "  </tr>\n";
+    $html.= "</table>\n";
 
     if (($most_posts = stats_get_most_posts())) {
 
         if (($most_posts['MOST_POSTS_COUNT'] > 0) && ($most_posts['MOST_POSTS_DATE'] > 0)) {
 
-            echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "  <tr>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "    <td>";
+            $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            $html.= "  <tr>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "    <td>";
 
             $post_stats_record_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
 
-            echo sprintf($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
+            $html.= sprintf($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
 
-            echo "    </td>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "</table>\n";
+            $html.= "    </td>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "  </tr>\n";
+            $html.= "</table>\n";
         }
     }
 
     if (($user_count = user_count())) {
 
-        echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-        echo "  <tr>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "    <td>";
+        $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        $html.= "  <tr>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "    <td>&nbsp;</td>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "  </tr>\n";
+        $html.= "  <tr>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "    <td>";
 
         if ($user_count <> 1) {
 
@@ -371,61 +371,63 @@ function stats_output_html()
                 $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']));
                 $user_newest_profile_link = sprintf($new_user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
 
-                echo sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);
+                $html.= sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);
 
             }else {
 
-                echo sprintf($lang['wehavenumregisteredmember'], $user_count);
+                $html.= sprintf($lang['wehavenumregisteredmember'], $user_count);
 
             }
 
         }else {
 
-            echo $lang['wehaveoneregisteredmember'];
+            $html.= $lang['wehaveoneregisteredmember'];
         }
 
-        echo "    </td>\n";
-        echo "    <td width=\"35\">&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
+        $html.= "    </td>\n";
+        $html.= "    <td width=\"35\">&nbsp;</td>\n";
+        $html.= "  </tr>\n";
+        $html.= "</table>\n";
     }
 
     if (($most_users = stats_get_most_users())) {
 
         if (($most_users['MOST_USERS_COUNT'] > 0) && ($most_users['MOST_USERS_DATE'] > 0)) {
 
-            echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "  <tr>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "    <td>";
+            $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            $html.= "  <tr>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "    <td>";
 
             $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
             $most_users_date = format_time($most_users['MOST_USERS_DATE'], 1);
 
-            echo sprintf($lang['mostuserseveronlinewasnumondate'], $most_users_count, $most_users_date);
+            $html.= sprintf($lang['mostuserseveronlinewasnumondate'], $most_users_count, $most_users_date);
 
-            echo "    </td>\n";
-            echo "    <td width=\"35\">&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "</table>\n";
+            $html.= "    </td>\n";
+            $html.= "    <td width=\"35\">&nbsp;</td>\n";
+            $html.= "  </tr>\n";
+            $html.= "</table>\n";
         }
     }
 
-    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "  <tr>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "  <tr>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "    <td width=\"35\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    exit;
+    $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    $html.= "  <tr>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "    <td>&nbsp;</td>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "  </tr>\n";
+    $html.= "</table>\n";
+    $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    $html.= "  <tr>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "    <td>&nbsp;</td>\n";
+    $html.= "    <td width=\"35\">&nbsp;</td>\n";
+    $html.= "  </tr>\n";
+    $html.= "</table>\n";
+    
+    // Return the output buffer contents.
+    return $html;
 }
 
 function stats_get_active_session_count()

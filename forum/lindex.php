@@ -135,6 +135,27 @@ $lang = load_language_file();
 // User UID for fetching recent message
 $uid = session_get_value('UID');
 
+// Check that required variables are set
+if (user_is_guest()) {
+
+    // Guests have a limited display. Default to All Discussions.
+    $mode = ALL_DISCUSSIONS;
+
+}else {
+
+    // Check for any unread messages.
+    $threads_any_unread = threads_any_unread();
+
+    // Get the view mode cookie
+    $mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+
+    // If it is set to unread discussions but we don't have any 
+    // unread posts change it back to All Discussions.
+    if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+        $mode = ALL_DISCUSSIONS;
+    }
+}
+
 // Does the user want to login or have they got saved username and password
 if (html_get_cookie('logon') && user_is_guest()) {
 
@@ -174,7 +195,7 @@ if (html_get_cookie('logon') && user_is_guest()) {
         }else {
 
             // Display thread list.
-            light_draw_thread_list();
+            light_draw_thread_list($mode);
         }
 
     }else {

@@ -196,6 +196,8 @@ if (user_is_guest()) {
             $mode = ALL_DISCUSSIONS;
         }
     }
+    
+    html_set_cookie("thread_mode_{$webtag}", $mode);    
 
     if (isset($_POST['mark_read_submit'])) {
 
@@ -276,8 +278,6 @@ if (user_is_guest()) {
         }
     }
 }
-
-html_set_cookie("thread_mode_{$webtag}", $mode);
 
 light_draw_thread_list($mode, $folder, $start_from);
 

@@ -31,6 +31,13 @@ var beehive = $.extend({}, beehive, {
                        'resizeable=yes',
                        'scrollbars=yes' ],
 
+    ajax_error : function(message) {
+        
+        if (console && console.log) {
+            console.log('AJAX ERROR', message);
+        }        
+    },
+    
     get_resize_width : function() {
         
         var $max_width = $(this).closest('.max_width[width]');
@@ -82,20 +89,25 @@ var beehive = $.extend({}, beehive, {
         $(context).find('frame').each(function() {
             
             if (!$.inArray($(this).attr('name'), beehive.frames)) return true;
-                
-            var $head = $(this.contentDocument).find('head');
-            
-            var $user_font = $head.find('link#user_font');
-            
-            $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
             
             beehive.reload_user_font(this.contentDocument);
         });
+                
+        var $head = $(context).find('head');
+        
+        var $user_font = $head.find('link#user_font');
+        
+        $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);        
     }
 });
 
 $.ajaxSetup({
-    cache: true
+    
+    'cache' : true,
+    
+    'error' : function(data) {
+        beehive.ajax_error(data);
+    }
 });
 
 $(beehive).bind('init', function() {
@@ -153,31 +165,45 @@ $(beehive).bind('init', function() {
         $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
     });
 
-    $('a.font_size').live('click', function() {
+    $('a.font_size_larger, a.font_size_smaller').live('click', function() {
 
-        $parent = $(this).closest('td');
+        var $this = $(this);
+        
+        var $parent = $this.closest('td');
         
         if (beehive.uid == 0) return true;
 
         $.ajax({
             
             'cache': false,
-            'url' : $(this).attr('href'),
+            
             'data' : {
                 'webtag' : beehive.webtag,
-                'json' : 'true'
+                'ajax'   : 'true',
+                'action' : $this.attr('class'),
+                'msg'    : $this.attr('rel')
             },
+            
+            'url' : beehive.forum_path + '/ajax.php',                    
+            
             'success' : function(data) {
                 
-                if (!data.success) return false;
+                try {
                 
-                $parent.html(data.html);
-
-                beehive.font_size = data.font_size;
-                
-                beehive.reload_user_font(top.document);
-                
-                $(top.document).find('frameset#index').attr('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
+                    var data = JSON.parse(data);
+                    
+                    $parent.html(data.html);
+                    
+                    beehive.font_size = data.font_size;
+                    
+                    beehive.reload_user_font(top.document);
+                    
+                    $(top.document).find('frameset#index').attr('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
+                    
+                } catch (exception) {
+                    
+                    beehive.ajax_error(exception);
+                }
             }
         });
 

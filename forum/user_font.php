@@ -128,22 +128,7 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
     // Update the user prefs.
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
         
-        // If we have a JSON request respond with the replacement
-        // HTML for the fontsize links, otherwise redirect back
-        // to messages.php
-        if (isset($_REQUEST['json'])) {
-
-            header('Content-type: application/json; charset=UTF-8', true);
-            
-            echo json_encode(array('success'   => true,
-                                   'font_size' => $user_prefs['FONT_SIZE'],
-                                   'html'      => messages_fontsize_form($tid, $pid, true, $user_prefs['FONT_SIZE'])));
-            exit;
-
-        } else {
-
-            header_redirect("messages.php?webtag=$webtag&msg=$tid.$pid&font_resize=1");
-        }
+        header_redirect("messages.php?webtag=$webtag&msg=$tid.$pid&font_resize=1");
     
     } else {
         
@@ -151,12 +136,6 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
         html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
         html_draw_bottom();        
     }
-
-} else if (isset($_REQUEST['json'])) {
-
-    header('Content-type: application/json; charset=UTF-8', true);
-    echo json_encode(array('success' => false));
-    exit;
 
 } else {
 

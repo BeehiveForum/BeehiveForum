@@ -23,66 +23,235 @@ USA
 
 /* $Id$ */
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
+function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
+{
+    $db_server   = (isset($GLOBALS['db_server']))   ? $GLOBALS['db_server']   : '';
+    $db_username = (isset($GLOBALS['db_username'])) ? $GLOBALS['db_username'] : '';
+    $db_password = (isset($GLOBALS['db_password'])) ? $GLOBALS['db_password'] : '';
+    $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
 }
 
-// MySQL Extension to use. By default we auto-detect.
-$db_extension = '';
+function db_connect()
+{
+    static $connection_id = false;
 
-// Include the configuration files
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
-}
+    db_get_connection_vars($db_server, $db_username, $db_password, $db_database);
 
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
-}
+    if (!$connection_id) {
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
+        if (!($connection_id = mysqli_connect($db_server, $db_username, $db_password))) {
+            throw new Exception('Could not connect to database server');
+        }
 
-if (strlen(trim($db_extension)) > 0) {
+        if (!mysqli_select_db($connection_id, $db_database)) {
+            throw new Exception('Unknown database');
+        }
 
-    if ($db_extension == 'mysql') {
+        if (!db_set_utf8_charset($connection_id)) {
+            throw new Exception('Could not enable UTF-8 mode');
+        }
 
-        include_once(BH_INCLUDE_PATH. "db/db_mysql.inc.php");
+        if (!db_set_time_zone_utc($connection_id)) {
+            throw new Exception('Could not set MySQL timezone to UTC');
+        }
 
-    }elseif ($db_extension == 'mysqli') {
+        if (!db_enable_compat_mode($connection_id)) {
+            throw new Exception('Could not change MYSQL compatbility options');
+        }
 
-        include_once(BH_INCLUDE_PATH. "db/db_mysqli.inc.php");
-
-    }else {
-
-        if (@extension_loaded('mysql')) {
-
-            include_once(BH_INCLUDE_PATH. "db/db_mysql.inc.php");
-
-        }elseif (@extension_loaded('mysqli')) {
-
-            include_once(BH_INCLUDE_PATH. "db/db_mysqli.inc.php");
+        if (!db_enable_no_auto_value($connection_id)) {
+            throw new Exception('Could not set MySQL Session Variable SQL_MODE');
         }
     }
 
-}else {
-
-    if (@extension_loaded('mysql')) {
-
-        include_once(BH_INCLUDE_PATH. "db/db_mysql.inc.php");
-
-    }elseif (@extension_loaded('mysqli')) {
-
-        include_once(BH_INCLUDE_PATH. "db/db_mysqli.inc.php");
-    }
+    return $connection_id;
 }
 
-if (!function_exists('db_connect')) {
-    throw new Exception("Could not load mysql or mysqli extension.");
+function db_set_utf8_charset($connection_id)
+{
+    $sql = "SET NAMES 'utf8'";
+    return db_query($sql, $connection_id);
+}
+
+function db_set_time_zone_utc($connection_id)
+{
+    $sql = "SET SESSION time_zone = '+0:00'";
+    return db_query($sql, $connection_id);
+}
+
+function db_enable_compat_mode($connection_id)
+{
+    $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
+
+    if (isset($mysql_big_selects) && $mysql_big_selects === true) {
+
+        $sql = "SET SESSION SQL_BIG_SELECTS = 1";
+        if (!db_query($sql, $connection_id)) return false;
+
+        $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
+        if (!db_query($sql, $connection_id)) return false;
+    }
+
+    return true;
+}
+
+function db_enable_no_auto_value($connection_id)
+{
+    $sql = "SET SESSION SQL_MODE = NO_AUTO_VALUE_ON_ZERO";
+
+    if (!db_query($sql, $connection_id)) return false;
+
+    $sql = "SHOW SESSION VARIABLES LIKE 'SQL_MODE'";
+
+    if (!($result = db_query($sql, $connection_id))) return false;
+
+    if (db_num_rows($result) < 1) return false;
+
+    list(, $value) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($value === 'NO_AUTO_VALUE_ON_ZERO');
+}
+
+function db_query($sql, $connection_id)
+{
+    if (!($result = mysqli_query($connection_id, $sql))) {
+        throw new Exception(db_error($connection_id));
+    }
+
+    return $result;
+}
+
+function db_unbuffered_query($sql, $connection_id)
+{
+    return db_query($sql, $connection_id);
+}
+
+function db_num_rows($result)
+{
+    if (($num_rows = mysqli_num_rows($result))) {
+        return $num_rows;
+    }
+
+    return 0;
+}
+
+function db_affected_rows($connection_id)
+{
+    if (($affected_rows = mysqli_affected_rows($connection_id))) {
+        return $affected_rows;
+    }
+
+    return false;
+}
+
+function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
+{
+    if (($result_array = mysqli_fetch_array($result, $result_type))) {
+        return $result_array;
+    }
+
+    return false;
+}
+
+function db_insert_id($connection_id)
+{
+    if (($insert_id = mysqli_insert_id($connection_id))) {
+        return $insert_id;
+    }
+
+    return false;
+}
+
+function db_error($connection_id = false)
+{
+    if ($connection_id !== false) {
+
+        if (($errstr = mysqli_error($connection_id))) {
+            return $errstr;
+        }
+
+    }else {
+
+        if (($errstr = mysqli_error())) {
+            return $errstr;
+        }
+    }
+
+    return "Unknown Error";
+}
+
+function db_errno($connection_id = false)
+{
+    if ($connection_id !== false) {
+
+        if (($errno = mysqli_errno($connection_id))) {
+            return $errno;
+        }
+
+    }else {
+
+        if (($errno = mysqli_errno())) {
+            return $errno;
+        }
+    }
+
+    return 0;
+}
+
+function db_fetch_mysql_version()
+{
+    static $mysql_version = false;
+
+    if (!$mysql_version) {
+
+        if (!($db_fetch_mysql_version = db_connect())) return false;
+
+        $sql = "SELECT VERSION() AS version";
+
+        $result = db_query($sql, $db_fetch_mysql_version);
+
+        if (!$version_data = db_fetch_array($result)) {
+
+            $sql = "SHOW VARIABLES LIKE 'version'";
+            $result = db_query($sql, $db_fetch_mysql_version);
+
+            $version_data = db_fetch_array($result);
+        }
+
+        $version_array = explode(".", $version_data['version']);
+
+        if (!isset($version_array) || !isset($version_array[0])) {
+            $version_array[0] = 3;
+        }
+
+        if (!isset($version_array[1])) {
+            $version_array[1] = 21;
+        }
+
+        if (!isset($version_array[2])) {
+            $version_array[2] = 0;
+        }
+
+        $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+    }
+
+    return $mysql_version;
+}
+
+function db_escape_string($str)
+{
+    if (($db_escape_string = db_connect())) {
+
+        if (function_exists('mysqli_real_escape_string')) {
+            return mysqli_real_escape_string($db_escape_string, $str);
+        }
+
+        if (function_exists('mysqli_escape_string')) {
+            return mysqli_escape_string($db_escape_string, $str);
+        }
+    }
+
+    return addslashes($str);
 }
 
 ?>

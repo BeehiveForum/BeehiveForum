@@ -167,11 +167,13 @@ if (isset($_POST['add'])) {
     $t_post_sig      = (double) (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
     $t_guest_access  = (double) (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
     $t_post_approval = (double) (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
+    $t_thread_move   = (double) (isset($_POST['t_thread_move']))   ? $_POST['t_thread_move']   : 0;
 
     // We need a double / float here because we're storing a high bit value
     $t_permissions = (double) $t_post_read | $t_post_create | $t_thread_create;
     $t_permissions = (double) $t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
-    $t_permissions = (double) $t_permissions | $t_post_html | $t_post_sig | $t_guest_access | $t_post_approval;
+    $t_permissions = (double) $t_permissions | $t_post_html | $t_post_sig | $t_guest_access;
+    $t_permissions = (double) $t_permissions | $t_post_approval | $t_thread_move;
 
     if ($valid) {
 
@@ -273,6 +275,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_guest_access", USER_PERM_GUEST_ACCESS, $lang['allowguestaccess'], false), "</td>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_post_approval", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_thread_move", USER_PERM_THREAD_MOVE, $lang['allowthreadmove'], false), "</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

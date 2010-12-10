@@ -38,7 +38,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $class="bhselect")
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $access_allowed = USER_PERM_THREAD_CREATE, $custom_html = "", $class="bhselect")
 {
     if (!$db_folder_draw_dropdown = db_connect()) return false;
 
@@ -47,8 +47,6 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     if (!is_numeric($allowed_types)) return "";
 
     $available_folders = array();
-
-    $access_allowed = USER_PERM_THREAD_CREATE;
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM `{$table_data['PREFIX']}FOLDER` ";
     $sql.= "WHERE ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL ";
@@ -69,7 +67,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
             }else {
 
-                if (session_check_perm($access_allowed, $folder_order['FID'])) {
+                if (session_check_perm($access_allowed, $folder_order['FID']) || ($folder_order['FID'] == $default_fid)) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }

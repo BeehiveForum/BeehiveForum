@@ -508,6 +508,7 @@ $lang['groupiswormed'] = "Group is wormed";
 $lang['readposts'] = "Read Posts";
 $lang['replytothreads'] = "Reply to threads";
 $lang['createnewthreads'] = "Create new threads";
+$lang['allowthreadmove'] = "Move threads to folder";
 $lang['editposts'] = "Edit posts";
 $lang['deleteposts'] = "Delete posts";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted";

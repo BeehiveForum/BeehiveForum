@@ -282,7 +282,7 @@ if (isset($_POST['save'])) {
 
             $t_move = $_POST['move'];
             
-            if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID']) && thread_change_folder($tid, $t_move) && (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session_check_perm(USER_PERM_THREAD_CREATE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS))))))) {
+            if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID']) && (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session_check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
 
                 $new_folder_title = folder_get_title($t_move);
                 $old_folder_title = folder_get_title($thread_data['FID']);
@@ -645,7 +645,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['movethread']}:</td>\n";
-            echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"), "</td>\n";
+            echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_NORMAL_THREAD, USER_PERM_THREAD_MOVE, "", "post_folder_dropdown"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -674,7 +674,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['movethread']}:</td>\n";
-            echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown"), "</td>\n";
+            echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_POLL_THREAD, USER_PERM_THREAD_MOVE, "", "post_folder_dropdown"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";

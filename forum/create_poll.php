@@ -755,7 +755,7 @@ if (!isset($t_fid)) {
     }
 }
 
-if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown")) {
+if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD, USER_PERM_THREAD_CREATE, "", "post_folder_dropdown")) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['cannotcreatenewthreads']);

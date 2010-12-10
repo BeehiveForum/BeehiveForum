@@ -1229,6 +1229,7 @@ function perm_display_list($perms)
     if ($perms & USER_PERM_EMAIL_CONFIRM)    $perms_array[] = 'EC';
     if ($perms & USER_PERM_CAN_IGNORE_ADMIN) $perms_array[] = 'IA';
     if ($perms & USER_PERM_PILLORIED)        $perms_array[] = 'UP';
+    if ($perms & USER_PERM_THREAD_MOVE)      $perms_array[] = 'TM';
 
     if (sizeof($perms_array) > 0) {
 

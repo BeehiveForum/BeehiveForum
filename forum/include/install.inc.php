@@ -47,10 +47,10 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 /**
 * check_install
-* 
-* Check that the config file exists and the installer 
+*
+* Check that the config file exists and the installer
 * files have been removed correctly.
-* 
+*
 * @param void
 * @return void
 */
@@ -125,11 +125,11 @@ function check_install()
 
 /**
 * install_incomplete
-* 
+*
 * Show error message about incomplete install.
 * Called by the exception handler when it encounters
 * a missing table or column or other SQL error.
-* 
+*
 * @param void
 * @return void
 */
@@ -195,11 +195,11 @@ function install_incomplete()
 
 /**
 * install_missing_files
-* 
+*
 * Show error message when the Exception handler
 * encounters a missing file that has been tried
 * to be included by the main script.
-* 
+*
 * @param void
 * @return void
 */
@@ -254,11 +254,11 @@ function install_missing_files()
 
 /**
 * install_check_mysql_version
-* 
+*
 * Check the MySQL Version matches or betters
 * the version required by Beehive Forum to
 * run correctly.
-* 
+*
 * @param void
 * @return mixed
 */
@@ -266,9 +266,9 @@ function install_check_mysql_version()
 {
     // Get the MySQL version.
     $mysql_version = db_fetch_mysql_version();
-        
+
     // If the version isn't available or is below what we need show an error
-    if (!is_numeric($mysql_version) || ($mysql_version < 40116)) {
+    if (!is_numeric($mysql_version) || ($mysql_version < 50141)) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -320,10 +320,10 @@ function install_check_mysql_version()
 
 /**
 * install_check_php_extensions
-* 
+*
 * Check the installed PHP extensions that Beehive
 * requires to function correctly.
-* 
+*
 * @param void
 * @return void
 */
@@ -331,15 +331,15 @@ function install_check_php_extensions()
 {
     // Static variable to store our required extensions.
     static $required_extensions = false;
-    
+
     // Initialise the variable store.
     if (!is_array($required_extensions)) {
         $required_extensions = array('mbstring', 'pcre', 'gd', 'json');
     }
-    
+
     // Get an array of extensions currently loaded by PHP
     $loaded_extensions = get_loaded_extensions();
-    
+
     // Compare them to the ones we require.
     if (array_diff($required_extensions, $loaded_extensions)) {
 
@@ -382,16 +382,16 @@ function install_check_php_extensions()
         echo "                          <table class=\"posthead\" width=\"95%\">\n";
         echo "                            <tr>\n";
         echo "                              <td align=\"left\">";
-        
+
         // Display a list of PHP extensions we use.
         foreach ($required_extensions as $extension_name) {
             echo "                                <a href=\"http://www.php.net/", $extension_name, "\">", $extension_name, "</a><br />\n";
         }
-        
+
         echo "                              </td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";
-        echo "                        </td>\n";        
+        echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -415,10 +415,10 @@ function install_check_php_extensions()
 
 /**
 * install_check_php_version
-* 
+*
 * Check the current PHP version matches our minimum
 * requirements.
-* 
+*
 * @param void
 * @return void.
 */
@@ -477,10 +477,10 @@ function install_check_php_version()
 
 /**
 * install_get_webtags
-* 
+*
 * Get an array of webtags from the FORUMS
 * table of the current Beehive installation.
-* 
+*
 * @param void
 * @return mixed
 */
@@ -509,9 +509,9 @@ function install_get_webtags()
 
 /**
 * install_format_table_prefix
-* 
+*
 * Format the database name and webtag into a table prefix.
-* 
+*
 * @param mixed $database_name
 * @param mixed $webtag
 * @return string
@@ -523,12 +523,12 @@ function install_format_table_prefix($database_name, $webtag)
 
 /**
 * install_prefix_webtag
-* 
+*
 * Prefix the specified table name with the webtag provided.
 * Used by array_walk as a callback in install_check_table_conflicts.
-* 
+*
 * Note: $table_name is passed by-reference and is modified directly.
-* 
+*
 * @param string $table_name
 * @param mixed $key
 * @param mixed $webtag
@@ -541,9 +541,9 @@ function install_prefix_webtag(&$table_name, $key, $webtag)
 
 /**
 * install_table_exists
-* 
+*
 * Check that the specified table exists.
-* 
+*
 * @param mixed $database_name
 * @param string $table_name
 * @return bool
@@ -563,9 +563,9 @@ function install_table_exists($database_name, $table_name)
 
 /**
 * install_column_exists
-* 
+*
 * Check that the specified column exists.
-* 
+*
 * @param mixed $database_name
 * @param mixed $table_name
 * @param string $column_name
@@ -586,11 +586,11 @@ function install_column_exists($database_name, $table_name, $column_name)
 
 /**
 * install_index_exists
-* 
+*
 * Check that an index of the specified name exists.
 * Note that this is the name of the index not the name
 * of the column(s) it is attached to.
-* 
+*
 * @param mixed $database_name
 * @param mixed $table_name
 * @param mixed $column_name
@@ -600,7 +600,7 @@ function install_index_exists($database_name, $table_name, $index_name)
     if (!$db_install_index_exists = db_connect()) return false;
 
     $sql = "SHOW INDEXES FROM `$database_name`.`$table_name`";
-    
+
     if (!$result = db_query($sql, $db_install_index_exists)) return false;
 
     while (($table_data = db_fetch_array($result))) {
@@ -612,11 +612,11 @@ function install_index_exists($database_name, $table_name, $index_name)
 
 /**
 * install_get_table_names
-* 
+*
 * Get array of table names used globally by
 * Beehive and per-forum installation (without
 * webtag prefix!)
-* 
+*
 * @param mixed &$global_tables
 * @param mixed &$forum_tables
 * @return void
@@ -625,13 +625,13 @@ function install_get_table_names(&$global_tables, &$forum_tables)
 {
     // Static store of global BH table names
     static $global_tables_store = false;
-    
+
     // Static store of per-forum BH table names.
     static $forum_tables_store = false;
-    
+
     // Check the global store has been initialised.
     if (!is_array($global_tables_store)) {
-        
+
         // Initislise the global store.
         $global_tables_store = array('DICTIONARY',          'FORUMS',              'FORUM_SETTINGS',
                                      'GROUPS',              'GROUP_PERMS',         'GROUP_USERS',
@@ -640,12 +640,12 @@ function install_get_table_names(&$global_tables, &$forum_tables)
                                      'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
                                      'SESSIONS',            'TIMEZONES',           'USER',
                                      'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
-                                     'VISITOR_LOG');        
+                                     'VISITOR_LOG');
     }
-    
+
     // Check the per-forum store has been initialised.
     if (!is_array($forum_tables_store)) {
-    
+
         // Initialise the store.
         $forum_tables_store = array('ADMIN_LOG',     'BANNED',          'FOLDER',
                                     'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
@@ -656,23 +656,23 @@ function install_get_table_names(&$global_tables, &$forum_tables)
                                     'THREAD_STATS',  'THREAD_TRACK',    'USER_FOLDER',
                                     'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
                                     'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
-                                    'USER_TRACK',    'WORD_FILTER');        
+                                    'USER_TRACK',    'WORD_FILTER');
     }
-    
+
     // Set the by-ref var to the global tables store.
     $global_tables = $global_tables_store;
-    
+
     // Set the by-ref variable to the per-forum tables store.
     $forum_tables = $forum_tables_store;
 }
 
 /**
 * install_check_table_conflicts
-* 
+*
 * Check the specified database for conflicting
 * table names used by Beehive that might stop
 * the installer from completing successfully.
-* 
+*
 * @param mixed $database_name
 * @param mixed $webtag
 * @param mixed $check_forum_tables
@@ -684,50 +684,50 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
 {
     // Database connection.
     if (!($db_install_check_table_conflicts = db_connect())) return false;
-    
+
     // SQL to get a list of existing tables in the database.
     $sql = "SHOW TABLES FROM `$database_name`";
 
     // Execute query.
     if (!$result = db_query($sql, $db_install_check_table_conflicts)) return false;
-    
+
     // Check there are some existing tables in the database.
     if (db_num_rows($result) < 1) return false;
-    
+
     // Get the existing tables as an array.
     while (($table_data = db_fetch_array($result, DB_RESULT_NUM))) {
         $existing_tables[] = $table_data[0];
     }
-    
+
     // Get arrays of global and forum tables.
     install_get_table_names($global_tables, $forum_tables);
-    
+
     // Prefix the forum tables with the webtag
     array_walk($forum_tables, 'install_prefix_webtag', $webtag);
-    
+
     // Construct the final array we'll use to check.
     $check_tables_array = array_merge($check_global_tables ? $global_tables : array(), $check_forum_tables ? $forum_tables : array());
-    
+
     // array_intersect can find our duplicates.
     $conflicting_tables_array = array_intersect($existing_tables, $check_tables_array);
-    
+
     // Check if we should remove conflicts automatically.
     if (($remove_conflicts === true) && (sizeof($conflicting_tables_array) > 0)) {
-    
+
         $sql = sprintf('DROP TABLE IF EXISTS `%s`', implode('`, `', array_map('db_escape_string', $conflicting_tables_array)));
         db_query($sql, $db_install_check_table_conflicts);
     }
-    
+
     // Return either the conflicting table names or false.
     return sizeof($conflicting_tables_array) > 0 ? $conflicting_tables_array : false;
 }
 
 /**
 * install_remove_table
-* 
+*
 * Remove a table from the specified database if
 * it exists.
-* 
+*
 * @param mixed $database_name
 * @param mixed $table_name
 * @return bool
@@ -745,11 +745,11 @@ function install_remove_table($database_name, $table_name)
 
 /**
 * install_remove_indexes
-* 
+*
 * Remove all the defined indexes on the specified table.
 * Use with caution, this can take a considerable time
 * to execute.
-* 
+*
 * @param mixed $database_name
 * @param string $table_name
 * @return bool
@@ -761,23 +761,23 @@ function install_remove_indexes($database_name, $table_name)
     $table_name = db_escape_string($table_name);
 
     $sql = "SHOW INDEX FROM `$database_name`.`$table_name`";
-    
+
     $index_names_array = array();
 
     if (!($result = db_query($sql, $db_install_remove_indexes))) return false;
-    
+
     while (($index_data = db_fetch_array($result))) {
         $index_names_array[] = $index_data['Key_name'];
     }
-    
+
     $index_names_array = array_unique($index_names_array);
 
     foreach ($index_names_array as $index_name) {
-        
+
         if (preg_match('/^PRIMARY$/', mb_strtoupper($index_name)) > 0) continue;
-        
+
         $sql = "ALTER TABLE `$database_name`.`$table_name` DROP INDEX `$index_name`";
-        
+
         db_query($sql, $db_install_remove_indexes);
     }
 
@@ -786,10 +786,10 @@ function install_remove_indexes($database_name, $table_name)
 
 /**
 * install_msie_buffer_fix
-* 
+*
 * Output something to the output buffer to
 * prevent MSIE from timing out the connection
-* 
+*
 * @param void
 * @return void
 */

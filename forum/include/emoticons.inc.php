@@ -171,7 +171,7 @@ function emoticons_apply($content)
         $replace_array[] = sprintf($emoticon_html_code, $emoticon, $key_encoded);
     }
 
-    $content = preg_replace($pattern_array, $replace_array, $content, 100);    
+    $content = preg_replace($pattern_array, $replace_array, $content, 100);
 
     // Return the content.
     return $content;
@@ -198,13 +198,13 @@ function emoticons_get_available($include_text_none = true)
         while ((@$file = readdir($dir)) !== false) {
 
             if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
-                
-                if ((@file_exists("emoticons/$file/style.css") && filesize("emoticons/$file/style.css") > 0) || (preg_match("/^none$|^text$/Diu", $file) > 0 && ($include_text_none === true))) { 
-                
+
+                if ((@file_exists("emoticons/$file/style.css") && filesize("emoticons/$file/style.css") > 0) || (preg_match("/^none$|^text$/Diu", $file) > 0 && ($include_text_none === true))) {
+
                     if (@file_exists("emoticons/$file/desc.txt")) {
                         $pack_name = implode('', file("emoticons/$file/desc.txt"));
                     }
-                         
+
                     $pack_name = (isset($pack_name) && strlen(trim($pack_name)) > 0) ? $pack_name : $file;
                     $emoticon_sets_txtnon[$file] = htmlentities_array($pack_name);
                  }
@@ -273,94 +273,60 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
 
     $webtag = get_webtag();
 
-    $emoticons_array = array();
-
+    // Make sure the emoticon set has no path info.
     $emoticon_set = basename($emoticon_set);
 
+    // Check the emoticon set exists.
     if (!emoticons_set_exists($emoticon_set)) {
         $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
     }
 
-    if ($emoticon_set != 'text' && $emoticon_set != 'none') {
+    // No previews for text / no emoticons
+    if (($emoticon_set == 'text') || ($emoticon_set == 'none')) return false;
 
-        $emoticon = array();
-        $emoticon_text = array();
+    // Array to hold text to emoticon lookups.
+    $emoticon = array();
 
-        if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
-            include("emoticons/$emoticon_set/definitions.php");
-        }
-
-        if (sizeof($emoticon) > 0) {
-
-            krsort($emoticon);
-            reset($emoticon);
-
-            $emoticon_text = array();
-
-            foreach ($emoticon as $k => $v) {
-
-                $emoticon_text[$v][] = $k;
-            }
-        }
-
-        if (($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css"))) {
-
-            $style_matches = array();
-
-            preg_match_all('/\.e_([\p{L}_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/iu', $style_contents, $style_matches);
-
-            for ($i = 0; $i < sizeof($style_matches[1]); $i++) {
-
-                if (isset($emoticon_text[$style_matches[1][$i]])) {
-
-                    $string_matches = array();
-
-                    for ($j = 0; $j < sizeof($emoticon_text[$style_matches[1][$i]]); $j++) {
-                        $string_matches[] = $emoticon_text[$style_matches[1][$i]][$j];
-                    }
-
-                    $emoticons_array[] = array('matches' => $string_matches,
-                                               'text'    => $style_matches[1][$i],
-                                               'img'     => $style_matches[2][$i]);
-                }
-            }
-        }
-
-        if (sizeof($emoticons_array) > 0) {
-
-            array_multisort($emoticons_array, SORT_DESC);
-
-            $html = "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
-
-            for ($i = 0; $i < min(sizeof($emoticons_array), $display_limit); $i++) {
-
-                $emot_tooltip_matches = array();
-
-                foreach ($emoticons_array[$i]['matches'] as $emot_match) {
-                    $emot_tooltip_matches[] = htmlentities_array($emot_match);
-                }
-
-                $emot_tip_text = trim(implode(" ", $emot_tooltip_matches));
-
-                $emot_match = $emoticons_array[$i]['matches'][0];
-
-                $emot_image = $emoticons_array[$i]['img'];
-
-                $html.= sprintf('<img src="emoticons/%s/%s" alt="%s" title="%s" class="emoticon_preview_img" />', $emoticon_set, $emot_image, htmlentities_array($emot_match), $emot_tip_text);
-            }
-
-            if ($display_limit < sizeof($emoticons_array)) {
-
-                $html.= "<div><b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" class=\"view_more\">{$lang['more']}</a></b></div>";
-            }
-
-            $html.= "</div>";
-
-            return $html;
-        }
+    // Include the emoticon pack.
+    if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+        include("emoticons/$emoticon_set/definitions.php");
     }
 
-    return false;
+    // Check it has some emoticons in it!
+    if (sizeof($emoticon) == 0) return false;
+
+    // Remove duplicate matches
+    $emoticon = array_unique($emoticon);
+
+    // HTML container
+    $html = "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
+
+    // Array to hold emoticon preview images
+    $emoticon_preview = array();
+
+    // Iterate over the emoticons.
+    foreach ($emoticon as $emot_text => $emot_class) {
+
+        // Generate HTML for the emoticon.
+        $emoticon_preview[] = sprintf('<span class="e_%1$s emoticon_preview_img" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text);
+
+        // Only generate emoticons up to $display_limit.
+        if (sizeof($emoticon_preview) == $display_limit) break;
+    }
+
+    // Add the emoticons to the HTML.
+    $html.= implode(' ', $emoticon_preview);
+
+    // Add a "More" link if we're not displaying all emoticons.
+    if ($display_limit < sizeof($emoticon)) {
+        $html.= "<div><b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" class=\"view_more\">{$lang['more']}</a></b></div>";
+    }
+
+    // Close the container.
+    $html.= "</div>";
+
+    // Return the HTML.
+    return $html;
 }
 
 ?>

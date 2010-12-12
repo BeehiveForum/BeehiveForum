@@ -119,14 +119,8 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Check to see if user has requested a pack to view
-if (isset($_GET['pack']) && strlen(trim(stripslashes_array($_GET['pack']))) > 0) {
-    $user_emoticon_pack = $_GET['pack'];
-}
-
 // Get array of available emoticon sets
 $emoticon_sets_array = emoticons_get_available(false);
-$emoticon_sets_array_keys = array_keys($emoticon_sets_array);
 
 // Output starts here
 html_draw_top("title={$lang['emoticons']}", "emoticons.js", 'pm_popup_disabled', 'class=window_title');
@@ -149,103 +143,52 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 
-if (isset($user_emoticon_pack) && $user_emoticon_pack != 'user') {
-
-    echo "                      <td align=\"left\" valign=\"top\" width=\"200\">\n";
-
-    foreach ($emoticon_sets_array as $user_emoticon_pack_name => $display_name) {
-
-        if ($user_emoticon_pack == $user_emoticon_pack_name) {
-
-            echo "                        <h2>{$display_name}</h2>\n";
-
-        }else {
-
-            echo "                        <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=$user_emoticon_pack_name\" target=\"_self\">{$display_name}</a></p>\n";
-        }
-    }
-
-    echo "                      </td>\n";
-
-}else {
-
-    if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
-
-        $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
-    }
+// Get the user emoticons.
+if (($emoticon_set = session_get_value('EMOTICONS')) === false) {
+    $emoticon_set = forum_get_setting('default_emoticons', false, 'default');
 }
 
-if (in_array($user_emoticon_pack, $emoticon_sets_array_keys)) {
-
-    $emoticon_path = basename($user_emoticon_pack);
-
-    if (@file_exists("emoticons/$emoticon_path/definitions.php")) {
-        include ("emoticons/$emoticon_path/definitions.php");
-    }
-
-}else if (isset($emoticon_sets_array[0])) {
-
-    $emoticon_path = basename($emoticon_sets_array_keys[0]);
-
-    if (@file_exists("emoticons/$emoticon_path/definitions.php")) {
-        include ("emoticons/$emoticon_path/definitions.php");
-    }
+// Check the emoticon set exists.
+if (!emoticons_set_exists($emoticon_set)) {
+    $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
 }
 
+// Make sure the emoticon set has no path info.
+$emoticon_set = basename($emoticon_set);
+
+// Array to hold text to emoticon lookups.
+$emoticon = array();
+
+// Array to hold emoticon to text lookups
+$emoticon_text = array();
+
+// Include the emoticon pack.
+if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+    include("emoticons/$emoticon_set/definitions.php");
+}
+
+// Group emoticons by text
 if (sizeof($emoticon) > 0) {
 
-    krsort($emoticon);
-    reset($emoticon);
-
-    $emoticon_text = array();
-
-    foreach ($emoticon as $k => $v) {
-        $emoticon_text[$v][] = $k;
+    foreach ($emoticon as $emot_text => $emot_class) {
+        $emoticon_text[$emot_class][] = $emot_text;
     }
 }
 
 echo "                      <td align=\"left\">\n";
 echo "                        <table class=\"posthead\" width=\"300\">\n";
 
-if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css"))) {
+// Display the preview
+foreach ($emoticon_text as $emot_class => $emot_text_array) {
 
-    $style_matches = array();
+    echo "                          <tr>\n";
+    echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\">\n";
 
-    $emots_array = array();
+    printf('                              <span class="e_%1$s emoticon_preview_img" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text_array[0]);
 
-    preg_match_all('/\.e_([\p{L}_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/iu', $style_content, $style_matches);
-
-    for ($i = 0; $i < count($style_matches[1]); $i++) {
-
-        if (isset($emoticon_text[$style_matches[1][$i]])) {
-
-            $string_matches = array();
-
-            for ($j = 0; $j < count($emoticon_text[$style_matches[1][$i]]); $j++) {
-
-                $string_matches[] = $emoticon_text[$style_matches[1][$i]][$j];
-            }
-
-            $emots_array[] = array('matches' => $string_matches,
-                                   'text'    => $style_matches[1][$i],
-                                   'img'     => $style_matches[2][$i]);
-        }
-    }
-
-    foreach ($emots_array as $emot) {
-
-        echo "                          <tr>\n";
-        echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\">\n";
-        echo "                              <img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" class=\"emoticon_preview_img\" />\n";
-        echo "                            <td align=\"left\">";
-
-        foreach ($emot['matches'] as $emot_match) {
-            echo htmlentities_array($emot_match), " &nbsp; ";
-        }
-
-        echo "      </td>\n";
-        echo "                          </tr>\n";
-    }
+    echo "                            </td>\n";
+    echo "                            <td align=\"left\">", implode('&nbsp;', htmlentities_array($emot_text_array)), "</td>\n";
+    echo "                          </tr>\n";
 }
 
 echo "                          <tr>\n";

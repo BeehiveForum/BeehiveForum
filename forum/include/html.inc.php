@@ -459,36 +459,36 @@ function html_get_top_frame_name()
 function html_include_javascript($script_filepath)
 {
     $path_parts = path_info_query($script_filepath);
-    
+
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
-    
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4613" : '?rev=4613';
-    
+
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4617" : '?rev=4617';
+
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
-    
+
     $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
-    
+
     printf("<script type=\"text/javascript\" src=\"%s%s\"></script>\n", $script_filepath, $query_string);
 }
 
 function html_include_css($script_filepath, $id = false, $media = 'screen')
 {
     $path_parts = path_info_query($script_filepath);
-    
+
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
-    
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4613" : '?rev=4613';
-    
+
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4617" : '?rev=4617';
+
     $id = ($id !== false) ? $id : sprintf('style_%s', preg_replace('/[^a-zA-Z]+/', '', $script_filepath));
-    
+
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
-    
+
     $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
-    
+
     printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $query_string, $media);
 }
 
@@ -575,7 +575,7 @@ function html_draw_top()
     forum_check_webtag_available($webtag);
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-    
+
     $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
 
     $frame_set_html = false;
@@ -659,7 +659,7 @@ function html_draw_top()
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
-        
+
         if (preg_match('/^inline_css=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
             if (isset($func_matches[1])) $inline_css = $func_matches[1];
             unset($arg_array[$key]);
@@ -670,7 +670,7 @@ function html_draw_top()
     if (strlen(trim($base_target)) < 1) $base_target = false;
 
     if (!isset($resize_width)) $resize_width = 0;
-    
+
     // Default Meta keywords and description.
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
@@ -678,10 +678,10 @@ function html_draw_top()
     // Get the page meta keywords and description
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
-    }    
+    }
 
     $forum_content_rating = html_get_forum_content_rating();
-    
+
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     if ($frame_set_html === false) {
@@ -694,7 +694,7 @@ function html_draw_top()
     echo "<head>\n";
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
-    
+
     if (strlen(trim($title)) > 0) {
         echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
     }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -702,7 +702,7 @@ function html_draw_top()
     }else {
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
-    
+
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$meta_description\" />\n";
@@ -720,32 +720,32 @@ function html_draw_top()
     if ($meta_refresh_delay && $meta_refresh_url) {
         echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url={$meta_refresh_url}\" />\n";
     }
-    
+
     printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array($forum_name));
     printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array($meta_description));
-    
+
     if (forum_check_webtag_available($webtag)) {
-        
+
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/unread_thread.ico'))));
-        
+
         if (forum_get_setting('show_links', 'Y')) {
             printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/link.ico'))));
         }
     }
-    
+
     if (forum_get_setting('show_pms', 'Y')) {
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/pmunread.ico'))));
     }
-    
+
     if (forum_check_webtag_available($webtag)) {
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/user_controls.ico'))));
     }
-    
+
     if (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/admintool.ico'))));
     }
-    
-    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("/index.php?webtag=$webtag"));    
+
+    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("/index.php?webtag=$webtag"));
 
     if ((basename($_SERVER['PHP_SELF']) == "index.php") && session_check(false, false)) {
 
@@ -755,25 +755,25 @@ function html_draw_top()
         if (($folders_array = folder_get_available_details())) {
 
             foreach ($folders_array as $folder) {
-                
+
                 $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
                 printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $rss_feed_path);
             }
         }
     }
-    
+
     if (($favicon_filepath = html_get_favicon())) {
         printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
     }
-    
+
     if (($apple_touch_icon_filepath = html_get_apple_touch_icon())) {
-        printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);    
+        printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);
     }
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
 
     printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
-    
+
     if (($stylesheet = html_get_style_sheet())) {
         html_include_css($stylesheet, 'user_style');
     }
@@ -791,32 +791,32 @@ function html_draw_top()
             }
         }
     }
-    
+
     $style_path_ie6 = html_get_forum_file_path('styles/style_ie6.css');
-    
+
     echo "<!--[if IE 6]>\n";
     echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
-    echo "<![endif]-->\n";    
-    
+    echo "<![endif]-->\n";
+
     if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
-        
+
         echo "<style type=\"text/css\">\n";
         echo "<!--\n\n";
         echo trim($inline_css), "\n\n";
         echo "//-->\n";
         echo "</style>\n";
-    }    
+    }
 
     // Font size (not for Guests)
     if (!user_is_guest()) {
         html_include_css(html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag)), 'user_font', 'screen');
-    }    
+    }
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
-    
+
     echo "<script type=\"text/javascript\">\n";
     echo "var beehive = ", json_encode(array('forum_path' => $forum_path)), ";\n";
-    echo "</script>\n";    
+    echo "</script>\n";
 
     html_include_javascript(html_get_forum_file_path('js/jquery-1.4.1.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
@@ -915,7 +915,7 @@ function html_draw_top()
     }
 
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
-        
+
         echo "<script type=\"text/javascript\">\n\n";
         echo "  var _gaq = _gaq || [];\n";
         echo "  _gaq.push(['_setAccount', '$google_analytics_code']);\n";
@@ -927,7 +927,7 @@ function html_draw_top()
         echo "  })();\n\n";
         echo "</script>\n";
     }
-    
+
     html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     echo "</head>\n\n";
@@ -981,12 +981,12 @@ function html_draw_bottom($frame_set_html = false)
 class html_frameset
 {
     private $frames_array = array();
-    
+
     protected $id;
     protected $framespacing = 0;
     protected $frameborder = 0;
     protected $allowtransparency = '';
-    
+
     public function html_frame($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
     {
         array_push($this->frames_array, new html_frame($src, $name, $frameborder, $scrolling, $noresize));
@@ -1203,26 +1203,26 @@ function html_set_cookie($name, $value, $expires = 0)
     // we disable cookie domain and path for them.
     // If we're also on Light mode we disable by default.
     if (!defined('BEEHIVEMODE_LIGHT') && !browser_check(BROWSER_OPERA)) {
-        
+
         // Get the cookie domain from config.inc.php or html_get_forum_uri
         if (isset($GLOBALS['cookie_domain']) && strlen(trim($GLOBALS['cookie_domain'])) > 0) {
             $cookie_domain = trim($GLOBALS['cookie_domain']);
         } else {
             $cookie_domain = html_get_forum_uri(null, false);
         }
-        
+
         // Try and parse the cookie_domain config.inc.php setting.
         if (($cookie_domain_array = @parse_url($cookie_domain))) {
-            
+
             // Check we have a hostname and path.
             if (isset($cookie_domain_array['host']) && isset($cookie_domain_array['path'])) {
-            
+
                 // Set the cookie with hostname and path.
                 return setcookie($name, $value, $expires, $cookie_domain_array['path'], ".{$cookie_domain_array['host']}", $cookie_secure);
             }
         }
     }
-    
+
     return setcookie($name, $value, $expires, '', '', $cookie_secure);
 }
 
@@ -1364,7 +1364,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
         }
 
         if ($start_page > 1) {
-            
+
             if (($start_page - 1) > 1) {
                 echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\">1</a>&nbsp;&hellip;&nbsp;";
             } else {
@@ -1387,7 +1387,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
                 echo "&hellip;&nbsp;<a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">{$page_count}</a>";
             } else {
                 echo "<a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">{$page_count}</a>";
-            }            
+            }
         }
 
     }else {
@@ -1410,14 +1410,14 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
                        'fragment' => null);
 
     if (($use_forum_uri === true) && ($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
-        
+
         $uri_array = array_merge($uri_array, @parse_url($forum_uri));
-    
+
     } else if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
-        
+
         $uri_array = array_merge($uri_array, @parse_url(dirname($_SERVER['REQUEST_URI'])));
     }
-    
+
     if (!isset($uri_array['scheme'])) {
 
         if (isset($_SERVER['HTTP_SCHEME']) && strlen(trim($_SERVER['HTTP_SCHEME'])) > 0) {
@@ -1433,9 +1433,9 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
             $uri_array['scheme'] = 'http';
         }
     }
-    
+
     if (!isset($uri_array['host'])) {
-        
+
         if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
 
             if (mb_strpos($_SERVER['HTTP_HOST'], ':') > 0) {
@@ -1452,7 +1452,7 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
             $uri_array['host'] = $_SERVER['SERVER_NAME'];
         }
     }
-    
+
     if (!isset($uri_array['port'])) {
 
         if (isset($_SERVER['SERVER_PORT']) && strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
@@ -1463,7 +1463,7 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
             }
         }
     }
-    
+
     if (!isset($uri_array['path'])) {
 
         if (isset($_SERVER['PATH_INFO']) && strlen(trim($_SERVER['PATH_INFO'])) > 0) {
@@ -1474,19 +1474,19 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
 
             $path = @parse_url($_SERVER['PHP_SELF']);
         }
-        
+
         if (isset($path['path'])) {
-            
+
             $uri_array['path'] = $path['path'];
         }
     }
-    
+
     if (server_os_mswin()) {
         $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', $uri_array['path']);
     }
-    
+
     $uri_array['path'] = rtrim(dirname(sprintf('%s/%s', $uri_array['path'], md5(uniqid(rand())))), '/');
-    
+
     if (strlen(trim($append_path)) > 0) {
         $uri_array['path'].= $append_path;
     }
@@ -1503,32 +1503,32 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
 {
     // Cache of requested file paths.
     static $file_path_cache_array = array();
-    
+
     // Check if the path is in the cache.
     if (!isset($file_path_cache_array[$file_path])) {
-    
+
         // Get the BH_FORUM_PATH prefix.
         $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
-        
+
         // HTTP schema
         $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
-        
+
         // Disable CDN for everything but images, CSS and icons.
         if (($url_file_path = @parse_url($file_path, PHP_URL_PATH))) {
             $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
         }
-        
+
         // If CDN is allowed, get the CDN path including the domain.
         if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_path($file_path)))) {
             $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
         } else {
             $final_file_path = preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
         }
-        
+
         // Add final file path to the cache.
         $file_path_cache_array[$file_path] = $final_file_path;
     }
-    
+
     // Return the cached entry.
     return $file_path_cache_array[$file_path];
 }

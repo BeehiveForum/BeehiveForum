@@ -1,0 +1,34 @@
+.e_smile,.e_wink,.e_sad,.e_cry,.e_tongue,.e_grin,.e_confused,.e_plain,.e_shock,.e_angry,.e_embarrassed,.e_shades,.e_happycry,.e_fail,.e_horror,.e_unsure,.e_grumpy,.e_tache,.e_rolleyes {
+    vertical-align: top;
+    display: -moz-inline-stack;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    font-size: 12px;
+    background-repeat: no-repeat;
+}
+
+.e_smile        { background-image: url("./images/smile.png"); }
+.e_wink         { background-image: url("./images/wink.png"); }
+.e_sad          { background-image: url("./images/sad.png"); }
+.e_cry          { background-image: url("./images/cry.png"); }
+.e_tongue       { background-image: url("./images/tongue.png"); }
+.e_grin         { background-image: url("./images/grin.png"); }
+.e_confused     { background-image: url("./images/confused.png"); }
+.e_plain        { background-image: url("./images/plain.png"); }
+.e_shock        { background-image: url("./images/shock.png"); }
+.e_angry        { background-image: url("./images/angry.png"); }
+.e_embarrassed  { background-image: url("./images/embarrassed.png"); }
+.e_shades       { background-image: url("./images/shades.png"); }
+.e_happycry     { background-image: url("./images/happycry.png"); }
+.e_fail         { background-image: url("./images/fail.png"); }
+.e_horror       { background-image: url("./images/horror.png"); }
+.e_unsure       { background-image: url("./images/unsure.png"); }
+.e_grumpy       { background-image: url("./images/grumpy.png"); }
+.e_tache        { background-image: url("./images/tache.png"); }
+.e_rolleyes     { background-image: url("./images/rolleyes.png"); }
+
+.e_smile span,.e_wink span,.e_sad span,.e_cry span,.e_tongue span,.e_grin span,.e_confused span,.e_plain span,.e_shock span,.e_angry span,.e_embarrassed span,.e_shades span,.e_happycry span,.e_fail span,.e_horror span,.e_unsure span,.e_grumpy span,.e_tache span,.e_rolleyes span {
+    display: none;
+}
+

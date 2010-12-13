@@ -58,8 +58,8 @@ $emoticon[':-/'] = "unsure";
 $emoticon[':/'] = "unsure";
 $emoticon[':C'] = "grumpy";
 $emoticon[':-C'] = "grumpy";
-$emoticon[':{'] = "tache";
-$emoticon[':-{'] = "tache";
+$emoticon[':{)'] = "tache";
+$emoticon[':-{)'] = "tache";
 $emoticon['(99)'] = "rolleyes";
 
 ?>

@@ -67,7 +67,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
             }else {
 
-                if (session_check_perm($access_allowed, $folder_order['FID']) || ($folder_order['FID'] == $default_fid)) {
+                if (session_check_perm($access_allowed, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }
@@ -286,9 +286,9 @@ function folder_get_available()
 function folder_get_available_by_forum($forum_fid)
 {
     if (!is_numeric($forum_fid)) return '0';
-    
+
     if (!$table_data = get_table_prefix()) return '0';
-    
+
     if (!$db_folder_get_available_by_forum = db_connect()) return '0';
 
     $access_allowed = user_is_guest() ? USER_PERM_GUEST_ACCESS : USER_PERM_POST_READ;
@@ -297,7 +297,7 @@ function folder_get_available_by_forum($forum_fid)
     $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = GROUP_PERMS.FID) ";
     $sql.= "WHERE GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0 ";
     $sql.= "GROUP BY GROUP_PERMS.FID HAVING FOLDER_PERMS & $access_allowed > 0";
-    
+
     $result = db_query($sql, $db_folder_get_available_by_forum);
 
     if (db_num_rows($result) > 0) {
@@ -494,14 +494,14 @@ function folder_get($fid)
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE FOLDER.FID = '$fid' AND GROUP_PERMS.FORUM = '$forum_fid' ";
     $sql.= "AND GROUP_PERMS.GID = 0 GROUP BY FOLDER.FID, FOLDER.TITLE";
-    
+
     if (!$result = db_query($sql, $db_folder_get)) return false;
 
     if (db_num_rows($result) > 0) {
 
         $folder_array = db_fetch_array($result);
         $folder_array['THREAD_COUNT'] = folder_get_thread_count($fid);
-        
+
         return $folder_array;
     }
 

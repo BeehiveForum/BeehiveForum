@@ -281,23 +281,26 @@ if (isset($_POST['save'])) {
         if (isset($_POST['move']) && is_numeric($_POST['move'])) {
 
             $t_move = $_POST['move'];
-            
-            if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID']) && (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session_check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
 
-                $new_folder_title = folder_get_title($t_move);
-                $old_folder_title = folder_get_title($thread_data['FID']);
+            if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID'])) {
 
-                post_add_edit_text($tid, 1);
+                if ((session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session_check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
 
-                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+                    $new_folder_title = folder_get_title($t_move);
+                    $old_folder_title = folder_get_title($thread_data['FID']);
 
-                    admin_add_log_entry(MOVED_THREAD, array($tid, $thread_data['TITLE'], $old_folder_title, $new_folder_title));
+                    post_add_edit_text($tid, 1);
+
+                    if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+
+                        admin_add_log_entry(MOVED_THREAD, array($tid, $thread_data['TITLE'], $old_folder_title, $new_folder_title));
+                    }
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomovethread'];
+                    $valid = false;
                 }
-
-            }else {
-
-                $error_msg_array[] = $lang['failedtomovethread'];
-                $valid = false;
             }
         }
     }

@@ -122,8 +122,30 @@ if (!forum_check_access_level()) {
 // Get array of available emoticon sets
 $emoticon_sets_array = emoticons_get_available(false);
 
+// Check for preview argument in URL.
+if (isset($_GET['pack']) && emoticons_set_exists($_GET['pack'])) {
+
+    // Get the emoticon pack from the URL.
+    $emoticon_set = basename($_GET['pack']);
+
+} else if (($emoticon_set = session_get_value('EMOTICONS')) === false) {
+
+    // Get the user's emoticon pack.
+    $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
+}
+
+// Check the emoticon set exists.
+if (!emoticons_set_exists($emoticon_set)) {
+
+    // Use the forum default emoticon pack.
+    $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
+}
+
+// Make sure the emoticon set has no path info.
+$emoticon_set = basename($emoticon_set);
+
 // Output starts here
-html_draw_top("title={$lang['emoticons']}", "emoticons.js", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title={$lang['emoticons']}", "emoticons.js", 'pm_popup_disabled', 'class=window_title', "emoticons=$emoticon_set");
 
 echo "<h1>{$lang['emoticons']}</h1>\n";
 echo "<br />\n";
@@ -142,19 +164,6 @@ echo "              <tr>\n";
 echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
-
-// Get the user emoticons.
-if (($emoticon_set = session_get_value('EMOTICONS')) === false) {
-    $emoticon_set = forum_get_setting('default_emoticons', false, 'default');
-}
-
-// Check the emoticon set exists.
-if (!emoticons_set_exists($emoticon_set)) {
-    $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
-}
-
-// Make sure the emoticon set has no path info.
-$emoticon_set = basename($emoticon_set);
 
 // Array to hold text to emoticon lookups.
 $emoticon = array();

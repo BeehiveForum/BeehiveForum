@@ -366,13 +366,18 @@ function html_get_top_page()
     return html_get_forum_file_path('styles/top.php');
 }
 
-function html_get_emoticon_style_sheet()
+function html_get_emoticon_style_sheet($emoticon_set = false)
 {
-    if (($user_emoticons = session_get_value('EMOTICONS')) === false) {
+    if (($emoticon_set) && emoticons_set_exists($emoticon_set)) {
+
+        $user_emoticons = basename($emoticon_set);
+
+    } else if (($user_emoticons = session_get_value('EMOTICONS')) === false) {
+
         $user_emoticons = forum_get_setting('default_emoticons');
     }
 
-    if ($user_emoticons !== false) {
+    if (emoticons_set_exists($user_emoticons)) {
         return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticons)));
     }
 
@@ -584,6 +589,8 @@ function html_draw_top()
 
     $func_matches = array();
 
+    $emoticons = false;
+
     foreach ($arg_array as $key => $func_args) {
 
         if (preg_match('/^title=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
@@ -662,6 +669,11 @@ function html_draw_top()
 
         if (preg_match('/^inline_css=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
             if (isset($func_matches[1])) $inline_css = $func_matches[1];
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match('/^emoticons=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
+            if (isset($func_matches[1])) $emoticons = $func_matches[1];
             unset($arg_array[$key]);
         }
     }
@@ -778,7 +790,7 @@ function html_draw_top()
         html_include_css($stylesheet, 'user_style');
     }
 
-    if (($emoticon_style_sheet = html_get_emoticon_style_sheet())) {
+    if (($emoticon_style_sheet = html_get_emoticon_style_sheet($emoticons))) {
         html_include_css($emoticon_style_sheet, 'emoticon_style', 'print, screen');
     }
 

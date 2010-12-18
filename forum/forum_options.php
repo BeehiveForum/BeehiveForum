@@ -476,7 +476,7 @@ if (!isset($uid)) $uid = session_get_value('UID');
 
 // Get User Prefs
 $user_prefs = user_get_prefs($uid);
-   
+
 // Set the default POST_PAGE options if none set
 if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
 
@@ -489,7 +489,7 @@ if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
 // Start output here
-html_draw_top("title={$lang['mycontrols']} - {$lang['forumoptions']}", "emoticons.js", 'class=window_title');
+html_draw_top("title={$lang['mycontrols']} - {$lang['forumoptions']}", "emoticons.js", 'forum_options.js', 'class=window_title');
 
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 
@@ -699,7 +699,7 @@ if (($available_styles = styles_get_available())) {
 if (sizeof($available_emoticons) > 1) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"popup 500x400\">{$lang['preview']}</a>]:</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"emoticon_preview_popup\">{$lang['preview']}</a>]:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default'))), "</td>\n";
     echo "                </tr>\n";
 }

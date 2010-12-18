@@ -232,7 +232,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
-    
+
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "SHOW_AVATARS")) {
 
         // Add field for thread_last_page
@@ -243,7 +243,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             $valid = false;
             return;
         }
-    }    
+    }
 
     // ANON_LOGON column had wrong default value in < 0.9.2
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE `ANON_LOGON` `ANON_LOGON` CHAR(1) NOT NULL DEFAULT '0'";
@@ -253,15 +253,15 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
-    
+
     // POST_PAGE needs to change from a varchar(3) to a smallint. Change default to 3271 (see constants.inc.php)
     $sql = "ALTER TABLE `USER_PREFS` CHANGE `POST_PAGE` `POST_PAGE` SMALLINT(4) DEFAULT '3271' NOT NULL";
-    
+
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;
         return;
-    }    
+    }
 
     // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
     $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, FID, BY_UID, TITLE, LENGTH, ";
@@ -363,7 +363,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
-    
+
     // Last Search Sort By
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_BY")) {
 
@@ -376,8 +376,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
-    
-    // Last Search Sort Dir    
+
+    // Last Search Sort Dir
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_DIR")) {
 
         // Add LAST_SEARCH_SORT_DIR to USER_TRACK
@@ -389,7 +389,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
-    
+
     // RSS Feed Max Items
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_RSS_FEEDS", "MAX_ITEM_COUNT")) {
 
@@ -402,25 +402,25 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     }
-    
+
     // Copy the forum styles back to the styles folder
     $start_main = sprintf('%s/forums/%s/start_main.php', rtrim(BH_FORUM_PATH, '/'), $table_data['WEBTAG']);
-    
+
     // Check the file exists and is readable
     if (file_exists($start_main) && is_readable($start_main)) {
-        
+
         // Read the contents
         $start_main_contents = db_escape_string(file_get_contents($start_main));
-        
+
         // Save it to the database.
         $sql = "REPLACE INTO FORUM_SETTINGS(FID, SNAME, SVALUE) VALUES ($forum_fid, 'start_page', '$start_main_contents')";
-        
+
         if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
-        }        
-    }   
+        }
+    }
 }
 
 // We got this far, that means we can now update the global forum tables.
@@ -436,7 +436,7 @@ $sql = "CREATE TABLE GROUP_PERMS_NEW (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PERM BIGINT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (GID, FORUM, FID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 

@@ -66,11 +66,11 @@ function bh_exception_arg_handler($arg)
     if (is_array($arg)) {
         return array_map('bh_exception_arg_handler', $arg);
     }
-    
+
     if (is_bool($arg)) {
         return $arg ? 'true' : 'false';
     }
-    
+
     return $arg;
 }
 
@@ -133,7 +133,7 @@ function bh_exception_handler($exception)
 
         // Separator
         $error_msg_array[] = '<hr />';
-        
+
         // Stacktrace header
         $error_msg_array[] = '<p><b>Stack trace:</b></p>';
 
@@ -290,7 +290,7 @@ function bh_exception_handler($exception)
 
             exit;
         }
-        
+
         // Status error header
         header(sprintf("%s 500 Internal Server Error", $_SERVER['SERVER_PROTOCOL']));
 

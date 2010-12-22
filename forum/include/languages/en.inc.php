@@ -1695,6 +1695,7 @@ $lang['usernametoolong'] = "Username must be a maximum of 15 characters long";
 $lang['usernamerequired'] = "A logon name is required";
 $lang['passwdmustnotcontainHTML'] = "Password must not contain HTML tags";
 $lang['passwdtooshort'] = "Password must be a minimum of 6 characters long";
+$lang['passwdtooshort'] = "Password must be a maximum of 32 characters long";
 $lang['passwdrequired'] = "A password is required";
 $lang['confirmationpasswdrequired'] = "A confirmation password is required";
 $lang['nicknamerequired'] = "A nickname is required";

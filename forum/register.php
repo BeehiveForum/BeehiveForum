@@ -92,13 +92,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Where are we going after we've logged on?
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
-    
+
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
     if (preg_match("/^$available_files_preg/u", basename(trim(stripslashes_array($_GET['final_uri'])))) > 0) {
         $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
-    }    
+    }
 }
 
 // Load the user session
@@ -197,13 +197,13 @@ if (isset($_POST['register'])) {
 
         $logon = mb_strtoupper(trim(stripslashes_array($_POST['logon'])));
 
-        if (mb_strlen($logon) < 2) {
+        if (mb_strlen($logon) < 3) {
 
             $error_msg_array[] = $lang['usernametooshort'];
             $valid = false;
         }
 
-        if (mb_strlen($logon) > 15) {
+        if (mb_strlen($logon) > 32) {
 
             $error_msg_array[] = $lang['usernametoolong'];
             $valid = false;
@@ -228,6 +228,12 @@ if (isset($_POST['register'])) {
         if (mb_strlen($password) < 6) {
 
             $error_msg_array[] = $lang['passwdtooshort'];
+            $valid = false;
+        }
+
+        if (mb_strlen($password) > 32) {
+
+            $error_msg_array[] = $lang['passwordtoolong'];
             $valid = false;
         }
 
@@ -458,7 +464,7 @@ if (isset($_POST['register'])) {
 
             // Save the new user preferences
             user_update_prefs($new_uid, $new_user_prefs, $new_user_prefs_global);
-            
+
             // Save the new user signature
             user_update_sig($new_uid, $sig_content, $sig_html);
 

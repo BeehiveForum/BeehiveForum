@@ -303,7 +303,7 @@ if (!isset($_GET['noframes'])) {
     echo "<body>\n";
 
 } else {
-    
+
     // No frames HTML header
     html_draw_top('pm_popup_disabled', 'robots=index,follow');
 }
@@ -373,7 +373,7 @@ if (!isset($_GET['noframes'])) {
     html_draw_bottom(true);
 
 } else {
-    
+
     html_draw_bottom();
 }
 

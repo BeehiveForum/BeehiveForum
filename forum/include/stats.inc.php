@@ -172,11 +172,11 @@ function stats_get_html()
             $active_users_array = array();
 
             foreach ($user_stats['USERS'] as $user) {
-                
+
                 $active_user_title = '';
-                
+
                 $active_user_class = '';
-                
+
                 $active_user_avatar = '';
 
                 if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
@@ -187,7 +187,7 @@ function stats_get_html()
                     $active_users_array[] = $active_user_display;
 
                 }else {
-                    
+
                     $active_user_logon = format_user_name($user['LOGON'], $user['NICKNAME']);
 
                     $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($active_user_logon));
@@ -200,40 +200,40 @@ function stats_get_html()
                             $active_user_class = 'user_stats_curuser';
 
                         }else {
-                            
+
                             $active_user_title = $lang['younormal'];
                             $active_user_class = 'user_stats_curuser';
                         }
 
                     }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
-                        
+
                         $active_user_title = $lang['friend'];
                         $active_user_class = 'user_stats_friend';
 
                     }else {
-                        
+
                         $active_user_class = 'user_stats_normal';
-                    }                    
-                    
+                    }
+
                     if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
-                        
+
                         $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
                                                          <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
                                                        </a>', $webtag, $user['UID'], $user['AVATAR_URL'], htmlentities_array($active_user_title));
-                        
+
                     }else if (isset($user['AVATAR_AID']) && is_md5($user['AVATAR_AID'])) {
-                        
+
                         $attachment = attachments_get_by_hash($user['AVATAR_AID']);
 
                         if (!($user_avatar_image = attachments_make_link($attachment, false, false, false, false))) {
-                            
+
                             $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
                                                              <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
                                                            </a>', $webtag, $user['UID'], $user_avatar_image, htmlentities_array($active_user_title));
-                          
+
                         }
                     }
-                    
+
                     $active_users_array[] = sprintf($user_profile_link, $active_user_avatar, $webtag, $user['UID'], $active_user_class, $active_user_title, $active_user_display);
                 }
             }
@@ -425,7 +425,7 @@ function stats_get_html()
     $html.= "    <td width=\"35\">&nbsp;</td>\n";
     $html.= "  </tr>\n";
     $html.= "</table>\n";
-    
+
     // Return the output buffer contents.
     return $html;
 }
@@ -572,7 +572,7 @@ function stats_get_active_user_list()
                 $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
-        
+
         if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
         }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
@@ -583,7 +583,7 @@ function stats_get_active_user_list()
             $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
         }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
             $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
-        }        
+        }
 
         if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
@@ -617,7 +617,7 @@ function stats_get_active_user_list()
                                                            'NICKNAME'     => $user_data['NICKNAME'],
                                                            'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
                                                            'ANON_LOGON'   => $anon_logon);
-                
+
                 if (isset($user_data['AVATAR_URL'])) $stats['USERS'][$user_data['UID']]['AVATAR_URL'] = $user_data['AVATAR_URL'];
                 if (isset($user_data['AVATAR_AID'])) $stats['USERS'][$user_data['UID']]['AVATAR_AID'] = $user_data['AVATAR_AID'];
             }

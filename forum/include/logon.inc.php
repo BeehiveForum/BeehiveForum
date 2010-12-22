@@ -60,10 +60,10 @@ function logon_perform()
 
         // Remove cookie that shows the logon screen.
         html_set_cookie('logon', '', time() - YEAR_IN_SECONDS);
-        
+
         // Initialise Guest user session.
         session_init(0);
-        
+
         // Success
         return true;
 
@@ -71,7 +71,7 @@ function logon_perform()
 
         // Extract the submitted username
         $user_logon = stripslashes_array($_POST['user_logon']);
-        
+
         // Extract the submitted password
         $user_passhash = md5(stripslashes_array($_POST['user_password']));
 
@@ -86,12 +86,12 @@ function logon_perform()
 
             // Check if we should save the passhash to allow auto logon,
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {
-                
+
                 html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
                 html_set_cookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
-                
+
             } else {
-                
+
                 html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
                 html_set_cookie('user_passhash', '', time() - YEAR_IN_SECONDS);
             }
@@ -112,35 +112,35 @@ function logon_perform_auto($redirect = true)
 
     // Validate the webtag
     forum_check_webtag_available($webtag);
-    
+
     // If we're logging in we don't want to try this.
     if (html_get_cookie('logon')) return false;
-    
+
     // Check if we're already logged in.
     if (session_check(false, false)) return false;
-    
+
     // Get the user_logon cookie
     if (!($user_logon = html_get_cookie('user_logon'))) return false;
-    
+
     // Get the passhash cookie value
     if (!($user_passhash = html_get_cookie('user_passhash'))) return false;
-    
+
     // Try and login the user.
     if (!($uid = user_logon($user_logon, $user_passhash))) return false;
-        
+
     // Reset the user_logon and user_passhash cookies
     html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
     html_set_cookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
-    
+
     // Initialise user session
     session_init($uid);
-    
+
     // Check if we're automatically redirecting
     if (!$redirect) return true;
-    
+
     // Reload the current page.
     header_redirect(get_request_uri(true, false));
-    
+
     // Success
     exit;
 }
@@ -210,7 +210,7 @@ function logon_draw_form($logon_options)
     echo "                      </tr>\n";
 
     if (!($logon_options & LOGON_FORM_HIDE_TICKBOX) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
-        
+
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" colspan=\"2\"><hr class=\"bhseparatorlogon\" /></td>\n";
         echo "                      </tr>\n";

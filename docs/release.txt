@@ -5,7 +5,7 @@ What's new in 1.0 (Released 1st November 2010)
 
 - Notes
 
-	- Beehive Forum 0.10 changes how forum styles
+	- Beehive Forum 1.0 changes how forum styles
 	  and start page are stored. Styles are now
 	  stored only in the main styles directory and
 	  start pages are saved to the database.
@@ -19,7 +19,7 @@ What's new in 1.0 (Released 1st November 2010)
 - Changes from 0.9.1
 
 	- Beehive Forum now uses JQuery as it's Javascript
-	  library, which allows for more compatibility and
+	  library, which allows for greater compatibility and
 	  extra features.
 
         - New icons. Beehive Forum now ships with the famfamfam 

@@ -346,11 +346,26 @@ function html_get_style_sheet()
         $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
-    if ($user_style !== false) {
+    if (($user_style !== false)) {
         return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
     }
 
     return html_get_forum_file_path('styles/style.css');
+}
+
+function html_get_script_style_sheet()
+{
+    if (($user_style = session_get_value('STYLE')) === false) {
+        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    }
+
+    $script_style_sheet = sprintf('styles/%s/%s.css', basename($user_style), basename($_SERVER['PHP_SELF'], '.php'));
+
+    if (($user_style !== false) && file_exists($script_style_sheet)) {
+        return html_get_forum_file_path($script_style_sheet);
+    }
+
+    return false;
 }
 
 function html_get_top_page()
@@ -478,7 +493,7 @@ function html_include_javascript($script_filepath)
     printf("<script type=\"text/javascript\" src=\"%s%s\"></script>\n", $script_filepath, $query_string);
 }
 
-function html_include_css($script_filepath, $id = false, $media = 'screen')
+function html_include_css($script_filepath, $media = 'screen', $id = false)
 {
     $path_parts = path_info_query($script_filepath);
 
@@ -786,12 +801,16 @@ function html_draw_top()
 
     printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
 
-    if (($stylesheet = html_get_style_sheet())) {
-        html_include_css($stylesheet, 'user_style');
+    if (($style_sheet = html_get_style_sheet())) {
+        html_include_css($style_sheet);
+    }
+
+    if (($script_style_sheet = html_get_script_style_sheet())) {
+        html_include_css($script_style_sheet);
     }
 
     if (($emoticon_style_sheet = html_get_emoticon_style_sheet($emoticons))) {
-        html_include_css($emoticon_style_sheet, 'emoticon_style', 'print, screen');
+        html_include_css($emoticon_style_sheet, 'print, screen');
     }
 
     if (isset($stylesheet_array) && is_array($stylesheet_array)) {
@@ -799,7 +818,7 @@ function html_draw_top()
         foreach ($stylesheet_array as $stylesheet) {
 
             if (isset($stylesheet['filename']) && isset($stylesheet['media'])) {
-                html_include_css($stylesheet['filename'], false, $stylesheet['media']);
+                html_include_css($stylesheet['filename'], $stylesheet['media']);
             }
         }
     }
@@ -821,7 +840,7 @@ function html_draw_top()
 
     // Font size (not for Guests)
     if (!user_is_guest()) {
-        html_include_css(html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag)), 'user_font', 'screen');
+        html_include_css(html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag)), 'screen', 'user_font');
     }
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";

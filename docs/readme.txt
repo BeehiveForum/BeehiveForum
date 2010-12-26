@@ -28,12 +28,13 @@ in release.txt.
     1.2.11   Add your forum to our list
     1.2.11   Email notifications
   1.3    Customising your Beehive Forum
-    1.3.1    Style sheet
-    1.3.2    Images
-    1.3.3    The top frame
-    1.3.4    Emoticons
-    1.3.5    GeSHi
-    1.3.6    TinyMCE
+    1.3.1    Start Page
+    1.3.2    Stylesheet
+    1.3.3    Images
+    1.3.4    The top frame
+    1.3.5    Emoticons
+    1.3.6    GeSHi
+    1.3.7    TinyMCE
   1.4    Upgrading from previous versions of Beehive Forum
     1.4.1    Upgrading your Beehive Forum installation
       1.4.1.1    Make a back up of your database
@@ -201,10 +202,10 @@ order will result in your Beehive Forum working incorrectly or not at all.
 1.2.2 Database setup
 ====================
 
-To set up the database, use something like phpMyAdmin (get it from
-https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you have the
-"skillz", to create a database for your forum to live in. Take note of the
-database name, as you will need it when you run the install script.
+To set up the database, use something like phpMyAdmin or SQLYog, or direct MySQL 
+if you have the access and the know-how, to create a database for your forum to
+live in. Take note of the database name, as you will need it when you run the 
+install script.
 
 Beehive Forum would prefer its very own database, but if you can't provide that
 it should work in an existing one.
@@ -311,20 +312,25 @@ It could be a bit of publicity for your site, and it helps us to be able to say
 "Look, all these people are using it!", but if you don't want to, you don't have
 to.
 
-1.2.12 Enabling email notifications on Windows platforms
-========================================================
+1.2.12 Enabling email notifications
+===================================
 
-Beehive Forum uses PHP's built-in mail function to send email notifications
-to users. By default, on Windows platforms PHP is set up to send mail via
+By default Beehive Forum uses PHP's built-in mail function to send email 
+notifications to users. On *nix, PHP is set up to use sendmail. In order to
+send email from your forum you will need to install sendmail or a clone such
+as postfix. On Windows platforms PHP is set up to send mail via SMTP to 
 localhost only. If you are not running a mail server on localhost you will
 need to edit php.ini and change the SMTP setting in the [mail function]
 section. Additionally you may also need to change the sendmail_from setting
 if your ISP / host requires emails to be sent from a specific address.
 
-Please note that if your mail server requires SMTP authentication, or POP
-before SMTP (sometimes called SMTP after POP), Beehive Forum will not be able 
-to send emails as PHP does not natively support any forms of SMTP 
-authentication.
+If your mail server requires SMTP authentication to send email you will need
+to change the settings in Global Forum Settings under Admin on your forum. 
+Please note that Beehive does not support POP before SMTP (sometimes called 
+SMTP after POP). The settings you need to enter will vary depending on your
+hosting provider or ISP. If you do not know this information, you must ask 
+for help from your host. Unless the information is public knowledge, we 
+cannot help you with it.
 
 More information on configuring the mail function can be found in the PHP
 manual here: http://ww.php.net/manual/en/book.mail.php
@@ -347,33 +353,24 @@ Then copy in the contents of one of the existing folders to base your new style 
 (the "default" folder is probably a good start) - style.css, top.html and the images
 folder with contents.
 
-You can also create random styles by using the forum styles tool in the admin section
-of the forum. Unfortunately this tool does not allow you to specify different multiple
-colours to use, rather it rather cunningly chooses some for you that are mathematically
-determined to be suitable based on your first choice.
+1.3.1 Start page
+================
 
-Notes:
+To edit the start page you can use the built-in start page editor. This is located
+in Admin > Start Page. 
 
-Due to the new multi-forum capabilities of Beehive Forum 0.5+, there are now two 
-locations where style sheets/images etc. are held. For styles which you wish to be
-globally available to all forums on your server, add/change the styles in the /styles
-subdirectory. For forum-specific styles, you will need to add/change the styles in
-the /forums/FORUM_WEBTAG/styles directory, where 'FORUM_WEBTAG' is the webtag of your
-forum that you chose on forum-creation. See /forums/default as an example.
+In Beehive Forum 1.0 the start page is saved directly to the database and no physical
+file is saved to the file system. To be able to create more complicated start pages,
+such as those which include PHP code, you will need to replace the saved information
+in the database by hand using phpMyAdmin or SQLYog.
 
-Styles created using the admin styles creator will be saved as forum-specific
-styles. If you wish for a style you create through it to be global, you will need to
-manually copy the style into the global /styles directory through your FTP program.
+Prior to Beehive Forum 1.0, the start page was saved to the file system in the forums
+subdirectory within another folder named to match the webtag of the folder.
 
-The files start_main.php, style.css and top.html can also be present in the 
-/forums/FORUM_WEBTAG directory, which allows for per-forum start pages, default forum 
-styles, and top frames.
+1.3.2 Stylesheet
+================
 
-
-1.3.1 Style sheet
-=================
-
-If you know how to do CSS, you can edit the style.css file in the
+If you know how to write and edit CSS, you can edit the style.css file in the
 /styles/[stylename] folder to change colours, fonts and things like that.
 We recommend taking a backup first, though, in case you make a mess of it.
 
@@ -388,19 +385,22 @@ list you would create a style sheet named thread_list.css and place it in the
 same folder as the main style.css. Beehive will automatically find and use this
 style sheet in preference to the main style.css.
 
-There is one caveat though of course (isn't there always?). When Beehive
-encounters the per-file style sheet it will leave out the main style.css so any
-classes you want displayed in all your forum styles must be defined in each
-of your per-page .css files.
+Please note, prior to Beehive Forum 1.0, when Beehive encounters the per-file 
+style sheet it will exclude out the main style.css so any classes you want 
+displayed in all your forum styles must be defined in each of your per-page 
+.css files. With the release of Beehive Forum 1.0 this functionality has been
+changed to include the per-file CSS file in addition to the main style.css and
+allows you to make use of CSS precedence to defined when the CSS should be 
+applied.
 
-1.3.2 Images
+1.3.3 Images
 ============
 
 Feel free to edit the images in the /styles/[stylename]/images folder too,
 as long as the dimensions remain the same. Again, you might want to take backups.
 
 
-1.3.3 The top frame
+1.3.4 The top frame
 ===================
 
 The very top frame is yours to do with as you wish. In each style's folder you will
@@ -410,7 +410,7 @@ inducing adverts for stuff, it's entirely up to you.
 Just keep it 60 pixels high or under.
 
 
-1.3.4 Emoticons
+1.3.5 Emoticons
 ===============
 
 Beehive Forum uses CSS-styled emoticons. This allows the end-user to have great control,
@@ -447,7 +447,7 @@ for example, both ':)' and ':-)', however). Also note that every .e_NAME class m
 also have the .e_NAME span { ... } class.
 
 
-1.3.5 GeSHi
+1.3.6 GeSHi
 ===========
 
 Beehive Forum uses several 'custom' HTML tags, including the <code> tag. This tag now 
@@ -463,7 +463,7 @@ To change any GeSHi settings edit the file include/geshi.inc.php.
 
 Note: GeSHi is not created by the Beehive Forum developers.
 
-1.3.6 TinyMCE
+1.3.7 TinyMCE
 =============
 
 Beehive Forum has a simple HTML toolbar built in, but also allows the use of the 

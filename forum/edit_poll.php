@@ -194,6 +194,12 @@ $poll_results = poll_get_votes($tid);
 // Check if the user is viewing signatures.
 $show_sigs = !(session_get_value('VIEW_SIGS'));
 
+// Get the user's post page preferences.
+$page_prefs = session_get_post_page_prefs();
+
+// Get the user's UID. We need this a couple of times
+$uid = session_get_value('UID');
+
 // Form validation tracking
 $valid = true;
 
@@ -241,6 +247,10 @@ if (!$threaddata = thread_get($tid)) {
 }
 
 $allow_html = true;
+
+if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+    $allow_html = false;
+}
 
 if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
 
@@ -486,117 +496,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "post.js", 'class=window_title');
-
-if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
-    $allow_html = false;
-}
-
-if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) {
-
-    $poll_data['TLOGON'] = $lang['allcaps'];
-    $poll_data['TNICK'] = $lang['allcaps'];
-
-    $preview_tuser = user_get(session_get_value('UID'));
-
-    $poll_data['FLOGON']   = $preview_tuser['LOGON'];
-    $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
-    $poll_data['FROM_UID'] = $preview_tuser['UID'];
-
-    $poll_data['CONTENT'] = "<br />\n";
-    $poll_data['CONTENT'].= "<div align=\"center\">\n";
-    $poll_data['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-    $poll_data['CONTENT'].= "  <tr>\n";
-    $poll_data['CONTENT'].= "    <td align=\"center\">\n";
-    $poll_data['CONTENT'].= "      <table width=\"95%\">\n";
-    $poll_data['CONTENT'].= "        <tr>\n";
-    $poll_data['CONTENT'].= "          <td align=\"left\"><h2>". (isset($t_question) ? word_filter_add_ob_tags(htmlentities_array($t_question)) : word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])))). "</h2></td>\n";
-    $poll_data['CONTENT'].= "        </tr>\n";
-    $poll_data['CONTENT'].= "        <tr>\n";
-    $poll_data['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
-
-    $poll_results = array();
-
-    $poll_answers_array = array();
-    $poll_groups_array  = array();
-    $poll_votes_array   = array();
-
-    $max_value   = 0;
-    $totalvotes  = 0;
-    $optioncount = 0;
-
-    // Poll answers and groups. If HTML is disabled we need to pass
-    // the answers through htmlentities_array.
-    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
-        $poll_preview_answers_array = htmlentities_array($t_answers_array);
-    }else {
-        $poll_preview_answers_array = $t_answers_array;
-    }
-
-    // Get the poll groups.
-    $poll_preview_groups_array = $t_answer_groups;
-
-    // Generate some random votes
-    $poll_preview_votes_array = rand_array(0, sizeof($t_answers_array), 1, 10);
-
-    // Construct the pollresults array that will be used to display the graph
-    // Modified to handle the new Group ID.
-    $poll_results = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
-                         'OPTION_NAME' => array_values($poll_preview_answers_array),
-                         'GROUP_ID'    => array_values($poll_preview_groups_array),
-                         'VOTES'       => array_values($poll_preview_votes_array));
-
-    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
-        $pollpreviewdata['OPTIONTYPE'] = $t_option_type;
-    }else {
-        $pollpreviewdata['OPTIONTYPE'] = 0;
-    }
-
-    if (isset($_POST['preview_form'])) {
-
-        $poll_data['CONTENT'].= poll_preview_form($poll_results, $pollpreviewdata);
-
-    }else {
-
-        if ($t_poll_type == POLL_VERTICAL_GRAPH) {
-            $poll_data['CONTENT'].= poll_preview_graph_vert($poll_results);
-        }elseif ($t_poll_type == POLL_TABLE_GRAPH) {
-            $poll_data['CONTENT'].= poll_preview_graph_table($poll_results);
-        } else {
-            $poll_data['CONTENT'].= poll_preview_graph_horz($poll_results);
-        }
-    }
-
-    $poll_data['CONTENT'].= "          </td>\n";
-    $poll_data['CONTENT'].= "        </tr>\n";
-    $poll_data['CONTENT'].= "      </table>\n";
-    $poll_data['CONTENT'].= "    </td>\n";
-    $poll_data['CONTENT'].= "  </tr>\n";
-    $poll_data['CONTENT'].= "  <tr>\n";
-    $poll_data['CONTENT'].= "    <td align=\"center\">";
-    $poll_data['CONTENT'].= "      <table width=\"95%\">\n";
-    $poll_data['CONTENT'].= "        <tr>\n";
-    $poll_data['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
-
-    if ($t_change_vote == POLL_VOTE_CAN_CHANGE) {
-        $poll_data['CONTENT'].= "{$lang['abletochangevote']}";
-    }else {
-        $poll_data['CONTENT'].= "{$lang['notabletochangevote']}";
-    }
-
-    $poll_data['CONTENT'].= "          </td>";
-    $poll_data['CONTENT'].= "        </tr>\n";
-    $poll_data['CONTENT'].= "      </table>\n";
-    $poll_data['CONTENT'].= "    </td>";
-    $poll_data['CONTENT'].= "  </tr>\n";
-    $poll_data['CONTENT'].= "</table>\n";
-    $poll_data['CONTENT'].= "</div>\n";
-    $poll_data['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
-
-    // Attachments preview
-    $poll_data['AID'] = $aid;
-
-}elseif ($valid && isset($_POST['apply'])) {
+if ($valid && isset($_POST['apply'])) {
 
     // Work out when the poll will close.
     if ($t_close_poll == POLL_CLOSE_ONE_DAY) {
@@ -674,106 +574,148 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     post_save_attachment_id($tid, $pid, $aid);
 
     header_redirect("discussion.php?webtag=$webtag&msg=$tid.1");
-
-}else {
-
-    $poll_data['TLOGON'] = $lang['allcaps'];
-    $poll_data['TNICK'] = $lang['allcaps'];
-
-    $preview_tuser = user_get($poll_data['FROM_UID']);
-
-    $poll_data['FLOGON']   = $preview_tuser['LOGON'];
-    $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
-    $poll_data['FROM_UID'] = $preview_tuser['UID'];
-
-    $poll_data['CONTENT'] = "<br />\n";
-    $poll_data['CONTENT'].= "<div align=\"center\">\n";
-    $poll_data['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-    $poll_data['CONTENT'].= "  <tr>\n";
-    $poll_data['CONTENT'].= "    <td align=\"center\">\n";
-    $poll_data['CONTENT'].= "      <table width=\"95%\">\n";
-    $poll_data['CONTENT'].= "        <tr>\n";
-    $poll_data['CONTENT'].= "          <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_data['QUESTION'])). "</h2></td>\n";
-    $poll_data['CONTENT'].= "        </tr>\n";
-    $poll_data['CONTENT'].= "        <tr>\n";
-    $poll_data['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
-
-    if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS) {
-
-        if ($poll_data['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
-
-            $poll_data['CONTENT'].= poll_preview_graph_vert($poll_results);
-
-        }elseif ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH)  {
-
-            $poll_data['CONTENT'].= poll_preview_graph_horz($poll_results);
-
-        }else {
-
-            $poll_data['CONTENT'].= poll_preview_graph_table($poll_results);
-        }
-
-    }else {
-
-        $poll_data['CONTENT'].= "            <ul>\n";
-
-        foreach ($poll_results['OPTION_NAME'] as $pollquestion) {
-            $poll_data['CONTENT'].= "          <li>{$pollquestion}</li>\n";
-        }
-
-        $poll_data['CONTENT'].= "            </ul>\n";
-    }
-
-    $poll_data['CONTENT'].= "          </td>\n";
-    $poll_data['CONTENT'].= "        </tr>\n";
-    $poll_data['CONTENT'].= "      </table>\n";
-    $poll_data['CONTENT'].= "    </td>\n";
-    $poll_data['CONTENT'].= "  </tr>\n";
-    $poll_data['CONTENT'].= "  <tr>\n";
-    $poll_data['CONTENT'].= "    <td align=\"center\">";
-    $poll_data['CONTENT'].= "      <table width=\"95%\">\n";
-    $poll_data['CONTENT'].= "        <tr>\n";
-    $poll_data['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
-
-    if ($poll_data['CHANGEVOTE'] == POLL_VOTE_CAN_CHANGE) {
-        $poll_data['CONTENT'].= $lang['abletochangevote'];
-    }else {
-        $poll_data['CONTENT'].= $lang['notabletochangevote'];
-    }
-
-    $poll_data['CONTENT'].= "          </td>";
-    $poll_data['CONTENT'].= "        </tr>\n";
-    $poll_data['CONTENT'].= "      </table>\n";
-    $poll_data['CONTENT'].= "    </td>";
-    $poll_data['CONTENT'].= "  </tr>\n";
-    $poll_data['CONTENT'].= "</table>\n";
-    $poll_data['CONTENT'].= "</div>\n";
-    $poll_data['CONTENT'].= "<br />\n";
-
-    if (session_get_value('UID') != $poll_data['FROM_UID'] && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        post_edit_refuse($tid, $pid);
-        exit;
-    }
 }
 
-echo sprintf("<h1>{$lang['editpoll']}</h1>\n", $edit_msg);
+html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "resize_width=785", "post.js", 'class=window_title');
+
+echo "<h1>{$lang['editpoll']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '785', 'left');
 }
 
 echo "<br />\n";
-echo "<form accept-charset=\"utf-8\" name=\"f_edit_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("t_msg", htmlentities_array($edit_msg)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
+echo "  <table width=\"785\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"785\">\n";
+
+if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) {
+
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
+    echo "                </tr>";
+
+    $polldata['TLOGON'] = $lang['allcaps'];
+    $polldata['TNICK'] = $lang['allcaps'];
+
+    $preview_tuser = user_get($uid);
+
+    $polldata['FLOGON']   = $preview_tuser['LOGON'];
+    $polldata['FNICK']    = $preview_tuser['NICKNAME'];
+    $polldata['FROM_UID'] = $preview_tuser['UID'];
+
+    $polldata['CONTENT'] = "<br />\n";
+    $polldata['CONTENT'].= "<div align=\"center\">\n";
+    $polldata['CONTENT'].= "<table class=\"box\" width=\"475\">\n";
+    $polldata['CONTENT'].= "  <tr>\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">\n";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
+    $polldata['CONTENT'].= "        <tr>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". htmlentities_array($t_question). "</h2></td>\n";
+    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "        <tr>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
+
+    $pollresults = array();
+
+    $max_value   = 0;
+    $totalvotes  = 0;
+    $optioncount = 0;
+
+    // Poll answers and groups. If HTML is disabled we need to pass
+    // the answers through htmlentities_array.
+    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+        $poll_preview_answers_array = htmlentities_array($t_answers_array);
+    }else {
+        $poll_preview_answers_array = $t_answers_array;
+    }
+
+    // Get the poll groups.
+    $poll_preview_groups_array = $t_answer_groups;
+
+    // Generate some random votes
+    $poll_preview_votes_array = rand_array(0, sizeof($t_answers_array), 1, 10);
+
+    // Construct the pollresults array that will be used to display the graph
+    // Modified to handle the new Group ID.
+    $pollresults = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
+                         'OPTION_NAME' => array_values($poll_preview_answers_array),
+                         'GROUP_ID'    => array_values($poll_preview_groups_array),
+                         'VOTES'       => array_values($poll_preview_votes_array));
+
+    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
+        $pollpreviewdata['OPTIONTYPE'] = $t_option_type;
+    }else {
+        $pollpreviewdata['OPTIONTYPE'] = 0;
+    }
+
+    if (isset($_POST['preview_form'])) {
+
+        $polldata['CONTENT'].= poll_preview_form($pollresults, $pollpreviewdata);
+
+    }else {
+
+        if ($t_poll_type == POLL_VERTICAL_GRAPH) {
+            $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+        }elseif ($t_poll_type == POLL_TABLE_GRAPH) {
+            $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
+        } else {
+            $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+        }
+    }
+
+    $polldata['CONTENT'].= "          </td>\n";
+    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "      </table>\n";
+    $polldata['CONTENT'].= "    </td>\n";
+    $polldata['CONTENT'].= "  </tr>\n";
+    $polldata['CONTENT'].= "  <tr>\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
+    $polldata['CONTENT'].= "        <tr>\n";
+    $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
+
+    if ($t_change_vote == POLL_VOTE_CAN_CHANGE) {
+        $polldata['CONTENT'].= $lang['abletochangevote'];
+    }elseif ($t_change_vote == POLL_VOTE_MULTI) {
+        $polldata['CONTENT'].= $lang['abletovotemultiple'];
+    }else {
+        $polldata['CONTENT'].= $lang['notabletochangevote'];
+    }
+
+    $polldata['CONTENT'].= "          </td>";
+    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "      </table>\n";
+    $polldata['CONTENT'].= "    </td>";
+    $polldata['CONTENT'].= "  </tr>\n";
+    $polldata['CONTENT'].= "</table>\n";
+    $polldata['CONTENT'].= "</div>\n";
+    $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
+
+    // Attachments preview
+    $polldata['AID'] = $aid;
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">\n";
+
+    message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
+
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+}
+
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['editpoll']}</td>\n";
 echo "                </tr>\n";
@@ -801,7 +743,6 @@ echo "                    <table class=\"posthead\" width=\"530\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['poll']}</h2>\n";
-echo "                          <div class=\"create_poll_display\">\n";
 echo "                          <table width=\"100%\" cellpadding=\"2\">\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\" class=\"subhead\">{$lang['hardedit']}</td>\n";
@@ -902,7 +843,7 @@ for ($i = 0; $i < $answer_count; $i++) {
             $t_answer_html = $parsed_text->getMessageHTML();
 
             $t_answer = new MessageText($allow_html ? $t_answer_html : false, $parsed_text->getMessage(), true, false);
-            
+
             $t_post_html = $t_answer_html ? true : $t_post_html;
 
             echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer->getTidyContent(), 40, 255), "</td>\n";
@@ -930,14 +871,16 @@ for ($i = 0; $i < $answer_count; $i++) {
     echo "                                        </tr>\n";
 }
 
-if ($allow_html == true) {
+echo "                                        <tr>\n";
+echo "                                          <td align=\"left\">&nbsp;</td>\n";
 
-    echo "                                        <tr>\n";
-    echo "                                          <td align=\"left\">&nbsp;</td>\n";
-    echo "                                          <td align=\"left\">", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], $t_post_html), "</td>\n";
-    echo "                                        </tr>\n";
+if ($allow_html == true) {
+    echo "                                          <td align=\"left\" colspan=\"3\">", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($t_post_html) && $t_post_html == 'Y')), "</td>\n";
+} else {
+    echo "                                          <td align=\"left\" colspan=\"3\">", form_input_hidden('t_post_html', 'N'), "</td>\n";
 }
 
+echo "                                        </tr>\n";
 echo "                                      </table>\n";
 echo "                                    </td>\n";
 echo "                                  </tr>\n";
@@ -1092,7 +1035,6 @@ echo "                                </table>\n";
 echo "                              </td>\n";
 echo "                            </tr>\n";
 echo "                          </table>\n";
-echo "                          </div>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -1114,26 +1056,6 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
-
-if ($valid) {
-
-    echo "              <table class=\"posthead\" width=\"785\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
-    echo "                </tr>";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">\n";
-
-    message_display($tid, $poll_data, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
-
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-}
-
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

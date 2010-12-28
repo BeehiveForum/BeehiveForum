@@ -939,30 +939,34 @@ if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
-    echo "                    <br />\n";
-    echo "                    <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
-
-    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
-    } else {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
-    }
-
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">\n";
-    
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                          <div class=\"emots_toggle\">{$emoticon_preview_html}</div>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                          <div class=\"emots_toggle\" style=\"display: none\">{$emoticon_preview_html}</div>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     }
-    
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
+
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" colspan=\"2\">\n";
+
+    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+        echo "                                <div class=\"emots_toggle\">{$emoticon_preview_html}</div>\n";
+    } else {
+        echo "                                <div class=\"emots_toggle\" style=\"display: none\">{$emoticon_preview_html}</div>\n";
+    }
+
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
 }
 
 echo "                    </table>\n";

@@ -482,7 +482,7 @@ function html_include_javascript($script_filepath)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4623" : '?rev=4623';
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4627" : '?rev=4627';
 
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
@@ -499,7 +499,7 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4623" : '?rev=4623';
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4627" : '?rev=4627';
 
     $id = ($id !== false) ? $id : sprintf('style_%s', preg_replace('/[^a-zA-Z]+/', '', $script_filepath));
 

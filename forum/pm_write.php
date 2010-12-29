@@ -967,6 +967,8 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
     echo "                              </td>\n";
     echo "                            </tr>\n";
     echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
 }
 
 echo "                    </table>\n";

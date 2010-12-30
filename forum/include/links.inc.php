@@ -239,7 +239,7 @@ function links_update_folder($fid, $name)
     return (db_affected_rows($db_links_update_folder) > 0);
 }
 
-function links_get_folder_path_links($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
+function links_get_folder_path_links($fid, $folders, $html = true, $link_last_too = false, $link_base = false)
 {
     $webtag = get_webtag();
 
@@ -258,24 +258,24 @@ function links_get_folder_path_links($fid, $folders, $links = true, $link_last_t
     $link_base = $link_base ? $link_base : "links.php?webtag=$webtag";
 
     if (strstr($link_base, "?")) {
-        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
+        $result = $html ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
     }else {
-        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
+        $result = $html ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
     }
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
 
         while (($val = array_pop($tree_array))) {
 
-            if (($val != $fid && $links) || $link_last_too) {
-                $html.= "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>";
+            if (($val != $fid && $html) || $link_last_too) {
+                $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>" : " &gt; ". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
             } else {
-                $html.= "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
+                $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])) : " &gt; ". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
             }
         }
     }
 
-    return $html;
+    return $result;
 }
 
 function links_get_folder_page_title($fid, $folders, $link_title = false)
@@ -283,8 +283,8 @@ function links_get_folder_page_title($fid, $folders, $link_title = false)
     if (!is_numeric($fid)) return false;
     if (!is_array($folders)) return false;
 
-    $tree_fid = $fid; 
-    
+    $tree_fid = $fid;
+
     $tree_array = array();
 
     list($key) = array_keys($folders);
@@ -299,15 +299,15 @@ function links_get_folder_page_title($fid, $folders, $link_title = false)
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
 
         while (($val = array_pop($tree_array))) {
-            
+
             $path.= " - ". $folders[$val]['NAME'];
         }
     }
-    
+
     if ($link_title !== false) {
         $path.= ' - '. $link_title;
     }
-    
+
     return $path;
 }
 

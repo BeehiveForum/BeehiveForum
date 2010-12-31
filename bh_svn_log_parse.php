@@ -32,6 +32,12 @@ define("BH_INCLUDE_PATH", "./forum/include/");
 // Mimic Lite Mode
 define("BEEHIVEMODE_LIGHT", true);
 
+// Beehive Config
+include_once(BH_INCLUDE_PATH. "config.inc.php");
+
+// Constants
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+
 // Database functions.
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 
@@ -47,7 +53,7 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 function get_svn_log_data($date)
 {
     $svn_log_cmd = sprintf("svn log --xml -r {%s}:{%s}", $date, date('Y-m-d', time() + 86400));
-    
+
     if (($log_handle = popen($svn_log_cmd, 'r'))) {
 
         $log_contents = '';
@@ -109,18 +115,18 @@ function svn_mysql_parse($svn_log_contents)
     if (!$db_svn_log_parse = db_connect()) return false;
 
     $svn_xml_data = new SimpleXMLElement($svn_log_contents);
-    
+
     foreach ($svn_xml_data as $svn_log_xml) {
-        
+
         $svn_log_entry_author = trim((string)$svn_log_xml->author);
-        
+
         $svn_log_entry_date = strtotime((string)$svn_log_xml->date);
-        
+
         $svn_log_entry_comment = trim((string)$svn_log_xml->msg);
-        
+
         if ((strlen($svn_log_entry_comment) > 0) && ($svn_log_entry_comment != '*** empty log message ***')) {
 
-            $sql = sprintf("SELECT LOG_ID FROM BEEHIVE_SVN_LOG WHERE AUTHOR = '%s' AND COMMENTS = '%s'", db_escape_string($svn_log_entry_author), 
+            $sql = sprintf("SELECT LOG_ID FROM BEEHIVE_SVN_LOG WHERE AUTHOR = '%s' AND COMMENTS = '%s'", db_escape_string($svn_log_entry_author),
                                                                                                          db_escape_string($svn_log_entry_comment));
 
             if (!$result = db_query($sql, $db_svn_log_parse)) return false;
@@ -136,16 +142,16 @@ function svn_mysql_parse($svn_log_contents)
             }
         }
     }
-    
+
     return true;
 }
 
 /**
 * svn_mysql_output_log
-* 
+*
 * Output the SVN log data saved in the MySQL database
 * to the specified filename.
-* 
+*
 * @param mixed $log_filename
 * @return mixed
 */
@@ -162,7 +168,7 @@ function svn_mysql_output_log($log_filename = null)
 
         $svn_log_entry_author = '';
         $svn_log_entry_date = '';
-        
+
         ob_start();
 
         printf("Project Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
@@ -185,7 +191,7 @@ function svn_mysql_output_log($log_filename = null)
 
             echo wordwrap(preg_replace("/(\r\n|\n|\r)/", "\r\n", $svn_log_entry), 100, "\r\n");
         }
-        
+
         if (isset($log_filename)) {
             file_put_contents($log_filename, ob_get_clean());
         }
@@ -239,9 +245,9 @@ if (isset($modified_date)) {
             $output_log_filename = trim($_SERVER['argv'][2]);
             echo "Generating Change Log. Saving to $output_log_filename\r\n";
             svn_mysql_output_log($output_log_filename);
-        
+
         } else if (isset($_GET['output'])) {
-    
+
             svn_mysql_output_log();
         }
 
@@ -265,9 +271,9 @@ if (isset($modified_date)) {
         echo "Error while preparing MySQL Database table";
         exit;
     }
-    
+
 }else if (isset($_GET['output'])) {
-    
+
     if (svn_mysql_prepare_table(false)) {
 
         svn_mysql_output_log();
@@ -276,7 +282,7 @@ if (isset($modified_date)) {
 
         echo "Error while preparing MySQL Database table";
         exit;
-    }    
+    }
 
 }else {
 

@@ -1,6 +1,274 @@
-Project Beehive Forum Change Log (Generated: Thu, 21 Oct 2010 19:13:33)
+Project Beehive Forum Change Log (Generated: Fri, 31 Dec 2010 15:11:32)
+
+Author: decoyduck
+Date: Thu, 30 Dec 2010 22:09:20
+-----------------------
+Fixed: HTML image as separator in move drop down on Links Detail page.
+
+Date: Wed, 29 Dec 2010 11:37:21
+-----------------------
+Fixed: Layout of Post, Write and Edit scripts with emoticons preview.
+
+Date: Tue, 28 Dec 2010 19:05:32
+-----------------------
+Fixed: Write PM page was broken by recent changes to emoticon preview box.
+Changed: Removed scrolling div from edit_poll.php and moved preview to top of page (only display
+when clicking preview buttons).
+
+Date: Sun, 26 Dec 2010 20:06:51
+-----------------------
+Fixed: Reimplemented per-file CSS stylesheets which were removed with the directory structure tidy
+up.
+Changed: Updated readme.txt and release.txt.
+
+Date: Wed, 22 Dec 2010 11:55:55
+-----------------------
+Fixed: Encoding of some files was on Windows-1252 when it should be UTF-8.
+Fixed: Password maximum length is 32 characters in the database.
+
+Date: Mon, 20 Dec 2010 13:35:56
+-----------------------
+Changed: Revision number URL query increased.
+
+Date: Mon, 20 Dec 2010 13:35:05
+-----------------------
+Fixed: Removed trailing &nbsp; from icon column of thread_list.php and start_left.php threads
+causing Chrome to show empty lines between threads.
+
+Date: Sat, 18 Dec 2010 10:28:19
+-----------------------
+Changed: Emoticon preview link now previews the emoticons selected before save.
+Changed: Installer now creates PERM column of GROUP_PERM as a BIGINT.
+Fixed: Emoticon definition files contained all the emoticon sets.
+
+Date: Tue, 14 Dec 2010 19:14:12
+-----------------------
+Changed: Revision number update in html_include_css and html_include_javascript
+
+Date: Tue, 14 Dec 2010 19:12:47
+-----------------------
+Fixed: Cannot rename a thread when move thread permission wasn't enabled.
+Fixed: Folder drop down always showing Default folder even if you didn't have permission to post
+there.
+
+Date: Mon, 13 Dec 2010 18:15:32
+-----------------------
+Fixed: :{) emoticon definition was incorrect in smallsquare emoticon pack.
+
+Date: Sun, 12 Dec 2010 19:06:55
+-----------------------
+Changed: Revision URL parameter updated.
+
+Date: Sun, 12 Dec 2010 13:02:43
+-----------------------
+Changed: Remove other emoticon pack display from display_emoticons.php.
+Changed: Removed CSS parsing of emoticon packs to speed up pages that display emoticon preview box.
+Added: smallsquare emoticon pack by Andy Farrell.
+
+Date: Fri, 10 Dec 2010 19:57:48
+-----------------------
+Changed: Minimum MySQL Version is now 5.1.41. 4.1 is deprecated by MySQL.
+
+Date: Fri, 10 Dec 2010 19:28:00
+-----------------------
+Added: Move Thread permission to separate creating a moving threads.
+Changed: Deprecated old MySQL connection method and removed separate db_mysql.inc.php and
+db_mysqli.inc.php
 
 Author: DecoyDuck
+Date: Sat, 04 Dec 2010 10:54:51
+-----------------------
+Added: Revision tag to JS and CSS includes.
+
+Date: Sat, 04 Dec 2010 10:48:31
+-----------------------
+Fixed: Search wouldn't allow mixed letters and numbers unless they were in quotes.
+Fixed: beehive.reload_user_font didn't work if you were viewing a page outside the frameset.
+Fixed: Light mode index lindex.php didn't switch to unread messages if they were available.
+Added: beehive.ajax_error which tests for console.log and uses it if available.
+Changed: lthread_list.php was setting a cookie for Guests which was never used.
+Changed: Moved all AJAX requests to go via ajax.php.
+Changed: forum_self_clean_check_xml() is now forum_self_clean_check_ajax() and prevents
+self-cleaning on AJAX and JSON requests.
+Changed: Added rel attributes to font resize links for new AJAX handler.
+Changed: stats_output_html() is now stats_get_html() and now returns HTML as a string.
+
+Date: Wed, 01 Dec 2010 20:27:04
+-----------------------
+Changed: Using Closure Compiler for compressing JS.
+Fixed: User avatar icon max size is 16x16px.
+
+Date: Sun, 28 Nov 2010 14:01:39
+-----------------------
+Removed: admin_make_style.php and supported functionality removed. Will hopefully replace later with
+better CSS editor.
+
+Date: Sun, 28 Nov 2010 14:01:19
+-----------------------
+Removed: admin_make_style.php and supported functionality removed. Will hopefully replace later with
+better CSS editor.
+Fixed: Untranslated string View Moderators in thread_list.php
+
+Date: Wed, 24 Nov 2010 18:40:06
+-----------------------
+forum/install/install.php - Changed how installer looks.
+forum/styles/tehforum/files/gallery.php - Fixed Gallery uploader to work with latest BH code.
+
+Date: Mon, 22 Nov 2010 20:30:12
+-----------------------
+Fixed: Frame resize not working in PM Inbox.
+
+Date: Mon, 22 Nov 2010 20:21:00
+-----------------------
+Fixed: Frame resize ajax event not working with new ajax.php.
+
+Date: Sun, 21 Nov 2010 19:38:16
+-----------------------
+Changed: Removed focus rect from inputs in Firefox.
+Fixed: Installer / upgrader not creating SHOW_AVATARS preference field or updating POST_PAGE
+preference.
+Fixed: Installer throwing exception when dictionary file couldn't be found.
+
+Date: Thu, 18 Nov 2010 19:01:56
+-----------------------
+Fixed: Not loading stats into div when stats display is initially hidden.
+
+Date: Thu, 18 Nov 2010 18:59:30
+-----------------------
+Added: Show Hide user stats is now handled by an ajax event if Javascript is enabled.
+
+Date: Thu, 18 Nov 2010 16:14:22
+-----------------------
+Added: Ajax request to handle collapsing and expanding signature, emoticons, poll advanced options
+and additional message.
+Fixed: Display of poll advanced options and additional message not working correctly.
+Fixed: USER_PREFS.POST_PAGE was a varchar(3). Changed to smallint.
+Fixed: Removed alert from json2.js.
+Changed: Default post page preferences now include visible poll advanced options and additional
+message.
+
+Date: Thu, 18 Nov 2010 15:06:02
+-----------------------
+Fixed: Reverted back to JSON.parse in search_popup.js and added json2.js for IE compatibility.
+Changed: Moved user autocomplete functionality into ajax.php.
+
+Date: Tue, 16 Nov 2010 20:25:37
+-----------------------
+Changed: Removed references to edit.inc.php.
+Changed: Added code to handle expanding and collapsing of signature and emoticons via javascript.
+
+Date: Tue, 16 Nov 2010 20:00:49
+-----------------------
+Changed: Renamed some functions and moved to different include files for better consistency.
+Changed: New create_poll.php without inner scrolling div to make usage easier on mobile and small
+screens.
+
+Date: Sun, 14 Nov 2010 17:27:23
+-----------------------
+Changed: Only include link tags for favicon and touch icon if the user has a valid style selected.
+
+Date: Sun, 14 Nov 2010 17:25:35
+-----------------------
+Changed: Moved favicon.ico into style's images directory.
+Added: Apple Touch (iPhone, iPod, iPad) hi-res bookmark / home screen icon.
+
+Date: Sun, 14 Nov 2010 13:07:34
+-----------------------
+Fixed: autocomplete user logon search inputs weren't being resized correctly.
+Changed: Removed all separate *_show.png and *_hide.png and replaced with single show.png and
+hide.png images.
+
+Date: Sat, 13 Nov 2010 09:38:27
+-----------------------
+Fixed: Invalid / in cookie path with no domain made FireFox not accept the cookie.
+
+Date: Mon, 08 Nov 2010 22:03:42
+-----------------------
+Fixed: bh_setcookie was not using the value from config.inc.php.
+Fixed: Allow HTTPS links in RSS feed and sitemap.xml.
+Fixed: Discrepancy in result of html_get_forum_uri when using forum_uri from forum settings.
+Changed: Removed function html_get_server_addr.
+Changed: Modified html_get_forum_uri to set everything it can.
+Changed: Removed "(Optional)" text from Poll Additional Message text.
+
+Date: Sun, 07 Nov 2010 19:31:50
+-----------------------
+Fixed: Stupid changes in PHP gd_info means "JPG Support" is "JPEG Support" in PHP/5.3.x.
+
+Date: Sun, 07 Nov 2010 17:43:08
+-----------------------
+Fixed: Function attachment_create_thumb_im needs to pass the full path to the attachment to
+imagemagick.
+Fixed: Not creating thumbnails for JPG images.
+
+Date: Wed, 03 Nov 2010 20:41:26
+-----------------------
+Fixed: Undefined variable $recent_visitor
+
+Date: Wed, 03 Nov 2010 19:57:02
+-----------------------
+Changed: Reduced space between images in message header.
+
+Date: Wed, 03 Nov 2010 19:52:34
+-----------------------
+Fixed: Broken new user link.
+
+Date: Wed, 03 Nov 2010 19:41:21
+-----------------------
+Fixed: Undefined variable $active_user_avatar
+
+Date: Wed, 03 Nov 2010 19:37:51
+-----------------------
+Added: User Avatars added to active users.
+
+Date: Wed, 03 Nov 2010 12:07:24
+-----------------------
+Fixed: Alignment of Reply, Edit and Delete links incorrect on Polls.
+
+Date: Sun, 31 Oct 2010 21:51:15
+-----------------------
+Fixed: Sending Status header breaks caching. Changed to send SERVER_PROTOCOL (default to HTTP/1.0)
+Fixed Font resizing no longer reloads frameset and works correctly in IE8.
+
+Date: Sun, 31 Oct 2010 16:21:35
+-----------------------
+Added: Show Avatars user preference (by request)
+Added: Avatars shown next to username on posts.
+Fixed: Thread Last page global setting not working correctly.
+Changed: Update release notes and readme
+
+Date: Sat, 30 Oct 2010 10:27:12
+-----------------------
+Fixed: Frame reload now working in Mozilla, IE8, Opera and Chrome + Safari.
+
+Date: Fri, 29 Oct 2010 19:24:01
+-----------------------
+Fixed: Post popup menu not showing in IE8.
+
+Date: Fri, 29 Oct 2010 07:22:39
+-----------------------
+Changed: Reverted back to $.getAJAX in pm.js.
+
+Date: Wed, 27 Oct 2010 22:20:51
+-----------------------
+Fixed: PM Notification popup not appearing on initial visit due to call to light_pm_check_messages
+happening.
+Changed: PM JSON request changed to be performed synchronously to prevent popup appearing twice.
+
+Date: Sun, 24 Oct 2010 14:44:35
+-----------------------
+Changed: Tests on $_SERVER['HTTP_*'] vars are now tested for string length for compatibility with
+nginx.
+
+Date: Sun, 24 Oct 2010 13:23:58
+-----------------------
+Changed: Removed check for php_sapi_name to prevent sending cache headers.
+
+Date: Sun, 24 Oct 2010 13:19:53
+-----------------------
+Changed: Switched to sending "Status" header instead of "HTTP/1.1" headers to allow better support
+under Fast-CGI.
+
 Date: Thu, 21 Oct 2010 17:32:31
 -----------------------
 Fixed: Removed debugging code from messages_set_read
@@ -133,7 +401,7 @@ Fixed: Incorrect POST_PER_PAGE session var, should be POSTS_PER_PAGE in messages
 
 Date: Tue, 24 Aug 2010 08:16:56
 -----------------------
-Changed: Anonymous user’s online status icon shows as offline.
+Changed: Anonymous users online status icon shows as offline.
 
 Date: Tue, 24 Aug 2010 08:03:47
 -----------------------
@@ -147,6 +415,7 @@ Date: Mon, 23 Aug 2010 20:59:35
 -----------------------
 Changed: Resized greyed out online / offline status icons.
 
+Author: decoyduck
 Date: Mon, 16 Aug 2010 20:08:41
 -----------------------
 Changed: Decreased size of edit_text class
@@ -275,11 +544,11 @@ Changed: Removing symlink on apple and tehforum styles.
 
 Date: Thu, 29 Jul 2010 21:36:07
 -----------------------
-Changed: Removing symlink on apple and tehforum styles.
+Changed: Removing synlink on apple and tehforum styles.
 
 Date: Thu, 29 Jul 2010 21:30:16
 -----------------------
-Fixed: Re-added width and height to avatar image on visitor logs.
+Fixed: Readded width and height to avatar image on visitor logs.
 
 Date: Thu, 29 Jul 2010 21:04:12
 -----------------------
@@ -313,7 +582,7 @@ Changed: Removed forums/styles from bh_check_styles.php support script.
 Changed: Lowered required PHP version to 5.2.0.
 Changed: Removed redundant language strings.
 Changed: Updated dependencies.
-Changed: Updates styles with missing error handler styling.
+Changed: Updates styles with missing errpr handler styling.
 
 Date: Mon, 26 Jul 2010 13:59:05
 -----------------------
@@ -324,7 +593,7 @@ Changed: Moved forum_apply_user_permissions to perm_update_user_forum_permission
 
 Date: Fri, 23 Jul 2010 20:17:32
 -----------------------
-Changed: Zend Code clean-up. Removed variable references not used.
+Changed: Zend Code cleanup. Removed variable references not used.
 
 Date: Fri, 23 Jul 2010 18:08:24
 -----------------------
@@ -343,7 +612,7 @@ Changed: Removed forum/top.php and restored styles/top.php. Each style must now 
 Date: Fri, 23 Jul 2010 11:34:32
 -----------------------
 Changed: Removed top_banner references.
-Changed: Re-added html_get_top_page function in html.inc.php which returns style's top.php or false.
+Changed: Readded html_get_top_page function in html.inc.php which returns style's top.php or false.
 
 Date: Fri, 23 Jul 2010 11:19:15
 -----------------------
@@ -500,7 +769,7 @@ Date: Sat, 12 Jun 2010 13:46:20
 -----------------------
 Fixed: Form action was passing folder id on url, overriding drop down value.
 
-Author: DecoyDuck
+Author: decoyduck
 Date: Wed, 09 Jun 2010 19:44:03
 -----------------------
 Changed: Added check for PHP Extensions that we require.
@@ -549,7 +818,7 @@ Changed: Made improvements to the forum maintenance functionality.
 Date: Thu, 06 May 2010 12:59:05
 -----------------------
 Fixed: Grammar error in text-captcha display.
-Changed: Forum self-preservation functions are run every page load.
+Changed: Forum self preservation functions are run every page load.
 
 Date: Wed, 05 May 2010 21:26:23
 -----------------------
@@ -632,7 +901,7 @@ Date: Wed, 07 Apr 2010 13:33:47
 -----------------------
 Fixed: Group By Thread search was showing wrong author and date. Now shows thread creator and links
 to post 1.
-Fixed: Missing "Wait..." when clicking Upload button on attachments popup.
+Fixed: Missing "Wait..." when clicking Upload button on attachements popup.
 Fixed: Installer not working in IE8.
 Fixed: Checkboxes not working correctly with attr('disabled', false) should be
 removeAttr('disabled');
@@ -675,7 +944,7 @@ Changed: Added favicon and RSS feed links to light mode output.
 
 Date: Sat, 27 Mar 2010 13:11:20
 -----------------------
-Changed: Format file-sizes as IEC standard for base-2 (KiB, MiB, etc.)
+Changed: Format filesizes as IEC standard for base-2 (KiB, MiB, etc.)
 
 Date: Sun, 14 Mar 2010 19:39:13
 -----------------------
@@ -696,7 +965,7 @@ Fixed: Undefined variable $first_day in timezone.inc.php
 
 Date: Sat, 13 Mar 2010 18:23:19
 -----------------------
-Fixed: Incorrect file path to JQuery in lightmode.
+Fixed: Incorrect filepath to JQuery in lightmode.
 
 Date: Fri, 12 Mar 2010 12:49:28
 -----------------------
@@ -755,7 +1024,7 @@ Changed: Moved SQL_MODE configuration into own function that we test result of.
 
 Date: Wed, 24 Feb 2010 00:18:03
 -----------------------
-Fixed: Re-implemented overflow max_width on post.php, create_poll.php, edit.php and pm_write.php.
+Fixed: Reimplemented overflow max_width on post.php, create_poll.php, edit.php and pm_write.php.
 
 Date: Mon, 22 Feb 2010 21:02:29
 -----------------------
@@ -1000,7 +1269,7 @@ Date: Fri, 29 Jan 2010 20:55:06
 -----------------------
 Added: AOL Browser detection added to browser_check function
 Added: Prevent caching for AOL browsers. Curse you ISPs who cache dynamic content.
-Changed: Deprecated cache_lite support as it's too badly written not to cause problems with BH's
+Changed: Depreceated cache_lite support as it's too badly written not to cause problems with BH's
 strict error handler.
 
 Date: Wed, 27 Jan 2010 22:39:05
@@ -1105,7 +1374,7 @@ Fixed: form_input_text_search messing the CSS up for search fields.
 Changed: Forum Options now reloads font_size.php
 Changed: Removed reload_frames when session expires.
 Changed: Made the search_popup.php easier to use.
-Changed: All scripts that now use search_popup.js call form_input_text_search to draw the field.
+Changed: All scripts thay now use search_popup.js call form_input_text_search to draw the field.
 
 Date: Fri, 15 Jan 2010 21:30:09
 -----------------------
@@ -1222,7 +1491,7 @@ Date: Sat, 05 Dec 2009 19:40:02
 -----------------------
 Changed: browser_check function's argument is no longer optional
 Changed: bh_logon cookie unset changed to remove value as well as set date in past.
-Changed: logon_auto_perform() now checks for the absence of bh_logon cookie.
+Changed: logon_auto_perform() now checks for the absense of bh_logon cookie.
 
 Date: Fri, 04 Dec 2009 18:54:18
 -----------------------
@@ -1283,7 +1552,7 @@ Changed: Indexes on THREAD table changed to allow indexing of thread list querie
 
 Date: Sun, 22 Nov 2009 10:19:43
 -----------------------
-Fixed: session.inc.php functions were not updating IP addresses of users all the time.
+Fixed: session.inc.php functions were not updating ip addresses of users all the time.
 Changed: Joins on USER_FORUM in bh_session_update_time changed to use LEFT JOIN to allow coalesce to
 work correctly.
 Changed: Joins on POST_CONTENT WHEN merging / splitting threads changed to LEFT JOIN to insert NULLs
@@ -1291,7 +1560,7 @@ into table where post content has been deleted.
 
 Date: Tue, 17 Nov 2009 21:13:34
 -----------------------
-Fixed: Forum and Thread title not being filtered by word filter in browser title.
+Fixed: Forum and Thread title not being filtered by wordfilter in browser title.
 
 Date: Mon, 16 Nov 2009 19:37:27
 -----------------------
@@ -1299,7 +1568,7 @@ Changed: Rolled back changes to user_prefs_update user_prefs_get and the tables.
 
 Date: Sun, 15 Nov 2009 20:58:39
 -----------------------
-Added: Mime-type restriction and checking to attachments.
+Added: Mimetype restriction and checking to attachments.
 
 Date: Sun, 15 Nov 2009 20:41:39
 -----------------------
@@ -1312,8 +1581,8 @@ Changed: WEBTAG_USER_PREFS table needs nullable columns to allow COALESCE to wor
 Date: Thu, 12 Nov 2009 21:32:46
 -----------------------
 Changed: post_create_thread now always returns false on failure, instead of -1
-Changed: thread_merge and thread_split now do much more processing in SQL with far fewer queries and
-less likelihood of going wrong.
+Changed: thread_merge and thread_split now do much more processing in SQL with far fewer quries and
+less likelyhood of going wrong.
 Changed: Mark as unread uses select box to pick post ID to prevent errors when entering number too
 high or too low.
 Fixed: padding on search_button in FireFox made the image appear offset incorrectly.
@@ -1463,7 +1732,7 @@ cut-off.
 Date: Sat, 10 Oct 2009 13:18:30
 -----------------------
 Fixed: bh_x7chat_auth.php not including logon.inc.php
-Added: Swift Mailer classes added to CVS Repository in preparation for switching away from PHP's
+Added: Swift Mailer classes added to CVS Repository in preperation for switching away from PHP's
 mail function.
 
 Date: Sat, 10 Oct 2009 13:12:56

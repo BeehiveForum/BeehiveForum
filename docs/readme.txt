@@ -107,7 +107,7 @@ You need web hosting which provides:
 As of Beehive Forum 0.9.1, functions depreciated in PHP 5.3.0 have been removed
 from or replaced in the code. However, no extensive testing has otherwise been 
 performed. If you are using PHP 5.3.0 and encounter problems with using 
-Beehive Forum 0.9.1 please contact us.
+Beehive Forum 0.9.1 or newer please contact us.
 
 
 1.2 Instructions
@@ -149,13 +149,6 @@ presented with a directory that looks a bit like this:
 |  |  |
 |  |  |- README
 |  |
-|  |- forums
-|  |  
-|  |- images
-|  |  |- admin_locked.png
-|  |  |- admintool.png
-|  |  |- ...
-|  |
 |  |- include
 |  |  |- admin.inc.php
 |  |  |- attachments.inc.php
@@ -195,20 +188,26 @@ presented with a directory that looks a bit like this:
 As you can see the main distribution contains a docs and forum folder. The main
 forum folder, which actually contains the Beehive Forum files, itself contains
 several more folders with relevant files in them. If they are not extracted
-in the right place subsequently uploading them to your server in this incorrect
-order will result in your Beehive Forum working incorrectly or not at all.
+into the right place subsequently uploading them to your server will result 
+in your Beehive Forum not working.
 
 
 1.2.2 Database setup
 ====================
 
-To set up the database, use something like phpMyAdmin or SQLYog, or direct MySQL 
-if you have the access and the know-how, to create a database for your forum to
-live in. Take note of the database name, as you will need it when you run the 
-install script.
+There are several different ways you can create a database for your Beehive Forum 
+to live in. Some hosts will may provide an administrative control panel such as
+CPanel or Plesk, others may offer direct access to phpMyAdmin. If available you 
+may also use a program like SQLYog or even the MySQL CLI client.
 
-Beehive Forum would prefer its very own database, but if you can't provide that
-it should work in an existing one.
+Use which ever you're most comfortable with. All you need to remember to do is
+to take note of the database name, and any applicable user credentials, as you
+will need them when you come to run the Beehive Forum installer.
+
+Beehive Forum would prefer it if you could provide it with its very own database, 
+and separate user credentials to use, but if you can't provide them it should 
+work in an existing one so long as there are no conflicting table names.
+
 
 1.2.3 MySQL permissions
 =======================
@@ -225,6 +224,7 @@ aid in the creation of the dictionary. To do this will also require GRANT
 permission on the database you are to install Beehive to. Without the FILE
 privilege the installer for Beehive Forum will still function but it will
 take a lot longer to complete.
+
 
 1.2.4 Upload
 ============
@@ -248,11 +248,13 @@ need your MySQL database's host address, username and password for this stage, a
 well as the name of the database from step 1.2.2.  You should be able to get the 
 information from your hosting provider if you're not running your own server.
 
+
 1.2.6 Installing from CLI
 =========================
 
 Support for the CLI installer has been discontinued. Please use the web based
 installer to set up your Beehive Forum.
+
 
 1.2.7 Creating your config.inc.php
 ==================================
@@ -260,6 +262,7 @@ installer to set up your Beehive Forum.
 Please use the web based installer to set up your Beehive Forum. Creation of
 your config.inc.php is handled automatically when installation is performed
 this way.
+
 
 1.2.8 First use
 ===============
@@ -312,6 +315,7 @@ It could be a bit of publicity for your site, and it helps us to be able to say
 "Look, all these people are using it!", but if you don't want to, you don't have
 to.
 
+
 1.2.12 Enabling email notifications
 ===================================
 
@@ -353,6 +357,7 @@ Then copy in the contents of one of the existing folders to base your new style 
 (the "default" folder is probably a good start) - style.css, top.html and the images
 folder with contents.
 
+
 1.3.1 Start page
 ================
 
@@ -366,6 +371,7 @@ in the database by hand using phpMyAdmin or SQLYog.
 
 Prior to Beehive Forum 1.0, the start page was saved to the file system in the forums
 subdirectory within another folder named to match the webtag of the folder.
+
 
 1.3.2 Stylesheet
 ================
@@ -392,6 +398,7 @@ displayed in all your forum styles must be defined in each of your per-page
 changed to include the per-file CSS file in addition to the main style.css and
 allows you to make use of CSS precedence to defined when the CSS should be 
 applied.
+
 
 1.3.3 Images
 ============
@@ -463,6 +470,7 @@ To change any GeSHi settings edit the file include/geshi.inc.php.
 
 Note: GeSHi is not created by the Beehive Forum developers.
 
+
 1.3.7 TinyMCE
 =============
 
@@ -480,6 +488,7 @@ the case copy the directory tiny_mce/plugins/beehive from a fresh download of
 Beehive Forum to your forum.
 
 Note: TinyMCE is not created by the Beehive Forum developers.
+
 
 1.4 Upgrading from previous versions of Beehive Forum
 ====================================================

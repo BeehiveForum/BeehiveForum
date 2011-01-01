@@ -32,6 +32,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "ip.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -638,7 +639,7 @@ function user_get_prefs($uid)
 function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)
 {
     if (!$db_user_update_prefs = db_connect()) return false;
-    
+
     if (!is_numeric($uid)) return false;
 
     if (!is_array($prefs_array)) return false;
@@ -663,7 +664,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'PM_EXPORT_TYPE', 'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
                                'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 'ANON_LOGON',
                                'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
-                               'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'USE_EMAIL_ADDR', 
+                               'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'USE_EMAIL_ADDR',
                                'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
                                'USE_MOVER_SPOILER', 'USE_LIGHT_MODE_SPOILER',
                                'USE_OVERFLOW_RESIZE', 'REPLY_QUICK', 'THREAD_LAST_PAGE',
@@ -681,22 +682,22 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE',
                                'REPLY_QUICK', 'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH',
                                'SHOW_AVATARS');
-    
+
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
     foreach ($prefs_array as $pref_name => $pref_setting) {
-        
+
         if (user_check_pref($pref_name, $pref_setting)) {
-            
+
             if (!isset($prefs_global_setting_array[$pref_name]) || $prefs_global_setting_array[$pref_name] == true) {
-                
+
                 if (in_array($pref_name, $global_pref_names)) {
 
                     $global_prefs_array[$pref_name] = $pref_setting;
                 }
 
             }else {
-                
+
                 if (in_array($pref_name, $forum_pref_names)) {
 
                     $forum_prefs_array[$pref_name] = $pref_setting;
@@ -704,7 +705,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             }
         }
     }
-    
+
     // Check to see we have some preferences to set globally.
     if (sizeof($global_prefs_array) > 0) {
 
@@ -721,7 +722,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         // Construct the query and run it.
         $sql = "INSERT INTO USER_PREFS (`UID`, `$column_names`) VALUES('$uid', '$column_insert_values') ";
         $sql.= "ON DUPLICATE KEY UPDATE $column_update_values ";
-        
+
         if (!db_query($sql, $db_user_update_prefs)) return false;
 
         // If a pref is set globally, we need to remove it from all the
@@ -739,7 +740,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $update_prefs_sql = implode(", ", array_map('user_update_prefs_callback2', $update_prefs_array));
 
                 $sql = "UPDATE LOW_PRIORITY `{$forum_prefix}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
-                
+
                 if (!db_query($sql, $db_user_update_prefs)) return false;
             }
         }
@@ -763,7 +764,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
         if (!db_query($sql, $db_user_update_prefs)) return false;
     }
-    
+
     return true;
 }
 
@@ -781,43 +782,43 @@ function user_check_pref($name, $value)
 {
     // Checks to ensure that a preference setting contains valid data
     if (strlen(trim($value)) == 0) return true;
-    
+
     // Different cases for different fields
     switch ($name) {
 
         case "FIRSTNAME":
         case "LASTNAME":
-            
+
             return preg_match("/^[a-z0-9 ]*$/Diu", $value);
             break;
-        
+
         case "STYLE":
         case "EMOTICONS":
         case "LANGUAGE":
-            
+
             return preg_match("/^[a-z0-9_-]*$/Diu", $value);
             break;
-        
+
         case "DOB":
-        
+
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/Du", $value);
             break;
-        
+
         case "HOMEPAGE_URL":
         case "PIC_URL":
         case "AVATAR_URL":
-            
+
             return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/iu', $value) || $value == "");
             break;
-            
+
         case "EMAIL_NOTIFY":
         case "DL_SAVING":
         case "MARK_AS_OF_INT":
         case "VIEW_SIGS":
         case "PM_NOTIFY":
         case "PM_NOTIFY_EMAIL":
-        case "PM_INCLUDE_REPLY": 
-        case "PM_SAVE_SENT_ITEM": 
+        case "PM_INCLUDE_REPLY":
+        case "PM_SAVE_SENT_ITEM":
         case "PM_EXPORT_ATTACHMENTS":
         case "PM_EXPORT_STYLE":
         case "PM_EXPORT_WORDFILTER":
@@ -836,33 +837,33 @@ function user_check_pref($name, $value)
         case "THREADS_BY_FOLDER":
         case "THREAD_LAST_PAGE":
         case "SHOW_AVATARS":
-        
+
             return ($value == "Y" || $value == "N") ? true : false;
             break;
-        
+
         case "PIC_AID":
         case "AVATAR_AID":
-        
+
             return (is_md5($value) || $value == "");
             break;
-        
+
         case "ANON_LOGON":
         case "TIMEZONE":
         case "POSTS_PER_PAGE":
         case "FONT_SIZE":
-        case "START_PAGE": 
-        case "DOB_DISPLAY": 
+        case "START_PAGE":
+        case "DOB_DISPLAY":
         case "POST_PAGE":
         case "SHOW_THUMBS":
         case "PM_AUTO_PRUNE":
         case "PM_EXPORT_FILE":
         case "PM_EXPORT_TYPE":
         case "LEFT_FRAME_WIDTH":
-        
+
             return is_numeric($value);
             break;
     }
-    
+
     return false;
 }
 

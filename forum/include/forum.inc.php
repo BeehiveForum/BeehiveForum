@@ -129,7 +129,7 @@ function get_table_prefix()
 function forum_check_webtag_available(&$webtag = false)
 {
     $forum_data = get_forum_data();
-    
+
     if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
 
         if (isset($forum_data['DEFAULT_FORUM']) && $webtag === false) {
@@ -302,7 +302,7 @@ function forum_check_password($forum_fid)
 
     // Get the forum's password hash.
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
-    
+
     // Check the stored cookie against the known hash of the forum password.
     if (html_get_cookie("sess_hash_{$webtag}") == $forum_passhash) return true;
 
@@ -374,7 +374,7 @@ function forum_check_password($forum_fid)
     echo "</div>\n";
 
     html_draw_bottom();
-    
+
     exit;
 }
 
@@ -627,10 +627,10 @@ function forum_check_global_setting_name($setting_name)
                                          'attachments_max_user_space', 'attachments_max_post_space', 'attachment_allow_guests',
                                          'attachment_dir', 'attachment_mime_types', 'attachment_use_old_method',
                                          'remove_stale_sessions_last_run', 'cache_dir', 'content_delivery_domains',
-                                         'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email', 
-                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function', 
-                                         'forum_maintenance_schedule', 'forum_timezone', 'forum_uri', 'pm_system_prune_folders_last_run', 
-                                         'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run', 
+                                         'forum_desc',  'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email',
+                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
+                                         'forum_maintenance_schedule', 'forum_timezone', 'forum_uri', 'pm_system_prune_folders_last_run',
+                                         'thread_auto_prune_unread_data_last_run', 'captcha_clean_up_last_run',
                                          'sitemap_create_file_last_run', 'enable_google_analytics',
                                          'allow_forum_google_analytics', 'google_analytics_code', 'guest_account_enabled',
                                          'guest_show_recent', 'imagemagick_path', 'message_cache_enabled', 'messages_unread_cutoff',
@@ -905,7 +905,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     // Only users with acces to the forum tools can create / delete forums.
     if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-        
+
         if (!$db_forum_create = db_connect()) return false;
 
         // Check that the WEBTAG is unique.
@@ -927,7 +927,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
             return false;
         }
-        
+
         // Catch SQL Exceptions
         try {
 
@@ -1504,7 +1504,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             // Get the Post ID. Again should be 1, but trying to be tidy here.
             if (!$new_pid = db_insert_id($db_forum_create)) {
                 throw new Exception('Fauled to fetch new post pid');
-            }    
+            }
 
             // First Post content.
             $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
@@ -1567,15 +1567,15 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             if (!db_query($sql, $db_forum_create)) {
                 throw new Exception('Failed to set user access permissions');
             }
-            
+
         } catch (Exception $e) {
-            
+
             forum_delete($forum_fid);
-            
+
             if (defined('BEEHIVE_INSTALL_NOWARN')) {
                 throw new Exception($e->getMessage());
             }
-            
+
             return false;
         }
 
@@ -2145,50 +2145,50 @@ function forum_get_content_delivery_path($file_path)
 {
     // Current array index
     static $content_delivery_domain_index = -1;
-    
+
     // Static to hold content delivery domains
     static $content_delivery_domains_array = false;
-    
+
     // Static array to hold files so we don't duplicate filenames to different domains.
     static $content_delivery_files_array = array();
-    
+
     // Check we haven't already loaded the list
     if (!is_array($content_delivery_domains_array)) {
-    
+
         // Get the content delivery domains as an array.
         $content_delivery_domains_array = explode("\n", forum_get_setting('content_delivery_domains'));
-        
+
         // Trim each entry in the array.
         $content_delivery_domains_array = array_map('trim', $content_delivery_domains_array);
-        
+
         // Remove empty lines and reindex the array.
         $content_delivery_domains_array = array_values(array_filter($content_delivery_domains_array));
     }
-    
+
     // Check we have something left to use.
     if (sizeof($content_delivery_domains_array) < 1) return false;
-    
+
     // Check if the file path has been previously requested.
     if (isset($content_delivery_files_array[$file_path])) {
         return $content_delivery_files_array[$file_path];
     }
-    
+
     // Increment the array index.
     $content_delivery_domain_index++;
-    
+
     // If the array index exists, return it.
     if (isset($content_delivery_domains_array[$content_delivery_domain_index])) {
-        
+
         // Cache the selected content delivery domain
         $content_delivery_files_array[$file_path] = $content_delivery_domains_array[$content_delivery_domain_index];
-        
+
         // Return the selected domain.
         return preg_replace('/^http(s)?:\/\//', '', $content_delivery_files_array[$file_path]);
     }
-    
+
     // Reset the array index
     $content_delivery_domain_index = -1;
-    
+
     // Call self.
     return forum_get_content_delivery_path($file_path);
 }
@@ -2223,7 +2223,7 @@ function forum_check_maintenance()
 
     // Get the scheduled forum maintenance start hour (default 03:00)
     $forum_maintenance_hour = forum_get_setting('forum_maintenance_hour', 'is_numeric', 3);
-    
+
     // Get the forum maintenance duration (default 1 hour)
     $forum_maintenance_duration = forum_get_setting('forum_maintenance_duration', 'is_numeric', 1);
 
@@ -2255,13 +2255,13 @@ function forum_check_maintenance()
 
     // Check the function actually exists before we try and execute it.
     if (!function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) return;
-    
+
     // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
     ignore_user_abort(true);
 
     // Execute the shutdown function. If it fails return now.
     if (!($forum_maintenance_functions_array[$forum_maintenance_function]())) return;
-    
+
     // Update the last run time of the function.
     $new_forum_settings[$forum_maintenance_date_var] = time();
 

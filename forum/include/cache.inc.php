@@ -43,6 +43,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 // Include files we need.
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -69,30 +70,30 @@ function cache_disable()
     header("Cache-Control: proxy-revalidate, post-check=0, pre-check=0", false);
     header("Cache-Control: max-age=0, s-maxage=0", false);
     header("Pragma: no-cache", true);
-    
+
     return true;
 }
 
 /**
 * cache_disable_aol
-* 
+*
 * Disable HTTP cache if AOL browser is detected.
-* 
+*
 * @param void
 * @return void
 */
 function cache_disable_aol()
 {
     if (!browser_check(BROWSER_AOL)) return false;
-    
+
     return cache_disable();
 }
 
 /**
 * cache_disable_proxy
-* 
+*
 * Disable HTTP caching if a proxy server is detected.
-* 
+*
 * @param void
 * @return void
 */
@@ -101,13 +102,13 @@ function cache_disable_proxy()
     $proxy_headers_array = get_proxy_cache_headers();
 
     foreach($proxy_headers_array as $proxy_header) {
-        
+
         if (isset($_SERVER[$proxy_header]) && strlen(trim($_SERVER[$proxy_header])) > 0) {
-            
+
             return cache_disable();
         }
     }
-    
+
     return false;
 }
 
@@ -133,7 +134,7 @@ function cache_check_thread_list()
     if (!cache_check_enabled()) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
-    
+
     if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -220,7 +221,7 @@ function cache_check_start_page()
     if (!cache_check_enabled()) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
-    
+
     if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -301,7 +302,7 @@ function cache_check_messages()
     if (!cache_check_enabled()) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
-    
+
     if (browser_check(BROWSER_AOL)) return false;
 
     // Disable cache on these URL queries.
@@ -435,7 +436,7 @@ function cache_check_last_modified($seconds = 300)
     if (!is_numeric($seconds)) return false;
 
     if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
-    
+
     if (browser_check(BROWSER_AOL)) return false;
 
     // Generate our last-modified and expires date stamps
@@ -478,7 +479,7 @@ function cache_check_last_modified($seconds = 300)
 function cache_check_etag($local_etag)
 {
     if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
-    
+
     if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {

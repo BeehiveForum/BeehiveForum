@@ -32,6 +32,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -149,7 +150,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
         if (!isset($thread_data['LOGON'])) $thread_data['LOGON'] = $lang['unknownuser'];
         if (!isset($thread_data['NICKNAME'])) $thread_data['NICKNAME'] = "";
-        
+
         thread_has_attachments($thread_data);
 
         return $thread_data;
@@ -592,7 +593,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!$table_data = get_table_prefix()) {
         return thread_merge_error(THREAD_MERGE_FORUM_ERROR, $error_str);
     }
-    
+
     // Forum FID
     $forum_fid = $table_data['FID'];
 
@@ -671,7 +672,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
             $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY TID = '$tida', CREATED";
             break;
     }
-    
+
     // Execute the query to copy the posts.
     if (!db_query($sql, $db_thread_merge)) {
 
@@ -709,7 +710,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
     $sql.= "WHERE TARGET_POST.TID = '$new_tid' ";
     $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
-    
+
     if (!db_query($sql, $db_thread_merge)) {
 
         // Unlock the threads if they weren't originally locked.
@@ -769,7 +770,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     // Update the new thread so it's closed if either
     // of it's source threads were originally closed.
     thread_set_closed($new_tid, ($threada['CLOSED'] > 0) | ($threadb['CLOSED'] > 0));
-    
+
     // Undelete the thread.
     thread_undelete($new_tid);
 
@@ -916,7 +917,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
-        
+
         // Return error message.
         return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
@@ -1248,7 +1249,7 @@ function thread_get_last_page_pid($length, $posts_per_page)
 function thread_has_attachments(&$thread_data)
 {
     if (!isset($thread_data['TID'])) return false;
-    
+
     if (!is_numeric($thread_data['TID'])) return false;
 
     if (!$table_data = get_table_prefix()) return false;

@@ -43,6 +43,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -600,7 +601,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
             $user_fetch_sql = "";
             break;
     }
-    
+
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT ";
@@ -613,7 +614,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
     $sql.= "GROUP BY GROUP_USERS.UID) AS PERMS ON (PERMS.UID = USER_FORUM.UID) ";
-    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";    
+    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;
 
@@ -1914,7 +1915,7 @@ function admin_send_new_user_notification($new_user_uid)
     if (!is_numeric($new_user_uid)) return false;
 
     $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
-    
+
     $notification_success = true;
 
     $sql = "SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";

@@ -32,6 +32,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -68,7 +69,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     // Create a new message
     $message = Swift_MessageBeehive::newInstance();
-    
+
     // Get the forum webtag.
     $webtag = get_webtag();
 
@@ -77,7 +78,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     // Get the from user details.
     if (!($from_user = user_get($fuid))) return false;
-    
+
     // Get the to user preferences.
     if (!($to_user_prefs = user_get_prefs($tuid))) return false;
 
@@ -199,7 +200,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
 
         // Get the right language for the email
         if (!$lang = email_get_language($to_user['UID'])) continue;
-        
+
         // Add the uid to exclude array
         array_push($exclude_user_array, $to_user['UID']);
 
@@ -300,9 +301,9 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
 
         // Get the right language for the email
         if (!$lang = email_get_language($to_user['UID'])) continue;
-        
+
         // Add the uid to exclude array
-        array_push($exclude_user_array, $to_user['UID']);        
+        array_push($exclude_user_array, $to_user['UID']);
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
@@ -361,7 +362,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the from user details
     if (!($from_user = user_get($fuid))) return false;
 
@@ -402,7 +403,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -455,7 +456,7 @@ function email_send_pw_reminder($logon)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -475,7 +476,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the from user details
     if (!($from_user = user_get($fuid))) return false;
 
@@ -506,7 +507,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -524,7 +525,7 @@ function email_send_user_confirmation($tuid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -561,7 +562,7 @@ function email_send_user_confirmation($tuid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -579,7 +580,7 @@ function email_send_changed_email_confirmation($tuid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -616,7 +617,7 @@ function email_send_changed_email_confirmation($tuid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -634,7 +635,7 @@ function email_send_user_approval_notification($tuid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -667,7 +668,7 @@ function email_send_user_approval_notification($tuid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -686,7 +687,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -719,7 +720,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -737,7 +738,7 @@ function email_send_user_approved_notification($tuid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -772,7 +773,7 @@ function email_send_user_approved_notification($tuid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -790,7 +791,7 @@ function email_send_post_approval_notification($tuid)
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -823,7 +824,7 @@ function email_send_post_approval_notification($tuid)
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -842,7 +843,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
-    
+
     // Get the to user details
     if (!($from_user = user_get($fuid))) return false;
 
@@ -875,10 +876,10 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
-    
+
     // Set the from recipient
     if ($use_email_addr) $message->setFrom($from_user['EMAIL'], $sent_from);
-    
+
     // Set the subject
     $message->setSubject($subject);
 
@@ -894,16 +895,16 @@ function email_get_language($to_uid)
 {
     // Array to hold our language strings
     $lang = array();
-    
+
     // Default language file.
     $default_language = forum_get_setting('default_language', false, 'en');
 
     // if the user has expressed a preference for language, use it
-    // if available otherwise use the default language.   
+    // if available otherwise use the default language.
     if (($user_prefs = user_get_prefs($to_uid))) {
-    
+
         $pref_language = (isset($user_prefs['LANGUAGE']) && strlen(trim($user_prefs['LANGUAGE'])) > 0) ? $user_prefs['LANGUAGE'] : $default_language;
-        
+
         if (@file_exists(BH_INCLUDE_PATH. "languages/$pref_language/email.inc.php")) {
 
             require(BH_INCLUDE_PATH. "languages/{$pref_language}/email.inc.php");
@@ -914,11 +915,11 @@ function email_get_language($to_uid)
              require(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
              return $lang;
         }
-    
+
     }else {
-    
+
         if (@file_exists(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php")) {
-        
+
             require(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php");
             return $lang;
 
@@ -928,7 +929,7 @@ function email_get_language($to_uid)
              return $lang;
         }
     }
-    
+
     return false;
 }
 

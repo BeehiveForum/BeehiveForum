@@ -32,6 +32,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -884,7 +885,7 @@ function search_output_opensearch_xml()
     forum_check_webtag_available($webtag);
 
     $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
-    
+
     $forum_opensearch_uri = html_get_forum_uri("/search.php?webtag=$webtag&amp;search_string={searchTerms}");
 
     header('Content-type: text/xml; charset=UTF-8', true);
@@ -897,7 +898,7 @@ function search_output_opensearch_xml()
     echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">", html_get_favicon(), "</Image>\n";
     echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
     echo "</OpenSearchDescription>\n";
-    
+
     exit;
 }
 

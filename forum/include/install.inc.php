@@ -41,6 +41,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "browser.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -334,7 +335,7 @@ function install_check_php_extensions()
 
     // Initialise the variable store.
     if (!is_array($required_extensions)) {
-        $required_extensions = array('mbstring', 'pcre', 'gd', 'json');
+        $required_extensions = array('date', 'mbstring', 'gd', 'json', 'mysqli', 'pcre', 'xml');
     }
 
     // Get an array of extensions currently loaded by PHP

@@ -34,6 +34,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "adsense.inc.php");
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
@@ -64,17 +65,17 @@ function light_html_draw_top()
     $title = "";
 
     $robots = "index,follow";
-    
+
     $webtag = get_webtag();
-    
-    forum_check_webtag_available($webtag);    
+
+    forum_check_webtag_available($webtag);
 
     $link_array = array();
 
     $func_matches = array();
 
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
-    
+
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     foreach ($arg_array as $key => $func_args) {
@@ -94,7 +95,7 @@ function light_html_draw_top()
             unset($arg_array[$key]);
         }
     }
-    
+
     // Default Meta keywords and description.
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
@@ -103,7 +104,7 @@ function light_html_draw_top()
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
     }
-    
+
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
@@ -113,8 +114,8 @@ function light_html_draw_top()
         echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
     }else {
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
-    }    
-    
+    }
+
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
@@ -130,7 +131,7 @@ function light_html_draw_top()
 
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
-    
+
     if (($stylesheet = html_get_style_sheet())) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
@@ -145,21 +146,21 @@ function light_html_draw_top()
             }
         }
     }
-    
+
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
-    
+
     printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
 
     if (($folders_array = folder_get_available_details())) {
 
         foreach ($folders_array as $folder) {
-            
+
             $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
-            
+
             printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $rss_feed_path);
         }
     }
-    
+
     echo "<link rel=\"shortcut icon\" href=\"", html_get_favicon(), "\" type=\"image/ico\" />\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
@@ -209,8 +210,8 @@ function light_draw_logon_form($error_msg_array = array())
     forum_check_webtag_available($webtag);
 
     html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
-    
-    light_html_draw_top("robots=noindex,nofollow");    
+
+    light_html_draw_top("robots=noindex,nofollow");
 
     echo "<h1>{$lang['logon']}</h1>\n";
 
@@ -223,7 +224,7 @@ function light_draw_logon_form($error_msg_array = array())
     $username_array = array();
     $password_array = array();
     $passhash_array = array();
-    
+
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</p>\n";
@@ -244,7 +245,7 @@ function light_draw_logon_form($error_msg_array = array())
     echo "  <p>", light_form_checkbox("user_remember", "Y", $lang['rememberme'], false, ''), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
-    
+
     light_html_draw_bottom();
 }
 
@@ -253,9 +254,9 @@ function light_draw_messages($msg)
     if (!validate_msg($msg)) return;
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
-    
+
     $lang = load_language_file();
 
     list($tid, $pid) = explode('.', $msg);
@@ -431,7 +432,7 @@ function light_draw_messages($msg)
     }else {
         echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
     }
-    
+
     light_html_draw_bottom();
 }
 
@@ -448,7 +449,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     $visible_threads_array = array();
 
     if (($uid = session_get_value('UID')) === false) return;
-    
+
     light_html_draw_top();
 
     echo "<h1>{$lang['threadlist']}</h1>\n";
@@ -824,14 +825,14 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     }
 
     echo "</h4>\n";
-    
+
     light_html_draw_bottom();
 }
 
 function light_draw_pm_inbox()
 {
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
@@ -945,7 +946,7 @@ function light_draw_pm_inbox()
             light_html_draw_bottom();
             exit;
         }
-        
+
         // Draw the header.
         light_html_draw_top("title={$lang['pminbox']}");
 
@@ -967,11 +968,11 @@ function light_draw_pm_inbox()
 
             echo "<h4><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\">{$lang['back']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
         }
-        
+
         light_html_draw_bottom();
 
     }else {
-        
+
         // Draw the header.
         light_html_draw_top("title={$lang['pminbox']}");
 
@@ -1110,7 +1111,7 @@ function light_draw_pm_inbox()
         }
 
         echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
-        
+
         light_html_draw_bottom();
     }
 }
@@ -1118,7 +1119,7 @@ function light_draw_pm_inbox()
 function light_draw_my_forums()
 {
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
@@ -1130,7 +1131,7 @@ function light_draw_my_forums()
         $page = 1;
         $start = 0;
     }
-    
+
     light_html_draw_top("title={$lang['myforums']}");
 
     echo "<h1>{$lang['myforums']}</h1>\n";
@@ -1216,7 +1217,7 @@ function light_draw_my_forums()
     }else {
         echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>";
     }
-    
+
     light_html_draw_bottom();
 }
 
@@ -1260,7 +1261,7 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
     $lang = load_language_file();
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     echo "<h1>{$lang['fullversion']}: <a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$msg"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a>";
@@ -1294,7 +1295,7 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
 function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $limit_text = true, $is_preview = false)
 {
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
@@ -1481,7 +1482,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     $attachments_array = array();
@@ -1753,7 +1754,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     $lang = load_language_file();
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     // Less than 20 messages, no nav needed
@@ -1960,7 +1961,7 @@ function light_attachments_make_link($attachment)
     if (!isset($attachment['filename'])) return false;
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
@@ -2049,7 +2050,7 @@ function light_post_edit_refuse()
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     if (!is_string($header_text)) return;
@@ -2234,7 +2235,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     $lang = load_language_file();
 
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     echo "<p>";
@@ -2376,13 +2377,13 @@ function light_pm_check_messages()
 
     // Check if we've already displayed the notification once.
     if ($light_pm_check_messages_done === true) return;
-    
+
     // Load the Language file
     $lang = load_language_file();
 
     // Get the webtag
     $webtag = get_webtag();
-    
+
     forum_check_webtag_available($webtag);
 
     // Default the variables to return 0 even on error.

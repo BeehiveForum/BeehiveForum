@@ -35,6 +35,7 @@ include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
@@ -61,9 +62,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
     if (!$db_messages_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $current_timestamp = time();
-    
+
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
@@ -136,7 +137,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
             if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
             if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
-            
+
             if (isset($message['AVATAR_URL_FORUM']) && strlen($message['AVATAR_URL_FORUM']) > 0) {
                 $message['AVATAR_URL'] = $message['AVATAR_URL_FORUM'];
             }elseif (isset($message['AVATAR_URL_GLOBAL']) && strlen($message['AVATAR_URL_GLOBAL']) > 0) {
@@ -147,7 +148,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
                 $message['AVATAR_AID'] = $message['AVATAR_AID_FORUM'];
             }elseif (isset($message['AVATAR_AID_GLOBAL']) && is_md5($message['AVATAR_AID_GLOBAL'])) {
                 $message['AVATAR_AID'] = $message['AVATAR_AID_GLOBAL'];
-            }            
+            }
 
             if (!is_array($messages)) $messages = array();
 
@@ -205,14 +206,14 @@ function messages_get($tid, $pid = 1, $limit = 1)
 function message_get_content($tid, $pid)
 {
     static $message_content = array();
-    
+
     if (!$db_message_get_content = db_connect()) return '';
-    
+
     if (!is_numeric($tid)) return '';
     if (!is_numeric($pid)) return '';
 
     if (!$table_data = get_table_prefix()) return '';
-    
+
     if (!isset($message_content["$tid.$pid"])) {
 
         $sql = "SELECT CONTENT FROM `{$table_data['PREFIX']}POST_CONTENT` ";
@@ -221,7 +222,7 @@ function message_get_content($tid, $pid)
         if (!$result = db_query($sql, $db_message_get_content)) return '';
 
         if (db_num_rows($result) < 1) return '';
-            
+
         list($message_content["$tid.$pid"]) = db_fetch_array($result, DB_RESULT_NUM);
     }
 
@@ -231,17 +232,17 @@ function message_get_content($tid, $pid)
 function message_get_meta_content($msg, &$meta_keywords, &$meta_description)
 {
     if (!validate_msg($msg)) return;
-    
+
     list($tid, $pid) = explode('.', $msg);
-    
+
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
-    
+
     if (($thread_data = thread_get($tid)) && ($message_content = message_get_content($tid, $pid))) {
-        
+
         $meta_keywords_array = search_strip_keywords(strip_tags(htmlentities_decode_array($message_content)));
-        
+
         $meta_description = $thread_data['TITLE'];
-        
+
         $meta_keywords = htmlentities_array(implode(',', $meta_keywords_array['keywords']));
     }
 }
@@ -780,7 +781,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "<div align=\"center\">\n";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
-    
+
     if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
 
     echo "    <td align=\"left\">\n";
@@ -801,9 +802,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>";
     }
-    
+
     if (session_get_value('SHOW_AVATARS') == 'Y') {
-    
+
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
             echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />";
@@ -1044,39 +1045,39 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-            
+
             if (isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) {
-                
+
                 echo "                <td width=\"25%\" align=\"left\">";
                 echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
                 echo "                </td>\n";
-                
+
             }else if (isset($message['ANON_LOGON_GLOBAL']) && $message['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
-                
+
                     echo "                <td width=\"25%\" align=\"left\">";
                     echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
                     echo "                </td>\n";
-                
+
             }else if (isset($message['USER_ACTIVE'])) {
-            
+
                 if ($message['USER_ACTIVE'] == 1) {
-                    
+
                     echo "                <td width=\"25%\" align=\"left\">";
                     echo "                  <img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"{$lang['useractive']}\" />";
                     echo "                </td>\n";
-                    
+
                 } else {
-                    
+
                     echo "                <td width=\"25%\" align=\"left\">";
                     echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"{$lang['userinactive']}\" />";
                     echo "                </td>\n";
                 }
-            
+
             } else {
-                
+
                 echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
             }
-            
+
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
             if ($msg_count > 0) {
@@ -1287,13 +1288,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page)
 {
     $webtag = get_webtag();
-    
+
     $lang = load_language_file();
-    
+
     echo "    <td align=\"left\" width=\"2%\" valign=\"top\">\n";
     echo "      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
-    echo "          <td align=\"center\">\n";    
+    echo "          <td align=\"center\">\n";
 
     if ($pid > 1) {
 
@@ -1308,14 +1309,14 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
             echo "<img src=\"", html_style_image("message_up.png"), "\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a>";
         }
     }
-    
+
     echo "          </td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td align=\"center\">\n";
-    
+
     if ($pid < $msg_count) {
-        
+
         if (($pid + 1) > (($first_msg + $posts_per_page) - 1)) {
 
             echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid + 1, "\" target=\"_self\">";
@@ -1327,7 +1328,7 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
             echo "<img src=\"", html_style_image("message_down.png"), "\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
         }
     }
-    
+
     echo "          </td>\n";
     echo "        </tr>\n";
     echo "      </table>\n";
@@ -1341,9 +1342,9 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     echo "<br /><div align=\"center\">";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
-    
+
     if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
-    
+
     echo "    <td align=\"left\">\n";
     echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
@@ -1386,9 +1387,9 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo "<br /><div align=\"center\">";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
-    
+
     if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
-    
+
     echo "    <td align=\"left\">\n";
     echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
@@ -1447,50 +1448,50 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     $spid = $pid % $ppp;
 
     if ($spid > 1) {
-        
+
         if ($pid > 1) {
-            
+
             $navbits[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid - 1). "</a>";
-            
+
         }else {
-            
+
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1);
         }
-        
+
         $i = 1;
-        
+
     }else {
-        
+
         $i = 0;
     }
 
     while ($spid + ($ppp - 1) < $length) {
-        
+
         if ($spid == $pid) {
-            
+
             $c = $i;
             $navbits[$i] = mess_nav_range($spid, $spid + ($ppp - 1));
-            
+
         }else {
-            
+
             $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($spid == 0 ? 1 : $spid). "\" target=\"_self\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
         }
-        
+
         $spid += $ppp;
-        
+
         $i++;
     }
 
     if ($spid <= $length) {
-        
+
         if ($spid == $pid) {
-            
+
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length);
-            
+
         }else {
-            
+
             $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$spid\" target=\"_self\">". mess_nav_range($spid,$length). "</a>";
         }
     }
@@ -1508,11 +1509,11 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
         if (isset($navbits[$i])) {
 
             if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
-                
+
                 $html.= "\n&nbsp;". $navbits[$i];
-                
+
             }else if (abs($c - $i) == 4) {
-                
+
                 $html.= "\n&nbsp;&hellip;";
             }
         }
@@ -1662,10 +1663,10 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     // Mark as read cut off
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
-    
+
     // Guest users' can't mark as read!
     if (!user_is_guest() && ($pid > $last_read)) {
-        
+
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
 
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
@@ -1718,7 +1719,7 @@ function messages_set_read($tid, $pid, $modified)
 
     // Check for existing entry in USER_THREAD
     if (!$table_data = get_table_prefix()) return false;
-    
+
     // User UID
     if (($uid = session_get_value('UID')) === false) return false;
 
@@ -1727,18 +1728,18 @@ function messages_set_read($tid, $pid, $modified)
 
     // Mark as read cut off
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
-    
+
     // Guest users' can't mark as read!
     if (!user_is_guest()) {
-        
+
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
 
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
-            
+
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
-            
+
             if (!db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {
@@ -1959,7 +1960,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     $html.= "<br />\n";
 
     echo $html;
-    
+
     return true;
 }
 
@@ -1992,22 +1993,22 @@ function messages_forum_stats($tid, $pid)
         echo "                    <td>\n";
         echo "                      <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "                        <tr>\n";
-        echo "                          <td align=\"left\" class=\"subhead\">{$lang['forumstats']}</td>\n";        
+        echo "                          <td align=\"left\" class=\"subhead\">{$lang['forumstats']}</td>\n";
         echo "                          <td align=\"right\" class=\"subhead\">\n";
-        
+
         if (user_is_guest()) {
-            
+
             echo "                            &nbsp;";
-        
+
         } else if (session_get_value("SHOW_STATS") == "Y") {
-            
+
             echo "                            ", form_submit_image('hide.png', 'forum_stats_toggle', 'hide', '', 'button_image toggle_button'), "\n";
-        
+
         } else {
-            
+
             echo "                            ", form_submit_image('show.png', 'forum_stats_toggle', 'show', '', 'button_image toggle_button'), "\n";
         }
-        
+
         echo "                          </td>\n";
         echo "                        </tr>";
         echo "                      </table>\n";
@@ -2015,13 +2016,13 @@ function messages_forum_stats($tid, $pid)
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td>\n";
-        
+
         if (user_is_guest() || (session_get_value("SHOW_STATS") == "Y")) {
             echo "                      <div id=\"forum_stats\" class=\"forum_stats_toggle\">\n";
         } else {
             echo "                      <div id=\"forum_stats\" class=\"forum_stats_toggle\" style=\"display: none\">\n";
         }
-        
+
         echo "                        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         echo "                          <tr>\n";
         echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";

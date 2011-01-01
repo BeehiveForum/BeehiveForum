@@ -33,6 +33,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -169,7 +170,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';
 
     $closed = ($closed === true) ? sprintf("'%s'", date(MYSQL_DATETIME, time())) : 'NULL';
-    
+
     $deleted = ($deleted === true) ? 'Y' : 'N';
 
     if (!$db_post_create_thread = db_connect()) return false;
@@ -579,7 +580,7 @@ function post_add_edit_text($tid, $pid)
     if (($edit_uid = session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POST` ";
@@ -601,7 +602,7 @@ function post_delete($tid, $pid)
     if (!$db_post_delete = db_connect()) return false;
 
     if (($approve_uid = session_get_value('UID')) === false) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (thread_is_poll($tid) && $pid == 1) {

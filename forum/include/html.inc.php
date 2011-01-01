@@ -42,6 +42,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 include_once(BH_INCLUDE_PATH. "adsense.inc.php");
 include_once(BH_INCLUDE_PATH. "browser.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");

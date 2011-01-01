@@ -84,9 +84,11 @@ include_once(BH_INCLUDE_PATH. "light.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
@@ -149,7 +151,7 @@ if (user_is_guest()) {
     // Get the view mode cookie
     $mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
 
-    // If it is set to unread discussions but we don't have any 
+    // If it is set to unread discussions but we don't have any
     // unread posts change it back to All Discussions.
     if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
         $mode = ALL_DISCUSSIONS;
@@ -207,5 +209,5 @@ if (html_get_cookie('logon') && user_is_guest()) {
 
 // Clear the logon cookie
 html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
-  
+
 ?>

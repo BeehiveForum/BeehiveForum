@@ -23,6 +23,25 @@ USA
 
 /* $Id$ */
 
+// We shouldn't be accessing this file directly.
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
+
+if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config.inc.php");
+}
+
+if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+}
+
+// Include files we need.
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
     $db_server   = (isset($GLOBALS['db_server']))   ? $GLOBALS['db_server']   : '';

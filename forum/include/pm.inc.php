@@ -2094,9 +2094,7 @@ function pm_system_prune_folders()
 {
     if (!$db_pm_prune_folders = db_connect()) return false;
 
-    $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
-
-    if ($pm_prune_length > 0) {
+    if (($pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0))) > 0) {
 
         $pm_read = PM_READ;
         $pm_sent_items = PM_SENT_ITEMS;
@@ -2108,11 +2106,9 @@ function pm_system_prune_folders()
         $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
         if (!db_query($sql, $db_pm_prune_folders)) return false;
-
-        return true;
     }
 
-    return false;
+    return true;
 }
 
 /**

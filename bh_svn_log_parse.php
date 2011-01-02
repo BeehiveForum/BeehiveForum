@@ -178,18 +178,38 @@ function svn_mysql_output_log($log_filename = null)
             $svn_log_entry = '';
 
             if ($svn_log_entry_author != $svn_log_entry_array['AUTHOR']) {
+
                 $svn_log_entry_author = $svn_log_entry_array['AUTHOR'];
-                $svn_log_entry.= sprintf("Author: %s\r\n", $svn_log_entry_author);
-            }
+                printf("Author: %s\r\n", $svn_log_entry_author);
 
-            if ($svn_log_entry_date != $svn_log_entry_array['DATE']) {
+                if ($svn_log_entry_date != $svn_log_entry_array['DATE']) {
+
+                    $svn_log_entry_date = $svn_log_entry_array['DATE'];
+                    printf("Date: %s\r\n", gmdate('D, d M Y H:i:s', $svn_log_entry_date));
+                }
+
+                echo "-----------------------\r\n";
+
+            } else if ($svn_log_entry_date != $svn_log_entry_array['DATE']) {
+
                 $svn_log_entry_date = $svn_log_entry_array['DATE'];
-                $svn_log_entry.= sprintf("Date: %s\r\n-----------------------\r\n", gmdate('D, d M Y H:i:s', $svn_log_entry_date));
+                printf("Date: %s\r\n-----------------------\r\n", gmdate('D, d M Y H:i:s', $svn_log_entry_date));
             }
 
-            $svn_log_entry.= "{$svn_log_entry_array['COMMENTS']}\r\n\r\n";
+            if (preg_match('/^(Fixed:|Changed:|Added:)(.+)/i', $svn_log_entry_array['COMMENTS'], $svn_log_entry_matches) > 0) {
 
-            echo wordwrap(preg_replace("/(\r\n|\n|\r)/", "\r\n", $svn_log_entry), 100, "\r\n");
+                $svn_log_comment = trim(preg_replace("/(\r\n|\n|\r)/", "\r\n", $svn_log_entry_matches[2]));
+
+                $svn_log_comment_array = explode("\r\n", wordwrap($svn_log_comment, 100 - strlen($svn_log_entry_matches[1]), "\r\n"));
+
+                foreach ($svn_log_comment_array as $line => $svn_log_comment_line) {
+
+                    echo $line == 0 ? str_pad($svn_log_entry_matches[1], 9, ' ', STR_PAD_RIGHT) : str_repeat(' ', 9);
+                    echo $svn_log_comment_line, "\r\n";
+                }
+
+                echo "\r\n";
+            }
         }
 
         if (isset($log_filename)) {

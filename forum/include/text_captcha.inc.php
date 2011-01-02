@@ -279,6 +279,8 @@ class captcha {
 
     public function destroy_image()
     {
+        $this->generate_private_key();
+
         if (@file_exists($this->get_image_filename())) {
             @unlink($this->get_image_filename());
         }
@@ -412,25 +414,22 @@ function captcha_clean_up()
 
     $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
 
-    if ((@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. 'images'))) {
+    if (!(@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. 'images'))) return false;
 
-        while ((($file = @readdir($dir)) !== false) && ($unlink_count < 20)) {
-            
-            $captcha_image_file = "$text_captcha_dir/images/$file";
-            
-            if ($file[0] == '.' || is_dir($captcha_image_file)) continue;
-            
-            if ((time() - filemtime($captcha_image_file)) > DAY_IN_SECONDS) {
-                @unlink($captcha_image_file);
-            }
+    while ((($file = @readdir($dir)) !== false) && ($unlink_count < 20)) {
 
-            $unlink_count++;
-        }
+        $captcha_image_file = "$text_captcha_dir/images/$file";
 
-        return true;
+        if ($file[0] == '.' || is_dir($captcha_image_file)) continue;
+
+        if ((time() - filemtime($captcha_image_file)) < DAY_IN_SECONDS) continue;
+
+        @unlink($captcha_image_file);
+
+        $unlink_count++;
     }
 
-    return false;
+    return true;
 }
 
 ?>

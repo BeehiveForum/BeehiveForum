@@ -2198,7 +2198,6 @@ function forum_self_clean_check_ajax()
     if (isset($_SERVER['PHP_SELF']) && strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
 
         $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
-
         if (in_array($script_filename, array('ajax.php', 'json.php'))) return false;
     }
 
@@ -2259,8 +2258,8 @@ function forum_check_maintenance()
     // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
     ignore_user_abort(true);
 
-    // Execute the shutdown function. If it fails return now.
-    if (!($forum_maintenance_functions_array[$forum_maintenance_function]())) return;
+    // Execute the maintenance function.
+    $forum_maintenance_functions_array[$forum_maintenance_function]();
 
     // Update the last run time of the function.
     $new_forum_settings[$forum_maintenance_date_var] = time();

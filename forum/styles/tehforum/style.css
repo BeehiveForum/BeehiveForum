@@ -763,6 +763,8 @@ p, h1, h2 {
 }
 
 .post_content {
+    max-width: 480px;
+    min-width: 480px;
     width: 480px;
 }
 
@@ -996,6 +998,8 @@ p, h1, h2 {
 }
 
 .signature_content {
+    max-width: 480px;
+    min-width: 480px;
     width: 480px;
 }
 

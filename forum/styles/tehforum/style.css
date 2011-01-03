@@ -251,7 +251,7 @@ p, h1, h2 {
     padding-left: 2px;
 }
 
-.bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
+.bhinputtext, .bhtextarea, .bhselect, .install_input,
 .bhinputlogon, .bhlogondropdown, .register_dropdown,
 .search_dropdown, .banned_dropdown, .links_dropdown,
 .timezone_dropdown, .admin_tools_textarea,
@@ -580,7 +580,7 @@ p, h1, h2 {
     overflow: hidden;
 }
 
-.install_dropdown {
+.install_input {
     width: 234px;
 }
 

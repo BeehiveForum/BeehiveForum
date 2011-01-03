@@ -59,12 +59,12 @@ function check_install()
 {
     // Check the config file exists.
     if (!file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-        header_redirect('./install/install.php');
+        header_redirect('./install/index.php');
     }
 
     // Check if the installer files still exist. Ignore them
     // if the BEEHIVE_INSTALL_NOWARN constant has been defined.
-    if (@file_exists('./install/install.php') && !defined("BEEHIVE_INSTALL_NOWARN")) {
+    if (@file_exists('./install/index.php') && !defined("BEEHIVE_INSTALL_NOWARN")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -177,7 +177,7 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"./install/install.php\" target=\"", html_get_top_frame_name(), "\">\n";
+    echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"./install/index.php\" target=\"", html_get_top_frame_name(), "\">\n";
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";

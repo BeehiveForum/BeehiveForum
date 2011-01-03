@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 1.0 / 1st November 2010
+Version 1.0 / 3rd January 2010
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -156,7 +156,7 @@ presented with a directory that looks a bit like this:
 |  |
 |  |- install
 |  |  |- config.inc.php
-|  |  |- new-install.php
+|  |  |- index.php
 |  |  |- ...
 |  |
 |  |- js
@@ -241,7 +241,7 @@ Once everything's uploaded, you will need to run the forum's install script. Thi
 is located in the /install subdirectory of your forum. To access it, you will need
 to load the file in your browser from the web space you just uploaded to, e.g.:
 
-http://www.mysite.com/forum/install/install.php
+http://www.mysite.com/forum/install/index.php
 
 This will then walk you through the creation of your new forum. Note that you will
 need your MySQL database's host address, username and password for this stage, as
@@ -559,10 +559,10 @@ newer ones.
 ==============================
 
 Once you've backed up your database/files and uploaded the new files, you will
-need to run the upgrade script, located at install/install.php in your forum
+need to run the upgrade script, located at install/index.php in your forum
 directory:
 
-http://www.mysite.com/forum/install/install.php
+http://www.mysite.com/forum/install/index.php
 
 Make sure you select the correct 'Upgrade' proceedure from the installation
 method drop-down list, and then follow the instructions.

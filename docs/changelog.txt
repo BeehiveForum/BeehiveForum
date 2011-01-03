@@ -1,6 +1,10 @@
-Project Beehive Forum Change Log (Generated: Sun, 02 Jan 2011 22:00:17)
+Project Beehive Forum Change Log (Generated: Mon, 03 Jan 2011 12:10:15)
 
 Author: decoyduck
+Date: Sun, 02 Jan 2011 22:25:50
+-----------------------
+Changed: Format of changelog.txt to make wrapped text easier to read.
+
 Date: Sun, 02 Jan 2011 19:47:14
 -----------------------
 Fixed:   pm_system_prune_folders maintenance function would always return false if pruning was
@@ -8,7 +12,7 @@ Fixed:   pm_system_prune_folders maintenance function would always return false 
 
 Date: Sun, 02 Jan 2011 12:25:24
 -----------------------
-Fixed:   Imagemagick functionality wasn't working on Windows Vista / 7 (UAC issue?)
+Fixed:   Imagemagick functionality wasn't working on Windows Server 2008
 
 Date: Sat, 01 Jan 2011 13:05:40
 -----------------------
@@ -64,10 +68,6 @@ Date: Mon, 13 Dec 2010 18:15:32
 -----------------------
 Fixed:   :{) emoticon definition was incorrect in smallsquare emoticon pack.
 
-Date: Sun, 12 Dec 2010 19:06:55
------------------------
-Changed: Revision URL parameter updated.
-
 Date: Sun, 12 Dec 2010 13:02:43
 -----------------------
 Changed: Remove other emoticon pack display from display_emoticons.php.
@@ -92,11 +92,6 @@ Fixed:   Search wouldn't allow mixed letters and numbers unless they were in quo
 Date: Wed, 01 Dec 2010 20:27:04
 -----------------------
 Changed: Using Closure Compiler for compressing JS.
-
-Date: Sun, 28 Nov 2010 14:01:39
------------------------
-Changed: Removed admin_make_style.php and supported functionality. Will hopefully replace later with
-         better CSS editor.
 
 Date: Sun, 28 Nov 2010 14:01:19
 -----------------------

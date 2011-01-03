@@ -46,7 +46,7 @@ p {
     font-size: 9pt;
 }
 
-.bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
+.bhinputtext, .bhtextarea, .bhselect, .install_input,
 .bhinputlogon, .bhlogondropdown, .register_dropdown,
 .search_dropdown, .banned_dropdown, .links_dropdown,
 .timezone_dropdown, .admin_tools_textarea,

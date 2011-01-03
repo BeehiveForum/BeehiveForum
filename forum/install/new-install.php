@@ -25,9 +25,9 @@ USA
 
 if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'new-install.php') {
 
-    header("Request-URI: install.php");
-    header("Content-Location: install.php");
-    header("Location: install.php");
+    header("Request-URI: index.php");
+    header("Content-Location: index.php");
+    header("Location: index.php");
     exit;
 }
 
@@ -92,7 +92,7 @@ $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0', ";
 $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '', ";
-$sql.= "  EXPIRES DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
+$sql.= "  EXPIRES DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (ID), ";
 $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
@@ -209,7 +209,7 @@ $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0', ";
 $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1', ";
 $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  ALLOWGUESTS TINYINT(1) NOT NULL DEFAULT '0', ";
+$sql.= "  ALLOWGUESTS TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -498,7 +498,7 @@ $sql = "CREATE TABLE `{$forum_table_prefix}USER_PROFILE` (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL, ";
-$sql.= "  PRIVACY TINYINT(3) NOT NULL DEFAULT '0', ";
+$sql.= "  PRIVACY TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, PIID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -1322,13 +1322,13 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
-    
+
     // Construct full path to the dictionary file.
     $dictionary_path = str_replace('\\', '/', rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR));
 
     // Check the file exists and is readable by PHP.
     if (@file_exists("$dictionary_path/english.dic") && is_readable("$dictionary_path/english.dic")) {
-        
+
         try {
 
             // Try importing the file using MySQL's LOAD DATA INFILE
@@ -1336,7 +1336,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
             $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
 
             $result = db_query($sql, $db_install);
-            
+
         } catch (Exception $e) {
 
             // MySQL LOAD DATA INFILE failed. Try reading the file

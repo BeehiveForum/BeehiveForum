@@ -946,12 +946,13 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             $sql = "CREATE TABLE `{$forum_table_prefix}BANNED` (";
-            $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
-            $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  EXPIRES DATETIME DEFAULT NULL,";
-            $sql.= "  PRIMARY KEY  (ID)";
+            $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+            $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0', ";
+            $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '', ";
+            $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '', ";
+            $sql.= "  EXPIRES DATETIME DEFAULT NULL, ";
+            $sql.= "  PRIMARY KEY (ID), ";
+            $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -996,7 +997,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
             $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
             $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (LID)";
+            $sql.= "  PRIMARY KEY  (LID),";
+            $sql.= "  KEY FID (FID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1018,10 +1020,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
             $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_FOLDERS` (";
             $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT NULL,";
+            $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1',";
             $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
             $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
-            $sql.= "  PRIMARY KEY  (FID)";
+            $sql.= "  PRIMARY KEY  (FID),";
+            $sql.= "  KEY PARENT_FID (PARENT_FID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1082,15 +1085,15 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
             $sql.= "  EDITED DATETIME DEFAULT NULL,";
             $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
+            $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
             $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
             $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
             $sql.= "  PRIMARY KEY  (TID,PID),";
             $sql.= "  KEY TO_UID (TO_UID),";
             $sql.= "  KEY FROM_UID (FROM_UID),";
             $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
-            $sql.= "  KEY CREATED (CREATED),";
-            $sql.= "  KEY APPROVED (APPROVED)";
+            $sql.= "  KEY APPROVED (APPROVED),";
+            $sql.= "  KEY CREATED (CREATED)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!($result = db_query($sql, $db_forum_create))) {
@@ -1116,7 +1119,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
             $sql.= "  OPTIONS TEXT NOT NULL, ";
             $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (PIID)";
+            $sql.= "  PRIMARY KEY  (PIID),";
+            $sql.= "  KEY PSID (PSID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1214,7 +1218,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
             $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
             $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (ID)";
+            $sql.= "  PRIMARY KEY  (ID),";
+            $sql.= "  KEY MOST_POSTS_COUNT (MOST_POSTS_COUNT), ";
+            $sql.= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1237,7 +1243,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
             $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
             $sql.= "  PRIMARY KEY (TID), ";
-            $sql.= "  KEY BY_UID (BY_UID), ";
             $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
             $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
             $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
@@ -1258,11 +1263,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_TRACK` (";
-            $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
-            $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
-            $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (TID, NEW_TID)";
+            $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
+            $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
+            $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
+            $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0', ";
+            $sql.= "  PRIMARY KEY (TID, NEW_TID), ";
+            $sql.= "  KEY NEW_TID (NEW_TID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1270,10 +1276,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             $sql = "CREATE TABLE `{$forum_table_prefix}USER_FOLDER` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (UID, FID)";
+            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  INTEREST TINYINT(4) DEFAULT '0', ";
+            $sql.= "  PRIMARY KEY (UID, FID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1281,11 +1287,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             $sql = "CREATE TABLE `{$forum_table_prefix}USER_PEER` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
-            $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL,";
-            $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
+            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL, ";
+            $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
+            $sql.= "  PRIMARY KEY (UID, PEER_UID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1339,6 +1345,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
             $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
             $sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
+            $sql.= "  LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280',";
+            $sql.= "  SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y',";
             $sql.= "  PRIMARY KEY  (UID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -1377,7 +1385,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
             $sql.= "  PRIMARY KEY  (UID,TID),";
             $sql.= "  KEY TID (TID),";
-            $sql.= "  KEY LAST_READ (LAST_READ)";
+            $sql.= "  KEY LAST_READ (LAST_READ),";
+            $sql.= "  KEY INTEREST (INTEREST)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
@@ -1390,8 +1399,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
             $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
             $sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
-            $sql.= "  LAST_SEARCH_SORT_BY TINYINT(3) DEFAULT NULL, ";
-            $sql.= "  LAST_SEARCH_SORT_DIR TINYINT(3) DEFAULT NULL, ";
+            $sql.= "  LAST_SEARCH_SORT_BY TINYINT(3) UNSIGNED DEFAULT NULL, ";
+            $sql.= "  LAST_SEARCH_SORT_DIR TINYINT(3) UNSIGNED DEFAULT NULL, ";
             $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
             $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
             $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
@@ -1404,15 +1413,15 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             }
 
             $sql = "CREATE TABLE `{$forum_table_prefix}WORD_FILTER` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
-            $sql.= "  MATCH_TEXT TEXT NOT NULL,";
-            $sql.= "  REPLACE_TEXT TEXT NOT NULL,";
-            $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (UID, FID)";
-            $sql.= ") TYPE = MYISAM";
+            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+            $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL DEFAULT '', ";
+            $sql.= "  MATCH_TEXT TEXT NOT NULL, ";
+            $sql.= "  REPLACE_TEXT TEXT NOT NULL, ";
+            $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
+            $sql.= "  PRIMARY KEY (UID, FID)";
+            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
             if (!db_query($sql, $db_forum_create)) {
                 throw new Exception('Failed to create table WORD_FILTER');
@@ -1570,10 +1579,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         } catch (Exception $e) {
 
-            forum_delete($forum_fid);
+            //forum_delete_tables($webtag, $database_name);
 
             if (defined('BEEHIVE_INSTALL_NOWARN')) {
-                throw new Exception($e->getMessage());
+                throw $e;
             }
 
             return false;
@@ -1632,16 +1641,41 @@ function forum_delete($fid)
 
             list($webtag, $database_name) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $sql = "DELETE QUICK FROM FORUMS, FORUM_SETTINGS, GROUP_PERMS, GROUPS, ";
-            $sql.= "POST_ATTACHMENT_IDS, POST_ATTACHMENT_FILES, SEARCH_RESULTS, VISITOR_LOG ";
-            $sql.= "USING FORUMS LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
-            $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.FORUM = FORUMS.FID) ";
-            $sql.= "LEFT JOIN GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
-            $sql.= "LEFT JOIN POST_ATTACHMENT_IDS ON (POST_ATTACHMENT_IDS.FID = FORUMS.FID) ";
-            $sql.= "LEFT JOIN POST_ATTACHMENT_FILES ON (POST_ATTACHMENT_FILES.AID = POST_ATTACHMENT_IDS.AID) ";
-            $sql.= "LEFT JOIN SEARCH_RESULTS ON (SEARCH_RESULTS.FORUM = FORUMS.FID) ";
-            $sql.= "LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.FORUM = FORUMS.FID)";
-            $sql.= "WHERE FORUMS.FID = '$fid'";
+            $sql = "DELETE QUICK FROM FORUMS WHERE FID = '$fid'";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM FORUM_SETTINGS WHERE FID = '$fid'";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FID = '$fid'";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$fid'";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
+            $sql.= "WHERE AID IN (SELECT AID FROM POST_ATTACHMENT_IDS ";
+            $sql.= "WHERE FID = '$fid')";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM GROUPS WHERE GID IN (SELECT GID FROM GROUP_PERMS WHERE FORUM = '$fid')";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID IN (SELECT GID FROM GROUP_PERMS WHERE FORUM = '$fid')";
+
+            if (!db_query($sql, $db_forum_delete)) return false;
+
+            $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
 
             if (!db_query($sql, $db_forum_delete)) return false;
 

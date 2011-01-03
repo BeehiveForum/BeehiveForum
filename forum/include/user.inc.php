@@ -981,7 +981,7 @@ function user_search($user_search)
 {
     if (!$db_user_search = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    $table_data = get_table_prefix();
 
     $lang = load_language_file();
 
@@ -995,13 +995,25 @@ function user_search($user_search)
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
-    // Main query.
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
-    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-    $sql.= "LIMIT 10";
+    // Include join to USER_PEER table if we have a valid forum.
+    if (isset($table_data['PREFIX'])) {
+
+        // Main query.
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
+        $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
+        $sql.= "LIMIT 10";
+
+    } else {
+
+        // Main query.
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER ";
+        $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
+        $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
+        $sql.= "LIMIT 10";
+    }
 
     if (!$result = db_query($sql, $db_user_search)) return false;
 

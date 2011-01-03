@@ -596,9 +596,9 @@ if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
 echo "                </tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    
+
     foreach ($pm_messages_array['message_array'] as $message) {
-        
+
         echo "                <tr>\n";
         echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
 
@@ -754,7 +754,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&sort_by=$sort_by&sort_dir=$sort_dir", $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 

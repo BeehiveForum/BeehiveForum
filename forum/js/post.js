@@ -24,44 +24,77 @@ USA
 $(beehive).bind('init', function() {
 
     beehive.quote_list = [];
-    
+
     var hide_post_options_containers = function() {
 
         $('.post_options_container').each(function() {
-            
+
             var $post_options_container = $(this);
-            
+
             var $link = $(this).prev('span.post_options');
-            
+
             if ($link.length == 1) {
-            
+
                 var link_offset = $link.offset();
-                
+
                 $post_options_container.hide();
-                
+
                 $post_options_container.css('top', link_offset.top + $link.height());
-                
+
                 $post_options_container.find('*').css('margin-left', -9999);
             }
-        });        
+        });
     };
-    
+
     $('span.post_options').each(function() {
 
         var $link = $(this);
-        
+
         $link.html(beehive.lang.more +'&nbsp;<img class="post_options" src="' + beehive.images['post_options.png'] + '" border="0" />');
-        
+
         $link.bind('click', function() {
-            
+
             hide_post_options_containers();
-            
+
+            if ($link.next('.post_options_container').length < 1) {
+
+                $.ajax({
+
+                    'cache' : true,
+
+                    'data' : {
+                        'webtag' : beehive.webtag,
+                        'ajax'   : 'true',
+                        'action' : 'post_options',
+                        'msg'    : $link.attr('id').match(/post_options_([^\.]+\.[^\.]+)/)[1]
+                    },
+
+                    'url' : beehive.forum_path + '/ajax.php',
+
+                    'success' : function(data) {
+
+                        try {
+
+                            $link.after(data);
+
+                            $link.trigger('click');
+
+                        } catch (exception) {
+
+                            beehive.ajax_error(exception);
+                        }
+                    }
+                });
+
+                return;
+            }
+
             var $post_options_container = $link.next('.post_options_container');
-            
+
             if ($post_options_container.length != 1) {
                  return;
             }
-            
+
             var link_offset = $link.offset();
 
             $post_options_container.show();
@@ -76,7 +109,7 @@ $(beehive).bind('init', function() {
 
             $post_options_container.find('*').css('margin-left', 0);
             $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
-            
+
             return false;
         });
     });
@@ -100,7 +133,7 @@ $(beehive).bind('init', function() {
         $('#quick_reply_container').hide();
     });
 
-    $('.quick_reply_link').bind('click', function() {
+    $('.quick_reply_link').live('click', function() {
 
         $('.post_options_container').hide();
 

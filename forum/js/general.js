@@ -32,88 +32,88 @@ var beehive = $.extend({}, beehive, {
                        'scrollbars=yes' ],
 
     ajax_error : function(message) {
-        
+
         if (console && console.log) {
             console.log('AJAX ERROR', message);
-        }        
+        }
     },
-    
+
     get_resize_width : function() {
-        
+
         var $max_width = $(this).closest('.max_width[width]');
-        
+
         if ($max_width.length > 0) {
             return $max_width.attr('width');
         }
-        
+
         return $('body').attr('clientWidth');
     },
-    
+
     get_frame_name : function(frame_name) {
-        
+
         for(var key in beehive.frames) {
             if (beehive.frames[key] == frame_name) return key;
         }
     },
-    
+
     reload_frame : function(context, frame_name) {
-        
+
         $(context).find('frame').each(function() {
-            
+
             if ($(this).attr('name') == frame_name) {
-                
+
                 $(this).attr('src', $(this).attr('src'));
                 return false;
             }
-            
+
             beehive.reload_frame(this.contentDocument, frame_name);
-        });        
+        });
     },
-    
+
     reload_top_frame : function(context, src) {
-        
+
         $(context).find('frame').each(function() {
-            
+
             if ($(this).attr('name') == beehive.frames.ftop) {
-                
+
                 $(this).attr('src', src);
                 return false;
             }
-            
+
             beehive.reload_top_frame(this.contentDocument, src);
         });
-    }, 
-    
+    },
+
     reload_user_font : function(context) {
-        
+
         $(context).find('frame').each(function() {
-            
+
             if (!$.inArray($(this).attr('name'), beehive.frames)) return true;
-            
+
             beehive.reload_user_font(this.contentDocument);
         });
-                
+
         var $head = $(context).find('head');
-        
+
         var $user_font = $head.find('link#user_font');
-        
-        $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);        
+
+        $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
     }
 });
 
 $.ajaxSetup({
-    
+
     'cache' : true,
-    
+
     'error' : function(data) {
         beehive.ajax_error(data);
     }
 });
 
 $(beehive).bind('init', function() {
-    
+
     var frame_resize_timeout;
-    
+
     $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
         return false;
     });
@@ -152,7 +152,7 @@ $(beehive).bind('init', function() {
     $('select.recent_user_dropdown').bind('change', function() {
         $('input[name="to_radio"][value="recent"]').attr('checked', true);
     });
-    
+
     $('select.friends_dropdown').bind('change', function() {
         $('input[name="to_radio"][value="friends"]').attr('checked', true);
     });
@@ -168,40 +168,40 @@ $(beehive).bind('init', function() {
     $('a.font_size_larger, a.font_size_smaller').live('click', function() {
 
         var $this = $(this);
-        
+
         var $parent = $this.closest('td');
-        
+
         if (beehive.uid == 0) return true;
 
         $.ajax({
-            
-            'cache': false,
-            
+
+            'cache' : false,
+
             'data' : {
                 'webtag' : beehive.webtag,
                 'ajax'   : 'true',
                 'action' : $this.attr('class'),
                 'msg'    : $this.attr('rel')
             },
-            
-            'url' : beehive.forum_path + '/ajax.php',                    
-            
+
+            'url' : beehive.forum_path + '/ajax.php',
+
             'success' : function(data) {
-                
+
                 try {
-                
+
                     var data = JSON.parse(data);
-                    
+
                     $parent.html(data.html);
-                    
+
                     beehive.font_size = data.font_size;
-                    
+
                     beehive.reload_user_font(top.document);
-                    
+
                     $(top.document).find('frameset#index').attr('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
-                    
+
                 } catch (exception) {
-                    
+
                     beehive.ajax_error(exception);
                 }
             }
@@ -211,102 +211,102 @@ $(beehive).bind('init', function() {
     });
 
     $('#preferences_updated').each(function() {
-        
+
         beehive.reload_frame(top.document, beehive.frames.fnav);
         beehive.reload_frame(top.document, beehive.frames.left);
         beehive.reload_top_frame(top.document, beehive.top_frame);
     });
-    
+
     $('input#print').bind('click', function() {
         window.print();
     });
-    
+
     $('a.button').bind('mousedown', function() {
         $(this).css('border', '1px inset');
     }).bind('mouseup mouseout', function() {
         $(this).css('border', '1px outset');
     });
-    
+
     if ($('body').hasClass('window_title')) {
         top.document.title = document.title;
     }
-    
+
     $(window).bind('resize', function() {
-        
+
         var frame_name = $(this).attr('name');
-        
+
         if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) return;
-        
+
         window.clearTimeout(frame_resize_timeout);
-        
+
         frame_resize_timeout = window.setTimeout(function() {
-            
+
             $.ajax({
-                
+
                 'cache' : false,
-                
-                'data' : { 
+
+                'data' : {
                     'webtag' : beehive.webtag,
                     'ajax'   : true,
                     'action' : 'frame_resize',
                     'size'   : this.innerWidth
                 },
-                
-                'url' : beehive.forum_path + '/ajax.php'                
+
+                'url' : beehive.forum_path + '/ajax.php'
             });
-            
-        }, 500);    
+
+        }, 500);
     });
-    
+
     $('.toggle_button').bind('click', function() {
-        
+
         var $button = $(this);
-        
+
         var $element = $('.' + $button.attr('id'));
-        
+
         if ($element.is(':visible')) {
-            
+
             $element.slideUp(150, function() {
-                
+
                 $button.attr('src', beehive.images['show.png']);
-                
+
                 $.ajax({
-                    
+
                     'cache' : false,
-                    
-                    'data' : { 
+
+                    'data' : {
                         'webtag'  : beehive.webtag,
                         'ajax'    : true,
                         'action'  : $button.attr('id'),
                         'display' : 'false'
                     },
-                    
-                    'url' : beehive.forum_path + '/ajax.php'                
+
+                    'url' : beehive.forum_path + '/ajax.php'
                 });
             });
-        
+
         } else {
-            
+
             $element.slideDown(150, function() {
-                
+
                 $button.attr('src', beehive.images['hide.png']);
-                
+
                 $.ajax({
-                    
+
                     'cache' : false,
-                    
-                    'data' : { 
+
+                    'data' : {
                         'webtag'  : beehive.webtag,
                         'ajax'    : true,
                         'action'  : $button.attr('id'),
                         'display' : 'true'
                     },
-                    
-                    'url' : beehive.forum_path + '/ajax.php'                
+
+                    'url' : beehive.forum_path + '/ajax.php'
                 });
             });
         }
-        
-        return false;    
-    });    
+
+        return false;
+    });
 });

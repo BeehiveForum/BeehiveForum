@@ -381,6 +381,30 @@ switch ($_GET['action']) {
 
         break;
 
+    case 'post_options':
+
+        // Get the msg from the request
+        if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        // Get message TID and PID.
+        list($tid, $pid) = explode('.', $_GET['msg']);
+
+        // Check we have a valid thread.
+        if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+        }
+
+        // Get the post options HTML
+        if (($post_options_html = message_get_post_options_html($tid, $pid, $thread_data['FID']))) {
+
+            // Send the vanilla HTML
+            echo $post_options_html;
+        }
+
+        break;
+
     // Unknown action
     default:
 

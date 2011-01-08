@@ -1459,7 +1459,7 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
 
         }elseif (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
 
-            $uri_array['scheme'] = (mb_strtolower($_SERVER['HTTPS']) != 'off' && $allow_https === true) ? 'https' : 'http';
+            $uri_array['scheme'] = (mb_strtolower($_SERVER['HTTPS']) != 'off') ? 'https' : 'http';
 
         }else {
 

@@ -233,7 +233,7 @@ if (isset($_POST['register'])) {
 
         if (mb_strlen($password) > 32) {
 
-            $error_msg_array[] = $lang['passwordtoolong'];
+            $error_msg_array[] = $lang['passwdtoolong'];
             $valid = false;
         }
 

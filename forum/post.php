@@ -324,7 +324,7 @@ if (isset($_POST['t_sig_html'])) {
     $t_sig_html = $_POST['t_sig_html'];
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 
     $fetched_sig = false;

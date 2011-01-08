@@ -636,7 +636,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $lang = load_language_file();
 
     $perm_is_moderator = session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
-    $perm_has_admin_access = session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
@@ -1744,9 +1743,6 @@ function messages_set_read($tid, $pid, $modified)
     // User UID
     if (($uid = session_get_value('UID')) === false) return false;
 
-    // Current datetime.
-    $current_datetime = date(MYSQL_DATETIME, time());
-
     // Mark as read cut off
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
@@ -1754,8 +1750,6 @@ function messages_set_read($tid, $pid, $modified)
     if (!user_is_guest()) {
 
         if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
-
-            $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
             $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_THREAD` ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";

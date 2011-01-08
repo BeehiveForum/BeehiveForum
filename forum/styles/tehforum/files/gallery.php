@@ -104,14 +104,14 @@ function resize_image($image_file_path, $max_width, $max_height)
 
     // Check the file exists and we can get some image data from it.
     if (!file_exists($image_file_path) || !($image_info = @getimagesize($image_file_path))) return false;
-    
+
     // Check the gd_info function exists
-    if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;    
+    if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
 
     // Check 1: Is the image format in our list of supported image types.
     if (!isset($required_read_support[$image_info[2]])) return false;
     if (!isset($required_write_support[$image_info[2]])) return false;
-    
+
     // Check 2: Check gd_info function indicates support for the image type.
     if (!attachments_get_gd_info_key($required_read_support[$image_info[2]])) return false;
     if (!attachments_get_gd_info_key($required_write_support[$image_info[2]])) return false;
@@ -169,10 +169,10 @@ if ((isset($_POST['upload'])) && (session_get_value('UID') > 0)) {
         $logon = session_get_value('LOGON');
 
         $temp_file = $_FILES['userimage']['tmp_name'];
-        
+
         $image_file_path = "$images_dir/$logon";
 
-        if (@$image_data = getimagesize($temp_file)) {
+        if (@($image_data = getimagesize($temp_file))) {
 
             if (@move_uploaded_file($temp_file, $image_file_path)) {
 
@@ -196,23 +196,23 @@ if ((isset($_POST['upload'])) && (session_get_value('UID') > 0)) {
         }
 
         html_draw_top('user_profile.js', "stylesheet=gallery.css");
-        
+
         echo "<h1>Error</h1>\n";
         echo "<p>Something went wrong. You'll be needing to try again.</p>";
-        
+
         html_draw_bottom();
         exit;
     }
 }
 
 // Get the files here
-if (@$dir = opendir($images_dir)) {
+if (@($dir = opendir($images_dir))) {
 
     while(($file = readdir($dir)) !== false) {
 
         if ($file != '.' && $file != '..' && !is_dir($file)) {
 
-            if (@$image_info = getimagesize("$images_dir/$file")) {
+            if (@($image_info = getimagesize("$images_dir/$file"))) {
 
                 $images_array[] = $file;
             }
@@ -297,7 +297,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
 
     foreach($images_array as $key => $image) {
 
-        if (@$image_info = getimagesize("$images_dir/$image")) {
+        if (@($image_info = getimagesize("$images_dir/$image"))) {
 
             $target_width  = $image_info[0];
             $target_height = $image_info[1];

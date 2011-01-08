@@ -1211,9 +1211,6 @@ function attachments_create_thumb($filehash, $max_width = 150, $max_height = 150
             return attachments_create_thumb_gd($filehash, $max_width, $max_height);
             break;
     }
-
-    // No thumbnail creation
-    return false;
 }
 
 /**

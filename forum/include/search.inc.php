@@ -316,7 +316,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
 
     // Split the search string into boolean parts and clean out
     // the empty array values.
-    $keyword_match = '([\+|-]?[\p{L}\p{N}\']+)|([\+|-]?["][^"]+["])';
+    $keyword_match = '([\+|-]?[\pL\pN\pP]+)|([\+|-]?["][^"]+["])';
 
     $keywords_array = preg_split("/$keyword_match/u", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
     $keywords_array = array_filter(array_map('trim', $keywords_array), 'strlen');
@@ -340,14 +340,14 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // and by checking individual words lengths.
     if ($strip_valid === true) {
 
-        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\p{L}\p{N}\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
+        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
         $keywords_array_swords = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/Diu', $mysql_fulltext_stopwords), $keywords_array);
 
         $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
 
     }else {
 
-        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\p{L}\p{N}\s\']{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/Diu', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
     }
 
@@ -379,7 +379,7 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
     // Expression to match words prefixed with a hyphen (for do not match)
     if ($remove_non_matches === true) {
 
-        $boolean_non_match = sprintf('/^-["]?([\p{L}\p{N}\s\']){%d,%d}["]?$/Du', $min_length, $max_length);
+        $boolean_non_match = sprintf('/^-["]?([\pL\pN\pP\pZ]){%d,%d}["]?$/Du', $min_length, $max_length);
 
         $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
         $keywords_array = preg_replace('/["|\+|\x00]+/u', '', $keywords_array);

@@ -297,7 +297,7 @@ function install_check_mysql_version()
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">MySQL Server Version 4.1.16 or newer is required to run Beehive Forum. Please upgrade your MySQL installtion.</td>\n";
+        echo "                        <td align=\"left\">MySQL Server Version 5.1.41 or newer is required to run Beehive Forum. Please upgrade your MySQL installtion.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -454,7 +454,7 @@ function install_check_php_version()
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">PHP Version 5.2.1 or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
+        echo "                        <td align=\"left\">PHP Version 5.2.0 or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

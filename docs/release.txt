@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 1.0 (Released 3rd January 2011)
+What's new in 1.0 (Released 9th January 2011)
 ==================
 
 - Notes

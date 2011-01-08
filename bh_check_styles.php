@@ -75,24 +75,24 @@ function get_file_list(&$file_list_array, $path, $extension)
 function parse_css_to_array($css_file_contents)
 {
     $css_rules_array = array();
-    
+
     preg_match_all('/([^}]+){([^}]+)}/im', $css_file_contents, $rule_matches_array, PREG_SET_ORDER);
-    
+
     foreach ($rule_matches_array as $rule_match) {
-        
+
         $selector = preg_replace('/ +/', ' ', preg_replace("/\r|\r\n|\n/", " ", trim($rule_match[1])));
-        
+
         $css_rules_array[$selector] = array();
-        
+
         $attributes_array = array_filter(array_map('trim', explode(';', $rule_match[2])), 'strlen');
-        
+
         foreach ($attributes_array as $attribute_line) {
-            
+
             list($attribute, $value) = explode(':', $attribute_line);
             $css_rules_array[$selector][trim($attribute)] = trim($value);
         }
     }
-    
+
     return $css_rules_array;
 }
 
@@ -100,16 +100,16 @@ function selector_sort($a, $b)
 {
     if ($a == 'html' && $b == 'body') return -1;
     if ($a == 'body' && $b == 'html') return 1;
-    
+
     if ($a == 'html') return -1;
     if ($b == 'html') return 1;
-    
+
     if ($a == 'body') return -1;
     if ($b == 'body') return 1;
-    
+
     if (substr($a, 0, 1) == '.' && substr($b, 0, 1) != '.') return 1;
     if (substr($a, 0, 1) != '.' && substr($b, 0, 1) == '.') return -1;
-    
+
     return strcmp($a, $b);
 }
 
@@ -123,31 +123,31 @@ function sort_array_by_array($array, $sort_by)
 function parse_array_to_css($css_rules_array)
 {
     $css_file_contents = '';
-    
+
     foreach ($css_rules_array as $selector => $rules_set) {
-        
+
         ksort($rules_set);
-        
+
         $css_file_contents.= sprintf("%s {\n    %s;\n}\n\n", wordwrap($selector, 65), implode_assoc($rules_set, ': ', ";\n    "));
     }
-    
+
     return trim($css_file_contents);
 }
 
-function array_diff_key_recursive($array1, $array2) 
+function array_diff_key_recursive($array1, $array2)
 {
     foreach($array1 as $key => $value) {
-        
+
         if (is_array($value) && array_key_exists($key, $array2)) {
-            
+
             $result[$key] = array_diff_key_recursive($array1[$key], $array2[$key]);
-        
+
         } else if (is_array($value)) {
-            
+
             $result[$key] = $array1[$key];
-        
+
         }else {
-            
+
             $result = array_diff_key($array1, $array2);
         }
 
@@ -155,7 +155,7 @@ function array_diff_key_recursive($array1, $array2)
             unset($result[$key]);
         }
     }
-    
+
     return $result;
 }
 
@@ -164,12 +164,15 @@ set_time_limit(0);
 
 // Output the content as text.
 header('Content-Type: text/plain');
-    
+
 // Array to hold our CSS schemes.
 $css_rules_array = array();
 
 // Get the CSS files in the main forum/styles directory
-get_file_list($file_list, 'forum/styles', '.css');
+get_file_list($file_list, 'forum/styles', 'style.css');
+
+// Get the CSS files in the main forum/styles directory
+get_file_list($file_list, 'forum/styles', 'install.css');
 
 // Iterate over each of the files.
 foreach($file_list as $css_filepath) {
@@ -177,59 +180,59 @@ foreach($file_list as $css_filepath) {
 }
 
 // Load the default style
-$default_css_rules = parse_css_to_array(file_get_contents('forum/styles/Default/style.css'));
+$default_css_rules = parse_css_to_array(file_get_contents('forum/styles/default/style.css'));
 
 // Make backup of default style
-rename('forum/styles/Default/style.css', sprintf('forum/styles/Default/style.css.%s', date('YmdHis')));
+rename('forum/styles/default/style.css', sprintf('forum/styles/default/style.css.%s', date('YmdHis')));
 
 // Clean the default style and save it.
 file_put_contents('forum/styles/Default/style.css', parse_array_to_css($default_css_rules));
 
 // Debug output.
 foreach($css_rules_array as $css_filepath => $css_rules_set) {
-    
+
     // Remove font-size rules
     foreach($css_rules_set as $selector => $rules_set) {
-        
+
         if (isset($default_css_rules[$selector]['font-size'])) {
             $css_rules_set[$selector]['font-size'] = $default_css_rules[$selector]['font-size'];
         } else {
-            unset($css_rules_set[$selector]['font-size']);    
+            unset($css_rules_set[$selector]['font-size']);
         }
     }
-    
+
     // Remove depreceated selectors
     $css_rules_set = array_diff_key($css_rules_set, array_diff_key($css_rules_set, $default_css_rules));
-    
+
     // Add the missing selectors
     $css_rules_set = array_merge($css_rules_set, array_diff_key($default_css_rules, $css_rules_set));
-    
+
     $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
-    
+
     // Copy the missing rules to the selectors
     foreach(array_diff_key_recursive($default_css_rules, $css_rules_set) as $selector => $missing_rules_set) {
-        
+
         foreach($missing_rules_set as $rule_name => $value) {
-            
+
             $css_rules_set[$selector][$rule_name] = $value;
         }
     }
-    
-    // Remove the extra rules from selectors, taking care not 
+
+    // Remove the extra rules from selectors, taking care not
     // to remove those with the word color in them.
     foreach(array_diff_key_recursive($css_rules_set, $default_css_rules) as $selector => $additional_rules_set) {
-        
+
         foreach($additional_rules_set as $rule_name => $value) {
-            
+
             if (preg_match('/color|background-image/', $rule_name) < 1) {
                 unset($css_rules_set[$selector][$rule_name]);
             }
         }
     }
-    
+
     // Backup the original file.
     rename($css_filepath, sprintf("$css_filepath.%s.%s", date('YmdHis'), md5(uniqid(mt_rand()))));
-    
+
     // Output the fixed style.
     file_put_contents($css_filepath, parse_array_to_css($css_rules_set));
 }

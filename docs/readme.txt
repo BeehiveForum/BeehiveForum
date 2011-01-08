@@ -817,14 +817,6 @@ Nigel Moore, Kevin Yip, Andrew Holgate, Mike Quigley, Matt Beale,
 Andy Black.
 
 
-4.5 Translations
-================
-
-French Canadian - Joanne McNair.
-German          - Armin Damm.
-X-Hacker        - Matt Beale.
-
-
 4.6 Official Beehive Forum Pimp
 ==============================
 

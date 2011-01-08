@@ -762,6 +762,13 @@ p, h1, h2 {
     background-color: #D42AD4;
 }
 
+.poll_accordian {
+    background-color: #A6BED7;
+    color: #FFFFFF;
+    font-weight: normal;
+    padding: 1px 5px;
+}
+
 .post_content {
     max-width: 480px;
     min-width: 480px;

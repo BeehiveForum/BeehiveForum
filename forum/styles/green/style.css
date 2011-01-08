@@ -234,7 +234,7 @@ p, h1, h2 {
 }
 
 .bhinputlogon_warning {
-    font-size: 10px;
+    font-size: 75%;
 }
 
 .bhinputprofileitem {
@@ -758,6 +758,13 @@ p, h1, h2 {
 
 .pollbar5 {
     background-color: #D42AD4;
+}
+
+.poll_accordian {
+    background-color: #A6BED7;
+    color: #FFFFFF;
+    font-weight: normal;
+    padding: 1px 5px;
 }
 
 .post_content {

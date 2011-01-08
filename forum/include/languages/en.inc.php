@@ -1020,7 +1020,7 @@ $lang['forum_settings_help_67'] = "Select the <b>Mail function</b> suitable for 
 $lang['forum_settings_help_68'] = "<b>Important:</b> If you are unsure what settings to use for sending email please consult your hosting provider's documentation.";
 $lang['forum_settings_help_69'] = "Your <b>Forum Root URI</b> is the address to your forum's index.php, excluding the script filename and query string. Example: <i>http://www.beehiveforum.net/forum</i>";
 $lang['forum_settings_help_70'] = "<b>Important:</b> Only enter a <b>Forum Root URI</b> if Beehive fails to automatically detect your forum's URI or if it detects the wrong value. Entering an incorrect value could make some areas of your Beehive Forum installation inaccessible.";
-$lang['forum_settings_help_71'] = "A <b>Content Delivery Network</b> or CDN can be used to help speed up page load of your forum by off-loading some of page content such as images, CSS and javascript to other servers.";
+$lang['forum_settings_help_71'] = "A <b>Content Delivery Network</b> or CDN can be used to help speed up page load of your forum by off-loading some of page content such as images, CSS and JavaScript to other servers.";
 $lang['forum_settings_help_72'] = "You should enter any CDN paths in the text box above, one per line. Your Beehive Forum will automatically prefix every static content request with each of the CDN paths in turn.";
 $lang['forum_settings_help_73'] = "Please Note: Your CDN paths should be to the root of the Beehive Forum content. For example, if you enter <i>cdn01.mybeehiveforum.net</i>, requests for the user's CSS styles will be made to <i>cdn01.mybeehiveforum.net/styles/[user_style]/style.css</i>";
 
@@ -1695,7 +1695,7 @@ $lang['usernametoolong'] = "Username must be a maximum of 15 characters long";
 $lang['usernamerequired'] = "A logon name is required";
 $lang['passwdmustnotcontainHTML'] = "Password must not contain HTML tags";
 $lang['passwdtooshort'] = "Password must be a minimum of 6 characters long";
-$lang['passwdtooshort'] = "Password must be a maximum of 32 characters long";
+$lang['passwdtoolong'] = "Password must be a maximum of 32 characters long";
 $lang['passwdrequired'] = "A password is required";
 $lang['confirmationpasswdrequired'] = "A confirmation password is required";
 $lang['nicknamerequired'] = "A nickname is required";

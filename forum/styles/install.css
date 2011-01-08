@@ -226,6 +226,13 @@ p, h1, h2 {
     width: 165px;
 }
 
+.bhseparatorlogon {
+    border-color: #A6BED7;
+    border-style: solid;
+    border-width: 1px 0px 0px;
+    margin: 10px 0px 5px;
+}
+
 .bhinputlogon_warning {
     font-size: 75%;
 }
@@ -752,6 +759,13 @@ p, h1, h2 {
 
 .pollbar5 {
     background-color: #D42AD4;
+}
+
+.poll_accordian {
+    background-color: #A6BED7;
+    color: #FFFFFF;
+    font-weight: normal;
+    padding: 1px 5px;
 }
 
 .post_content {

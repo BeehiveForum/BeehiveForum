@@ -161,7 +161,14 @@ function light_html_draw_top()
         }
     }
 
-    echo "<link rel=\"shortcut icon\" href=\"", html_get_favicon(), "\" type=\"image/ico\" />\n";
+    if (($favicon_filepath = html_get_favicon())) {
+        printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
+    }
+
+    if (($apple_touch_icon_filepath = html_get_apple_touch_icon())) {
+        printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);
+    }
+
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";

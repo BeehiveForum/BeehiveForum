@@ -77,7 +77,7 @@ $(beehive).bind('init', function() {
 
                             $link.after(data);
 
-                            $link.trigger('click');
+                            $link.triggerHandler('click');
 
                         } catch (exception) {
 

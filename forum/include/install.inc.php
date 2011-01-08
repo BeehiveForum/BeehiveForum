@@ -73,7 +73,7 @@ function check_install()
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"styles/install.css\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<h1>Beehive Forum Installation Error</h1>\n";
         echo "<br />\n";
@@ -143,7 +143,7 @@ function install_incomplete()
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-    echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"styles/install.css\" type=\"text/css\" />\n";
     echo "</head>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
@@ -213,7 +213,7 @@ function install_missing_files()
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-    echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"styles/install.css\" type=\"text/css\" />\n";
     echo "</head>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
@@ -278,7 +278,7 @@ function install_check_mysql_version()
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"../styles/install.css\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
         echo "<br />\n";
@@ -351,7 +351,7 @@ function install_check_php_extensions()
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"../styles/install.css\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
         echo "<br />\n";
@@ -435,7 +435,7 @@ function install_check_php_version()
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"../styles/install.css\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
         echo "<br />\n";

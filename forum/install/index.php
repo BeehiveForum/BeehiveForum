@@ -251,7 +251,7 @@ if (isset($_POST['install_method'])) {
                     // Check to see if running in developer mode.
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if (@file_put_contents('include/config.inc.php', $config_file)) {
+                        if (@file_put_contents('../include/config.inc.php', $config_file)) {
                             $config_saved = true;
                         }
 
@@ -359,6 +359,8 @@ if (isset($_POST['install_method'])) {
                         echo "              <input type=\"hidden\" name=\"db_username\" value=\"$db_username\">\n";
                         echo "              <input type=\"hidden\" name=\"db_password\" value=\"$db_password\">\n";
                         echo "              <input type=\"hidden\" name=\"db_database\" value=\"$db_database\">\n";
+                        echo "              <input type=\"hidden\" name=\"admin_email\" value=\"$admin_email\">\n";
+                        echo "              <input type=\"hidden\" name=\"enable_error_reports\" value=\"", $enable_error_reports ? 'Y' : 'N', "\">\n";
                         echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
                         echo "            </form>\n";
                         echo "          </td>\n";
@@ -404,7 +406,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if (($config_file = @file_get_contents('install/config.inc.php'))) {
+    if (($config_file = @file_get_contents('config.inc.php'))) {
 
         if (isset($_POST['db_server']) && strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
             $db_server = trim(stripslashes_array($_POST['db_server']));
@@ -422,13 +424,29 @@ if (isset($_POST['install_method'])) {
             $db_password = trim(stripslashes_array($_POST['db_password']));
         }
 
+        if (isset($_POST['admin_email']) && strlen(trim(stripslashes_array($_POST['admin_email']))) > 0) {
+            $admin_email = trim(stripslashes_array($_POST['admin_email']));
+        }
+
+        if (isset($_POST['enable_error_reports']) && ($_POST['enable_error_reports'] == 'Y')) {
+            $enable_error_reports = true;
+        }else {
+            $enable_error_reports = false;
+        }
+
         if (isset($db_server) && isset($db_database) && isset($db_username) && isset($db_password)) {
 
             // Database details
             $config_file = str_replace('{db_server}',   $db_server,   $config_file);
-            $config_file = str_replace('{db_database}', $db_database, $config_file);
             $config_file = str_replace('{db_username}', $db_username, $config_file);
             $config_file = str_replace('{db_password}', $db_password, $config_file);
+            $config_file = str_replace('{db_database}', $db_database, $config_file);
+
+            // Error reporting verbose mode
+            $config_file = str_replace('\'{error_report_verbose}\'', ($enable_error_reports) ? 'true' : 'false', $config_file);
+
+            // Error reporting to email address.
+            $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
 
             header("Content-Type: text/plain; name=\"config.inc.php\"");
             header("Content-disposition: attachment; filename=\"config.inc.php\"");

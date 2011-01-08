@@ -1,6 +1,39 @@
-Project Beehive Forum Change Log (Generated: Mon, 03 Jan 2011 12:10:15)
+Project Beehive Forum Change Log (Generated: Sat, 08 Jan 2011 23:31:24)
 
 Author: decoyduck
+Date: Sat, 08 Jan 2011 23:03:54
+-----------------------
+Changed: Expression for matching search keywords changed to allow UTF-8 punctuation and word
+         separators.
+
+Date: Sat, 08 Jan 2011 17:32:57
+-----------------------
+Fixed:   Installer was broken if it couldn't write to include/config.inc.php.
+
+Date: Sat, 08 Jan 2011 16:31:42
+-----------------------
+Fixed:   Sig comparison on edit.php
+
+Date: Sat, 08 Jan 2011 16:19:45
+-----------------------
+Fixed:   Language string passwdtoolong was incorrectly setup in en.inc.php.
+
+Date: Sat, 08 Jan 2011 10:03:03
+-----------------------
+Changed: Call triggerHandler instead of trigger on post menu popup.
+
+Date: Sat, 08 Jan 2011 10:01:56
+-----------------------
+Added:   Apple Touch Icon to light mode pages.
+
+Date: Wed, 05 Jan 2011 20:15:18
+-----------------------
+Added:   Lazy loading of Post Options menu to reduce size of HTML for message pane.
+
+Date: Mon, 03 Jan 2011 23:01:53
+-----------------------
+Fixed:   User autocomplete not working if no forums created.
+
 Date: Sun, 02 Jan 2011 22:25:50
 -----------------------
 Changed: Format of changelog.txt to make wrapped text easier to read.
@@ -68,6 +101,10 @@ Date: Mon, 13 Dec 2010 18:15:32
 -----------------------
 Fixed:   :{) emoticon definition was incorrect in smallsquare emoticon pack.
 
+Date: Sun, 12 Dec 2010 19:06:55
+-----------------------
+Changed: Revision URL parameter updated.
+
 Date: Sun, 12 Dec 2010 13:02:43
 -----------------------
 Changed: Remove other emoticon pack display from display_emoticons.php.
@@ -92,6 +129,11 @@ Fixed:   Search wouldn't allow mixed letters and numbers unless they were in quo
 Date: Wed, 01 Dec 2010 20:27:04
 -----------------------
 Changed: Using Closure Compiler for compressing JS.
+
+Date: Sun, 28 Nov 2010 14:01:39
+-----------------------
+Changed: Removed admin_make_style.php and supported functionality. Will hopefully replace later with
+         better CSS editor.
 
 Date: Sun, 28 Nov 2010 14:01:19
 -----------------------

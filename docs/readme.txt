@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 1.0 / 3rd January 2010
+Version 1.0 / 9th January 2011
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -74,7 +74,7 @@ in release.txt.
 You need web hosting which provides:
 
   - PHP 5.2.0 or above
-  - MySQL 4.1.16 or above
+  - MySQL 5.1.41 or above
   - PCRE 6.6 compiled with --enable-utf8 --enable-unicode-properties
 
 1.1.1 Requirements Notes

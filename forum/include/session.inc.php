@@ -782,7 +782,7 @@ function session_get_perm_array($uid)
 
                 if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
 
-                    $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
+                    $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = (double)$permission_data['PERM'];
                 }
             }
         }

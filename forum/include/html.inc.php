@@ -336,7 +336,7 @@ function html_get_apple_touch_icon()
     }
 
     if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon.png', basename($user_style)));
+        return html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon.png', basename($user_style)), true, true);
     }
 
     return false;
@@ -1532,7 +1532,7 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
     return $server_uri;
 }
 
-function html_get_forum_file_path($file_path, $allow_cdn = true)
+function html_get_forum_file_path($file_path, $allow_cdn = true, $use_full_path = false)
 {
     // Cache of requested file paths.
     static $file_path_cache_array = array();
@@ -1552,8 +1552,10 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
         }
 
         // If CDN is allowed, get the CDN path including the domain.
-        if (($allow_cdn === true) && (($cdn_domain = forum_get_content_delivery_path($file_path)))) {
+        if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
             $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
+        } else if (($use_full_path === true) && ($forum_uri = html_get_forum_uri())) {
+            $final_file_path = sprintf('%s/%s', $forum_uri, ltrim($file_path, '/'));
         } else {
             $final_file_path = preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
         }

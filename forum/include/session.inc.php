@@ -177,7 +177,7 @@ function session_check($show_session_fail = true, $init_guest_session = true)
                     forum_update_last_visit($user_sess['UID']);
                 }
             }
-            
+
             // Forum self preservation
             forum_check_maintenance();
 
@@ -401,7 +401,7 @@ function guest_session_init()
             // Update visitor log.
             session_update_visitor_log(0, $forum_fid);
         }
-        
+
         // Forum self-preservation
         forum_check_maintenance();
 
@@ -628,7 +628,7 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     // Check for an existing user session.
     $sql = "SELECT HASH FROM SESSIONS WHERE UID = '$uid'";
-    
+
     if (!$result = db_query($sql, $db_session_init)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -766,6 +766,28 @@ function session_get_perm_array($uid)
         $forum_fid = 0;
     }
 
+    if (($table_data = get_table_prefix())) {
+
+        $forum_fid = $table_data['FID'];
+
+        $sql = "SELECT GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(PERM) AS PERM, COUNT(GID) AS FOLDER_PERM_COUNT ";
+        $sql.= "FROM GROUP_PERMS INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = GROUP_PERMS.FID) ";
+        $sql.= "WHERE GROUP_PERMS.GID = 0 AND FORUM IN (0, $forum_fid) GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
+
+        if (!$result = db_query($sql, $db_session_get_perm_array)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            while (($permission_data = db_fetch_array($result))) {
+
+                if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
+
+                    $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
+                }
+            }
+        }
+    }
+
     $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
     $sql.= "FROM GROUP_USERS INNER JOIN GROUP_PERMS USING (GID) ";
@@ -780,29 +802,14 @@ function session_get_perm_array($uid)
 
             if ($permission_data['USER_PERM_COUNT'] > 0) {
 
-                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
-            }
-        }
-    }
-    
-    if (($table_data = get_table_prefix())) {
+                if (isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
 
-        $forum_fid = $table_data['FID'];
-        
-        $sql = "SELECT GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
-        $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = GROUP_PERMS.FID) ";
-        $sql.= "WHERE GROUP_PERMS.GID = 0 AND FORUM IN (0, $forum_fid) GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
-
-        if (!$result = db_query($sql, $db_session_get_perm_array)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            while (($permission_data = db_fetch_array($result))) {
-
-                if (!isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
-
-                    $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
+                    if (($user_perm_array[$permission_data['FORUM']][$permission_data['FID']] & USER_PERM_THREAD_MOVE) > 0) {
+                        $permission_data['PERM'] = (double)$permission_data['PERM'] | USER_PERM_THREAD_MOVE;
+                    }
                 }
+
+                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = (double)$permission_data['PERM'];
             }
         }
     }
@@ -1006,7 +1013,7 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 * Fetches the user's post page (POST_PAGE) setting from their user preferences.
 * If no user preference is available it returns a default value of 3271 which
 * includes:
-* 
+*
 * POST_TOOLBAR_DISPLAY
 * POST_EMOTICONS_DISPLAY
 * POST_TEXT_DEFAULT
@@ -1022,7 +1029,7 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 function session_get_post_page_prefs()
 {
     if (!$page_prefs = session_get_value('POST_PAGE')) {
-        
+
         $page_prefs = (double)POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
         $page_prefs = (double)$page_prefs | POST_SIGNATURE_DISPLAY | POLL_ADVANCED_DISPLAY | POLL_ADDITIONAL_MESSAGE_DISPLAY;
     }

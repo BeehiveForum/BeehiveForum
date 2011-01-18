@@ -814,7 +814,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                echo "&nbsp;<img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
+                echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
             }
         }
     }

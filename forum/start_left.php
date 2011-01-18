@@ -358,7 +358,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
                 if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                    echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                    echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
                 }else {
 

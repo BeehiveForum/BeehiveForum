@@ -340,7 +340,7 @@ if (isset($user_profile['PIC_URL'])) {
         echo "                            <tr>\n";
         echo "                              <td align=\"right\" class=\"subhead\">\n";
         echo "                                <div class=\"profile_image\">\n";
-        echo "                                  <img src=\"$profile_picture_href\" width=\"95\" height=\"95\" alt=\"\" />\n";
+        echo "                                  <img src=\"$profile_picture_href&amp;profile_picture\" width=\"95\" height=\"95\" alt=\"\" />\n";
         echo "                                </div>\n";
         echo "                              </td>\n";
         echo "                            </tr>\n";

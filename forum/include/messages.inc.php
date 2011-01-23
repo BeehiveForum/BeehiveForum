@@ -75,18 +75,18 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
     $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-    $sql.= "($current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0))) < $active_sess_cutoff AS USER_ACTIVE, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS_FORUM.ANON_LOGON, ";
     $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
+    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL, ";
+    $sql.= "(SELECT $current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0)) < $active_sess_cutoff FROM SESSIONS ";
+    $sql.= "WHERE SESSIONS.FID = {$table_data['FID']} AND SESSIONS.UID = POST.FROM_UID ORDER BY TIME DESC LIMIT 1) AS USER_ACTIVE ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER_FROM ";
     $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.FID = {$table_data['FID']} AND SESSIONS.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = SESSIONS.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' ";
     $sql.= "AND POST.PID >= '$pid' ";
     $sql.= "ORDER BY POST.PID ";
@@ -161,39 +161,51 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (($messages = db_fetch_array($result))) {
 
-            if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
+            if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
-            if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
-            if (!isset($messages['APPROVED_BY'])) $messages['APPROVED_BY'] = 0;
+            if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
+            if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
 
-            if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
-            if (!isset($messages['EDITED_BY'])) $messages['EDITED_BY'] = 0;
+            if (!isset($message['EDITED'])) $message['EDITED'] = 0;
+            if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
 
-            if (!isset($messages['IPADDRESS'])) $messages['IPADDRESS'] = "";
+            if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
-            if (!isset($messages['FROM_RELATIONSHIP'])) $messages['FROM_RELATIONSHIP'] = 0;
-            if (!isset($messages['TO_RELATIONSHIP'])) $messages['TO_RELATIONSHIP'] = 0;
+            if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
+            if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
-            if (!isset($messages['FNICK'])) $messages['FNICK'] = $lang['unknownuser'];
-            if (!isset($messages['FLOGON'])) $messages['FLOGON'] = $lang['unknownuser'];
-            if (!isset($messages['FROM_UID'])) $messages['FROM_UID'] = -1;
-
-            if (!isset($messages['TNICK'])) $messages['TNICK'] = $lang['allcaps'];
-            if (!isset($messages['TLOGON'])) $messages['TLOGON'] = $lang['allcaps'];
-
-            if (!isset($messages['MOVED_TID'])) $messages['MOVED_TID'] = 0;
-            if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
-
-            if (isset($messages['PTNICK'])) {
-                if (!is_null($messages['PTNICK']) && strlen($messages['PTNICK']) > 0) {
-                    $messages['TNICK'] = $messages['PTNICK'];
+            if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
+                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
+                    $message['TNICK'] = $message['PTNICK'];
                 }
             }
 
-            if (isset($messages['PFNICK'])) {
-                if (!is_null($messages['PFNICK']) && strlen($messages['PFNICK']) > 0) {
-                    $messages['FNICK'] = $messages['PFNICK'];
+            if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
+                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
+                    $message['FNICK'] = $message['PFNICK'];
                 }
+            }
+
+            if (!isset($message['FNICK'])) $message['FNICK'] = $lang['unknownuser'];
+            if (!isset($message['FLOGON'])) $message['FLOGON'] = $lang['unknownuser'];
+            if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
+
+            if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
+            if (!isset($message['TLOGON'])) $message['TLOGON'] = $lang['allcaps'];
+
+            if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
+            if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
+
+            if (isset($message['AVATAR_URL_FORUM']) && strlen($message['AVATAR_URL_FORUM']) > 0) {
+                $message['AVATAR_URL'] = $message['AVATAR_URL_FORUM'];
+            }elseif (isset($message['AVATAR_URL_GLOBAL']) && strlen($message['AVATAR_URL_GLOBAL']) > 0) {
+                $message['AVATAR_URL'] = $message['AVATAR_URL_GLOBAL'];
+            }
+
+            if (isset($message['AVATAR_AID_FORUM']) && is_md5($message['AVATAR_AID_FORUM'])) {
+                $message['AVATAR_AID'] = $message['AVATAR_AID_FORUM'];
+            }elseif (isset($message['AVATAR_AID_GLOBAL']) && is_md5($message['AVATAR_AID_GLOBAL'])) {
+                $message['AVATAR_AID'] = $message['AVATAR_AID_GLOBAL'];
             }
 
             return $messages;

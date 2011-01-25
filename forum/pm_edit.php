@@ -399,7 +399,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("title={$lang['privatemessages']}", "onUnload=clearFocus()", "resize_width=720", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title={$lang['privatemessages']}", "onUnload=clearFocus()", "resize_width=720", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editpm']}</h1>\n";
 

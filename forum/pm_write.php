@@ -784,7 +784,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top("title={$lang['privatemessages']} - {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
+html_draw_top("title={$lang['privatemessages']} - {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
 
 echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['sendnewpm']}</h1>\n";
 

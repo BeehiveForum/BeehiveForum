@@ -33,7 +33,7 @@ var beehive = $.extend({}, beehive, {
 
     ajax_error : function(message) {
 
-        if (console && console.log) {
+        if ((typeof(console) !== 'undefined') && (typeof(console.log) !== 'undefined')) {
             console.log('AJAX ERROR', message);
         }
     },
@@ -235,7 +235,9 @@ $(beehive).bind('init', function() {
 
         var frame_name = $(this).attr('name');
 
-        if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) return;
+        if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) return true;
+
+        if (beehive.uid == 0) return true;
 
         window.clearTimeout(frame_resize_timeout);
 

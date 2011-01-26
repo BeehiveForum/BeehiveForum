@@ -598,8 +598,6 @@ function html_draw_top()
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
-
     $frame_set_html = false;
 
     $pm_popup_disabled = false;
@@ -847,10 +845,6 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    echo "<script type=\"text/javascript\">\n";
-    echo "var beehive = ", json_encode(array('forum_path' => $forum_path)), ";\n";
-    echo "</script>\n";
-
     html_include_javascript(html_get_forum_file_path('js/jquery-1.4.1.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
@@ -947,6 +941,8 @@ function html_draw_top()
         }
     }
 
+    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
+
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
 
         echo "<script type=\"text/javascript\">\n\n";
@@ -960,8 +956,6 @@ function html_draw_top()
         echo "  })();\n\n";
         echo "</script>\n";
     }
-
-    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     echo "</head>\n\n";
 

@@ -92,6 +92,9 @@ if (($user_style = session_get_value('STYLE')) === false) {
     $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
 }
 
+// Get the forum path
+$forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+
 // Load the language file.
 $lang = load_language_file();
 
@@ -112,7 +115,7 @@ $lang_required = array('fixhtmlexplanation',
 if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
-                       
+
 // Construct the Javascript / JSON array
 $json_data = array('webtag'           => $webtag,
                    'uid'              => session_get_value('UID'),
@@ -123,6 +126,7 @@ $json_data = array('webtag'           => $webtag,
                    'emoticons'        => html_get_emoticon_style_sheet(),
                    'top_frame'        => html_get_top_page(),
                    'left_frame_width' => $left_frame_width,
+                   'forum_path'       => $forum_path,
                    'frames'           => array('index'       => html_get_frame_name('index'),
                                                'admin'       => html_get_frame_name('admin'),
                                                'start'       => html_get_frame_name('start'),
@@ -141,15 +145,15 @@ $json_data = array('webtag'           => $webtag,
 if (($images_array = glob("styles/$user_style/images/*.png"))) {
 
     foreach ($images_array as $image_filename) {
-        
+
         $image_filename = basename($image_filename);
         $json_data['images'][$image_filename] = html_style_image($image_filename);
     }
 }
 
-// If the data is requested via JSON send the 
+// If the data is requested via JSON send the
 // correct header and content.
-if (isset($_GET['json'])) {                       
+if (isset($_GET['json'])) {
 
     // JSON header
     header('Content-type: application/json; charset=UTF-8', true);
@@ -158,10 +162,10 @@ if (isset($_GET['json'])) {
     echo json_encode($json_data);
 
 } else {
-    
+
     header('Content-type: text/javascript; charset=UTF-8', true);
-    
-    echo "beehive = $.extend({}, beehive, ", json_encode($json_data), ");\n";
+
+    echo "var beehive = $.extend({}, beehive, ", json_encode($json_data), ");\n";
     echo "$(document).ready(function() {\n";
     echo "  $(beehive).trigger('init');\n";
     echo "});";

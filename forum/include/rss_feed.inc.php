@@ -192,15 +192,15 @@ function rss_feed_fetch()
     $sql.= "COALESCE(DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL RSS_FEEDS.FREQUENCY MINUTE), 0) AS NEXT_RUN ";
     $sql.= "FROM `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
     $sql.= "WHERE RSS_FEEDS.FREQUENCY > 0 AND USER.UID IS NOT NULL ";
-    $sql.= "HAVING CAST('2010-05-02 15:23:00' AS DATETIME) > NEXT_RUN ";
+    $sql.= "HAVING CAST('$current_datetime' AS DATETIME) > NEXT_RUN ";
     $sql.= "LIMIT 0, 1";
-    
+
     if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
 
     if (db_num_rows($result) > 0) {
 
         $rss_feed = db_fetch_array($result, DB_RESULT_ASSOC);
-        
+
         $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}RSS_FEEDS` ";
         $sql.= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
         $sql.= "WHERE RSSID = {$rss_feed['RSSID']}";
@@ -260,13 +260,18 @@ function rss_feed_check_feeds()
     $lang = load_language_file();
 
     if (($rss_feed = rss_feed_fetch())) {
-        
+
+        echo '<pre>';
+        print_r($rss_feed);
+        echo '</pre>';
+        exit;
+
         if (($rss_data = rss_feed_read_database($rss_feed['URL']))) {
-            
+
             $max_item_count = min(10, $rss_feed['MAX_ITEM_COUNT']);
-            
+
             foreach ($rss_data as $item_index => $rss_feed_item) {
-                
+
                 if (($item_index + 1) > $max_item_count) return;
 
                 if (!rss_feed_thread_exist($rss_feed['RSSID'], $rss_feed_item->link)) {

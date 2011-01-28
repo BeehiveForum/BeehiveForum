@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 1.0 / 9th January 2011
+Version 1.0.1 / 30th January 2011
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -364,10 +364,10 @@ folder with contents.
 To edit the start page you can use the built-in start page editor. This is located
 in Admin > Start Page. 
 
-In Beehive Forum 1.0 the start page is saved directly to the database and no physical
-file is saved to the file system. To be able to create more complicated start pages,
-such as those which include PHP code, you will need to replace the saved information
-in the database by hand using phpMyAdmin or SQLYog.
+As of Beehive Forum 1.0 the start page is saved directly to the database and no 
+physical file is saved to the file system. To be able to create more complicated 
+start pages, such as those which include PHP code, you will need to replace the
+saved information in the database by hand using phpMyAdmin or SQLYog.
 
 Prior to Beehive Forum 1.0, the start page was saved to the file system in the forums
 subdirectory within another folder named to match the webtag of the folder.

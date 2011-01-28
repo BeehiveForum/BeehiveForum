@@ -1876,7 +1876,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
             }else {
 
-                if (session_check_perm($access_allowed, $folder_order['FID'])) {
+                if (session_check_perm($access_allowed, $folder_order['FID']) || ($default_fid == $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
                 }

@@ -33,7 +33,7 @@ USA
 */
 
 // Beehive Version
-define('BEEHIVE_VERSION', "1.0-CVS");
+define('BEEHIVE_VERSION', "1.0.1-CVS");
 
 // Beehive DOB (unixtimestamp)
 define('BEEHIVE_DOB', 1018220400);

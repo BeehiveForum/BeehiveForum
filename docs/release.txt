@@ -1,5 +1,37 @@
 Beehive Forum Release Notes
 
+What's new in 1.0.1 (Released 30th January 2011)
+====================
+
+- Changes from 1.0
+
+	- RSS Feeds weren't updating due to hard-coded
+          date in SQL query.
+
+	- Window resize event firing for guests and
+          causing error in IE7.
+
+        - Emoticons not added by clicking on them in 
+          pm_edit.php and pm_write.php
+
+        - Duplicate messages displaying if post author 
+          had more than 1 active session.
+
+        - Profile and Avatar attachments would count up
+          views due to missing profile_picture or 
+          avatar_picture URL parameter.
+
+        - Cast perm value to a double to stop max integer 
+          size corrupting permissions.
+
+        - Apple Touch Icon not displaying on Android 
+          devices because they require absolute path to 
+          the image.
+
+        - Permission USER_PERM_THREAD_MOVE was being 
+          overridden by user permissions.
+
+
 What's new in 1.0 (Released 9th January 2011)
 ==================
 

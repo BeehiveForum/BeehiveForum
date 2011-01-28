@@ -31,6 +31,9 @@ What's new in 1.0.1 (Released 30th January 2011)
         - Permission USER_PERM_THREAD_MOVE was being 
           overridden by user permissions.
 
+        - folder_draw_dropdown wasn't allowing the 
+          current folder
+
 
 What's new in 1.0 (Released 9th January 2011)
 ==================

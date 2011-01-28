@@ -1,6 +1,14 @@
-Project Beehive Forum Change Log (Generated: Fri, 28 Jan 2011 20:38:32)
+Project Beehive Forum Change Log (Generated: Fri, 28 Jan 2011 22:46:09)
 
 Author: decoyduck
+Date: Fri, 28 Jan 2011 22:45:52
+-----------------------
+Fixed:   folder_draw_dropdown wasn't allowing the current folder.
+
+Date: Fri, 28 Jan 2011 20:44:31
+-----------------------
+Changed: Updated rel URL query parameter in html.inc.php.
+
 Date: Fri, 28 Jan 2011 20:16:52
 -----------------------
 Fixed:   RSS Feeds weren't updating due to hard-coded date in SQL query.

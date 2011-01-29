@@ -261,11 +261,6 @@ function rss_feed_check_feeds()
 
     if (($rss_feed = rss_feed_fetch())) {
 
-        echo '<pre>';
-        print_r($rss_feed);
-        echo '</pre>';
-        exit;
-
         if (($rss_data = rss_feed_read_database($rss_feed['URL']))) {
 
             $max_item_count = min(10, $rss_feed['MAX_ITEM_COUNT']);

@@ -591,15 +591,57 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-if (install_index_exists($db_database, 'VISITOR_LOG', 'SID')) {
+// Remove VISITOR_LOG_OLD if it exists.
+$sql = "DROP TABLE IF EXISTS VISITOR_LOG_OLD";
 
-    // Remove the index on SID before we add the UNIQUE index
-    $sql = "ALTER IGNORE TABLE VISITOR_LOG DROP INDEX SID";
-    $result = @db_query($sql, $db_install);
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
-// Add the UNIQUE index to SID.
-$sql = "ALTER IGNORE TABLE VISITOR_LOG ADD UNIQUE (SID)";
+// Rename the old VISITOR_LOG table to VISITOR_LOG_OLD.
+$sql = "ALTER TABLE VISITOR_LOG RENAME TO VISITOR_LOG_OLD";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Create new VISITOR_LOG TABLE that matches the schema from a new install.
+$sql = "CREATE TABLE VISITOR_LOG (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  LAST_LOGON DATETIME DEFAULT NULL, ";
+$sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL, ";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
+$sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
+$sql.= "  PRIMARY KEY (UID, VID), ";
+$sql.= "  KEY FORUM (FORUM), ";
+$sql.= "  KEY SID (SID), ";
+$sql.= "  KEY LAST_LOGON (LAST_LOGON)";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Copy the old visitor log to the new table, ignoring any errors.
+$sql = "INSERT IGNORE INTO VISITOR_LOG (UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+$sql.= "SELECT UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG_OLD";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove VISITOR_LOG_OLD
+$sql = "DROP TABLE IF EXISTS VISITOR_LOG_OLD";
 
 if (!$result = @db_query($sql, $db_install)) {
 

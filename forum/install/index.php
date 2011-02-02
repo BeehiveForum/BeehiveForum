@@ -216,9 +216,9 @@ if (isset($_POST['install_method'])) {
             install_check_mysql_version();
 
             // Check the install method
-            if (($install_method == 3) && (@file_exists('upgrade-08x-to-09.php'))) {
+            if (($install_method >= 3) && (@file_exists('upgrade.php'))) {
 
-                include_once("upgrade-08x-to-09.php");
+                include_once("upgrade.php");
 
             }elseif (($install_method == 1) && (@file_exists('new-install.php'))) {
 
@@ -620,7 +620,8 @@ echo "                            <option value=\"\">Please select...</option>\n
 echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
 echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
 echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.8.x to 0.9</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.9.x to 1.0.1</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 1.0 to 1.0.1</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

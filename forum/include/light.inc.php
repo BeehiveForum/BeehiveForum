@@ -120,8 +120,8 @@ function light_html_draw_top()
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$meta_description\" />\n";
-    echo "<meta name=\"MobileOptimized\" content=\"320\" />\n";
-    echo "<meta name=\"viewport\" content=\"width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" />\n";
+    echo "<meta name=\"MobileOptimized\" content=\"0\" />\n";
+    echo "<meta name=\"viewport\" content=\"width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; maximum-scale=2.5; minimum-scale=0.5; user-scalable=1;\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
 

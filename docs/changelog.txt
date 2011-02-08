@@ -1,13 +1,25 @@
-Project Beehive Forum Change Log (Generated: Fri, 28 Jan 2011 22:46:09)
+Project Beehive Forum Change Log (Generated: Tue, 08 Feb 2011 18:43:05)
 
 Author: decoyduck
+Date: Tue, 08 Feb 2011 18:41:45
+-----------------------
+Changed: Allow user-scale (zoom) on mobile platforms.
+
+Date: Sat, 05 Feb 2011 13:08:16
+-----------------------
+Fixed:   Links detail showing duplicate top level link in folder path.
+
+Date: Wed, 02 Feb 2011 20:25:31
+-----------------------
+Fixed:   Installer referenced 0.8.x to 0.9.x instead of 0.9.x to 1.0.
+
+Date: Sat, 29 Jan 2011 16:14:13
+-----------------------
+Fixed:   Removed debugging code from rss_feed.inc.php
+
 Date: Fri, 28 Jan 2011 22:45:52
 -----------------------
 Fixed:   folder_draw_dropdown wasn't allowing the current folder.
-
-Date: Fri, 28 Jan 2011 20:44:31
------------------------
-Changed: Updated rel URL query parameter in html.inc.php.
 
 Date: Fri, 28 Jan 2011 20:16:52
 -----------------------

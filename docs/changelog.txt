@@ -1,6 +1,10 @@
-Project Beehive Forum Change Log (Generated: Tue, 08 Feb 2011 18:43:05)
+Project Beehive Forum Change Log (Generated: Sat, 12 Feb 2011 16:12:01)
 
 Author: decoyduck
+Date: Tue, 08 Feb 2011 18:54:10
+-----------------------
+Changed: Updated build number, changelog.txt, readme.txt and release.txt.
+
 Date: Tue, 08 Feb 2011 18:41:45
 -----------------------
 Changed: Allow user-scale (zoom) on mobile platforms.
@@ -17,9 +21,21 @@ Date: Sat, 29 Jan 2011 16:14:13
 -----------------------
 Fixed:   Removed debugging code from rss_feed.inc.php
 
+Date: Fri, 28 Jan 2011 22:53:27
+-----------------------
+Changed: Updated rel URL query parameter in html.inc.php.
+
+Date: Fri, 28 Jan 2011 22:48:13
+-----------------------
+Changed: Updated rel URL query parameter in html.inc.php.
+
 Date: Fri, 28 Jan 2011 22:45:52
 -----------------------
 Fixed:   folder_draw_dropdown wasn't allowing the current folder.
+
+Date: Fri, 28 Jan 2011 20:44:31
+-----------------------
+Changed: Updated rel URL query parameter in html.inc.php.
 
 Date: Fri, 28 Jan 2011 20:16:52
 -----------------------

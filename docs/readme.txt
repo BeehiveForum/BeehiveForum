@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 1.0.1 / 13th February 2011
+Version 1.0.1 / 14th February 2011
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.

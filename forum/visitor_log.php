@@ -433,7 +433,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                     $profile_item_options_array = explode("\n", $user_array["PROFILE_ITEM_OPTIONS_$key"]);
 
-                    if (isset($profile_item_options_array[$user_array["PROFILE_ITEM_OPTIONS_$key"]])) {
+                    if (isset($profile_item_options_array[$user_array["ENTRY_$key"]])) {
 
                         echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($profile_item_options_array[$user_array["ENTRY_$key"]]), "\">", word_filter_add_ob_tags(htmlentities_array($profile_item_options_array[$user_array["ENTRY_$key"]])), "&nbsp;</div></td>\n";
 

@@ -288,29 +288,17 @@ function folder_get_available_by_forum($forum_fid)
 {
     if (!is_numeric($forum_fid)) return '0';
 
-    if (!$table_data = get_table_prefix()) return '0';
+    if (user_is_guest()) {
 
-    if (!$db_folder_get_available_by_forum = db_connect()) return '0';
-
-    $access_allowed = user_is_guest() ? USER_PERM_GUEST_ACCESS : USER_PERM_POST_READ;
-
-    $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS FOLDER_PERMS FROM GROUP_PERMS ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = GROUP_PERMS.FID) ";
-    $sql.= "WHERE GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0 ";
-    $sql.= "GROUP BY GROUP_PERMS.FID HAVING FOLDER_PERMS & $access_allowed > 0";
-
-    $result = db_query($sql, $db_folder_get_available_by_forum);
-
-    if (db_num_rows($result) > 0) {
-
-        $folder_list_array = array();
-
-        while (($folder_data = db_fetch_array($result))) {
-
-            $folder_list_array[] = $folder_data['FID'];
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
+            return implode(',', array_filter($folder_list, 'is_numeric'));
         }
 
-        return (sizeof($folder_list_array) > 0) ? implode(',', $folder_list_array) : '0';
+    }else {
+
+        if (($folder_list = session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
+            return implode(',', array_filter($folder_list, 'is_numeric'));
+        }
     }
 
     return '0';

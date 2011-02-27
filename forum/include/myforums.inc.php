@@ -201,9 +201,11 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             // Get any unread messages
             if ($unread_cutoff_datetime !== false) {
 
-                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
-                $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
-                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
+                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
+                $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+                $sql.= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
+                $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
                 $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
                 if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
@@ -218,18 +220,17 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
             }
 
             // Total number of messages
-            $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-            $sql.= "WHERE THREAD.FID IN ($folders) ";
+            $sql = "SELECT COALESCE(SUM(THREAD.LENGTH), 0) FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
+            $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+            $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+            $sql.= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
+            $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
 
             if (!$result_messages_count = db_query($sql, $db_get_my_forums)) return false;
 
-            $num_messages_data = db_fetch_array($result_messages_count);
+            list($num_messages) = db_fetch_array($result_messages_count, DB_RESULT_NUM);
 
-            if (!isset($num_messages_data['NUM_MESSAGES']) || is_null($num_messages_data['NUM_MESSAGES'])) {
-                $forum_data['NUM_MESSAGES'] = 0;
-            }else {
-                $forum_data['NUM_MESSAGES'] = $num_messages_data['NUM_MESSAGES'];
-            }
+            $forum_data['NUM_MESSAGES'] = $num_messages;
 
             // Get unread to me message count
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
@@ -240,13 +241,9 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
 
             if (!$result_unread_to_me = db_query($sql, $db_get_my_forums)) return false;
 
-            $forum_unread_post_data = db_fetch_array($result_unread_to_me);
+            list($unread_to_me) = db_fetch_array($result_unread_to_me, DB_RESULT_NUM);
 
-            if (!isset($forum_unread_post_data['UNREAD_TO_ME']) || is_null($forum_unread_post_data['UNREAD_TO_ME'])) {
-                $forum_data['UNREAD_TO_ME'] = 0;
-            }else {
-                $forum_data['UNREAD_TO_ME'] = $forum_unread_post_data['UNREAD_TO_ME'];
-            }
+            $forum_data['UNREAD_TO_ME'] = $unread_to_me;
 
             // Sometimes the USER_THREAD table might have a higher count that the thread
             // length due to table corruption. I've only seen this on the SF provided

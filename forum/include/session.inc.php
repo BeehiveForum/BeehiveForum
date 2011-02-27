@@ -752,7 +752,7 @@ function session_end($remove_cookies = true)
 * @param integer $uid - User UID.
 */
 
-function session_get_perm_array($uid)
+function session_get_perm_array($uid, $forum_fid = false)
 {
     if (!$db_session_get_perm_array = db_connect()) return false;
 
@@ -760,10 +760,11 @@ function session_get_perm_array($uid)
 
     $user_perm_array = array();
 
-    if (($table_data = get_table_prefix())) {
+    if (!is_numeric($forum_fid)) {
+
+        if (!($table_data = get_table_prefix())) return false;
+
         $forum_fid = $table_data['FID'];
-    }else {
-        $forum_fid = 0;
     }
 
     if (($table_data = get_table_prefix())) {
@@ -977,10 +978,20 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
     if ($forum_fid === false) {
 
         if (!$table_data = get_table_prefix()) return false;
+
         $forum_fid = $table_data['FID'];
     }
 
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
+
+    if (!isset($user_sess['PERMS'][$forum_fid])) {
+
+        $user_sess['PERMS'][$forum_fid] = array();
+
+        if (($user_perms = session_get_perm_array($user_sess['UID'], $forum_fid))) {
+            $user_sess['PERMS'][$forum_fid] = $user_perms[$forum_fid];
+        }
+    }
 
     $folder_fid_array = array();
 

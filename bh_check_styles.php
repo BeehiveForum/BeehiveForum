@@ -39,7 +39,7 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 
 // Array of files to exclude from the matches
-$exclude_files_array = array('start_main.css', 'style_ie6.css');
+$exclude_files_array = array('start_main.css', 'style_ie6.css', 'gallery.css');
 
 // Array of directories to exclude from the matches
 $exclude_dirs_array = array('forum/styles/Default');

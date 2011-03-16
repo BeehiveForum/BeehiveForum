@@ -1427,22 +1427,13 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
 function html_get_forum_uri($append_path = null, $use_forum_uri = true)
 {
-    $uri_array = array('scheme'   => null,
-                       'host'     => null,
-                       'port'     => null,
-                       'user'     => null,
-                       'pass'     => null,
-                       'path'     => null,
-                       'query'    => null,
-                       'fragment' => null);
-
     if (($use_forum_uri === true) && ($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
 
-        $uri_array = array_merge($uri_array, @parse_url($forum_uri));
+        $uri_array = @parse_url($forum_uri);
 
     } else if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
 
-        $uri_array = array_merge($uri_array, @parse_url(dirname($_SERVER['REQUEST_URI'])));
+        $uri_array = @parse_url($_SERVER['REQUEST_URI']);
     }
 
     if (!isset($uri_array['scheme'])) {
@@ -1508,11 +1499,7 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
         }
     }
 
-    if (server_os_mswin()) {
-        $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', $uri_array['path']);
-    }
-
-    $uri_array['path'] = rtrim(dirname(sprintf('%s/%s', $uri_array['path'], md5(uniqid(rand())))), '/');
+    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname($uri_array['path']. 'a'));
 
     if (strlen(trim($append_path)) > 0) {
         $uri_array['path'].= $append_path;

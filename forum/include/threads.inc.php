@@ -110,7 +110,7 @@ function threads_get_folders()
     return false;
 }
 
-function threads_get_all($uid, $offset = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_all($uid, $folder, $offset = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
@@ -125,7 +125,13 @@ function threads_get_all($uid, $offset = 0) // get "all" threads (i.e. most rece
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships.
     $user_ignored = USER_IGNORED;
@@ -151,7 +157,7 @@ function threads_get_all($uid, $offset = 0) // get "all" threads (i.e. most rece
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -167,7 +173,7 @@ function threads_get_all($uid, $offset = 0) // get "all" threads (i.e. most rece
     return threads_process_list($result);
 }
 
-function threads_get_started_by_me($uid) // get threads started by user
+function threads_get_started_by_me($uid, $folder) // get threads started by user
 {
     if (!$db_threads_get_started_by_me = db_connect()) return array(0, 0);
 
@@ -181,7 +187,13 @@ function threads_get_started_by_me($uid) // get threads started by user
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
@@ -204,7 +216,7 @@ function threads_get_started_by_me($uid) // get threads started by user
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.BY_UID = '$uid' AND THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.BY_UID = '$uid' AND THREAD.FID IN ($folder) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
@@ -216,7 +228,7 @@ function threads_get_started_by_me($uid) // get threads started by user
     return threads_process_list($result);
 }
 
-function threads_get_unread($uid) // get unread messages for $uid
+function threads_get_unread($uid, $folder) // get unread messages for $uid
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -230,7 +242,13 @@ function threads_get_unread($uid) // get unread messages for $uid
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationship
     $user_ignored = USER_IGNORED;
@@ -259,7 +277,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -277,7 +295,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     return threads_process_list($result);
 }
 
-function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores folder interest level)
+function threads_get_unread_to_me($uid, $folder) // get unread messages to $uid (ignores folder interest level)
 {
     if (!$db_threads_get_unread_to_me = db_connect()) return array(0, 0);
 
@@ -291,7 +309,13 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -316,7 +340,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -332,7 +356,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     return threads_process_list($result);
 }
 
-function threads_get_by_days($uid, $days = 1) // get threads from the last $days days
+function threads_get_by_days($uid, $folder, $days = 1) // get threads from the last $days days
 {
     if (!$db_threads_get_by_days = db_connect()) return array(0, 0);
 
@@ -344,7 +368,13 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships.
     $user_ignored = USER_IGNORED;
@@ -373,7 +403,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -390,7 +420,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     return threads_process_list($result);
 }
 
-function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
+function threads_get_by_interest($uid, $folder, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
 {
     if (!$db_threads_get_by_interest = db_connect()) return array(0, 0);
 
@@ -405,7 +435,13 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -431,7 +467,7 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
     $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -448,7 +484,7 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
+function threads_get_unread_by_interest($uid, $folder, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
 {
     if (!$db_threads_get_unread_by_interest = db_connect()) return array(0, 0);
 
@@ -463,7 +499,13 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -492,7 +534,7 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
     $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -511,7 +553,7 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
     return threads_process_list($result);
 }
 
-function threads_get_recently_viewed($uid) // get messages recently seem by $uid
+function threads_get_recently_viewed($uid, $folder) // get messages recently seem by $uid
 {
     if (!$db_threads_get_recently_viewed = db_connect()) return array(0, 0);
 
@@ -525,7 +567,13 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -554,7 +602,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -572,7 +620,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     return threads_process_list($result);
 }
 
-function threads_get_by_relationship($uid, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
+function threads_get_by_relationship($uid, $folder, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
 {
     if (!$db_threads_get_by_relationship = db_connect()) return array(0, 0);
 
@@ -587,7 +635,13 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND) // get t
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
@@ -609,7 +663,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND) // get t
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND (USER_PEER.RELATIONSHIP & $relationship = $relationship)";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
@@ -622,7 +676,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND) // get t
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
+function threads_get_unread_by_relationship($uid, $folder, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -637,7 +691,13 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Check to see if unread messages are disabled.
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
@@ -662,7 +722,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND (USER_PEER.RELATIONSHIP & $relationship = $relationship)";
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
@@ -677,7 +737,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     return threads_process_list($result);
 }
 
-function threads_get_polls($uid)
+function threads_get_polls($uid, $folder)
 {
     if (!$db_threads_get_polls = db_connect()) return array(0, 0);
 
@@ -691,7 +751,13 @@ function threads_get_polls($uid)
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -718,7 +784,7 @@ function threads_get_polls($uid)
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -735,7 +801,7 @@ function threads_get_polls($uid)
     return threads_process_list($result);
 }
 
-function threads_get_sticky($uid)
+function threads_get_sticky($uid, $folder)
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
@@ -749,7 +815,13 @@ function threads_get_sticky($uid)
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -776,7 +848,7 @@ function threads_get_sticky($uid)
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -793,7 +865,7 @@ function threads_get_sticky($uid)
     return threads_process_list($result);
 }
 
-function threads_get_longest_unread($uid) // get unread messages for $uid
+function threads_get_longest_unread($uid, $folder) // get unread messages for $uid
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -807,7 +879,13 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -837,7 +915,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -915,7 +993,7 @@ function threads_get_folder($uid, $fid, $offset = 0)
     return threads_process_list($result);
 }
 
-function threads_get_deleted($uid)
+function threads_get_deleted($uid, $folder)
 {
     if (!$db_threads_get_all = db_connect()) return array(0, 0);
 
@@ -929,7 +1007,13 @@ function threads_get_deleted($uid)
     if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -956,7 +1040,7 @@ function threads_get_deleted($uid)
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -972,7 +1056,7 @@ function threads_get_deleted($uid)
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid
+function threads_get_unread_by_days($uid, $folder, $days = 0) // get unread messages for $uid
 {
     if (!$db_threads_get_unread = db_connect()) return array(0, 0);
 
@@ -987,7 +1071,13 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+
+    // Check the selected folder is in those available.
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+
+    // If the folder is not numeric use the available folders.
+    if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
@@ -1019,7 +1109,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";

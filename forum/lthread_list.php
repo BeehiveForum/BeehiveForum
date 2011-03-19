@@ -135,17 +135,10 @@ if (!forum_check_access_level()) {
 
 // Are we viewing a specific folder only?
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
     $folder = $_GET['folder'];
-    $mode = 0;
-
 }else if (isset($_POST['folder']) && is_numeric($_POST['folder'])) {
-
     $folder = $_POST['folder'];
-    $mode = 0;
-
 }else {
-
     $folder = false;
 }
 
@@ -196,8 +189,8 @@ if (user_is_guest()) {
             $mode = ALL_DISCUSSIONS;
         }
     }
-    
-    html_set_cookie("thread_mode_{$webtag}", $mode);    
+
+    html_set_cookie("thread_mode_{$webtag}", $mode);
 
     if (isset($_POST['mark_read_submit'])) {
 
@@ -217,7 +210,7 @@ if (user_is_guest()) {
 
                     if (threads_mark_read($thread_data)) {
 
-                        header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                        header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                         exit;
 
                     }else {
@@ -231,7 +224,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_all_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -244,7 +237,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_50_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -257,7 +250,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_folder_read($folder)) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {

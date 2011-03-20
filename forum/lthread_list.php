@@ -133,29 +133,28 @@ if (!forum_check_access_level()) {
     header_redirect("lforums.php");
 }
 
+// Get the folders the user can see.
+if (!($available_folders = folder_get_available_array())) {
+    $available_folders = array();
+}
+
 // Are we viewing a specific folder only?
-if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-    $folder = $_GET['folder'];
-}else if (isset($_POST['folder']) && is_numeric($_POST['folder'])) {
-    $folder = $_POST['folder'];
-}else {
+if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folders)) {
+    $folder = $_REQUEST['folder'];
+} else {
     $folder = false;
 }
 
 // View offset.
-if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
-    $start_from = $_GET['start_from'];
-}else if (isset($_POST['start_from']) && is_numeric($_POST['start_from'])) {
-    $start_from = $_POST['start_from'];
-}else {
+if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
+    $start_from = $_REQUEST['start_from'];
+} else {
     $start_from = 0;
 }
 
 // View mode
-if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
-    $mode = $_GET['mode'];
-}else if (isset($_POST['mode']) && is_numeric($_POST['mode'])) {
-    $mode = $_POST['mode'];
+if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
+    $thread_mode = $_REQUEST['thread_mode'];
 }
 
 // Check that required variables are set
@@ -167,8 +166,8 @@ if (user_is_guest()) {
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
-    if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
-        $mode = ALL_DISCUSSIONS;
+    if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
+        $thread_mode = ALL_DISCUSSIONS;
     }
 
 }else {
@@ -177,20 +176,20 @@ if (user_is_guest()) {
 
     $threads_any_unread = threads_any_unread();
 
-    if (isset($mode) && is_numeric($mode)) {
+    if (isset($thread_mode) && is_numeric($thread_mode)) {
 
-        html_set_cookie("thread_mode_{$webtag}", $mode);
+        html_set_cookie("thread_mode_{$webtag}", $thread_mode);
 
     }else {
 
-        $mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+        $thread_mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
 
-        if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-            $mode = ALL_DISCUSSIONS;
+        if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+            $thread_mode = ALL_DISCUSSIONS;
         }
     }
 
-    html_set_cookie("thread_mode_{$webtag}", $mode);
+    html_set_cookie("thread_mode_{$webtag}", $thread_mode);
 
     if (isset($_POST['mark_read_submit'])) {
 
@@ -210,7 +209,7 @@ if (user_is_guest()) {
 
                     if (threads_mark_read($thread_data)) {
 
-                        header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                        header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                         exit;
 
                     }else {
@@ -224,7 +223,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_all_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -237,7 +236,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_50_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -250,7 +249,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_folder_read($folder)) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
                     exit;
 
                 }else {
@@ -272,6 +271,6 @@ if (user_is_guest()) {
     }
 }
 
-light_draw_thread_list($mode, $folder, $start_from);
+light_draw_thread_list($thread_mode, $folder, $start_from);
 
 ?>

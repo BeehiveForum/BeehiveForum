@@ -1122,7 +1122,7 @@ function threads_get_unread_by_days($uid, $folder, $start_from = 0, $days = 0) /
 
 function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
 {
-    if (!$db_threads_get_unread_by_interest = db_connect()) return array(0, 0);
+    if (!($db_threads_get_recent = db_connect())) return array(0, 0);
 
     // Language file
     $lang = load_language_file();

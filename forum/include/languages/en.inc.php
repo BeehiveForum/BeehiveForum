@@ -1856,6 +1856,7 @@ $lang['selectedfolder'] = "Selected folder";
 $lang['navigate'] = "Navigate";
 $lang['couldnotretrievefolderinformation'] = "There are no folders available.";
 $lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or %s for all threads";
+$lang['viewingmessagesinfolder'] = "Viewing messages in &quot;%s&quot; only. To view threads in all folders %s.";
 $lang['clickhere'] = "click here";
 $lang['prev50threads'] = "Previous 50 threads";
 $lang['next50threads'] = "Next 50 threads";

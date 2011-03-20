@@ -768,7 +768,7 @@ function html_draw_top()
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/user_controls.ico'))));
     }
 
-    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+    if (session_check(false, false) && (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("/index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(sprintf('/%s', html_style_image('msie/admintool.ico'))));
     }
 

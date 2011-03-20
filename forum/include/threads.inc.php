@@ -110,25 +110,23 @@ function threads_get_folders()
     return false;
 }
 
-function threads_get_all($uid, $folder, $offset = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_all($uid, $folder, $start_from = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
-    if (!$db_threads_get_all = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($offset)) return array(0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
 
     // Ensure offset is positive.
-    $offset = abs($offset);
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -138,11 +136,11 @@ function threads_get_all($uid, $folder, $offset = 0) // get "all" threads (i.e. 
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Formulate query.
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
-    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
-    $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, ";
+    $sql.= "THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+    $sql.= "THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
+    $sql.= "USER_THREAD.INTEREST, FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
     $sql.= "THREAD_TRACK.TRACK_TYPE FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD_TRACK` THREAD_TRACK ";
     $sql.= "ON (THREAD_TRACK.TID = THREAD.TID) ";
@@ -166,38 +164,38 @@ function threads_get_all($uid, $folder, $offset = 0) // get "all" threads (i.e. 
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT $offset, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_started_by_me($uid, $folder) // get threads started by user
+function threads_get_started_by_me($uid, $folder, $start_from = 0) // get threads started by user
 {
-    if (!$db_threads_get_started_by_me = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view unread messages.
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -221,31 +219,31 @@ function threads_get_started_by_me($uid, $folder) // get threads started by user
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_started_by_me)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_unread($uid, $folder) // get unread messages for $uid
+function threads_get_unread($uid, $folder, $start_from = 0) // get unread messages for $uid
 {
-    if (!$db_threads_get_unread = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view unread messages.
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -255,10 +253,10 @@ function threads_get_unread($uid, $folder) // get unread messages for $uid
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Check to see if unread messages have been disabled.
-    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -288,31 +286,31 @@ function threads_get_unread($uid, $folder) // get unread messages for $uid
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_unread_to_me($uid, $folder) // get unread messages to $uid (ignores folder interest level)
+function threads_get_unread_to_me($uid, $folder, $start_from = 0) // get unread messages to $uid (ignores folder interest level)
 {
-    if (!$db_threads_get_unread_to_me = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view unread messages.
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -322,7 +320,7 @@ function threads_get_unread_to_me($uid, $folder) // get unread messages to $uid 
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -349,29 +347,29 @@ function threads_get_unread_to_me($uid, $folder) // get unread messages to $uid 
     $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_unread_to_me)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_by_days($uid, $folder, $days = 1) // get threads from the last $days days
+function threads_get_by_days($uid, $folder, $start_from = 0, $days = 1) // get threads from the last $days days
 {
-    if (!$db_threads_get_by_days = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($days)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+    if (!is_numeric($days)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -384,7 +382,7 @@ function threads_get_by_days($uid, $folder, $days = 1) // get threads from the l
     $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     // Formulate query.
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -413,32 +411,32 @@ function threads_get_by_days($uid, $folder, $days = 1) // get threads from the l
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_by_days)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_by_interest($uid, $folder, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
+function threads_get_by_interest($uid, $folder, $start_from = 0, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
 {
-    if (!$db_threads_get_by_interest = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($interest)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+    if (!is_numeric($interest)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -448,7 +446,7 @@ function threads_get_by_interest($uid, $folder, $interest = THREAD_INTERESTED) /
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -477,32 +475,32 @@ function threads_get_by_interest($uid, $folder, $interest = THREAD_INTERESTED) /
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_by_interest)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_unread_by_interest($uid, $folder, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
+function threads_get_unread_by_interest($uid, $folder, $start_from = 0, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
 {
-    if (!$db_threads_get_unread_by_interest = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($interest)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+    if (!is_numeric($interest)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -512,10 +510,10 @@ function threads_get_unread_by_interest($uid, $folder, $interest = THREAD_INTERE
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Check to see if unread messages have been disabled.
-    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -546,31 +544,31 @@ function threads_get_unread_by_interest($uid, $folder, $interest = THREAD_INTERE
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_unread_by_interest)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_recently_viewed($uid, $folder) // get messages recently seem by $uid
+function threads_get_recently_viewed($uid, $folder, $start_from = 0) // get messages recently seem by $uid
 {
-    if (!$db_threads_get_recently_viewed = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -583,7 +581,7 @@ function threads_get_recently_viewed($uid, $folder) // get messages recently see
     $threads_viewed_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - DAY_IN_SECONDS);
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -613,38 +611,38 @@ function threads_get_recently_viewed($uid, $folder) // get messages recently see
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_recently_viewed)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_by_relationship($uid, $folder, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
+function threads_get_by_relationship($uid, $folder, $start_from = 0, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
 {
-    if (!$db_threads_get_by_relationship = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($relationship)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+    if (!is_numeric($relationship)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -669,41 +667,41 @@ function threads_get_by_relationship($uid, $folder, $relationship = USER_FRIEND)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_by_relationship)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_unread_by_relationship($uid, $folder, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
+function threads_get_unread_by_relationship($uid, $folder, $start_from = 0, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
 {
-    if (!$db_threads_get_unread = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($relationship)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+    if (!is_numeric($relationship)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
     // Check to see if unread messages are disabled.
-    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -730,31 +728,31 @@ function threads_get_unread_by_relationship($uid, $folder, $relationship = USER_
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_polls($uid, $folder)
+function threads_get_polls($uid, $folder, $start_from = 0)
 {
-    if (!$db_threads_get_polls = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -765,7 +763,7 @@ function threads_get_polls($uid, $folder)
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -794,31 +792,31 @@ function threads_get_polls($uid, $folder)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_polls)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_sticky($uid, $folder)
+function threads_get_sticky($uid, $folder, $start_from = 0)
 {
-    if (!$db_threads_get_all = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -829,7 +827,7 @@ function threads_get_sticky($uid, $folder)
 
     // Formulate query - the join with USER_THREAD is needed because even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -858,31 +856,31 @@ function threads_get_sticky($uid, $folder)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_longest_unread($uid, $folder) // get unread messages for $uid
+function threads_get_longest_unread($uid, $folder, $start_from = 0) // get unread messages for $uid
 {
-    if (!$db_threads_get_unread = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -892,10 +890,10 @@ function threads_get_longest_unread($uid, $folder) // get unread messages for $u
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Check to see if unread messages have been disabled.
-    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -926,40 +924,36 @@ function threads_get_longest_unread($uid, $folder) // get unread messages for $u
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql.= "ORDER BY T_LENGTH DESC, THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_folder($uid, $fid, $offset = 0)
+function threads_get_folder($uid, $folder, $start_from = 0)
 {
-    if (!$db_threads_get_folder = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($fid)) return array(0, 0);
-    if (!is_numeric($offset)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($folder)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
 
     // Ensure offset is positive.
-    $offset = abs($offset);
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$folders_array = folder_get_available_array()) return array(0, 0);
+    if (!$folders_array = folder_get_available_array()) return array(0, 0, 0);
 
     // Check to make sure the specified folder is available to the user.
-    if (!in_array($fid, $folders_array)) return array(0, 0);
+    if (!in_array($folder, $folders_array)) return array(0, 0, 0);
 
     // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -978,7 +972,7 @@ function threads_get_folder($uid, $fid, $offset = 0)
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.FID IN ($fid) ";
+    $sql.= "WHERE THREAD.FID IN ($folder) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
@@ -986,31 +980,31 @@ function threads_get_folder($uid, $fid, $offset = 0)
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT $offset, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_folder)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_deleted($uid, $folder)
+function threads_get_deleted($uid, $folder, $start_from = 0)
 {
-    if (!$db_threads_get_all = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Only Admins can view deleted threads.
-    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0);
+    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -1021,7 +1015,7 @@ function threads_get_deleted($uid, $folder)
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -1049,32 +1043,32 @@ function threads_get_deleted($uid, $folder)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.DELETED = 'Y' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_all)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
-function threads_get_unread_by_days($uid, $folder, $days = 0) // get unread messages for $uid
+function threads_get_unread_by_days($uid, $folder, $start_from = 0, $days = 0) // get unread messages for $uid
 {
-    if (!$db_threads_get_unread = db_connect()) return array(0, 0);
-
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
-    if (!is_numeric($days)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
+    if (!is_numeric($start_from)) return array(0, 0, 0);
+    if (!is_numeric($days)) return array(0, 0, 0);
+
+    // Ensure offset is positive.
+    $start_from = abs($start_from);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
-    if (!$table_data = get_table_prefix()) return array(0, 0);
+    if (!$table_data = get_table_prefix()) return array(0, 0, 0);
 
     // Guests can't view this thread type.
-    if (user_is_guest()) return array(0, 0);
+    if (user_is_guest()) return array(0, 0, 0);
 
     // Get the folders the user can see.
-    if (!$available_folders = folder_get_available_array()) return array(0, 0);
+    if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
     // Check the selected folder is in those available.
-    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0);
+    if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
     // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
@@ -1084,13 +1078,13 @@ function threads_get_unread_by_days($uid, $folder, $days = 0) // get unread mess
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Check to see if unread messages have been disabled.
-    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0);
+    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
     // Generate datetime for '$days' days ago.
     $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     // Formulate query
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "FOLDER.PREFIX, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.LOGON, ";
@@ -1121,17 +1115,13 @@ function threads_get_unread_by_days($uid, $folder, $days = 0) // get unread mess
     $sql.= "AND THREAD.MODIFIED >= CAST('$threads_modified_datetime' AS DATETIME) ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT $start_from, 50";
 
-    if (!$result = db_query($sql, $db_threads_get_unread)) return array(0, 0);
-
-    return threads_process_list($result);
+    return threads_process_list($sql, $folder);
 }
 
 function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
 {
-    if (!$db_threads_get_recent = db_connect()) return false;
-
     // Language file
     $lang = load_language_file();
 
@@ -1260,73 +1250,72 @@ function threads_get_unread_cutoff()
 }
 
 // Arrange the results of a query into the right order for display
-function threads_process_list($result)
+function threads_process_list($sql, $folder)
 {
-    // Language file
+    if (!($db_threads_process_list = db_connect())) return array(0, 0, 0);
+
+    if (!($result = db_query($sql, $db_threads_process_list))) return array(0, 0, 0);
+
+    if (db_num_rows($result) == 0) return array(0, 0, 0);
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!($result_count = db_query($sql, $db_threads_process_list))) return array(0, 0, 0);
+
+    list($total_threads) = db_fetch_array($result_count, DB_RESULT_NUM);
+
     $lang = load_language_file();
 
-    // Unread cutoff
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
-    // Check for a specified folder
-    if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-        $folder_order = array($_GET['folder']);
-    }
+    $threads_array = array();
 
-    if (db_num_rows($result) > 0) {
+    while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
-        $threads_array = array();
-
-        while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
-
-            if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
-                if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
-                    $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
-                }
+        if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
+            if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
+                $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
             }
-
-            if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
-            if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
-
-            if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
-            if (!isset($thread['INTEREST']) || is_null($thread['INTEREST'])) $thread['INTEREST'] = 0;
-            if (!isset($thread['STICKY']) || is_null($thread['STICKY'])) $thread['STICKY'] = 0;
-            if (!isset($thread['VIEWCOUNT']) || is_null($thread['VIEWCOUNT'])) $thread['VIEWCOUNT'] = 0;
-            if (!isset($thread['PREFIX']) || is_null($thread['PREFIX'])) $thread['PREFIX'] = "";
-            if (!isset($thread['TRACK_TYPE']) || is_null($thread['TRACK_TYPE'])) $thread['TRACK_TYPE'] = -1;
-            if (!isset($thread['DELETED']) || is_null($thread['DELETED'])) $thread['DELETED'] = 'N';
-
-            if (!isset($folder_order) || !is_array($folder_order)) {
-                $folder_order = array($thread['FID']);
-            }else {
-                if (!in_array($thread['FID'], $folder_order)) {
-                    $folder_order[] = $thread['FID'];
-                }
-            }
-
-            if (user_is_guest()) {
-
-                $thread['LAST_READ'] = 0;
-
-            }else if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
-
-                $thread['LAST_READ'] = 0;
-
-                if (isset($thread['MODIFIED']) && $unread_cutoff_timestamp !== false && $thread['MODIFIED'] < $unread_cutoff_timestamp) {
-                    $thread['LAST_READ'] = $thread['LENGTH'];
-                }else if (isset($thread['UNREAD_PID']) && is_numeric($thread['UNREAD_PID'])) {
-                    $thread['LAST_READ'] = $thread['UNREAD_PID'];
-                }
-            }
-
-            $threads_array[$thread['TID']] = $thread;
         }
 
-        threads_have_attachments($threads_array);
-        return array($threads_array, $folder_order);
+        if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
+        if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
+
+        if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+        if (!isset($thread['INTEREST']) || is_null($thread['INTEREST'])) $thread['INTEREST'] = 0;
+        if (!isset($thread['STICKY']) || is_null($thread['STICKY'])) $thread['STICKY'] = 0;
+        if (!isset($thread['VIEWCOUNT']) || is_null($thread['VIEWCOUNT'])) $thread['VIEWCOUNT'] = 0;
+        if (!isset($thread['PREFIX']) || is_null($thread['PREFIX'])) $thread['PREFIX'] = "";
+        if (!isset($thread['TRACK_TYPE']) || is_null($thread['TRACK_TYPE'])) $thread['TRACK_TYPE'] = -1;
+        if (!isset($thread['DELETED']) || is_null($thread['DELETED'])) $thread['DELETED'] = 'N';
+
+        if (!isset($folder_order) || !is_array($folder_order)) {
+            $folder_order = array($thread['FID']);
+        } else if (!in_array($thread['FID'], $folder_order)) {
+            $folder_order[] = $thread['FID'];
+        }
+
+        if (user_is_guest()) {
+
+            $thread['LAST_READ'] = 0;
+
+        } else if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
+
+            $thread['LAST_READ'] = 0;
+
+            if (isset($thread['MODIFIED']) && $unread_cutoff_timestamp !== false && $thread['MODIFIED'] < $unread_cutoff_timestamp) {
+                $thread['LAST_READ'] = $thread['LENGTH'];
+            }else if (isset($thread['UNREAD_PID']) && is_numeric($thread['UNREAD_PID'])) {
+                $thread['LAST_READ'] = $thread['UNREAD_PID'];
+            }
+        }
+
+        $threads_array[$thread['TID']] = $thread;
     }
 
-    return array(0, 0);
+    threads_have_attachments($threads_array);
+
+    return array($threads_array, $folder_order, $total_threads);
 }
 
 function threads_get_folder_msgs()
@@ -1522,7 +1511,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
     return false;
 }
 
-function thread_list_draw_top($thread_mode)
+function thread_list_draw_top($thread_mode, $folder = false)
 {
     $lang = load_language_file();
 
@@ -1612,7 +1601,14 @@ function thread_list_draw_top($thread_mode)
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"left\" class=\"postbody\">\n";
+    echo "        ", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go", $lang['goexcmark']), "\n";
+
+    if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
+        echo "        ", form_input_hidden("folder", htmlentities_array($folder)), "\n";
+    }
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

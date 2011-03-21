@@ -101,7 +101,7 @@ if (isset($_POST['install_method'])) {
 
     }else {
 
-        if (isset($install_method) && $install_method < 2) {
+        if (isset($install_method) && ($install_method < 2)) {
 
             $error_array[] = "Forum webtag must between 1 and 32 characters in length.\n";
             $valid = false;
@@ -142,7 +142,7 @@ if (isset($_POST['install_method'])) {
         $db_cpassword = "";
     }
 
-    if (isset($install_method) && $install_method < 2) {
+    if (isset($install_method) && ($install_method < 2)) {
 
         if (isset($_POST['admin_username']) && strlen(trim(stripslashes_array($_POST['admin_username']))) > 0) {
             $admin_username = trim(stripslashes_array($_POST['admin_username']));
@@ -193,7 +193,7 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        if ($install_method == 0 && ($admin_password != $admin_cpassword)) {
+        if (($install_method == 0) && ($admin_password != $admin_cpassword)) {
 
             $error_array[] = "Administrator account passwords do not match.\n";
             $valid = false;
@@ -216,16 +216,16 @@ if (isset($_POST['install_method'])) {
             install_check_mysql_version();
 
             // Check the install method
-            if (($install_method >= 3) && (@file_exists('upgrade.php'))) {
+            if (($install_method == 3) && (@file_exists('upgrade.php'))) {
 
                 include_once("upgrade.php");
 
-            }elseif (($install_method == 1) && (@file_exists('new-install.php'))) {
+            } else if (($install_method == 1) && (@file_exists('new-install.php'))) {
 
                 $remove_conflicts = true;
                 include_once("new-install.php");
 
-            }elseif (($install_method == 0) && (@file_exists('new-install.php'))) {
+            } else if (($install_method == 0) && (@file_exists('new-install.php'))) {
 
                 include_once("new-install.php");
             }
@@ -620,8 +620,7 @@ echo "                            <option value=\"\">Please select...</option>\n
 echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
 echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
 echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.9.x to 1.0.1</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 1.0 to 1.0.1</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 1.0.x to 1.1.0</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

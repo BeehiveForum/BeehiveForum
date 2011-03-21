@@ -161,12 +161,15 @@ function light_html_draw_top()
         }
     }
 
-    if (($favicon_filepath = html_get_favicon())) {
-        printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
+    if (($apple_touch_icon_path = html_get_apple_touch_icon_path())) {
+
+        printf("<link rel=\"apple-touch-icon\" href=\"%s/apple-touch-icon-57x57.png\" />\n", $apple_touch_icon_path);
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s/apple-touch-icon-72x72.png\" />\n", $apple_touch_icon_path);
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s/apple-touch-icon-114x114.png\" />\n", $apple_touch_icon_path);
     }
 
-    if (($apple_touch_icon_filepath = html_get_apple_touch_icon())) {
-        printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);
+    if (($favicon_path = html_get_favicon_path())) {
+        printf("<link rel=\"shortcut icon\" href=\"%s/favicon.ico\" type=\"image/ico\" />\n", $favicon_path);
     }
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";

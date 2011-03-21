@@ -316,27 +316,27 @@ function html_message_type_error()
     html_draw_bottom();
 }
 
-function html_get_favicon()
+function html_get_favicon_path()
 {
     if (($user_style = session_get_value('STYLE')) === false) {
         $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', basename($user_style)));
+        return html_get_forum_file_path(sprintf('styles/%s/images', basename($user_style)));
     }
 
     return false;
 }
 
-function html_get_apple_touch_icon()
+function html_get_apple_touch_icon_path()
 {
     if (($user_style = session_get_value('STYLE')) === false) {
         $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon.png', basename($user_style)), true, true);
+        return html_get_forum_file_path(sprintf('styles/%s/images', basename($user_style)), true, true);
     }
 
     return false;
@@ -484,7 +484,7 @@ function html_include_javascript($script_filepath)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4672" : '?rev=4672';
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&amp;rev=4672" : '?rev=4672';
 
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
@@ -501,7 +501,7 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&rev=4672" : '?rev=4672';
+    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&amp;rev=4672" : '?rev=4672';
 
     $id = ($id !== false) ? $id : sprintf('style_%s', preg_replace('/[^a-zA-Z]+/', '', $script_filepath));
 
@@ -789,12 +789,15 @@ function html_draw_top()
         }
     }
 
-    if (($favicon_filepath = html_get_favicon())) {
-        printf("<link rel=\"shortcut icon\" href=\"%s\" type=\"image/ico\" />\n", $favicon_filepath);
+    if (($apple_touch_icon_path = html_get_apple_touch_icon_path())) {
+
+        printf("<link rel=\"apple-touch-icon\" href=\"%s/apple-touch-icon-57x57.png\" />\n", $apple_touch_icon_path);
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s/apple-touch-icon-72x72.png\" />\n", $apple_touch_icon_path);
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s/apple-touch-icon-114x114.png\" />\n", $apple_touch_icon_path);
     }
 
-    if (($apple_touch_icon_filepath = html_get_apple_touch_icon())) {
-        printf("<link rel=\"apple-itouch-icon\" href=\"%s\" />\n", $apple_touch_icon_filepath);
+    if (($favicon_path = html_get_favicon_path())) {
+        printf("<link rel=\"shortcut icon\" href=\"%s/favicon.ico\" type=\"image/ico\" />\n", $favicon_path);
     }
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));

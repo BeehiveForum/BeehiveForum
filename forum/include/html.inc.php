@@ -316,71 +316,42 @@ function html_message_type_error()
     html_draw_bottom();
 }
 
-function html_get_favicon_path()
+function html_get_user_style_path()
 {
     if (($user_style = session_get_value('STYLE')) === false) {
         $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
-    if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/images', basename($user_style)));
-    }
-
-    return false;
-}
-
-function html_get_apple_touch_icon_path()
-{
-    if (($user_style = session_get_value('STYLE')) === false) {
-        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
-    }
-
-    if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/images', basename($user_style)), true, true);
-    }
-
-    return false;
+    return $user_style;
 }
 
 function html_get_style_sheet()
 {
-    if (($user_style = session_get_value('STYLE')) === false) {
-        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (!($user_style = html_get_user_style_path())) {
+        return html_get_forum_file_path('styles/style.css');
     }
 
-    if (($user_style !== false)) {
-        return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
-    }
-
-    return html_get_forum_file_path('styles/style.css');
+    return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
 }
 
 function html_get_script_style_sheet()
 {
-    if (($user_style = session_get_value('STYLE')) === false) {
-        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
-    }
+    if (!($user_style = html_get_user_style_path())) return false;
 
     $script_style_sheet = sprintf('styles/%s/%s.css', basename($user_style), basename($_SERVER['PHP_SELF'], '.php'));
 
-    if (($user_style !== false) && file_exists($script_style_sheet)) {
-        return html_get_forum_file_path($script_style_sheet);
-    }
+    if (($user_style === false) || !file_exists($script_style_sheet)) return false;
 
-    return false;
+    return html_get_forum_file_path($script_style_sheet);
 }
 
 function html_get_top_page()
 {
-    if (($user_style = session_get_value('STYLE')) === false) {
-        $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    if (!($user_style = html_get_user_style_path())) {
+        return html_get_forum_file_path('styles/top.php');
     }
 
-    if (($user_style !== false)) {
-        return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)));
-    }
-
-    return html_get_forum_file_path('styles/top.php');
+    return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)));
 }
 
 function html_get_emoticon_style_sheet($emoticon_set = false)
@@ -403,22 +374,16 @@ function html_get_emoticon_style_sheet($emoticon_set = false)
 
 function html_get_forum_keywords()
 {
-    if (($forum_keywords = forum_get_setting('forum_keywords'))) {
+    if (!($forum_keywords = forum_get_setting('forum_keywords'))) return '';
 
-        return $forum_keywords;
-    }
-
-    return "";
+    return $forum_keywords;
 }
 
 function html_get_forum_description()
 {
-    if (($forum_desc = forum_get_setting('forum_desc'))) {
+    if (!($forum_desc = forum_get_setting('forum_desc'))) return '';
 
-        return $forum_desc;
-    }
-
-    return "";
+    return $forum_desc;
 }
 
 function html_get_forum_content_rating()
@@ -428,31 +393,28 @@ function html_get_forum_content_rating()
                                    FORUM_RATING_MATURE     => 'Mature',
                                    FORUM_RATING_RESTRICTED => 'Restricted');
 
-    if (($forum_content_rating = forum_get_setting('forum_content_rating'))) {
-
-        if (isset($content_ratings_array[$forum_content_rating])) {
-
-            return $content_ratings_array[$forum_content_rating];
-        }
+    if (!($forum_content_rating = forum_get_setting('forum_content_rating'))) {
+        return $content_ratings_array[FORUM_RATING_GENERAL];
     }
 
-    return $content_ratings_array[FORUM_RATING_GENERAL];
+    if (!isset($content_ratings_array[$forum_content_rating])) {
+        return $content_ratings_array[FORUM_RATING_GENERAL];
+    }
+
+    return $content_ratings_array[$forum_content_rating];
 }
 
 function html_get_forum_email()
 {
-    if (($forum_email = forum_get_setting('forum_email'))) {
+    if (!($forum_email = forum_get_setting('forum_email'))) return '';
 
-        return $forum_email;
-    }
-
-    return "";
+    return $forum_email;
 }
 
 function html_get_frame_name($basename)
 {
     // Forum URL
-    $forum_uri = html_get_forum_uri();
+    $forum_uri = html_get_forum_uri(null, true, true);
 
     // Get the webtag
     $webtag = get_webtag();
@@ -471,11 +433,11 @@ function html_get_frame_name($basename)
 
 function html_get_top_frame_name()
 {
-    if (isset($GLOBALS['frame_top_target']) && strlen(trim($GLOBALS['frame_top_target'])) > 0) {
-        return $GLOBALS['frame_top_target'];
+    if (!isset($GLOBALS['frame_top_target']) || strlen(trim($GLOBALS['frame_top_target'])) == 0) {
+        return '_top';
     }
 
-    return '_top';
+    return $GLOBALS['frame_top_target'];
 }
 
 function html_include_javascript($script_filepath)
@@ -789,15 +751,13 @@ function html_draw_top()
         }
     }
 
-    if (($apple_touch_icon_path = html_get_apple_touch_icon_path())) {
+    if (($user_style_path = html_get_user_style_path())) {
 
-        printf("<link rel=\"apple-touch-icon\" href=\"%s/apple-touch-icon-57x57.png\" />\n", $apple_touch_icon_path);
-        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s/apple-touch-icon-72x72.png\" />\n", $apple_touch_icon_path);
-        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s/apple-touch-icon-114x114.png\" />\n", $apple_touch_icon_path);
-    }
+        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path), true, true));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path), true, true));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path), true, true));
 
-    if (($favicon_path = html_get_favicon_path())) {
-        printf("<link rel=\"shortcut icon\" href=\"%s/favicon.ico\" type=\"image/ico\" />\n", $favicon_path);
+        printf("<link rel=\"shortcut icon\" type=\"image/ico\"href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
@@ -1430,7 +1390,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
 function html_get_forum_uri($append_path = null, $use_forum_uri = true)
 {
-    if (($use_forum_uri === true) && ($forum_uri = forum_get_global_setting('forum_uri', 'strlen', false))) {
+    if (($use_forum_uri === true) && ($forum_uri = rtrim(forum_get_global_setting('forum_uri', 'strlen', false), '/'))) {
 
         $uri_array = @parse_url($forum_uri);
 
@@ -1502,7 +1462,7 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
         }
     }
 
-    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname($uri_array['path']. 'a'));
+    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/'). '/a'));
 
     if (strlen(trim($append_path)) > 0) {
         $uri_array['path'].= $append_path;

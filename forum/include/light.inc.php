@@ -161,15 +161,13 @@ function light_html_draw_top()
         }
     }
 
-    if (($apple_touch_icon_path = html_get_apple_touch_icon_path())) {
+    if (($user_style_path = html_get_user_style_path())) {
 
-        printf("<link rel=\"apple-touch-icon\" href=\"%s/apple-touch-icon-57x57.png\" />\n", $apple_touch_icon_path);
-        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s/apple-touch-icon-72x72.png\" />\n", $apple_touch_icon_path);
-        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s/apple-touch-icon-114x114.png\" />\n", $apple_touch_icon_path);
-    }
+        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path), true, true));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path), true, true));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path), true, true));
 
-    if (($favicon_path = html_get_favicon_path())) {
-        printf("<link rel=\"shortcut icon\" href=\"%s/favicon.ico\" type=\"image/ico\" />\n", $favicon_path);
+        printf("<link rel=\"shortcut icon\" type=\"image/ico\"href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";

@@ -183,7 +183,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['forum_uri']) && strlen(trim(stripslashes_array($_POST['forum_uri']))) > 0) {
-        $new_forum_settings['forum_uri'] = trim(stripslashes_array($_POST['forum_uri']));
+        $new_forum_settings['forum_uri'] = rtrim(trim(stripslashes_array($_POST['forum_uri'])), '/');
     }else {
         $new_forum_settings['forum_uri'] = "";
     }
@@ -689,7 +689,7 @@ echo "                        <td align=\"left\">", form_input_text("forum_keywo
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumrooturi']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_uri", (isset($forum_global_settings['forum_uri']) ? htmlentities_array($forum_global_settings['forum_uri']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_uri", (isset($forum_global_settings['forum_uri']) ? htmlentities_array(rtrim($forum_global_settings['forum_uri'], '/')) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

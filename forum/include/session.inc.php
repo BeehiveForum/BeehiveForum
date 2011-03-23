@@ -975,14 +975,16 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 {
     if (!is_numeric($perm)) return false;
 
+    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
+
+    if (!isset($user_sess['UID'])) return false;
+
     if ($forum_fid === false) {
 
         if (!$table_data = get_table_prefix()) return false;
 
         $forum_fid = $table_data['FID'];
     }
-
-    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     if (!isset($user_sess['PERMS'][$forum_fid])) {
 

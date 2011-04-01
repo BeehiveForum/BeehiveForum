@@ -405,16 +405,16 @@ if (isset($_POST['search'])) {
 
                 if (isset($search_string) && strlen(trim($search_string)) > 0) {
 
-                    $keywords_error_array = search_strip_keywords($search_string, true);
-                    $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
+                    $keywords_error_array = search_extract_keywords($search_string, true);
+                    $keywords_error_array['keywords_array'] = search_strip_special_chars($keywords_error_array['keywords_array'], false);
 
-                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
+                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords_array']));
 
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
 
                     $error_msg = sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link);
                     $error_msg.= "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
-                    $error_msg.= "<p><ul><li>". implode("</li>\n        <li>", $keywords_error_array['keywords']). "</li></ul></p>\n";
+                    $error_msg.= "<p><ul><li>". implode("</li>\n        <li>", $keywords_error_array['keywords_array']). "</li></ul></p>\n";
 
                     html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
                     html_error_msg($error_msg);

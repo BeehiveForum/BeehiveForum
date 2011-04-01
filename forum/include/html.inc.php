@@ -190,7 +190,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
+    //if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 

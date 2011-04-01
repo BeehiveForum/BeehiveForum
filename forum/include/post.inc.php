@@ -53,13 +53,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     $post_content = db_escape_string($content);
 
-    // IP Address can be hidden by calling this function with $hide_ipaddress
-    // set to true. Useful for automated functionality like the RSS Feeder.
-    if ($hide_ipaddress === false) {
-        if (!$ipaddress = get_ip_address()) return -1;
-    }else {
-        $ipaddress = "";
-    }
+    $ipaddress = ($hide_ipaddress == false) ? get_ip_address() : '';
 
     if (!is_numeric($tid)) return -1;
     if (!is_numeric($reply_pid)) return -1;
@@ -70,47 +64,42 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    // Check that the post needs approval. If the user is a moderator
-    // their posts are self-approved.
+    // Check that the post needs approval. If the user is a moderator their posts are self-approved.
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
-        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, CAST('$current_datetime' AS DATETIME), 0, '$ipaddress')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
+        $sql.= "TO_UID, CREATED, APPROVED, IPADDRESS, SEARCH_ID) SELECT $tid, $reply_pid, ";
+        $sql.= "$fuid, $tuid, CAST('$current_datetime' AS DATETIME), NULL, '$ipaddress', ";
+        $sql.= "(SELECT MAX(SEARCH_ID) + 1 FROM `{$table_data['PREFIX']}POST`)";
 
     }else {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
-        $sql.= "$fuid, $tuid, '$current_datetime', CAST('$current_datetime' AS DATETIME), $fuid, '$ipaddress')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, ";
+        $sql.= "CREATED, APPROVED, APPROVED_BY, IPADDRESS, SEARCH_ID) SELECT $tid, $reply_pid, $fuid, ";
+        $sql.= "$tuid, CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "$fuid, '$ipaddress', (SELECT MAX(SEARCH_ID) + 1 FROM `{$table_data['PREFIX']}POST`)";
     }
 
-    if (db_query($sql, $db_post_create)) {
+    if (!db_query($sql, $db_post_create)) return -1;
 
-        $new_pid = db_insert_id($db_post_create);
+    $new_pid = db_insert_id($db_post_create);
 
-        // Insert the post content. This query can take some time
-        // because of the FULLTEXT indexing used for seatching
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
-        $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
+    $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-        if (db_query($sql, $db_post_create)) {
+    if (!db_query($sql, $db_post_create)) return -1;
 
-            // Update the thread length and unread pid
-            post_update_thread_length($tid, $new_pid);
+    post_update_thread_length($tid, $new_pid);
 
-            // Update user's post count.
-            user_increment_post_count($fuid);
+    user_increment_post_count($fuid);
 
-            // If post approval is required send the notification to admins.
-            if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
-                admin_send_post_approval_notification($fid);
-            }
+    search_sphinx_update_index($tid, $new_pid);
 
-            return $new_pid;
-        }
+    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
+        admin_send_post_approval_notification($fid);
     }
 
-    return -1;
+    return $new_pid;
 }
 
 function post_approve($tid, $pid)
@@ -567,6 +556,9 @@ function post_update($fid, $tid, $pid, $content)
         if (!db_query($sql, $db_post_update)) return false;
     }
 
+    // Update Swiftsearch index.
+    search_sphinx_update_index($tid, $pid);
+
     return true;
 }
 
@@ -629,6 +621,9 @@ function post_delete($tid, $pid)
     $sql.= "AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_delete)) return false;
+
+    // Update Swiftsearch index.
+    search_sphinx_update_index($tid, $pid);
 
     return true;
 }

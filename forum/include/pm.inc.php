@@ -619,14 +619,14 @@ function pm_search_execute($search_string, &$error)
         return false;
     }
 
-    $search_keywords_array = search_strip_keywords($search_string);
+    $search_keywords_array = search_extract_keywords($search_string);
 
-    $filtered_keyword_count   = $search_keywords_array['filtered_word_count'];
-    $unfiltered_keyword_count = $search_keywords_array['unfiltered_word_count'];
+    $filtered_count   = $search_keywords_array['filtered_count'];
+    $unfiltered_count = $search_keywords_array['unfiltered_count'];
 
-    if ($filtered_keyword_count > 0 && $filtered_keyword_count == $unfiltered_keyword_count) {
+    if ($filtered_count > 0 && $filtered_count == $unfiltered_count) {
 
-        $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords']));
+        $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords_array']));
 
         $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', false, 100));
         $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;

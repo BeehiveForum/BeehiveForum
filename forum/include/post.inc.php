@@ -623,7 +623,7 @@ function post_delete($tid, $pid)
     if (!db_query($sql, $db_post_delete)) return false;
 
     // Update Swiftsearch index.
-    search_sphinx_update_index($tid, $pid);
+    search_sphinx_delete_index($tid, $pid);
 
     return true;
 }

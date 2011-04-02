@@ -324,9 +324,6 @@ function search_sphinx_execute($search_arguments, &$error)
     // to that folder, otherwise limit them to their available folders.
     $where_sql = "WHERE fid IN ({$search_arguments['fid']}) ";
 
-    // Can't search for deleted threads nor threads with no posts
-    $where_sql.= "AND deleted = 0 AND length > 0 ";
-
     // Where query needs to limit the search results to the user specified date range.
     $where_sql.= search_date_range_sphinx($search_arguments['date_from'], $search_arguments['date_to']);
 
@@ -431,10 +428,14 @@ function search_sphinx_execute($search_arguments, &$error)
     // into the SEARCH_RESULTS table in the MySQL database.
     while (($search_result = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
-        $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, ";
-        $sql.= "LENGTH, RELEVANCE) VALUES('$uid', '$forum_fid', {$search_result['fid']}, {$search_result['tid']}, ";
-        $sql.= "{$search_result['pid']}, {$search_result['by_uid']}, {$search_result['from_uid']}, {$search_result['to_uid']}, ";
-        $sql.= "FROM_UNIXTIME({$search_result['created']}), {$search_result['length']}, {$search_result['weight']}) ";
+        $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, ";
+        $sql.= "TO_UID, CREATED, LENGTH, RELEVANCE) SELECT '$uid' AS UID, '$forum_fid' AS FORUM, ";
+        $sql.= "THREAD.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED ";
+        $sql.= "FROM `{$table_data['PREFIX']}POST` POST INNER JOIN `{$table_data['PREFIX']}THREAD` ";
+        $sql.= "THREAD ON (THREAD.TID = POST.TID) INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+        $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TID = '{$search_result['tid']}' ";
+        $sql.= "AND POST.PID = '{$search_result['pid']}' AND THREAD.LENGTH > 0 ";
+        $sql.= "AND THREAD.DELETED = 'N'";
 
         if (!db_query($sql, $db_search_results)) return false;
     }
@@ -453,12 +454,11 @@ function search_sphinx_connect()
     return $sphinx_connection;
 }
 
-function search_sphinx_update_index($tid, $pid)
+function search_sphinx_update_index($tid, $pid = false)
 {
     if (forum_get_setting('sphinx_search_enabled', 'N')) return false;
 
     if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -478,25 +478,64 @@ function search_sphinx_update_index($tid, $pid)
     $sql.= "ON (POST_CONTENT.TID = POST.TID AND POST_CONTENT.PID = POST.PID) ";
     $sql.= "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
     $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE POST.TID = '$tid' ";
+
+    if (is_numeric($pid) && ($pid > 0)) {
+        $sql.= "AND POST.PID = '$pid'";
+    }
+
+    if (!$result = db_query($sql, $db_search_sphinx_update_index)) return false;
+
+    if (db_num_rows($result) == 0) return false;
+
+    while (($search_index_data = db_fetch_array($result))) {
+
+        $title = db_escape_string($search_index_data['TITLE']);
+
+        $content = db_escape_string($search_index_data['CONTENT']);
+
+        $sql = "REPLACE INTO $webtag (id, title, content, fid, tid, pid, by_uid, from_uid, to_uid, ";
+        $sql.= "deleted, length, created) VALUES ({$search_index_data['SEARCH_ID']}, '$title', '$content', ";
+        $sql.= "{$search_index_data['FID']}, {$search_index_data['TID']}, {$search_index_data['PID']}, ";
+        $sql.= "{$search_index_data['BY_UID']}, {$search_index_data['FROM_UID']}, {$search_index_data['TO_UID']}, ";
+        $sql.= "{$search_index_data['DELETED']}, {$search_index_data['LENGTH']}, {$search_index_data['CREATED']})";
+
+        if (!db_query($sql, $sphinx_connection)) return false;
+    }
+
+    return true;
+}
+
+function search_sphinx_delete_index($tid, $pid)
+{
+    if (forum_get_setting('sphinx_search_enabled', 'N')) return false;
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $webtag = forum_get_webtag($forum_fid);
+
+    if (!$db_search_sphinx_update_index = db_connect()) return false;
+
+    if (!$sphinx_connection = search_sphinx_connect()) return false;
+
+    $sql = "SELECT POST.SEARCH_ID FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
     if (!$result = db_query($sql, $db_search_sphinx_update_index)) return false;
 
     if (db_num_rows($result) == 0) return false;
 
-    $search_index_data = db_fetch_array($result);
+    while (($search_index_data = db_fetch_array($result))) {
 
-    $title = db_escape_string($search_index_data['TITLE']);
+        $sql = "DELETE FROM $webtag WHERE id = {$search_index_data['SEARCH_ID']}";
 
-    $content = db_escape_string($search_index_data['CONTENT']);
-
-    $sql = "REPLACE INTO $webtag (id, title, content, fid, tid, pid, by_uid, from_uid, to_uid, ";
-    $sql.= "deleted, length, created) VALUES ({$search_index_data['SEARCH_ID']}, '$title', '$content', ";
-    $sql.= "{$search_index_data['FID']}, {$search_index_data['TID']}, {$search_index_data['PID']}, ";
-    $sql.= "{$search_index_data['BY_UID']}, {$search_index_data['FROM_UID']}, {$search_index_data['TO_UID']}, ";
-    $sql.= "{$search_index_data['DELETED']}, {$search_index_data['LENGTH']}, {$search_index_data['CREATED']})";
-
-    if (!db_query($sql, $sphinx_connection)) return false;
+        if (!db_query($sql, $sphinx_connection)) return false;
+    }
 
     return true;
 }

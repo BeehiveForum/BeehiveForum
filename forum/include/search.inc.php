@@ -425,7 +425,8 @@ function search_sphinx_execute($search_arguments, &$error)
     }
 
     // Iterate over the results returned by Swift and save them
-    // into the SEARCH_RESULTS table in the MySQL database.
+    // into the SEARCH_RESULTS table in the MySQL database along
+    // with the Sphinx weight as our relevance.
     while (($search_result = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, ";
@@ -494,11 +495,10 @@ function search_sphinx_update_index($tid, $pid = false)
 
         $content = db_escape_string($search_index_data['CONTENT']);
 
-        $sql = "REPLACE INTO $webtag (id, title, content, fid, tid, pid, by_uid, from_uid, to_uid, ";
-        $sql.= "deleted, length, created) VALUES ({$search_index_data['SEARCH_ID']}, '$title', '$content', ";
-        $sql.= "{$search_index_data['FID']}, {$search_index_data['TID']}, {$search_index_data['PID']}, ";
-        $sql.= "{$search_index_data['BY_UID']}, {$search_index_data['FROM_UID']}, {$search_index_data['TO_UID']}, ";
-        $sql.= "{$search_index_data['DELETED']}, {$search_index_data['LENGTH']}, {$search_index_data['CREATED']})";
+        $sql = "REPLACE INTO $webtag (id, title, content, fid, tid, pid, by_uid, from_uid, to_uid, created) ";
+        $sql.= "VALUES ({$search_index_data['SEARCH_ID']}, '$title', '$content', {$search_index_data['FID']}, ";
+        $sql.= "{$search_index_data['TID']}, {$search_index_data['PID']}, {$search_index_data['BY_UID']}, ";
+        $sql.= "{$search_index_data['FROM_UID']}, {$search_index_data['TO_UID']}, {$search_index_data['CREATED']})";
 
         if (!db_query($sql, $sphinx_connection)) return false;
     }

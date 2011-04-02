@@ -429,7 +429,7 @@ function search_sphinx_execute($search_arguments, &$error)
     while (($search_result = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, ";
-        $sql.= "RELEVANCE) SELECT '$uid' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID, THREAD.BY_UID, ";
+        $sql.= "RELEVANCE) SELECT '$uid' AS UID, '$forum_fid' AS FORUM, FOLDER.FID, THREAD.TID, POST.PID, THREAD.BY_UID, ";
         $sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH, {$search_result['weight']} AS RELEVANCE ";
         $sql.= "FROM `{$table_data['PREFIX']}POST` POST INNER JOIN `{$table_data['PREFIX']}THREAD` ";
         $sql.= "THREAD ON (THREAD.TID = POST.TID) INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";

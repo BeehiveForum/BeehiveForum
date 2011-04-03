@@ -315,7 +315,11 @@ function search_sphinx_execute($search_arguments, &$error)
     $webtag = forum_get_webtag($forum_fid);
 
     // Swift connection.
-    if (!$sphinx_connection = search_sphinx_connect()) return false;
+    if (!$sphinx_connection = search_sphinx_connect()) {
+
+        $error = SEARCH_SPHINX_UNAVAILABLE;
+        return false;
+    }
 
     // Database connection.
     if (!$db_search_results = db_connect()) return false;

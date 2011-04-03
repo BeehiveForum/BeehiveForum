@@ -150,6 +150,7 @@ define('SEARCH_USER_NOT_FOUND', 1);
 define('SEARCH_NO_KEYWORDS', 2);
 define('SEARCH_NO_MATCHES', 3);
 define('SEARCH_FREQUENCY_TOO_GREAT', 4);
+define('SEARCH_SPHINX_UNAVAILABLE', 5);
 
 // Constants for style creation
 define('STYLE_MODE_NONE', 0);

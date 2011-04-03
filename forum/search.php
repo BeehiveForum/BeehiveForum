@@ -447,6 +447,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                 $search_frequency = forum_get_setting('search_min_frequency', false, 0);
                 $error_msg_array[] = sprintf($lang['searchfrequencyerror'], $search_frequency);
                 break;
+
+            case SEARCH_SPHINX_UNAVAILABLE:
+
+                $error_msg_array[] = $lang['searchunavailable'];
+                break;
         }
     }
 

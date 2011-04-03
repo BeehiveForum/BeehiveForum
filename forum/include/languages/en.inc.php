@@ -902,6 +902,7 @@ $lang['confirmunreadcutoff'] = "Are you sure you want to change the unread cut-o
 $lang['otherchangeswillstillbeapplied'] = "Clicking 'No' will only cancel the unread cut-off changes. Other changes you've made will still be saved.";
 $lang['searchoptions'] = "Search Options";
 $lang['searchfrequency'] = "Search Frequency";
+$lang['searchunavailable'] = "Search is currently unavailable. Please try again later.";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Session cut off (seconds)";
 $lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";

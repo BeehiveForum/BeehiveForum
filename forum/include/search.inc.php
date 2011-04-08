@@ -231,7 +231,7 @@ function search_mysql_execute($search_arguments, &$error)
 
     }else {
 
-        if (!isset($search_arguments['uid_array']) || sizeof($search_arguments['uid_array']) < 1) {
+        if (!isset($search_arguments['user_uid_array']) || sizeof($search_arguments['user_uid_array']) < 1) {
 
             $error = SEARCH_NO_KEYWORDS;
             return false;
@@ -365,7 +365,7 @@ function search_sphinx_execute($search_arguments, &$error)
 
     }else {
 
-        if (!isset($search_arguments['uid_array']) || sizeof($search_arguments['uid_array']) < 1) {
+        if (!isset($search_arguments['user_uid_array']) || sizeof($search_arguments['user_uid_array']) < 1) {
 
             $error = SEARCH_NO_KEYWORDS;
             return false;
@@ -667,11 +667,23 @@ function search_save_arguments($search_arguments)
 
     if (($uid = session_get_value('UID')) === false) return false;
 
-    $keywords = db_escape_string($search_arguments['search_string']);
+    if (isset($search_arguments['search_string'])) {
+        $keywords = db_escape_string($search_arguments['search_string']);
+    } else {
+        $keywords = '';
+    }
 
-    $sort_by = db_escape_string($search_arguments['sort_by']);
+    if (isset($search_arguments['sort_by'])) {
+        $sort_by = db_escape_string($search_arguments['sort_by']);
+    } else {
+        $sort_by = '';
+    }
 
-    $sort_dir = db_escape_string($search_arguments['sort_dir']);
+    if (isset($search_arguments['sort_dir'])) {
+        $sort_dir = db_escape_string($search_arguments['sort_dir']);
+    }else {
+        $sort_dir = '';
+    }
 
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords', LAST_SEARCH_SORT_BY = '$sort_by', ";

@@ -422,6 +422,8 @@ function captcha_clean_up()
 
         if ($file[0] == '.' || is_dir($captcha_image_file)) continue;
 
+        if (!file_exists($captcha_image_file)) continue;
+
         if ((time() - filemtime($captcha_image_file)) < DAY_IN_SECONDS) continue;
 
         @unlink($captcha_image_file);

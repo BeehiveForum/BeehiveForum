@@ -165,14 +165,14 @@ if (isset($hash) && is_md5($hash)) {
         // the full image we increase the view count by one.
         if (isset($_GET['thumb']) && forum_get_setting('attachment_thumbnails', 'Y')) {
 
-            $filepath = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
+            $file_path = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
 
         }else {
 
             if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
 
                 // Construct the attachment filepath.
-                $filepath = "{$attachment_dir}/{$attachment_details['hash']}";
+                $file_path = "{$attachment_dir}/{$attachment_details['hash']}";
 
                 // Increment the view count only if the attachment
                 // isn't being used as an avatar or profile picture.
@@ -186,13 +186,16 @@ if (isset($hash) && is_md5($hash)) {
         if (sizeof($attachment_mime_types) == 0 || in_array($attachment_details['mimetype'], $attachment_mime_types)) {
 
             // Use the filename quite a few times, so assign it to a variable to save some time.
-            $filename = rawurldecode(basename($attachment_details['filename']));
+            $file_name = rawurldecode(basename($attachment_details['filename']));
 
             // Check the filepath is set and exists.
-            if (isset($filepath) && @file_exists($filepath)) {
+            if (isset($file_path) && @file_exists($file_path)) {
 
                 // Filesize for Content-Length header.
-                $length = filesize($filepath);
+                $file_size = filesize($file_path);
+
+                // chunk size to use when reading the file.
+                $chunk_size = 1 * (1024 * 1024);
 
                 // Are we viewing or downloading the attachment?
                 if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
@@ -208,7 +211,7 @@ if (isset($hash) && is_md5($hash)) {
                 if (preg_match('/cgi/u', php_sapi_name()) < 1) {
 
                     // Etag Header for cache control
-                    $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+                    $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($file_path)). " GMT");
 
                     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
                         $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
@@ -217,7 +220,7 @@ if (isset($hash) && is_md5($hash)) {
                     }
 
                     // Last Modified Header for cache control
-                    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
+                    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($file_path)). "GMT";
 
                     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
                         $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
@@ -226,7 +229,7 @@ if (isset($hash) && is_md5($hash)) {
                     }
 
                     if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-                        
+
                         header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
                         exit;
                     }
@@ -235,10 +238,31 @@ if (isset($hash) && is_md5($hash)) {
                     header("Etag: \"$local_etag\"", true);
                 }
 
-                header("Content-Length: $length", true);
-                header("Content-disposition: inline; filename=\"$filename\"", true);
-                readfile($filepath);
-                exit;
+                header("Content-Length: $file_size", true);
+                header("Content-disposition: inline; filename=\"$file_name\"", true);
+
+                if ($file_size > $chunk_size) {
+
+                    if (($file_handle = fopen($file_path, 'rb'))) {
+
+                        while (!feof($file_handle)) {
+
+                            echo fread($file_handle, $chunk_size);
+
+                            ob_flush();
+
+                            flush();
+                        }
+
+                        fclose($file_handle);
+                        exit;
+                    }
+
+                } else {
+
+                    readfile($file_path);
+                    exit;
+                }
             }
         }
     }

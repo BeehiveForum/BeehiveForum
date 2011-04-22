@@ -53,7 +53,7 @@ function load_language_file()
             throw new Exception("<p>Could not load English language file (en.inc.php)</p>");
         }
 
-        include(BH_INCLUDE_PATH. "languages/en.inc.php");
+        include_once BH_INCLUDE_PATH. "languages/en.inc.php";
 
         $default_language = forum_get_setting('default_language', false, 'en');
 
@@ -71,7 +71,7 @@ function load_language_file()
          // if the browser doesn't send an Accept-Language header, give up.
         if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) || strlen(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])) == 0) {
 
-            include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
+            include_once BH_INCLUDE_PATH. "languages/{$default_language}.inc.php";
             return $lang;
         }
 
@@ -105,13 +105,13 @@ function load_language_file()
 
             if (@file_exists("include/languages/{$langs_array[$key]}.inc.php")) {
 
-                include(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php");
+                include_once BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php";
                 return $lang;
             }
         }
 
         // if we're still here, no languages matched. Use the default specified in config.inc.php
-        include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
+        include_once BH_INCLUDE_PATH. "languages/{$default_language}.inc.php";
         return $lang;
     }
 

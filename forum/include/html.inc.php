@@ -1394,9 +1394,11 @@ function html_get_forum_uri($append_path = null, $use_forum_uri = true)
 
         $uri_array = @parse_url($forum_uri);
 
-    } else if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
+    } else {
 
-        $uri_array = @parse_url($_SERVER['REQUEST_URI']);
+        $uri_array = @parse_url($_SERVER['PHP_SELF']);
+
+        $uri_array['path'] = dirname($uri_array['path']);
     }
 
     if (!isset($uri_array['scheme'])) {

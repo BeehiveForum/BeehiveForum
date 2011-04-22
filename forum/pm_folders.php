@@ -365,10 +365,10 @@ $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_
 echo "  <br />\n";
 echo "  <table width=\"90%\" border=\"0\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"100%\">\n";
-echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "      <td align=\"left\">\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" width=\"60%\">\n";
+echo "            <td align=\"left\">\n";
 echo "              <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" title=\"{$pm_used_percent}% {$lang['used']}\">\n";

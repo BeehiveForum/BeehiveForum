@@ -307,15 +307,19 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                     }else if ($tag == 'spoiler' && $close == true) {
 
-                        $html_parts[$i] = '/div';
+                        $html_parts[$i] = '/span';
+
+                        array_splice($html_parts, $i, 0, array('/span', ''));
+
+                        $i+= 2;
 
                     }else if ($tag == 'spoiler') {
 
-                        $html_parts[$i] = "div class=\"spoiler\"";
+                        $html_parts[$i] = 'span';
 
-                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"spoiler\"", '', 'b', "$fix_html_spoiler_text ", '/b', '', '/div', ''));
+                        array_splice($html_parts, $i, 0, array('span class="spoiler"', ''));
 
-                        $i += 8;
+                        $i+= 2;
                     }
 
                 }else {
@@ -409,7 +413,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             // wrap white-text
                             $ta = array('/'. $last_tag2, '');
-                            
+
                             $ws = array();
 
                             if (preg_match("/( )?\\s+$/u", $html_parts[$i - 1], $ws) > 0) {
@@ -639,9 +643,9 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         $tag_quote = true;
                     }
 
-                    if ($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0)) {
+                    if ($tag == 'span class="spoiler"' || (substr($tag, 0, 3) == 'span' && $spoiler > 0)) {
                         $spoiler++;
-                    }else if ($spoiler > 0 && $tag == '/div') {
+                    }else if ($spoiler > 0 && $tag == '/span') {
                         $spoiler--;
                     }
 
@@ -912,129 +916,17 @@ function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
         $html = preg_replace("/<a href=\"(mailto:)?([^\"]*)\">((mailto:)?\\2)<\\/a>/u", "$3", $html);
     }
 
-    // make <code>..</code> tag, and html_entity_decode
-    $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code-([^\"]*)\">.*?<\\/div>.*?<pre class=\"code\">(.*?)<\\/pre>/isu", "tidy_html_code_tag_callback", $html);
+    // Make <code>..</code> tag, and html_entity_decode
+    $html = preg_replace_callback('/<div class="quotetext" id="code-([^"]*)">.*?<\/div>.*?<pre class="code">(.*?)<\/pre>/isu', 'tidy_html_code_tag_callback', $html);
 
-    // make <quote source=".." url="..">..</quote> tag
-    $html_left = '';
-    $html_right = $html;
+    // Quote tags
+    $html = preg_replace_callback('/<div class="quotetext" id="quote">.+?(<a href="([^"]*)">)?([^<>]*)(<\/a>)?<\/div>\s*<div class="quote">(.*)<\/div>/isu', 'tidy_html_quote_tag_callback', $html);
 
-    while (($pos = mb_strpos($html_right, '<div class="quotetext" id="quote">')) > -1) {
+    // Newer inline spoiler tag.
+    $html = preg_replace('/<span class="spoiler"><span>(.*)<\/span><\/span>/isu', "<spoiler>\\1</spoiler>", $html);
 
-        $html_left.= mb_substr($html_right, 0, $pos);
-
-        $matches = array();
-
-        if (preg_match("/^<div class=\"quotetext\" id=\"quote\">.+?(<a href=\"([^\"]*)\">)?([^<>]*)(<\\/a>)?<\\/div>\\s*<div class=\"quote\">.*<\\/div>/isu", mb_substr($html_right, $pos), $matches) > 0) {
-
-            $html_left.= '<quote source="'. $matches[3]. '" url="'. $matches[2]. '">';
-
-            $search = 'class="quote"';
-
-            $j = mb_strpos($html_right, $search);
-
-            $first = $j + mb_strlen($search) + 1;
-
-            $open_num = 1;
-
-            while (1 != 2) {
-
-                $open = mb_strpos($html_right, '<div', $j);
-                $close = mb_strpos($html_right, '</div>', $j);
-
-                if (!is_integer($open)) {
-                    $open = $close + 1;
-                }
-
-                if ($close < $open && $open_num == 1) {
-
-                    $j = $close;
-                    break;
-
-                }else if ($close < $open) {
-
-                    $open_num--;
-                    $open = $close;
-
-                }else {
-
-                    $open_num++;
-                }
-
-                $j = $open + 1;
-            }
-
-            $html_left.= tidy_html(substr($html_right, $first, $j - $first), $linebreaks). '</quote>';
-            $html_right = mb_substr($html_right, $j + mb_strlen('</div>'));
-
-        }else {
-
-            $html_left.= mb_substr($html_right, $pos, 1);
-            $html_right = mb_substr($html_right, $pos + 1);
-        }
-    }
-
-    $html = $html_left. $html_right;
-
-    // make <spoiler>..</spoiler> tag
-    $html_left = '';
-    $html_right = $html;
-
-    while (($pos = mb_strpos($html_right, '<div class="quotetext" id="spoiler">')) > -1) {
-
-        $html_left.= mb_substr($html_right, 0, $pos);
-
-        if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\">.+?<\\/div>.*?<div class=\"spoiler\">.*<\\/div>/isu", mb_substr($html_right, $pos))) {
-
-            $html_left.= '<spoiler>';
-
-            $search = "class=\"spoiler\"";
-
-            $j = mb_strpos($html_right, $search);
-
-            $first = $j + mb_strlen($search) + 1;
-
-            $open_num = 1;
-
-            while (1 != 2) {
-
-                $open = mb_strpos($html_right, '<div', $j);
-                $close = mb_strpos($html_right, '</div>', $j);
-
-                if (!is_integer($open)) {
-
-                    $open = $close + 1;
-                }
-
-                if ($close < $open && $open_num == 1) {
-
-                    $j = $close;
-                    break;
-
-                }else if ($close < $open) {
-
-                    $open_num--;
-                    $open = $close;
-
-                }else {
-
-                    $open_num++;
-                }
-
-                $j = $open + 1;
-            }
-
-            $html_left.= tidy_html(substr($html_right, $first, $j - $first), $linebreaks).'</spoiler>';
-            $html_right = mb_substr($html_right, $j + mb_strlen('</div>'));
-
-        }else {
-
-            $html_left.= mb_substr($html_right, $pos, 1);
-            $html_right = mb_substr($html_right, $pos + 1);
-        }
-    }
-
-    $html = $html_left. $html_right;
+    // Older block spoiler tag.
+    $html = preg_replace('/<div class="quotetext" id="spoiler">.+?<\/div>.*?<div class="spoiler">(.*)<\/div>/isu', '<spoiler>\\1</spoiler>', $html);
 
     return $html;
 }
@@ -1048,6 +940,11 @@ function tidy_html($html, $linebreaks = true, $links = true, $tidy_mce = false)
 function tidy_html_code_tag_callback($matches)
 {
     return sprintf('<code language="%s">%s</code>', $matches[1], htmlentities_decode_array(strip_tags($matches[2])));
+}
+
+function tidy_html_quote_tag_callback($matches)
+{
+    return sprintf('<quote source="%s" url="%s">%s</quote>', $matches[2], $matches[1], $matches[5]);
 }
 
 /**

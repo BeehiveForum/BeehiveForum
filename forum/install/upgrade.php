@@ -23,7 +23,7 @@ USA
 
 /* $Id$ */
 
-if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade-08x-to-083.php') {
+if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgrade.php') {
 
     header("Request-URI: index.php");
     header("Content-Location: index.php");
@@ -303,6 +303,45 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
         // New User preference for thread list folder order
         $sql = "ALTER TABLE `{$table_data['PREFIX']}BANNED` ADD EXPIRES DATETIME NOT NULL";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
+
+        // Add SEARCH_ID column for Sphinx integration.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        // Add a unique index to SEARCH_ID.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        // Declare a MySQL variable to increment the SEARCH_ID column.
+        $sql = "SELECT @search_id:= 0";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        // UPDATE SEARCH_ID in POST table to assign unique id to every post.
+        $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
 
         if (!$result = @db_query($sql, $db_install)) {
 

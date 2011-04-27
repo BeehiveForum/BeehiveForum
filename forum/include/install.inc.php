@@ -342,7 +342,17 @@ function install_check_php_extensions()
     $loaded_extensions = get_loaded_extensions();
 
     // Compare them to the ones we require.
-    if (array_diff($required_extensions, $loaded_extensions)) {
+    if (($missing_extensions = array_diff($required_extensions, $loaded_extensions))) {
+
+        // Format the list of required PHP extensions we use.
+        foreach ($required_extensions as $key => $extension_name) {
+            $required_extensions[$key] = sprintf('<a href="http://www.php.net/%1$s">%1$s</a>', $extension_name);
+        }
+
+        // Format the list of missing PHP extensions we need.
+        foreach ($missing_extensions as $key => $extension_name) {
+            $missing_extensions[$key] = sprintf('<a href="http://www.php.net/%1$s">%1$s</a>', $extension_name);
+        }
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -382,13 +392,23 @@ function install_check_php_extensions()
         echo "                        <td align=\"center\">\n";
         echo "                          <table class=\"posthead\" width=\"95%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\">";
-
-        // Display a list of PHP extensions we use.
-        foreach ($required_extensions as $extension_name) {
-            echo "                                <a href=\"http://www.php.net/", $extension_name, "\">", $extension_name, "</a><br />\n";
-        }
-
+        echo "                              <td align=\"left\">", implode(', ', $required_extensions), "</td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\"><b>Missing Extensions:</b></td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"center\">\n";
+        echo "                          <table class=\"posthead\" width=\"95%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\">", implode(', ', $missing_extensions), "</td>\n";
+        echo "                            </tr>\n";
         echo "                              </td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";

@@ -1,0 +1,191 @@
+0. Requirements
+================
+
+To enable searching via Sphinx on your Beehive Forum you are going to need:
+
+ - Sphinx Search version 2.0.1-beta.
+ - Beehive Forum 1.1.0.
+ - The ability to edit sphinx.conf and add new indexes.
+
+
+1. Install Sphinx
+=================
+
+Beehive Forum requires Sphinx 2.0.1-beta or newer. If your package manager
+doesn't provide a new enough version of Sphinx (or your OS doesn't provide
+a package manager) you can download the source and / or binaries from:
+
+  http://sphinxsearch.com/downloads/beta/
+
+Once you have downloaded Sphinx follow the instructions for installing it.
+
+2. Setting up Sphinx
+====================
+
+To make Beehive work with Sphinx you need to enable MySQL protocol support,
+hence the requirement for 2.0.1-beta. To do this you need to ensure your
+sphinx.conf contains a listen directive which reads:
+
+  listen = 9306:mysql41
+
+9306 is the port Sphinx will listen on for MySQL connections. You can change
+this if you want, but don't change it to the same port as the real MySQL as
+that would be really, really silly.
+
+As an example, here is the entire searchd section of the sphinx.conf as used
+on Teh Forum:
+
+    searchd
+    {
+        listen              = 9312
+        listen              = 9306:mysql41
+
+        log                 = /var/log/searchd.log
+
+        query_log           = /var/log/query.log
+
+        read_timeout        = 5
+
+        client_timeout      = 30
+
+        max_children        = 10
+
+        pid_file            = /var/log/searchd.pid
+
+        max_matches         = 1000
+
+        seamless_rotate     = 1
+
+        preopen_indexes     = 0
+
+        unlink_old          = 1
+
+        workers             = threads
+    }
+
+In addition to the listen directive changes you also need to create an index
+in Sphinx for each of the forums on your Beehive Forum installation. The names
+of the indexes should match the webtags of your forums. If for example your
+forum's webtag is 'DEFAULT' your index should be named the same.
+
+Again, here is the index section from Teh Forum that you can use as reference:
+
+    index DEFAULT
+    {
+        type              = rt
+
+        path              = /var/data/sphinx/beehive
+
+        rt_field          = title
+        rt_field          = content
+
+        rt_attr_uint      = fid
+        rt_attr_uint      = tid
+        rt_attr_uint      = pid
+        rt_attr_uint      = by_uid
+        rt_attr_uint      = from_uid
+        rt_attr_uint      = to_uid
+
+        rt_attr_timestamp = created
+
+        charset_type      = utf-8
+
+        html_strip        = 1
+    }
+
+Please feel free to change the path directive, this is where Sphinx will store
+the physical index files, but please, please don't change anything else about
+the index definition (except its name of course). If you do change anything your
+Beehive Forum may not be able to communicate with Sphinx.
+
+Good job, Sphinx is now all set up and ready to rock and roll with your Beehive
+Forum. All that is left to do for this step is to start the Sphinx searchd daemon
+as per the Sphinx documentation for your OS.
+
+
+3. Filling the Sphinx index
+===========================
+
+Now begins the tricky bit.
+
+Once Sphinx support is enabled on your Beehive Forum (we'll get to that later)
+any new threads and posts will be automatically indexed. However, any threads
+and posts created before the switch-on will not be indexed and thus will be
+unsearchable.
+
+If you're enabling Sphinx for an existing well established Beehive Forum, you'll
+probably want to index all the old threads and posts and not just new ones. To
+be able to do this requires some SQL trickery and will very likely mean taking
+your forum down for a short while.
+
+Below you will find an SQL query that you can use to generate the data that will
+be used to populate the sphinx index. As with creating the indexes in Sphinx, you
+will need to repeat this SQL query for each forum you have on your Beehive Forum
+installation, making sure to change the 'DEFAULT' webtag (and DEFAULT_ table
+prefixes) to match the correct webtag of each forum.
+
+What this SQL query actually does is create a new table named DEFAULT and fills
+it with data that we'll need to bring the Sphinx index bang up to date.
+
+
+    CREATE TABLE `DEFAULT` AS
+        SELECT POST.SEARCH_ID AS `id`,
+               COALESCE(THREAD.TITLE, '') AS `title`,
+               COALESCE(POST_CONTENT.CONTENT, '') AS `content`,
+               COALESCE(THREAD.FID, 0) AS `fid`,
+               COALESCE(THREAD.TID, 0) AS `tid`,
+               COALESCE(POST.PID, 0) AS `pid`,
+               COALESCE(THREAD.BY_UID, 0) AS `by_uid`,
+               COALESCE(POST.FROM_UID, 0) AS `from_uid`,
+               COALESCE(POST.TO_UID, 0) AS `to_uid`,
+               UNIX_TIMESTAMP(POST.CREATED) AS `created`
+          FROM `DEFAULT_POST` POST
+    INNER JOIN `DEFAULT_POST_CONTENT` POST_CONTENT ON (POST_CONTENT.TID = POST.TID AND POST_CONTENT.PID = POST.PID)
+    INNER JOIN `DEFAULT_THREAD` THREAD ON (THREAD.TID = POST.TID)
+    INNER JOIN `DEFAULT_FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID)
+         WHERE POST.SEARCH_ID IS NOT NULL;
+
+Once the new table is created and filled with your forum's posts, you will need
+to export it to a file. The easiest way to do this is using mysqldump. To export
+just this table when using mysqldump use the optional second table argument,
+for example:
+
+  mysqldump database DEFAULT > sphinx_index.sql
+
+
+Unfortunately Sphinx is quite picky about its SQL support and doesn't like the
+backticks (`) that MySQL uses to escape table and column names. Before you import
+this SQL dump into Sphinx you will need to edit the dump and remove those
+backticks.
+
+The easiest way to do this on Linux is using sed with the following command:
+
+  sed -e "s/\`//g" sphinx_index.sql
+
+
+For other sed-less Operating Systems, you will need to investigate your own way
+to remove the backticks.
+
+Once you have a backtick-less sphinx_index.sql that Sphinx will be able to
+understand, you can start importing it into Sphinx itself. To do this use the
+MySQL command line client. To import the file into Sphinx type:
+
+  mysql -P9306 < sphinx_index.sql
+
+
+If you changed the port number of Sphinx, be sure to update it here.
+
+Once the data is imported successfully you can delete the table created using
+the SQL query above and delete the files. Both may be quite large and could be
+consuming a lot of disk space.
+
+
+4. Enabling Sphinx support in Beehive Forum
+===========================================
+
+To enable Sphinx support in your Beehive Forum, simply (natch) visit the Global
+Forum Settings of your Beehive Forum and enter the Sphinx server address and
+port number into the relevant boxes, tick the box to enable it's use and save
+the changes.
+
+Job done.

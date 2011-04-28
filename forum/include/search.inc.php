@@ -454,7 +454,11 @@ function search_sphinx_connect()
 
     if (!($sphinx_search_port = forum_get_setting('sphinx_search_port', 'is_numeric', false))) return false;
 
-    if (!($sphinx_connection = @mysqli_connect($sphinx_search_host, null, null, null, $sphinx_search_port))) return false;
+    if (!($sphinx_link = mysqli_init())) return false;
+
+    if (!mysqli_options($sphinx_link, MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
+
+    if (!($sphinx_connection = @mysqli_real_connect($sphinx_link, $sphinx_search_host, null, null, null, $sphinx_search_port))) return false;
 
     return $sphinx_connection;
 }

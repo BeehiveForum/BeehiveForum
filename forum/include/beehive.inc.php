@@ -44,9 +44,9 @@ function draw_beehive_bar()
     echo "    <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
     echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.net/faq/\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://sourceforge.net/docman/?group_id=50772\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://sourceforge.net/donate/?group_id=50772\" target=\"_blank\">{$lang['donateexcmark']}</a>\n";
+    echo "      <a href=\"http://www.beehiveforum.net/docs/\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.net/support/\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.net/donate/\" target=\"_blank\">{$lang['donateexcmark']}</a>\n";
     echo "    </td>\n";
     echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date("Y", time()), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
     echo "  </tr>\n";

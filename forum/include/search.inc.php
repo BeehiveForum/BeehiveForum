@@ -42,6 +42,30 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+function search_sphinx_connect()
+{
+    if (!($sphinx_search_host = forum_get_setting('sphinx_search_host'))) return false;
+
+    if (!($sphinx_search_port = forum_get_setting('sphinx_search_port', 'is_numeric', false))) return false;
+
+    if (!($sphinx_link = mysqli_init())) return false;
+
+    if (!mysqli_options($sphinx_link, MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
+
+    if (!(@mysqli_real_connect($sphinx_link, $sphinx_search_host, null, null, null, $sphinx_search_port))) return false;
+
+    return $sphinx_link;
+}
+
+function search_sphinx_search_index()
+{
+    if (!($sphinx_search_index = forum_get_global_setting('sphinx_search_index'))) return false;
+
+    if (!preg_match('/^[a-z]+[a-z0-9]+$/Diu', $sphinx_search_index)) return false;
+
+    return $sphinx_search_index;
+}
+
 function search_execute($search_arguments, &$error)
 {
     if (($uid = session_get_value('UID')) === false) return false;
@@ -311,9 +335,6 @@ function search_sphinx_execute($search_arguments, &$error)
 
     $forum_fid = $table_data['FID'];
 
-    // Swift forum index is the forum's webtag.
-    $webtag = forum_get_webtag($forum_fid);
-
     // Swift connection.
     if (!$sphinx_connection = search_sphinx_connect()) {
 
@@ -321,12 +342,19 @@ function search_sphinx_execute($search_arguments, &$error)
         return false;
     }
 
-    // Database connection.
+    // Get the Sphinx Search index name.
+    if (!$sphinx_search_index = search_sphinx_search_index()) {
+
+        $error = SEARCH_SPHINX_UNAVAILABLE;
+         return false;
+    }
+
+    // Regular Database connection.
     if (!$db_search_results = db_connect()) return false;
 
     // If the user has specified a folder within their viewable scope limit them
     // to that folder, otherwise limit them to their available folders.
-    $where_sql = "WHERE fid IN ({$search_arguments['fid']}) ";
+    $where_sql = "WHERE forum = {$forum_fid} AND fid IN ({$search_arguments['fid']}) ";
 
     // Where query needs to limit the search results to the user specified date range.
     $where_sql.= search_date_range_sphinx($search_arguments['date_from'], $search_arguments['date_to']);
@@ -407,7 +435,7 @@ function search_sphinx_execute($search_arguments, &$error)
     }
 
     // Build the final query.
-    $sql = "SELECT * FROM $webtag $where_sql $group_sql $order_sql LIMIT 1000";
+    $sql = "SELECT * FROM $sphinx_search_index $where_sql $group_sql $order_sql LIMIT 1000";
 
     // If the user has performed a search within the last x minutes bail out
     if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
@@ -448,21 +476,6 @@ function search_sphinx_execute($search_arguments, &$error)
     return true;
 }
 
-function search_sphinx_connect()
-{
-    if (!($sphinx_search_host = forum_get_setting('sphinx_search_host'))) return false;
-
-    if (!($sphinx_search_port = forum_get_setting('sphinx_search_port', 'is_numeric', false))) return false;
-
-    if (!($sphinx_link = mysqli_init())) return false;
-
-    if (!mysqli_options($sphinx_link, MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
-
-    if (!($sphinx_connection = @mysqli_real_connect($sphinx_link, $sphinx_search_host, null, null, null, $sphinx_search_port))) return false;
-
-    return $sphinx_connection;
-}
-
 function search_sphinx_update_index($tid, $pid = false)
 {
     if (forum_get_setting('sphinx_search_enabled', 'N')) return false;
@@ -473,16 +486,18 @@ function search_sphinx_update_index($tid, $pid = false)
 
     $forum_fid = $table_data['FID'];
 
-    $webtag = forum_get_webtag($forum_fid);
-
     if (!$db_search_sphinx_update_index = db_connect()) return false;
 
     if (!$sphinx_connection = search_sphinx_connect()) return false;
 
-    $sql = "SELECT POST.SEARCH_ID, THREAD.TITLE, POST_CONTENT.CONTENT, THREAD.FID, ";
-    $sql.= "THREAD.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, THREAD.LENGTH, ";
-    $sql.= "IF(THREAD.DELETED = 'Y', 1, IF(POST_CONTENT.CONTENT IS NULL, 0, 1)) AS DELETED, ";
-    $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED FROM `{$table_data['PREFIX']}POST` POST ";
+    if (!$sphinx_search_index = search_sphinx_search_index()) return false;
+
+    $sql = "SELECT POST.SEARCH_ID, COALESCE(THREAD.TITLE, '') AS TITLE, ";
+    $sql.= "COALESCE(POST_CONTENT.CONTENT, '') AS CONTENT, COALESCE(THREAD.FID, 0) AS FID, ";
+    $sql.= "COALESCE(THREAD.TID, 0) AS TID, COALESCE(POST.PID, 0) AS PID, ";
+    $sql.= "COALESCE(THREAD.BY_UID, 0) AS BY_UID, COALESCE(POST.FROM_UID, 0) AS FROM_UID, ";
+    $sql.= "COALESCE(POST.TO_UID, 0) AS TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "INNER JOIN `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
     $sql.= "ON (POST_CONTENT.TID = POST.TID AND POST_CONTENT.PID = POST.PID) ";
     $sql.= "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
@@ -503,8 +518,8 @@ function search_sphinx_update_index($tid, $pid = false)
 
         $content = db_escape_string($search_index_data['CONTENT']);
 
-        $sql = "REPLACE INTO $webtag (id, title, content, fid, tid, pid, by_uid, from_uid, to_uid, created) ";
-        $sql.= "VALUES ({$search_index_data['SEARCH_ID']}, '$title', '$content', {$search_index_data['FID']}, ";
+        $sql = "REPLACE INTO $sphinx_search_index (id, title, content, forum, fid, tid, pid, by_uid, from_uid, to_uid, created) ";
+        $sql.= "VALUES ({$search_index_data['SEARCH_ID']}, '$title', '$content', {$table_data['FID']}, {$search_index_data['FID']}, ";
         $sql.= "{$search_index_data['TID']}, {$search_index_data['PID']}, {$search_index_data['BY_UID']}, ";
         $sql.= "{$search_index_data['FROM_UID']}, {$search_index_data['TO_UID']}, {$search_index_data['CREATED']})";
 
@@ -525,11 +540,11 @@ function search_sphinx_delete_index($tid, $pid)
 
     $forum_fid = $table_data['FID'];
 
-    $webtag = forum_get_webtag($forum_fid);
-
     if (!$db_search_sphinx_update_index = db_connect()) return false;
 
     if (!$sphinx_connection = search_sphinx_connect()) return false;
+
+    if (!$sphinx_search_index = search_sphinx_search_index()) return false;
 
     $sql = "SELECT POST.SEARCH_ID FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
@@ -540,7 +555,7 @@ function search_sphinx_delete_index($tid, $pid)
 
     while (($search_index_data = db_fetch_array($result))) {
 
-        $sql = "DELETE FROM $webtag WHERE id = {$search_index_data['SEARCH_ID']}";
+        $sql = "DELETE FROM $sphinx_search_index WHERE id = {$search_index_data['SEARCH_ID']}";
 
         if (!db_query($sql, $sphinx_connection)) return false;
     }

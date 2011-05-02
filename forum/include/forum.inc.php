@@ -126,6 +126,29 @@ function get_table_prefix()
     return false;
 }
 
+function get_all_table_prefixes()
+{
+    $db_get_all_table_prefixes = db_connect();
+
+    $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
+    $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX FROM FORUMS";
+
+    if (!($result = db_query($sql, $db_get_all_table_prefixes))) return false;
+
+    if (db_num_rows($result) == 0) return false;
+
+    $forum_data_array = array();
+
+    while (($forum_data = db_fetch_array($result))) {
+
+        if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+
+        $forum_data_array[] = $forum_data;
+    }
+
+    return $forum_data_array;
+}
+
 function forum_check_webtag_available(&$webtag = false)
 {
     $forum_data = get_forum_data();
@@ -641,8 +664,8 @@ function forum_check_global_setting_name($setting_name)
                                          'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled',
                                          'mail_function', 'sendmail_path', 'smtp_server', 'smtp_port', 'smtp_username',
-                                         'smtp_password', 'sphinx_search_enabled', 'sphinx_search_host', 'sphinx_search_port',
-                                         'use_minified_scripts');
+                                         'smtp_password', 'sphinx_search_enabled', 'sphinx_search_host', 'sphinx_search_index',
+                                         'sphinx_search_port', 'use_minified_scripts');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }

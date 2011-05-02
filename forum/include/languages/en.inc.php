@@ -905,6 +905,7 @@ $lang['searchfrequency'] = "Search Frequency";
 $lang['sphinxsearchintegration'] = "Sphinx Search Integration";
 $lang['enablesphinxsearchintegration'] = "Enable Sphinx Search integration";
 $lang['sphinxsearchsettingsincorrect'] = "Cannot connect to a Sphinx Search server using the settings you have specified.";
+$lang['sphinxsearchindexname'] = "Sphinx Search Index Name";
 $lang['sphinxsearchhostname'] = "Sphinx Search Hostname";
 $lang['sphinxsearchport'] = "Sphinx Search Port";
 $lang['searchunavailable'] = "Search is currently unavailable. Please try again later.";

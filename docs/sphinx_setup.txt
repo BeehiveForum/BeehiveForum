@@ -28,12 +28,13 @@ sphinx.conf contains a listen directive which reads:
 
   listen = 9306:mysql41
 
-9306 is the port Sphinx will listen on for MySQL connections. You can change
-this if you want, but don't change it to the same port as the real MySQL as
-that would be really, really silly.
+9306 is the port Sphinx will listen on for MySQL protocol connections. You 
+can change this if you want, but don't change it to the same port as the 
+real MySQL as that would be really, really silly.
 
 As an example, here is the entire searchd section of the sphinx.conf as used
 on Teh Forum:
+
 
     searchd
     {
@@ -63,14 +64,16 @@ on Teh Forum:
         workers             = threads
     }
 
+
 In addition to the listen directive changes you also need to create an index
-in Sphinx for each of the forums on your Beehive Forum installation. The names
-of the indexes should match the webtags of your forums. If for example your
-forum's webtag is 'DEFAULT' your index should be named the same.
+in Sphinx for your Beehive Forum installation to index it's posts in. The name
+of the index can be whatever you choose, for simplicity sake it is shown here
+as 'beehiveforum'.
 
 Again, here is the index section from Teh Forum that you can use as reference:
 
-    index DEFAULT
+
+    index beehiveforum
     {
         type              = rt
 
@@ -79,6 +82,7 @@ Again, here is the index section from Teh Forum that you can use as reference:
         rt_field          = title
         rt_field          = content
 
+        rt_attr_uint      = forum
         rt_attr_uint      = fid
         rt_attr_uint      = tid
         rt_attr_uint      = pid
@@ -93,6 +97,7 @@ Again, here is the index section from Teh Forum that you can use as reference:
         html_strip        = 1
     }
 
+
 Please feel free to change the path directive, this is where Sphinx will store
 the physical index files, but please, please don't change anything else about
 the index definition (except its name of course). If you do change anything your
@@ -103,89 +108,58 @@ Forum. All that is left to do for this step is to start the Sphinx searchd daemo
 as per the Sphinx documentation for your OS.
 
 
-3. Filling the Sphinx index
-===========================
-
-Now begins the tricky bit.
-
-Once Sphinx support is enabled on your Beehive Forum (we'll get to that later)
-any new threads and posts will be automatically indexed. However, any threads
-and posts created before the switch-on will not be indexed and thus will be
-unsearchable.
-
-If you're enabling Sphinx for an existing well established Beehive Forum, you'll
-probably want to index all the old threads and posts and not just new ones. To
-be able to do this requires some SQL trickery and will very likely mean taking
-your forum down for a short while.
-
-Below you will find an SQL query that you can use to generate the data that will
-be used to populate the sphinx index. As with creating the indexes in Sphinx, you
-will need to repeat this SQL query for each forum you have on your Beehive Forum
-installation, making sure to change the 'DEFAULT' webtag (and DEFAULT_ table
-prefixes) to match the correct webtag of each forum.
-
-What this SQL query actually does is create a new table named DEFAULT and fills
-it with data that we'll need to bring the Sphinx index bang up to date.
-
-
-    CREATE TABLE `DEFAULT` AS
-        SELECT POST.SEARCH_ID AS `id`,
-               COALESCE(THREAD.TITLE, '') AS `title`,
-               COALESCE(POST_CONTENT.CONTENT, '') AS `content`,
-               COALESCE(THREAD.FID, 0) AS `fid`,
-               COALESCE(THREAD.TID, 0) AS `tid`,
-               COALESCE(POST.PID, 0) AS `pid`,
-               COALESCE(THREAD.BY_UID, 0) AS `by_uid`,
-               COALESCE(POST.FROM_UID, 0) AS `from_uid`,
-               COALESCE(POST.TO_UID, 0) AS `to_uid`,
-               UNIX_TIMESTAMP(POST.CREATED) AS `created`
-          FROM `DEFAULT_POST` POST
-    INNER JOIN `DEFAULT_POST_CONTENT` POST_CONTENT ON (POST_CONTENT.TID = POST.TID AND POST_CONTENT.PID = POST.PID)
-    INNER JOIN `DEFAULT_THREAD` THREAD ON (THREAD.TID = POST.TID)
-    INNER JOIN `DEFAULT_FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID)
-         WHERE POST.SEARCH_ID IS NOT NULL;
-
-Once the new table is created and filled with your forum's posts, you will need
-to export it to a file. The easiest way to do this is using mysqldump. To export
-just this table when using mysqldump use the optional second table argument,
-for example:
-
-  mysqldump database DEFAULT > sphinx_index.sql
-
-
-Unfortunately Sphinx is quite picky about its SQL support and doesn't like the
-backticks (`) that MySQL uses to escape table and column names. Before you import
-this SQL dump into Sphinx you will need to edit the dump and remove those
-backticks.
-
-The easiest way to do this on Linux is using sed with the following command:
-
-  sed -e "s/\`//g" sphinx_index.sql
-
-
-For other sed-less Operating Systems, you will need to investigate your own way
-to remove the backticks.
-
-Once you have a backtick-less sphinx_index.sql that Sphinx will be able to
-understand, you can start importing it into Sphinx itself. To do this use the
-MySQL command line client. To import the file into Sphinx type:
-
-  mysql -P9306 < sphinx_index.sql
-
-
-If you changed the port number of Sphinx, be sure to update it here.
-
-Once the data is imported successfully you can delete the table created using
-the SQL query above and delete the files. Both may be quite large and could be
-consuming a lot of disk space.
-
-
-4. Enabling Sphinx support in Beehive Forum
+3. Enabling Sphinx support in Beehive Forum
 ===========================================
 
-To enable Sphinx support in your Beehive Forum, simply (natch) visit the Global
-Forum Settings of your Beehive Forum and enter the Sphinx server address and
-port number into the relevant boxes, tick the box to enable it's use and save
-the changes.
+To enable Sphinx support in your Beehive Forum, simply visit the Global Forum 
+Settings of your Beehive Forum and look for the Sphinx Search Integration section.
+Here you will find 3 text fields where you can enter the Sphinx index name you
+created in your sphinx.conf and the Sphinx server address and port number.
 
-Job done.
+Additionally there is a set of radio buttons to quickly and easily enable or 
+disable the integration.
+
+Once you've entered the values, scroll to the bottom and click save.
+
+
+4. Filling the Sphinx index
+===========================
+
+Once Sphinx support is enabled on your Beehive Forum any new threads and posts 
+will be automatically indexed. However, any threads and posts created before the 
+switch-on will not be indexed and thus will be unsearchable.
+
+If you're enabling Sphinx for an existing well established Beehive Forum, you'll
+probably be want to index all the old threads and posts and not just new ones.
+Fortunately, we've made this easy by the inclusion of a PHP script you can run
+from the shell named update_sphinx_index.php
+
+You will find this script in the main forum folder. To run it simply use the CLI
+version of PHP from a shell / Command Prompt, i.e.:
+
+    php update_sphinx_update.php
+
+This script may take quite a while to run, if you're on Linux it is recommended
+you make use of screen (or byobu) to run this in a detatachable window that you
+can come back to later to check on.
+
+Note that you will only need to run this script once. After it is run, new posts 
+will automatically be added to the index. If they don't then something has gone
+wrong with your configuration or you've found bug.
+
+
+5. Help. It didn't work!
+========================
+
+Don't panic! Pop over to Teh Forum (http://www.tehforum.co.uk) and ask for help. 
+Please help us to help you by indicating any error messages you received and how 
+far along this guide you've manage to get. 
+
+Please be paitient in getting a reply, we'll try to get to you ASAP, but please 
+be aware that we don't monitor the forum 24/7 (it's our hobby, not our job), so 
+you might have to wait for someone to wake up, make a quick visit to the bathroom,
+check their emails / twitter / facebook and have some breakfast before they even
+think about get around to logging on to the forum.
+
+If you don't get a reply without 24 hours then you can feel free to bump the
+thread.

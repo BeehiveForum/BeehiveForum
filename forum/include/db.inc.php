@@ -273,4 +273,9 @@ function db_escape_string($str)
     return addslashes($str);
 }
 
+function db_ping($connection_id)
+{
+    return mysqli_ping($connection_id);
+}
+
 ?>

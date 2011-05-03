@@ -1112,6 +1112,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
             $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
             $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+            $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED DEFAULT '0',";
             $sql.= "  PRIMARY KEY  (TID,PID),";
             $sql.= "  KEY TO_UID (TO_UID),";
             $sql.= "  KEY FROM_UID (FROM_UID),";
@@ -1508,6 +1509,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 throw new Exception('Failed to set owner forum permissions');
             }
 
+            // Get unique ID for this post.
+            $search_id = post_create_sphinx_search_id();
+
             // Create 'Welcome' Thread
             $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
             $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
@@ -1525,10 +1529,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
             // Create the first post in the thread. Make it appear to be from
             // the Owner UID.
-            $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, ";
-            $sql.= "VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+            $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
+            $sql.= "CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, SEARCH_ID) ";
             $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '')";
+            $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '', $search_id)";
 
             if (!db_query($sql, $db_forum_create)) {
                 throw new Exception('Failed to create first post');

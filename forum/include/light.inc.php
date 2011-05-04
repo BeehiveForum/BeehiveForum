@@ -1063,29 +1063,29 @@ function light_draw_pm_inbox()
 
                     if ($current_folder == PM_FOLDER_INBOX) {
 
-                        $pm_messages_array = pm_get_inbox(false, false, $start_from, 20);
+                        $pm_messages_array = pm_get_inbox(false, false, $start_from, 10);
 
                     }elseif ($current_folder == PM_FOLDER_SENT) {
 
-                        $pm_messages_array = pm_get_sent(false, false, $start_from, 20);
+                        $pm_messages_array = pm_get_sent(false, false, $start_from, 10);
 
                     }elseif ($current_folder == PM_FOLDER_OUTBOX) {
 
-                        $pm_messages_array = pm_get_outbox(false, false, $start_from, 20);
+                        $pm_messages_array = pm_get_outbox(false, false, $start_from, 10);
 
                     }elseif ($current_folder == PM_FOLDER_SAVED) {
 
-                        $pm_messages_array = pm_get_saved_items(false, false, $start_from, 20);
+                        $pm_messages_array = pm_get_saved_items(false, false, $start_from, 10);
 
                     }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
-                        $pm_messages_array = pm_get_drafts(false, false, $start_from, 20);
+                        $pm_messages_array = pm_get_drafts(false, false, $start_from, 10);
                     }
 
                     if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
                         if ($start_from > 0) {
-                            echo "<p><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from - 20), "\"><b>{$lang['prev']}</b></a></p>\n";
+                            echo "<p><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from - 10), "\"><b>{$lang['prev']}</b></a></p>\n";
                         }
 
                         echo "<ul>\n";
@@ -1147,10 +1147,10 @@ function light_draw_pm_inbox()
 
                         echo "</ul>\n";
 
-                        $more_messages = $pm_message_count_array[$folder_type] - $start_from - 20;
+                        $more_messages = $pm_message_count_array[$folder_type] - $start_from - 10;
 
                         if ($more_messages > 0) {
-                            echo "<p><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from + 20), "\"><b>{$lang['next']}</b></a></p>\n";
+                            echo "<p><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from + 10), "\"><b>{$lang['next']}</b></a></p>\n";
                         }
                     }
                 }

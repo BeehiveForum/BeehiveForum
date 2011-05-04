@@ -400,7 +400,7 @@ define('DICTIONARY_SUGGEST', 3);
 // PM Export constants
 define('PM_EXPORT_HTML', 0);
 define('PM_EXPORT_XML', 1);
-define('PM_EXPORT_PLAINTEXT', 2);
+define('PM_EXPORT_CSV', 2);
 define('PM_EXPORT_SINGLE', 0);
 define('PM_EXPORT_MANY', 1);
 

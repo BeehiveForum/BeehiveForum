@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
+/* $Id: pm_options.php 4599 2010-11-16 20:00:49Z DecoyDuck $ */
 
 // Set the default timezone
 date_default_timezone_set('UTC');
@@ -81,6 +81,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 
 // Get Webtag
 $webtag = get_webtag();
@@ -115,115 +116,97 @@ if (user_is_guest()) {
     exit;
 }
 
-// Array to hold error messages.
+// Array to store error messages.
 $error_msg_array = array();
 
+// Check that PM system is enabled
+pm_enabled();
+
+// Variables to hold message counts
+$pm_new_count = 0;
+$pm_outbox_count = 0;
+$pm_unread_count = 0;
+
+// Check for new PMs
+pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
+
+// Get custom folder names array.
+if (!$pm_folder_names_array = pm_get_folder_names(false)) {
+
+    $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                                   PM_FOLDER_SENT    => $lang['pmsentitems'],
+                                   PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                                   PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                                   PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
+}
+
 // Submit code starts here.
-if (isset($_POST['save'])) {
+if (isset($_POST['export'])) {
 
-    $user_prefs = array();
-    $user_prefs_global = array();
+    $options_array = array();
 
-    if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
-        $user_prefs['PM_NOTIFY'] = "Y";
-    }else {
-        $user_prefs['PM_NOTIFY'] = "N";
-    }
+    $pm_folders_array = array();
 
-    if (isset($_POST['pm_save_sent_items']) && $_POST['pm_save_sent_items'] == "Y") {
-        $user_prefs['PM_SAVE_SENT_ITEM'] = "Y";
-    }else {
-        $user_prefs['PM_SAVE_SENT_ITEM'] = "N";
-    }
+    if (isset($_POST['pm_folders_array']) && is_array($_POST['pm_folders_array'])) {
 
-    if (isset($_POST['pm_include_reply']) && $_POST['pm_include_reply'] == "Y") {
-        $user_prefs['PM_INCLUDE_REPLY'] = "Y";
-    } else {
-        $user_prefs['PM_INCLUDE_REPLY'] = "N";
-    }
+        foreach ($_POST['pm_folders_array'] as $folder => $export) {
 
-    if (isset($_POST['pm_auto_prune_enabled']) && $_POST['pm_auto_prune_enabled'] == "Y") {
+            if (isset($pm_folder_names_array[$folder]) && ($export == 'Y')) {
 
-        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
-
-            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'];
-
-        }else {
-
-            $user_prefs['PM_AUTO_PRUNE'] = "-60";
-        }
-
-    }else {
-
-        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
-
-            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'] * -1;
-
-        }else {
-
-            $user_prefs['PM_AUTO_PRUNE'] = "-60";
+                $pm_folders_array[] = $folder;
+            }
         }
     }
 
-    if (isset($_POST['pm_export_file']) && is_numeric($_POST['pm_export_file'])) {
-        $user_prefs['PM_EXPORT_FILE'] = $_POST['pm_export_file'];
+    if (isset($_POST['pm_export_file']) && in_array($_POST['pm_export_file'], range(0, 2))) {
+        $options_array['PM_EXPORT_FILE'] = $_POST['pm_export_file'];
     }else {
-        $user_prefs['PM_EXPORT_FILE'] = 0;
+        $options_array['PM_EXPORT_FILE'] = 0;
     }
 
-    if (isset($_POST['pm_export_type']) && is_numeric($_POST['pm_export_type'])) {
-        $user_prefs['PM_EXPORT_TYPE'] = $_POST['pm_export_type'];
+    if (isset($_POST['pm_export_type']) && in_array($_POST['pm_export_file'], range(0, 1))) {
+        $options_array['PM_EXPORT_TYPE'] = $_POST['pm_export_type'];
     }else {
-        $user_prefs['PM_EXPORT_TYPE'] = 0;
+        $options_array['PM_EXPORT_TYPE'] = 0;
     }
 
     if (isset($_POST['pm_export_attachments']) && $_POST['pm_export_attachments'] == "Y") {
-        $user_prefs['PM_EXPORT_ATTACHMENTS'] = "Y";
+        $options_array['PM_EXPORT_ATTACHMENTS'] = "Y";
     }else {
-        $user_prefs['PM_EXPORT_ATTACHMENTS'] = "N";
+        $options_array['PM_EXPORT_ATTACHMENTS'] = "N";
     }
 
     if (isset($_POST['pm_export_style']) && $_POST['pm_export_style'] == "Y") {
-        $user_prefs['PM_EXPORT_STYLE'] = "Y";
+        $options_array['PM_EXPORT_STYLE'] = "Y";
     }else {
-        $user_prefs['PM_EXPORT_STYLE'] = "N";
+        $options_array['PM_EXPORT_STYLE'] = "N";
     }
 
     if (isset($_POST['pm_export_wordfilter']) && $_POST['pm_export_wordfilter'] == "Y") {
-        $user_prefs['PM_EXPORT_WORDFILTER'] = "Y";
+        $options_array['PM_EXPORT_WORDFILTER'] = "Y";
     }else {
-        $user_prefs['PM_EXPORT_WORDFILTER'] = "N";
+        $options_array['PM_EXPORT_WORDFILTER'] = "N";
     }
 
-    // User's UID for updating with.
-    $uid = session_get_value('UID');
+    if (sizeof($pm_folders_array) > 0) {
 
-    // Update USER_PREFS
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        pm_export_folders($pm_folders_array, $options_array);
 
-        // Reinitialize the User's Session to save them having to logout and back in
-        session_init($uid, false);
+    } else {
 
-        // Redirect back to the page so we correctly reload the user's preferences.
-        header_redirect("pm_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
-        exit;
-
-    }else {
-
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
-        $valid = false;
+        $error_msg_array[] = $lang['youmustselectsomefolderstoexport'];
     }
 }
 
-if (!isset($uid)) $uid = session_get_value('UID');
+$uid = session_get_value('UID');
 
 // Get User Prefs
 $user_prefs = user_get_prefs($uid);
 
 // Start output here
-html_draw_top("title={$lang['privatemessageoptions']}", "emoticons.js", 'class=window_title');
+html_draw_top("title={$lang['exportprivatemessages']}", "emoticons.js", 'class=window_title');
 
-echo "<h1>{$lang['privatemessageoptions']}</h1>\n";
+echo "<h1>{$lang['exportprivatemessages']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -235,7 +218,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<br />\n";
-echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"pm_options.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"pm_export.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -245,22 +228,32 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['privatemessageoptions']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['selectprivatemessagefolderstoexport']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("pm_save_sent_items", "Y", $lang['savepminsentitems'], (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("pm_auto_prune_enabled", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] > 0) ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($user_prefs['PM_AUTO_PRUNE']) ? ($user_prefs['PM_AUTO_PRUNE'] > 0 ? $user_prefs['PM_AUTO_PRUNE'] : $user_prefs['PM_AUTO_PRUNE'] * -1) : 60)), " {$lang['days']}</td>\n";
+echo "                  <td align=\"left\">\n";
+
+$pm_message_count_array = pm_get_folder_message_counts();
+
+foreach ($pm_folder_names_array as $folder_type => $folder_name) {
+
+    if (isset($pm_message_count_array[$folder_type]) && is_numeric($pm_message_count_array[$folder_type])) {
+
+        echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"foldername\">", form_checkbox("pm_folders_array[$folder_type]", "Y", $folder_name), "&nbsp;<span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+    }
+}
+
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -310,7 +303,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("export", $lang['export']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

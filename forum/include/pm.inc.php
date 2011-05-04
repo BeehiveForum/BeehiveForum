@@ -138,7 +138,7 @@ function pm_error_refuse()
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
+function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = false)
 {
     if (!$db_pm_get_inbox = db_connect()) return false;
 
@@ -148,10 +148,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-
-    $offset = abs($offset);
-
-    if (!is_numeric($limit)) $limit = 10;
+    if (!is_numeric($limit)) $limit = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -159,7 +156,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_inbox_array = array();
-    $mid_array = array();
+    $messages_array = array();
 
     $pm_inbox_items = PM_INBOX_ITEMS;
 
@@ -171,7 +168,11 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) $sql.= "LIMIT $offset, $limit";
+    if (is_numeric($offset) && is_numeric($limit)) {
+
+        $offset = abs($offset);
+        $sql.= "LIMIT $offset, $limit";
+    }
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
 
@@ -205,7 +206,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
 
             $pm_get_inbox_array[$pm_data['MID']] = $pm_data;
-            $mid_array[] = $pm_data['MID'];
+            $messages_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -214,7 +215,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
         return pm_get_inbox($sort_by, $sort_dir, $offset);
     }
 
-    pms_have_attachments($pm_get_inbox_array, $mid_array);
+    pms_have_attachments($pm_get_inbox_array, $messages_array);
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_get_inbox_array);
@@ -229,7 +230,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
+function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = false)
 {
     if (!$db_pm_get_outbox = db_connect()) return false;
 
@@ -239,8 +240,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-
-    if (!is_numeric($limit)) $limit = 10;
+    if (!is_numeric($limit)) $limit = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -248,7 +248,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
-    $mid_array = array();
+    $messages_array = array();
 
     $pm_outbox_items = PM_OUTBOX_ITEMS;
 
@@ -260,7 +260,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) {
+    if (is_numeric($offset) && is_numeric($limit)) {
 
         $offset = abs($offset);
         $sql.= "LIMIT $offset, $limit";
@@ -298,7 +298,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
 
             $pm_get_outbox_array[$pm_data['MID']] = $pm_data;
-            $mid_array[] = $pm_data['MID'];
+            $messages_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -307,7 +307,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
         return pm_get_outbox($sort_by, $sort_dir, $offset);
     }
 
-    pms_have_attachments($pm_get_outbox_array, $mid_array);
+    pms_have_attachments($pm_get_outbox_array, $messages_array);
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_get_outbox_array);
@@ -322,7 +322,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
+function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = false)
 {
     if (!$db_pm_get_sent = db_connect()) return false;
 
@@ -332,8 +332,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-
-    if (!is_numeric($limit)) $limit = 10;
+    if (!is_numeric($limit)) $limit = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -341,7 +340,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_sent_array = array();
-    $mid_array = array();
+    $messages_array = array();
 
     $pm_sent_items = PM_SENT_ITEMS;
 
@@ -353,7 +352,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) {
+    if (is_numeric($offset) && is_numeric($limit)) {
 
         $offset = abs($offset);
         $sql.= "LIMIT $offset, $limit";
@@ -391,7 +390,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
 
             $pm_get_sent_array[$pm_data['MID']] = $pm_data;
-            $mid_array[] = $pm_data['MID'];
+            $messages_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -400,7 +399,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
         return pm_get_sent($sort_by, $sort_dir, $offset);
     }
 
-    pms_have_attachments($pm_get_sent_array, $mid_array);
+    pms_have_attachments($pm_get_sent_array, $messages_array);
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_get_sent_array);
@@ -415,7 +414,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
+function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = false)
 {
     if (!$db_pm_get_saved_items = db_connect()) return false;
 
@@ -425,8 +424,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-
-    if (!is_numeric($limit)) $limit = 10;
+    if (!is_numeric($limit)) $limit = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -434,7 +432,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_saved_items_array = array();
-    $mid_array = array();
+    $messages_array = array();
 
     $pm_saved_out = PM_SAVED_OUT;
     $pm_saved_in  = PM_SAVED_IN;
@@ -448,7 +446,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) {
+    if (is_numeric($offset) && is_numeric($limit)) {
 
         $offset = abs($offset);
         $sql.= "LIMIT $offset, $limit";
@@ -486,7 +484,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
 
             $pm_get_saved_items_array[$pm_data['MID']] = $pm_data;
-            $mid_array[] = $pm_data['MID'];
+            $messages_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -495,7 +493,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
         return pm_get_saved_items($sort_by, $sort_dir, $offset);
     }
 
-    pms_have_attachments($pm_get_saved_items_array, $mid_array);
+    pms_have_attachments($pm_get_saved_items_array, $messages_array);
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_get_saved_items_array);
@@ -510,7 +508,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = 10)
+function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, $limit = false)
 {
     if (!$db_pm_get_drafts = db_connect()) return false;
 
@@ -520,8 +518,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!is_numeric($offset)) $offset = false;
-
-    if (!is_numeric($limit)) $limit = 10;
+    if (!is_numeric($limit)) $limit = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -529,7 +526,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_get_drafts_array = array();
-    $mid_array = array();
+    $messages_array = array();
 
     $pm_draft_items = PM_DRAFT_ITEMS;
 
@@ -541,7 +538,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
-    if (is_numeric($offset)) {
+    if (is_numeric($offset) && is_numeric($limit)) {
 
         $offset = abs($offset);
         $sql.= "LIMIT $offset, $limit";
@@ -579,7 +576,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
 
             $pm_get_drafts_array[$pm_data['MID']] = $pm_data;
-            $mid_array[] = $pm_data['MID'];
+            $messages_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -588,7 +585,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
         return pm_get_drafts($sort_by, $sort_dir, $offset);
     }
 
-    pms_have_attachments($pm_get_drafts_array, $mid_array);
+    pms_have_attachments($pm_get_drafts_array, $messages_array);
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_get_drafts_array);
@@ -688,7 +685,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     if (($uid = session_get_value('UID')) === false) return false;
 
     $pm_search_results_array = array();
-    $mid_array = array();
+    $messages_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM_SEARCH_RESULTS.MID, PM_SEARCH_RESULTS.TYPE, ";
     $sql.= "PM_SEARCH_RESULTS.FROM_UID, PM_SEARCH_RESULTS.TO_UID, PM_SEARCH_RESULTS.RECIPIENTS, ";
@@ -734,10 +731,10 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
 
             $pm_search_results_array[$pm_data['MID']] = $pm_data;
-            $mid_array[] = $pm_data['MID'];
+            $messages_array[] = $pm_data['MID'];
         }
 
-        pms_have_attachments($pm_search_results_array, $mid_array);
+        pms_have_attachments($pm_search_results_array, $messages_array);
 
     }else if ($message_count > 0) {
 
@@ -1076,7 +1073,7 @@ function pm_get_content($mid)
         return $pm_content;
     }
 
-    return $sql;
+    return false;
 }
 
 /**
@@ -1743,18 +1740,18 @@ function pm_delete_message($mid)
 * Deletes the specified array of messages
 *
 * @return bool - True on success, False on failure.
-* @param array $mid_array - Array of message IDs to delete
+* @param array $messages_array - Array of message IDs to delete
 */
 
-function pm_delete_messages($mid_array)
+function pm_delete_messages($messages_array)
 {
-    if (!is_array($mid_array)) return false;
+    if (!is_array($messages_array)) return false;
 
-    $mid_array = array_filter($mid_array, 'is_numeric');
+    $messages_array = array_filter($messages_array, 'is_numeric');
 
-    if (sizeof($mid_array) < 1) return false;
+    if (sizeof($messages_array) < 1) return false;
 
-    foreach ($mid_array as $mid) {
+    foreach ($messages_array as $mid) {
         if (!pm_delete_message($mid)) return false;
     }
 
@@ -1806,18 +1803,18 @@ function pm_archive_message($mid)
 * Archive the specified array of messages
 *
 * @return bool - True on success, False on failure.
-* @param array $mid_array - Array of message IDs to delete
+* @param array $messages_array - Array of message IDs to delete
 */
 
-function pm_archive_messages($mid_array)
+function pm_archive_messages($messages_array)
 {
-    if (!is_array($mid_array)) return false;
+    if (!is_array($messages_array)) return false;
 
-    $mid_array = array_filter($mid_array, 'is_numeric');
+    $messages_array = array_filter($messages_array, 'is_numeric');
 
-    if (sizeof($mid_array) < 1) return false;
+    if (sizeof($messages_array) < 1) return false;
 
-    foreach ($mid_array as $mid) {
+    foreach ($messages_array as $mid) {
         if (!pm_archive_message($mid)) return false;
     }
 
@@ -2142,15 +2139,15 @@ function pm_auto_prune_enabled()
 *
 * @return void
 * @param array $pm_array - By Reference array of messages.
-* @param array $mid_array - Array of messages IDs to check.
+* @param array $messages_array - Array of messages IDs to check.
 */
 
-function pms_have_attachments(&$pm_array, $mid_array)
+function pms_have_attachments(&$pm_array, $messages_array)
 {
-    if (!is_array($mid_array)) return false;
-    if (sizeof($mid_array) < 1) return false;
+    if (!is_array($messages_array)) return false;
+    if (sizeof($messages_array) < 1) return false;
 
-    $mid_list = implode(",", array_filter($mid_array, 'is_numeric'));
+    $mid_list = implode(",", array_filter($messages_array, 'is_numeric'));
 
     if (!$db_pms_have_attachments = db_connect()) return false;
 
@@ -2197,38 +2194,61 @@ function pm_has_attachments($mid)
 }
 
 /**
-* Export folder
+* Export folders
 *
-* Fetches the messages in the specified folder for export.
+* Fetches the messages in the specified folders for export.
 *
 * @return bool
 * @param integer $folder - Folder to export.
 */
 
-function pm_export_folder($folder)
+function pm_export_folders($pm_folders_array, $options_array)
 {
-    if ($folder == PM_FOLDER_INBOX) {
+    if (!is_array($pm_folders_array)) return false;
+    if (!is_array($options_array)) return false;
 
-        $mid_array = pm_get_inbox();
+    $pm_messages_array = array('message_count' => 0, 'message_array' => array());
 
-    }elseif ($folder == PM_FOLDER_SENT) {
+    foreach ($pm_folders_array as $folder) {
 
-        $mid_array = pm_get_sent();
+        $folder_messages_array = array();
 
-    }elseif ($folder == PM_FOLDER_OUTBOX) {
+        switch ($folder) {
 
-        $mid_array = pm_get_outbox();
+            case PM_FOLDER_INBOX:
 
-    }elseif ($folder == PM_FOLDER_SAVED) {
+                $folder_messages_array = pm_get_inbox();
+                break;
 
-        $mid_array = pm_get_saved_items();
+            case PM_FOLDER_SENT:
 
-    }elseif ($folder == PM_FOLDER_DRAFTS) {
+                $folder_messages_array = pm_get_sent();
+                break;
 
-        $mid_array = pm_get_drafts();
+            case PM_FOLDER_OUTBOX:
+
+                $folder_messages_array = pm_get_outbox();
+                break;
+
+            case PM_FOLDER_SAVED:
+
+                $folder_messages_array = pm_get_saved_items();
+                break;
+
+            case PM_FOLDER_DRAFTS:
+
+                $folder_messages_array = pm_get_drafts();
+                break;
+        }
+
+        if (sizeof($folder_messages_array) > 0) {
+
+            $pm_messages_array['message_count']+= $folder_messages_array['message_count'];
+            $pm_messages_array['message_array'] = array_merge($pm_messages_array['message_array'], $folder_messages_array['message_array']);
+        }
     }
 
-    if (!pm_export_messages($mid_array, $folder)) return false;
+    if (!pm_export_messages($pm_messages_array, $options_array)) return false;
 
     return true;
 }
@@ -2284,80 +2304,52 @@ function pm_export_html_bottom()
     return $html;
 }
 
-function pm_export_messages($mid_array, $folder = PM_FOLDER_NONE)
+function pm_export_messages($pm_messages_array, $options_array = array())
 {
+    if (!is_array($pm_messages_array)) return false;
+    if (!is_array($options_array)) $options_array = array();
+
     $logon = mb_strtolower(session_get_value('LOGON'));
 
-    switch ($folder) {
-
-        case PM_FOLDER_INBOX:
-
-            $archive_name = "pm_backup_{$logon}_inbox.zip";
-            break;
-
-        case PM_FOLDER_SENT:
-
-            $archive_name = "pm_backup_{$logon}_sent_items.zip";
-            break;
-
-        case PM_FOLDER_OUTBOX:
-
-            $archive_name = "pm_backup_{$logon}_outbox.zip";
-            break;
-
-        case PM_FOLDER_SAVED:
-
-            $archive_name = "pm_backup_{$logon}_saved_items.zip";
-            break;
-
-        case PM_FOLDER_DRAFTS:
-
-            $archive_name = "pm_backup_{$logon}_drafts.zip";
-            break;
-
-        default:
-
-            $archive_name = "pm_backup_{$logon}.zip";
-            break;
+    if (!isset($options_array['PM_EXPORT_TYPE'])) {
+        $options_array['PM_EXPORT_TYPE'] = session_get_value('PM_EXPORT_TYPE');
     }
 
-    $pm_export_type = session_get_value('PM_EXPORT_TYPE');
-    $pm_export_style = session_get_value('PM_EXPORT_STYLE');
+    if (!isset($options_array['PM_EXPORT_STYLE'])) {
+        $options_array['PM_EXPORT_STYLE'] = session_get_value('PM_EXPORT_STYLE');
+    }
 
     $zip_file = new zip_file();
 
-    if ($pm_export_style == "Y") {
-
-        if (@file_exists("styles/style.css")) {
-
-            $stylesheet_content = implode("", file("styles/style.css"));
-            $zip_file->add_file($stylesheet_content, "styles/style.css");
-        }
+    if (($options_array['PM_EXPORT_STYLE'] == "Y") && (@file_exists("styles/style.css"))) {
+        $zip_file->add_file(file_get_contents("styles/style.css"), "styles/style.css");
     }
 
-    switch ($pm_export_type) {
+    switch ($options_array['PM_EXPORT_TYPE']) {
 
         case PM_EXPORT_HTML:
 
-            if (!pm_export_html($mid_array, $zip_file)) return false;
+            if (!pm_export_html($pm_messages_array, $zip_file, $options_array)) return false;
             break;
 
         case PM_EXPORT_XML:
 
-            if (!pm_export_xml($mid_array, $zip_file)) return false;
+            if (!pm_export_xml($pm_messages_array, $zip_file, $options_array)) return false;
             break;
 
-        case PM_EXPORT_PLAINTEXT:
+        case PM_EXPORT_CSV:
 
-            if (!pm_export_plaintext($mid_array, $zip_file)) return false;
+            if (!pm_export_csv($pm_messages_array, $zip_file, $options_array)) return false;
             break;
     }
 
     header("Content-Type: application/zip");
     header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
-    header("Content-Disposition: attachment; filename=\"$archive_name\"");
+    header("Content-Disposition: attachment; filename=\"pm_backup_{$logon}.zip\"");
     header("Pragma: no-cache");
+
     echo $zip_file->output_zip();
+
     exit;
 }
 
@@ -2371,64 +2363,69 @@ function pm_export_messages($mid_array, $folder = PM_FOLDER_NONE)
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_html($mid_array, &$zip_file)
+function pm_export_html($pm_messages_array, &$zip_file, $options_array = array())
 {
-    if (!is_array($mid_array)) return false;
+    if (!is_array($pm_messages_array)) return false;
+
     if (!is_object($zip_file)) return false;
 
-    $pm_export_file = session_get_value('PM_EXPORT_FILE');
-    $pm_export_attachments = session_get_value('PM_EXPORT_ATTACHMENTS');
-    $pm_export_wordfilter = session_get_value('PM_EXPORT_WORDFILTER');
+    if (!is_array($options_array)) $options_array = array();
+
+    if (!isset($options_array['PM_EXPORT_FILE'])) {
+        $options_array['PM_EXPORT_FILE'] = session_get_value('PM_EXPORT_FILE');
+    }
+
+    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
+        $options_array['PM_EXPORT_ATTACHMENTS'] = session_get_value('PM_EXPORT_ATTACHMENTS');
+    }
+
+    if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
+        $options_array['PM_EXPORT_WORDFILTER'] = session_get_value('PM_EXPORT_WORDFILTER');
+    }
 
     $pm_display = pm_export_html_top(false);
 
-    if (is_array($mid_array) && sizeof($mid_array) > 0) {
+    if (!isset($pm_messages_array['message_array'])) return false;
 
-        foreach ($mid_array as $mid) {
+    if (sizeof($pm_messages_array) == 0) return false;
 
-            if (($pm_message_array = pm_message_get($mid))) {
+    foreach ($pm_messages_array['message_array'] as $message) {
 
-                $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
-                $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-                if ($pm_export_wordfilter == 'Y') {
-                    $pm_message_array = array_map('pm_export_word_filter_apply', $pm_message_array);
-                }
-
-                $pm_display.= pm_display_html_export($pm_message_array, $pm_message_array['FOLDER']);
-
-                if ($pm_export_file == PM_EXPORT_SINGLE) {
-                    $pm_display.= "<br />\n";
-                }
-
-                if ($pm_export_file == PM_EXPORT_MANY) {
-
-                    $pm_display.= pm_export_html_bottom();
-
-                    $filename = sprintf("message_%s.html", $mid);
-
-                    $zip_file->add_file($pm_display, $filename);
-                    $pm_display = pm_export_html_top(false);
-                }
-
-                if (isset($pm_message_array['AID']) && $pm_export_attachments == 'Y') {
-                    pm_export_attachments($pm_message_array['AID'], $pm_message_array['FROM_UID'], $zip_file);
-                }
-            }
+        if (isset($message['AID']) && ($options_array['PM_EXPORT_ATTACHMENTS'] == 'Y')) {
+            pm_export_attachments($message['AID'], $message['FROM_UID'], $zip_file);
         }
 
-        if ($pm_export_file == PM_EXPORT_SINGLE) {
+        $message['FOLDER'] = pm_message_get_folder($message['MID']);
+        $message['CONTENT'] = pm_get_content($message['MID']);
+
+        if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
+            $message = array_map('pm_export_word_filter_apply', $message);
+        }
+
+        $pm_display.= pm_display_html_export($message, $message['FOLDER']);
+
+        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
+            $pm_display.= "<br />\n";
+        }
+
+        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
 
             $pm_display.= pm_export_html_bottom();
 
-            $filename = "messages.html";
-            $zip_file->add_file($pm_display, $filename);
-        }
+            $zip_file->add_file($pm_display, sprintf("message_%s.html", $message['MID']));
 
-        return true;
+            $pm_display = pm_export_html_top(false);
+        }
     }
 
-    return false;
+    if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
+
+        $pm_display.= pm_export_html_bottom();
+
+        $zip_file->add_file($pm_display, "messages.html");
+    }
+
+    return true;
 }
 
 /**
@@ -2441,86 +2438,83 @@ function pm_export_html($mid_array, &$zip_file)
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_xml($mid_array, &$zip_file)
+function pm_export_xml($pm_messages_array, &$zip_file, $options_array = array())
 {
-    if (!is_array($mid_array)) return false;
+    if (!is_array($pm_messages_array)) return false;
+
     if (!is_object($zip_file)) return false;
 
-    $pm_export_file = session_get_value('PM_EXPORT_FILE');
-    $pm_export_attachments = session_get_value('PM_EXPORT_ATTACHMENTS');
-    $pm_export_wordfilter = session_get_value('PM_EXPORT_WORDFILTER');
+    if (!is_array($options_array)) $options_array = array();
 
-    $beehive_version = BEEHIVE_VERSION;
+    if (!isset($options_array['PM_EXPORT_FILE'])) {
+        $options_array['PM_EXPORT_FILE'] = session_get_value('PM_EXPORT_FILE');
+    }
+
+    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
+        $options_array['PM_EXPORT_ATTACHMENTS'] = session_get_value('PM_EXPORT_ATTACHMENTS');
+    }
+
+    if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
+        $options_array['PM_EXPORT_WORDFILTER'] = session_get_value('PM_EXPORT_WORDFILTER');
+    }
+
+    if (!isset($pm_messages_array['message_array'])) return false;
+
+    if (sizeof($pm_messages_array) == 0) return false;
 
     $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
     $pm_display.= "  <beehiveforum>\n";
-    $pm_display.= "    <version>$beehive_version</version>\n";
     $pm_display.= "    <messages>\n";
 
-    if (is_array($mid_array) && sizeof($mid_array) > 0) {
+    foreach ($pm_messages_array['message_array'] as $message) {
 
-        foreach ($mid_array as $mid) {
-
-            if (($pm_message_array = pm_message_get($mid))) {
-
-                $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
-                $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-                if ($pm_export_wordfilter == 'Y') {
-                    $pm_message_array = array_map('pm_export_word_filter_apply', $pm_message_array);
-                }
-
-                $pm_display.= "      <message>\n";
-
-                foreach ($pm_message_array as $key => $value) {
-
-                    if (!in_array($key, array('CONTENT', 'AID'))) {
-
-                        $key = mb_strtolower($key);
-                        $pm_display.= "        <$key>$value</$key>\n";
-                    }
-                }
-
-                $pm_display.= "        <content><![CDATA[{$pm_message_array['CONTENT']}]]></content>\n";
-                $pm_display.= "      </message>\n";
-
-                if ($pm_export_file == PM_EXPORT_MANY) {
-
-                    $pm_display.= "    </messages>\n";
-                    $pm_display.= "  </beehiveforum>\n";
-
-                    $filename = sprintf("message_%s.xml", $mid);
-
-                    $zip_file->add_file($pm_display, $filename);
-
-                    $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-                    $pm_display.= "  <beehiveforum>\n";
-                    $pm_display.= "    <messages>\n";
-                }
-
-                if (isset($pm_message_array['AID']) && $pm_export_attachments == 'Y') {
-                    pm_export_attachments($pm_message_array['AID'], $pm_message_array['FROM_UID'], $zip_file);
-                }
-            }
+        if (isset($message['AID']) && ($options_array['PM_EXPORT_ATTACHMENTS'] == 'Y')) {
+            pm_export_attachments($message['AID'], $message['FROM_UID'], $zip_file);
         }
 
-        if ($pm_export_file == PM_EXPORT_SINGLE) {
+        $message['FOLDER'] = pm_message_get_folder($message['MID']);
+        $message['CONTENT'] = pm_get_content($message['MID']);
+
+        if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
+            $message = array_map('pm_export_word_filter_apply', $message);
+        }
+
+        unset($message['AID']);
+
+        $pm_display.= "      <message>\n";
+
+        foreach ($message as $key => $value) {
+            $pm_display.= sprintf('        <%1$s><![CDATA[%2$s]]></%1$s>', $key, $value);
+        }
+
+        $pm_display.= "      </message>\n";
+
+        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
 
             $pm_display.= "    </messages>\n";
             $pm_display.= "  </beehiveforum>\n";
 
-            $filename = "messages.xml";
-            $zip_file->add_file($pm_display, $filename);
-        }
+            $zip_file->add_file($pm_display, sprintf("message_%s.xml", $message['MID']));
 
-        return true;
+            $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+            $pm_display.= "  <beehiveforum>\n";
+            $pm_display.= "    <messages>\n";
+        }
     }
 
-    return false;
+    if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
+
+        $pm_display.= "    </messages>\n";
+        $pm_display.= "  </beehiveforum>\n";
+
+        $zip_file->add_file($pm_display, "messages.xml");
+    }
+
+    return true;
 }
 
 /**
-* Export messages to plaintext
+* Export messages to csv
 *
 * Exports messages to plaintext and add them to zip file.
 *
@@ -2529,66 +2523,94 @@ function pm_export_xml($mid_array, &$zip_file)
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_plaintext($mid_array, &$zip_file)
+function pm_export_csv($pm_messages_array, &$zip_file, $options_array = array())
 {
-    if (!is_array($mid_array)) return false;
+    if (!is_array($pm_messages_array)) return false;
+
     if (!is_object($zip_file)) return false;
 
-    $pm_export_file = session_get_value('PM_EXPORT_FILE');
-    $pm_export_attachments = session_get_value('PM_EXPORT_ATTACHMENTS');
-    $pm_export_wordfilter = session_get_value('PM_EXPORT_WORDFILTER');
+    if (!is_array($options_array)) $options_array = array();
 
-    $pm_display = "";
-
-    if (is_array($mid_array) && sizeof($mid_array) > 0) {
-
-        foreach ($mid_array as $mid) {
-
-            if (($pm_message_array = pm_message_get($mid))) {
-
-                $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
-                $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-                if ($pm_export_wordfilter == 'Y') {
-                    $pm_message_array = array_map('pm_export_word_filter_apply', $pm_message_array);
-                }
-
-                foreach ($pm_message_array as $key => $value) {
-
-                    if (!in_array($key, array('CONTENT', 'AID'))) {
-
-                        $key = mb_strtolower($key);
-                        $pm_display.= "$key:$value\n";
-                    }
-                }
-
-                $pm_display.= "content:\r\n\r\n{$pm_message_array['CONTENT']}\r\n\r\n\r\n\r\n";
-
-                if ($pm_export_file == PM_EXPORT_MANY) {
-
-                    $filename = sprintf("message_%s.txt", $mid);
-
-                    $zip_file->add_file($pm_display, $filename);
-
-                    $pm_display = "";
-                }
-
-                if (isset($pm_message_array['AID']) && $pm_export_attachments == 'Y') {
-                    pm_export_attachments($pm_message_array['AID'], $pm_message_array['FROM_UID'], $zip_file);
-                }
-            }
-        }
-
-        if ($pm_export_file == PM_EXPORT_SINGLE) {
-
-            $filename = "messages.txt";
-            $zip_file->add_file($pm_display, $filename);
-        }
-
-        return true;
+    if (!isset($options_array['PM_EXPORT_FILE'])) {
+        $options_array['PM_EXPORT_FILE'] = session_get_value('PM_EXPORT_FILE');
     }
 
-    return false;
+    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
+        $options_array['PM_EXPORT_ATTACHMENTS'] = session_get_value('PM_EXPORT_ATTACHMENTS');
+    }
+
+    if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
+        $options_array['PM_EXPORT_WORDFILTER'] = session_get_value('PM_EXPORT_WORDFILTER');
+    }
+
+    if (!isset($pm_messages_array['message_array'])) return false;
+
+    if (sizeof($pm_messages_array) == 0) return false;
+
+    $pm_csv_export = fopen('php://temp', 'w');
+
+    $pm_csv_header = array('MID', 'TYPE', 'FROM_UID', 'TO_UID', 'SUBJECT',
+                           'RECIPIENTS', 'CREATED', 'FLOGON', 'TLOGON',
+                           'FNICK', 'TNICK', 'FOLDER', 'CONTENT');
+
+    if (!fputcsv($pm_csv_export, $pm_csv_header)) return false;
+
+    foreach ($pm_messages_array['message_array'] as $message) {
+
+        if (isset($message['AID']) && ($options_array['PM_EXPORT_ATTACHMENTS'] == 'Y')) {
+            pm_export_attachments($message['AID'], $message['FROM_UID'], $zip_file);
+        }
+
+        $message['FOLDER'] = pm_message_get_folder($message['MID']);
+
+        $message['CONTENT'] = preg_replace("[\r\n|\r|\n]", '\n', pm_get_content($message['MID']));
+
+        $message['CREATED'] = date('Y-m-d H:i:s', $message['CREATED']);
+
+        if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
+            $message = array_map('pm_export_word_filter_apply', $message);
+        }
+
+        unset($message['AID']);
+
+        if (!fputcsv($pm_csv_export, $message)) return false;
+
+        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
+
+            rewind($pm_csv_export);
+
+            $pm_csv_contents = '';
+
+            while (!feof($pm_csv_export)) {
+                $pm_csv_contents.= fgets($pm_csv_export);
+            }
+
+            $zip_file->add_file($pm_csv_contents, sprintf("message_%s.csv", $message['MID']));
+
+            fclose($pm_csv_export);
+
+            $pm_csv_export = fopen('php://temp', 'r+');
+
+            if (!fputcsv($pm_csv_export, $pm_csv_header)) return false;
+        }
+    }
+
+    if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
+
+        rewind($pm_csv_export);
+
+        $pm_csv_contents = '';
+
+        while (!feof($pm_csv_export)) {
+            $pm_csv_contents.= fgets($pm_csv_export);
+        }
+
+        $zip_file->add_file($pm_csv_contents, 'messages.csv');
+    }
+
+    fclose($pm_csv_export);
+
+    return true;
 }
 
 /**
@@ -2676,7 +2698,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
     return true;
 }
 
-function pm_get_folder_names()
+function pm_get_folder_names($include_search_results = true)
 {
     if (!$db_pm_get_folder_names = db_connect()) return false;
 
@@ -2697,8 +2719,12 @@ function pm_get_folder_names()
                                        PM_FOLDER_SENT    => $lang['pmsentitems'],
                                        PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
                                        PM_FOLDER_SAVED   => $lang['pmsaveditems'],
-                                       PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
-                                       PM_SEARCH_RESULTS => $lang['searchresults']);
+                                       PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
+
+        if ($include_search_results === true) {
+
+            $pm_folder_names_array[PM_SEARCH_RESULTS] = $lang['searchresults'];
+        }
     }
 
     $sql = "SELECT FID, TITLE FROM PM_FOLDERS WHERE UID = '$uid'";

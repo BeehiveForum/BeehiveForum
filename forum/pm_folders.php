@@ -355,6 +355,17 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('export.png'), "\" alt=\"{$lang['exportprivatemessages']}\" title=\"{$lang['exportprivatemessages']}\" />&nbsp;<a href=\"pm_export.php?webtag=$webtag\" title=\"{$lang['exportprivatemessages']}\">{$lang['exportprivatemessages']}</a></td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 
 // Fetch the free PM space and calculate it as a percentage.
 $pm_free_space = pm_get_free_space();

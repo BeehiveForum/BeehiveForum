@@ -321,11 +321,22 @@ if (isset($_POST['pm_delete_messages'])) {
 
     $valid = true;
 
+    $process_messages = array('message_count' => 0, 'message_array' => array());
+
     if (isset($_POST['process']) && is_array($_POST['process'])) {
-        $process_messages = array_filter($_POST['process'], 'is_numeric');
-    }else {
-        $process_messages = array();
+
+        foreach ($_POST['process'] as $export_mid) {
+
+            if (!is_numeric($export_mid)) continue;
+
+            if (($message = pm_message_get($export_mid))) {
+
+                $process_messages['message_array'][] = $message;
+            }
+        }
     }
+
+    $process_messages['message_count'] = sizeof($process_messages['message_array']);
 
     if (sizeof($process_messages) > 0) {
 
@@ -337,11 +348,8 @@ if (isset($_POST['pm_delete_messages'])) {
 
     }else {
 
-        if (!pm_export_folder($current_folder)) {
-
-            $error_msg_array[] = $lang['failedtoexportmessages'];
-            $valid = false;
-        }
+        $error_msg_array[] = $lang['youmustselectsomemessages'];
+        $valid = false;
     }
 
 }else if (isset($_POST['pm_save_messages'])) {
@@ -451,27 +459,27 @@ if ($start < 0) $start = 0;
 
 if ($current_folder == PM_FOLDER_INBOX) {
 
-    $pm_messages_array = pm_get_inbox($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_get_inbox($sort_by, $sort_dir, $start, 10);
 
 }elseif ($current_folder == PM_FOLDER_SENT) {
 
-    $pm_messages_array = pm_get_sent($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_get_sent($sort_by, $sort_dir, $start, 10);
 
 }elseif ($current_folder == PM_FOLDER_OUTBOX) {
 
-    $pm_messages_array = pm_get_outbox($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_get_outbox($sort_by, $sort_dir, $start, 10);
 
 }elseif ($current_folder == PM_FOLDER_SAVED) {
 
-    $pm_messages_array = pm_get_saved_items($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_get_saved_items($sort_by, $sort_dir, $start, 10);
 
 }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
-    $pm_messages_array = pm_get_drafts($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_get_drafts($sort_by, $sort_dir, $start, 10);
 
 }elseif ($current_folder == PM_SEARCH_RESULTS) {
 
-    $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start, 10);
 }
 
 echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$current_folder]}</h1>\n";

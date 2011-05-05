@@ -2262,7 +2262,7 @@ function pm_export_folders($pm_folders_array, $options_array)
 * @param integer $mid - Message ID
 */
 
-function pm_export_html_top($mid)
+function pm_export_html_top($message = null)
 {
     $lang = load_language_file();
 
@@ -2271,10 +2271,10 @@ function pm_export_html_top($mid)
     $html.= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     $html.= "<head>\n";
 
-    if (is_bool($mid)) {
-        $html.= "<title>{$lang['messages']}</title>\n";
+    if (isset($message['SUBJECT']) && isset($message['MID'])) {
+        $html.= sprintf("<title>{$lang['message']} %s - %s</title>\n", htmlentities($message['MID']), htmlentities($message['SUBJECT']));
     }else {
-        $html.= sprintf("<title>{$lang['pmmessagenumber']}</title>\n", $mid);
+        $html.= "<title>{$lang['messages']}</title>\n";
     }
 
     if (@file_exists("styles/style.css")) {
@@ -2383,7 +2383,9 @@ function pm_export_html($pm_messages_array, &$zip_file, $options_array = array()
         $options_array['PM_EXPORT_WORDFILTER'] = session_get_value('PM_EXPORT_WORDFILTER');
     }
 
-    $pm_display = pm_export_html_top(false);
+    if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
+        $pm_display = pm_export_html_top();
+    }
 
     if (!isset($pm_messages_array['message_array'])) return false;
 
@@ -2402,6 +2404,10 @@ function pm_export_html($pm_messages_array, &$zip_file, $options_array = array()
             $message = array_map('pm_export_word_filter_apply', $message);
         }
 
+        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
+            $pm_display = pm_export_html_top($message);
+        }
+
         $pm_display.= pm_display_html_export($message, $message['FOLDER']);
 
         if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
@@ -2413,8 +2419,6 @@ function pm_export_html($pm_messages_array, &$zip_file, $options_array = array()
             $pm_display.= pm_export_html_bottom();
 
             $zip_file->add_file($pm_display, sprintf("message_%s.html", $message['MID']));
-
-            $pm_display = pm_export_html_top(false);
         }
     }
 

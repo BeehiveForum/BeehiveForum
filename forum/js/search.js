@@ -56,6 +56,8 @@ $(beehive).bind('init', function() {
         $('#search_form').submit();
     });
 
+    $('#search_string').focus();
+
     $('div#search_success').each(function() {
 
         if (top.document.body.rows) {

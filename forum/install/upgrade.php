@@ -53,6 +53,21 @@ if (!($forum_webtag_array = install_get_webtags())) {
 // Path to styles directory.
 $styles_path = sprintf('%s/styles', rtrim(BH_FORUM_PATH, '/'));
 
+// Create new SPHINX_SEARCH_ID table shared by all forums.
+if (!install_table_exists($db_database, 'SPHINX_SEARCH_ID')) {
+
+    $sql = "CREATE TABLE SPHINX_SEARCH_ID (";
+    $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  PRIMARY KEY (SEARCH_ID)";
+    $sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
@@ -332,7 +347,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
 
         // Declare a MySQL variable to increment the SEARCH_ID column.
-        $sql = "SELECT @search_id:= 0";
+        $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
 
         if (!$result = @db_query($sql, $db_install)) {
 
@@ -342,6 +357,15 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
         // UPDATE SEARCH_ID in POST table to assign unique id to every post.
         $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
+        $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
 
         if (!$result = @db_query($sql, $db_install)) {
 

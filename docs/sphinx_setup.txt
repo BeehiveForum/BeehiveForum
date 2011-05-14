@@ -17,7 +17,9 @@ a package manager) you can download the source and / or binaries from:
 
   http://sphinxsearch.com/downloads/beta/
 
-Once you have downloaded Sphinx follow the instructions for installing it.
+Once you have downloaded Sphinx follow the instructions for installing it /
+compiling it for your OS.
+
 
 2. Setting up Sphinx
 ====================
@@ -28,7 +30,7 @@ sphinx.conf contains a listen directive which reads:
 
   listen = 9306:mysql41
 
-9306 is the port Sphinx will listen on for MySQL protocol connections. You 
+Port 9306 is what Sphinx will listen on for MySQL protocol connections. You 
 can change this if you want, but don't change it to the same port as the 
 real MySQL as that would be really, really silly.
 
@@ -100,12 +102,11 @@ Again, here is the index section from Teh Forum that you can use as reference:
 
 Please feel free to change the path directive, this is where Sphinx will store
 the physical index files, but please, please don't change anything else about
-the index definition (except its name of course). If you do change anything your
+the index definition, except its name of course. If you do change anything your
 Beehive Forum may not be able to communicate with Sphinx.
 
-Good job, Sphinx is now all set up and ready to rock and roll with your Beehive
-Forum. All that is left to do for this step is to start the Sphinx searchd daemon
-as per the Sphinx documentation for your OS.
+Once Sphinx is all set up all that is left to do is to start the Sphinx searchd
+daemon / service as per the Sphinx documentation for your OS.
 
 
 3. Enabling Sphinx support in Beehive Forum
@@ -132,12 +133,12 @@ switch-on will not be indexed and thus will be unsearchable.
 If you're enabling Sphinx for an existing well established Beehive Forum, you'll
 probably be want to index all the old threads and posts and not just new ones.
 Fortunately, we've made this easy by the inclusion of a PHP script you can run
-from the shell named update_sphinx_index.php
+from the shell named sphinx_update.php
 
 You will find this script in the main forum folder. To run it simply use the CLI
 version of PHP from a shell / Command Prompt, i.e.:
 
-    php update_sphinx_update.php
+    php sphinx_update.php
 
 This script may take quite a while to run, if you're on Linux it is recommended
 you make use of screen (or byobu) to run this in a detatachable window that you
@@ -157,9 +158,7 @@ far along this guide you've manage to get.
 
 Please be paitient in getting a reply, we'll try to get to you ASAP, but please 
 be aware that we don't monitor the forum 24/7 (it's our hobby, not our job), so 
-you might have to wait for someone to wake up, make a quick visit to the bathroom,
-check their emails / twitter / facebook and have some breakfast before they even
-think about get around to logging on to the forum.
+you might have to wait for someone to reply.
 
 If you don't get a reply without 24 hours then you can feel free to bump the
 thread.

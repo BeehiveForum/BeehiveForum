@@ -309,7 +309,7 @@ function search_mysql_execute($search_arguments, &$error)
     $sql.= "$group_sql $having_sql $order_sql $limit_sql";
 
     // If the user has performed a search within the last x minutes bail out
-    if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
+    if (!check_search_frequency()) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;
@@ -438,7 +438,7 @@ function search_sphinx_execute($search_arguments, &$error)
     $sql = "SELECT * FROM $sphinx_search_index $where_sql $group_sql $order_sql LIMIT 1000";
 
     // If the user has performed a search within the last x minutes bail out
-    if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
+    if (!check_search_frequency()) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;

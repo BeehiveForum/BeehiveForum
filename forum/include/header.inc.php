@@ -88,4 +88,13 @@ function header_redirect($uri, $reason = false)
     }
 }
 
+function header_status($status, $message)
+{
+    if (substr(php_sapi_name(), 0, 3) == 'cgi') {
+        header(sprintf('Status: %s %s', $status, $message), true);
+    } else {
+        header(sprintf('%s %s %s', $_SERVER['SERVER_PROTOCOL'], $status, $message), true);
+    }
+}
+
 ?>

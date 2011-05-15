@@ -812,10 +812,6 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-
-        } else if (defined('BEEHIVE_INSTALL_NOWARN')) {
-
-            echo $text_captcha->get_error();
         }
     }
 

@@ -24,19 +24,19 @@ USA
 $(beehive).bind('init', function() {
 
     $.ajax({
-        
-        'cache' : false,
-        
-        'data' : { 
-            'webtag' : beehive.webtag, 
+
+        'cache' : true,
+
+        'data' : {
+            'webtag' : beehive.webtag,
             'ajax'   : 'true',
             'action' : 'get_forum_stats'
         },
-        
-        'url' : beehive.forum_path + '/ajax.php',        
-        
+
+        'url' : beehive.forum_path + '/ajax.php',
+
         'success' : function(data) {
-            
+
             $('#forum_stats').html(data);
         }
     });

@@ -610,7 +610,7 @@ function pm_search_execute($search_string, &$error)
 
     if (!db_query($sql, $db_pm_search_execute)) return false;
 
-    if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
+    if (!check_search_frequency()) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;

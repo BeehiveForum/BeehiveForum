@@ -281,7 +281,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 
 function html_user_banned()
 {
-    header(sprintf("%s 500 Internal Server Error", $_SERVER['SERVER_PROTOCOL']));
+    header_status(500, 'Internal Server Error');
     exit;
 }
 
@@ -446,15 +446,15 @@ function html_include_javascript($script_filepath)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&amp;rev=4672" : '?rev=4672';
-
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
     $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
 
-    printf("<script type=\"text/javascript\" src=\"%s%s\"></script>\n", $script_filepath, $query_string);
+    $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
+
+    printf("<script type=\"text/javascript\" src=\"%s\"></script>\n", $script_filepath);
 }
 
 function html_include_css($script_filepath, $media = 'screen', $id = false)
@@ -462,8 +462,6 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
     $path_parts = path_info_query($script_filepath);
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
-
-    $query_string = isset($path_parts['query']) ? "?{$path_parts['query']}&amp;rev=4672" : '?rev=4672';
 
     $id = ($id !== false) ? $id : sprintf('style_%s', preg_replace('/[^a-zA-Z]+/', '', $script_filepath));
 
@@ -473,7 +471,9 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 
     $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
 
-    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $query_string, $media);
+    $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
+
+    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $media);
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags
@@ -956,10 +956,6 @@ function html_draw_bottom($frame_set_html = false)
             echo "    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n";
             echo "  })();\n\n";
             echo "</script>\n";
-        }
-
-        if (defined('BEEHIVE_INSTALL_NOWARN') && basename($_SERVER['PHP_SELF']) != 'nav.php') {
-            echo "<p align=\"center\">", number_format((memory_get_usage() / 1024) / 1024, 4), "MB /", number_format((memory_get_peak_usage() / 1024) / 1024, 4), "MB</p>\n";
         }
 
         echo "</body>\n";

@@ -133,8 +133,6 @@ function cache_check_thread_list()
 
     if (!cache_check_enabled()) return false;
 
-    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
-
     if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -190,7 +188,7 @@ function cache_check_thread_list()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
+                header_status(304, 'Not Modified');
                 exit;
             }
         }
@@ -219,8 +217,6 @@ function cache_check_start_page()
     if (!cache_check_logon_hash()) return false;
 
     if (!cache_check_enabled()) return false;
-
-    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
 
@@ -271,7 +267,7 @@ function cache_check_start_page()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
+                header_status(304, 'Not Modified');
                 exit;
             }
         }
@@ -300,8 +296,6 @@ function cache_check_messages()
     if (!cache_check_logon_hash()) return false;
 
     if (!cache_check_enabled()) return false;
-
-    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
 
@@ -365,7 +359,7 @@ function cache_check_messages()
 
             if (strcmp($remote_last_modified, $local_last_modified) == "0") {
 
-                header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
+                header_status(304, 'Not Modified');
                 exit;
             }
         }
@@ -429,13 +423,9 @@ function cache_check_enabled()
 
 function cache_check_last_modified($seconds = 300)
 {
-    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
-
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 
     if (!is_numeric($seconds)) return false;
-
-    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
 
@@ -455,7 +445,7 @@ function cache_check_last_modified($seconds = 300)
             header("Last-Modified: $remote_last_modified", true);
             header('Cache-Control: private, must-revalidate', true);
 
-            header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
+            header_status(304, 'Not Modified');
             exit;
         }
     }
@@ -478,8 +468,6 @@ function cache_check_last_modified($seconds = 300)
 
 function cache_check_etag($local_etag)
 {
-    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
-
     if (browser_check(BROWSER_AOL)) return false;
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
@@ -490,7 +478,7 @@ function cache_check_etag($local_etag)
 
     if (strcmp($remote_etag, $local_etag) == "0") {
 
-        header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
+        header_status(304, 'Not Modified');
         header("Etag: \"$local_etag\"");
         exit;
     }

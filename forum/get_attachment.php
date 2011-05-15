@@ -204,40 +204,32 @@ if (isset($hash) && is_md5($hash)) {
                     header("Content-Type: ". $attachment_details['mimetype'], true);
                 }
 
-                // Only do the cache control if we're not running
-                // in PHP CGI Mode. We need to do this check as
-                // we need to modify the HTTP Response header
-                // which is not permitted under PHP CGI Mode.
-                if (preg_match('/cgi/u', php_sapi_name()) < 1) {
+                // Etag Header for cache control
+                $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($file_path)). " GMT");
 
-                    // Etag Header for cache control
-                    $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($file_path)). " GMT");
-
-                    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
-                        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-                    }else {
-                        $remote_etag = false;
-                    }
-
-                    // Last Modified Header for cache control
-                    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($file_path)). "GMT";
-
-                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
-                        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-                    }else {
-                        $remote_last_modified = false;
-                    }
-
-                    if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-
-                        header(sprintf("%s 304 Not Modified", $_SERVER['SERVER_PROTOCOL']));
-                        exit;
-                    }
-
-                    header("Last-Modified: $local_last_modified", true);
-                    header("Etag: \"$local_etag\"", true);
+                if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
+                    $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                }else {
+                    $remote_etag = false;
                 }
 
+                // Last Modified Header for cache control
+                $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($file_path)). "GMT";
+
+                if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
+                    $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+                }else {
+                    $remote_last_modified = false;
+                }
+
+                if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
+
+                    header_status(304, 'Not Modified');
+                    exit;
+                }
+
+                header("Last-Modified: $local_last_modified", true);
+                header("Etag: \"$local_etag\"", true);
                 header("Content-Length: $file_size", true);
                 header("Content-disposition: inline; filename=\"$file_name\"", true);
 

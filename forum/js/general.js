@@ -175,7 +175,7 @@ $(beehive).bind('init', function() {
 
         $.ajax({
 
-            'cache' : false,
+            'cache' : true,
 
             'data' : {
                 'webtag' : beehive.webtag,
@@ -245,7 +245,7 @@ $(beehive).bind('init', function() {
 
             $.ajax({
 
-                'cache' : false,
+                'cache' : true,
 
                 'data' : {
                     'webtag' : beehive.webtag,
@@ -274,7 +274,7 @@ $(beehive).bind('init', function() {
 
                 $.ajax({
 
-                    'cache' : false,
+                    'cache' : true,
 
                     'data' : {
                         'webtag'  : beehive.webtag,
@@ -295,7 +295,7 @@ $(beehive).bind('init', function() {
 
                 $.ajax({
 
-                    'cache' : false,
+                    'cache' : true,
 
                     'data' : {
                         'webtag'  : beehive.webtag,

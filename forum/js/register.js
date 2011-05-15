@@ -26,29 +26,29 @@ $(beehive).bind('init', function() {
     $('#text_captcha_reload').bind('click', function() {
 
         $.ajax({
-            
-            'cache' : false,
-            
+
+            'cache' : true,
+
             'data' : {
                 'webtag' : beehive.webtag,
                 'ajax'   : 'true',
                 'action' : 'reload_captcha'
             },
-            
+
             'url' : beehive.forum_path + '/ajax.php',
-            
+
             'success' : function(data) {
-                
+
                 try {
-                    
+
                     var data = JSON.parse(data);
-                    
+
                     $('#captcha_img').attr('src', data.image);
                     $('#public_key').val(data.key).attr('maxLength', data.chars);
-                    $('#private_key').val('');                    
-                
+                    $('#private_key').val('');
+
                 } catch (exception) {
-                    
+
                     beehive.ajax_error(exception);
                 }
             }

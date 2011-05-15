@@ -73,9 +73,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Don't cache this page
-cache_disable();
-
 // Get webtag
 $webtag = get_webtag();
 
@@ -141,7 +138,6 @@ $json_data = array('webtag'           => $webtag,
                                                'pm_folders'  => html_get_frame_name('pm_folders'),
                                                'pm_messages' => html_get_frame_name('pm_messages')));
 
-// Get all the styles images.
 if (($images_array = glob("styles/$user_style/images/*.png"))) {
 
     foreach ($images_array as $image_filename) {
@@ -151,24 +147,33 @@ if (($images_array = glob("styles/$user_style/images/*.png"))) {
     }
 }
 
-// If the data is requested via JSON send the
-// correct header and content.
+// Decide on the correct Content-Type and encoding
+// of the content. This allows Beehive to reload the
+// JSON data via the same script, either for use
+// in a <script> tag or via AJAX.
 if (isset($_GET['json'])) {
 
-    // JSON header
-    header('Content-type: application/json; charset=UTF-8', true);
+    $content_type = 'application/json';
 
-    // Output the JSON data.
-    echo json_encode($json_data);
+    $content = json_encode($json_data);
 
 } else {
 
-    header('Content-type: text/javascript; charset=UTF-8', true);
+    $content_type = 'text/javascript';
 
-    echo "var beehive = $.extend({}, beehive, ", json_encode($json_data), ");\n";
-    echo "$(document).ready(function() {\n";
-    echo "  $(beehive).trigger('init');\n";
-    echo "});";
+    $content = sprintf('var beehive = $.extend({}, beehive, %s);
+                        $(document).ready(function() {
+                          $(beehive).trigger("init");
+                        });', json_encode($json_data));
 }
+
+// Send correct Content-Type header
+header(sprintf('Content-type: %s; charset=UTF-8', $content_type), true);
+
+// Check the cache of the file.
+cache_check_etag(md5($content_type. $content));
+
+// Output the content
+echo $content;
 
 ?>

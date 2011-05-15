@@ -142,9 +142,7 @@ function ban_check($user_sess, $user_is_guest = false)
                 }
             }
 
-            if (defined("BEEHIVE_INSTALL_NOWARN")) return true;
-
-            header(sprintf("%s 500 Internal Server Error", $_SERVER['SERVER_PROTOCOL']));
+            header_status(500, 'Internal Server Error');
             exit;
         }
     }

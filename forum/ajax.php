@@ -78,9 +78,6 @@ include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Don't cache this page
-cache_disable();
-
 // Get webtag
 $webtag = get_webtag();
 
@@ -92,8 +89,11 @@ $uid = session_get_value('UID');
 
 // Check this is an ajax request and we have an action.
 if (!isset($_GET['ajax']) || !isset($_GET['action'])) {
-    header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+    header_status(500, 'Internal Server Error');
 }
+
+// Content buffer
+$content = '';
 
 // Switch on the action
 switch ($_GET['action']) {
@@ -103,7 +103,9 @@ switch ($_GET['action']) {
 
         // Check we have a search query.
         if (!isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Clean up the query.
@@ -111,13 +113,14 @@ switch ($_GET['action']) {
 
         // Get the search results.
         if (!$search_results_array = user_search($query)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
-        // JSON encode the results to return.
-        foreach ($search_results_array['results_array'] as $search_result) {
-            echo json_encode(array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))), "\n";
-        }
+        // This is oddly formatted as the JQuery.autocomplete plugin expects each
+        // result on a new line, rather than as a validly formatted JSON object.
+        $content.= implode("\n", array_map('json_encode', array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))));
 
         break;
 
@@ -129,7 +132,9 @@ switch ($_GET['action']) {
 
         // Get the hide state from the request.
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Don't rely on switching the bit, always check the client
@@ -145,7 +150,9 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         break;
@@ -158,7 +165,9 @@ switch ($_GET['action']) {
 
         // Get the hide state from the request.
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Don't rely on switching the bit, always check the client
@@ -174,7 +183,9 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         break;
@@ -187,7 +198,9 @@ switch ($_GET['action']) {
 
         // Get the hide state from the request.
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Don't rely on switching the bit, always check the client
@@ -203,7 +216,9 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         break;
@@ -216,7 +231,9 @@ switch ($_GET['action']) {
 
         // Get the hide state from the request.
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Don't rely on switching the bit, always check the client
@@ -232,7 +249,9 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         break;
@@ -242,7 +261,9 @@ switch ($_GET['action']) {
 
         // Get the hide state from the request.
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Don't rely on toggling the stats, always check the client
@@ -260,7 +281,9 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         break;
@@ -270,7 +293,9 @@ switch ($_GET['action']) {
 
         // Get the size from the request
         if (!isset($_GET['size']) || !is_numeric($_GET['size'])) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Set the LEFT_FRAME_WIDTH preference
@@ -281,7 +306,9 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         break;
@@ -293,7 +320,7 @@ switch ($_GET['action']) {
         if (($pm_notification_data = pm_check_messages()) !== false) {
 
             // Send JSON encoded data.
-            echo json_encode($pm_notification_data);
+            $content.= json_encode($pm_notification_data);
         }
 
         break;
@@ -302,11 +329,14 @@ switch ($_GET['action']) {
     case 'get_forum_stats':
 
         // Get the forum stats HTML
-        if (($forum_stats_html = stats_get_html()) !== false) {
+        if (!($forum_stats_html = stats_get_html())) {
 
-            // Send the vanilla HTML
-            echo $forum_stats_html;
+            header_status(500, 'Internal Server Error');
+            exit;
         }
+
+        // Send the vanilla HTML
+        $content.= $forum_stats_html;
 
         break;
 
@@ -327,7 +357,7 @@ switch ($_GET['action']) {
                                        'key'   => $text_captcha->get_public_key());
 
             // Send the JSON encoded array.
-            echo json_encode($text_captcha_data);
+            $content.= json_encode($text_captcha_data);
         }
 
         break;
@@ -337,7 +367,9 @@ switch ($_GET['action']) {
 
         // Get the current message TID.PID
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Spli the msg into separate TID and PID variables.
@@ -373,12 +405,14 @@ switch ($_GET['action']) {
 
         // Save the user prefs.
         if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
-        echo json_encode(array('success'   => true,
-                               'font_size' => $user_prefs['FONT_SIZE'],
-                               'html'      => messages_fontsize_form($tid, $pid, true, $user_prefs['FONT_SIZE'])));
+        $content.= json_encode(array('success'   => true,
+                                     'font_size' => $user_prefs['FONT_SIZE'],
+                                     'html'      => messages_fontsize_form($tid, $pid, true, $user_prefs['FONT_SIZE'])));
 
         break;
 
@@ -386,7 +420,9 @@ switch ($_GET['action']) {
 
         // Get the msg from the request
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Get message TID and PID.
@@ -394,14 +430,16 @@ switch ($_GET['action']) {
 
         // Check we have a valid thread.
         if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-            header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
+
+            header_status(500, 'Internal Server Error');
+            exit;
         }
 
         // Get the post options HTML
         if (($post_options_html = message_get_post_options_html($tid, $pid, $thread_data['FID']))) {
 
             // Send the vanilla HTML
-            echo $post_options_html;
+            $content.= $post_options_html;
         }
 
         break;
@@ -409,8 +447,14 @@ switch ($_GET['action']) {
     // Unknown action
     default:
 
-        header(sprintf("%s 500 Internal server error", $_SERVER['SERVER_PROTOCOL']));
-        break;
+        header_status(500, 'Internal Server Error');
+        exit;
 }
+
+// Check the cache on the content
+cache_check_etag(md5($content));
+
+// Output the content.
+echo $content;
 
 ?>

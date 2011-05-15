@@ -49,31 +49,16 @@ $mysql_big_selects = false;
 
 // Error Handler -------------------------------------------------------
 
-$show_friendly_errors = true;
-
-// If you want Beehive to display user friendly error messages you can
-// enable this option.
-//
-// Note: Under some circumstances this setting can cause problems
-//       with PHP's error handler that result in blank pages
-//       appearing instead of the appropriate error message.
-//       If you encounter such issues you should consider
-//       disabling this option.
-//
-// ---------------------------------------------------------------------
-
-// Error Reporting Verbose Mode ----------------------------------------
-
 $error_report_verbose = true;
 
-// The Beehive Forum Error Handler can be configured to gather verbose
-// details about any errors that occur, include HTTP Request and Cookie
-// vars.
+// The Beehive Forum Error Handler can be configured to display verbose
+// details about any errors that occur to the end user.
 //
-// WARNING: Verbose error reporting data may include user and system
+// WARNING: This setting is NOT recommended in production environments.
+//          Verbose error reporting data may include user and system
 //          credentials which may be used to compromise your server.
 //          It is recommended that only enable verbose error reporting
-//          on closed systems.
+//          on closed testing environments.
 
 // ---------------------------------------------------------------------
 

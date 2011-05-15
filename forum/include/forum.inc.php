@@ -584,10 +584,6 @@ function forum_save_settings($forum_settings_array)
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!db_query($sql, $db_forum_save_settings)) return false;
-
-        }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
-
-            throw new Exception("Unknown forum setting name '$setting_name'");
         }
     }
 
@@ -612,10 +608,6 @@ function forum_save_default_settings($forum_settings_array)
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!db_query($sql, $db_forum_save_default_settings)) return false;
-
-        }else if (!defined('BEEHIVE_INSTALL_NOWARN')) {
-
-            throw new Exception("Unknown default forum setting name '$setting_name'");
         }
     }
 
@@ -1607,11 +1599,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         } catch (Exception $e) {
 
-            //forum_delete_tables($webtag, $database_name);
-
-            if (defined('BEEHIVE_INSTALL_NOWARN')) {
-                throw $e;
-            }
+            forum_delete_tables($webtag, $database_name);
 
             return false;
         }
@@ -2306,13 +2294,13 @@ function forum_check_maintenance()
     $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, 'is_numeric', 0);
 
     // If the function has been run previously in the last 24 hours skip it.
-    if (((time() - $forum_maintenance_last_run) < DAY_IN_SECONDS) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
+    if (((time() - $forum_maintenance_last_run) < DAY_IN_SECONDS)) return;
 
     // Check that the scheduled start time has passed.
-    if ((time() < mktime($forum_maintenance_hour)) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
+    if ((time() < mktime($forum_maintenance_hour))) return;
 
     // Check that the maintenance window has not passed.
-    if ((time() > mktime($forum_maintenance_hour + $forum_maintenance_duration)) && !defined('BEEHIVE_INSTALL_NOWARN')) return;
+    if ((time() > mktime($forum_maintenance_hour + $forum_maintenance_duration))) return;
 
     // Check the function actually exists before we try and execute it.
     if (!function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) return;

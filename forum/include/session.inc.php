@@ -759,6 +759,8 @@ function session_get_perm_array($uid, $forum_fid)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($forum_fid)) return false;
 
+    $user_perm_array = array();
+
     $sql = "SELECT GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS FOLDER_PERM_COUNT FROM GROUP_PERMS ";
     $sql.= "WHERE GROUP_PERMS.GID = 0 AND FORUM IN (0, $forum_fid) ";

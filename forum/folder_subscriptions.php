@@ -139,12 +139,12 @@ if (isset($_POST['save'])) {
 
         foreach ($_POST['set_interest'] as $folder) {
 
-            if ($valid && is_numeric($folder)) {
+            if ($valid && is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
                 if (!user_set_folder_interest($folder, 0)) {
 
-                    $folder_title = folder_get_title($folder);
                     $error_msg_array[] = sprintf("{$lang['couldnotupdateinterestonfolder']}", $folder_title);
+
                     $valid = false;
                 }
             }

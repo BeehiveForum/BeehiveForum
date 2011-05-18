@@ -454,6 +454,8 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     $error_msg_array = array();
 
+    $available_views = thread_list_available_views();
+
     $visible_threads_array = array();
 
     if (($uid = session_get_value('UID')) === false) return;
@@ -677,10 +679,18 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
         light_html_display_success_msg($lang['successfullymarkreadselectedthreads']);
 
-    } else if (!$thread_info) {
+    } else if (!is_array($thread_info)) {
 
-        $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
-        light_html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link));
+        if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
+
+            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
+            light_html_display_warning_msg(sprintf($lang['nodiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_discussions_link));
+
+        }else {
+
+            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
+            light_html_display_warning_msg(sprintf($lang['nodiscussionsinallfolders'], $available_views[$thread_mode], $all_discussions_link));
+        }
 
     } else if (sizeof($error_msg_array) > 0) {
 
@@ -689,7 +699,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
         $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
-        light_html_display_warning_msg(sprintf($lang['viewingmessagesinfolder'], $folder_title, $all_folders_link));
+        light_html_display_warning_msg(sprintf($lang['viewingdiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_folders_link));
     }
 
     if (($start_from > 0) && !is_numeric($folder)) {

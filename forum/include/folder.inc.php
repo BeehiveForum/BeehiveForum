@@ -131,7 +131,7 @@ function folder_get_title($fid)
         return $folder_title;
     }
 
-    return "The Unknown Folder";
+    return false;
 }
 
 function folder_get_prefix($fid)

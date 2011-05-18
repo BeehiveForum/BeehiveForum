@@ -23,13 +23,22 @@ USA
 
 $(beehive).bind('init', function() {
 
-   $('.spoiler').hover(function() {
-       
-       $(this).addClass('spoiler_reveal');
-       
-   },function() {
-       
-       $(this).removeClass('spoiler_reveal');
-       
-   });
+    if (beehive.use_mover_spoiler == 'Y') {
+
+        $('.spoiler').hover(function() {
+
+            $(this).addClass('spoiler_reveal');
+
+        },function() {
+
+            $(this).removeClass('spoiler_reveal');
+
+        });
+
+    } else {
+
+        $('.spoiler').bind('click', function() {
+            $(this).toggleClass('spoiler_reveal');
+        });
+    }
 });

@@ -128,6 +128,9 @@ rss_feed_check_feeds();
 // Array to hold error messages
 $error_msg_array = array();
 
+// Array of available thread list views.
+$available_views = thread_list_available_views();
+
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
@@ -452,27 +455,17 @@ if (isset($_REQUEST['msg']) && validate_msg($_REQUEST['msg'])) {
     }
 }
 
-if (session_get_value('UID') > 0) {
+// Check for a specified folder and move it to the top of the thread list.
+if (isset($folder) && is_numeric($folder)) {
 
-    // Check to see if we have a folder selected and
-    // ensure that is added to the list of folders
-    // and NOT to the ignored folders.
-    if (isset($_REQUEST['msg']) && validate_msg($_REQUEST['msg'])) {
-
-        list($selected_tid) = explode('.', $_REQUEST['msg']);
-
-        if (($thread = thread_get($selected_tid))) {
-            $selected_folder = $thread['FID'];
-        }
-
-    } else if (isset($folder) && is_numeric($folder)) {
-
-        $selected_folder = $folder;
-
-    } else {
-
-        $selected_folder = 0;
+    if (in_array($folder, $folder_order)) {
+        array_splice($folder_order, array_search($folder, $folder_order), 1);
     }
+
+    array_unshift($folder_order, $folder);
+}
+
+if (session_get_value('UID') > 0) {
 
     // Array to hold our ignored folders in.
     $ignored_folders = array();
@@ -514,8 +507,16 @@ if (isset($_REQUEST['mark_read_success'])) {
 
 } else if (!is_array($thread_info)) {
 
-    $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-    html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link), '100%', 'left');
+    if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
+
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
+        html_display_warning_msg(sprintf($lang['nodiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
+
+    }else {
+
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
+        html_display_warning_msg(sprintf($lang['nodiscussionsinallfolders'], $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
+    }
 
 } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -524,7 +525,7 @@ if (isset($_REQUEST['mark_read_success'])) {
 } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
     $all_folders_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
-    html_display_warning_msg(sprintf($lang['viewingmessagesinfolder'], $folder_title, $all_folders_link), '100%', 'left');
+    html_display_warning_msg(sprintf($lang['viewingdiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
 
 } else {
 

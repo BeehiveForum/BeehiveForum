@@ -865,10 +865,7 @@ function html_draw_top()
 
             if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
-                if (session_get_value('USE_MOVER_SPOILER') == "Y") {
-
-                    html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
-                }
+                html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
             }
         }
 

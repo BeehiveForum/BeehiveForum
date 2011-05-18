@@ -1519,8 +1519,6 @@ function thread_list_draw_top($thread_mode, $folder = false)
 
     $webtag = get_webtag();
 
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
-
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
@@ -1541,6 +1539,31 @@ function thread_list_draw_top($thread_mode, $folder = false)
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";
+
+    $available_views = thread_list_available_views();
+
+    echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" class=\"postbody\">\n";
+    echo "        ", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go", $lang['goexcmark']), "\n";
+
+    if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
+        echo "        ", form_input_hidden("folder", htmlentities_array($folder)), "\n";
+    }
+
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+}
+
+function thread_list_available_views()
+{
+    $lang = load_language_file();
+
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
 
     if (user_is_guest()) {
 
@@ -1599,21 +1622,7 @@ function thread_list_draw_top($thread_mode, $folder = false)
         }
     }
 
-    echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
-    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\">\n";
-    echo "        ", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go", $lang['goexcmark']), "\n";
-
-    if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
-        echo "        ", form_input_hidden("folder", htmlentities_array($folder)), "\n";
-    }
-
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
+    return $available_views;
 }
 
 function threads_have_attachments(&$threads_array)

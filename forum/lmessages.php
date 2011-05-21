@@ -174,6 +174,15 @@ if (isset($_POST['pollsubmit'])) {
         light_html_draw_bottom();
         exit;
     }
+
+}elseif (isset($_POST['pollchangevote'])) {
+
+    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+
+        $tid = $_POST['tid'];
+
+        poll_delete_vote($tid);
+    }
 }
 
 // Display messages

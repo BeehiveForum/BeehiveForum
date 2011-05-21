@@ -558,14 +558,14 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                     }else {
 
                         $poll_data['CONTENT'].= "                                <tr>\n";
-                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
+                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false). "</td>\n";
                         $poll_data['CONTENT'].= "                                </tr>\n";
                     }
 
                 }else {
 
                     $poll_data['CONTENT'].= "                                <tr>\n";
-                    $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
+                    $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false). "</td>\n";
                     $poll_data['CONTENT'].= "                                </tr>\n";
                 }
 
@@ -786,7 +786,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                 $poll_data['CONTENT'].= "                            </td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
 
-                if ($poll_data['CHANGEVOTE'] != 0) {
+                if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
 
                     $poll_data['CONTENT'].= "                          <tr>\n";
                     $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
@@ -997,14 +997,14 @@ function poll_preview_form($poll_results, $poll_data)
                 }else {
 
                     $poll_display.= "                      <tr>\n";
-                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
+                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]), false). "</td>\n";
                     $poll_display.= "                      </tr>\n";
                 }
 
             }else {
 
                 $poll_display.= "                      <tr>\n";
-                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
+                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]), false). "</td>\n";
                 $poll_display.= "                      </tr>\n";
             }
 

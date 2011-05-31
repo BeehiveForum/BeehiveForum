@@ -190,11 +190,15 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 {
     $lang = load_language_file();
 
-    //if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
+    if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 
-    if (sizeof($error_list_array) < 1) return;
+    if (sizeof($error_list_array) == 0) return;
+
+    if (sizeof($error_list_array) == 1) {
+        return html_display_error_msg(array_shift($error_list_array), $width, $align, $id);
+    }
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
@@ -220,7 +224,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
+    if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
 
@@ -241,7 +245,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
+    if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
 
@@ -262,7 +266,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
+    if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
 

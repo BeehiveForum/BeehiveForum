@@ -321,22 +321,11 @@ if (isset($_POST['pm_delete_messages'])) {
 
     $valid = true;
 
-    $process_messages = array('message_count' => 0, 'message_array' => array());
-
     if (isset($_POST['process']) && is_array($_POST['process'])) {
-
-        foreach ($_POST['process'] as $export_mid) {
-
-            if (!is_numeric($export_mid)) continue;
-
-            if (($message = pm_message_get($export_mid))) {
-
-                $process_messages['message_array'][] = $message;
-            }
-        }
+        $process_messages = array_filter($_POST['process'], 'is_numeric');
+    }else {
+        $process_messages = array();
     }
-
-    $process_messages['message_count'] = sizeof($process_messages['message_array']);
 
     if (sizeof($process_messages) > 0) {
 

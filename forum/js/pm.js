@@ -23,15 +23,22 @@ USA
 
 $(beehive).bind('init', function() {
 
-    $('#pm_delete_messages').bind('click', function() {
+    $('#pm_delete_messages,#pm_save_messages,#pm_export_messages').bind('click', function() {
 
-        if (window.confirm(beehive.lang.deletemessagesconfirmation)) {
-
-            $('#pm_delete_confirm').val('Y');
-            return true;
+        if ($('input[name^="process"]:checked').length == 0) {
+            return false;
         }
 
-        return false;
+        if ($(this).attr('id') == 'pm_delete_messages') {
+
+            if (!window.confirm(beehive.lang.deletemessagesconfirmation)) {
+                return false;
+            }
+
+            $('#pm_delete_confirm').val('Y');
+        }
+
+        return true;
     });
 
     $('#pm_rename_success,#pm_delete_success,#pm_archive_success').each(function() {

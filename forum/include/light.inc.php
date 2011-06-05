@@ -172,6 +172,7 @@ function light_html_draw_top()
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.4.1.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/json2.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
@@ -187,6 +188,8 @@ function light_html_draw_top()
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
         }
     }
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
 
     echo "</head>\n";
     echo "<body id=\"light-mode\">\n";

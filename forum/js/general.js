@@ -114,6 +114,10 @@ $(beehive).bind('init', function() {
 
     var frame_resize_timeout;
 
+    $('form[method="get"]').append(
+        $('<input type="hidden" name="_">').val((new Date).getTime())
+    );
+
     $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
         return false;
     });

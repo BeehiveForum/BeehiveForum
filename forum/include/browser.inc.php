@@ -50,9 +50,9 @@ function browser_check($browser_check)
     if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 
         if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'aol') !== false) {
-            
+
             $browser = $browser | BROWSER_AOL;
-        
+
         } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'lynx') !== false) {
 
             $browser = $browser | BROWSER_LYNX;
@@ -115,6 +115,68 @@ function browser_check($browser_check)
     }
 
     return ($browser & $browser_check) > 0;
+}
+
+/**
+* browser_mobile
+*
+* Check if a browser looks like a mobile browser
+* by testing various aspects of the HTTP request
+* including user-agent, WAP support, HTTP Profile
+* header, etc.
+*
+* @param void
+* @return boolean
+*/
+function browser_mobile()
+{
+    $mobile_browser = 0;
+
+    if ((isset($_SERVER['HTTP_USER_AGENT'])) && (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|iphone|ipad|ipod|android|xoom)/i', strtolower($_SERVER['HTTP_USER_AGENT'])))) {
+        $mobile_browser++;
+    }
+
+    if ((isset($_SERVER['HTTP_ACCEPT'])) && (strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') !== false)) {
+        $mobile_browser++;
+    }
+
+    if (isset($_SERVER['HTTP_X_WAP_PROFILE'])) {
+        $mobile_browser++;
+    }
+
+    if (isset($_SERVER['HTTP_PROFILE'])) {
+        $mobile_browser++;
+    }
+
+    $mobile_agents = array('w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
+                           'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
+                           'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
+                           'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
+                           'newt','noki','oper','palm','pana','pant','phil','play','port','prox',
+                           'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
+                           'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
+                           'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
+                           'wapr','webc','winw','winw','xda','xda-');
+
+    if ((isset($_SERVER['HTTP_USER_AGENT'])) && (in_array(strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4)), $mobile_agents))) {
+        $mobile_browser++;
+    }
+
+    if ((isset($_SERVER['ALL_HTTP'])) && (strpos(strtolower($_SERVER['ALL_HTTP']), 'operamini') !== false)) {
+        $mobile_browser++;
+    }
+
+    // Exclude Windows desktop browsers
+    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows') !== false) {
+        $mobile_browser = 0;
+    }
+
+    // Windows Phone 7
+    if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows phone') !== false) {
+        $mobile_browser++;
+    }
+
+    return $mobile_browser > 0;
 }
 
 ?>

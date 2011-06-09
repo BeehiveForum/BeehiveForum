@@ -68,6 +68,7 @@ $forum_settings = forum_get_settings();
 // Fetch Global Forum Settings
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "browser.inc.php");
 include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
@@ -172,7 +173,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }
 
 // Check for noframes display mode.
-if (!isset($_GET['noframes'])) {
+if (!browser_mobile()) {
 
     // Output starts here
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
@@ -305,7 +306,7 @@ if (!isset($_GET['noframes'])) {
 } else {
 
     // No frames HTML header
-    html_draw_top('pm_popup_disabled', 'robots=index,follow');
+    light_html_draw_top();
 }
 
 // Does the user want to login or have they got saved username and password
@@ -360,11 +361,8 @@ if (html_get_cookie('logon') && user_is_guest()) {
 // Clear the logon cookie
 html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
-// Light mode footer.
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
-
 // Frames mode HTML
-if (!isset($_GET['noframes'])) {
+if (!browser_mobile()) {
 
     echo "</body>\n";
     echo "</noframes>\n";
@@ -374,7 +372,7 @@ if (!isset($_GET['noframes'])) {
 
 } else {
 
-    html_draw_bottom();
+    light_html_draw_bottom();
 }
 
 ?>

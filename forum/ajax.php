@@ -118,9 +118,9 @@ switch ($_GET['action']) {
             exit;
         }
 
-        // This is oddly formatted as the JQuery.autocomplete plugin expects each
-        // result on a new line, rather than as a validly formatted JSON object.
-        $content.= implode("\n", array_map('json_encode', array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))));
+        foreach ($search_results_array['results_array'] as $search_result) {
+            $content.= json_encode(array_intersect_key($search_result, array_flip(array('LOGON', 'NICKNAME')))). "\n";
+        }
 
         break;
 

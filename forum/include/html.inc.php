@@ -338,6 +338,15 @@ function html_get_style_sheet()
     return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
 }
 
+function html_get_mobile_style_sheet()
+{
+    if (!($user_style = html_get_user_style_path())) {
+        return html_get_forum_file_path('styles/mobile.css');
+    }
+
+    return html_get_forum_file_path(sprintf('styles/%s/mobile.css', basename($user_style)));
+}
+
 function html_get_script_style_sheet()
 {
     if (!($user_style = html_get_user_style_path())) return false;

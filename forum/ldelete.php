@@ -268,11 +268,9 @@ if (isset($_POST['delete'])) {
 
 light_html_draw_top("title={$lang['deletemessage']} {$tid}.{$pid}", "robots=noindex,nofollow");
 
-echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
+echo "<h2>{$lang['deletemessage']} {$tid}.{$pid}</h2>\n";
 
 light_pm_check_messages();
-
-echo "<br />\n";
 
 if ($preview_message['TO_UID'] == 0) {
 
@@ -291,8 +289,6 @@ $preview_tuser = user_get($preview_message['FROM_UID']);
 $preview_message['FLOGON'] = $preview_tuser['LOGON'];
 $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
-echo "<h2>{$lang['deletemessage']}</h2>\n";
-
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
@@ -307,7 +303,7 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 }else {
 
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
+    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
 }
 
 echo "<p>", light_form_submit("delete", $lang['delete']), "&nbsp;", light_form_submit("cancel", $lang['cancel']), "</p>\n";

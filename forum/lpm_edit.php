@@ -367,7 +367,7 @@ light_html_draw_top("title={$lang['editpm']}");
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h1>{$lang['messagepreview']}</h1>\n";
+    echo "<h2>{$lang['messagepreview']}</h2>\n";
 
     light_pm_display($pm_message_array, PM_FOLDER_OUTBOX, true);
 
@@ -378,7 +378,7 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_edit.php\" met
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
 
-echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editpm']}</h1>\n";
+echo "<h2>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editpm']}</h2>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array, '720', 'left');

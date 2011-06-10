@@ -179,7 +179,7 @@ $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE
 
 light_html_draw_top("title=$thread_title");
 
-light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
+light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
 light_pm_check_messages();
 

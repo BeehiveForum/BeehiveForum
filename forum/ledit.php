@@ -584,20 +584,20 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
-            echo sprintf("<h2>{$lang['messagewasnotfound']}</h2>\n", $edit_msg);
+            echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
+            echo sprintf("<h3>{$lang['messagewasnotfound']}</h3>\n", $edit_msg);
             exit;
         }
 
     }else{
 
-        echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
-        echo sprintf("<h2>{$lang['messagewasnotfound']}</h2>\n", $edit_msg);
+        echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
+        echo sprintf("<h3>{$lang['messagewasnotfound']}</h3>\n", $edit_msg);
         exit;
     }
 }
 
-echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
+echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
 
 light_pm_check_messages();
 
@@ -612,7 +612,7 @@ echo form_input_hidden("t_to_uid", htmlentities_array($to_uid));
 echo form_input_hidden("t_from_uid", htmlentities_array($from_uid));
 
 if ($valid && isset($_POST['preview'])) {
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
+    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
 }
 
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";

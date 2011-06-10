@@ -649,7 +649,7 @@ light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow");
 // preview message
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h1>{$lang['messagepreview']}</h1>\n";
+    echo "<h2>{$lang['messagepreview']}</h2>\n";
 
     $pm_preview_array['TLOGON'] = $t_new_recipient_array['LOGON'];
     $pm_preview_array['TNICK']  = $t_new_recipient_array['NICK'];
@@ -677,7 +677,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
 
-echo "<h1>{$lang['sendnewpm']}</h1>\n";
+echo "<h2>{$lang['sendnewpm']}</h2>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);

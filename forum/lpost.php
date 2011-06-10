@@ -559,7 +559,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h1>{$lang['messagepreview']}</h1>";
+    echo "<h2>{$lang['messagepreview']}</h2>";
 
     light_pm_check_messages();
 
@@ -587,7 +587,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    light_message_display(0, $preview_message, 0, 0, false, false, false, false, true);
+    light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true);
 
     echo "<br />\n";
 }
@@ -623,7 +623,7 @@ if (!isset($t_fid)) {
 
 if ($new_thread) {
 
-    echo "<h1>{$lang['createnewthread']}</h1>\n";
+    echo "<h2>{$lang['createnewthread']}</h2>\n";
 
     light_pm_check_messages();
 
@@ -653,7 +653,7 @@ if ($new_thread) {
 
     }else {
 
-        echo "<h1>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h1>\n";
+        echo "<h2>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h2>\n";
 
         light_pm_check_messages();
 
@@ -703,7 +703,7 @@ if (!$new_thread && $reply_to_pid > 0) {
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $thread_data['FID'], false, false, false, false, false);
+        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, false, false);
     }
 }
 

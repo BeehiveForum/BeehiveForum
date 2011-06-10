@@ -131,6 +131,10 @@ pm_user_prune_folders();
 // Load language file
 $lang = load_language_file();
 
+light_html_draw_top();
+
 light_draw_pm_inbox();
+
+light_html_draw_bottom();
 
 ?>

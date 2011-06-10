@@ -185,7 +185,10 @@ if (isset($_POST['pollsubmit'])) {
     }
 }
 
-// Display messages
+light_html_draw_top();
+
 light_draw_messages($msg);
+
+light_html_draw_bottom();
 
 ?>

@@ -316,7 +316,7 @@ function light_draw_messages($msg)
 
     $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-    light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
+    light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
     light_pm_check_messages();
 
@@ -390,13 +390,13 @@ function light_draw_messages($msg)
 
                 }else {
 
-                    light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false);
+                    light_message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false);
                     $last_pid = $message['PID'];
                 }
 
             }else {
 
-                light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
+                light_message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
                 $last_pid = $message['PID'];
             }
 
@@ -689,12 +689,13 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
             echo "<div class=\"folder\">\n";
             echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">", word_filter_add_ob_tags(htmlentities_array($folder_info[$folder_number]['TITLE'])), "</a></h3>";
+            echo "  <div class=\"folder_inner\">\n";
 
             if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
                 if (is_array($thread_info)) {
 
-                    echo "<div class=\"folder_info\">";
+                    echo "  <div class=\"folder_info\">";
 
                     if (isset($folder_msgs[$folder_number])) {
                         echo $folder_msgs[$folder_number];
@@ -711,7 +712,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                         }
                     }
 
-                    echo "</div>\n";
+                    echo "  </div>\n";
 
                     if (($start_from > 0) && is_numeric($folder) && ($folder_number == $folder)) {
                         echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\">{$lang['prev50threads']}</a></div>\n";
@@ -813,6 +814,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                 }
             }
 
+            echo "  </div>\n";
             echo "</div>\n";
 
             if (is_array($thread_info)) reset($thread_info);
@@ -1015,8 +1017,9 @@ function light_draw_pm_inbox()
             if (isset($pm_message_count_array[$folder_type]) && is_numeric($pm_message_count_array[$folder_type])) {
 
                 echo "<div class=\"folder\">";
-                echo "<h3><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder_type\">$folder_name</a></h3>\n";
-                echo "<div class=\"folder_info\">{$pm_message_count_array[$folder_type]} {$lang['messages']}</div>\n";
+                echo "  <h3><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder_type\">$folder_name</a></h3>\n";
+                echo "  <div class=\"folder_inner\">\n";
+                echo "    <div class=\"folder_info\">{$pm_message_count_array[$folder_type]} {$lang['messages']}</div>\n";
 
                 if (isset($current_folder) && ($current_folder == $folder_type)) {
 
@@ -1116,6 +1119,7 @@ function light_draw_pm_inbox()
                     }
                 }
 
+                echo "  </div>\n";
                 echo "</div>\n";
             }
         }
@@ -1268,7 +1272,7 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
     return $html;
 }
 
-function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
+function light_messages_top($msg, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
     $lang = load_language_file();
 
@@ -1276,13 +1280,16 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
 
     forum_check_webtag_available($webtag);
 
-    echo "<div class=\"message_full_link\"><a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$msg"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a></div>";
+    echo "<h2><a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$msg"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
 
-    if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
-    if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
-    if ($interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
-    if ($sticky == "Y") echo "&nbsp;({$lang['sticky']})";
-    if ($locked) echo "&nbsp;<font color=\"#FF0000\">({$lang['locked']})</font>";
+    if ($closed) echo "&nbsp;<img src=\"", html_style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
+    if ($thread_interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", html_style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
+    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<img src=\"", html_style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
+    if ($sticky == "Y") echo "&nbsp;<img src=\"", html_style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" />";
+    if ($locked) echo "&nbsp;<img src=\"", html_style_image('admin_locked.png'), "\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" />\n";
+    if ($deleted) echo "&nbsp;<img src=\"", html_style_image('delete.png'), "\" alt=\"{$lang['deleted']}\" title=\"{$lang['deleted']}\" />\n";
+
+    echo "</h2>\n";
 }
 
 function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
@@ -1556,10 +1563,10 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
-    light_message_display($tid, $poll_data, $msg_count, $folder_fid, true, $closed, $limit_text, true, $is_preview);
+    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, true, $closed, $limit_text, true, $is_preview);
 }
 
-function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
+function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
 {
     $lang = load_language_file();
 
@@ -1629,6 +1636,10 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
         return;
     }
 
+    if ($in_list) {
+        echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
+    }
+
     echo "<div class=\"message\">\n";
 
     if (session_get_value('IMAGES_TO_LINKS') == 'Y') {
@@ -1647,16 +1658,8 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
-    if ($in_list) {
-        echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
-    }
-
     echo "<div class=\"message_from\">\n";
     echo "  <span>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>\n";
-
-    if (isset($message['PID'])) {
-         echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>\n";
-    }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -1714,12 +1717,32 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     }
 
     echo "</div>\n";
+    echo "<div class=\"message_links\">\n";
 
     if ($in_list && $msg_count > 0) {
-        echo sprintf("<div class=\"message_count\">{$lang['messagecountdisplay']}</div>\n", $message['PID'], $msg_count);
+
+        echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">$tid.{$message['PID']}</a>";
+
+        if ($message['REPLY_TO_PID'] > 0) {
+
+            echo " {$lang['inreplyto']} ";
+
+            if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
+
+                echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">$tid.{$message['REPLY_TO_PID']}</a>";
+
+            }else {
+
+                echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">$tid.{$message['REPLY_TO_PID']}</a>";
+            }
+        }
     }
 
-    $message['CONTENT'] = message_apply_formatting($message['CONTENT'], false, true);
+    echo "</div>\n";
+
+    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, true);
+    }
 
     $message['CONTENT'] = light_spoiler_enable($message['CONTENT']);
 

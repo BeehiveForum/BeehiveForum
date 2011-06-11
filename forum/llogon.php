@@ -134,6 +134,10 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
     }
 }
 
+light_html_draw_top();
+
 light_draw_logon_form($error_msg_array);
+
+light_html_draw_bottom();
 
 ?>

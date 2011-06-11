@@ -157,6 +157,10 @@ function light_html_draw_top()
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 
+    if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true))) {
+        echo "<link rel=\"stylesheet\" href=\"$emoticon_stylesheet\" type=\"text/css\" media=\"screen\" />\n";
+    }
+
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
 
     printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
@@ -216,7 +220,11 @@ function light_html_draw_top()
     echo "    <div class=\"clearer\"></div>\n";
     echo "    <div id=\"nav\">\n";
     echo "      <ul>\n";
-    echo "        <li><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+
+    if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
+        echo "        <li><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+    }
+
     echo "        <li><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
     echo "        <li><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
     echo "      </ul>\n";
@@ -964,11 +972,18 @@ function light_draw_pm_inbox()
 
         $delete_mid = $_GET['deletemsg'];
 
-        if (pm_delete_message($delete_mid)) {
+        if (isset($_GET['pm_delete_confirm']) && ($_GET['pm_delete_confirm'] == 'Y')) {
 
-            header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
-            exit;
+            if (pm_delete_message($delete_mid)) {
+
+                header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
+                exit;
+            }
         }
+
+        light_html_display_msg($lang['delete'], $lang['deletemessageconfirmation'], "lpm.php", 'get', array('submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'deletemsg' => $delete_mid, 'pm_delete_confirm' => 'Y'));
+        light_html_draw_bottom();
+        exit;
     }
 
     if (isset($mid) && is_numeric($mid) && $mid > 0) {
@@ -1222,9 +1237,7 @@ function light_draw_my_forums()
 
                 echo "<div class=\"forum\">\n";
                 echo "  <h3><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-                echo "  <div class=\"forum_info\">\n";
-                echo "    {$forum['MESSAGES']} {$lang['messages']}\n";
-                echo "  </div>\n";
+                echo "  <div class=\"forum_info\">", number_format($forum['MESSAGES']), " {$lang['messages']}</div>\n";
                 echo "</div>\n";
             }
 
@@ -1655,7 +1668,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
-        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n";
+        $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"message_full_view\">{$lang['viewfullmsg']}.</a>";
     }
 
     echo "<div class=\"message_from\">\n";
@@ -2183,7 +2197,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     }
 
     echo "<div class=\"message_box\">\n";
-    echo "  <h3>", $header_text, "</h3>\n";
+    echo "  <h2>", $header_text, "</h2>\n";
     echo "  <p>", $string_msg, "</p>\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
@@ -2218,7 +2232,7 @@ function light_html_display_error_array($error_list_array)
     if (sizeof($error_list_array) < 1) return;
 
     echo "<div class=\"success_msg\">\n";
-    echo "  <h3>{$lang['thefollowingerrorswereencountered']}</h3>\n";
+    echo "  <h2>{$lang['thefollowingerrorswereencountered']}</h2>\n";
     echo "  <ul>\n";
     echo "    <li>", implode("</li>\n<li>", $error_list_array), "</li>\n";
     echo "  </ul>\n";
@@ -2232,7 +2246,7 @@ function light_html_display_success_msg($string_msg)
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"success_msg\">\n";
-    echo "  <h3>", $string_msg, "</h3>\n";
+    echo "  <h2>", $string_msg, "</h2>\n";
     echo "</div>\n";
 }
 
@@ -2243,7 +2257,7 @@ function light_html_display_warning_msg($string_msg)
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"warning_msg\">\n";
-    echo "  <h3>", $string_msg, "</h3>\n";
+    echo "  <h2>", $string_msg, "</h2>\n";
     echo "</div>\n";
 }
 
@@ -2254,7 +2268,7 @@ function light_html_display_error_msg($string_msg)
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"error_msg\">\n";
-    echo "  <h3>", $string_msg, "</h3>\n";
+    echo "  <h2>", $string_msg, "</h2>\n";
     echo "</div>\n";
 }
 
@@ -2296,12 +2310,12 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     forum_check_webtag_available($webtag);
 
-    echo "<p>";
+    echo "<div class=\"message\">\n";
+    echo "<div class=\"message_from\">\n";
 
     if ($folder == PM_FOLDER_INBOX) {
 
-        echo "<b>{$lang['from']}: ";
-        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</b><br />\n";
+        echo "<span>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</span>\n";
 
     }else {
 
@@ -2313,32 +2327,28 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
                 $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
             }
 
-            echo "<b>{$lang['to']}: ";
-            echo word_filter_add_ob_tags(implode('; ', $recipient_array)), "</b><br />\n";
+            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
 
         }elseif (is_array($pm_message_array['TLOGON'])) {
 
             $recipient_array = array_unique($pm_message_array['TLOGON']);
 
-            echo "<b>{$lang['to']}: ";
-            echo word_filter_add_ob_tags(implode('; ', $recipient_array)), "</b><br />\n";
+            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
 
         }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
-            echo "<b>{$lang['to']}: ";
-            echo word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</b><br />\n";
+            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span\n";
 
         }else {
 
-            echo "<b>{$lang['to']}: <i>{$lang['norecipients']}</i></b><br />\n";
+            echo "<span>{$lang['to']}: <span class=\"norecipients\">{$lang['norecipients']}</span></span>\n";
         }
     }
 
-    // Add emoticons/wikilinks and word filter tags
-    $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
-    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
+    echo "</div>\n";
+    echo "<div class=\"message_subject\">\n";
 
-    echo "<b>{$lang['subject']}: ";
+    echo "<span>{$lang['subject']}: ";
 
     if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
@@ -2346,14 +2356,16 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     }else {
 
-        echo "<i>{$lang['nosubject']}</i></b>\n";
+        echo "<span class=\"no_subject\">{$lang['nosubject']}</span>\n";
     }
 
-    echo "</p>\n";
+    echo "</span>\n";
+    echo "</div>\n";
 
-    echo $pm_message_array['CONTENT'];
+    $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
+    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
 
-    echo "                      </tr>\n";
+    echo "<div class=\"message_body\">", $pm_message_array['CONTENT'], "</div>\n";
 
     if (isset($pm_message_array['AID'])) {
 
@@ -2366,63 +2378,75 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-                echo "<p><b>{$lang['attachments']}:</b><br />\n";
+                echo "<div class=\"message_attachments\">\n";
+                echo "  <span>{$lang['attachments']}:</span>\n";
+                echo "  <ul>\n";
 
                 foreach ($attachments_array as $attachment) {
 
                     if (($attachment_link = light_attachments_make_link($attachment))) {
 
-                        echo $attachment_link, "<br />\n";
+                        echo "<li>", $attachment_link, "</li>\n";
                     }
                 }
 
-                echo "</p>\n";
+                echo "  </ul>\n";
+                echo "</div>\n";
             }
 
             if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                echo "<p><b>{$lang['imageattachments']}:</b><br />\n";
+                echo "<div class=\"message_attachments\">\n";
+                echo "  <span>{$lang['imageattachments']}:</span>\n";
+                echo "  <ul>\n";
 
                 foreach ($image_attachments_array as $attachment) {
 
                     if (($attachment_link = light_attachments_make_link($attachment))) {
 
-                        echo $attachment_link, "<br />\n";
+                        echo "<li>", $attachment_link, "</li>\n";
                     }
                 }
 
-                echo "</p>\n";
+                echo "  </ul>\n";
+                echo "</div>\n";
             }
         }
     }
 
     if ($preview === false) {
 
+        $links_array = array();
+
         if ($folder == PM_FOLDER_INBOX) {
 
-            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
 
         }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-            echo "<p><a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
+            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
 
         }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
 
         }else {
 
-            echo "<p><a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>&nbsp;&nbsp;";
-            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a></p>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
+        }
+
+        if (sizeof($links_array) > 0) {
+            echo "<div class=\"message_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
         }
     }
 
-    echo "<hr />";
+    echo "</div>";
 }
 
 function light_pm_check_messages()

@@ -1451,6 +1451,7 @@ $lang['successfullydeletedselectedmessages'] = "Successfully deleted selected me
 $lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
 $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
 $lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
+$lang['deletemessageconfirmation'] = "Are you sure you want to delete the selected message?";
 $lang['deletemessagesconfirmation'] = "Are you sure you want to delete all of the selected messages?";
 $lang['youmustselectsomemessages'] = "You must select some messages to process";
 $lang['successfullyrenamedfolder'] = "Successfully Renamed Folder";

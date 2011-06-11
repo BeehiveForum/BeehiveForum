@@ -271,6 +271,10 @@ if (user_is_guest()) {
     }
 }
 
+light_html_draw_top();
+
 light_draw_thread_list($thread_mode, $folder, $start_from);
+
+light_html_draw_bottom();
 
 ?>

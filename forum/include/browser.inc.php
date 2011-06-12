@@ -176,6 +176,14 @@ function browser_mobile()
         $mobile_browser++;
     }
 
+    if (html_get_cookie('view', 'full')) {
+        $mobile_browser = 0;
+    }
+
+    if (html_get_cookie('view', 'mobile')) {
+        $mobile_browser++;
+    }
+
     return $mobile_browser > 0;
 }
 

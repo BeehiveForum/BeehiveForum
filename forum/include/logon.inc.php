@@ -282,8 +282,8 @@ function logon_draw_form($logon_options)
         }
 
         echo "<hr class=\"bhlogonseparator\" />\n";
-        echo "<h2>{$lang['usingaPDA']}</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"", html_get_top_frame_name(), "\">{$lang['lightHTMLversion']}</a></p>\n";
+        echo "<h2>{$lang['usingamobiledevice']}</h2>\n";
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;view=mobile\" target=\"", html_get_top_frame_name(), "\">{$lang['mobileversion']}</a></p>\n";
     }
 }
 

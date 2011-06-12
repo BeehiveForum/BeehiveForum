@@ -176,7 +176,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (thread_is_poll($tid) && $pid == 1) {
 
     light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
-    light_html_display_error_msg($lang['cannoteditpollsinlightmode']);
+    light_html_display_error_msg($lang['cannoteditpollsinmobileversion']);
     light_html_draw_bottom();
     exit;
 }

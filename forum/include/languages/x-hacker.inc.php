@@ -1069,7 +1069,7 @@ $lang['cannotdeletepostsinthisfolder'] = "j00 c4nNo+ del3t3 pO\$+S 1n +hIS f0LDe
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
 $lang['nomessagespecifiedforedit'] = "n0 M3\$SA9E 5pEc1pHIed PhOR eD1+inG";
-$lang['cannoteditpollsinlightmode'] = "c4NnO+ 3Di+ P0llS 1N li9HT M0de";
+$lang['cannoteditpollsinlightmode'] = "c4NnO+ 3Di+ P0llS 1N M081le V13vv";
 $lang['editedbyuser'] = "eDI+3D: %s 8y %s";
 $lang['successfullyeditedpost'] = "sUCCessFUlLY ed1+ED p0\$T %s";
 $lang['errorupdatingpost'] = "eRR0r upD@t1Ng POS+";
@@ -1236,8 +1236,7 @@ $lang['problemsloggingon'] = "pRO8L3M\$ l0G91n9 On?";
 $lang['deletecookies'] = "d3L3TE cOOkIES";
 $lang['cookiessuccessfullydeleted'] = "cO0K13s \$uCCesSFulLy DEl3T3D";
 $lang['forgottenpasswd'] = "fOrg0+T3n YOur p4\$SWORd?";
-$lang['usingaPDA'] = "uSing 4 Pd4?";
-$lang['lightHTMLversion'] = "lI9HT h+ML V3Rsi0N";
+$lang['lightHTMLversion'] = "M081le V3Rsi0N";
 $lang['logonbutton'] = "lOG0N";
 $lang['otherdotdotdot'] = "oTh3R&amp;HelL1P;";
 $lang['yoursessionhasexpired'] = "youR S3SS1ON h4s 3XP1reD. j00 W1ll Ne3D +0 lO9In 494IN to C0N+1Nu3.";
@@ -1541,7 +1540,7 @@ $lang['listmeontheactiveusersdisplay'] = "lIs+ M3 ON +He Act1v3 U53Rs DISpl@y";
 $lang['browseanonymously'] = "bRoW\$3 PhOrum 4N0nyM0U\$Ly";
 $lang['allowfriendstoseemeasonline'] = "br0wS3 @n0nYMou5LY, but 4LLow PhRIends +0 \$33 m3 4S OnlinE";
 $lang['revealspoileronmouseover'] = "revE4l \$p0IL3RS oN moU\$3 Over";
-$lang['showspoilersinlightmode'] = "alwAYS sHow SPOIl3r5 1N lI9Ht M0DE (Use\$ l1ghT3R Fon+ C0l0uR)";
+$lang['showspoilersinlightmode'] = "alwAYS sHow SPOIl3r5 1N Mob1l3 V3r510n (Use\$ l1ghT3R Fon+ C0l0uR)";
 $lang['resizeimagesandreflowpage'] = "rEsize 1M@G3S @Nd R3FLow P493 +o prEV3nT H0RIz0n+@L sCroLL1N9.";
 $lang['showforumstats'] = "sH0W FORum 5t@+S 4+ Bo++om 0ph m3s\$A93 p@NE";
 $lang['usewordfilter'] = "eN4BL3 WOrd phIL+3R.";

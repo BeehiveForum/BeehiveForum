@@ -25,8 +25,9 @@ input,
     cursor: pointer;
     font-size: 120%;
     font-weight: bold;
-    margin: 0;
-    padding: 1px 4px;
+    line-height: 150%;
+    margin: 3px;
+    padding: 2px 4px 1px;
     text-align: center;
     text-decoration: none;
 }

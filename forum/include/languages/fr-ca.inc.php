@@ -1040,7 +1040,6 @@ $lang['cannotdeletepostsinthisfolder'] = "Vous ne pouvez pas supprimer vos messa
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
 $lang['nomessagespecifiedforedit'] = "Aucun message d'indiqué pour révision";
-$lang['cannoteditpollsinlightmode'] = "Impossible de modifier les scrutins en mode léger";
 $lang['editedbyuser'] = "MODIFIÉ: %s par %s";
 $lang['successfullyeditedpost'] = "Modification du message %s réussie";
 $lang['errorupdatingpost'] = "Erreur rencontrée durant la mise à jour du message";
@@ -1207,8 +1206,6 @@ $lang['problemsloggingon'] = "Vous avez des problèmes d'ouverture de session?";
 $lang['deletecookies'] = "Supprimer les témoins";
 $lang['cookiessuccessfullydeleted'] = "Suppression des témoins réussie";
 $lang['forgottenpasswd'] = "Vous avez oublié votre mot de passe?";
-$lang['usingaPDA'] = "Vous utilisez un assistant personnel numérique (PDA)?";
-$lang['lightHTMLversion'] = "Version HTML légèr";
 $lang['logonbutton'] = "Ouvrir session";
 $lang['otherdotdotdot'] = "Autre&hellip;";
 $lang['yoursessionhasexpired'] = "Votre session s'est terminée. Vous devez ouvrir une nouvelle session pour continuer.";
@@ -1511,7 +1508,6 @@ $lang['listmeontheactiveusersdisplay'] = "M'inclure dans la liste des utilisateu
 $lang['browseanonymously'] = "Naviguer le forum anonymement";
 $lang['allowfriendstoseemeasonline'] = "Naviguer anonymement, mais permettre mes ami(e)s de voir que je suis connecté";
 $lang['revealspoileronmouseover'] = "Révèlez les gâcheurs sur survol";
-$lang['showspoilersinlightmode'] = "Montrez toujours les gâcheurs en mode allégé (utilise une police de couleur plus pâle)";
 $lang['resizeimagesandreflowpage'] = "Redimensionner les images et remarginer la page afin de prévenir le défilement horizontal.";
 $lang['showforumstats'] = "Montrer les statistiques du forum au pied du panneau de message";
 $lang['usewordfilter'] = "Activer le filtre des mots.";

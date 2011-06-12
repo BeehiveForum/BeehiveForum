@@ -620,7 +620,7 @@ echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("u
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", '', (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_mover_spoiler_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_light_mode_spoiler", "Y", $lang['showspoilersinlightmode'], (isset($user_prefs['USE_LIGHT_MODE_SPOILER']) && $user_prefs['USE_LIGHT_MODE_SPOILER'] == "Y")), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_light_mode_spoiler", "Y", $lang['showspoilersinmobileversion'], (isset($user_prefs['USE_LIGHT_MODE_SPOILER']) && $user_prefs['USE_LIGHT_MODE_SPOILER'] == "Y")), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_light_mode_spoiler_global", "Y", '', (isset($user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL']) ? $user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_light_mode_spoiler_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

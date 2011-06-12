@@ -1040,7 +1040,6 @@ $lang['cannotdeletepostsinthisfolder'] = "Du kannst keine Posts in diesem Ordner
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
 $lang['nomessagespecifiedforedit'] = "Keine Nachricht fuer Editierung definiert";
-$lang['cannoteditpollsinlightmode'] = "Kann Abstimmungen im Light-Modus nicht bearbeiten";
 $lang['editedbyuser'] = "Geaendert: %s von %s";
 $lang['successfullyeditedpost'] = "Erfolgreich geaenderter Eintrag %s";
 $lang['errorupdatingpost'] = "Fehler bei Aenderung des Posts";
@@ -1205,8 +1204,6 @@ $lang['problemsloggingon'] = "Probleme beim anmelden?";
 $lang['deletecookies'] = "Cookies loeschen";
 $lang['cookiessuccessfullydeleted'] = "Cookies erfolgreich geloescht";
 $lang['forgottenpasswd'] = "Passwort vergessen";
-$lang['usingaPDA'] = "Benutzt Du einen PDA?";
-$lang['lightHTMLversion'] = "Light HTML Version";
 $lang['logonbutton'] = "Anmelden";
 $lang['otherdotdotdot'] = "Andere&hellip;";
 $lang['yoursessionhasexpired'] = "Ihre Sitzung ist abgelaufen. Sie muessen sich wieder anmelden um fortzufahren.";
@@ -1509,7 +1506,6 @@ $lang['listmeontheactiveusersdisplay'] = "In den Aktiven Benutzern anzeigen wenn
 $lang['browseanonymously'] = "Forum anonym durchsuchen";
 $lang['allowfriendstoseemeasonline'] = "anonym durchsuchen, aber Freunden erlauben mich als Online zu sehen";
 $lang['revealspoileronmouseover'] = "Spoiler hervorheben durch Mouse-Over";
-$lang['showspoilersinlightmode'] = "Spoiler immer hell anzeigen (nutzt hellere Schriftfarbe)";
 $lang['resizeimagesandreflowpage'] = "Bildgroessen aendern und Seite aktualisieren um horizontales Scrollen zu vermeiden.";
 $lang['showforumstats'] = "Zeige Forenstatistik am Fuss der Nachrichten";
 $lang['usewordfilter'] = "Wortfilter aktivieren.";

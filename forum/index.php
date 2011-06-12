@@ -127,6 +127,18 @@ if (isset($_GET['other_logon'])) {
     $other_logon = false;
 }
 
+// Set cookie for persistent full mode / mobile use.
+if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
+
+    html_set_cookie('view', 'full');
+    header_redirect('index.php');
+
+} else if (isset($_GET['view']) && ($_GET['view'] == 'mobile')) {
+
+    html_set_cookie('view', 'mobile');
+    header_redirect('index.php');
+}
+
 // Check to see if the user is trying to change their password.
 $skip_logon_page = false;
 
@@ -173,7 +185,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }
 
 // Check for noframes display mode.
-if (!browser_mobile() || (isset($_GET['view']) && $_GET['view'] == 'full')) {
+if ((html_get_cookie('view') == 'full') && (html_get_cookie('view') != 'mobile' || !browser_mobile())) {
 
     // Output starts here
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
@@ -364,7 +376,7 @@ if (html_get_cookie('logon') && user_is_guest()) {
 html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
 // Frames mode HTML
-if (!browser_mobile() || (isset($_GET['view']) && $_GET['view'] == 'full')) {
+if ((html_get_cookie('view') == 'full') && (html_get_cookie('view') != 'mobile' || !browser_mobile())) {
 
     echo "</body>\n";
     echo "</noframes>\n";

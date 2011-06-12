@@ -253,7 +253,38 @@ if (isset($_POST['t_post_html'])) {
     }
 }
 
-user_get_sig($uid, $t_sig, $t_sig_html);
+if (isset($_POST['t_sig_html'])) {
+
+    $t_sig_html = $_POST['t_sig_html'];
+
+    if ($t_sig_html != "N") {
+        $sig_html = POST_HTML_ENABLED;
+    }
+
+    $fetched_sig = false;
+
+    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+        $t_sig = stripslashes_array($_POST['t_sig']);
+    }else {
+        $t_sig = "";
+    }
+
+}else {
+
+    if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
+
+        $t_sig = '';
+        $t_sig_html = 'Y';
+    }
+
+    if ($t_sig_html != "N") {
+        $sig_html = POST_HTML_ENABLED;
+    }
+
+    $t_sig = tidy_html($t_sig, false);
+
+    $fetched_sig = true;
+}
 
 if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
@@ -633,6 +664,12 @@ if ($new_thread) {
 
 echo "<div class=\"post_to\">{$lang['to']}:", post_draw_to_dropdown($t_to_uid), "</div>";
 echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
+
+if ($allow_sig == true) {
+
+    echo form_input_hidden("t_sig", $sig->getTidyContent());
+    echo form_input_hidden("t_sig_html", htmlentities_array($t_sig_html));
+}
 
 if ($allow_html == true) {
 

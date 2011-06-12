@@ -263,7 +263,7 @@ if (user_is_guest()) {
 
             unset($_POST['mark_read_submit'], $_POST['mark_read_confirm']);
 
-            light_html_draw_top("robots=noindex,nofollow");
+            light_html_draw_top("robots=noindex,nofollow", "tab=messages");
             light_html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'lthread_list.php', 'post', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_POST, array('mark_read_confirm' => 'Y')));
             light_html_draw_bottom();
             exit;
@@ -271,7 +271,7 @@ if (user_is_guest()) {
     }
 }
 
-light_html_draw_top();
+light_html_draw_top("tab=messages");
 
 light_draw_thread_list($thread_mode, $folder, $start_from);
 

@@ -129,7 +129,9 @@ if (!forum_check_access_level()) {
 
 if (user_is_guest()) {
 
+    light_html_draw_top("tab=messages");
     light_html_guest_error();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -148,7 +150,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -162,7 +164,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -170,7 +172,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['nomessagespecifiedfordel']);
     light_html_draw_bottom();
     exit;
@@ -197,7 +199,7 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['cannotdeletepostsinthisfolder']);
     light_html_draw_bottom();
     exit;
@@ -205,7 +207,7 @@ if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -217,7 +219,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -225,7 +227,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((session_get_value('UID') != $preview_message['FROM_UID'] || session_check_perm(USER_PERM_PILLORIED, 0)) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -233,7 +235,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -241,7 +243,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg(sprintf($lang['messagewasnotfound'], $msg));
     light_html_draw_bottom();
     exit;
@@ -266,11 +268,9 @@ if (isset($_POST['delete'])) {
     }
 }
 
-light_html_draw_top("title={$lang['deletemessage']} {$tid}.{$pid}", "robots=noindex,nofollow");
+light_html_draw_top("title={$lang['deletemessage']} {$tid}.{$pid}", "robots=noindex,nofollow", "tab=messages");
 
 echo "<h2>{$lang['deletemessage']} {$tid}.{$pid}</h2>\n";
-
-light_pm_check_messages();
 
 if ($preview_message['TO_UID'] == 0) {
 
@@ -306,7 +306,10 @@ if (thread_is_poll($tid) && $pid == 1) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
 }
 
-echo "<p>", light_form_submit("delete", $lang['delete']), "&nbsp;", light_form_submit("cancel", $lang['cancel']), "</p>\n";
+echo "<div class=\"post_buttons\">";
+echo light_form_submit("delete", $lang['delete']);
+echo light_form_submit("cancel", $lang['cancel']);
+echo "</div>\n";
 echo "</form>\n";
 
 light_html_draw_bottom();

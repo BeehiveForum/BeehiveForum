@@ -128,7 +128,9 @@ if (!forum_check_access_level()) {
 
 if (user_is_guest()) {
 
+    light_html_draw_top("tab=messages");
     light_html_guest_error();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -305,7 +307,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -319,7 +321,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['cannotcreatepostinfolder']);
         light_html_draw_bottom();
         exit;
@@ -351,7 +353,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['cannotcreatethreadinfolder']);
         light_html_draw_bottom();
         exit;
@@ -402,7 +404,7 @@ if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -410,7 +412,7 @@ if (!$new_thread) {
 
     if (!$thread_data = thread_get($reply_to_tid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -518,7 +520,7 @@ if ($valid && isset($_POST['post'])) {
     }
 }
 
-light_html_draw_top("title={$lang['postmessage']}", "robots=noindex,nofollow");
+light_html_draw_top("title={$lang['postmessage']}", "robots=noindex,nofollow", "tab=messages");
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
@@ -529,8 +531,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h2>{$lang['messagepreview']}</h2>";
-
-    light_pm_check_messages();
 
     if ($t_to_uid == 0) {
 
@@ -576,6 +576,8 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpost.php\" method
 echo form_input_hidden('webtag', htmlentities_array($webtag));
 echo form_input_hidden('t_dedupe', htmlentities_array($t_dedupe));
 
+echo "<div class=\"post\">\n";
+
 if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
 }
@@ -586,16 +588,17 @@ if (!isset($t_fid)) {
 
 if ($new_thread) {
 
-    echo "<h2>{$lang['createnewthread']}</h2>\n";
-
-    light_pm_check_messages();
-
-    echo "<p>{$lang['selectfolder']}: ";
-    echo light_folder_draw_dropdown($t_fid, "t_fid"), "</p>\n";
-    echo "<p>{$lang['threadtitle']}: ";
-    echo light_form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 30, 64);
-    echo "</p>\n";
     echo form_input_hidden("t_newthread", "Y");
+
+    echo "<h2>{$lang['createnewthread']}</h2>\n";
+    echo "<div class=\"post_inner\">\n";
+
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        light_html_display_error_array($error_msg_array);
+    }
+
+    echo "<div class=\"post_folder\">{$lang['selectfolder']}:", light_folder_draw_dropdown($t_fid, "t_fid"), "</div>";
+    echo "<div class=\"post_thread_title\">{$lang['threadtitle']}:", light_form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 30, 64), "</div>";
 
 }else {
 
@@ -617,39 +620,43 @@ if ($new_thread) {
     }else {
 
         echo "<h2>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h2>\n";
+        echo "<div class=\"post_inner\">\n";
 
-        light_pm_check_messages();
+        if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+            light_html_display_error_array($error_msg_array);
+        }
 
         echo form_input_hidden("t_tid", htmlentities_array($reply_to_tid));
         echo form_input_hidden("t_rpid", htmlentities_array($reply_to_pid))."\n";
     }
 }
 
-if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    light_html_display_error_array($error_msg_array);
-}
-
-echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
+echo "<div class=\"post_to\">{$lang['to']}:", post_draw_to_dropdown($t_to_uid), "</div>";
+echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
 
 if ($allow_html == true) {
 
     $tph_radio = $post->getHTML();
 
-    echo "<p>{$lang['htmlinmessage']}:<br />\n";
-    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED), "<br />\n";
-    echo "</p>";
+    echo "<div class=\"post_html\"><span>{$lang['htmlinmessage']}:</span>\n";
+    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED);
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO);
+    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED);
+    echo "</div>";
 
 }else {
 
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<p>", light_form_submit("post", $lang['post']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
-echo "</p>";
+echo "<div class=\"post_buttons\">";
+echo light_form_submit("post", $lang['post']);
+echo light_form_submit("preview", $lang['preview']);
+echo light_form_submit("cancel", $lang['cancel']);
+echo "</div>";
 
+echo "</div>";
+echo "</div>";
 echo "</form>\n";
 
 if (!$new_thread && $reply_to_pid > 0) {

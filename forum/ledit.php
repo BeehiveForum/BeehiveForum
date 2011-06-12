@@ -131,7 +131,9 @@ if (!forum_check_access_level()) {
 
 if (user_is_guest()) {
 
+    light_html_draw_top("tab=messages");
     light_html_guest_error();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -143,7 +145,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -157,7 +159,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -165,7 +167,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['nomessagespecifiedforedit']);
     light_html_draw_bottom();
     exit;
@@ -173,7 +175,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['cannoteditpollsinlightmode']);
     light_html_draw_bottom();
     exit;
@@ -193,7 +195,7 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['cannoteditpostsinthisfolder']);
     light_html_draw_bottom();
     exit;
@@ -201,7 +203,7 @@ if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -215,9 +217,10 @@ $page_prefs = session_get_post_page_prefs();
 
 $valid = true;
 
-light_html_draw_top(sprintf("title={$lang['editmessage']}", $edit_msg), "robots=noindex,nofollow");
+light_html_draw_top(sprintf("title={$lang['editmessage']}", $edit_msg), "robots=noindex,nofollow", "tab=messages");
 
 $t_content = "";
+
 $t_sig = "";
 
 if (isset($_POST['t_post_emots'])) {
@@ -382,7 +385,7 @@ if (isset($_POST['preview'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -452,7 +455,7 @@ if (isset($_POST['preview'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -484,7 +487,7 @@ if (isset($_POST['preview'])) {
 
     if (((forum_get_setting('allow_post_editing', 'N')) || ((session_get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['nopermissiontoedit']);
         light_html_draw_bottom();
         exit;
@@ -492,7 +495,7 @@ if (isset($_POST['preview'])) {
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['nopermissiontoedit']);
         light_html_draw_bottom();
         exit;
@@ -534,7 +537,7 @@ if (isset($_POST['preview'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -546,7 +549,7 @@ if (isset($_POST['preview'])) {
 
             if (((forum_get_setting('allow_post_editing', 'N')) || ((session_get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+                light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
                 light_html_display_error_msg($lang['nopermissiontoedit']);
                 light_html_draw_bottom();
                 exit;
@@ -554,7 +557,7 @@ if (isset($_POST['preview'])) {
 
             if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
+                light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
                 light_html_display_error_msg($lang['nopermissiontoedit']);
                 light_html_draw_bottom();
                 exit;
@@ -597,12 +600,11 @@ if (isset($_POST['preview'])) {
     }
 }
 
-echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
+if ($valid && isset($_POST['preview'])) {
 
-light_pm_check_messages();
+    echo "<h2>{$lang['messagepreview']}</h2>";
 
-if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    light_html_display_error_array($error_msg_array);
+    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
@@ -611,35 +613,46 @@ echo form_input_hidden("t_msg", htmlentities_array($edit_msg));
 echo form_input_hidden("t_to_uid", htmlentities_array($to_uid));
 echo form_input_hidden("t_from_uid", htmlentities_array($from_uid));
 
-if ($valid && isset($_POST['preview'])) {
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
+echo "<div class=\"post\">\n";
+echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
+echo "<div class=\"post_inner\">\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    light_html_display_error_array($error_msg_array);
 }
 
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
+echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()))."</p>\n";
+
+    echo form_input_hidden("t_sig", $sig->getTidyContent(), 5, 50);
+    echo form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()));
 }
 
 if ($allow_html == true) {
 
     $tph_radio = $post->getHTML();
 
-    echo "<p>{$lang['htmlinmessage']}:<br />\n";
-    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED), "<br />\n";
-    echo "</p>";
+    echo "<div class=\"post_html\"><span>{$lang['htmlinmessage']}:</span>\n";
+    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED);
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO);
+    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED);
+    echo "</div>";
 
 }else {
 
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<p>", light_form_submit("apply", $lang['apply']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
-echo "</p>";
+echo "<div class=\"post_buttons\">";
+echo light_form_submit("apply", $lang['apply']);
+echo light_form_submit("preview", $lang['preview']);
+echo light_form_submit("cancel", $lang['cancel']);
+echo "</div>";
 
-echo "</form>\n";
+echo "</div>";
+echo "</div>";
+echo "</form>\n";;
 
 light_html_draw_bottom();
 

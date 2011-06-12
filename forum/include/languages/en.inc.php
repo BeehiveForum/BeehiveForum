@@ -218,6 +218,8 @@ $lang['hint'] = "Hint";
 $lang['new'] = "New";
 $lang['referer'] = "Referer";
 $lang['thefollowingerrorswereencountered'] = "The following errors were encountered:";
+$lang['top'] = "Top";
+$lang['desktopversion'] = "Desktop Version";
 
 // Admin interface (admin*.php) ----------------------------------------
 $lang['admintools'] = "Admin Tools";
@@ -1243,8 +1245,8 @@ $lang['problemsloggingon'] = "Problems logging on?";
 $lang['deletecookies'] = "Delete Cookies";
 $lang['cookiessuccessfullydeleted'] = "Cookies successfully deleted";
 $lang['forgottenpasswd'] = "Forgotten your password?";
-$lang['usingaPDA'] = "Using a PDA?";
-$lang['lightHTMLversion'] = "Light HTML version";
+$lang['usingaPDA'] = "Using a mobile device?";
+$lang['lightHTMLversion'] = "Mobile version";
 $lang['logonbutton'] = "Logon";
 $lang['otherdotdotdot'] = "Other&hellip;";
 $lang['yoursessionhasexpired'] = "Your session has expired. You will need to login again to continue.";

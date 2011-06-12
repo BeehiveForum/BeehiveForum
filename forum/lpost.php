@@ -251,38 +251,7 @@ if (isset($_POST['t_post_html'])) {
     }
 }
 
-if (isset($_POST['t_sig_html'])) {
-
-    $t_sig_html = $_POST['t_sig_html'];
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $fetched_sig = false;
-
-    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
-        $t_sig = stripslashes_array($_POST['t_sig']);
-    }else {
-        $t_sig = "";
-    }
-
-}else {
-
-    if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
-
-        $t_sig = '';
-        $t_sig_html = 'Y';
-    }
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $t_sig = tidy_html($t_sig, false);
-
-    $fetched_sig = true;
-}
+user_get_sig($uid, $t_sig, $t_sig_html);
 
 if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
@@ -583,13 +552,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $t_content;
 
-    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
-        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
-    }
-
     light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true);
-
-    echo "<br />\n";
 }
 
 if (!$new_thread) {
@@ -669,10 +632,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
 
-if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 50), form_input_hidden("t_sig_html", htmlentities_array($t_sig_html))."</p>\n";
-}
-
 if ($allow_html == true) {
 
     $tph_radio = $post->getHTML();
@@ -695,7 +654,7 @@ echo "</form>\n";
 
 if (!$new_thread && $reply_to_pid > 0) {
 
-    echo "<p>{$lang['inreplyto']}:</p>\n";
+    echo "<h2>{$lang['inreplyto']}:</h2>\n";
 
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
@@ -703,7 +662,7 @@ if (!$new_thread && $reply_to_pid > 0) {
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, false, false);
+        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, true);
     }
 }
 

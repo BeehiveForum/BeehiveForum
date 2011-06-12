@@ -209,6 +209,8 @@ if (isset($_POST['pollsubmit'])) {
 
         $tid = $_POST['tid'];
 
+        $pid = 1;
+
         poll_delete_vote($tid);
     }
 }

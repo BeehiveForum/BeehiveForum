@@ -323,8 +323,10 @@ if (html_get_cookie('logon') && user_is_guest()) {
         // Check for message to display.
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
+            list($tid, $pid) = explode('.', $_GET['msg']);
+
             // Display the request message.
-            light_draw_messages($_GET['msg']);
+            light_draw_messages($tid, $pid);
 
         // Check for PM to display.
         }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {

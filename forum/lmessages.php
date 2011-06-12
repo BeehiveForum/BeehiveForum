@@ -144,8 +144,7 @@ $uid = session_get_value('UID');
 // default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $msg = $_GET['msg'];
-    list($tid, $pid) = explode('.', $msg);
+    list($tid, $pid) = explode('.', $_GET['msg']);
 
 }else if (($msg = messages_get_most_recent($uid))) {
 
@@ -181,13 +180,15 @@ if (isset($_POST['pollsubmit'])) {
 
         $tid = $_POST['tid'];
 
+        $pid = 1;
+
         poll_delete_vote($tid);
     }
 }
 
 light_html_draw_top();
 
-light_draw_messages($msg);
+light_draw_messages($tid, $pid);
 
 light_html_draw_bottom();
 

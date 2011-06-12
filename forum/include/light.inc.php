@@ -206,7 +206,8 @@ function light_html_draw_top()
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
 
     echo "</head>\n";
-    echo "<body id=\"light-mode\">\n";
+    echo "<body>\n";
+    echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
     echo "  <div id=\"header_top\">\n";
     echo "    <h1><a href=\"index.php\">", htmlentities_array($forum_name), "</a></h1>\n";
@@ -218,17 +219,24 @@ function light_html_draw_top()
     }
 
     echo "    <div class=\"clearer\"></div>\n";
-    echo "    <div id=\"nav\">\n";
-    echo "      <ul>\n";
+    echo "  </div>\n";
+    echo "  <div id=\"nav\">\n";
+    echo "    <ul>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
-        echo "        <li><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+
+        echo "      <li class=\"three_col\"><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+        echo "      <li class=\"three_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
+        echo "      <li class=\"three_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
+
+    } else {
+
+        echo "      <li class=\"active two_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
+        echo "      <li class=\"two_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
     }
 
-    echo "        <li><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
-    echo "        <li><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
-    echo "      </ul>\n";
-    echo "    </div>\n";
+    echo "    </ul>\n";
+    echo "    <div class=\"clearer\"></div>\n";
     echo "  </div>\n";
     echo "</div>\n";
     echo "<div id=\"content\">\n";
@@ -240,8 +248,15 @@ function light_html_draw_top()
 
 function light_html_draw_bottom()
 {
+    $webtag = get_webtag();
+
+    $lang = load_language_file();
+
     echo "</div>\n";
     echo "<div id=\"footer\">\n";
+    echo "  <div id=\"footer_links\">\n";
+    echo "    <a href=\"#top\">{$lang['top']}</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">{$lang['desktopversion']}</a>\n";
+    echo "  </div>\n";
     echo "  <h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
     echo "</div>\n";
     echo "</body>\n";
@@ -290,17 +305,13 @@ function light_draw_logon_form($error_msg_array = array())
     echo "</form>\n";
 }
 
-function light_draw_messages($msg)
+function light_draw_messages($tid, $pid)
 {
-    if (!validate_msg($msg)) return;
-
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
-
-    list($tid, $pid) = explode('.', $msg);
 
     if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
@@ -324,7 +335,7 @@ function light_draw_messages($msg)
 
     $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-    light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
+    light_messages_top($tid, $pid, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
     light_pm_check_messages();
 
@@ -418,17 +429,23 @@ function light_draw_messages($msg)
 
     unset($messages, $message);
 
+    echo "<div class=\"message_page_footer\">\n";
+    echo "<ul>\n";
+
+    if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
+        echo "<li><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" class=\"reply_all\">{$lang['replyall']}</a></li>\n";
+    }
+
     if ($last_pid < $thread_data['LENGTH']) {
 
         $npid = $last_pid + 1;
-        echo form_quick_button("lmessages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$npid"));
+        echo "<li class=\"right_col\">", form_quick_button("lmessages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$npid")), "</li>\n";
     }
+
+    echo "</ul>\n";
+    echo "</div>\n";
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
-
-    if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
-        echo "<div class=\"replyall\"><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></div>\n";
-    }
 
     if (($msg_count > 0 && !user_is_guest())) {
         messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
@@ -453,16 +470,23 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     light_pm_check_messages();
 
+    echo "<div id=\"thread_view\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
-    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  ", light_threads_draw_discussions_dropdown($thread_mode), "\n";
+
+    echo form_input_hidden("webtag", htmlentities_array($webtag));
 
     if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
-        echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
+        echo form_input_hidden('folder', htmlentities_array($folder)), "\n";
     }
 
-    echo "  ", light_form_submit("go", $lang['goexcmark']), "\n";
+    echo "<ul>\n";
+    echo "<li>", light_threads_draw_discussions_dropdown($thread_mode), "</li>\n";
+
+
+    echo "<li class=\"right_col\">", light_form_submit("go", $lang['goexcmark']), "</li>\n";
+    echo "</ul>\n";
     echo "</form>\n";
+    echo "</div>\n";
 
     // Get the right threads for whichever mode is selected
     switch ($thread_mode) {
@@ -768,6 +792,8 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
+                            echo "<span>";
+
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
                             if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" />";
@@ -779,6 +805,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
                             echo $number." ";
                             echo $thread_time." ";
+                            echo "</span>";
                             echo "</li>\n";
                         }
                     }
@@ -804,7 +831,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
                 } else if ($folder_info[$folder_number]['INTEREST'] != -1) {
 
-                    echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">";
+                    echo "<div class=\"folder_info\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">";
 
                     if (isset($folder_msgs[$folder_number])) {
                         echo $folder_msgs[$folder_number];
@@ -845,6 +872,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     if (!user_is_guest()) {
 
         echo "<h3>{$lang['markasread']}</h3>\n";
+        echo "<div id=\"thread_mark_read\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
 
         echo form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
@@ -872,10 +900,12 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
             $selected_option = THREAD_MARK_READ_FOLDER;
         }
 
-        echo light_form_dropdown_array("mark_read_type", $labels, $selected_option), "\n";
-        echo light_form_submit("mark_read_submit", $lang['goexcmark']), "\n";
-
+        echo "<ul>\n";
+        echo "<li>", light_form_dropdown_array("mark_read_type", $labels, $selected_option), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_submit("mark_read_submit", $lang['goexcmark']), "</li>\n";
+        echo "</ul>\n";
         echo "</form>\n";
+        echo "</div>\n";
     }
 }
 
@@ -979,9 +1009,14 @@ function light_draw_pm_inbox()
                 header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
                 exit;
             }
+
+        } else if (isset($_GET['back'])) {
+
+            header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&mid=$delete_mid");
+            exit;
         }
 
-        light_html_display_msg($lang['delete'], $lang['deletemessageconfirmation'], "lpm.php", 'get', array('submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'deletemsg' => $delete_mid, 'pm_delete_confirm' => 'Y'));
+        light_html_display_msg($lang['delete'], $lang['deletemessageconfirmation'], "lpm.php", 'get', array('pm_delete_confirm' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'deletemsg' => $delete_mid));
         light_html_draw_bottom();
         exit;
     }
@@ -1069,12 +1104,10 @@ function light_draw_pm_inbox()
 
                         foreach ($pm_messages_array['message_array'] as $message) {
 
-                            echo "<li>";
-
                             if ($message['TYPE'] == PM_UNREAD) {
-                                echo "<img src=\"", html_style_image('pmunread.png'), "\" alt=\"{$lang['unread']}\" title=\"{$lang['unread']}\" />\n";
-                            }else {
-                                echo "<img src=\"", html_style_image('pmread.png'), "\" alt=\"{$lang['readmessage']}\" title=\"{$lang['readmessage']}\" />\n";
+                                echo "<li class=\"pm_unread\">";
+                            } else {
+                                echo "<li class=\"pm_read\">";
                             }
 
                             echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
@@ -1140,7 +1173,7 @@ function light_draw_pm_inbox()
         }
 
 
-        echo "<div class=\"pm_send_new\"><a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\">{$lang['sendnewpm']}</a></div>\n";
+        echo "<a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
 
         // Fetch the free PM space and calculate it as a percentage.
         $pm_free_space = pm_get_free_space();
@@ -1285,7 +1318,7 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
     return $html;
 }
 
-function light_messages_top($msg, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
+function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
     $lang = load_language_file();
 
@@ -1293,7 +1326,7 @@ function light_messages_top($msg, $thread_title, $thread_interest_level = THREAD
 
     forum_check_webtag_available($webtag);
 
-    echo "<h2><a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$msg"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
+    echo "<h2><a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
 
     if ($closed) echo "&nbsp;<img src=\"", html_style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($thread_interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", html_style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
@@ -1340,7 +1373,33 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
         $poll_question = thread_get_title($tid);
     }
 
-    $total_votes  = 0;
+    $bar_color = 1;
+
+    $total_votes = array();
+    $max_values  = array();
+
+    $bar_color = 1;
+
+    poll_results_check_data($poll_results);
+
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {
+
+        if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
+            $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
+        }else {
+            $max_values[$poll_results['GROUP_ID'][$option_key]] += $poll_results['VOTES'][$option_key];
+        }
+
+        if (!isset($total_votes[$poll_results['GROUP_ID'][$option_key]])) {
+            $total_votes[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
+        }else {
+            $total_votes[$poll_results['GROUP_ID'][$option_key]] += $poll_results['VOTES'][$option_key];
+        }
+    }
+
+    array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
 
     $request_uri = get_request_uri();
 
@@ -1392,12 +1451,12 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
                     }else {
 
-                        $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false). "<br />\n";
+                        $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false);
                     }
 
                 }else {
 
-                    $poll_data['CONTENT'].= light_form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false). "<br />\n";
+                    $poll_data['CONTENT'].= light_form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false);
                 }
 
                 $poll_previous_group = $poll_results['GROUP_ID'][$key];
@@ -1407,7 +1466,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
                 if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
 
-                    $poll_data['CONTENT'].= light_form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key]}]", $drop_down_data, false, false). "<br />\n";
+                    $poll_data['CONTENT'].= light_form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key]}]", $drop_down_data, false, false);
                 }
             }
         }
@@ -1419,6 +1478,8 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
             $poll_previous_group = false;
 
             $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+            echo "<div class=\"poll_results\">\n";
 
             foreach ($poll_results_option_id_keys as $option_key) {
 
@@ -1432,23 +1493,37 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
                         $poll_group_count++;
                     }
 
-                    $poll_data['CONTENT'].= word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). ":&nbsp;";
-
                     if (isset($total_votes[$poll_results['GROUP_ID'][$option_key]]) && $total_votes[$poll_results['GROUP_ID'][$option_key]] > 0) {
                         $vote_percent = round((100 / $total_votes[$poll_results['GROUP_ID'][$option_key]]) * $poll_results['VOTES'][$option_key], 2);
                     }else {
                         $vote_percent = 0;
                     }
 
-                    $poll_data['CONTENT'].= $poll_results['VOTES'][$option_key]. " {$lang['votes']} (". $vote_percent. "%)<br />\n";
+                    $poll_bar_width = 0;
+
+                    if ($max_values[$poll_results['GROUP_ID'][$option_key]] > 0) {
+                        $poll_bar_width = round(100 / $max_values[$poll_results['GROUP_ID'][$option_key]], 2) * $poll_results['VOTES'][$option_key];
+                    }
+
+                    $poll_data['CONTENT'].= "<div class=\"poll_bar poll_bar_$bar_color\"><div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%\"></div></div>\n";
+                    $poll_data['CONTENT'].= "<div class=\"poll_vote_result\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). ": ";
+                    $poll_data['CONTENT'].= $poll_results['VOTES'][$option_key]. " {$lang['votes']} (". $vote_percent. "%)</div>\n";
 
                     $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+
+                    $bar_color++;
+
+                    if ($bar_color > 5) $bar_color = 1;
                 }
             }
+
+            echo "</div>\n";
 
         }else {
 
             $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+            echo "<div class=\"poll_results\">\n";
 
             foreach ($poll_results_option_id_keys as $option_key) {
 
@@ -1467,6 +1542,8 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
                     $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
                 }
             }
+
+            echo "</div>\n";
         }
     }
 
@@ -1488,11 +1565,11 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
         $poll_group_count = sizeof($group_array);
 
-        $poll_data['CONTENT'].= "<p>". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</p>\n";
+        $poll_data['CONTENT'].= "<div class=\"poll_vote_counts\">". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</div>\n";
 
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
-            $poll_data['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
+            $poll_data['CONTENT'].= "<div class=\"poll_vote_closed\">{$lang['pollhasended']}</div>\n";
 
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
@@ -1550,33 +1627,34 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
                 $poll_data['CONTENT'].= sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true));
 
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
-                    $poll_data['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>";
+                    $poll_data['CONTENT'].= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
                 }
 
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
-                    $poll_data['CONTENT'].= "<p>". light_form_submit('pollchangevote', $lang['changevote']). "</p>\n";
+                    $poll_data['CONTENT'].= "<div class=\"poll_buttons\">". light_form_submit('pollchangevote', $lang['changevote']). "</div>\n";
                 }
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-                    $poll_data['CONTENT'].= "<p>{$lang['polltypewarning']}</p>\n";
+                    $poll_data['CONTENT'].= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
                 }
 
             }else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
-                $poll_data['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>";
+                $poll_data['CONTENT'].= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-                    $poll_data['CONTENT'].= "<p>{$lang['polltypewarning']}</p>\n";
+                    $poll_data['CONTENT'].= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
                 }
             }
         }
     }
 
     $poll_data['CONTENT'].= "</form>\n";
+    $poll_data['CONTENT'].= "</div>\n";
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
-    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, true, $closed, $limit_text, true, $is_preview);
+    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, true, $closed, false, true, $is_preview);
 }
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
@@ -1672,18 +1750,22 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"message_full_view\">{$lang['viewfullmsg']}.</a>";
     }
 
+    echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
-    echo "  <span>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>\n";
-
-    // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-    if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
-        $message['FROM_RELATIONSHIP']-= USER_IGNORED;
-    }
+    echo "<span>\n";
+    echo "{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK'])));
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
     }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
         echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
+    }
+
+    echo "</span>\n";
+
+    // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
+    if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+        $message['FROM_RELATIONSHIP']-= USER_IGNORED;
     }
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
@@ -1699,16 +1781,15 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
+    echo "<div class=\"clearer\"></div>\n";
     echo "</div>";
     echo "<div class=\"message_to\">\n";
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), "</span>\n";
+        echo "<span>\n";
 
-        if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) {
-            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">#{$message['REPLY_TO_PID']}</a>";
-        }
+        echo "{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK'])));
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
@@ -1719,17 +1800,25 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         if (!$is_preview) {
 
             if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-                echo format_time($message['VIEWED'], 1);
+                echo "<span class=\"message_read\">", format_time($message['VIEWED'], 1), "</span>";
             } else {
-                echo "&nbsp;{$lang['unread']}";
+                echo "<span class=\"message_unread\">{$lang['unread']}</span>";
             }
         }
+
+        echo "</span>\n";
 
     }else {
 
         echo "<span>{$lang['to']}: {$lang['all_caps']}</span>\n";
     }
 
+    if ($in_list && $msg_count > 0) {
+        echo sprintf($lang['messagecountdisplay'], $message['PID'], $msg_count);
+    }
+
+    echo "<div class=\"clearer\"></div>\n";
+    echo "</div>\n";
     echo "</div>\n";
     echo "<div class=\"message_links\">\n";
 
@@ -1753,6 +1842,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }
 
     echo "</div>\n";
+
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, true);
@@ -1823,31 +1913,35 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if ($in_list && $limit_text != false) {
+    if (!$is_preview && $msg_count > 0) {
 
         $links_array = array();
 
         if (!$closed && session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
-            $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
+            $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">{$lang['reply']}</a>";
         }
 
         if (($uid == $message['FROM_UID'] && session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session_check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
-            $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">{$lang['delete']}</a>";
         }
 
         if ((!(session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
             if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
-                $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['edit']}</a>";
+                $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"edit\">{$lang['edit']}</a>";
             }
         }
 
         if (sizeof($links_array) > 0) {
-            echo "<div class=\"message_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
+            echo "<div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
         }
+
+    } else {
+
+        echo "<div class=\"message_footer_links\"></div>\n";
     }
 
     echo "</div>";
@@ -1930,10 +2024,10 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     }
     $max = $i;
 
-    $html = "{$lang['showmessages']}:";
+    $html = "<span>{$lang['showmessages']}:</span>";
 
     if ($length <= $ppp) {
-        $html .= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">{$lang['all']}</a>\n";
+        $html.= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">{$lang['all']}</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
@@ -2196,7 +2290,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
         }
     }
 
-    echo "<div class=\"message_box\">\n";
+    echo "<div class=\"message_box message_question\">\n";
     echo "  <h2>", $header_text, "</h2>\n";
     echo "  <p>", $string_msg, "</p>\n";
 
@@ -2231,7 +2325,7 @@ function light_html_display_error_array($error_list_array)
 
     if (sizeof($error_list_array) < 1) return;
 
-    echo "<div class=\"success_msg\">\n";
+    echo "<div class=\"message_box message_error\">\n";
     echo "  <h2>{$lang['thefollowingerrorswereencountered']}</h2>\n";
     echo "  <ul>\n";
     echo "    <li>", implode("</li>\n<li>", $error_list_array), "</li>\n";
@@ -2245,7 +2339,7 @@ function light_html_display_success_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<div class=\"success_msg\">\n";
+    echo "<div class=\"message_box message_success\">\n";
     echo "  <h2>", $string_msg, "</h2>\n";
     echo "</div>\n";
 }
@@ -2256,7 +2350,7 @@ function light_html_display_warning_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<div class=\"warning_msg\">\n";
+    echo "<div class=\"message_box message_warning\">\n";
     echo "  <h2>", $string_msg, "</h2>\n";
     echo "</div>\n";
 }
@@ -2267,7 +2361,7 @@ function light_html_display_error_msg($string_msg)
 
     if (!is_string($string_msg)) return;
 
-    echo "<div class=\"error_msg\">\n";
+    echo "<div class=\"message_box message_error\">\n";
     echo "  <h2>", $string_msg, "</h2>\n";
     echo "</div>\n";
 }
@@ -2311,6 +2405,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     forum_check_webtag_available($webtag);
 
     echo "<div class=\"message\">\n";
+    echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
 
     if ($folder == PM_FOLDER_INBOX) {
@@ -2345,6 +2440,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
         }
     }
 
+    echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
     echo "<div class=\"message_subject\">\n";
 
@@ -2360,6 +2456,8 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     }
 
     echo "</span>\n";
+    echo "<div class=\"clearer\"></div>\n";
+    echo "</div>\n";
     echo "</div>\n";
 
     $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
@@ -2420,29 +2518,29 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         if ($folder == PM_FOLDER_INBOX) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\">{$lang['reply']}</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" class=\"reply\">{$lang['reply']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">{$lang['forward']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
 
         }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\">{$lang['edit']}</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" class=\"edit\">{$lang['edit']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">{$lang['forward']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
 
         }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\">{$lang['edit']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" class=\"edit\">{$lang['edit']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
 
         }else {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\">{$lang['forward']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">{$lang['forward']}</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
         }
 
         if (sizeof($links_array) > 0) {
-            echo "<div class=\"message_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
+            echo "<div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
         }
     }
 

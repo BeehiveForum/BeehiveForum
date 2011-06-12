@@ -625,7 +625,7 @@ echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_c
 
 if ($allow_sig == true) {
 
-    echo form_input_hidden("t_sig", $sig->getTidyContent(), 5, 50);
+    echo form_input_hidden("t_sig", $sig->getTidyContent());
     echo form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()));
 }
 

@@ -1,0 +1,672 @@
+* {
+    color: #000000;
+    font-family: verdana, arial, helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 10px;
+}
+
+input,
+.select,
+.textarea,
+.text {
+    font-weight: normal;
+}
+
+.button {
+    background-color: #008400;
+    border-width: 1px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 120%;
+    font-weight: bold;
+    margin: 0;
+    padding: 1px 4px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.checkbox,
+.radio {
+    margin-right: 3px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.quotetext {
+    margin: 5px 10px 0 20px;
+    padding: 3px;
+}
+
+.quote {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    margin: 0 10px 0 20px;
+    padding: 3px;
+}
+
+.code {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    font-family: monospace;
+    font-size: 120%;
+    margin: 0 10px 0 20px;
+    overflow: scroll;
+    padding: 3px;
+}
+
+.clearer {
+    clear: both;
+}
+
+body {
+    background-color: #E1FFD2;
+    font-size: 62.5%;
+}
+
+#header {
+    background-color: #2E8B2E;
+    position: relative;
+}
+
+#footer {
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+#footer > #footer_links {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+#footer h6 {
+    font-size: 90%;
+    padding-top: 10px;
+}
+
+#header > #header_top {
+    border-bottom: 1px solid #000000;
+    border-top: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    padding: 4px 8px;
+    position: relative;
+}
+
+#header > #header_top > h1 {
+    float: left;
+    font-size: 160%;
+    font-weight: bold;
+    line-height: 130%;
+}
+
+#header > #header_top > h1 a {
+    background: url('images/mobile_header.png') transparent no-repeat scroll 0 0;
+    display: block;
+    height: 25px;
+    text-indent: -9000px;
+    width: 110px;
+}
+
+#header > #header_top #header_links {
+    float: right;
+}
+
+#header > #header_top #header_links a {
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    font-size: 120%;
+    font-weight: bold;
+    line-height: 190%;
+    margin: 2px 0 0 4px;
+    padding: 0 8px;
+}
+
+#nav {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    clear: both;
+    padding: 4px 4px 0;
+}
+
+#nav ul {
+    display: table;
+    margin-bottom: -1px;
+    width: 100%;
+}
+
+#nav li.three_col {
+    width: 33%;
+}
+
+#nav li.two_col {
+    width: 50%;
+}
+
+#nav li {
+    color: #FFFFFF;
+}
+
+#nav li.active {
+    color: #000000;
+    background-color: #E1FFD2;
+}
+
+#nav li.active a {
+    color: #000000;
+}
+
+#nav li {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    display: table-cell;
+    font-size: 150%;
+    font-weight: bold;
+}
+
+#nav li a {
+    color: #FFFFFF;
+    display: block;
+    line-height: 30px;
+    text-align: center;
+}
+
+#content {
+    margin: 10px;
+    padding-bottom: 5px;
+}
+
+#thread_view ul,
+#thread_mark_read ul {
+    display: table;
+    width: 100%;
+}
+
+#thread_view li,
+#thread_mark_read li {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#thread_view li .select,
+#thread_mark_read li .select {
+    width: 100%;
+}
+
+#thread_view li.right_col,
+#thread_mark_read li.right_col {
+    text-align: center;
+    width: 3%;
+}
+
+.message_box {
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.message_box h2 {
+    display: inline-block;
+    font-size: 130%;
+    line-height: 160%;
+    margin: 0;
+    padding-left: 25px;
+}
+
+.message_box a {
+    text-decoration: underline;
+}
+
+.message_box p {
+    font-size: 120%;
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.message_question h2 {
+    background: url('images/help.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_error h2 {
+    background: url('images/error.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_success h2 {
+    background: url('images/success.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_warning h2 {
+    background: url('images/warning.png') transparent no-repeat scroll 0 50%;
+}
+
+.folder {
+    margin: 10px 0;
+}
+
+.folder h3 {
+    background: url('images/folder.png') transparent no-repeat scroll 0 0;
+    font-size: 130%;
+    line-height: 150%;
+    padding-left: 20px;
+}
+
+.folder_inner {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    padding: 2px;
+}
+
+.folder_info,
+.folder_pagination {
+    background-color: #86D85F;
+    border: 1px solid #86D85F;
+    font-size: 110%;
+    padding: 0 2px;
+}
+
+.folder_info span {
+    float: right;
+}
+
+.folder ul {
+    background-color: #86D85F;
+    border: 1px solid #86D85F;
+    list-style: none;
+    padding-bottom: 3px;
+}
+
+.folder ul li {
+    background: url('images/bullet.png') transparent no-repeat scroll 0 0;
+    font-size: 120%;
+    line-height: 150%;
+    padding-left: 20px;
+}
+
+.folder ul li.pm_unread {
+    background: url('images/pmunread.png') transparent no-repeat scroll 0 0;
+}
+
+.folder ul li.pm_read {
+    background: url('images/pmread.png') transparent no-repeat scroll 0 0;
+}
+
+.folder ul li span {
+    margin-left: 5px;
+    white-space: nowrap;
+}
+
+.folder ul li span img {
+    margin: 0 2px;
+    vertical-align: middle;
+}
+
+.message {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    font-size: 120%;
+    margin: 10px 0;
+    padding: 2px;
+}
+
+.message_header {
+    background-color: #86D85F;
+    border: 1px solid #86D85F;
+    font-size: 110%;
+    padding: 2px 4px;
+}
+
+.message_header img {
+    margin: 0 2px;
+    vertical-align: middle;
+}
+
+.message_from,
+.message_to,
+.message_subject {
+    line-height: 150%;
+    text-align: right;
+}
+
+.message_from > span,
+.message_to > span,
+.message_subject > span {
+    float: left;
+}
+
+.message_to span.message_read {
+    font-size: 85%;
+    padding-left: 10px;
+}
+
+.message_to span.message_unread {
+    background: url('images/unread.png') transparent no-repeat scroll 0 0;
+    padding-left: 20px;
+}
+
+.message_links {
+    padding: 2px 4px;
+    text-align: right;
+}
+
+.message_body {
+    padding: 4px;
+}
+
+.message_body a {
+    text-decoration: underline;
+}
+
+.message_body ol,
+.message_body ul,
+.message_box ol,
+.message_box ul {
+    margin: 10px 0;
+    padding-left: 40px;
+}
+
+.message .edit_text {
+    font-size: 90%;
+    margin: 10px 0;
+}
+
+.message_footer_links {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.message_footer_links a {
+    display: inline-block;
+    line-height: 160%;
+    padding-left: 20px;
+    text-decoration: underline;
+}
+
+.message_footer_links a.reply {
+    background: url('images/post.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_footer_links a.edit {
+    background: url('images/edit.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_footer_links a.delete {
+    background: url('images/delete.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_footer_links a.forward {
+    background: url('images/forward.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_pagination {
+    font-size: 120%;
+    text-align: center;
+}
+
+.message_pagination span {
+    display: block;
+    font-weight: bold;
+}
+
+.message_pagination a {
+    text-decoration: underline;
+}
+
+.message_keep_reading {
+    margin: 10px 0;
+    text-align: right;
+}
+
+.message_page_footer ul {
+    display: table;
+    width: 100%;
+}
+
+.message_page_footer li {
+    display: table-cell;
+}
+
+.message_page_footer li.right_col {
+    text-align: right;
+}
+
+a.reply_all {
+    background: url('images/reply_all.png') transparent no-repeat scroll 0 0;
+    display: inline-block;
+    font-size: 120%;
+    font-weight: bold;
+    line-height: 160%;
+    margin: 10px 0;
+    padding-left: 20px;
+    text-decoration: underline;
+}
+
+a.pm_send_new {
+    background: url('images/post.png') transparent no-repeat scroll 0 0;
+    display: inline-block;
+    font-size: 120%;
+    font-weight: bold;
+    line-height: 160%;
+    margin: 10px 0 0;
+    padding-left: 20px;
+    text-decoration: underline;
+}
+
+.poll {
+    border: 1px solid #000000;
+    margin: 0 auto;
+    padding: 10px;
+    width: 75%;
+}
+
+.poll hr {
+    margin: 10px 0;
+}
+
+.poll h2 {
+    font-size: 120%;
+    line-height: 200%;
+    margin: 0;
+}
+
+.poll label {
+    display: block;
+    line-height: 200%;
+}
+
+.poll .poll_vote_counts {
+    line-height: 250%;
+}
+
+.poll .poll_buttons {
+    margin: 15px 0;
+}
+
+.poll .poll_type_warning {
+    line-height: 180%;
+}
+
+.poll .poll_bar {
+    height: 20px;
+    margin: 5px 0;
+}
+
+.poll .poll_bar_inner {
+    height: 20px;
+}
+
+.poll .poll_bar_1 {
+    border: 1px solid #0000AA;
+}
+
+.poll .poll_bar_2 {
+    border: 1px solid #D40000;
+}
+
+.poll .poll_bar_3 {
+    border: 1px solid #2AAA00;
+}
+
+.poll .poll_bar_4 {
+    border: 1px solid #F4AA00;
+}
+
+.poll .poll_bar_5 {
+    border: 1px solid #D42AD4;
+}
+
+.poll .poll_bar_inner_1 {
+    background-color: #0000AA;
+}
+
+.poll .poll_bar_inner_2 {
+    background-color: #D40000;
+}
+
+.poll .poll_bar_inner_3 {
+    background-color: #2AAA00;
+}
+
+.poll .poll_bar_inner_4 {
+    background-color: #F4AA00;
+}
+
+.poll .poll_bar_inner_5 {
+    background-color: #D42AD4;
+}
+
+.post {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    padding: 2px;
+}
+
+.post h2 {
+    background-color: #A6BED7;
+    color: #FFFFFF;
+    font-size: 130%;
+    font-weight: normal;
+    margin: 0;
+    padding: 2px 3px;
+}
+
+.post .post_inner {
+    background-color: #86D85F;
+    padding: 8px;
+}
+
+.post_folder,
+.post_thread_title,
+.post_to,
+.post_content,
+.post_html,
+.post_buttons {
+    margin: 0 0 10px;
+}
+
+.post_folder,
+.post_thread_title,
+.post_to,
+.post_content,
+.post_html {
+    font-size: 120%;
+}
+
+.post_to .select,
+.post_to .text,
+.post_folder .select,
+.post_thread_title .text,
+.post_content .textarea {
+    font-size: 110%;
+    width: 100%;
+}
+
+.post_html,
+.post_buttons {
+    text-align: center;
+}
+
+.post_folder,
+.post_thread_title,
+.post_to,
+.post_content,
+.post_html span {
+    font-weight: bold;
+}
+
+.post_html label {
+    margin: 0px 3px;
+}
+
+.post_buttons .button {
+    margin: 0px 3px;
+}
+
+.pm_folder_usage {
+    font-size: 110%;
+    text-align: center;
+}
+
+.pm_bar {
+    border: 1px solid #000000;
+    height: 11px;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.pm_bar_inner {
+    background: url("images/pbar.png") transparent repeat-x scroll 0 0;
+    height: 11px;
+}
+
+.logon {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    margin: 20px auto 0;
+    padding: 2px;
+    width: 75%;
+}
+
+.logon h2 {
+    background-color: #A6BED7;
+    color: #FFFFFF;
+    font-size: 130%;
+    font-weight: normal;
+    margin: 0;
+    padding: 2px 3px;
+}
+
+.logon .logon_inner {
+    background-color: #86D85F;
+    padding: 8px;
+}
+
+.logon_username,
+.logon_password,
+.logon_remember,
+.logon_buttons {
+    margin: 0 0 10px;
+}
+
+.logon_username,
+.logon_password,
+.logon_remember {
+    font-size: 120%;
+}
+
+.logon_username .text,
+.logon_password .password {
+    font-size: 110%;
+    width: 100%;
+}
+
+.logon_buttons {
+    text-align: center;
+}

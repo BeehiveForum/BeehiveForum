@@ -118,7 +118,9 @@ $uid = session_get_value('UID');
 // Guests can't access PMs
 if (user_is_guest()) {
 
+    light_html_draw_top("tab=inbox");
     light_html_guest_error();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -131,7 +133,7 @@ pm_user_prune_folders();
 // Load language file
 $lang = load_language_file();
 
-light_html_draw_top();
+light_html_draw_top("tab=inbox");
 
 light_draw_pm_inbox();
 

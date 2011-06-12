@@ -173,7 +173,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
 }
 
 // Check for noframes display mode.
-if (!browser_mobile()) {
+if (!browser_mobile() || (isset($_GET['view']) && $_GET['view'] == 'full')) {
 
     // Output starts here
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
@@ -306,7 +306,7 @@ if (!browser_mobile()) {
 } else {
 
     // No frames HTML header
-    light_html_draw_top();
+    light_html_draw_top("tab=messages");
 }
 
 // Does the user want to login or have they got saved username and password
@@ -364,7 +364,7 @@ if (html_get_cookie('logon') && user_is_guest()) {
 html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
 // Frames mode HTML
-if (!browser_mobile()) {
+if (!browser_mobile() || (isset($_GET['view']) && $_GET['view'] == 'full')) {
 
     echo "</body>\n";
     echo "</noframes>\n";

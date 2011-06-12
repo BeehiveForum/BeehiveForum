@@ -64,6 +64,8 @@ function light_html_draw_top()
 
     $title = "";
 
+    $tab = "";
+
     $robots = "index,follow";
 
     $webtag = get_webtag();
@@ -80,6 +82,11 @@ function light_html_draw_top()
 
         if (preg_match('/^title=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             if (strlen($title) < 1) $title = $func_matches[1];
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match('/^tab=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
+            if (strlen($tab) < 1) $tab = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -225,14 +232,14 @@ function light_html_draw_top()
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
 
-        echo "      <li class=\"three_col\"><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
-        echo "      <li class=\"three_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
-        echo "      <li class=\"three_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
+        echo "      <li class=\"", $tab == "forum" ? "active" : "", " three_col\"><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+        echo "      <li class=\"", $tab == "messages" ? "active" : "", " three_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
+        echo "      <li class=\"", $tab == "inbox" ? "active" : "", " three_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
 
     } else {
 
-        echo "      <li class=\"active two_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
-        echo "      <li class=\"two_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
+        echo "      <li class=\"", $tab == "messages" ? "active" : "", " two_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
+        echo "      <li class=\"", $tab == "inbox" ? "active" : "", " two_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
     }
 
     echo "    </ul>\n";
@@ -240,6 +247,8 @@ function light_html_draw_top()
     echo "  </div>\n";
     echo "</div>\n";
     echo "<div id=\"content\">\n";
+
+    if ($tab != 'inbox') light_pm_check_messages();
 
     if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
         adsense_output_html();
@@ -283,6 +292,9 @@ function light_draw_logon_form($error_msg_array = array())
     $password_array = array();
     $passhash_array = array();
 
+    echo "<div class=\"logon\">\n";
+    echo "<h2>{$lang['logon']}</h2>\n";
+    echo "<div class=\"logon_inner\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <div class=\"logon_username\"><span>{$lang['username']}:</span>", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</div>\n";
@@ -301,8 +313,10 @@ function light_draw_logon_form($error_msg_array = array())
     }
 
     echo "  <div class=\"logon_remember\">", light_form_checkbox("user_remember", "Y", $lang['rememberme'], false, ''), "</div>\n";
-    echo "  <div class=\"logon_button\">", light_form_submit('logon', $lang['logon']), "</div>\n";
+    echo "  <div class=\"logon_buttons\">", light_form_submit('logon', $lang['logon']), "</div>\n";
     echo "</form>\n";
+    echo "</div>\n";
+    echo "</div>\n";
 }
 
 function light_draw_messages($tid, $pid)
@@ -336,8 +350,6 @@ function light_draw_messages($tid, $pid)
     $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
     light_messages_top($tid, $pid, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
-
-    light_pm_check_messages();
 
     if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
@@ -421,7 +433,6 @@ function light_draw_messages($tid, $pid)
 
             if (adsense_check_user() && adsense_check_page($message_number, 10, $thread_data['LENGTH'])) {
 
-                echo "<br />\n";
                 adsense_output_html();
             }
         }
@@ -439,7 +450,7 @@ function light_draw_messages($tid, $pid)
     if ($last_pid < $thread_data['LENGTH']) {
 
         $npid = $last_pid + 1;
-        echo "<li class=\"right_col\">", form_quick_button("lmessages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$npid")), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$npid")), "</li>\n";
     }
 
     echo "</ul>\n";
@@ -467,8 +478,6 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     $visible_threads_array = array();
 
     if (($uid = session_get_value('UID')) === false) return;
-
-    light_pm_check_messages();
 
     echo "<div id=\"thread_view\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
@@ -998,11 +1007,13 @@ function light_draw_pm_inbox()
         }
     }
 
-    if (isset($_GET['deletemsg']) && is_numeric($_GET['deletemsg'])) {
+    if (isset($_GET['deletemsg']) && is_numeric($_GET['deletemsg']) && ($pm_message_array = pm_message_get($_GET['deletemsg']))) {
 
         $delete_mid = $_GET['deletemsg'];
 
-        if (isset($_GET['pm_delete_confirm']) && ($_GET['pm_delete_confirm'] == 'Y')) {
+        $pm_message_array['CONTENT'] = pm_get_content($delete_mid);
+
+        if (isset($_POST['pm_delete_confirm'])) {
 
             if (pm_delete_message($delete_mid)) {
 
@@ -1010,13 +1021,21 @@ function light_draw_pm_inbox()
                 exit;
             }
 
-        } else if (isset($_GET['back'])) {
+        } else if (isset($_POST['cancel'])) {
 
             header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&mid=$delete_mid");
             exit;
         }
 
-        light_html_display_msg($lang['delete'], $lang['deletemessageconfirmation'], "lpm.php", 'get', array('pm_delete_confirm' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'deletemsg' => $delete_mid));
+        echo "<form method=\"post\" action=\"lpm.php?deletemsg=$delete_mid&folder=$current_folder\">";
+
+        light_pm_display($pm_message_array, $current_folder, true);
+
+        echo "<div class=\"post_buttons\">";
+        echo light_form_submit("pm_delete_confirm", $lang['delete']);
+        echo light_form_submit("cancel", $lang['cancel']);
+        echo "</div>\n";
+
         light_html_draw_bottom();
         exit;
     }
@@ -1061,6 +1080,8 @@ function light_draw_pm_inbox()
         }
 
         $pm_message_count_array = pm_get_folder_message_counts();
+
+        echo "<a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
 
         foreach ($pm_folder_names_array as $folder_type => $folder_name) {
 
@@ -1111,6 +1132,7 @@ function light_draw_pm_inbox()
                             }
 
                             echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
+                            echo "<span>";
 
                             if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX) {
 
@@ -1154,6 +1176,7 @@ function light_draw_pm_inbox()
                                 echo format_time($message['CREATED']);
                             }
 
+                            echo "</span>\n";
                             echo "</li>\n";
                         }
 
@@ -1172,7 +1195,6 @@ function light_draw_pm_inbox()
             }
         }
 
-
         echo "<a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
 
         // Fetch the free PM space and calculate it as a percentage.
@@ -1180,6 +1202,10 @@ function light_draw_pm_inbox()
         $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
         $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
+
+        echo "<div class=\"pm_bar\">\n";
+        echo "<div class=\"pm_bar_inner\" style=\"width: {$pm_used_percent}%\"></div>\n";
+        echo "</div>\n";
 
         echo "<div class=\"pm_folder_usage\">", sprintf($lang['yourpmfoldersare'], "$pm_used_percent%"), "</div>\n";
 
@@ -1204,8 +1230,6 @@ function light_draw_my_forums()
         $page = 1;
         $start = 0;
     }
-
-    light_pm_check_messages();
 
     if (isset($_GET['webtag_error'])) {
         light_html_display_error_msg($lang['invalidforumidorforumnotfound']);
@@ -1285,7 +1309,7 @@ function light_draw_my_forums()
 
 function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)
 {
-    $html = "<select name=\"$name\" class=\"bhlightselect\"";
+    $html = "<select name=\"$name\" class=\"select\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
@@ -1308,7 +1332,7 @@ function light_form_dropdown_array($name, $options_array, $default = "", $custom
 
 function light_form_submit($name = "submit", $value = "Submit", $custom_html = "")
 {
-    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
+    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"button\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -1340,7 +1364,7 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
 
 function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<label><input type=\"radio\" name=\"$name\" value=\"$value\"";
+    $html = "<label><input type=\"radio\" name=\"$name\" value=\"$value\" class=\"radio\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -1351,6 +1375,30 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
     }
 
     $html.= " />$text</label>";
+
+    return $html;
+}
+
+function light_form_quick_button($href, $label, $var_array = false, $target = "_self")
+{
+    $webtag = get_webtag();
+
+    $html = "<form accept-charset=\"utf-8\" method=\"get\" action=\"$href\" target=\"$target\">";
+    $html.= form_input_hidden("webtag", htmlentities_array($webtag));
+
+    if (is_array($var_array)) {
+
+        foreach ($var_array as $var_name => $var_value) {
+
+            if (!is_array($var_value)) {
+
+                $html.= form_input_hidden($var_name, htmlentities_array($var_value));
+            }
+        }
+    }
+
+    $html.= light_form_submit(form_unique_id('submit'), $label);
+    $html.= "</form>";
 
     return $html;
 }
@@ -1431,7 +1479,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
                     if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key - 1]] > 1) {
 
-                        $poll_data['CONTENT'].= light_form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key - 1]}]", $drop_down_data, false, false). "<br />\n";
+                        $poll_data['CONTENT'].= light_form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key - 1]}]", $drop_down_data, false, false);
 
                     }else {
 
@@ -1537,7 +1585,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
                         $poll_group_count++;
                     }
 
-                    $poll_data['CONTENT'].= word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "<br />\n";
+                    $poll_data['CONTENT'].= word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]);
 
                     $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
                 }
@@ -2047,16 +2095,13 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     echo "<div class=\"message_pagination\">$html</div>\n";
 }
 
-function light_html_guest_error ()
+function light_html_guest_error()
 {
     $frame_top_target = html_get_top_frame_name();
 
     $lang = load_language_file();
 
-    light_html_display_error_msg($lang['guesterror']);
-
-    echo "<br />\n";
-    echo form_quick_button("llogout.php", $lang['loginnow'], false, $frame_top_target);
+    light_html_display_msg($lang['login'], $lang['guesterror'], 'llogout.php', 'get', array('login' => $lang['loginnow']));
 }
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
@@ -2116,12 +2161,12 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_h
         $custom_html = sprintf(' %s', trim($custom_html));
     }
 
-    return sprintf('<textarea name="%s" class="bhlightinput" rows="%s" cols="%s"%s>%s</textarea>', $name, $rows, $cols, $custom_html, $value);
+    return sprintf('<textarea name="%s" class="textarea" rows="%s" cols="%s"%s>%s</textarea>', $name, $rows, $cols, $custom_html, $value);
 }
 
 function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<label><input type=\"checkbox\" name=\"$name\" value=\"$value\" class=\"bhlightinput\"";
+    $html = "<label><input type=\"checkbox\" name=\"$name\" value=\"$value\" class=\"checkbox\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -2138,7 +2183,7 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
 
 function light_form_field($name, $value = "", $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
-    $html = "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"bhlightinput\"";
+    $html = "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"$type\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
@@ -2432,7 +2477,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
-            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span\n";
+            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span>\n";
 
         }else {
 

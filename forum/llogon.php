@@ -134,7 +134,7 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
     }
 }
 
-light_html_draw_top();
+light_html_draw_top("tab=messages");
 
 light_draw_logon_form($error_msg_array);
 

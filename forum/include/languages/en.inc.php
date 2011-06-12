@@ -113,6 +113,7 @@ $lang['threadlist'] = "Thread List";
 $lang['message'] = "Message";
 $lang['from'] = "From";
 $lang['to'] = "To";
+$lang['content'] = "Content";
 $lang['all_caps'] = "ALL";
 $lang['of'] = "of";
 $lang['reply'] = "Reply";

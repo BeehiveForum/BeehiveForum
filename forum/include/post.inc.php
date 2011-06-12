@@ -227,7 +227,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 {
     $lang = load_language_file();
 
-    $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'bhselect';
+    $class = defined('BEEHIVEMODE_LIGHT') ? 'select' : 'bhselect';
 
     $html = "<select name=\"t_to_uid\" class=\"$class\">";
 
@@ -304,7 +304,7 @@ function post_draw_to_dropdown_recent($default_uid)
 {
     $lang = load_language_file();
 
-    $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'recent_user_dropdown';
+    $class = defined('BEEHIVEMODE_LIGHT') ? 'select' : 'recent_user_dropdown';
 
     $html = "<select name=\"t_to_uid_recent\" class=\"$class\">";
 
@@ -378,7 +378,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 {
     $lang = load_language_file();
 
-    $class = defined('BEEHIVEMODE_LIGHT') ? 'bhlightselect' : 'user_in_thread_dropdown';
+    $class = defined('BEEHIVEMODE_LIGHT') ? 'select' : 'user_in_thread_dropdown';
 
     $html = "<select name=\"t_to_uid_in_thread\" class=\"$class\" $custom_html>";
 

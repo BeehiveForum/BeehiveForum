@@ -122,7 +122,9 @@ $uid = session_get_value('UID');
 // Guests can't access this page.
 if (user_is_guest()) {
 
+    light_html_draw_top("tab=inbox");
     light_html_guest_error();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -315,7 +317,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         }else {
 
-            light_html_draw_top("title={$lang['error']}");
+            light_html_draw_top("title={$lang['error']}", "tab=inbox");
             light_pm_error_refuse();
             light_html_draw_bottom();
             exit;
@@ -477,7 +479,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}");
+        light_html_draw_top("title={$lang['error']}", "tab=inbox");
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -519,7 +521,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}");
+        light_html_draw_top("title={$lang['error']}", "tab=inbox");
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -555,7 +557,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}");
+        light_html_draw_top("title={$lang['error']}", "tab=inbox");
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -644,7 +646,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow");
+light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow", "tab=inbox");
 
 // preview message
 if ($valid && isset($_POST['preview'])) {
@@ -668,8 +670,6 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['CONTENT'] = $t_content;
 
     light_pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true);
-
-    echo "<br />\n";
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_write.php\" method=\"post\" target=\"_self\">\n";
@@ -677,35 +677,39 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
 
+echo "<div class=\"post\">\n";
 echo "<h2>{$lang['sendnewpm']}</h2>\n";
+echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<p>{$lang['subject']}: ";
-echo light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</p>\n";
-echo "<p>{$lang['to']}: ";
-echo form_input_text("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", 0, 0), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</p>\n";
+echo "<div class=\"post_thread_title\">{$lang['subject']}:", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
+echo "<div class=\"post_to\">{$lang['to']}:", light_form_input_text("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", 0, 0), "</div>\n";
+echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>\n";
 
 if ($allow_html == true) {
 
     $tph_radio = $post->getHTML();
 
-    echo "<p>{$lang['htmlinmessage']}:<br />\n";
-    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED), "<br />\n";
-    echo "</p>";
+    echo "<div class=\"post_html\"><span>{$lang['htmlinmessage']}:</span>\n";
+    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED);
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO);
+    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED);
+    echo "</div>";
 
 }else {
 
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<p>", light_form_submit("send", $lang['send']), "&nbsp;", light_form_submit("save", $lang['save']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
-echo "</p>";
+echo "<div class=\"post_buttons\">";
+echo light_form_submit("send", $lang['send']);
+echo light_form_submit("save", $lang['save']);
+echo light_form_submit("preview", $lang['preview']);
+echo light_form_submit("cancel", $lang['cancel']);
+echo "</div>";
 
 if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
@@ -720,12 +724,14 @@ if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
     echo form_input_hidden("editmsg", htmlentities_array($t_edit_mid)), "\n";
 }
 
+echo "</div>";
+echo "</div>";
 echo "</form>\n";
 
 if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
+    echo "<h2>{$lang['inreplyto']}:</h2>\n";
     light_pm_display($pm_data, PM_FOLDER_INBOX, true);
-    echo "<br />\n";
 }
 
 light_html_draw_bottom();

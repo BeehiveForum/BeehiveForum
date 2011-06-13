@@ -167,12 +167,12 @@ function browser_mobile()
     }
 
     // Exclude Windows desktop browsers
-    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows') !== false) {
+    if ((isset($_SERVER['ALL_HTTP'])) && (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows') !== false)) {
         $mobile_browser = 0;
     }
 
     // Windows Phone 7
-    if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows phone') !== false) {
+    if ((isset($_SERVER['ALL_HTTP'])) && (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows phone') !== false)) {
         $mobile_browser++;
     }
 

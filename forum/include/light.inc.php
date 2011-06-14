@@ -694,31 +694,31 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     }
 
     // If no threads are returned, say something to that effect
-    if (isset($_GET['mark_read_success'])) {
+    if (isset($_REQUEST['mark_read_success'])) {
 
-        light_html_display_success_msg($lang['successfullymarkreadselectedthreads']);
+        light_html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
 
     } else if (!is_array($thread_info)) {
 
         if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-            light_html_display_warning_msg(sprintf($lang['nodiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_discussions_link));
+            $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
+            light_html_display_warning_msg(sprintf($lang['nodiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
 
         }else {
 
-            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-            light_html_display_warning_msg(sprintf($lang['nodiscussionsinallfolders'], $available_views[$thread_mode], $all_discussions_link));
+            $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
+            light_html_display_warning_msg(sprintf($lang['nodiscussionsinallfolders'], $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
         }
 
-    } else if (sizeof($error_msg_array) > 0) {
+    } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        light_html_display_error_array($error_msg_array);
+        light_html_display_error_array($error_msg_array, '100%', 'left');
 
     } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-        $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
-        light_html_display_warning_msg(sprintf($lang['viewingdiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_folders_link));
+        $all_folders_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
+        light_html_display_warning_msg(sprintf($lang['viewingdiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
     }
 
     if (($start_from > 0) && !is_numeric($folder)) {

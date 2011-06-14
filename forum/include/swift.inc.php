@@ -35,6 +35,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
+include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 
 // Include Swift Mailer
 include_once(BH_INCLUDE_PATH. "/swift/swift_required.php");
@@ -47,11 +48,11 @@ abstract class Swift_TransportFactory
         $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
 
         if (($mail_function == MAIL_FUNCTION_SMTP) && ($smtp_server = forum_get_global_setting('smtp_server'))) {
-            
+
             $smtp_port = forum_get_global_setting('smtp_port', false, '25');
-            
+
             $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
-            
+
             if (($smtp_username = forum_get_global_setting('smtp_username', 'strlen', ''))) {
                 $transport->setUsername($smtp_username);
             }
@@ -77,7 +78,7 @@ class Swift_SmtpTransportSingleton
     private static $instance;
 
     private function __construct() { }
-    
+
     public static function getInstance($smtp_server, $smtp_port)
     {
         if (is_null(self::$instance)) {
@@ -94,11 +95,11 @@ class Swift_MailTransportSingleton
     private static $instance;
 
     private function __construct() { }
-    
+
     public static function getInstance()
     {
         if (!self::check_mail_vars()) return false;
-        
+
         if (is_null(self::$instance)) {
             self::$instance = Swift_MailTransport::newInstance();
         }
@@ -124,11 +125,11 @@ class Swift_SendmailTransportSingleton
     private static $instance;
 
     private function __construct() { }
-    
+
     public static function getInstance($sendmail_path)
     {
         if (!self::check_mail_vars()) return false;
-        
+
         if (is_null(self::$instance)) {
             self::$instance = Swift_SendmailTransport::newInstance($sendmail_path);
         }
@@ -164,7 +165,7 @@ class Swift_MessageBeehive extends Swift_Message
 
         // Mail function we're using.
         $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
-        
+
         // Get the Swift Headers set
         $headers = $this->getHeaders();
 

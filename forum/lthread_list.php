@@ -180,7 +180,7 @@ if (user_is_guest()) {
 
         html_set_cookie("thread_mode_{$webtag}", $thread_mode);
 
-    }else {
+    } else {
 
         $thread_mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
 
@@ -189,19 +189,17 @@ if (user_is_guest()) {
         }
     }
 
-    html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+    if (isset($_REQUEST['mark_read_submit'])) {
 
-    if (isset($_POST['mark_read_submit'])) {
+        if (isset($_REQUEST['mark_read_confirm']) && ($_REQUEST['mark_read_confirm'] == 'Y')) {
 
-        if (isset($_POST['mark_read_confirm']) && $_POST['mark_read_confirm'] == 'Y') {
+            if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
 
-            if ($_POST['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
-
-                if (isset($_POST['mark_read_threads']) && strlen(trim(stripslashes_array($_POST['mark_read_threads']))) > 0) {
+                if (isset($_REQUEST['mark_read_threads']) && strlen(trim(stripslashes_array($_REQUEST['mark_read_threads']))) > 0) {
 
                     $thread_data = array();
 
-                    $mark_read_threads = trim(stripslashes_array($_POST['mark_read_threads']));
+                    $mark_read_threads = trim(stripslashes_array($_REQUEST['mark_read_threads']));
 
                     $mark_read_threads_array = array_filter(explode(',', $mark_read_threads), 'is_numeric');
 
@@ -209,62 +207,62 @@ if (user_is_guest()) {
 
                     if (threads_mark_read($thread_data)) {
 
-                        header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                        header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
                         exit;
 
-                    }else {
+                    } else {
 
                         $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
                         $valid = false;
                     }
                 }
 
-            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_ALL) {
+            } else if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_ALL) {
 
                 if (threads_mark_all_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
                     exit;
 
-                }else {
+                } else {
 
                     $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
                     $valid = false;
                 }
 
-            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
+            } else if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
 
                 if (threads_mark_50_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
                     exit;
 
-                }else {
+                } else {
 
                     $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
                     $valid = false;
                 }
 
-            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
+            } else if (($_REQUEST['mark_read_type'] == THREAD_MARK_READ_FOLDER) && (isset($folder) && is_numeric($folder))) {
 
                 if (threads_mark_folder_read($folder)) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&start_from=$start_from&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
                     exit;
 
-                }else {
+                } else {
 
                     $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
                     $valid = false;
                 }
             }
 
-        }else {
+        } else {
 
-            unset($_POST['mark_read_submit'], $_POST['mark_read_confirm']);
+            unset($_REQUEST['mark_read_submit'], $_REQUEST['mark_read_confirm']);
 
-            light_html_draw_top("robots=noindex,nofollow", "tab=messages");
-            light_html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'lthread_list.php', 'post', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_POST, array('mark_read_confirm' => 'Y')));
+            light_html_draw_top("tab=messages");
+            light_html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'lthread_list.php', 'post', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
             light_html_draw_bottom();
             exit;
         }

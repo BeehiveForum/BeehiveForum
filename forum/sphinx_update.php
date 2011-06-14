@@ -62,6 +62,10 @@ $forum_settings = forum_get_settings();
 // Fetch Global Forum Settings
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "search.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+
 $table_data_array = get_all_table_prefixes();
 
 $script_version_text = sprintf("Beehive Forum %s Sphinx Search Integration", BEEHIVE_VERSION);

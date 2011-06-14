@@ -69,6 +69,7 @@ $forum_settings = forum_get_settings();
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");

@@ -42,6 +42,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "swift.inc.php");
+include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 
 class TextAreaHTML
 {

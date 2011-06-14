@@ -58,6 +58,7 @@ include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "swift.inc.php");
+include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function html_guest_error()

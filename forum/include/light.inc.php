@@ -456,6 +456,8 @@ function light_draw_messages($tid, $pid)
     echo "</ul>\n";
     echo "</div>\n";
 
+    echo "<a href=\"lthread_list.php?webtag=$webtag\" class=\"thread_list_link\">{$lang['backtothreadlist']}</a>";
+
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
 
     if (($msg_count > 0 && !user_is_guest())) {
@@ -1800,7 +1802,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
-    echo "<span>\n";
     echo "{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK'])));
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
@@ -1808,8 +1809,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
         echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
     }
-
-    echo "</span>\n";
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -1825,7 +1824,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         if ($in_list) {
 
             if (($from_user_permissions & USER_PERM_WORMED)) echo $lang['wormeduser'];
-            echo format_time($message['CREATED'], 1);
+            echo "<span class=\"message_time\">", format_time($message['CREATED'], 1), "</span>\n";
         }
     }
 
@@ -1834,8 +1833,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "<div class=\"message_to\">\n";
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
-
-        echo "<span>\n";
 
         echo "{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK'])));
 
@@ -1850,19 +1847,17 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
                 echo "<span class=\"message_read\">", format_time($message['VIEWED'], 1), "</span>";
             } else {
-                echo "<span class=\"message_unread\">{$lang['unread']}</span>";
+                echo "<span class=\"message_unread\" title=\"{$lang['unread']}\"></span>";
             }
         }
 
-        echo "</span>\n";
-
     }else {
 
-        echo "<span>{$lang['to']}: {$lang['all_caps']}</span>\n";
+        echo "{$lang['to']}: {$lang['all_caps']}";
     }
 
     if ($in_list && $msg_count > 0) {
-        echo sprintf($lang['messagecountdisplay'], $message['PID'], $msg_count);
+        echo "<span class=\"message_count\">", sprintf($lang['messagecountdisplay'], $message['PID'], $msg_count), "</span>";
     }
 
     echo "<div class=\"clearer\"></div>\n";
@@ -2489,7 +2484,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     echo "</div>\n";
     echo "<div class=\"message_subject\">\n";
 
-    echo "<span>{$lang['subject']}: ";
+    echo "{$lang['subject']}: ";
 
     if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
@@ -2500,7 +2495,6 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
         echo "<span class=\"no_subject\">{$lang['nosubject']}</span>\n";
     }
 
-    echo "</span>\n";
     echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
     echo "</div>\n";

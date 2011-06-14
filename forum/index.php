@@ -317,14 +317,19 @@ if (!browser_mobile()) {
 
 } else {
 
-    // No frames HTML header
-    light_html_draw_top("tab=messages");
+    if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+        light_html_draw_top("tab=inbox");
+
+    } else {
+
+        light_html_draw_top("tab=messages");
+    }
 }
 
 // Does the user want to login or have they got saved username and password
 if (html_get_cookie('logon') && user_is_guest()) {
 
-    // Display the logon form.
     light_draw_logon_form();
 
 } else {

@@ -1815,7 +1815,6 @@ $lang['visiblediscussions'] = "Sichtbare Diskussionen";
 $lang['selectedfolder'] = "Ordner auswaehlen";
 $lang['navigate'] = "Navigieren";
 $lang['couldnotretrievefolderinformation'] = "Keine Ordner vorhanden.";
-$lang['nomessagesinthiscategory'] = "Keine Nachrichten in dieser Kategorie. Bitte waehle eine andere, oder %s fuer alle Eintraege";
 $lang['clickhere'] = "klick hier";
 $lang['prev50threads'] = "Vorherige 50 Eintraege";
 $lang['next50threads'] = "Naechste 50 Eintraege";

@@ -1817,7 +1817,6 @@ $lang['visiblediscussions'] = "Discussions Visibles";
 $lang['selectedfolder'] = "Dossier sélectionné";
 $lang['navigate'] = "Naviguer";
 $lang['couldnotretrievefolderinformation'] = "Aucun dossier de disponible.";
-$lang['nomessagesinthiscategory'] = "Aucun message dans cette catégorie. Veuillez sélectionner un autre, ou %s pour tous les fils de discussion";
 $lang['clickhere'] = "cliquer ici";
 $lang['prev50threads'] = "Premiers 50 fil de discussion";
 $lang['next50threads'] = "Prochains 50 fils de discussion";

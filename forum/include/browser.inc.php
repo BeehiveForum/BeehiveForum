@@ -132,10 +132,6 @@ function browser_mobile()
 {
     $mobile_browser = 0;
 
-    if ((isset($_SERVER['HTTP_USER_AGENT'])) && (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|iphone|ipad|ipod|android|xoom)/i', strtolower($_SERVER['HTTP_USER_AGENT'])))) {
-        $mobile_browser++;
-    }
-
     if ((isset($_SERVER['HTTP_ACCEPT'])) && (strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') !== false)) {
         $mobile_browser++;
     }
@@ -148,17 +144,20 @@ function browser_mobile()
         $mobile_browser++;
     }
 
-    $mobile_agents = array('w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
-                           'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
-                           'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
-                           'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
-                           'newt','noki','oper','palm','pana','pant','phil','play','port','prox',
-                           'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
-                           'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
-                           'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
-                           'wapr','webc','winw','winw','xda','xda-');
+    // User Agent from https://code.google.com/p/the-devices-detection/source/list
+    $mobile_agents = array('iPhone', 'iPad', 'iPod', 'Palm', 'EudoraWeb', 'Blazer',
+                           'AvantGo', 'Android', 'Windows CE', 'Cellphone', 'Small',
+                           'MMEF20', 'Danger', 'hiptop', 'Proxinet', 'ProxiNet', 'Newt',
+                           'PalmOS', 'NetFront', 'SHARP-TQ-GX10', 'SonyEricsson',
+                           'SymbianOS', 'UP.Browser', 'UP.Link', 'TS21i-10', 'MOT-V',
+                           'portalmmm', 'DoCoMo', 'Opera Mini', 'Palm', 'Handspring',
+                           'Nokia', 'Kyocera', 'Samsung', 'Motorola', 'Mot', 'Smartphone',
+                           'Blackberry', 'WAP', 'SonyEricsson', 'PlayStation Portable',
+                           'LG', 'MMP', 'OPWV', 'Symbian', 'EPOC');
 
-    if ((isset($_SERVER['HTTP_USER_AGENT'])) && (in_array(strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4)), $mobile_agents))) {
+    $mobile_agents_preg = implode('|', array_map('preg_quote_callback', $mobile_agents));
+
+    if ((isset($_SERVER['HTTP_USER_AGENT'])) && preg_match("/($mobile_agents_preg)/u", $_SERVER['HTTP_USER_AGENT'])) {
         $mobile_browser++;
     }
 

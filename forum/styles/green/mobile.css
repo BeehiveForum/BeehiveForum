@@ -364,7 +364,8 @@ body {
     text-align: right;
 }
 
-.message_body {
+.message_body,
+.message_attachments {
     padding: 4px;
 }
 
@@ -378,6 +379,23 @@ body {
 .message_box ul {
     margin: 10px 0;
     padding-left: 40px;
+}
+
+.message_body img {
+    max-width: 100% !important;
+}
+
+.message_attachments {
+    margin: 10px 0 0;
+}
+
+.message_attachments ul {
+    list-style: none;
+}
+
+.message_attachments li {
+    background: url('images/attach.png') transparent no-repeat scroll 0 0;
+    padding-left: 20px;
 }
 
 .message .edit_text {

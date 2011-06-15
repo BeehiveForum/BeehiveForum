@@ -300,14 +300,8 @@ body {
     background: url('images/pmread.png') transparent no-repeat scroll 0 0;
 }
 
-.folder ul li span {
-    margin-left: 5px;
+.folder ul li > span {
     white-space: nowrap;
-}
-
-.folder ul li span img {
-    margin: 0 2px;
-    vertical-align: middle;
 }
 
 .message {
@@ -589,7 +583,7 @@ a.thread_list_link {
 .post h2 {
     background-color: #A6BED7;
     color: #FFFFFF;
-    font-size: 130%;
+    font-size: 120%;
     font-weight: normal;
     margin: 0;
     padding: 2px 3px;
@@ -614,7 +608,7 @@ a.thread_list_link {
 .post_to,
 .post_content,
 .post_html {
-    font-size: 120%;
+    font-size: 110%;
 }
 
 .post_to .select,
@@ -675,7 +669,7 @@ a.thread_list_link {
 .logon h2 {
     background-color: #A6BED7;
     color: #FFFFFF;
-    font-size: 130%;
+    font-size: 120%;
     font-weight: normal;
     margin: 0;
     padding: 2px 3px;
@@ -707,4 +701,75 @@ a.thread_list_link {
 
 .logon_buttons {
     text-align: center;
+}
+
+span.thread_high_interest,
+span.thread_subscribed,
+span.thread_poll,
+span.thread_sticky,
+span.thread_friend,
+span.thread_split,
+span.thread_merge,
+span.thread_attachment,
+span.thread_closed,
+span.thread_locked,
+span.thread_deleted,
+span.user_friend,
+span.user_enemy {
+    display: inline-block;
+    margin: 0px 2px;
+    padding-left: 16px;
+    text-indent: -9999px;
+}
+
+span.thread_high_interest {
+    background: url('images/high_interest.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_subscribed {
+    background: url('images/subscribe.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_poll {
+    background: url('images/poll.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_sticky {
+    background: url('images/sticky.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_friend {
+    background: url('images/friend.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_split {
+    background: url('images/split_thread.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_merge {
+    background: url('images/merge_thread.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_attachment {
+    background: url('images/attach.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_closed {
+    background: url('images/thread_closed.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_locked {
+    background: url('images/admin_locked.png') transparent no-repeat scroll 0 2px;
+}
+
+span.thread_deleted {
+    background: url('images/delete.png') transparent no-repeat scroll 0 2px;
+}
+
+span.user_friend {
+    background: url('images/friend.png') transparent no-repeat scroll 0 2px;
+}
+
+span.user_enemy {
+    background: url('images/enemy.png') transparent no-repeat scroll 0 2px;
 }

@@ -1215,8 +1215,10 @@ function user_get_peer_nickname($uid, $peer_uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PEER_NICKNAME FROM `{$table_data['PREFIX']}USER_PEER` ";
-    $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+    $sql = "SELECT COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
+    $sql.= "FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = '$peer_uid'";
 
     if (!$result = db_query($sql, $db_user_get_peer_nickname)) return false;
 

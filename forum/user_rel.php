@@ -239,7 +239,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if (isset($_POST['reset_nickname'])) {
+if (isset($_POST['reset_nickname_x']) || isset($_POST['reset_nickname_y'])) {
 
     $peer_nickname = user_get_nickname($peer_uid);
     $peer_relationship = user_get_peer_relationship($uid, $peer_uid);

@@ -1854,7 +1854,6 @@ $lang['visiblediscussions'] = "Visible discussions";
 $lang['selectedfolder'] = "Selected folder";
 $lang['navigate'] = "Navigate";
 $lang['couldnotretrievefolderinformation'] = "There are no folders available.";
-$lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or %s for all threads";
 $lang['clickhere'] = "click here";
 $lang['prev50threads'] = "Previous 50 threads";
 $lang['next50threads'] = "Next 50 threads";

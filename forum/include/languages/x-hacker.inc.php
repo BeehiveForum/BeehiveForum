@@ -1854,7 +1854,6 @@ $lang['visiblediscussions'] = "vI\$1Bl3 di5cU5\$1On5";
 $lang['selectedfolder'] = "sEL3cTEd FolD3R";
 $lang['navigate'] = "nAV1GA+E";
 $lang['couldnotretrievefolderinformation'] = "tHEr3 4re nO PHOLder\$ av4IL4BL3.";
-$lang['nomessagesinthiscategory'] = "n0 M3\$54G3S 1N ThIS c4+eg0RY. PleAse SeL3CT @NotHeR, 0r %s FOR 4LL +hr3@d\$";
 $lang['clickhere'] = "cLiCk HERE";
 $lang['prev50threads'] = "preVI0uS 50 ThrE4dS";
 $lang['next50threads'] = "nex+ 50 ThR34d5";

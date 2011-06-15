@@ -53,23 +53,20 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $previous_nickname = user_get_nickname($peer_uid);
+    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PEER` (UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
+    $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', NULL) ON DUPLICATE KEY UPDATE ";
+    $sql.= "RELATIONSHIP = VALUES(RELATIONSHIP), PEER_NICKNAME = NULL";
 
-    if ($relationship == USER_NORMAL && ($nickname == "" || $nickname == $previous_nickname)) {
+    if (!db_query($sql, $db_user_rel_update)) return false;
 
-        $sql = "DELETE FROM `{$table_data['PREFIX']}USER_PEER` ";
-        $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+    $user_nickname = user_get_nickname($peer_uid);
 
-        if (!db_query($sql, $db_user_rel_update)) return false;
-
-    }else {
+    if (($nickname != $user_nickname)) {
 
         $nickname = db_escape_string($nickname);
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PEER` ";
-        $sql.= "(UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
-        $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', '$nickname') ";
-        $sql.= "ON DUPLICATE KEY UPDATE RELATIONSHIP = VALUES(RELATIONSHIP), ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PEER` (UID, PEER_UID, PEER_NICKNAME) ";
+        $sql.= "VALUES ('$uid', '$peer_uid', '$nickname') ON DUPLICATE KEY UPDATE ";
         $sql.= "PEER_NICKNAME = VALUES(PEER_NICKNAME)";
 
         if (!db_query($sql, $db_user_rel_update)) return false;

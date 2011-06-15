@@ -805,14 +805,14 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
                             echo "<span>";
 
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
-                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" />";
-                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<img src=\"".html_style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" />";
-                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<img src=\"", html_style_image('split_thread.png'), "\" alt=\"{$lang['threadhasbeensplit']}\" title=\"{$lang['threadhasbeensplit']}\" />";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<img src=\"", html_style_image('merge_thread.png'), "\" alt=\"{$lang['threadhasbeenmerged']}\" title=\"{$lang['threadhasbeenmerged']}\" />";
-                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", html_style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"{$lang['subscribed']}\">[S]</span>";
+                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<span class=\"thread_poll\" title=\"{$lang['poll']}\">[P]</span>";
+                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<span class=\"thread_sticky\" title=\"{$lang['sticky']}\">[ST]</span>";
+                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<span class=\"thread_friend\" title=\"{$lang['friend']}\">[F]</span>";
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<span class=\"thread_split\" title=\"{$lang['threadhasbeensplit']}\">[TS]</span>";
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<span class=\"thread_merge\" title=\"{$lang['threadhasbeenmerged']}\">[TM]</span>";
+                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<span class=\"thread_attachment\" title=\"{$lang['attachment']}\">[A]</span>";
 
                             echo $number." ";
                             echo $thread_time." ";
@@ -1354,12 +1354,12 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
 
     echo "<h2><a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
 
-    if ($closed) echo "&nbsp;<img src=\"", html_style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
-    if ($thread_interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", html_style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
-    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<img src=\"", html_style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
-    if ($sticky == "Y") echo "&nbsp;<img src=\"", html_style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" />";
-    if ($locked) echo "&nbsp;<img src=\"", html_style_image('admin_locked.png'), "\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" />\n";
-    if ($deleted) echo "&nbsp;<img src=\"", html_style_image('delete.png'), "\" alt=\"{$lang['deleted']}\" title=\"{$lang['deleted']}\" />\n";
+    if ($closed) echo "<span class=\"thread_closed\" title=\"{$lang['closed']}\">[C]</span>\n";
+    if ($thread_interest_level == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";
+    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"{$lang['subscribed']}\">[S]</span>";
+    if ($sticky == "Y") echo "<span class=\"thread_sticky\" title=\"{$lang['sticky']}\">[ST]</span>";
+    if ($locked) echo "<span class=\"thread_locked\" title=\"{$lang['locked']}\">[L]</span>\n";
+    if ($deleted) echo "<span class=\"thread_deleted\" title=\"{$lang['deleted']}\">[D]</span>\n";
 
     echo "</h2>\n";
 }
@@ -1805,9 +1805,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK'])));
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
+        echo "<span class=\"user_friend\" title=\"{$lang['friend']}\">[F]</span>";
     }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
-        echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
+        echo "<span class=\"user_enemy\" title=\"{$lang['ignoreduser']}\">[E]</span>";
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -1837,9 +1837,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         echo "{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK'])));
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
+            echo "<span class=\"user_friend\" title=\"{$lang['friend']}\">[F]</span>";
         }else if (($message['TO_RELATIONSHIP'] & USER_IGNORED)) {
-            echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
+            echo "<span class=\"user_enemy\" title=\"{$lang['ignoreduser']}\">[E]</span>";
         }
 
         if (!$is_preview) {
@@ -2227,12 +2227,7 @@ function light_attachments_make_link($attachment)
     $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
     $href.= "&amp;filename={$attachment['filename']}";
 
-    $attachment_link = "<img src=\"";
-    $attachment_link.= html_style_image('attach.png');
-    $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" />";
-    $attachment_link.= "<a href=\"$href\" target=\"_blank\">{$attachment['filename']}</a>";
-
-    return $attachment_link;
+    return "<a href=\"$href\" target=\"_blank\">{$attachment['filename']}</a>";
 }
 
 function light_threads_draw_discussions_dropdown($thread_mode)

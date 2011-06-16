@@ -64,8 +64,6 @@ function light_html_draw_top()
 
     $title = "";
 
-    $tab = "";
-
     $robots = "index,follow";
 
     $webtag = get_webtag();
@@ -82,11 +80,6 @@ function light_html_draw_top()
 
         if (preg_match('/^title=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
             if (strlen($title) < 1) $title = $func_matches[1];
-            unset($arg_array[$key]);
-        }
-
-        if (preg_match('/^tab=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen($tab) < 1) $tab = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -216,30 +209,20 @@ function light_html_draw_top()
     echo "<body>\n";
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
-    echo "  <div id=\"header_top\">\n";
-    echo "    <h1><a href=\"index.php\">", htmlentities_array($forum_name), "</a></h1>\n";
-
-    if (user_is_guest()) {
-        echo "    <span id=\"header_links\"><a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></span>\n";
-    }else {
-        echo "    <span id=\"header_links\"><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></span>\n";
-    }
-
-    echo "    <div class=\"clearer\"></div>\n";
-    echo "  </div>\n";
     echo "  <div id=\"nav\">\n";
     echo "    <ul>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
+        echo "      <li><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+    }
 
-        echo "      <li class=\"", $tab == "forum" ? "active" : "", " three_col\"><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
-        echo "      <li class=\"", $tab == "messages" ? "active" : "", " three_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
-        echo "      <li class=\"", $tab == "inbox" ? "active" : "", " three_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
+    echo "      <li><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
+    echo "      <li><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
 
+    if (user_is_guest()) {
+        echo "      <li><a href=\"llogon.php\">", $lang['login'], "</a></li>\n";
     } else {
-
-        echo "      <li class=\"", $tab == "messages" ? "active" : "", " two_col\"><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
-        echo "      <li class=\"", $tab == "inbox" ? "active" : "", " two_col\"><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
+        echo "      <li><a href=\"llogout.php\">", $lang['logout'], "</a></li>\n";
     }
 
     echo "    </ul>\n";
@@ -248,7 +231,7 @@ function light_html_draw_top()
     echo "</div>\n";
     echo "<div id=\"content\">\n";
 
-    if ($tab != 'inbox') light_pm_check_messages();
+    light_pm_check_messages();
 
     if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
         adsense_output_html();

@@ -122,7 +122,7 @@ $uid = session_get_value('UID');
 // Guests can't access this page.
 if (user_is_guest()) {
 
-    light_html_draw_top("tab=inbox");
+    light_html_draw_top();
     light_html_guest_error();
     light_html_draw_bottom();
     exit;
@@ -317,7 +317,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         }else {
 
-            light_html_draw_top("title={$lang['error']}", "tab=inbox");
+            light_html_draw_top("title={$lang['error']}", );
             light_pm_error_refuse();
             light_html_draw_bottom();
             exit;
@@ -479,7 +479,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", "tab=inbox");
+        light_html_draw_top("title={$lang['error']}", );
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -521,7 +521,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", "tab=inbox");
+        light_html_draw_top("title={$lang['error']}", );
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -557,7 +557,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", "tab=inbox");
+        light_html_draw_top("title={$lang['error']}", );
         light_pm_error_refuse();
         light_html_draw_bottom();
         exit;
@@ -646,7 +646,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow", "tab=inbox");
+light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow", );
 
 // preview message
 if ($valid && isset($_POST['preview'])) {

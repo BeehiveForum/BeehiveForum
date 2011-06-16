@@ -145,7 +145,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", "tab=messages");
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", );
     light_html_display_error_msg($lang['invalidmsgidornomessageidspecified']);
     light_html_draw_bottom();
     exit;
@@ -153,7 +153,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    light_html_draw_top("title={$lang['error']}", "tab=messages");
+    light_html_draw_top("title={$lang['error']}", );
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -161,7 +161,7 @@ if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    light_html_draw_top("title={$lang['error']}", "tab=messages");
+    light_html_draw_top("title={$lang['error']}", );
     light_html_display_error_msg($lang['foldercouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -169,7 +169,7 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    light_html_draw_top("title={$lang['error']}", "tab=messages");
+    light_html_draw_top("title={$lang['error']}", );
     light_html_display_error_msg($lang['postdoesnotexist']);
     light_html_draw_bottom();
     exit;
@@ -177,7 +177,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-light_html_draw_top("title=$thread_title", "tab=messages");
+light_html_draw_top("title=$thread_title", );
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 

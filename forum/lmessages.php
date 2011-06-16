@@ -152,7 +152,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", );
+    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessages']);
     light_html_draw_bottom();
     exit;
@@ -168,7 +168,7 @@ if (isset($_POST['pollsubmit'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", );
+        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
         light_html_display_error_msg($lang['mustselectpolloption']);
         light_html_draw_bottom();
         exit;

@@ -147,7 +147,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled', );
+    light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
     light_html_display_error_msg($lang['nomessagespecifiedforedit']);
     light_html_draw_bottom();
     exit;
@@ -260,7 +260,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", );
+        light_html_draw_top("title={$lang['error']}");
         light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -285,7 +285,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", );
+        light_html_draw_top("title={$lang['error']}");
         light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -335,7 +335,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
-            light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled', );
+            light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
             light_pm_post_edit_refuse();
             light_html_draw_bottom();
             exit;
@@ -358,14 +358,14 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}", );
+        light_html_draw_top("title={$lang['error']}");
         light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
 }
 
-light_html_draw_top("title={$lang['editpm']}", );
+light_html_draw_top("title={$lang['editpm']}");
 
 if ($valid && isset($_POST['preview'])) {
 

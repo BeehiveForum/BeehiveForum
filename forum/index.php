@@ -359,18 +359,27 @@ if (html_get_cookie('logon') && user_is_guest()) {
                 $thread_mode = $_REQUEST['thread_mode'];
             }
 
-            $threads_any_unread = threads_any_unread();
+            if (user_is_guest()) {
 
-            if (isset($thread_mode) && is_numeric($thread_mode)) {
-
-                html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+                if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
+                    $thread_mode = ALL_DISCUSSIONS;
+                }
 
             } else {
 
-                $thread_mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+                $threads_any_unread = threads_any_unread();
 
-                if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-                    $thread_mode = ALL_DISCUSSIONS;
+                if (isset($thread_mode) && is_numeric($thread_mode)) {
+
+                    html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+
+                } else {
+
+                    $thread_mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+
+                    if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+                        $thread_mode = ALL_DISCUSSIONS;
+                    }
                 }
             }
 

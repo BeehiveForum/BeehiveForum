@@ -105,7 +105,7 @@ if (!session_user_approved()) {
 // Load language file
 $lang = load_language_file();
 
-light_html_draw_top("tab=forums");
+light_html_draw_top();
 
 light_draw_my_forums();
 

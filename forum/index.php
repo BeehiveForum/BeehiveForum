@@ -301,11 +301,11 @@ if (!browser_mobile()) {
 
     if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-        light_html_draw_top("tab=inbox");
+        light_html_draw_top();
 
     } else {
 
-        light_html_draw_top("tab=messages");
+        light_html_draw_top();
     }
 }
 

@@ -100,34 +100,28 @@ if (session_user_banned()) {
     exit;
 }
 
-// Get webtag
 $webtag = get_webtag();
 
-// Check the webtag is valid. Don't redirect.
 forum_check_webtag_available($webtag);
 
-// Check for login failure.
 if (isset($_GET['logon_failed'])) {
     $logon_failed = '&amp;logon_failed=true';
 }else {
     $logon_failed = false;
 }
 
-// Check for log out notification.
 if (isset($_GET['logout_success'])) {
     $logout_success = '&amp;logout_success=true';
 }else {
     $logout_success = false;
 }
 
-// Check for other logon button click
 if (isset($_GET['other_logon'])) {
     $other_logon = '&amp;other_logon=true';
 }else {
     $other_logon = false;
 }
 
-// Set cookie for persistent full mode / mobile use.
 if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
 
     html_set_cookie('view', 'full');
@@ -139,16 +133,12 @@ if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
     header_redirect('index.php');
 }
 
-// Check to see if the user is trying to change their password.
 $skip_logon_page = false;
 
-// Load language file
 $lang = load_language_file();
 
-// Top frame filename
 $top_html = html_get_top_page();
 
-// Are we being redirected somewhere?
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
     $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
@@ -184,13 +174,10 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     }
 }
 
-// Check for noframes display mode.
 if (!browser_mobile()) {
 
-    // Output starts here
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
-    // If user has requested password change show the form instead of the logon page.
     if ($skip_logon_page === true) {
 
         $frameset = new html_frameset_rows('index', "60,22,*");
@@ -201,7 +188,6 @@ if (!browser_mobile()) {
 
     }else if (html_get_cookie('logon') && user_is_guest()) {
 
-        // Display the logon page.
         if (isset($final_uri) && strlen($final_uri) > 0) {
 
             $final_uri = sprintf("logon.php?webtag=$webtag$other_logon$logout_success$logon_failed&amp;final_uri=%s", rawurlencode($final_uri));
@@ -229,11 +215,9 @@ if (!browser_mobile()) {
 
     }else {
 
-        // Calculate how tall the nav frameset should be based on the user's fontsize.
         $navsize = session_get_value('FONT_SIZE');
         $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
-        // Check for Forum webtag.
         if (forum_check_webtag_available($webtag)) {
 
             if (!isset($final_uri)) {
@@ -308,10 +292,8 @@ if (!browser_mobile()) {
         $frameset->html_frame($final_uri, html_get_frame_name('main'));
     }
 
-    // Output the frame.
     $frameset->output_html(false);
 
-    // Light mode embedded in <noframes> tags.
     echo "<noframes>\n";
     echo "<body>\n";
 
@@ -327,60 +309,82 @@ if (!browser_mobile()) {
     }
 }
 
-// Does the user want to login or have they got saved username and password
 if (html_get_cookie('logon') && user_is_guest()) {
 
     light_draw_logon_form();
 
 } else {
 
-    // Check the webtag is valid.
     if (forum_check_webtag_available($webtag)) {
 
-        // Check for message to display.
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
             list($tid, $pid) = explode('.', $_GET['msg']);
 
-            // Display the request message.
             light_draw_messages($tid, $pid);
 
-        // Check for PM to display.
         }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-            // Guests can't access PMs
             if (user_is_guest()) {
 
                 light_html_guest_error();
                 exit;
             }
 
-            // Check that PM system is enabled
             light_pm_enabled();
 
-            // Prune the PM folders
             pm_user_prune_folders();
 
-            // Display the Inbox.
             light_draw_pm_inbox();
 
         }else {
 
-            // Display thread list.
-            light_draw_thread_list();
+            if (!($available_folders = folder_get_available_array())) {
+                $available_folders = array();
+            }
+
+            if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folders)) {
+                $folder = $_REQUEST['folder'];
+            } else {
+                $folder = false;
+            }
+
+            if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
+                $start_from = $_REQUEST['start_from'];
+            } else {
+                $start_from = 0;
+            }
+
+            if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
+                $thread_mode = $_REQUEST['thread_mode'];
+            }
+
+            $threads_any_unread = threads_any_unread();
+
+            if (isset($thread_mode) && is_numeric($thread_mode)) {
+
+                html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+
+            } else {
+
+                $thread_mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+
+                if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+                    $thread_mode = ALL_DISCUSSIONS;
+                }
+            }
+
+            light_draw_thread_list($thread_mode, $folder, $start_from);
         }
 
     }else {
 
-        // Draw forums page.
         light_draw_my_forums();
     }
 }
 
-// Clear the logon cookie
 html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
-// Frames mode HTML
 if (!browser_mobile()) {
 
     echo "</body>\n";

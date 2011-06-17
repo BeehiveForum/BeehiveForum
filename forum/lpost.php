@@ -142,12 +142,12 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "lmessages.php?webtag=$webtag";
-
     if (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
-        $uri.= "&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
-    }elseif (isset($_GET['replyto'])) {
-        $uri.= "&msg={$_GET['replyto']}";
+        $uri = "lmessages.php?webtag=$webtag&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
+    }else if (isset($_GET['replyto'])) {
+        $uri = "lmessages.php?webtag=$webtag&msg={$_GET['replyto']}";
+    } else {
+        $uri = "lthread_list.php?webtag=$webtag";
     }
 
     header_redirect($uri);

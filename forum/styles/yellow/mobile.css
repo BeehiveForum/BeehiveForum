@@ -525,7 +525,7 @@ a.thread_list_link {
 }
 
 .post h2 {
-    background-color: #A6BED7;
+    background-color: #FFA41A;
     color: #FFFFFF;
     font-weight: normal;
     margin: 0;
@@ -601,8 +601,8 @@ a.thread_list_link {
 }
 
 .logon h2 {
-    background-color: #A6BED7;
-    color: #FFFFFF;
+    background-color: #FFA41A;
+    color: #FFFFFF
     font-weight: normal;
     margin: 0;
     padding: 2px 3px;

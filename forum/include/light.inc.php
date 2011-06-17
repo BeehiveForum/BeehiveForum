@@ -1335,7 +1335,8 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
 
     forum_check_webtag_available($webtag);
 
-    echo "<h2><a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
+    echo "<h2 class=\"thread_title\">";
+    echo "<a href=\"", html_get_forum_uri("/index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
 
     if ($closed) echo "<span class=\"thread_closed\" title=\"{$lang['closed']}\">[C]</span>\n";
     if ($thread_interest_level == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";

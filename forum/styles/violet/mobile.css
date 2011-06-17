@@ -253,6 +253,11 @@ body {
     white-space: nowrap;
 }
 
+h2.thread_title {
+    font-size: 130%;
+    line-height: 150%;
+}
+
 .message {
     background-color: #FFFFFF;
     border: 1px solid #000000;

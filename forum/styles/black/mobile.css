@@ -1,5 +1,4 @@
 * {
-    color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     margin: 0;
@@ -38,6 +37,7 @@ input,
 }
 
 a {
+    color: #000000;
     text-decoration: none;
 }
 
@@ -69,6 +69,7 @@ a {
 }
 
 body {
+    color: #000000;
     background-color: #CCCCCC;
     font-size: 62.5%;
 }

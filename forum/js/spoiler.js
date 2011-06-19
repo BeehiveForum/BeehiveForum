@@ -23,7 +23,7 @@ USA
 
 $(beehive).bind('init', function() {
 
-    if (beehive.use_mover_spoiler == 'Y') {
+    if (beehive.use_mover_spoiler == 'Y' && !beehive.mobile_version) {
 
         $('.spoiler').hover(function() {
 
@@ -32,7 +32,6 @@ $(beehive).bind('init', function() {
         },function() {
 
             $(this).removeClass('spoiler_reveal');
-
         });
 
     } else {

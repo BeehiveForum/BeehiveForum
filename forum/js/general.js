@@ -98,7 +98,9 @@ var beehive = $.extend({}, beehive, {
         var $user_font = $head.find('link#user_font');
 
         $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
-    }
+    },
+
+    mobile_version : false
 });
 
 $.ajaxSetup({
@@ -113,6 +115,8 @@ $.ajaxSetup({
 $(beehive).bind('init', function() {
 
     var frame_resize_timeout;
+
+    beehive.mobile_version = $('body#mobile').length > 0;
 
     $('form[method="get"]').append(
         $('<input type="hidden" name="_">').val((new Date).getTime())

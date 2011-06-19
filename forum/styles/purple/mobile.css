@@ -51,9 +51,72 @@ a {
     font-family: monospace;
     font-size: 120%;
     margin: 0 10px 0 20px;
-    white-space: pre-wrap;
     overflow: scroll;
     padding: 3px;
+    white-space: pre-wrap;
+}
+
+span.spoiler {
+    background: #EEEEEE url('images/spoiler.png');
+    border: 1px solid #CCCCCC;
+    color: #EEEEEE;
+    display: inline-block;
+    min-height: 16px;
+    min-width: 55px;
+    padding: 0px 3px;
+}
+
+span.spoiler * {
+    visibility: hidden;
+}
+
+span.spoiler_light {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    color: #CCCCCC;
+    display: inline-block;
+    padding: 3px;
+}
+
+span.spoiler_reveal {
+    background-image: none;
+    color: #000000;
+}
+
+span.spoiler_reveal * {
+    visibility: visible;
+}
+
+div.spoiler {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    color: #EEEEEE;
+    margin: 0 10px 0 20px;
+    padding: 3px;
+}
+
+div.spoiler * {
+    margin-left: -9999px;
+}
+
+div.spoiler_light {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    color: #CCCCCC;
+    margin: 0 10px 0 20px;
+    padding: 3px;
+}
+
+div.spoiler_reveal {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    color: #000000;
+    margin: 0 10px 0 20px;
+    padding: 3px;
+}
+
+div.spoiler_reveal * {
+    margin-left: 0px;
 }
 
 .clearer {

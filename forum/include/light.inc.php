@@ -865,8 +865,8 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     if (!user_is_guest()) {
 
-        echo "<h3>{$lang['markasread']}</h3>\n";
         echo "<div id=\"thread_mark_read\">\n";
+        echo "<h3>{$lang['markasread']}</h3>\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
 
         echo form_input_hidden("webtag", htmlentities_array($webtag)), "\n";

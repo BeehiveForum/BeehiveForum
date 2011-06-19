@@ -1,14 +1,6 @@
 * {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-h1,
-h2,
-h3 {
-    margin-top: 10px;
 }
 
 input,
@@ -72,6 +64,8 @@ body {
     color: #000000;
     background-color: #FFFFC1;
     font-size: 62.5%;
+    margin: 0;
+    padding: 0;
 }
 
 #header {
@@ -102,6 +96,7 @@ body {
     border-collapse: collapse;
     display: table;
     margin: 5px 0;
+    padding: 0;
 }
 
 #nav li {
@@ -141,6 +136,8 @@ body {
 #thread_view ul,
 #thread_mark_read ul {
     display: table;
+    margin: 0;
+    padding: 0;
     width: 100%;
 }
 
@@ -159,6 +156,11 @@ body {
 #thread_mark_read li.right_col {
     text-align: right;
     width: 2%;
+}
+
+#thread_mark_read h3 {
+    margin: 0;
+    padding: 0;
 }
 
 .message_box {
@@ -208,9 +210,9 @@ body {
     background: url('images/folder.png') transparent no-repeat scroll 0 0;
     font-size: 110%;
     line-height: 150%;
-    padding-left: 20px;
+    margin: 0;
+    padding: 0 0 0 20px;
 }
-
 .folder_inner {
     background-color: #FFFFFF;
     border: 1px solid #000000;
@@ -233,7 +235,8 @@ body {
     background-color: #FFC846;
     border: 1px solid #FFC846;
     list-style: none;
-    padding-bottom: 3px;
+    margin: 0;
+    padding: 0 0 3px;
 }
 
 .folder ul li {
@@ -251,7 +254,14 @@ body {
 }
 
 .folder ul li > span {
+    margin-left: 3px;
     white-space: nowrap;
+}
+
+.folder ul li.pm_unread > span,
+.folder ul li.pm_read > span {
+    display: block;
+    font-size: 90%;
 }
 
 h2.thread_title {
@@ -320,14 +330,6 @@ h2.thread_title {
     text-decoration: underline;
 }
 
-.message_body ol,
-.message_body ul,
-.message_box ol,
-.message_box ul {
-    margin: 10px 0;
-    padding-left: 40px;
-}
-
 .message_body img {
     max-width: 100% !important;
 }
@@ -338,6 +340,8 @@ h2.thread_title {
 
 .message_attachments ul {
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .message_attachments li {
@@ -399,6 +403,8 @@ h2.thread_title {
 
 .message_page_footer ul {
     display: table;
+    margin: 0;
+    padding: 0;
     width: 100%;
 }
 

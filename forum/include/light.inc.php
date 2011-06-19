@@ -206,7 +206,7 @@ function light_html_draw_top()
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
 
     echo "</head>\n";
-    echo "<body>\n";
+    echo "<body id=\"mobile\">\n";
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
     echo "  <div id=\"nav\">\n";
@@ -1977,7 +1977,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 function light_spoiler_enable($message)
 {
     if (session_get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
-        return str_replace("<div class=\"spoiler\">", "<div class=\"spoiler_light\">", $message);
+        return preg_replace('/<(div|span) class="spoiler">/iu', '<\1 class="spoiler_light">', $message);
     }
 
     return $message;

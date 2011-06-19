@@ -1054,7 +1054,8 @@ span.spoiler {
     font-family: verdana, arial, helvetica, sans-serif;
     padding: 0px;
     display: inline-block;
-    min-width: 50px;
+    min-height: 16px;
+    min-width: 55px;
     padding: 0px 3px;
 }
 

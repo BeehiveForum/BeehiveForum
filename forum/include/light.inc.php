@@ -249,7 +249,7 @@ function light_html_draw_bottom()
     echo "  <div id=\"footer_links\">\n";
     echo "    <a href=\"#top\">{$lang['top']}</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">{$lang['desktopversion']}</a>\n";
     echo "  </div>\n";
-    echo "  <h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
+    echo "  <h6><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Beehive Forum ", BEEHIVE_VERSION, "<br />&copy; ", date('Y'), " Project Beehive Forum</a></h6>\n";
     echo "</div>\n";
     echo "</body>\n";
     echo "</html>\n";

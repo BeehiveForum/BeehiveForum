@@ -911,8 +911,7 @@ function light_draw_pm_inbox()
 
     $lang = load_language_file();
 
-    // Get custom folder names array.
-    if (!$pm_folder_names_array = pm_get_folder_names()) {
+    if (!($pm_folder_names_array = pm_get_folder_names())) {
 
         $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
                                        PM_FOLDER_SENT    => $lang['pmsentitems'],
@@ -930,38 +929,15 @@ function light_draw_pm_inbox()
         $start_from = 0;
     }
 
-    // Check to see if we're viewing a message and get the folder it is in.
     if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
-
         $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
-
-        if (!$message_folder = pm_message_get_folder($mid)) {
-            $message_folder = PM_FOLDER_INBOX;
-        }
-
     }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
         $mid = ($_GET['pmid'] > 0) ? $_GET['pmid'] : 0;
-
-        if (!$message_folder = pm_message_get_folder($mid)) {
-            $message_folder = PM_FOLDER_INBOX;
-        }
-
     }else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
-
         $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
-
-        if (!$message_folder = pm_message_get_folder($mid)) {
-            $message_folder = PM_FOLDER_INBOX;
-        }
-
-    }else {
-
-        $mid = 0;
-        $message_folder = PM_FOLDER_INBOX;
     }
 
-    $current_folder = $message_folder;
+    $current_folder = PM_FOLDER_INBOX;
 
     if (isset($_GET['folder'])) {
 
@@ -1025,9 +1001,9 @@ function light_draw_pm_inbox()
         exit;
     }
 
-    if (isset($mid) && is_numeric($mid) && $mid > 0) {
+    if (isset($mid) && is_numeric($mid)) {
 
-        if ($current_folder != $message_folder) {
+        if (!($current_folder = pm_message_get_folder($mid))) {
 
             light_html_display_error_msg($lang['messagenotfoundinselectedfolder']);
             return;
@@ -1039,20 +1015,17 @@ function light_draw_pm_inbox()
             return;
         }
 
-        if (isset($pm_message_array) && is_array($pm_message_array)) {
-
-            if (isset($_GET['message_sent'])) {
-                light_html_display_success_msg($lang['msgsentsuccessfully']);
-            }else if (isset($_GET['deleted'])) {
-                light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
-            }else if (isset($_GET['message_saved'])) {
-                html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
-            }
-
-            $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-            light_pm_display($pm_message_array, $message_folder);
+        if (isset($_GET['message_sent'])) {
+            light_html_display_success_msg($lang['msgsentsuccessfully']);
+        }else if (isset($_GET['deleted'])) {
+            light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
+        }else if (isset($_GET['message_saved'])) {
+            light_html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
         }
+
+        $pm_message_array['CONTENT'] = pm_get_content($mid);
+
+        light_pm_display($pm_message_array, $current_folder);
 
     }else {
 
@@ -1061,123 +1034,80 @@ function light_draw_pm_inbox()
         }else if (isset($_GET['deleted'])) {
             light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
         }else if (isset($_GET['message_saved'])) {
-            html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
+            light_html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
         }
 
         $pm_message_count_array = pm_get_folder_message_counts();
 
-        echo "<a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
+        echo "<div id=\"folder_view\">\n";
+        echo "<form accept-charset=\"utf-8\" method=\"get\" action=\"lpm.php\">\n";
+        echo "<ul>\n";
+        echo "<li>", light_form_dropdown_array("folder", $pm_folder_names_array, $current_folder), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_submit("go", $lang['goexcmark']), "</li>\n";
+        echo "</ul>\n";
+        echo "</form>\n";
+        echo "</div>\n";
 
-        foreach ($pm_folder_names_array as $folder_type => $folder_name) {
+        if (isset($pm_message_count_array[$current_folder]) && is_numeric($pm_message_count_array[$current_folder])) {
 
-            if (isset($pm_message_count_array[$folder_type]) && is_numeric($pm_message_count_array[$folder_type])) {
+            echo "<div class=\"folder\">";
+            echo "  <h3>{$pm_folder_names_array[$current_folder]}</h3>\n";
+            echo "  <div class=\"folder_inner\">\n";
+            echo "    <div class=\"folder_info\">{$pm_message_count_array[$current_folder]} {$lang['messages']}</div>\n";
 
-                echo "<div class=\"folder\">";
-                echo "  <h3><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder_type\">$folder_name</a></h3>\n";
-                echo "  <div class=\"folder_inner\">\n";
-                echo "    <div class=\"folder_info\">{$pm_message_count_array[$folder_type]} {$lang['messages']}</div>\n";
+            if ($current_folder == PM_FOLDER_INBOX) {
 
-                if (isset($current_folder) && ($current_folder == $folder_type)) {
+                $pm_messages_array = pm_get_inbox(false, false, $start_from, 20);
 
-                    if ($current_folder == PM_FOLDER_INBOX) {
+            }elseif ($current_folder == PM_FOLDER_SENT) {
 
-                        $pm_messages_array = pm_get_inbox(false, false, $start_from, 10);
+                $pm_messages_array = pm_get_sent(false, false, $start_from, 20);
 
-                    }elseif ($current_folder == PM_FOLDER_SENT) {
+            }elseif ($current_folder == PM_FOLDER_OUTBOX) {
 
-                        $pm_messages_array = pm_get_sent(false, false, $start_from, 10);
+                $pm_messages_array = pm_get_outbox(false, false, $start_from, 20);
 
-                    }elseif ($current_folder == PM_FOLDER_OUTBOX) {
+            }elseif ($current_folder == PM_FOLDER_SAVED) {
 
-                        $pm_messages_array = pm_get_outbox(false, false, $start_from, 10);
+                $pm_messages_array = pm_get_saved_items(false, false, $start_from, 20);
 
-                    }elseif ($current_folder == PM_FOLDER_SAVED) {
+            }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
-                        $pm_messages_array = pm_get_saved_items(false, false, $start_from, 10);
+                $pm_messages_array = pm_get_drafts(false, false, $start_from, 20);
+            }
 
-                    }elseif ($current_folder == PM_FOLDER_DRAFTS) {
+            if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
-                        $pm_messages_array = pm_get_drafts(false, false, $start_from, 10);
-                    }
-
-                    if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-
-                        if ($start_from > 0) {
-                            echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from - 10), "\">{$lang['prev']}</a></div>\n";
-                        }
-
-                        echo "<ul>\n";
-
-                        foreach ($pm_messages_array['message_array'] as $message) {
-
-                            if ($message['TYPE'] == PM_UNREAD) {
-                                echo "<li class=\"pm_unread\">";
-                            } else {
-                                echo "<li class=\"pm_read\">";
-                            }
-
-                            echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
-                            echo "<span>";
-
-                            if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX) {
-
-                                echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), " ";
-                                echo format_time($message['CREATED']);
-
-                            }elseif ($current_folder == PM_FOLDER_SAVED) {
-
-                                echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), " ";
-                                echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), " ";
-                                echo format_time($message['CREATED']);
-
-                            }elseif ($current_folder == PM_FOLDER_DRAFTS) {
-
-                                if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
-
-                                    $recipient_array = preg_split("/[;|,]/u", trim($message['RECIPIENTS']));
-
-                                    if ($message['TO_UID'] > 0) {
-                                        $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));
-                                    }
-
-                                    $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
-
-                                    echo word_filter_add_ob_tags(implode('; ', $recipient_array)), "&nbsp;";
-
-                                }else if (isset($message['TO_UID']) && $message['TO_UID'] > 0) {
-
-                                    echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), " ";
-
-                                }else {
-
-                                    echo "<span class=\"pm_no_recipients\">{$lang['norecipients']}</span>";
-                                }
-
-                                echo "<span class=\"pm_not_sent\">{$lang['notsent']}</span>";
-
-                            }else {
-
-                                echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), " ";
-                                echo format_time($message['CREATED']);
-                            }
-
-                            echo "</span>\n";
-                            echo "</li>\n";
-                        }
-
-                        echo "</ul>\n";
-
-                        $more_messages = $pm_message_count_array[$folder_type] - $start_from - 10;
-
-                        if ($more_messages > 0) {
-                            echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from + 10), "\">{$lang['next']}</a></div>\n";
-                        }
-                    }
+                if ($start_from > 0) {
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from - 20), "\">{$lang['prev']}</a></div>\n";
                 }
 
-                echo "  </div>\n";
-                echo "</div>\n";
+                echo "<ul>\n";
+
+                foreach ($pm_messages_array['message_array'] as $message) {
+
+                    if ($message['TYPE'] == PM_UNREAD) {
+                        echo "<li class=\"pm_unread\">";
+                    } else {
+                        echo "<li class=\"pm_read\">";
+                    }
+
+                    echo "  <a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
+                    echo "  <span>", format_time($message['CREATED']), "</span>\n";
+                    echo "</li>\n";
+                }
+
+                echo "</ul>\n";
+
+                $more_messages = $pm_message_count_array[$current_folder] - $start_from - 20;
+
+                if ($more_messages > 0) {
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from + 20), "\">{$lang['next']}</a></div>\n";
+                }
             }
+
+            echo "  </div>\n";
+            echo "</div>\n";
         }
 
         echo "<a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";

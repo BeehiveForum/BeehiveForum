@@ -198,7 +198,8 @@ body {
 }
 
 #thread_view ul,
-#thread_mark_read ul {
+#thread_mark_read ul,
+#folder_view ul {
     display: table;
     margin: 0;
     padding: 0;
@@ -206,18 +207,21 @@ body {
 }
 
 #thread_view li,
-#thread_mark_read li {
+#thread_mark_read li,
+#folder_view li {
     display: table-cell;
     vertical-align: middle;
 }
 
 #thread_view li .select,
-#thread_mark_read li .select {
+#thread_mark_read li .select,
+#folder_view li .select {
     width: 100%;
 }
 
 #thread_view li.right_col,
-#thread_mark_read li.right_col {
+#thread_mark_read li.right_col,
+#folder_view li.right_col {
     text-align: right;
     width: 2%;
 }
@@ -320,12 +324,6 @@ body {
 .folder ul li > span {
     margin-left: 3px;
     white-space: nowrap;
-}
-
-.folder ul li.pm_unread > span,
-.folder ul li.pm_read > span {
-    display: block;
-    font-size: 90%;
 }
 
 h2.thread_title {
@@ -467,9 +465,9 @@ h2.thread_title {
 
 .message_page_footer ul {
     display: table;
+    width: 100%;
     margin: 0;
     padding: 0;
-    width: 100%;
 }
 
 .message_page_footer li {

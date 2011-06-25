@@ -498,7 +498,8 @@ a.pm_send_new {
     text-decoration: underline;
 }
 
-a.thread_list_link {
+a.thread_list_link,
+a.folder_list_link {
     background: url('images/thread_back.png') transparent no-repeat scroll 0 0;
     display: inline-block;
     font-weight: bold;

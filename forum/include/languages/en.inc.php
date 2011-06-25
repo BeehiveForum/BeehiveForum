@@ -1409,6 +1409,7 @@ $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
+$lang['backtofolderlist'] = "Back to folder list";
 $lang['saveselectedmessages'] = "Save Selected Messages";
 $lang['exportselectedmessages'] = "Export Selected Messages";
 $lang['nosubject'] = "No Subject";

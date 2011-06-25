@@ -246,9 +246,14 @@ function light_html_draw_bottom()
 
     echo "</div>\n";
     echo "<div id=\"footer\">\n";
-    echo "  <div id=\"footer_links\">\n";
-    echo "    <a href=\"#top\">{$lang['top']}</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">{$lang['desktopversion']}</a>\n";
-    echo "  </div>\n";
+
+    if (!session_is_search_engine()) {
+
+        echo "  <div id=\"footer_links\">\n";
+        echo "    <a href=\"#top\">{$lang['top']}</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">{$lang['desktopversion']}</a>\n";
+        echo "  </div>\n";
+    }
+
     echo "  <h6><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Beehive Forum ", BEEHIVE_VERSION, "<br />&copy; ", date('Y'), " Project Beehive Forum</a></h6>\n";
     echo "</div>\n";
     echo "</body>\n";
@@ -1027,6 +1032,8 @@ function light_draw_pm_inbox()
 
         light_pm_display($pm_message_array, $current_folder);
 
+        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\" class=\"folder_list_link\">{$lang['backtofolderlist']}</a>";
+
     }else {
 
         if (isset($_GET['message_sent'])) {
@@ -1110,7 +1117,7 @@ function light_draw_pm_inbox()
             echo "</div>\n";
         }
 
-        echo "<a href=\"lpm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
+        echo "<a href=\"lpm_write.php?webtag=$webtag\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
 
         // Fetch the free PM space and calculate it as a percentage.
         $pm_free_space = pm_get_free_space();

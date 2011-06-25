@@ -179,7 +179,7 @@ function browser_mobile()
         $mobile_browser = 0;
     }
 
-    if (html_get_cookie('view', 'mobile')) {
+    if (session_is_search_engine() || html_get_cookie('view', 'mobile')) {
         $mobile_browser++;
     }
 

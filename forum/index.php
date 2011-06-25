@@ -141,42 +141,42 @@ $lang = load_language_file();
 
 $top_html = html_get_top_page();
 
-if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+if (!browser_mobile() && !session_is_search_engine()) {
 
-    $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
+    if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-    $available_files = get_available_files();
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+        $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
 
-    $available_admin_files = get_available_admin_files();
-    $available_admin_files_preg = implode("|^", array_map('preg_quote_callback', $available_admin_files));
+        $available_files = get_available_files();
+        $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    $my_controls_files = get_available_user_control_files();
-    $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
+        $available_admin_files = get_available_admin_files();
+        $available_admin_files_preg = implode("|^", array_map('preg_quote_callback', $available_admin_files));
 
-    if (preg_match("/^$available_files_preg/u", $final_uri_check) > 0) {
+        $my_controls_files = get_available_user_control_files();
+        $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
 
-        $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
+        if (preg_match("/^$available_files_preg/u", $final_uri_check) > 0) {
 
-        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
+            $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
 
-            $final_uri = href_cleanup_query_keys($final_uri);
-            $skip_logon_page = true;
+            if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
 
-        }else if (preg_match("/^$available_admin_files_preg/u", $final_uri) > 0) {
+                $final_uri = href_cleanup_query_keys($final_uri);
+                $skip_logon_page = true;
 
-            $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
-            $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
+            }else if (preg_match("/^$available_admin_files_preg/u", $final_uri) > 0) {
 
-        }else if (preg_match("/^$my_controls_preg/u", $final_uri) > 0) {
+                $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
+                $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
 
-            $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
-            $final_uri = "user.php?webtag=$webtag&amp;page=$final_uri";
+            }else if (preg_match("/^$my_controls_preg/u", $final_uri) > 0) {
+
+                $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
+                $final_uri = "user.php?webtag=$webtag&amp;page=$final_uri";
+            }
         }
     }
-}
-
-if (!browser_mobile()) {
 
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
@@ -396,7 +396,7 @@ if (html_get_cookie('logon') && user_is_guest()) {
 
 html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
-if (!browser_mobile()) {
+if (!browser_mobile() && !session_is_search_engine()) {
 
     echo "</body>\n";
     echo "</noframes>\n";

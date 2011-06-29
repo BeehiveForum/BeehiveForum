@@ -159,7 +159,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     }else {
 
-        if (($messages = db_fetch_array($result))) {
+        if (($message = db_fetch_array($result))) {
 
             if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
@@ -208,7 +208,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
                 $message['AVATAR_AID'] = $message['AVATAR_AID_GLOBAL'];
             }
 
-            return $messages;
+            return $message;
         }
     }
 

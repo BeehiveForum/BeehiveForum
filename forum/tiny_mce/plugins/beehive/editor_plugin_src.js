@@ -7,6 +7,7 @@
         init : function (ed, url) {
 
             this.editor = ed;
+            this.url = url;
 
             ed.addCommand('bhAddQuote', this.addQuote, this);
             ed.addCommand('bhAddCode', this.addCode, this);
@@ -21,19 +22,21 @@
             ed.addButton('bhspellcheck', {title : 'beehive.spellCheckDesc', cmd : 'bhOpenSpellCheck', image : url + '/img/spellcheck.gif'});
 
             ed.onNodeChange.add(function(ed, cm, n) {
+
                 cm.setActive('bhquote', n.nodeName == 'DIV' && n.className == 'quote' && !n.name);
                 cm.setActive('bhcode', n.nodeName == 'PRE' && n.className == 'code' && !n.name);
-                cm.setActive('bhspoiler', n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name);
+                cm.setActive('bhspoiler', n.nodeName == 'SPAN' && n.className == 'spoiler' && !n.name);
                 cm.setActive('bhnoemots', n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name);
 
                 cm.setDisabled('bhquote', !(n.nodeName == 'DIV' && n.className == 'quote' && !n.name) && ed.selection.getContent().length == 0);
                 cm.setDisabled('bhcode', !(n.nodeName == 'PRE' && n.className == 'code' && !n.name) && ed.selection.getContent().length == 0);
-                cm.setDisabled('bhspoiler', !(n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name) && ed.selection.getContent().length == 0);
+                cm.setDisabled('bhspoiler', !(n.nodeName == 'SPAN' && n.className == 'spoiler' && !n.name) && ed.selection.getContent().length == 0);
                 cm.setDisabled('bhnoemots', !(n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name) && ed.selection.getContent().length == 0);
             });
         },
 
         getInfo : function() {
+
             return {
                 longname : 'Beehive Forum TinyMCE 3.x Plugin',
                 author : 'Project Beehive Forum',
@@ -44,6 +47,7 @@
         },
 
         addQuote : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
 
             if (this.inQuote()) {
@@ -74,6 +78,7 @@
         },
 
         addCode : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
 
             if (this.inCode()) {
@@ -104,36 +109,28 @@
         },
 
         addSpoiler : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
 
             if (this.inSpoiler()) {
 
-                ed.dom.remove(ed.selection.getNode().previousSibling);
+                ed.dom.remove(ed.selection.getNode(), true);
                 ed.dom.remove(ed.selection.getNode(), true);
                 return;
 
             }else if (ed.selection.getContent().length > 0) {
 
-                var beehivePluginContainer = dom.create('div', { 'class' : 'bhplugincontainer' });
+                var spoilerText = dom.create('span', { 'class' : 'spoiler' });
+                var spoilerMain = dom.create('span', { }, ed.selection.getContent());
 
-                var spoilerText = dom.create('div', { id : 'spoiler', 'class' : 'quotetext' });
-                var spoilerMain = dom.create('div', { 'class' : 'spoiler' }, ed.selection.getContent());
+                dom.add(spoilerText, spoilerMain);
 
-                dom.add(spoilerText, 'b', {}, ed.getLang('beehive.spoilerText'));
-
-                dom.add(beehivePluginContainer, spoilerText);
-                dom.add(beehivePluginContainer, spoilerMain);
-
-                if (ed.selection.getContent().length == ed.getContent().length) {
-                    dom.add(beehivePluginContainer, dom.create('br'));
-                }
-
-                ed.selection.setNode(beehivePluginContainer);
-                this.removeContainer();
+                ed.selection.setNode(spoilerText);
             }
         },
 
         addNoEmots : function() {
+
             var ed = this.editor, p = ed.dom.getPos(ed.dom.getParent(ed.selection.getNode(), '*'));
 
             if (this.inNoEmots()) {
@@ -144,34 +141,46 @@
         },
 
         openSpellCheck : function() {
+
             var ed = this.editor, p = ed.dom.getPos(ed.dom.getParent(ed.selection.getNode(), '*'));
+
             if (ed.getContent().length > 0) {
                 window.open('dictionary.php?webtag=' + beehive.webtag + '&obj_id=' + this.editor.id, 'spellcheck','width=550, height=480, resizable=yes, scrollbars=yes');
             }
         },
 
         inQuote : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
+
             return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'DIV' && n.className == 'quote' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
         },
 
         inCode : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
+
             return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'PRE' && n.className == 'code' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
         },
 
         inSpoiler : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
-            return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'DIV' && n.className == 'spoiler' && n.previousSibling.nodeName == 'DIV' && n.previousSibling.className == 'quotetext')});
+
+            return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'SPAN' && n.parentNode.nodeName == 'SPAN' && n.parentNode.className == 'spoiler')});
         },
 
         inNoEmots : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
+
             return ed.dom.getParent(ed.selection.getNode(), function(n) {return (n.nodeName == 'SPAN' && n.className == 'noemots')});
-            },
+        },
 
         removeContainer : function() {
+
             var ed = this.editor, dom = tinymce.DOM;
+
             ed.dom.remove(ed.dom.getParent(ed.selection.getNode(), function(n) {return tinymce.DOM.hasClass(n, 'bhplugincontainer');}), true);
         }
     });

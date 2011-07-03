@@ -47,16 +47,35 @@ pre {
     padding: 3px;
 }
 
-.spoiler {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+div.spoiler {
+    background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
-    background-color: #EEEEEE;
-    margin-top: 0px;
+    font-family: verdana, arial, helvetica, sans-serif;
     margin-bottom: 10px;
     margin-left: 40px;
     margin-right: 10px;
+    margin-top: 0px;
     padding: 3px;
+}
+
+div.spoiler * {
+    margin-left: -9999px;
+}
+
+span.spoiler {
+    background: url("img/spoiler.png") repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #CCCCCC;
+    color: #EEEEEE;
+    display: inline-block;
+    font-family: verdana,arial,helvetica,sans-serif;
+    min-height: 16px;
+    min-width: 55px;
+    padding: 0 3px;
+}
+
+span.spoiler * {
+    visibility: hidden;
 }
 
 .noemots {

@@ -737,7 +737,7 @@ class MessageText {
                     $this->diff = true;
                 }
 
-                $text = preg_replace('/(\s)?<br( [^>]*)?>(\s)?(\n)?/i', "<br />\n", $text);
+                $text = fix_tiny_mce_html($text);
 
             }else {
 
@@ -765,8 +765,14 @@ class MessageText {
     {
         if ($this->html > POST_HTML_DISABLED) {
 
-            if ($this->tiny_mce) return htmlentities_array(tidy_html($this->text, false, $this->links, true));
-            return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
+            if ($this->tiny_mce) {
+
+                return htmlentities_array(tidy_tiny_mce($this->text));
+
+            } else {
+
+                return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
+            }
         }
 
         return strip_tags($this->text);

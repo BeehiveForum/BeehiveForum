@@ -95,9 +95,7 @@ class TextAreaHTML
 
         $dictionary = new dictionary();
 
-        $toolbar_image = $dictionary->is_installed() ? 'html_toolbar.png' : 'html_toolbar_no_dict.png';
-
-        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, html_style_image($toolbar_image));
+        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\">\n", $this->toolbar_count);
 
         $str.= $this->toolbar_img($lang['bold'], 'bold');
         $str.= $this->toolbar_img($lang['italic'], 'italic');
@@ -116,6 +114,8 @@ class TextAreaHTML
         $str.= $this->toolbar_img($lang['spoiler'], 'spoiler');
         $str.= $this->toolbar_img($lang['horizontalrule'], 'horizontalrule');
         $str.= $this->toolbar_img($lang['image'], 'image');
+        $str.= $this->toolbar_img($lang['youtubevideo'], 'youtubevideo');
+        $str.= $this->toolbar_img($lang['flash'], 'flash');
         $str.= $this->toolbar_img($lang['hyperlink'], 'hyperlink');
 
         if ($dictionary->is_installed()) {
@@ -179,7 +179,7 @@ class TextAreaHTML
 
         $this->toolbar_count = $this->toolbar_count + 1;
 
-        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\" style=\"background-image: url('%s');\">\n", $this->toolbar_count, html_style_image('html_toolbar_reduced.png'));
+        $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\">\n", $this->toolbar_count);
 
         $str.= $this->toolbar_img($lang['bold'], 'bold');
         $str.= $this->toolbar_img($lang['italic'], 'italic');
@@ -242,7 +242,7 @@ class TextAreaHTML
 
     protected function toolbar_img($title, $action, $image_name = "blank.png")
     {
-        return "<a rel=\"$action\"><img src=\"". html_style_image($image_name). "\" alt=\"{$title}\" title=\"{$title}\" class=\"tools_up\" /></a>";
+        return "<a class=\"toolbar_button button_$action\"><img src=\"". html_style_image($image_name). "\" alt=\"{$title}\" title=\"{$title}\" class=\"tools_up\" /></a>";
     }
 }
 

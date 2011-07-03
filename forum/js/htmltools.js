@@ -54,7 +54,7 @@ var htmltools = function()
             }
 
             active_field = t;
-            
+
             if (!active_field.createTextRange && !active_field.setSelectionRange) {
                 return;
             }
@@ -207,30 +207,41 @@ var htmltools = function()
             }
         },
 
-        add_tag : function(tag, a, v, enclose)
+        parse_attributes : function(attributes)
         {
-            if (!active_field){
+            if (attributes === undefined || attributes === null) return '';
+
+            attributes = $.map(attributes, function(value, index) {
+                return index + '="' + encodeURIComponent(value) + '"';
+            }).join(' ').trim();
+
+            return (attributes.length > 0) ? ' ' + attributes : '';
+        },
+
+        add_tag : function(tag, attributes, enclose)
+        {
+            if (!active_field) {
                 return;
             }
-            
-            var single_tags = {br : true, img : true, hr : true, area : true, embed : true};
-            
+
+            var single_tags = {br : true, img : true, hr : true, area : true, flash : true};
+
             var open_tag, close_tag, valid, ca, i, j, re, list_tmp;
 
             if (!active_field.createTextRange && !active_field.setSelectionRange) {
 
                 if (!single_tags[tag]) {
 
-                    open_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\">" : ">");
-                    close_tag = "</" + tag + ">";
+                    open_tag = '<' + tag + this.parse_attributes(attributes) + '>';
+                    close_tag = '</' + tag + '>';
 
                 }else {
 
-                    open_tag = "";
-                    close_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
+                    open_tag = '';
+                    close_tag = '<' + tag + this.parse_attributes(attributes) + '>';
                 }
 
-                active_field.value += open_tag + close_tag;
+                active_field.value+= open_tag + close_tag;
                 return;
             }
 
@@ -367,14 +378,14 @@ var htmltools = function()
 
                 re = re.exec(right_bound);
 
-                extra_right += re[0];
+                extra_right+= re[0];
 
                 right_bound = right_bound.substr(re[0].length);
             }
 
             mark = valid;
 
-            str_enclose += extra_right;
+            str_enclose+= extra_right;
 
             var str_enclose_right = right_bound;
 
@@ -411,7 +422,7 @@ var htmltools = function()
 
                 if (valid === true) {
 
-                    extra_right += right_bound.substr(0, j + 1);
+                    extra_right+= right_bound.substr(0, j + 1);
                     right_bound = right_bound.substr(j + 1);
                     i = -1;
                 }
@@ -420,33 +431,40 @@ var htmltools = function()
             str = extra_left + str + extra_right;
 
             re = new RegExp("^(<[^<>]+>)*(<" + tag + "( [^<>]*)?>)", "i");
+
             var open = re.exec(str);
 
             re = new RegExp("<\/" + tag + "( [^<>]*)?>(<[^<>]+>)*$", "i");
+
             var close = re.exec(str);
 
             list_tmp = 0;
 
             if (open !== null && close !== null && enclose !== true) {
 
-                if (a !== undefined && a !== null) {
+                if (attributes !== null) {
 
-                    var newstr = this.change_attribute(open[2], a, v);
+                    var newstr = this.change_attribute(open[2], attributes);
+
                     re = new RegExp("<" + tag + "( [^<>]*)?>", "i");
+
                     str = str.replace(re, newstr);
 
                 }else {
 
                     re = new RegExp("<" + tag + "( [^<>]*)?>", "i");
+
                     str = str.replace(re, "");
 
                     re = new RegExp("<\/" + tag + "( [^<>]*)?>((.|\n)*)$", "i");
+
                     str = str.replace(re, "$2");
                 }
 
                 var text_start = 0;
 
                 var mark_open = false;
+
                 var mark_close = false;
 
                 for (i = 0; i <= str.length; i++) {
@@ -490,7 +508,7 @@ var htmltools = function()
 
                 var open_found = false;
                 var close_found = false;
-                
+
                 if (/^<[^<>]*>$/.test(str_enclose) !== true && enclose !== true) {
 
                     for (i = 0; i < str_mid.length; i++) {
@@ -503,7 +521,7 @@ var htmltools = function()
 
                         open_found = true;
 
-                        str_left += ca;
+                        str_left+= ca;
 
                         if (ca == ">" && str_mid.charAt(i+1) != "<") {
 
@@ -553,8 +571,18 @@ var htmltools = function()
                         open_tag = "";
                         close_tag = "";
 
-                        list_tmp = this.parse_list(str_mid, a);
-                        
+                        list_tmp = this.parse_list(str_mid, false);
+
+                        str_mid = list_tmp;
+                        list_tmp = list_tmp.split("\n").length - 1;
+
+                    }else if (tag == 'numberedlist') {
+
+                        open_tag = "";
+                        close_tag = "";
+
+                        list_tmp = this.parse_list(str_mid, true);
+
                         str_mid = list_tmp;
                         list_tmp = list_tmp.split("\n").length - 1;
 
@@ -563,15 +591,20 @@ var htmltools = function()
                         open_tag = "<quote source=\"\" url=\"\">";
                         close_tag = "</quote>";
 
+                    }else if (tag == 'flash') {
+
+                        open_tag = '';
+                        close_tag = '<flash src="" width="" height="" wmode="transparent" />';
+
                     }else if (!single_tags[tag]) {
 
-                        open_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\">" : ">");
-                        close_tag = "</" + tag + ">";
+                        open_tag = '<' + tag + this.parse_attributes(attributes) + '>';
+                        close_tag = '</' + tag + '>';
 
                     }else {
 
-                        open_tag = "";
-                        close_tag = "<" + tag + (a !== undefined && a !== null  ? " " + a + "=\"" + v + "\" />" : " />");
+                        open_tag = '';
+                        close_tag = '<' + tag + this.parse_attributes(attributes) + '>';
                     }
 
                     str = str_left + open_tag + str_mid + close_tag + str_right;
@@ -594,13 +627,31 @@ var htmltools = function()
 
                         if (/^<[^<>]+>$/.test(str_enclose) === false) {
 
-                            list_tmp = this.parse_list(str_enclose, a);
+                            list_tmp = this.parse_list(str_enclose, false);
                             str_enclose = list_tmp;
 
                         }else {
 
-                            list_tmp = this.parse_list("", a);
-                            str_enclose += list_tmp;
+                            list_tmp = this.parse_list("", false);
+                            str_enclose+= list_tmp;
+                        }
+
+                        list_tmp = list_tmp.split("\n").length - 1;
+
+                    }else if (tag == "numberedlist") {
+
+                        open_tag = "";
+                        close_tag = "";
+
+                        if (/^<[^<>]+>$/.test(str_enclose) === false) {
+
+                            list_tmp = this.parse_list(str_enclose, true);
+                            str_enclose = list_tmp;
+
+                        }else {
+
+                            list_tmp = this.parse_list("", true);
+                            str_enclose+= list_tmp;
                         }
 
                         list_tmp = list_tmp.split("\n").length - 1;
@@ -612,13 +663,13 @@ var htmltools = function()
 
                     }else if (!single_tags[tag]) {
 
-                        open_tag = "<" + tag + (a !== undefined && a !== null ? " " + a + "=\"" + v + "\">" : ">");
-                        close_tag = "</" + tag + ">";
+                        open_tag = '<' + tag + this.parse_attributes(attributes) + '>';
+                        close_tag = '</' + tag + '>';
 
                     }else {
 
-                        open_tag = "";
-                        close_tag = "<" + tag + (a !== undefined && a !== null ? " " + a + "=\"" + v + "\" />" : " />");
+                        open_tag = '';
+                        close_tag = '<' + tag + this.parse_attributes(attributes) + '>';
                     }
 
                     active_field.value = str_enclose_left + open_tag + str_enclose + close_tag + str_enclose_right;
@@ -658,25 +709,29 @@ var htmltools = function()
         {
             if (!active_field.createTextRange && !active_field.setSelectionRange) {
 
-                active_field.value += text;
+                active_field.value+= text;
                 return;
             }
 
             var str = this.get_selection();
 
             var ss = this.get_selection_start();
+
             var se = ss + str.length; // get_selection_end();
 
             ss = se;
 
             var left_bound = active_field.value.substr(0, ss);
+
             var right_bound = active_field.value.substr(ss);
 
             if (/<[^<>]*$/.test(left_bound) === true) {
 
                 var re = new RegExp("^[^<>]*>");
+
                 re = re.exec(right_bound);
-                ss += (re !== null) ? re[0].length : 0;
+
+                ss+= (re !== null) ? re[0].length : 0;
             }
 
             active_field.value = active_field.value.substr(0, ss) + text + active_field.value.substr(ss);
@@ -684,15 +739,21 @@ var htmltools = function()
             if (active_field.setSelectionRange) {
 
                 active_field.focus();
+
                 active_field.setSelectionRange(ss, ss + text.length);
 
             }else if (active_field.createTextRange) {
 
-                ss -= active_field.value.substr(0, ss+1).split(/\n/).length-1;
+                ss-= active_field.value.substr(0, ss+1).split(/\n/).length-1;
+
                 var range = active_field.createTextRange();
+
                 range.collapse(true);
+
                 range.moveEnd('character', ss + text.length);
+
                 range.moveStart('character', ss);
+
                 range.select();
             }
 
@@ -709,81 +770,26 @@ var htmltools = function()
             active_field.value = content;
         },
 
-        change_attribute : function(tag, a, v)
+        change_attribute : function(tag, attributes)
         {
             tag = tag.substr(1, tag.length - 2);
 
-            var split_tag = tag.split(/\s+/);
-            
-            var tempstr;
+            var i, attr_match, split_attr, split_tag = tag.split(/\s+/);
 
-            for (var i = 1; i < split_tag.length; i++) {
+            for (i = 1; i < split_tag.length; i++) {
 
-                var quote = split_tag[i].substr(split_tag[i].indexOf("=") + 1, 1);
+                split_attr = split_tag[i].match(/([^=]+)=('|")([^\2]+)\2/);
 
-                if (quote == "\"" || quote == "'") {
+                for (attr_match in attributes) {
 
-                    var lastchar = split_tag[i].substr(split_tag[i].length - 1);
+                    if (split_attr[1] == attr_match) {
 
-                    if (lastchar != quote) {
-
-                        tempstr = split_tag[i];
-
-                        for (var j=i+1; j<split_tag.length; j++) {
-
-                            tempstr+= " " + split_tag[j];
-
-                            lastchar = split_tag[j].substr(split_tag[j].length - 1);
-
-                            if (lastchar == quote) {
-
-                                split_tag[i] = tempstr;
-                                split_tag.splice(i + 1, j - i);
-                                break;
-                            }
-                        }
+                        return '<' + split_tag[0] + ' ' + attr_match + '="' + encodeURIComponent(attributes[attr_match]) + '">';
                     }
                 }
             }
 
-            tempstr = split_tag[0];
-            
-            var found = false;
-
-            for (i = 1; i < split_tag.length; i++) {
-
-                split_tag[i] = split_tag[i].split("=");
-
-                if (split_tag[i][0] == a) {
-
-                    split_tag[i] = a + "=\"" + v + "\"";
-                    found = true;
-
-                }else {
-
-                    if (/^[\"\']/.test(split_tag[i][1]) === true) {
-
-                        split_tag[i][1] = split_tag[i][1].substr(1);
-                    }
-
-                    if (/[\"\']$/.test(split_tag[i][1]) === true) {
-
-                        split_tag[i][1] = split_tag[i][1].substr(0, split_tag[i][1].length - 1);
-                    }
-
-                    split_tag[i] = split_tag[i][0] + "=\"" + split_tag[i][1] + "\"";
-                }
-            }
-
-            if (found === false) {
-                split_tag.push(a + "=\"" + v + "\"");
-            }
-
-            for (i = 1; i < split_tag.length; i++) {
-                tempstr+= " " + split_tag[i];
-            }
-
-            return ("<" + tempstr + ">");
+            return '<' + tag + '>';
         },
 
         add_link : function()
@@ -791,7 +797,7 @@ var htmltools = function()
             var url = window.prompt("URL:", "http://");
 
             if (url !== null && url.length > 0 && url != 'http://') {
-                htmltools.add_tag("a", "href", url);
+                htmltools.add_tag("a", { "href" : url });
             }
 
             return;
@@ -802,7 +808,20 @@ var htmltools = function()
             var url = window.prompt("Image URL:", "http://");
 
             if (url !== null && url.length > 0 && url != 'http://') {
-                htmltools.add_tag("img", "src", url, true);
+                htmltools.add_tag("img", { "src" : url }, true);
+            }
+
+            return;
+        },
+
+        add_youtube_video : function()
+        {
+            var url = window.prompt("Youtube URL:", "http://");
+
+            if (url !== null && url.length > 0 && url != 'http://') {
+
+                htmltools.add_text(url);
+                htmltools.add_tag("youtube", { }, true);
             }
 
             return;
@@ -845,9 +864,9 @@ var htmltools = function()
             var result = re.exec(nl[0]);
 
             var type = 3;
-            
+
             var start = 1;
-            
+
             var func, str, n, c, count, i;
 
             if (num === true) {
@@ -886,7 +905,7 @@ var htmltools = function()
                             func = this.pl_roman;
                         }
                     }
-                    
+
                     start = func(n);
 
                     count = start;
@@ -932,10 +951,10 @@ var htmltools = function()
                         nl[i] = nl[i].replace(re, "");
                         nl[i] = "<li>" + nl[i] + "</li>\n";
 
-                        str += nl[i];
+                        str+= nl[i];
                     }
 
-                    str += "</ol>";
+                    str+= "</ol>";
 
                 }else {
 
@@ -944,7 +963,7 @@ var htmltools = function()
                     for (i = 0; i < nl.length; i++) {
 
                         nl[i] = "<li>" + nl[i] + "</li>\n";
-                        str += nl[i];
+                        str+= nl[i];
                     }
 
                     str+= "</ol>";
@@ -957,7 +976,7 @@ var htmltools = function()
                 for (i = 0; i < nl.length; i++) {
 
                     nl[i] = "<li>" + nl[i] + "</li>\n";
-                    str += nl[i];
+                    str+= nl[i];
                 }
 
                 str+= "</ul>";
@@ -970,37 +989,35 @@ var htmltools = function()
         {
             var a = b.toLowerCase();
 
-            var numerals = [];
-            
-            var ca;
+            var numerals = {
+                i : 1,
+                v : 5,
+                x : 10,
+                l : 50,
+                c : 100,
+                d : 500,
+                m : 1000
+            };
 
-            numerals.i = 1;
-            numerals.v = 5;
-            numerals.x = 10;
-            numerals.l = 50;
-            numerals.c = 100;
-            numerals.d = 500;
-            numerals.m = 1000;
-
-            var n = 0;
+            var ca, n = 0;
 
             for (var i = 0; i < a.length; i++) {
 
                 ca = a.charAt(i);
 
-                if (i == a.length-1) {
+                if (i == a.length - 1) {
                     return (n + numerals[ca]);
                 }
 
-                var nextca = a.charAt(i+1);
+                var nextca = a.charAt(i + 1);
 
-                if ((ca == 'i' || ca == 'x' || ca == 'c') && numerals[ca] < numerals[nextca]) {
+                if ((ca == 'i' || ca == 'x' || ca == 'c') && (numerals[ca] < numerals[nextca])) {
 
-                    n -= numerals[ca];
+                    n-= numerals[ca];
 
                 }else {
 
-                    n += numerals[ca];
+                    n+= numerals[ca];
                 }
             }
 
@@ -1039,19 +1056,19 @@ $(beehive).bind('init', function() {
 
     $('select[name="font_face"]').bind('change', function() {
 
-        htmltools.add_tag('font', 'face', $(this).val());
+        htmltools.add_tag('font', { 'face' : $(this).val() });
         $(this).attr('selectedIndex', 0);
     });
 
     $('select[name="font_size"]').bind('change', function() {
 
-        htmltools.add_tag('font', 'size', $(this).val());
+        htmltools.add_tag('font', { 'size' : $(this).val() });
         $(this).attr('selectedIndex', 0);
     });
 
     $('select[name="font_colour"]').bind('change', function() {
 
-        htmltools.add_tag('font', 'color', $(this).val());
+        htmltools.add_tag('font', { 'color' : $(this).val() });
         $(this).attr('selectedIndex', 0);
     });
 
@@ -1080,13 +1097,13 @@ $(beehive).bind('init', function() {
 
     }).bind('click', function() {
 
-        var $button = $(this).parent('a');
+        var $button = $(this).parent('a.toolbar_button');
 
         if ($button.length != 1) {
              return;
         }
 
-        $('input[type="radio"][name="t_post_html"]').each(function() {
+        /*$('input[type="radio"][name="t_post_html"]').each(function() {
 
             if ($('input[type="radio"][name="t_post_html"][value!="disabled"][checked]').length === 0) {
 
@@ -1095,113 +1112,123 @@ $(beehive).bind('init', function() {
             }
         });
 
-        $('input:checkbox[name="t_post_html"]').attr('checked', true);
+        $('input:checkbox[name="t_post_html"]').attr('checked', true);*/
 
-        switch($button.attr('rel')) {
+        switch (true) {
 
-            case 'bold':
+            case $button.hasClass('button_bold'):
 
                 htmltools.add_tag('b');
                 break;
 
-            case 'italic':
+            case $button.hasClass('button_italic'):
 
                 htmltools.add_tag('i');
                 break;
 
-            case 'underline':
+            case $button.hasClass('button_underline'):
 
                 htmltools.add_tag('u');
                 break;
 
-            case 'strikethrough':
+            case $button.hasClass('button_strikethrough'):
 
                 htmltools.add_tag('s');
                 break;
 
-            case 'superscript':
+            case $button.hasClass('button_superscript'):
 
                 htmltools.add_tag('sup');
                 break;
 
-            case 'subscript':
+            case $button.hasClass('button_subscript'):
 
                 htmltools.add_tag('sub');
                 break;
 
-            case 'leftalign':
+            case $button.hasClass('button_leftalign'):
 
-                htmltools.add_tag('div', 'align', 'left');
+                htmltools.add_tag('div', { 'align' : 'left' });
                 break;
 
-            case 'center':
+            case $button.hasClass('button_center'):
 
-                htmltools.add_tag('div', 'align', 'center');
+                htmltools.add_tag('div', { 'align' : 'center' });
                 break;
 
-            case 'rightalign':
+            case $button.hasClass('button_rightalign'):
 
-                htmltools.add_tag('div', 'align', 'right');
+                htmltools.add_tag('div', { 'align' : 'right' });
                 break;
 
-            case 'numberedlist':
+            case $button.hasClass('button_numberedlist'):
 
-                htmltools.add_tag('list', true, null, true);
+                htmltools.add_tag('numberedlist', null, true);
                 break;
 
-            case 'list':
+            case $button.hasClass('button_list'):
 
-                htmltools.add_tag('list', null, null, true);
+                htmltools.add_tag('list', null, true);
                 break;
 
-            case 'indenttext':
+            case $button.hasClass('button_indenttext'):
 
-                htmltools.add_tag('blockquote', null, null, true);
+                htmltools.add_tag('blockquote', null, true);
                 break;
 
-            case 'code':
+            case $button.hasClass('button_code'):
 
-                htmltools.add_tag('code', 'language', '', true);
+                htmltools.add_tag('code', { 'language' : '' }, true);
                 break;
 
-            case 'quote':
+            case $button.hasClass('button_quote'):
 
-                htmltools.add_tag('quote', 'source', '', true);
+                htmltools.add_tag('quote', { 'source' : '' }, true);
                 break;
 
-            case 'spoiler':
+            case $button.hasClass('button_spoiler'):
 
-                htmltools.add_tag('spoiler', null, null, true);
+                htmltools.add_tag('spoiler', null, true);
                 break;
 
-            case 'horizontalrule':
+            case $button.hasClass('button_horizontalrule'):
 
-                htmltools.add_tag('hr', null, null, true);
+                htmltools.add_tag('hr', null, true);
                 break;
 
-            case 'image':
+            case $button.hasClass('button_image'):
 
                 htmltools.add_image();
                 break;
 
-            case 'hyperlink':
+            case $button.hasClass('button_hyperlink'):
 
                 htmltools.add_link();
                 break;
 
-            case 'spellcheck':
+            case $button.hasClass('button_spellcheck'):
 
                 htmltools.open_spell_check();
                 break;
 
-            case 'noemoticons':
+            case $button.hasClass('button_noemoticons'):
 
-                htmltools.add_tag('noemots', null, null, true);
+                htmltools.add_tag('noemots', null, true);
                 break;
 
-            case 'emoticons':
+            case $button.hasClass('button_emoticons'):
 
                 htmltools.open_emoticons();
+                break;
+
+            case $button.hasClass('button_youtubevideo'):
+
+                htmltools.add_youtube_video();
+                break;
+
+            case $button.hasClass('button_flash'):
+
+                htmltools.add_tag('flash');
                 break;
         }
     });
@@ -1217,13 +1244,13 @@ $(beehive).bind('init', function() {
     $('span.fix_html_compare input[type="radio"]').bind('click', function() {
 
         var textarea_name = /^co_(.*)_rb$/.exec($(this).attr('name'));
-        
+
         if (textarea_name[1]) {
 
             var $textarea = $('textarea.htmltools[name=' + textarea_name[1] + ']');
-            
+
             if ($textarea.length > 0) {
-                
+
                 $textarea.val($(this).val());
             }
         }

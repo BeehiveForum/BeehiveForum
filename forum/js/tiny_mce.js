@@ -12,7 +12,7 @@ tinyMCE.init({
     invalid_elements : "!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp",
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "left",
-    content_css : "tiny_mce/plugins/beehive/tiny_mce_style.css"
+    content_css : "tiny_mce/plugins/beehive/beehive.css,tiny_mce/plugins/flash/flash.css"
 });
 
 var htmltools = function()

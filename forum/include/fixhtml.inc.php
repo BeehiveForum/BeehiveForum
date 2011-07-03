@@ -776,15 +776,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
     }
 }
 
-function fix_tiny_mce_html($html)
-{
-    $html = preg_replace('/(\s)?<br( [^>]*)?>(\s)?(\n)?/i', "<br />\n", $html);
-
-    $html = preg_replace('/<img class="mceItem youtube" src="(http|https):\/\/img\.youtube\.com\/vi\/([^&#]*)\/0.jpg" alt="\2"[^>]+>/isu', '<iframe class="youtube" width="480" height="390" src="\1://www.youtube.com/embed/\2" frameborder="0" allowfullscreen></iframe>', $html);
-
-    return $html;
-}
-
 /**
 * Limits HTML tags to certain attributes
 *
@@ -1034,15 +1025,26 @@ function tidy_tiny_mce($html)
     // Youtube video tag
     $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="(http|https):\/\/(www\.)?youtube.com\/embed\/([^"]+)" frameborder="0" allowfullscreen><\/iframe>/isu', '<img class="mceItem youtube" src="\1://img.youtube.com/vi/\3/0.jpg" alt="\3" />', $html);
 
+    // Flash
+    $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1">(<param name="wmode" value="(opaque|transparent)">)?<\/object>/isu', 'tidy_tiny_mce_flash_object_tag_callback', $html);
+
     return $html;
 }
 
-/**
-* Used by tidy_html to convert <code> tags
-*
-* @return string
-* @param array $matches Array returned by preg_replace_callback
-*/
+function fix_tiny_mce_html($html)
+{
+    // Trim whitespace from around <br /> tags
+    $html = preg_replace('/(\s)?<br( [^>]*)?>(\s)?(\n)?/i', "<br />\n", $html);
+
+    // Convert youtube image into real youtube iframe.
+    $html = preg_replace('/<img class="mceItem youtube" src="(http|https):\/\/img\.youtube\.com\/vi\/([^&#]*)\/0.jpg" alt="\2"[^>]+>/isu', '<iframe class="youtube" width="480" height="390" src="\1://www.youtube.com/embed/\2" frameborder="0" allowfullscreen></iframe>', $html);
+
+    // Convert flash image into real object tag.
+    $html = preg_replace_callback('/<img class="mceItem flash" src=".+" alt="(.+);wmode=(transparent|opaque)" width="([^"]+)" height="([^"]+)"[^>]+>/isu', 'tidy_tiny_mce_flash_img_tag_callback', $html);
+
+    return $html;
+}
+
 function tidy_html_code_tag_callback($matches_array)
 {
     return sprintf('<code language="%s">%s</code>', $matches_array[1], htmlentities_decode_array(strip_tags($matches_array[2])));
@@ -1076,6 +1078,37 @@ function tidy_html_flash_tag_callback($matches_array)
     return sprintf("<flash %s />", implode_assoc($flash_html_attr, '=', ' '));
 }
 
+function tidy_tiny_mce_flash_img_tag_callback($matches_array)
+{
+    if (!isset($matches_array[1], $matches_array[2], $matches_array[3], $matches_array[4])) {
+        return '';
+    }
+
+    return sprintf('<object type="application/x-shockwave-flash" data="%1$s" width="%3$s" height="%4$s"><param name="movie" value="%1$s"><param name="wmode" value="%2$s"></object>', urldecode($matches_array[1]), $matches_array[2], $matches_array[3], $matches_array[4]);
+}
+
+function tidy_tiny_mce_flash_object_tag_callback($matches_array)
+{
+    if (!isset($matches_array[1]) && strlen(trim($matches_array)) == 0) {
+        return '';
+    }
+
+    if (isset($matches_array[3]) && is_numeric($matches_array[3])) {
+        $flash_html_attr['width'] = sprintf('"%s"', $matches_array[3]);
+    }
+
+    if (isset($matches_array[5]) && is_numeric($matches_array[5])) {
+        $flash_html_attr['height'] = sprintf('"%s"', $matches_array[5]);
+    }
+
+    if (isset($matches_array[7]) && in_array($matches_array[7], array('opaque', 'transparent'))) {
+        $flash_wmode = $matches_array[7];
+    } else {
+        $flash_wmode = 'opaque';
+    }
+
+    return sprintf('<img class="mceItem flash" src="tiny_mce/plugins/flash/img/blank.gif" alt="%s;wmode=%s" %s />', urlencode($matches_array[1]), urlencode($flash_wmode), implode_assoc($flash_html_attr, '=', ' '));
+}
 /**
 * Used by tidy_html to convert <code> tags
 *

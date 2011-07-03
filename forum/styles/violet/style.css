@@ -1491,15 +1491,114 @@ div.spoiler_reveal * {
 }
 
 .tools {
-    background-repeat: no-repeat;
     display: none;
     margin: 0;
     margin-bottom: 3px;
     text-align: left;
 }
 
+.tools a.toolbar_button {
+    background: transparent url('images/html_toolbar.png') no-repeat scroll 0 0;
+    border: none;
+    display: inline-block;
+    outline: none;
+    padding: 0;
+}
+
+.tools a.toolbar_button.button_bold {
+    background-position: 0px 0px;
+}
+
+.tools a.toolbar_button.button_italic {
+    background-position: -22px 0px;
+}
+
+.tools a.toolbar_button.button_underline {
+    background-position: -44px 0px;
+}
+
+.tools a.toolbar_button.button_strikethrough {
+    background-position: -66px 0px;
+}
+
+.tools a.toolbar_button.button_superscript {
+    background-position: -88px 0px;
+}
+
+.tools a.toolbar_button.button_subscript {
+    background-position: -110px 0px;
+}
+
+.tools a.toolbar_button.button_leftalign {
+    background-position: -132px 0px;
+}
+
+.tools a.toolbar_button.button_center {
+    background-position: -154px 0px;
+}
+
+.tools a.toolbar_button.button_rightalign {
+    background-position: -176px 0px;
+}
+
+.tools a.toolbar_button.button_numberedlist {
+    background-position: -198px 0px;
+}
+
+.tools a.toolbar_button.button_list {
+    background-position: -220px 0px;
+}
+
+.tools a.toolbar_button.button_indenttext {
+    background-position: -242px 0px;
+}
+
+.tools a.toolbar_button.button_code {
+    background-position: -264px 0px;
+}
+
+.tools a.toolbar_button.button_quote {
+    background-position: -286px 0px;
+}
+
+.tools a.toolbar_button.button_spoiler {
+    background-position: -308px 0px;
+}
+
+.tools a.toolbar_button.button_horizontalrule {
+    background-position: -330px 0px;
+}
+
+.tools a.toolbar_button.button_image {
+    background-position: -352px 0px;
+}
+
+.tools a.toolbar_button.button_youtubevideo {
+    background-position: -374px 0px;
+}
+
+.tools a.toolbar_button.button_flash {
+    background-position: -396px 0px;
+}
+
+.tools a.toolbar_button.button_hyperlink {
+    background-position: -418px 0px;
+}
+
+.tools a.toolbar_button.button_spellcheck {
+    background-position: -440px 0px;
+}
+
+.tools a.toolbar_button.button_noemoticons {
+    background-position: -462px 0px;
+}
+
+.tools a.toolbar_button.button_emoticons {
+    background-position: -484px 0px;
+}
+
 .tools_up {
-    border: 1px solid #996699;
+    border: 1px solid #C8D7E6;
     height: 18px;
     margin-left: 1px;
     margin-right: 1px;

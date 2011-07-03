@@ -1595,6 +1595,10 @@ div.spoiler_reveal * {
     background-position: -462px 0px;
 }
 
+.tools a.toolbar_button.button_emoticons {
+    background-position: -484px 0px;
+}
+
 .tools_up {
     border: 1px solid #C8D7E6;
     height: 18px;

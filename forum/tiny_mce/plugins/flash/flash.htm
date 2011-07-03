@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{#flash_dlg.title}</title>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="js/flash.js"></script>
+</head>
+<body>
+
+<form onsubmit="FlashDialog.insert();return false;" action="#">
+    <table role="presentation" border="0" cellpadding="4" cellspacing="0">
+        <tr>
+            <td><label for="flashURL">{#flash_dlg.url_field}</label></td>
+            <td><input id="flashURL" name="flashURL" type="text" class="text" size="44" /></td>
+        </tr>
+        <tr>
+            <td><label for="width">{#flash_dlg.size}</label></td>
+            <td>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td><input type="text" id="flashWidth" name="flashWidth" onchange="FlashDialog.formToData('width');" size="5" /> x <input type="text" id="flashHeight" name="flashHeight" onchange="FlashDialog.formToData('height');" size="5" /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="width">{#flash_dlg.window_mode}</label></td>
+            <td>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <select name="wmode" id="wmode">
+                                <option value="opaque">{#flash_dlg.opaque}</option>
+                                <option value="transparent">{#flash_dlg.transparent}</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+   </table>
+
+	<div class="mceActionPanel">
+		<input type="button" id="insert" name="insert" value="{#insert}" onclick="FlashDialog.insert();" />
+		<input type="button" id="cancel" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" />
+	</div>
+</form>
+
+</body>
+</html>

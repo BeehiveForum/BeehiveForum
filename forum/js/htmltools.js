@@ -212,7 +212,7 @@ var htmltools = function()
             if (attributes === undefined || attributes === null) return '';
 
             attributes = $.map(attributes, function(value, index) {
-                return index + '="' + encodeURIComponent(value) + '"';
+                return index + '="' + value + '"';
             }).join(' ').trim();
 
             return (attributes.length > 0) ? ' ' + attributes : '';
@@ -772,24 +772,13 @@ var htmltools = function()
 
         change_attribute : function(tag, attributes)
         {
-            tag = tag.substr(1, tag.length - 2);
+            var $tag = $(tag);
 
-            var i, attr_match, split_attr, split_tag = tag.split(/\s+/);
-
-            for (i = 1; i < split_tag.length; i++) {
-
-                split_attr = split_tag[i].match(/([^=]+)=('|")([^\2]+)\2/);
-
-                for (attr_match in attributes) {
-
-                    if (split_attr[1] == attr_match) {
-
-                        return '<' + split_tag[0] + ' ' + attr_match + '="' + encodeURIComponent(attributes[attr_match]) + '">';
-                    }
-                }
+            for (attr_match in attributes) {
+                $tag.attr(attr_match, attributes[attr_match]);
             }
 
-            return '<' + tag + '>';
+            return $('<div>').append($tag).html().split(/(^[^>]+>)<\//)[1];
         },
 
         add_link : function()
@@ -853,6 +842,20 @@ var htmltools = function()
         open_emoticons : function(pack)
         {
             window.open('display_emoticons.php?webtag=' + beehive.webtag + '&pack=' + pack, 'emoticons','width=500, height=400, resizable=yes, scrollbars=yes');
+        },
+
+        toggle_html : function()
+        {
+            $('input[type="radio"][name="t_post_html"]').each(function() {
+
+                if ($('input[type="radio"][name="t_post_html"][value!="disabled"][checked]').length === 0) {
+
+                    $('input[type="radio"][name="t_post_html"][value!="enabled"]').attr('checked', true);
+                    return false;
+                }
+            });
+
+            $('input:checkbox[name="t_post_html"]').attr('checked', true);
         },
 
         parse_list : function(a, num)
@@ -1057,18 +1060,27 @@ $(beehive).bind('init', function() {
     $('select[name="font_face"]').bind('change', function() {
 
         htmltools.add_tag('font', { 'face' : $(this).val() });
+
+        htmltools.toggle_html();
+
         $(this).attr('selectedIndex', 0);
     });
 
     $('select[name="font_size"]').bind('change', function() {
 
         htmltools.add_tag('font', { 'size' : $(this).val() });
+
+        htmltools.toggle_html();
+
         $(this).attr('selectedIndex', 0);
     });
 
     $('select[name="font_colour"]').bind('change', function() {
 
         htmltools.add_tag('font', { 'color' : $(this).val() });
+
+        htmltools.toggle_html();
+
         $(this).attr('selectedIndex', 0);
     });
 
@@ -1102,17 +1114,6 @@ $(beehive).bind('init', function() {
         if ($button.length != 1) {
              return;
         }
-
-        /*$('input[type="radio"][name="t_post_html"]').each(function() {
-
-            if ($('input[type="radio"][name="t_post_html"][value!="disabled"][checked]').length === 0) {
-
-                $('input[type="radio"][name="t_post_html"][value!="enabled"]').attr('checked', true);
-                return false;
-            }
-        });
-
-        $('input:checkbox[name="t_post_html"]').attr('checked', true);*/
 
         switch (true) {
 
@@ -1231,6 +1232,8 @@ $(beehive).bind('init', function() {
                 htmltools.add_tag('flash');
                 break;
         }
+
+        htmltools.toggle_html();
     });
 
     $('div.tools').css('display', 'block');

@@ -596,40 +596,37 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                     }else if ($tag == 'youtube') {
 
-                        if (!isset($html_parts[$i + 2]) || ($html_parts[$i + 2] !== '/youtube')) {
+                        if (!isset($html_parts[$i + 1], $html_parts[$i + 2]) || ($html_parts[$i + 2] !== '/youtube')) {
 
-                            array_splice($html_parts, $i, 4, array('', '', '', ''));
+                            array_splice($html_parts, $i, 3, array('', '', ''));
 
-                            $i+= 2;
+                            $i+= 3;
 
                         } else {
 
-                            preg_match('/^(http|https):\/\/(www\.)?youtube\.com\/watch\?(.+)/su', trim($html_parts[$i + 1]), $matches_array);
+                            preg_match('/^(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&]+)|youtu\.be\/(.+))/su', trim($html_parts[$i + 1]), $matches_array);
 
-                            if (!isset($matches_array[1], $matches_array[2], $matches_array[3])) {
+                            if (isset($matches_array[1], $matches_array[5])) {
 
-                                array_splice($html_parts, $i, 4, array('', '', '', ''));
+                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen', $matches_array[1], $matches_array[5], htmlentities($matches_array[0]));
 
-                                $i+= 2;
+                                array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
+
+                                $i+= 3;
+
+                            }else if (isset($matches_array[1], $matches_array[4])) {
+
+                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen', $matches_array[1], $matches_array[4], htmlentities($matches_array[0]));
+
+                                array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
+
+                                $i+= 3;
 
                             } else {
 
-                                parse_str($matches_array[3], $url_query_array);
+                                array_splice($html_parts, $i, 3, array('', '', ''));
 
-                                if (!isset($url_query_array['v'])) {
-
-                                    array_splice($html_parts, $i, 4, array('', '', '', ''));
-
-                                    $i+= 2;
-
-                                } else {
-
-                                    $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://%syoutube.com/embed/%s" frameborder="0" allowfullscreen', $matches_array[1], $matches_array[2], $url_query_array['v']);
-
-                                    array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
-
-                                    $i+= 2;
-                                }
+                                $i+= 3;
                             }
                         }
 
@@ -1005,7 +1002,7 @@ function tidy_html($html, $linebreaks = true, $links = true)
     $html = preg_replace('/<div class="quotetext" id="spoiler">.+?<\/div>.*?<div class="spoiler">(.*)<\/div>/isu', '<spoiler>\\1</spoiler>', $html);
 
     // Youtube tag
-    $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="(http|https):\/\/(www\.)?youtube.com\/embed\/([^"]+)" frameborder="0" allowfullscreen><\/iframe>/isu', '<youtube>\\1://\\2youtube.com/watch?v=\\3</youtube>', $html);
+    $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen><\/iframe>/isu', '<youtube>\\1</youtube>', $html);
 
     // Flash tag
     $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1">(<param name="wmode" value="(opaque|transparent)">)?<\/object>/isu', 'tidy_html_flash_tag_callback', $html);
@@ -1023,7 +1020,7 @@ function tidy_tiny_mce($html)
     $html = preg_replace_callback("/<pre class=\"code\">(.*?)<\\/pre>/isu", "tidy_html_pre_tag_callback", $html);
 
     // Youtube video tag
-    $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="(http|https):\/\/(www\.)?youtube.com\/embed\/([^"]+)" frameborder="0" allowfullscreen><\/iframe>/isu', '<img class="mceItem youtube" src="\1://img.youtube.com/vi/\3/0.jpg" alt="\3" />', $html);
+    $html = preg_replace_callback('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen><\/iframe>/isu', 'tidy_tiny_mce_youtube_iframe_tag_callback', $html);
 
     // Flash
     $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1">(<param name="wmode" value="(opaque|transparent)">)?<\/object>/isu', 'tidy_tiny_mce_flash_object_tag_callback', $html);
@@ -1037,7 +1034,7 @@ function fix_tiny_mce_html($html)
     $html = preg_replace('/(\s)?<br( [^>]*)?>(\s)?(\n)?/i', "<br />\n", $html);
 
     // Convert youtube image into real youtube iframe.
-    $html = preg_replace('/<img class="mceItem youtube" src="(http|https):\/\/img\.youtube\.com\/vi\/([^&#]*)\/0.jpg" alt="\2"[^>]+>/isu', '<iframe class="youtube" width="480" height="390" src="\1://www.youtube.com/embed/\2" frameborder="0" allowfullscreen></iframe>', $html);
+    $html = preg_replace_callback('/<img class="mceItem youtube" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" src="[^"]+" alt="([^"]+)"\s?\/>/isu', 'tidy_tiny_mce_youtube_img_tag_callback', $html);
 
     // Convert flash image into real object tag.
     $html = preg_replace_callback('/<img class="mceItem flash" src=".+" alt="(.+);wmode=(transparent|opaque)" width="([^"]+)" height="([^"]+)"[^>]+>/isu', 'tidy_tiny_mce_flash_img_tag_callback', $html);
@@ -1109,6 +1106,35 @@ function tidy_tiny_mce_flash_object_tag_callback($matches_array)
 
     return sprintf('<img class="mceItem flash" src="tiny_mce/plugins/flash/img/blank.gif" alt="%s;wmode=%s" %s />', urlencode($matches_array[1]), urlencode($flash_wmode), implode_assoc($flash_html_attr, '=', ' '));
 }
+
+function tidy_tiny_mce_youtube_img_tag_callback($matches_array)
+{
+    if (isset($matches_array[6], $matches_array[7]) && ($matches_array[6] == $matches_array[7])) {
+
+        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen></iframe>', $matches_array[2], $matches_array[6], $matches_array[1]);
+
+    } else if (isset($matches_array[5], $matches_array[7]) && ($matches_array[5] == $matches_array[7])) {
+
+        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen></iframe>', $matches_array[2], $matches_array[5], $matches_array[1]);
+    }
+
+    return '';
+}
+
+function tidy_tiny_mce_youtube_iframe_tag_callback($matches_array)
+{
+    if (isset($matches_array[0], $matches_array[6])) {
+
+        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[6], htmlentities($matches_array[1]));
+
+    } else if (isset($matches_array[0], $matches_array[5])) {
+
+        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[5], htmlentities($matches_array[1]));
+    }
+
+    return '';
+}
+
 /**
 * Used by tidy_html to convert <code> tags
 *

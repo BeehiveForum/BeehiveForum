@@ -95,9 +95,6 @@ function bh_exception_handler($exception)
         $error_report_email_addr_from = 'no-reply@abeehiveforum.net';
     }
 
-    // The requested script's filename
-    $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
-
     // Now we can carry on with any other errors.
     if (error_reporting()) {
 

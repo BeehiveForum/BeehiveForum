@@ -321,7 +321,7 @@ function light_draw_messages($tid, $pid)
         return;
     }
 
-    if (!$folder_data = folder_get($thread_data['FID'])) {
+    if (!folder_get($thread_data['FID'])) {
 
         light_html_display_error_msg($lang['foldercouldnotbefound']);
         return;
@@ -1376,7 +1376,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
     $poll_data['CONTENT'] = "<div class=\"poll\">\n";
     $poll_data['CONTENT'].= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question)). "</h2>\n";
-    $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
+    $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
     $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
 
@@ -1532,6 +1532,9 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
             }
         }
 
+        $total_votes = 0;
+        $guest_votes = 0;
+
         poll_get_total_votes($tid, $total_votes, $guest_votes);
 
         $poll_group_count = sizeof($group_array);
@@ -1625,7 +1628,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
-    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, true, $closed, false, true, $is_preview);
+    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, true, $closed, $limit_text, true, $is_preview);
 }
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
@@ -2013,8 +2016,6 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error()
 {
-    $frame_top_target = html_get_top_frame_name();
-
     $lang = load_language_file();
 
     light_html_display_msg($lang['login'], $lang['guesterror'], 'llogout.php', 'get', array('login' => $lang['loginnow']));
@@ -2291,8 +2292,6 @@ function light_html_display_error_array($error_list_array)
 
 function light_html_display_success_msg($string_msg)
 {
-    $lang = load_language_file();
-
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"message_box message_success\">\n";
@@ -2302,8 +2301,6 @@ function light_html_display_success_msg($string_msg)
 
 function light_html_display_warning_msg($string_msg)
 {
-    $lang = load_language_file();
-
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"message_box message_warning\">\n";
@@ -2313,8 +2310,6 @@ function light_html_display_warning_msg($string_msg)
 
 function light_html_display_error_msg($string_msg)
 {
-    $lang = load_language_file();
-
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"message_box message_error\">\n";
@@ -2348,8 +2343,11 @@ function light_pm_enabled()
     if (!forum_get_setting('show_pms', 'Y')) {
 
         light_html_display_error_msg($lang['pmshavebeendisabled']);
-        return false;
+        light_html_draw_bottom();
+        exit;
     }
+
+    return true;
 }
 
 function light_pm_display($pm_message_array, $folder, $preview = false)

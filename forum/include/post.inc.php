@@ -111,7 +111,7 @@ function post_create_sphinx_search_id()
 
     $sql = "INSERT INTO SPHINX_SEARCH_ID (SEARCH_ID) VALUES(NULL)";
 
-    if (!$result = db_query($sql, $db_post_create_sphinx_search_id)) return false;
+    if (!db_query($sql, $db_post_create_sphinx_search_id)) return false;
 
     return db_insert_id($db_post_create_sphinx_search_id);
 }

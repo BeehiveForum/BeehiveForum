@@ -478,7 +478,7 @@ if (session_get_value('UID') > 0) {
 
         if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
 
-            if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($selected_folder) && $selected_folder == $fid)) {
+            if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($folder) && $folder == $fid)) {
                 array_push($folder_order, $fid);
             } else {
                 array_push($ignored_folders, $fid);
@@ -583,7 +583,7 @@ foreach ($folder_order as $folder_number) {
         echo "  </tr>\n";
         echo "</table>\n";
 
-        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($folder) && $folder == $folder_number)) {
 
             echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "  <tr>\n";

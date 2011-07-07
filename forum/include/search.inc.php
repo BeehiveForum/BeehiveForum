@@ -484,8 +484,6 @@ function search_sphinx_update_index($tid, $pid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_fid = $table_data['FID'];
-
     if (!$db_search_sphinx_update_index = db_connect()) return false;
 
     if (!$sphinx_connection = search_sphinx_connect()) return false;
@@ -537,8 +535,6 @@ function search_sphinx_delete_index($tid, $pid)
     if (!is_numeric($pid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
 
     if (!$db_search_sphinx_update_index = db_connect()) return false;
 

@@ -195,7 +195,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 
-    if (sizeof($error_list_array) == 0) return;
+    if (sizeof($error_list_array) == 0) return '';
 
     if (sizeof($error_list_array) == 1) {
         return html_display_error_msg(array_shift($error_list_array), $width, $align, $id);

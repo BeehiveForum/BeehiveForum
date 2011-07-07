@@ -166,7 +166,7 @@ function threads_get_all($uid, $folder, $start_from = 0) // get "all" threads (i
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_started_by_me($uid, $folder, $start_from = 0) // get threads started by user
@@ -221,7 +221,7 @@ function threads_get_started_by_me($uid, $folder, $start_from = 0) // get thread
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_unread($uid, $folder, $start_from = 0) // get unread messages for $uid
@@ -288,7 +288,7 @@ function threads_get_unread($uid, $folder, $start_from = 0) // get unread messag
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_unread_to_me($uid, $folder, $start_from = 0) // get unread messages to $uid (ignores folder interest level)
@@ -349,7 +349,7 @@ function threads_get_unread_to_me($uid, $folder, $start_from = 0) // get unread 
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_by_days($uid, $folder, $start_from = 0, $days = 1) // get threads from the last $days days
@@ -413,7 +413,7 @@ function threads_get_by_days($uid, $folder, $start_from = 0, $days = 1) // get t
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_by_interest($uid, $folder, $start_from = 0, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
@@ -477,7 +477,7 @@ function threads_get_by_interest($uid, $folder, $start_from = 0, $interest = THR
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_unread_by_interest($uid, $folder, $start_from = 0, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
@@ -546,7 +546,7 @@ function threads_get_unread_by_interest($uid, $folder, $start_from = 0, $interes
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_recently_viewed($uid, $folder, $start_from = 0) // get messages recently seem by $uid
@@ -613,7 +613,7 @@ function threads_get_recently_viewed($uid, $folder, $start_from = 0) // get mess
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_by_relationship($uid, $folder, $start_from = 0, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
@@ -669,7 +669,7 @@ function threads_get_by_relationship($uid, $folder, $start_from = 0, $relationsh
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_unread_by_relationship($uid, $folder, $start_from = 0, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
@@ -730,7 +730,7 @@ function threads_get_unread_by_relationship($uid, $folder, $start_from = 0, $rel
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_polls($uid, $folder, $start_from = 0)
@@ -794,7 +794,7 @@ function threads_get_polls($uid, $folder, $start_from = 0)
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_sticky($uid, $folder, $start_from = 0)
@@ -858,7 +858,7 @@ function threads_get_sticky($uid, $folder, $start_from = 0)
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_longest_unread($uid, $folder, $start_from = 0) // get unread messages for $uid
@@ -926,7 +926,7 @@ function threads_get_longest_unread($uid, $folder, $start_from = 0) // get unrea
     $sql.= "ORDER BY T_LENGTH DESC, THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_folder($uid, $folder, $start_from = 0)
@@ -982,7 +982,7 @@ function threads_get_folder($uid, $folder, $start_from = 0)
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_deleted($uid, $folder, $start_from = 0)
@@ -1045,7 +1045,7 @@ function threads_get_deleted($uid, $folder, $start_from = 0)
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_unread_by_days($uid, $folder, $start_from = 0, $days = 0) // get unread messages for $uid
@@ -1117,7 +1117,7 @@ function threads_get_unread_by_days($uid, $folder, $start_from = 0, $days = 0) /
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start_from, 50";
 
-    return threads_process_list($sql, $folder);
+    return threads_process_list($sql);
 }
 
 function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
@@ -1252,7 +1252,7 @@ function threads_get_unread_cutoff()
 }
 
 // Arrange the results of a query into the right order for display
-function threads_process_list($sql, $folder)
+function threads_process_list($sql)
 {
     if (!($db_threads_process_list = db_connect())) return array(0, 0, 0);
 
@@ -1271,6 +1271,8 @@ function threads_process_list($sql, $folder)
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     $threads_array = array();
+
+    $folder_order = array();
 
     while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
@@ -1291,9 +1293,7 @@ function threads_process_list($sql, $folder)
         if (!isset($thread['TRACK_TYPE']) || is_null($thread['TRACK_TYPE'])) $thread['TRACK_TYPE'] = -1;
         if (!isset($thread['DELETED']) || is_null($thread['DELETED'])) $thread['DELETED'] = 'N';
 
-        if (!isset($folder_order) || !is_array($folder_order)) {
-            $folder_order = array($thread['FID']);
-        } else if (!in_array($thread['FID'], $folder_order)) {
+        if (!in_array($thread['FID'], $folder_order)) {
             $folder_order[] = $thread['FID'];
         }
 

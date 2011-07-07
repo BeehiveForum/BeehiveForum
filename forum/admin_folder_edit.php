@@ -238,11 +238,11 @@ if (isset($_POST['save'])) {
 
             if (isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
 
-                if (isset($_POST['fid_move']) && is_numeric($_POST['fid_move']) && ($new_folder_title = folder_get_title($fid_move))) {
+                if (isset($_POST['fid_move']) && is_numeric($_POST['fid_move'])) {
 
                     $fid_move = $_POST['fid_move'];
 
-                    if ($fid != $fid_move) {
+                    if (($fid != $fid_move) && ($new_folder_title = folder_get_title($fid_move))) {
 
                         if (folder_move_threads($fid, $fid_move)) {
 

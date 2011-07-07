@@ -76,7 +76,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 {
     $fix_html_code_text = 'code:';
     $fix_html_quote_text = 'quote:';
-    $fix_html_spoiler_text = 'spoiler:';
 
     $geshi_path = 'geshi/geshi';
 
@@ -604,6 +603,8 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         } else {
 
+                            $matches_array = array();
+
                             preg_match('/^(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&]+)|youtu\.be\/(.+))/su', trim($html_parts[$i + 1]), $matches_array);
 
                             if (isset($matches_array[1], $matches_array[5])) {
@@ -632,6 +633,8 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                     }else if ($tag == 'flash') {
 
+                        $matches_array = array();
+
                         preg_match('/src="([^"]+)"/su', $html_parts[$i], $matches_array);
 
                         if (!isset($matches_array[1]) || strlen(trim($matches_array[1])) == 0) {
@@ -642,17 +645,23 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             $flash_attr_array = array('data' => sprintf('"%s"', $matches_array[1]));
 
+                            $matches_array = array();
+
                             preg_match('/width="([^"]+)"/su', $html_parts[$i], $matches_array);
 
                             if (isset($matches_array[1]) && is_numeric($matches_array[1])) {
                                 $flash_attr_array['width'] = sprintf('"%s"', $matches_array[1]);
                             }
 
+                            $matches_array = array();
+
                             preg_match('/height="([^"]+)"/su', $html_parts[$i], $matches_array);
 
                             if (isset($matches_array[1]) && is_numeric($matches_array[1])) {
                                 $flash_attr_array['height'] = sprintf('"%s"', $matches_array[1]);
                             }
+
+                            $matches_array = array();
 
                             preg_match('/wmode="(opaque|transparent)"/su', $html_parts[$i], $matches_array);
 

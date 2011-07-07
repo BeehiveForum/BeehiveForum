@@ -490,7 +490,8 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
         $poll_question = thread_get_title($tid);
     }
 
-    $total_votes  = 0;
+    $total_votes = 0;
+    $guest_votes = 0;
 
     $request_uri = get_request_uri();
 

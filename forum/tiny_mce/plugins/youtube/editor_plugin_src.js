@@ -1,95 +1,116 @@
-/**
- * editor_plugin_src.js
- *
- * Copyright 2009, Moxiecode Systems AB
- * Released under LGPL License.
- *
- * License: http://tinymce.moxiecode.com/license
- * Contributing: http://tinymce.moxiecode.com/contributing
- */
+/*======================================================================
+Copyright Project Beehive Forum 2002
 
+This file is part of Beehive Forum.
+
+Beehive Forum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Beehive Forum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
+
+/**
+* This plugin is based heavilly on code found on:
+*
+* http://www.travelogie.com/blog/post/2011/04/06/Youtube-plugin-for-TinyMCE.aspx
+*
+* It has been modified to support Beehive Forum's HTML parsing,
+* so the user can switch mid-post from using TinyMCE to the built-in
+* HTML toolbar editor.
+*/
 (function () {
-    // Load plugin specific language pack
+
     tinymce.PluginManager.requireLangPack('youtube');
 
     tinymce.create('tinymce.plugins.YoutubePlugin', {
-        /**
-        * Initializes the plugin, this will be executed after the plugin has been created.
-        * This call is done before the editor instance has finished it's initialization so use the onInit event
-        * of the editor instance to intercept that event.
-        *
-        * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
-        * @param {string} url Absolute URL to where the plugin is located.
-        */
+
         init: function (ed, url) {
-            // Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
+
             ed.addCommand('mceYoutube', function () {
+
                 ed.windowManager.open({
+
                     file: url + '/youtube.htm',
                     width: 320 + parseInt(ed.getLang('example.delta_width', 0)),
                     height: 120 + parseInt(ed.getLang('example.delta_height', 0)),
                     inline: 1
+
                 }, {
-                    plugin_url: url, // Plugin absolute URL
-                    some_custom_arg: 'custom arg' // Custom argument
+
+                    plugin_url: url,
+                    some_custom_arg: 'custom arg'
                 });
             });
 
-            // Register example button
             ed.addButton('youtube', {
+
                 title: 'youtube.desc',
                 cmd: 'mceYoutube',
                 image: url + '/img/youtube.gif'
             });
 
-            // Add a node change handler, selects the button in the UI when a image is selected
             ed.onNodeChange.add(function (ed, cm, n) {
+
                 var active = false;
+
                 if (n.nodeName == 'IMG') {
+
                     try {
-                        var src = n.attributes["src"].value;
-                        var alt = n.attributes["alt"].value;
-                        var regexRes = src.match("vi/([^&#]*)/0.jpg");
-                        active = regexRes[1] === alt;
-                    }
-                    catch (err) {
+
+                        var title = n.attributes['title'].value;
+
+                        var alt = n.attributes['alt'].value;
+
+                        var matches = title.match(/(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+))/);
+
+                        if (matches[4] !== undefined) {
+
+                            active = matches[4] === alt;
+
+                        } else if (matches[5] !== undefined) {
+
+                            active = matches[5] === alt;
+
+                        } else {
+
+                            active = false;
+                        }
+
+                    } catch (err) {
+
                     }
                 }
+
                 cm.setActive('youtube', active);
             });
         },
 
-        /**
-        * Creates control instances based in the incomming name. This method is normally not
-        * needed since the addButton method of the tinymce.Editor class is a more easy way of adding buttons
-        * but you sometimes need to create more complex controls like listboxes, split buttons etc then this
-        * method can be used to create those.
-        *
-        * @param {String} n Name of the control to create.
-        * @param {tinymce.ControlManager} cm Control manager to use inorder to create new control.
-        * @return {tinymce.ui.Control} New control instance or null if no control was created.
-        */
         createControl: function (n, cm) {
             return null;
         },
 
-        /**
-        * Returns information about the plugin as a name/value array.
-        * The current keys are longname, author, authorurl, infourl and version.
-        *
-        * @return {Object} Name/value array containing information about the plugin.
-        */
         getInfo: function () {
+
             return {
-                longname: 'Youtube plugin',
-                author: 'travelogie.com',
-                authorurl: 'http://travelogie.com',
-                infourl: 'http://travelogie.com/blog',
-                version: "1.0"
+
+                longname: 'Youtube TinyMCE plugin',
+                author: 'Beehive Forum',
+                authorurl: 'http://beehiveforum.net',
+                infourl: 'http://beehiveforum.net',
+                version: "2.0"
             };
         }
     });
 
-    // Register plugin
     tinymce.PluginManager.add('youtube', tinymce.plugins.YoutubePlugin);
 })();

@@ -1053,9 +1053,8 @@ span.spoiler {
     background: #EEEEEE url('images/spoiler.png');
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
-    font-family: verdana, arial, helvetica, sans-serif;
-    padding: 0px;
     display: inline-block;
+    font-family: verdana, arial, helvetica, sans-serif;
     min-height: 16px;
     min-width: 55px;
     padding: 0px 3px;

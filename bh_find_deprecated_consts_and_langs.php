@@ -23,12 +23,12 @@ USA
 
 /* $Id$ */
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./forum/include/");
+define("BH_INCLUDE_PATH", "forum/include/");
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
+$exclude_files_array = array();
 
-// Load Language File Function
+$exclude_dirs_array = array('forum/include/languages', 'forum/include/swift');
+
 function load_language_file($filename)
 {
     $lang = array();
@@ -38,45 +38,38 @@ function load_language_file($filename)
     return $lang;
 }
 
-function get_files(&$files_array, $path, $ignore_files_array = array())
+function get_file_list(&$file_list_array, $path, $extension)
 {
-    if (!is_array($files_array)) $files_array = array();
+    $extension_preg = preg_quote($extension, '/');
 
-    if (!is_array($ignore_files_array)) $ignore_files_array = array();
+    if (!is_array($file_list_array)) $file_list_array = array();
 
-    if (($dir = opendir($path))) {
+    if (($dir_handle = opendir($path))) {
 
-        while (($file = readdir($dir)) !== false) {
+        while (($file_name = readdir($dir_handle)) !== false) {
 
-            if ($file != "." && $file != "..") {
+            if ($file_name != "." && $file_name != "..") {
 
-                if (!is_dir("$path/$file")) {
+                if (@is_dir("$path/$file_name") && !in_array("$path/$file_name", $GLOBALS['exclude_dirs_array'])) {
 
-                    $path_parts = pathinfo("$path/$file");
+                    get_file_list($file_list_array, "$path/$file_name", $extension);
 
-                    if (isset($path_parts['extension']) && $path_parts['extension'] == 'php') {
+                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array("$path/$file_name", $GLOBALS['exclude_files_array'])) {
 
-                        if (!in_array($file, $ignore_files_array)) {
-
-                            $files_array[] = "$path/$file";
-                        }
-                    }
+                    $file_list_array[] = "$path/$file_name";
                 }
             }
         }
-
-        closedir($dir);
-        return true;
     }
 
-    return false;
+    return sizeof($file_list_array) > 0;
 }
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
+
+include_once BH_INCLUDE_PATH. 'constants.inc.php';
 
 $unused_constants = get_defined_constants(true);
 
@@ -84,68 +77,58 @@ $unused_constants = isset($unused_constants['user']) ? $unused_constants['user']
 
 $unused_langs = load_language_file("en.inc.php");
 
-if (get_files($files_array, "forum")) {
+if (get_file_list($file_list_array, 'forum', '.php')) {
 
-    if (get_files($files_array, "forum/include", array('constants.inc.php'))) {
+    echo "Please wait, checking files...\n\n";
 
-        echo "Please wait, checking files...\n\n";
+    foreach ($file_list_array as $file_path_name) {
 
-        foreach ($files_array as $filename) {
+        if (!($file_contents = @file_get_contents($file_path_name))) {
+            continue;
+        }
 
-            if (($file_contents = file_get_contents($filename))) {
+        foreach ($unused_langs as $lang_key => $lang_value) {
 
-                echo "CHECKING: $filename\n";
-
-                foreach ($unused_langs as $lang_key => $lang_value) {
-
-                    if (stristr($file_contents, "\$lang['$lang_key']")) {
-                        unset($unused_langs[$lang_key]);
-                    }
-                }
-
-                if (isset($unused_constants) && is_array($unused_constants)) {
-
-                    foreach ($unused_constants as $const_key => $const_value) {
-
-                        if (stristr($file_contents, $const_key)) {
-                            unset($unused_constants[$const_key]);
-                        }
-                    }
-                }
-
-            }else {
-
-                echo "FAILED TO LOAD: $filename\n";
+            if (stristr($file_contents, "\$lang['$lang_key']")) {
+                unset($unused_langs[$lang_key]);
             }
         }
 
-        if (sizeof($unused_langs) > 0) {
-
-            echo "\nUnused language strings:\n\n";
-
-            foreach ($unused_langs as $lang_key => $lang_value) {
-
-                echo "\$lang['$lang_key'] = \"$lang_value\";\n";
-            }
-
-        }else {
-
-            echo "\nNo unused language strings detected!\n";
-        }
-
-        if (sizeof($unused_constants) > 0) {
-
-            echo "\nUnused Constants:\n\n";
+        if (isset($unused_constants) && is_array($unused_constants)) {
 
             foreach ($unused_constants as $const_key => $const_value) {
 
-                echo "define(\"$const_key\", $const_value);\n";
+                if (stristr($file_contents, $const_key)) {
+                    unset($unused_constants[$const_key]);
+                }
             }
-
-        }else {
-
-            echo "\nNo unused constants detected!\n";
         }
+    }
+
+    if (sizeof($unused_langs) > 0) {
+
+        echo "\nUnused language strings:\n\n";
+
+        foreach ($unused_langs as $lang_key => $lang_value) {
+            printf("\$lang['%s'] = \"%s\";\n", $lang_key, htmlentities($lang_value));
+        }
+
+    }else {
+
+        echo "\nNo unused language strings detected!\n";
+    }
+
+    if (sizeof($unused_constants) > 0) {
+
+        echo "\nUnused Constants:\n\n";
+
+        foreach ($unused_constants as $const_key => $const_value) {
+            printf("define(\"%s\", %s);\n", $const_key, $const_value);
+        }
+
+    }else {
+
+        echo "\nNo unused constants detected!\n";
     }
 }
 

@@ -23,10 +23,12 @@ USA
 
 /* $Id$ */
 
-// Array of files to exclude from the matches
-$exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hacker.inc.php');
+define("BH_INCLUDE_PATH", "forum/include/");
 
-// Load Language File Function
+$exclude_files_array = array();
+
+$exclude_dirs_array = array('forum/include/languages', 'forum/include/swift');
+
 function load_language_file($filename)
 {
     $lang = array();
@@ -36,7 +38,6 @@ function load_language_file($filename)
     return $lang;
 }
 
-// Get array of files in specified directory and sub-directories.
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -49,53 +50,50 @@ function get_file_list(&$file_list_array, $path, $extension)
 
             if ($file_name != "." && $file_name != "..") {
 
-                if (@is_dir("$path/$file_name")) {
+                if (@is_dir("$path/$file_name") && !in_array("$path/$file_name", $GLOBALS['exclude_dirs_array'])) {
 
                     get_file_list($file_list_array, "$path/$file_name", $extension);
 
-                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
+                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array("$path/$file_name", $GLOBALS['exclude_files_array'])) {
 
                     $file_list_array[] = "$path/$file_name";
                 }
             }
         }
     }
+
+    return sizeof($file_list_array) > 0;
 }
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Get the file list
-get_file_list($file_list, 'forum', '.php');
-
-// Load English language file
 if (($lang = load_language_file('en.inc.php'))) {
 
-    // Check through each file individually.
-    foreach ($file_list as $php_file) {
+    if (get_file_list($file_list_array, 'forum', '.php')) {
 
-        // Load File Contents
-        if ((@$php_file_contents = file_get_contents($php_file))) {
+        foreach ($file_list_array as $file_path_name) {
 
-            // Look for language string usage.
+            if (!($file_contents = @file_get_contents($file_path_name))) {
+                continue;
+            }
+
             $lang_matches = array();
 
-            if (preg_match_all('/\$lang\[\'([^\']+)\'\]/iu', $php_file_contents, $lang_matches) > 0) {
+            if (!preg_match_all('/\$lang\[\'([^\']+)\'\]/iu', $file_contents, $lang_matches) > 0) {
+                continue;
+            }
 
-                // Only want one of each found matches.
-                $lang_matches = array_unique($lang_matches[1]);
+            $lang_matches = array_unique($lang_matches[1]);
 
-                // Iterate through the matches check and display them if not defined.
-                foreach ($lang_matches as $lang_key) {
+            foreach ($lang_matches as $lang_key) {
 
-                    if (!isset($lang[$lang_key])) {
-
-                        echo "\$lang['$lang_key'] = \"\";\n";
-                    }
+                if (isset($lang[$lang_key])) {
+                    continue;
                 }
+
+                echo "\$lang['$lang_key'] = \"\";\n";
             }
         }
     }

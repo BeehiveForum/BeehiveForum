@@ -42,9 +42,10 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 // Include files we need.
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 
-function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
+function db_get_connection_vars(&$db_server, &$db_port, &$db_username, &$db_password, &$db_database)
 {
     $db_server   = (isset($GLOBALS['db_server']))   ? $GLOBALS['db_server']   : '';
+    $db_port     = (isset($GLOBALS['db_port']))     ? $GLOBALS['db_port']     : '3306';
     $db_username = (isset($GLOBALS['db_username'])) ? $GLOBALS['db_username'] : '';
     $db_password = (isset($GLOBALS['db_password'])) ? $GLOBALS['db_password'] : '';
     $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
@@ -54,16 +55,12 @@ function db_connect()
 {
     static $connection_id = false;
 
-    db_get_connection_vars($db_server, $db_username, $db_password, $db_database);
+    db_get_connection_vars($db_server, $db_port, $db_username, $db_password, $db_database);
 
     if (!$connection_id) {
 
-        if (!($connection_id = mysqli_connect($db_server, $db_username, $db_password))) {
+        if (!($connection_id = mysqli_connect($db_server, $db_username, $db_password, $db_database, $db_port))) {
             throw new Exception('Could not connect to database server');
-        }
-
-        if (!mysqli_select_db($connection_id, $db_database)) {
-            throw new Exception('Unknown database');
         }
 
         if (!db_set_utf8_charset($connection_id)) {

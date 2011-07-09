@@ -26,6 +26,7 @@ USA
 // MAIN CONFIGURATION FILE
 // Database stuff ------------------------------------------------------
 $db_server   = "{db_server}";    // The address of your MySQL server
+$db_server   = "{db_port}";      // The port of your MySQL server (default: 3306)
 $db_username = "{db_username}";  // Your MySQL username
 $db_password = "{db_password}";  // Your MySQL password
 $db_database = "{db_database}";  // The name of your MySQL database

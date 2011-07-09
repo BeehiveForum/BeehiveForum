@@ -114,6 +114,12 @@ if (isset($_POST['install_method'])) {
         $db_server = '';
     }
 
+    if (isset($_POST['db_port']) && is_numeric($_POST['db_port'])) {
+        $db_port = $_POST['db_port'];
+    }else {
+        $db_port = '';
+    }
+
     if (isset($_POST['db_database']) && strlen(trim(stripslashes_array($_POST['db_database']))) > 0) {
 
         $db_database = trim(stripslashes_array($_POST['db_database']));
@@ -238,6 +244,7 @@ if (isset($_POST['install_method'])) {
 
                     // Database details
                     $config_file = str_replace('{db_server}',   $db_server,   $config_file);
+                    $config_file = str_replace('{db_port}',     $db_port,     $config_file);
                     $config_file = str_replace('{db_username}', $db_username, $config_file);
                     $config_file = str_replace('{db_password}', $db_password, $config_file);
                     $config_file = str_replace('{db_database}', $db_database, $config_file);
@@ -355,11 +362,12 @@ if (isset($_POST['install_method'])) {
                         echo "        <tr>\n";
                         echo "          <td width=\"55%\" align=\"right\">\n";
                         echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_server\" value=\"$db_server\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_username\" value=\"$db_username\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_password\" value=\"$db_password\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_database\" value=\"$db_database\">\n";
-                        echo "              <input type=\"hidden\" name=\"admin_email\" value=\"$admin_email\">\n";
+                        echo "              <input type=\"hidden\" name=\"db_server\" value=\"", htmlentities_array($db_server), "\">\n";
+                        echo "              <input type=\"hidden\" name=\"db_port\" value=\"", htmlentities_array($db_port), "\">\n";
+                        echo "              <input type=\"hidden\" name=\"db_username\" value=\"", htmlentities_array($db_username), "\">\n";
+                        echo "              <input type=\"hidden\" name=\"db_password\" value=\"", htmlentities_array($db_password), "\">\n";
+                        echo "              <input type=\"hidden\" name=\"db_database\" value=\"", htmlentities_array($db_database), "\">\n";
+                        echo "              <input type=\"hidden\" name=\"admin_email\" value=\"", htmlentities_array($admin_email), "\">\n";
                         echo "              <input type=\"hidden\" name=\"enable_error_reports\" value=\"", $enable_error_reports ? 'Y' : 'N', "\">\n";
                         echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
                         echo "            </form>\n";
@@ -397,7 +405,7 @@ if (isset($_POST['install_method'])) {
 
         }elseif ($valid) {
 
-            $error_array[] = "<p>Database connection to '$db_server' could not be established. Please check your MySQL Database Configuration settings are correct and that you have permisison to access the database you've entered.</p>\n<p><b>Note:</b> The database must be created manually prior to the installation of the Beehive Forum software!</p>\n";
+            $error_array[] = "<p>Database connection to ". htmlentities_array($db_server). ":". htmlentities_array($db_port). " could not be established. Please check your MySQL Database Configuration settings are correct and that you have permisison to access the database you've entered.</p>\n<p><b>Note:</b> The database must be created manually prior to the installation of the Beehive Forum software!</p>\n";
             $valid = false;
         }
     }
@@ -410,6 +418,10 @@ if (isset($_POST['install_method'])) {
 
         if (isset($_POST['db_server']) && strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
             $db_server = trim(stripslashes_array($_POST['db_server']));
+        }
+
+        if (isset($_POST['db_port']) && is_numeric($_POST['db_port'])) {
+            $db_port = $_POST['db_port'];
         }
 
         if (isset($_POST['db_database']) && strlen(trim(stripslashes_array($_POST['db_database']))) > 0) {
@@ -434,10 +446,11 @@ if (isset($_POST['install_method'])) {
             $enable_error_reports = false;
         }
 
-        if (isset($db_server) && isset($db_database) && isset($db_username) && isset($db_password)) {
+        if (isset($db_server, $db_port, $db_database, $db_username, $db_password)) {
 
             // Database details
             $config_file = str_replace('{db_server}',   $db_server,   $config_file);
+            $config_file = str_replace('{db_port}',     $db_port,     $config_file);
             $config_file = str_replace('{db_username}', $db_username, $config_file);
             $config_file = str_replace('{db_password}', $db_password, $config_file);
             $config_file = str_replace('{db_database}', $db_database, $config_file);
@@ -458,6 +471,7 @@ if (isset($_POST['install_method'])) {
 
             // Database details
             $config_file = str_replace('{db_server}',   "", $config_file);
+            $config_file = str_replace('{db_port}',     "", $config_file);
             $config_file = str_replace('{db_database}', "", $config_file);
             $config_file = str_replace('{db_username}', "", $config_file);
             $config_file = str_replace('{db_password}', "", $config_file);
@@ -501,7 +515,7 @@ if (isset($_POST['install_method'])) {
             echo "                        <td align=\"left\" class=\"postbody\">\n";
             echo "                          <ol>\n";
             echo "                            <li><p>Copy and paste the text in the box below into a text editor.</p></li>\n";
-            echo "                            <li><p>Edit the \$db_server, \$db_database, \$db_username and \$db_password entries near the top of the script to match those that you entered in the first step of this installation</p></li>\n";
+            echo "                            <li><p>Edit the \$db_server, \$db_port, \$db_database, \$db_username and \$db_password entries near the top of the script to match those that you entered in the first step of this installation</p></li>\n";
             echo "                            <li><p>Save the file as config.inc.php (all in lowercase) and upload it to the 'include' folder of your Beehive installation.</p></li>\n";
             echo "                            <li><p>Delete the 'install' folder from the Beehive ditribution on your server.</p></li>\n";
             echo "                          </ol>\n";
@@ -659,6 +673,10 @@ echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext install_input\" value=\"", (isset($db_server) && strlen($db_server) > 0 ? htmlentities_array($db_server) : ''), "\" size=\"28\" tabindex=\"3\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Port:</td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_port\" class=\"bhinputtext install_input\" value=\"", (isset($db_port) && strlen($db_port) > 0 ? htmlentities_array($db_port) : '3306'), "\" size=\"28\" tabindex=\"3\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";

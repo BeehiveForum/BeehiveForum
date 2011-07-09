@@ -453,6 +453,16 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
+    // Purge the USER_TRACK.USER_TIME_TOTAL, USER_TIME_BEST and USER_TIME_UPDATED columns
+    // as they were totally calculated incorrectly prior to Beehive Forum 1.1
+    $sql = "UPDATE `{$table_data['PREFIX']}USER_TRACK` SET USER_TIME_TOTAL = NULL, USER_TIME_BEST = NULL, USER_TIME_UPDATED = NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // RSS Feed Max Items
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_RSS_FEEDS", "MAX_ITEM_COUNT")) {
 

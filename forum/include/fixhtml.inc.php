@@ -99,6 +99,333 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         $html_tags = array('a', 'abbr', 'acronym', 'address', 'applet', 'area', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset', 'flash', 'font', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'isindex', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'marquee', 'menu', 'meta', 'noemots', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'q', 'quote', 's', 'samp', 'script', 'select', 'small', 'span', 'spoiler', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var', 'youtube');
 
+        $html_tags = array_diff($html_tags, $bad_tags);
+
+        $bad_tags = array();
+
+        for ($i = 0; $i < count($html_parts); $i++) {
+
+            if ($i % 2) {
+
+                $tag = explode(' ', $html_parts[$i]);
+
+                if (substr($tag[0], 0, 1) == '/') {
+
+                    $close = true;
+                    $tag = mb_substr($tag[0], 1);
+
+                }else {
+
+                    $close = false;
+                    $tag = $tag[0];
+                }
+
+                $tag = mb_strtolower($tag);
+
+                if (in_array($tag, $html_tags)) {
+
+                    if ($tag == 'code' && $close == true) {
+
+                        $html_parts[$i] = '/pre';
+
+                    }else if ($tag == 'code') {
+
+                        $lang_tmp = array();
+
+                        preg_match("/ language=[\"|']?([^\"|']+)/iu", $html_parts[$i], $lang_tmp);
+
+                        $lang = isset($lang_tmp[1]) ? $lang_tmp[1] : '';
+
+                        $tmpcode = '';
+
+                        $html_parts[$i] = 'pre class="code"';
+
+                        $open_code = 1;
+
+                        for ($j = $i + 1; $j < count($html_parts); $j++) {
+
+                            if ($j % 2) {
+
+                                if (substr($html_parts[$j], 0, 5) == '/code') {
+
+                                    if ($open_code == 1) {
+
+                                        $html_parts[$j] = '/pre';
+
+                                        $code_highlighter->set_source($tmpcode);
+
+                                        $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
+
+                                        if (strlen($lang_geshi) > 0) {
+                                            $code_highlighter->set_language($lang_geshi);
+                                        }else {
+                                            $code_highlighter->set_language(strtolower($lang));
+                                        }
+
+                                        set_error_handler('geshi_error_handler');
+
+                                        $tmpcode = $code_highlighter->parse_code();
+                                        $tmpcode = preg_replace("/<\\/?pre( [^>]*)?>/u", '', $tmpcode);
+
+                                        restore_error_handler();
+
+                                        array_splice($html_parts, $i + 1, $j - $i - 1, $tmpcode);
+
+                                        $tmpcode = '<closed>';
+
+                                        break;
+
+                                    }else {
+
+                                        $open_code--;
+                                    }
+
+                                }else if (substr($html_parts[$j], 0, 4) == 'code') {
+
+                                    $open_code++;
+                                }
+
+                                $tmpcode.= '<'. $html_parts[$j]. '>';
+
+                            }else {
+
+                                $tmpcode.= $html_parts[$j];
+                            }
+                        }
+
+                        if ($tmpcode != '<closed>') {
+
+                            array_splice($html_parts, $i + 1, 0, array('', '/pre'));
+                            $i += 2;
+                        }
+
+                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code-$lang\"", '', 'b', $lang. ' '. $fix_html_code_text, '/b', '', '/div', ''));
+
+                        $i += 10;
+
+                    }else if ($tag == 'quote' && $close == true) {
+
+                        $html_parts[$i] = '/div';
+
+                    }else if ($tag == 'quote') {
+
+                        $source_name = stristr($html_parts[$i], ' source=');
+                        $source_name = mb_substr($source_name, 8);
+
+                        if (strlen($source_name) > 0) {
+
+                            $qu = mb_substr($source_name, 0, 1);
+
+                            if ($qu == "\"" || $qu == "'") {
+
+                                $source_pos = 1;
+
+                            }else {
+
+                                $source_pos = 0;
+                                $qu = false;
+                            }
+
+                            for ($j = $source_pos; $j <= mb_strlen($source_name); $j++) {
+
+                                $ctmp = mb_substr($source_name, $j, 1);
+
+                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == ' ')) {
+
+                                    if ($ctmp != ' ') {
+                                        $j--;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            $source_name = mb_substr($source_name, $source_pos, $j);
+
+                        }else {
+
+                            $source_name = '';
+                        }
+
+                        $url_name = stristr($html_parts[$i], ' url=');
+                        $url_name = mb_substr($url_name, 5);
+
+                        if (strlen($url_name) > 0) {
+
+                            $qu = mb_substr($url_name, 0, 1);
+
+                            if ($qu == "\"" || $qu == "'") {
+
+                                $url_pos = 1;
+
+                            }else {
+
+                                $url_pos = 0;
+                                $qu = false;
+                            }
+
+                            for ($j = $url_pos; $j <= mb_strlen($url_name); $j++) {
+
+                                $ctmp = mb_substr($url_name, $j, 1);
+
+                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == ' ')) {
+
+                                    if ($ctmp != ' ') {
+                                        $j--;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            $url_name = mb_substr($url_name, $url_pos, $j);
+
+                        }else {
+
+                            $url_name = '';
+                        }
+
+                        if (mb_strlen(trim($url_name)) > 0) {
+
+                            if ($source_name == '') {
+
+                                $source_name = $url_name;
+                            }
+
+                            $html_parts[$i] = "div class=\"quote\"";
+
+                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', '', "a href=\"$url_name\"", $source_name, '/a', '', '/div', ''));
+
+                            $i += 12;
+
+                        }else {
+
+                            $html_parts[$i] = "div class=\"quote\"";
+                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', $source_name, '/div', ''));
+                            $i += 8;
+                        }
+
+                    }else if ($tag == 'spoiler' && $close == true) {
+
+                        $html_parts[$i] = '/span';
+
+                        array_splice($html_parts, $i, 0, array('/span', ''));
+
+                        $i+= 2;
+
+                    }else if ($tag == 'spoiler') {
+
+                        $html_parts[$i] = 'span';
+
+                        array_splice($html_parts, $i, 0, array('span class="spoiler"', ''));
+
+                        $i+= 2;
+
+                    }else if ($tag == 'youtube') {
+
+                        if (!isset($html_parts[$i + 1], $html_parts[$i + 2]) || ($html_parts[$i + 2] !== '/youtube')) {
+
+                            array_splice($html_parts, $i, 3, array('', '', ''));
+
+                            $i+= 3;
+
+                        } else {
+
+                            $matches_array = array();
+
+                            preg_match('/^(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&]+)|youtu\.be\/(.+))/su', trim($html_parts[$i + 1]), $matches_array);
+
+                            if (isset($matches_array[1], $matches_array[5])) {
+
+                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"', $matches_array[1], $matches_array[5], htmlentities($matches_array[0]));
+
+                                array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
+
+                                $i+= 3;
+
+                            }else if (isset($matches_array[1], $matches_array[4])) {
+
+                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"', $matches_array[1], $matches_array[4], htmlentities($matches_array[0]));
+
+                                array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
+
+                                $i+= 3;
+
+                            } else {
+
+                                array_splice($html_parts, $i, 3, array('', '', ''));
+
+                                $i+= 3;
+                            }
+                        }
+
+                    }else if ($tag == 'flash') {
+
+                        $matches_array = array();
+
+                        preg_match('/src="([^"]+)"/su', $html_parts[$i], $matches_array);
+
+                        if (!isset($matches_array[1]) || strlen(trim($matches_array[1])) == 0) {
+
+                            $html_parts[$i] = '';
+
+                        } else {
+
+                            $flash_attr_array = array('data' => sprintf('"%s"', $matches_array[1]));
+
+                            $matches_array = array();
+
+                            preg_match('/width="([^"]+)"/su', $html_parts[$i], $matches_array);
+
+                            if (isset($matches_array[1]) && is_numeric($matches_array[1])) {
+                                $flash_attr_array['width'] = sprintf('"%s"', $matches_array[1]);
+                            }
+
+                            $matches_array = array();
+
+                            preg_match('/height="([^"]+)"/su', $html_parts[$i], $matches_array);
+
+                            if (isset($matches_array[1]) && is_numeric($matches_array[1])) {
+                                $flash_attr_array['height'] = sprintf('"%s"', $matches_array[1]);
+                            }
+
+                            $matches_array = array();
+
+                            preg_match('/wmode="(opaque|transparent)"/su', $html_parts[$i], $matches_array);
+
+                            if (isset($matches_array[1]) && in_array($matches_array[1], array('window', 'opaque', 'transparent'))) {
+                                $flash_wmode = $matches_array[1];
+                            }
+
+                            $flash_html_parts = array(sprintf('object type="application/x-shockwave-flash" %s', implode_assoc($flash_attr_array, '=', ' ')));
+
+                            array_push($flash_html_parts, '', sprintf('param name="movie" value=%s', $flash_attr_array['data']));
+
+                            if (isset($flash_wmode) && strlen(trim($flash_wmode)) > 0) {
+                                array_push($flash_html_parts, '', sprintf('param name="wmode" value="%s"', $flash_wmode));
+                            }
+
+                            array_push($flash_html_parts, '', '/object');
+
+                            array_splice($html_parts, $i, 1, $flash_html_parts);
+
+                            $i+= sizeof($flash_html_parts) - 1;
+                        }
+                    }
+
+                }else {
+
+                    $html_parts[$i - 1].= '&lt;'. $html_parts[$i]. '&gt;';
+                    $html_parts[$i] = '';
+                }
+
+            }else {
+
+                $html_parts[$i] = str_replace('<', '&lt;', $html_parts[$i]);
+                $html_parts[$i] = str_replace('>', '&gt;', $html_parts[$i]);
+            }
+        }
+
         $close = null;
 
         $open_tags = array();
@@ -370,331 +697,6 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         }
                     }
                 }
-            }
-        }
-
-        $html_tags = array_diff($html_tags, $bad_tags);
-
-        for ($i = 0; $i < count($html_parts); $i++) {
-
-            if ($i % 2) {
-
-                $tag = explode(' ', $html_parts[$i]);
-
-                if (substr($tag[0], 0, 1) == '/') {
-
-                    $close = true;
-                    $tag = mb_substr($tag[0], 1);
-
-                }else {
-
-                    $close = false;
-                    $tag = $tag[0];
-                }
-
-                $tag = mb_strtolower($tag);
-
-                if (in_array($tag, $html_tags)) {
-
-                    if ($tag == 'code' && $close == true) {
-
-                        $html_parts[$i] = '/pre';
-
-                    }else if ($tag == 'code') {
-
-                        $lang_tmp = array();
-
-                        preg_match("/ language=[\"|']?([^\"|']+)/iu", $html_parts[$i], $lang_tmp);
-
-                        $lang = isset($lang_tmp[1]) ? $lang_tmp[1] : '';
-
-                        $tmpcode = '';
-
-                        $html_parts[$i] = 'pre class="code"';
-
-                        $open_code = 1;
-
-                        for ($j = $i + 1; $j < count($html_parts); $j++) {
-
-                            if ($j % 2) {
-
-                                if (substr($html_parts[$j], 0, 5) == '/code') {
-
-                                    if ($open_code == 1) {
-
-                                        $html_parts[$j] = '/pre';
-
-                                        $code_highlighter->set_source($tmpcode);
-
-                                        $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
-
-                                        if (strlen($lang_geshi) > 0) {
-                                            $code_highlighter->set_language($lang_geshi);
-                                        }else {
-                                            $code_highlighter->set_language(strtolower($lang));
-                                        }
-
-                                        set_error_handler('geshi_error_handler');
-
-                                        $tmpcode = $code_highlighter->parse_code();
-                                        $tmpcode = preg_replace("/<\\/?pre( [^>]*)?>/u", '', $tmpcode);
-
-                                        restore_error_handler();
-
-                                        array_splice($html_parts, $i + 1, $j - $i - 1, $tmpcode);
-
-                                        $tmpcode = '<closed>';
-
-                                        break;
-
-                                    }else {
-
-                                        $open_code--;
-                                    }
-
-                                }else if (substr($html_parts[$j], 0, 4) == 'code') {
-
-                                    $open_code++;
-                                }
-
-                                $tmpcode.= '<'. $html_parts[$j]. '>';
-
-                            }else {
-
-                                $tmpcode.= $html_parts[$j];
-                            }
-                        }
-
-                        if ($tmpcode != '<closed>') {
-
-                            array_splice($html_parts, $i + 1, 0, array('', '/pre'));
-                            $i += 2;
-                        }
-
-                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code-$lang\"", '', 'b', $lang. ' '. $fix_html_code_text, '/b', '', '/div', ''));
-
-                        $i += 10;
-
-                    }else if ($tag == 'quote' && $close == true) {
-
-                        $html_parts[$i] = '/div';
-
-                    }else if ($tag == 'quote') {
-
-                        $source_name = stristr($html_parts[$i], ' source=');
-                        $source_name = mb_substr($source_name, 8);
-
-                        if (strlen($source_name) > 0) {
-
-                            $qu = mb_substr($source_name, 0, 1);
-
-                            if ($qu == "\"" || $qu == "'") {
-
-                                $source_pos = 1;
-
-                            }else {
-
-                                $source_pos = 0;
-                                $qu = false;
-                            }
-
-                            for ($j = $source_pos; $j <= mb_strlen($source_name); $j++) {
-
-                                $ctmp = mb_substr($source_name, $j, 1);
-
-                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == ' ')) {
-
-                                    if ($ctmp != ' ') {
-                                        $j--;
-                                    }
-
-                                    break;
-                                }
-                            }
-
-                            $source_name = mb_substr($source_name, $source_pos, $j);
-
-                        }else {
-
-                            $source_name = '';
-                        }
-
-                        $url_name = stristr($html_parts[$i], ' url=');
-                        $url_name = mb_substr($url_name, 5);
-
-                        if (strlen($url_name) > 0) {
-
-                            $qu = mb_substr($url_name, 0, 1);
-
-                            if ($qu == "\"" || $qu == "'") {
-
-                                $url_pos = 1;
-
-                            }else {
-
-                                $url_pos = 0;
-                                $qu = false;
-                            }
-
-                            for ($j = $url_pos; $j <= mb_strlen($url_name); $j++) {
-
-                                $ctmp = mb_substr($url_name, $j, 1);
-
-                                if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == ' ')) {
-
-                                    if ($ctmp != ' ') {
-                                        $j--;
-                                    }
-
-                                    break;
-                                }
-                            }
-
-                            $url_name = mb_substr($url_name, $url_pos, $j);
-
-                        }else {
-
-                            $url_name = '';
-                        }
-
-                        if (mb_strlen(trim($url_name)) > 0) {
-
-                            if ($source_name == '') {
-
-                                $source_name = $url_name;
-                            }
-
-                            $html_parts[$i] = "div class=\"quote\"";
-
-                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', '', "a href=\"$url_name\"", $source_name, '/a', '', '/div', ''));
-
-                            $i += 12;
-
-                        }else {
-
-                            $html_parts[$i] = "div class=\"quote\"";
-                            array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', $source_name, '/div', ''));
-                            $i += 8;
-                        }
-
-                    }else if ($tag == 'spoiler' && $close == true) {
-
-                        $html_parts[$i] = '/span';
-
-                        array_splice($html_parts, $i, 0, array('/span', ''));
-
-                        $i+= 2;
-
-                    }else if ($tag == 'spoiler') {
-
-                        $html_parts[$i] = 'span';
-
-                        array_splice($html_parts, $i, 0, array('span class="spoiler"', ''));
-
-                        $i+= 2;
-
-                    }else if ($tag == 'youtube') {
-
-                        if (!isset($html_parts[$i + 1], $html_parts[$i + 2]) || ($html_parts[$i + 2] !== '/youtube')) {
-
-                            array_splice($html_parts, $i, 3, array('', '', ''));
-
-                            $i+= 3;
-
-                        } else {
-
-                            $matches_array = array();
-
-                            preg_match('/^(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&]+)|youtu\.be\/(.+))/su', trim($html_parts[$i + 1]), $matches_array);
-
-                            if (isset($matches_array[1], $matches_array[5])) {
-
-                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen', $matches_array[1], $matches_array[5], htmlentities($matches_array[0]));
-
-                                array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
-
-                                $i+= 3;
-
-                            }else if (isset($matches_array[1], $matches_array[4])) {
-
-                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen', $matches_array[1], $matches_array[4], htmlentities($matches_array[0]));
-
-                                array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
-
-                                $i+= 3;
-
-                            } else {
-
-                                array_splice($html_parts, $i, 3, array('', '', ''));
-
-                                $i+= 3;
-                            }
-                        }
-
-                    }else if ($tag == 'flash') {
-
-                        $matches_array = array();
-
-                        preg_match('/src="([^"]+)"/su', $html_parts[$i], $matches_array);
-
-                        if (!isset($matches_array[1]) || strlen(trim($matches_array[1])) == 0) {
-
-                            $html_parts[$i] = '';
-
-                        } else {
-
-                            $flash_attr_array = array('data' => sprintf('"%s"', $matches_array[1]));
-
-                            $matches_array = array();
-
-                            preg_match('/width="([^"]+)"/su', $html_parts[$i], $matches_array);
-
-                            if (isset($matches_array[1]) && is_numeric($matches_array[1])) {
-                                $flash_attr_array['width'] = sprintf('"%s"', $matches_array[1]);
-                            }
-
-                            $matches_array = array();
-
-                            preg_match('/height="([^"]+)"/su', $html_parts[$i], $matches_array);
-
-                            if (isset($matches_array[1]) && is_numeric($matches_array[1])) {
-                                $flash_attr_array['height'] = sprintf('"%s"', $matches_array[1]);
-                            }
-
-                            $matches_array = array();
-
-                            preg_match('/wmode="(opaque|transparent)"/su', $html_parts[$i], $matches_array);
-
-                            if (isset($matches_array[1]) && in_array($matches_array[1], array('window', 'opaque', 'transparent'))) {
-                                $flash_wmode = $matches_array[1];
-                            }
-
-                            $flash_html_parts = array(sprintf('object type="application/x-shockwave-flash" %s', implode_assoc($flash_attr_array, '=', ' ')));
-
-                            array_push($flash_html_parts, '', sprintf('param name="movie" value=%s', $flash_attr_array['data']));
-
-                            if (isset($flash_wmode) && strlen(trim($flash_wmode)) > 0) {
-                                array_push($flash_html_parts, '', sprintf('param name="wmode" value="%s"', $flash_wmode));
-                            }
-
-                            array_push($flash_html_parts, '', '/object');
-
-                            array_splice($html_parts, $i, 1, $flash_html_parts);
-
-                            $i+= sizeof($flash_html_parts) - 1;
-                        }
-                    }
-
-                }else {
-
-                    $html_parts[$i - 1].= '&lt;'. $html_parts[$i]. '&gt;';
-                    $html_parts[$i] = '';
-                }
-
-            }else {
-
-                $html_parts[$i] = str_replace('<', '&lt;', $html_parts[$i]);
-                $html_parts[$i] = str_replace('>', '&gt;', $html_parts[$i]);
             }
         }
 
@@ -1011,7 +1013,7 @@ function tidy_html($html, $linebreaks = true, $links = true)
     $html = preg_replace('/<div class="quotetext" id="spoiler">.+?<\/div>.*?<div class="spoiler">(.*)<\/div>/isu', '<spoiler>\\1</spoiler>', $html);
 
     // Youtube tag
-    $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen><\/iframe>/isu', '<youtube>\\1</youtube>', $html);
+    $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen="true"><\/iframe>/isu', '<youtube>\\1</youtube>', $html);
 
     // Flash tag
     $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1">(<param name="wmode" value="(opaque|transparent)">)?<\/object>/isu', 'tidy_html_flash_tag_callback', $html);
@@ -1029,7 +1031,7 @@ function tidy_tiny_mce($html)
     $html = preg_replace_callback("/<pre class=\"code\">(.*?)<\\/pre>/isu", "tidy_html_pre_tag_callback", $html);
 
     // Youtube video tag
-    $html = preg_replace_callback('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen><\/iframe>/isu', 'tidy_tiny_mce_youtube_iframe_tag_callback', $html);
+    $html = preg_replace_callback('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen="true"><\/iframe>/isu', 'tidy_tiny_mce_youtube_iframe_tag_callback', $html);
 
     // Flash
     $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1">(<param name="wmode" value="(opaque|transparent)">)?<\/object>/isu', 'tidy_tiny_mce_flash_object_tag_callback', $html);
@@ -1120,11 +1122,11 @@ function tidy_tiny_mce_youtube_img_tag_callback($matches_array)
 {
     if (isset($matches_array[6], $matches_array[7]) && ($matches_array[6] == $matches_array[7])) {
 
-        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen></iframe>', $matches_array[2], $matches_array[6], $matches_array[1]);
+        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"></iframe>', $matches_array[2], $matches_array[6], $matches_array[1]);
 
     } else if (isset($matches_array[5], $matches_array[7]) && ($matches_array[5] == $matches_array[7])) {
 
-        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen></iframe>', $matches_array[2], $matches_array[5], $matches_array[1]);
+        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"></iframe>', $matches_array[2], $matches_array[5], $matches_array[1]);
     }
 
     return '';

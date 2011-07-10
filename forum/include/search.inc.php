@@ -385,7 +385,9 @@ function search_sphinx_execute($search_arguments, &$error)
     /// Keyword based search.
     if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
 
-        $search_string = db_escape_string(stripslashes_array($search_arguments['search_string']));
+        // Sphinx doesn't like -- in MATCH. Don't know if it's because it
+        // thinks it is a MySQL-style comment or a bug. We have no choice but to strip it out.
+        $search_string = db_escape_string(stripslashes_array(str_replace('--', '', $search_arguments['search_string'])));
 
         search_save_arguments($search_arguments);
 

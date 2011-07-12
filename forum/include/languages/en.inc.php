@@ -890,6 +890,8 @@ $lang['wikiintegrationuri'] = "WikiWiki Location";
 $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
+$lang['sharelinks'] = "Share Links";
+$lang['showsharelinks'] = "Show Share Links";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
 $lang['unreadmessagescutoff'] = "Unread messages cut-off";
@@ -1033,6 +1035,7 @@ $lang['forum_settings_help_70'] = "<b>Important:</b> Only enter a <b>Forum Root 
 $lang['forum_settings_help_71'] = "A <b>Content Delivery Network</b> or CDN can be used to help speed up page load of your forum by off-loading some of page content such as images, CSS and JavaScript to other servers.";
 $lang['forum_settings_help_72'] = "You should enter any CDN paths in the text box above, one per line. Your Beehive Forum will automatically prefix every static content request with each of the CDN paths in turn.";
 $lang['forum_settings_help_73'] = "Please Note: Your CDN paths should be to the root of the Beehive Forum content. For example, if you enter <i>cdn01.mybeehiveforum.net</i>, requests for the user's CSS styles will be made to <i>cdn01.mybeehiveforum.net/styles/[user_style]/style.css</i>";
+$lang['forum_settings_help_74'] = "Enabling <b>Show Share Links</b> adds social network share links for Google+, Facebook and Twitter, at the top of each thread. Users can opt-out of displaying these buttons from their My Controls area. By disabling it here, they will be hidden for all users.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 $lang['aidnotspecified'] = "AID not specified.";
@@ -1379,6 +1382,9 @@ $lang['messagedeleted'] = "Message %s.%s was deleted";
 $lang['viewinframeset'] = "View in Frameset";
 $lang['pressctrlentertoquicklysubmityourpost'] = "Press Ctrl+Enter to quickly submit your post";
 $lang['invalidmsgidornomessageidspecified'] = "Invalid Message ID or no Message ID specified.";
+$lang['sharefacebook'] = "Share on Facebook";
+$lang['sharetwitter'] = "Share on Twitter";
+$lang['twittercurrentlyreading'] = "Currently reading: %s";
 
 // Moderators list (mods_list.php) -------------------------------------
 $lang['cantdisplaymods'] = "Cannot display folder moderators";
@@ -1583,6 +1589,7 @@ $lang['postinhtmlbydefault'] = "Post in HTML by default";
 $lang['postdefaultquick'] = "Use Quick Reply by default. (Full reply in menu)";
 $lang['threadlinksgotolastpage'] = "Thread list last post link goes to last page of posts.";
 $lang['showuseravatars'] = "Show user avatars in message headers, visitor log and active user list";
+$lang['showsharelinksinthreads'] = "Show social network share links at top of each thread";
 $lang['privatemessageoptions'] = "Private Message Options";
 $lang['privatemessageexportoptions'] = "Private Message Export Options";
 $lang['exportprivatemessages'] = "Export Private Messages";
@@ -2064,7 +2071,7 @@ $lang['movetodeleteditems'] = "Move to Deleted Threads";
 $lang['undeletethread'] = "Undelete Thread";
 $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
-$lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
+$lang['threadreadstatusupdated'] = "Thread Read Status Updated Successfully";
 $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
 $lang['threadwassuccessfullydeleted'] = "Thread was successfully deleted";
 $lang['threadwassuccessfullyundeleted'] = "Thread was successfully undeleted";

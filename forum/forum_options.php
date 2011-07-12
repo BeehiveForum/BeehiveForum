@@ -325,6 +325,18 @@ if (isset($_POST['save'])) {
         $user_prefs_global['SHOW_AVATARS'] = false;
     }
 
+    if (isset($_POST['show_share_links']) && ($_POST['show_share_links'] == "Y")) {
+        $user_prefs['SHOW_SHARE_LINKS'] = 'Y';
+    }else {
+        $user_prefs['SHOW_SHARE_LINKS'] = 'N';
+    }
+
+    if (isset($_POST['show_share_links_global'])) {
+        $user_prefs_global['SHOW_SHARE_LINKS'] = ($_POST['show_share_links_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['SHOW_SHARE_LINKS'] = false;
+    }
+
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
         $user_prefs['ENABLE_WIKI_WORDS'] = "Y";
     }else {
@@ -589,7 +601,7 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"15\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"16\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("threads_by_folder", "Y", $lang['sortthreadlistbyfolders'], (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
@@ -646,6 +658,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_avatars", "Y", $lang['showuseravatars'], (isset($user_prefs['SHOW_AVATARS']) && $user_prefs['SHOW_AVATARS'] == "Y")), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_avatars_global", "Y", '', (isset($user_prefs['SHOW_AVATARS_GLOBAL']) ? $user_prefs['SHOW_AVATARS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_share_links", "Y", $lang['showsharelinksinthreads'], (isset($user_prefs['SHOW_SHARE_LINKS']) && $user_prefs['SHOW_SHARE_LINKS'] == "Y")), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_share_links_global", "Y", '', (isset($user_prefs['SHOW_SHARE_LINKS_GLOBAL']) ? $user_prefs['SHOW_SHARE_LINKS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

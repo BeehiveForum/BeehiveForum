@@ -588,7 +588,8 @@ function user_get_prefs($uid)
     $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
     $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.ENABLE_WIKI_WORDS, ";
     $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.USE_OVERFLOW_RESIZE, ";
-    $sql.= "USER_PREFS.THREAD_LAST_PAGE, USER_PREFS.SHOW_AVATARS FROM USER_PREFS ";
+    $sql.= "USER_PREFS.THREAD_LAST_PAGE, USER_PREFS.SHOW_AVATARS, ";
+    $sql.= "USER_PREFS.SHOW_SHARE_LINKS FROM USER_PREFS ";
     $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
     $sql.= "WHERE UID = '$uid'";
 
@@ -607,7 +608,8 @@ function user_get_prefs($uid)
         $sql.= "USE_ADMIN_FILTER, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
         $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, REPLY_QUICK, ";
         $sql.= "THREADS_BY_FOLDER, THREAD_LAST_PAGE, USE_EMAIL_ADDR, LEFT_FRAME_WIDTH, ";
-        $sql.= "SHOW_AVATARS FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
+        $sql.= "SHOW_AVATARS, SHOW_SHARE_LINKS FROM `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
@@ -668,7 +670,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
                                'USE_MOVER_SPOILER', 'USE_LIGHT_MODE_SPOILER',
                                'USE_OVERFLOW_RESIZE', 'REPLY_QUICK', 'THREAD_LAST_PAGE',
-                               'SHOW_AVATARS');
+                               'SHOW_AVATARS', 'SHOW_SHARE_LINKS');
 
     // names of preferences that can be set on a per-forum basis
     $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'PIC_AID', 'AVATAR_URL',
@@ -681,7 +683,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'SHOW_THUMBS', 'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
                                'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE',
                                'REPLY_QUICK', 'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH',
-                               'SHOW_AVATARS');
+                               'SHOW_AVATARS', 'SHOW_SHARE_LINKS');
 
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
@@ -837,6 +839,7 @@ function user_check_pref($name, $value)
         case "THREADS_BY_FOLDER":
         case "THREAD_LAST_PAGE":
         case "SHOW_AVATARS":
+        case "SHOW_SHARE_LINKS":
 
             return ($value == "Y" || $value == "N") ? true : false;
             break;

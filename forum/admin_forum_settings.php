@@ -370,6 +370,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['show_links'] = "N";
     }
 
+    if (isset($_POST['show_share_links']) && $_POST['show_share_links'] == "Y") {
+        $new_forum_settings['show_share_links'] = "Y";
+    }else {
+        $new_forum_settings['show_share_links'] = "N";
+    }
+
     if (isset($_POST['allow_polls']) && $_POST['allow_polls'] == "Y") {
         $new_forum_settings['allow_polls'] = "Y";
     }else {
@@ -984,6 +990,45 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_13']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['sharelinks']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['showsharelinks']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("show_share_links", "Y", $lang['yes'], (isset($forum_settings['show_share_links']) && $forum_settings['show_share_links'] == "Y")), "&nbsp;", form_radio("show_share_links", "N", $lang['no'], (isset($forum_settings['show_share_links']) && $forum_settings['show_share_links'] == "N") || !isset($forum_settings['show_share_links'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_74']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

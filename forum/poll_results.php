@@ -195,110 +195,32 @@ if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
     $view_style = POLL_VIEW_TYPE_OPTION;
 }
 
+$show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
+
+$highlight_array = array();
+
 $poll_user_count = 0;
+
+$poll_results = poll_get_votes($tid);
+
+$user_poll_votes_array = poll_get_user_vote($tid);
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("title=$thread_title - {$poll_data['QUESTION']}", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title=$thread_title", 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
-echo "<table width=\"580\" border=\"0\">\n";
+echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), false, array()), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
+echo "<table width=\"100%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">\n";
-
-if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
-
-    if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-
-        echo poll_public_ballot($tid, $view_style, $start, $poll_user_count);
-
-    }else {
-
-        echo "      <table class=\"box\" width=\"100%\">\n";
-        echo "        <tr>\n";
-        echo "          <td align=\"left\" class=\"posthead\">\n";
-        echo "            <table width=\"100%\">\n";
-
-        if (strlen(trim($poll_data['QUESTION'])) > 0 && strcasecmp($thread_title, $poll_data['QUESTION']) <> 0) {
-
-            echo "              <tr>\n";
-            echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(htmlentities_array($poll_data['QUESTION'])), "</td>\n";
-            echo "              </tr>\n";
-        }
-
-        echo "              <tr>\n";
-        echo "                <td align=\"left\">\n";
-
-        if ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
-
-            echo poll_horizontal_graph($tid);
-
-        }elseif ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
-
-            echo poll_table_graph($tid);
-
-        }else {
-
-            echo poll_vertical_graph($tid);
-        }
-
-        echo "                </td>\n";
-        echo "              </tr>\n";
-        echo "            </table>\n";
-        echo "          </td>\n";
-        echo "        </tr>\n";
-        echo "      </table>\n";
-    }
-
-}else {
-
-    $pollresults = poll_get_votes($tid);
-
-    for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
-
-        if (!empty($pollresults['OPTION_NAME'][$i])) {
-
-            echo "        <tr>\n";
-            echo "          <td align=\"left\" class=\"postbody\">{$pollresults['OPTION_NAME'][$i]}</td>\n";
-            echo "        </tr>\n";
-        }
-    }
-}
-
-echo "    </td>\n";
+echo "    <td width=\"2%\">&nbsp;</td>\n";
+echo "    <td align=\"left\">", poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true, $highlight_array), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-
-if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-
-    if ($view_style == POLL_VIEW_TYPE_USER) {
-
-        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"postbody\" align=\"center\">", page_links("poll_results.php?webtag=$webtag&tid=$tid&view_style=$view_style", $start, $poll_user_count, 5), "</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-        echo "<br />\n";
-    }
-
-    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"center\" class=\"postbody\">\n";
-    echo "      <form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
-    echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "        ", form_input_hidden("tid", htmlentities_array($tid)), "\n";
-    echo "        View Style: ", form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
-    echo "      </form>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-}
-
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";

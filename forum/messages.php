@@ -281,33 +281,23 @@ echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true, $highlight_array), "</td>\n";
-
-if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
-
-    if (($userpollvote = poll_get_user_vote($tid))) {
-
-        for ($i = 0; $i < sizeof($userpollvote); $i++) {
-            $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
-        }
-
-        if (sizeof($userpollvotes_array) > 1) {
-            echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
-        }else {
-            echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
-        }
-
-    }else {
-
-        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youhavenotvoted']}</span></td>\n";
-    }
-}
-
+echo "    <td align=\"right\" class=\"share_links\" style=\"vertical-align: middle\">\n";
+echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
+echo "        <g:plusone size=\"small\" count=\"false\"></g:plusone>\n";
+echo "      </div>\n";
+echo "      <div style=\"display: inline-block; width: 47px; vertical-align: middle; margin-top: 2px; overflow: hidden\">\n";
+echo "        <iframe src=\"http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>\n";
+echo "      </div>\n";
+echo "      <div style=\"display: inline-block; width: 55px; vertical-align: middle; overflow: hidden\">\n";
+echo "        <a href=\"http://twitter.com/share\" class=\"twitter-share-button\" data-count=\"none\">Tweet</a>\n";
+echo "      </div>\n";
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
 if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
     if ($_GET['markasread'] > 0) {
-        html_display_success_msg($lang['threareadstatusupdated'], '96%', 'center');
+        html_display_success_msg($lang['threadreadstatusupdated'], '96%', 'center');
     }else {
         html_display_error_msg($lang['failedtoupdatethreadreadstatus'], '96%', 'center');
     }
@@ -534,9 +524,6 @@ if ($msg_count > 0 && !user_is_guest() && !isset($_GET['markasread'])) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" colspan=\"3\" class=\"postbody\">&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
 
 if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
@@ -608,7 +595,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
-    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 640x480\">{$lang['viewresults']}</a>\n";
+    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\">{$lang['viewresults']}</a>\n";
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";

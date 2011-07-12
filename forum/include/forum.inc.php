@@ -628,8 +628,8 @@ function forum_check_setting_name($setting_name)
                                   'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
                                   'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
                                   'restricted_message', 'searchbots_show_active', 'searchbots_show_recent',
-                                  'send_new_user_email', 'session_cutoff', 'show_links', 'show_stats',
-                                  'start_page', 'start_page_css', 'wiki_integration_uri');
+                                  'send_new_user_email', 'session_cutoff', 'show_links', 'show_share_links',
+                                  'show_stats', 'start_page', 'start_page_css', 'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
 }
@@ -1365,6 +1365,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
             $sql.= "  LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280',";
             $sql.= "  SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y',";
+            $sql.= "  SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y',";
             $sql.= "  PRIMARY KEY  (UID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 

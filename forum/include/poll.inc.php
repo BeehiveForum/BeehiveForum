@@ -687,7 +687,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['resultdetails']}</span></a></td>\n";
+                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['resultdetails']}</span></a></td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
@@ -770,11 +770,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['resultdetails']}</span></a>";
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['resultdetails']}</span></a>";
 
                     }else {
 
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['results']}</span></a>";
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
 
                     }
                 }
@@ -816,11 +816,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
                     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['resultdetails']}</span></a>";
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['resultdetails']}</span></a>";
 
                     }else {
 
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 640x480\"><span>{$lang['results']}</span></a>";
+                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
                     }
                 }
 
@@ -843,6 +843,40 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
                     $poll_data['CONTENT'].= "                          </tr>\n";
                 }
             }
+        }
+
+    } else {
+
+        if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
+
+            $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+
+            $user_poll_votes_display_array = array();
+
+            foreach ($user_poll_votes_array_keys as $vote_key) {
+
+                foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
+
+                    if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
+
+                        if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
+
+                            $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
+
+                        }else {
+
+                            $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
+                        }
+                    }
+                }
+            }
+
+            $poll_data['CONTENT'].= "                          <tr>\n";
+            $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
+            $poll_data['CONTENT'].= "                          </tr>\n";
+            $poll_data['CONTENT'].= "                          <tr>\n";
+            $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+            $poll_data['CONTENT'].= "                          </tr>\n";
         }
     }
 

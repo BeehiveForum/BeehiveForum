@@ -777,7 +777,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
         $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);
 
-        echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
         echo "  <tr>\n";
@@ -785,10 +784,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</div>\n";
+        echo "<br />\n";
         return;
     }
 
-    echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
@@ -917,7 +916,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if ($is_poll) {
 
-            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 640x480\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
+            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
         }
 
         echo sprintf($lang['messagecountdisplay'], $message['PID'], $msg_count);
@@ -1161,6 +1160,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     echo "</div>\n";
+    echo "<br />\n";
 }
 
 function message_get_post_options_html($tid, $pid, $folder_fid)
@@ -1371,7 +1371,7 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
 {
     $lang = load_language_file();
 
-    echo "<br /><div align=\"center\">";
+    echo "<div align=\"center\">";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
 
@@ -1410,13 +1410,14 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";
+    echo "<br />\n";
 }
 
 function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page)
 {
     $lang = load_language_file();
 
-    echo "<br /><div align=\"center\">";
+    echo "<div align=\"center\">";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
 
@@ -1438,6 +1439,7 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";
+    echo "<br />\n";
 }
 
 function messages_start_panel()

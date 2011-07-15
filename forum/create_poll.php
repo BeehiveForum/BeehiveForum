@@ -373,7 +373,7 @@ if (isset($_POST['cancel'])) {
         $error_msg_array[] = $lang['pleaseselectfolder'];
         $valid = false;
     }
-    
+
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
 
         $t_answers_array = array_filter(stripslashes_array($_POST['answers']), "strlen");
@@ -770,7 +770,7 @@ echo "<h1>{$lang['createpoll']}</h1>\n";
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '785', 'left');
 }
-            
+
 $t_message_text = $post->getTidyContent();
 
 $t_sig = $sig->getTidyContent();
@@ -894,13 +894,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['AID'] = $aid;
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">\n";
-    
+    echo "                  <td align=\"left\"><br />\n";
+
     message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
-    
+
     echo "                  </td>\n";
     echo "                </tr>\n";
-            
+
     if (strlen($t_message_text) > 0) {
 
         $polldata['CONTENT'] = $t_message_text;
@@ -911,7 +911,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         }
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">", message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true), "</td>\n";
+        echo "                  <td align=\"left\"><br />", message_display(0, $polldata, 0, 0, 0, false, false, false, false, $show_sigs, true), "</td>\n";
         echo "                </tr>\n";
     }
 
@@ -1002,13 +1002,13 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">\n";
-    
+
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
         echo "                          <div class=\"emots_toggle\">{$emoticon_preview_html}</div>\n";
     } else {
         echo "                          <div class=\"emots_toggle\" style=\"display: none\">{$emoticon_preview_html}</div>\n";
     }
-    
+
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
@@ -1164,7 +1164,7 @@ echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
 echo "                                          </tr>\n";
-      
+
 if (forum_get_setting('poll_allow_guests', false)) {
 
     echo "                                          <tr>\n";
@@ -1366,20 +1366,20 @@ if ($allow_sig == true) {
     } else {
         echo "                                                  <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
     }
-    
+
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" colspan=\"2\">\n";
     echo "                                                    <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    
+
     $t_sig = $sig->getTidyContent();
 
     echo $tools->textarea("t_sig", $t_sig, 5, 75, false, 'tabindex="7"', 'signature_content');
-    
+
     if ($sig->isDiff() && !$fetched_sig) {
         echo $tools->compare_original("t_sig", $sig);
     }
-    
+
     echo "                                                    </div>\n";
     echo "                                                  </td>\n";
     echo "                                                </tr>\n";

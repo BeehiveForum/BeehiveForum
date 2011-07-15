@@ -408,7 +408,7 @@ function light_draw_messages($tid, $pid)
 
                 if ($message['PID'] == 1) {
 
-                    light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], $thread_data['CLOSED'], false, false);
+                    light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], false, false);
                     $last_pid = $message['PID'];
 
                 }else {
@@ -1330,7 +1330,7 @@ function light_form_quick_button($href, $label, $var_array = false, $target = "_
     return $html;
 }
 
-function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $limit_text = true, $is_preview = false)
+function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_preview = false)
 {
     $lang = load_language_file();
 
@@ -1632,7 +1632,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $closed = false, $lim
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
-    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, true, $closed, $limit_text, true, $is_preview);
+    light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, $in_list, $closed, $limit_text, true, $is_preview);
 }
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)

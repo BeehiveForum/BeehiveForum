@@ -218,7 +218,7 @@ echo "</table>\n";
 echo "<table width=\"100%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td width=\"2%\">&nbsp;</td>\n";
-echo "    <td align=\"left\">", poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true, $highlight_array), "</td>\n";
+echo "    <td align=\"left\">", poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true, $highlight_array), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";

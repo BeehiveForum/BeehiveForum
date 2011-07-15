@@ -121,7 +121,7 @@ function adsense_slot_id($ad_type)
 function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length = NULL)
 {
     static $random_pid = false;
-    
+
     $adsense_display_pages = adsense_display_pages();
 
     $admin_area_files_array = get_available_admin_files();
@@ -151,7 +151,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_RANDOM_MSG) && ($pid == $random_pid)) return true;
         }
     }
-    
+
     return false;
 }
 
@@ -177,7 +177,7 @@ function adsense_output_html()
         if (adsense_publisher_id()) {
 
             $adsense_display_users = adsense_display_users();
-            
+
             $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
@@ -185,6 +185,7 @@ function adsense_output_html()
             echo "<div class=\"google_adsense_container\" style=\"width: 100%; text-align: center\">\n";
             echo "  <div style=\"width: {$ad_width}px; margin: auto\">\n";
             echo "    <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
+
             if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
                 echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
             }

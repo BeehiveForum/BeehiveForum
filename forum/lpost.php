@@ -706,7 +706,7 @@ if (!$new_thread && $reply_to_pid > 0) {
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, true);
+        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, false, true);
     }
 }
 

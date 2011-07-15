@@ -501,7 +501,7 @@ if ($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }else {
@@ -520,8 +520,8 @@ if ($msg_count > 0) {
 
         if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
 
-            echo "<br />\n";
             adsense_output_html();
+            echo "<br />\n";
         }
     }
 }

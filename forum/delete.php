@@ -310,15 +310,15 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\">{$lang['deletemessage']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\">\n";
+echo "                  <td align=\"left\"><br />";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true);
+    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
 
 }else {
 
-    message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, false, false, false, $show_sigs, true);
+    message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, $show_sigs, true);
 }
 
 echo "                  </td>\n";

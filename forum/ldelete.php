@@ -299,11 +299,11 @@ echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_poll_display($tid, $threaddata['LENGTH'], $threaddata['FID'], $threaddata['CLOSED'], false, true);
+    light_poll_display($tid, $threaddata['LENGTH'], $threaddata['FID'], false, $threaddata['CLOSED'], false, true);
 
 }else {
 
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
+    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, $threaddata['CLOSED'], false, false, true);
 }
 
 echo "<div class=\"post_buttons\">";

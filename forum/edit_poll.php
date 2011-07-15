@@ -703,11 +703,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['AID'] = $aid;
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">\n";
-
-    message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
-
-    echo "                  </td>\n";
+    echo "                  <td align=\"left\"><br />", message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

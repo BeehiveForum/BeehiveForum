@@ -103,11 +103,7 @@ function light_html_draw_top()
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
 
-    if (strlen(trim($title)) > 0) {
-
-        echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
-
-    }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
 
@@ -125,12 +121,20 @@ function light_html_draw_top()
             echo "<link rel=\"last\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
             echo "<link rel=\"up\" href=\"lthread_list.php?webtag=$webtag&amp;folder={$folder_data['FID']}\" />\n";
 
-            echo "<title>", thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']), "</title>\n";
+            echo "<title>", thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
+
+        } else if (strlen(trim($title)) > 0) {
+
+            echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
 
         } else {
 
             echo "<title>", htmlentities_array($forum_name), "</title>\n";
         }
+
+    } else if (strlen(trim($title)) > 0) {
+
+        echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
 
     } else {
 

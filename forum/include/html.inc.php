@@ -698,11 +698,39 @@ function html_draw_top()
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
 
-    if (strlen(trim($title)) > 0) {
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+        message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
+
+        list($tid, $pid) = explode('.', $_GET['msg']);
+
+        if (($thread_data = thread_get($tid)) && ($folder_data = thread_get_folder($tid))) {
+
+            $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
+            $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
+
+            echo "<link rel=\"first\" href=\"index.php?webtag=$webtag&amp;msg=$tid.1\" />\n";
+            echo "<link rel=\"previous\" href=\"index.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}\" />\n";
+            echo "<link rel=\"next\" href=\"index.php?webtag=$webtag&amp;msg=$tid.$next_page\" />\n";
+            echo "<link rel=\"last\" href=\"index.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
+
+            echo "<title>", thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
+
+        } else if (strlen(trim($title)) > 0) {
+
+            echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
+
+        } else {
+
+            echo "<title>", htmlentities_array($forum_name), "</title>\n";
+        }
+
+    } else if (strlen(trim($title)) > 0) {
+
         echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
-    }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        echo "<title>", htmlentities_array($meta_description), " - ", htmlentities_array($forum_name), "</title>\n";
-    }else {
+
+    } else {
+
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
 

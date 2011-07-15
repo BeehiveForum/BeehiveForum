@@ -694,7 +694,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "              </tr>\n";
     echo "              <tr>\n";
-    echo "                <td align=\"left\">", message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true), "</td>\n";
+    echo "                <td align=\"left\"><br />", message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, $show_sigs, true), "</td>\n";
     echo "              </tr>\n";
     echo "              <tr>\n";
     echo "                <td align=\"left\">&nbsp;</td>\n";

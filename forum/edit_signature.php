@@ -381,12 +381,7 @@ if (isset($_POST['preview'])) {
         echo "                        <td align=\"left\">\n";
         echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\">\n";
-
-        message_display(0, $preview_message, 0, 0, 0, true, false, false, false, true, true);
-        echo "<br />\n";
-
-        echo "                              </td>\n";
+        echo "                              <td align=\"left\"><br />", message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true, true), "</td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";
         echo "                        </td>\n";

@@ -188,18 +188,18 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
 
     if ($message['PID'] == 1) {
 
-        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], $thread_data['CLOSED'], false, false);
+        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], false, $thread_data['CLOSED'], false, false);
         $last_pid = $message['PID'];
 
     }else {
 
-        light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, false, false);
+        light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, true, false, false);
         $last_pid = $message['PID'];
     }
 
 }else {
 
-    light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, false, false);
+    light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, false, false);
     $last_pid = $message['PID'];
 }
 

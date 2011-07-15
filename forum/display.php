@@ -227,16 +227,16 @@ if ($message) {
 
         if ($message['PID'] == 1) {
 
-            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
 
         }else {
 
-            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, $show_sigs, true);
+            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, $show_sigs, true);
         }
 
     }else {
 
-        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, $show_sigs, true);
+        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, $show_sigs, true);
     }
 }
 

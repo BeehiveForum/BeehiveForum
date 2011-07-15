@@ -472,7 +472,7 @@ function poll_get_user_vote($tid)
     return false;
 }
 
-function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
+function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $lang = load_language_file();
 
@@ -890,7 +890,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $closed = false
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
-    message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
+    message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, $in_list, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
 }
 
 function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
@@ -2103,7 +2103,7 @@ function poll_confirm_close($tid)
 
     html_display_warning_msg($lang['pollconfirmclose'], '96%', 'center');
 
-    poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], $threaddata['CLOSED'], false, $show_sigs, true);
+    poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, $threaddata['CLOSED'], false, $show_sigs, true);
 
     echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
     echo form_input_hidden("webtag", htmlentities_array($webtag));

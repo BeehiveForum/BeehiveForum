@@ -784,7 +784,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</div>\n";
-        echo "<br />\n";
+        echo  ($in_list) ? "<br />\n" : '';
         return;
     }
 
@@ -1160,7 +1160,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     echo "</div>\n";
-    echo "<br />\n";
+    echo  ($in_list) ? "<br />\n" : '';
 }
 
 function message_get_post_options_html($tid, $pid, $folder_fid)
@@ -1410,7 +1410,7 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";
-    echo "<br />\n";
+    echo  ($in_list) ? "<br />\n" : '';
 }
 
 function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page)
@@ -1439,7 +1439,7 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";
-    echo "<br />\n";
+    echo  ($in_list) ? "<br />\n" : '';
 }
 
 function messages_start_panel()

@@ -153,7 +153,7 @@ $(beehive).bind('init', function() {
 
                 $('#quick_reply_container #t_content').focus();
 
-                $('#quick_reply_container #t_content').get(0).scrollIntoView(false);
+                $('#quick_reply_container input#post').get(0).scrollIntoView(false);
             }
         }
     });

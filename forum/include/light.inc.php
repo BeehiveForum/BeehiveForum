@@ -920,6 +920,9 @@ function light_draw_pm_inbox()
 
     $lang = load_language_file();
 
+    // Check for new PMs
+    pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
+
     if (!($pm_folder_names_array = pm_get_folder_names())) {
 
         $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
@@ -946,34 +949,34 @@ function light_draw_pm_inbox()
         $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
     }
 
-    $current_folder = PM_FOLDER_INBOX;
+    $folder = PM_FOLDER_INBOX;
 
     if (isset($_GET['folder'])) {
 
         if ($_GET['folder'] == PM_FOLDER_INBOX) {
-            $current_folder = PM_FOLDER_INBOX;
+            $folder = PM_FOLDER_INBOX;
         }else if ($_GET['folder'] == PM_FOLDER_SENT) {
-            $current_folder = PM_FOLDER_SENT;
+            $folder = PM_FOLDER_SENT;
         }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
-            $current_folder = PM_FOLDER_OUTBOX;
+            $folder = PM_FOLDER_OUTBOX;
         }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
-            $current_folder = PM_FOLDER_SAVED;
+            $folder = PM_FOLDER_SAVED;
         }else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
-            $current_folder = PM_FOLDER_DRAFTS;
+            $folder = PM_FOLDER_DRAFTS;
         }
 
     }elseif (isset($_POST['folder'])) {
 
         if ($_POST['folder'] == PM_FOLDER_INBOX) {
-            $current_folder = PM_FOLDER_INBOX;
+            $folder = PM_FOLDER_INBOX;
         }else if ($_POST['folder'] == PM_FOLDER_SENT) {
-            $current_folder = PM_FOLDER_SENT;
+            $folder = PM_FOLDER_SENT;
         }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
-            $current_folder = PM_FOLDER_OUTBOX;
+            $folder = PM_FOLDER_OUTBOX;
         }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
-            $current_folder = PM_FOLDER_SAVED;
+            $folder = PM_FOLDER_SAVED;
         }else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
-            $current_folder = PM_FOLDER_DRAFTS;
+            $folder = PM_FOLDER_DRAFTS;
         }
     }
 
@@ -987,19 +990,19 @@ function light_draw_pm_inbox()
 
             if (pm_delete_message($delete_mid)) {
 
-                header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
+                header_redirect("lpm.php?webtag=$webtag&folder=$folder&deleted=true");
                 exit;
             }
 
         } else if (isset($_POST['cancel'])) {
 
-            header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&mid=$delete_mid");
+            header_redirect("lpm.php?webtag=$webtag&folder=$folder&mid=$delete_mid");
             exit;
         }
 
-        echo "<form method=\"post\" action=\"lpm.php?deletemsg=$delete_mid&folder=$current_folder\">";
+        echo "<form method=\"post\" action=\"lpm.php?deletemsg=$delete_mid&folder=$folder\">";
 
-        light_pm_display($pm_message_array, $current_folder, true);
+        light_pm_display($pm_message_array, $folder, true);
 
         echo "<div class=\"post_buttons\">";
         echo light_form_submit("pm_delete_confirm", $lang['delete']);
@@ -1012,7 +1015,7 @@ function light_draw_pm_inbox()
 
     if (isset($mid) && is_numeric($mid)) {
 
-        if (!($current_folder = pm_message_get_folder($mid))) {
+        if (!($folder = pm_message_get_folder($mid))) {
 
             light_html_display_error_msg($lang['messagenotfoundinselectedfolder']);
             return;
@@ -1034,9 +1037,9 @@ function light_draw_pm_inbox()
 
         $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-        light_pm_display($pm_message_array, $current_folder);
+        light_pm_display($pm_message_array, $folder);
 
-        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\" class=\"folder_list_link\">{$lang['backtofolderlist']}</a>";
+        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder\" class=\"folder_list_link\">{$lang['backtofolderlist']}</a>";
 
     }else {
 
@@ -1053,36 +1056,36 @@ function light_draw_pm_inbox()
         echo "<div id=\"folder_view\">\n";
         echo "<form accept-charset=\"utf-8\" method=\"get\" action=\"lpm.php\">\n";
         echo "<ul>\n";
-        echo "<li>", light_form_dropdown_array("folder", $pm_folder_names_array, $current_folder), "</li>\n";
+        echo "<li>", light_form_dropdown_array("folder", $pm_folder_names_array, $folder), "</li>\n";
         echo "<li class=\"right_col\">", light_form_submit("go", $lang['goexcmark']), "</li>\n";
         echo "</ul>\n";
         echo "</form>\n";
         echo "</div>\n";
 
-        if (isset($pm_message_count_array[$current_folder]) && is_numeric($pm_message_count_array[$current_folder])) {
+        if (isset($pm_message_count_array[$folder]) && is_numeric($pm_message_count_array[$folder])) {
 
             echo "<div class=\"folder\">";
-            echo "  <h3>{$pm_folder_names_array[$current_folder]}</h3>\n";
+            echo "  <h3>{$pm_folder_names_array[$folder]}</h3>\n";
             echo "  <div class=\"folder_inner\">\n";
-            echo "    <div class=\"folder_info\">{$pm_message_count_array[$current_folder]} {$lang['messages']}</div>\n";
+            echo "    <div class=\"folder_info\">{$pm_message_count_array[$folder]} {$lang['messages']}</div>\n";
 
-            if ($current_folder == PM_FOLDER_INBOX) {
+            if ($folder == PM_FOLDER_INBOX) {
 
                 $pm_messages_array = pm_get_inbox(false, false, $start_from, 20);
 
-            }elseif ($current_folder == PM_FOLDER_SENT) {
+            }elseif ($folder == PM_FOLDER_SENT) {
 
                 $pm_messages_array = pm_get_sent(false, false, $start_from, 20);
 
-            }elseif ($current_folder == PM_FOLDER_OUTBOX) {
+            }elseif ($folder == PM_FOLDER_OUTBOX) {
 
                 $pm_messages_array = pm_get_outbox(false, false, $start_from, 20);
 
-            }elseif ($current_folder == PM_FOLDER_SAVED) {
+            }elseif ($folder == PM_FOLDER_SAVED) {
 
                 $pm_messages_array = pm_get_saved_items(false, false, $start_from, 20);
 
-            }elseif ($current_folder == PM_FOLDER_DRAFTS) {
+            }elseif ($folder == PM_FOLDER_DRAFTS) {
 
                 $pm_messages_array = pm_get_drafts(false, false, $start_from, 20);
             }
@@ -1090,7 +1093,7 @@ function light_draw_pm_inbox()
             if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
                 if ($start_from > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from - 20), "\">{$lang['prev']}</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from - 20), "\">{$lang['prev']}</a></div>\n";
                 }
 
                 echo "<ul>\n";
@@ -1103,17 +1106,17 @@ function light_draw_pm_inbox()
                         echo "<li class=\"pm_read\">";
                     }
 
-                    echo "  <a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
+                    echo "  <a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
                     echo "  <span>", format_time($message['CREATED']), "</span>\n";
                     echo "</li>\n";
                 }
 
                 echo "</ul>\n";
 
-                $more_messages = $pm_message_count_array[$current_folder] - $start_from - 20;
+                $more_messages = $pm_message_count_array[$folder] - $start_from - 20;
 
                 if ($more_messages > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;start_from=", ($start_from + 20), "\">{$lang['next']}</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from + 20), "\">{$lang['next']}</a></div>\n";
                 }
             }
 

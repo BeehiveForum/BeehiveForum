@@ -117,7 +117,7 @@ $error_msg_array = array();
 // Available PM Folders
 $available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
                            PM_FOLDER_SAVED, PM_FOLDER_DRAFTS, PM_SEARCH_RESULTS);
-                           
+
 $uid = session_get_value('UID');
 
 // Get the user's saved left frame width.
@@ -183,6 +183,5 @@ if (isset($_GET['message_sent'])) {
 $frameset->output_html();
 
 html_draw_bottom(true);
-exit;
 
 ?>

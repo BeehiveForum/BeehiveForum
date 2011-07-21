@@ -201,6 +201,11 @@ echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
 echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";
 echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
+echo "<image>\n";
+echo "<title>{$forum_name}</title>\n";
+echo "<url>", html_style_image('rss_icon.png', true, true), "</url>\n";
+echo "<link>{$forum_location}/</link>\n";
+echo "</image>\n";
 
 // Get the 20 most recent threads
 if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y')))) {

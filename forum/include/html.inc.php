@@ -1213,17 +1213,17 @@ function html_js_safe_str($str)
     return strtr($str, $unsafe_chars_tbl);
 }
 
-function html_style_image($img)
+function html_style_image($img, $allow_cdn = true, $use_full_path = false)
 {
     if (($user_style = session_get_value('STYLE')) === false) {
         $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
     }
 
     if ($user_style !== false) {
-        return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img));
+        return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img), $allow_cdn, $use_full_path);
     }
 
-    return html_get_forum_file_path(sprintf('images/%s', $img));
+    return html_get_forum_file_path(sprintf('images/%s', $img), $allow_cdn, $use_full_path);
 }
 
 function html_set_cookie($name, $value, $expires = 0)

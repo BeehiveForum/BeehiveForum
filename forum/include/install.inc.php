@@ -659,9 +659,9 @@ function install_get_table_names(&$global_tables, &$forum_tables)
                                      'PM',                  'PM_ATTACHMENT_IDS',   'PM_CONTENT',
                                      'PM_FOLDERS',          'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES',
                                      'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
-                                     'SESSIONS',            'TIMEZONES',           'USER',
-                                     'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
-                                     'VISITOR_LOG');
+                                     'SESSIONS',            'SPHINX_SEARCH_ID',    'TIMEZONES',
+                                     'USER',                'USER_FORUM',          'USER_HISTORY',
+                                     'USER_PREFS',          'VISITOR_LOG');
     }
 
     // Check the per-forum store has been initialised.

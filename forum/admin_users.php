@@ -392,13 +392,13 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT'], 1), "</td>\n";
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT']), "</td>\n";
         }else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }
 
         if (isset($user['REGISTERED']) && $user['REGISTERED'] > 0) {
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['REGISTERED'], 1), "</td>\n";
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['REGISTERED']), "</td>\n";
         }else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }

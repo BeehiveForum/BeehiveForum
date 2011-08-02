@@ -110,7 +110,7 @@ function format_file_size($size)
 * @param boolean $verbose - Force display of year / month even if the same as current server time.
 */
 
-function format_time($time, $verbose = false)
+function format_time($time)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
     $lang = load_language_file();
@@ -131,53 +131,52 @@ function format_time($time, $verbose = false)
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
-    // Calculate $time in local timezone and current local time
-    $local_time = $time + ($gmt_offset * HOUR_IN_SECONDS);
-    $local_time_now = time() + ($gmt_offset * HOUR_IN_SECONDS);
+    // Calculate $time in user's timezone.
+    $time = $time + ($gmt_offset * HOUR_IN_SECONDS);
 
-    // Amend times for daylight saving if necessary
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+    // Calculate the current time in user's timezone.
+    $current_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
 
-        $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
-        $local_time_now = $local_time_now + ($dst_offset * HOUR_IN_SECONDS);
+    // Check for DST changes
+    if (($dl_saving == 'Y') && timestamp_is_dst($timezone_id, $gmt_offset)) {
+
+        // Ammend the $time to include DST
+        $time = $time + ($dst_offset * HOUR_IN_SECONDS);
+
+        // Ammend the current time to include DST
+        $current_time = $current_time + ($dst_offset * HOUR_IN_SECONDS);
     }
 
-    // Get the numerical for the dates to convert
-    $date_string = gmdate("i G j n Y", $local_time);
-    list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
+    // Get the numerical parts for $time
+    list($time_min, $time_hour, $time_day, $time_month, $time_year) = explode(" ", gmdate("i G j n Y", $time));
 
-    // We only ever use the month as a string
-    $month_str = $lang['month_short'][$month];
+    // Get the numerical parts for the current time
+    list($current_min, $current_hour, $current_day, $current_month, $current_year) = explode(' ', gmdate('i G j n Y', $current_time));
 
-    if (($year != gmdate("Y", $local_time_now))) {
+    // Get the month string for $time
+    $time_month = $lang['month_short'][$time_month];
 
-        if ($verbose) {
-            $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
-        }else {
-            $fmt = sprintf($lang['monthyear'], $month_str, $year); // M Y
-        }
+    // Get the month string for current time.
+    $current_month = $lang['month_short'][$current_month];
 
-    }elseif (($month != gmdate("n", $local_time_now)) || ($day != gmdate("j", $local_time_now))) {
+    // Decide on the date format.
+    if (($time_year != $current_year)) {
 
-        if ($verbose) {
+        // If the year is different, show everything.
+        $format = sprintf($lang['daymonthyearhourminute'], $time_day, $time_month, $time_year, $time_hour, $time_min); // j M Y H:i
 
-            if (($year != gmdate("Y", $local_time_now))) {
-                $fmt = sprintf($lang['daymonthyearhourminute'], $day, $month_str, $year, $hour, $min); // j M Y H:i
-            }else {
-                $fmt = sprintf($lang['daymonthhourminute'], $day, $month_str, $hour, $min); // j M H:i
-            }
+    } else if (($time_month != $current_month) || ($time_day != $current_day)) {
 
-        }else {
+        // If the month or day are different, show them with the time.
+        $format = sprintf($lang['daymonthhourminute'], $time_day, $time_month, $time_hour, $time_min); // j M H:i
 
-            $fmt = sprintf($lang['daymonth'], $day, $month_str); // j M
-        }
+    } else {
 
-    }else {
-
-        $fmt = sprintf($lang['hourminute'], $hour, $min); // H:i
+        // Show only the time.
+        $format = sprintf($lang['hourminute'], $time_hour, $time_min); // H:i
     }
 
-    return $fmt;
+    return $format;
 }
 
 /**
@@ -859,14 +858,14 @@ function implode_assoc($array, $separator = ': ', $glue = ', ')
 function path_info_query($path)
 {
     if (!($path_parts = @pathinfo($path))) return false;
-    
+
     if (($url_parts = @parse_url($path)) && isset($url_parts['query'])) {
-        
+
         $path_parts['query'] = $url_parts['query'];
         $path_parts['extension'] = str_replace("?{$path_parts['query']}", '', $path_parts['extension']);
         $path_parts['basename'] = str_replace("?{$path_parts['query']}", '', $path_parts['basename']);
     }
-    
+
     return $path_parts;
 }
 

@@ -32,9 +32,9 @@ $(beehive).bind('init', function() {
     });
 
     $('.upload_fields').css('display', 'block');
-    
+
     $('input#upload').bind('click', function() {
-        $(this).val(beehive.lang.waitdotdot);
+        $(this).val(beehive.lang.waitdotdotdot);
     });
 
     $('input#complete').bind('click', function() {

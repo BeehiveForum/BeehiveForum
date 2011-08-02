@@ -116,7 +116,7 @@ if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
 // Construct the Javascript / JSON array
 $json_data = array('webtag'            => $webtag,
                    'uid'               => session_get_value('UID'),
-                   'lang'              => array_intersect_key($lang, array_flip($lang_required)),
+                   'lang'              => htmlentities_decode_array(array_intersect_key($lang, array_flip($lang_required))),
                    'images'            => array(),
                    'font_size'         => $font_size,
                    'user_style'        => html_get_style_sheet(),

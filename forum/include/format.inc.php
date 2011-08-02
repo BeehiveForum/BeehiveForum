@@ -208,33 +208,44 @@ function format_date($time)
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
-    // Calculate $time in local timezone and current local time
-    $local_time = $time + ($gmt_offset * HOUR_IN_SECONDS);
-    $local_time_now = time() + ($gmt_offset * HOUR_IN_SECONDS);
+    // Calculate $time in user's timezone.
+    $time = $time + ($gmt_offset * HOUR_IN_SECONDS);
 
-    // Amend times for daylight saving if necessary
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+    // Calculate the current time in user's timezone.
+    $current_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
 
-        $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
-        $local_time_now = $local_time_now + ($dst_offset * HOUR_IN_SECONDS);
+    // Check for DST changes
+    if (($dl_saving == 'Y') && timestamp_is_dst($timezone_id, $gmt_offset)) {
+
+        // Ammend the $time to include DST
+        $time = $time + ($dst_offset * HOUR_IN_SECONDS);
+
+        // Ammend the current time to include DST
+        $current_time = $current_time + ($dst_offset * HOUR_IN_SECONDS);
     }
 
-    // Get the numerical for the dates to convert
-    $date_string = gmdate("j n Y", $local_time);
-    list($day, $month, $year) = explode(" ", $date_string);
+    // Get the numerical parts for $time
+    list($time_day, $time_month, $time_year) = explode(" ", gmdate("j n Y", $time));
 
-    // We only ever use the month as a string
-    $month_str = $lang['month_short'][$month];
+    // Get the numerical parts for the current time
+    list($current_day, $current_year) = explode(' ', gmdate('j Y', $current_time));
 
-    if (($year != gmdate("Y", $local_time_now))) {
+    // Get the month string for $time
+    $time_month = $lang['month_short'][$time_month];
 
-        $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
-    }else {
+    // Decide on the date format.
+    if (($time_year != $current_year)) {
 
-        $fmt = sprintf($lang['daymonth'], $day, $month_str); // j M
+        // If the year is different, show everything.
+        $format = sprintf($lang['daymonthyear'], $time_day, $time_month, $time_year); // j M Y
+
+    } else {
+
+        // Show only the day and month.
+        $format = sprintf($lang['daymonth'], $time_day, $time_month); // j M
     }
 
-    return $fmt;
+    return $format;
 }
 
 /**

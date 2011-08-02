@@ -1755,7 +1755,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         if ($in_list) {
 
             if (($from_user_permissions & USER_PERM_WORMED)) echo $lang['wormeduser'];
-            echo "<span class=\"message_time\">", format_time($message['CREATED'], 1), "</span>\n";
+            echo "<span class=\"message_time\">", format_time($message['CREATED']), "</span>\n";
         }
     }
 
@@ -1776,7 +1776,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         if (!$is_preview) {
 
             if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-                echo "<span class=\"message_read\">", format_time($message['VIEWED'], 1), "</span>";
+                echo "<span class=\"message_read\">", format_time($message['VIEWED']), "</span>";
             } else {
                 echo "<span class=\"message_unread\" title=\"{$lang['unread']}\"></span>";
             }
@@ -1836,7 +1836,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
-                echo "<div class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</div>\n";
+                echo "<div class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED']), $edit_user), "</div>\n";
             }
         }
     }

@@ -328,7 +328,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         $auto_update = false;
 
         echo "                  <tr>\n";
-        echo "                    <td align=\"left\" valign=\"top\"><span title=\"", format_time($admin_log_entry['CREATED'], true), "\">", format_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                    <td align=\"left\" valign=\"top\"><span title=\"", format_time($admin_log_entry['CREATED']), "\">", format_time($admin_log_entry['CREATED']), "</td>\n";
 
         $entry_array = htmlentities_array(explode("\x00", $admin_log_entry['ENTRY']));
 

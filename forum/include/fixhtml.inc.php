@@ -399,10 +399,10 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             $flash_html_parts = array(sprintf('object type="application/x-shockwave-flash" %s', implode_assoc($flash_attr_array, '=', ' ')));
 
-                            array_push($flash_html_parts, '', sprintf('param name="movie" value=%s', $flash_attr_array['data']));
+                            array_push($flash_html_parts, '', sprintf('param name="movie" value=%s /', $flash_attr_array['data']));
 
                             if (isset($flash_wmode) && strlen(trim($flash_wmode)) > 0) {
-                                array_push($flash_html_parts, '', sprintf('param name="wmode" value="%s"', $flash_wmode));
+                                array_push($flash_html_parts, '', sprintf('param name="wmode" value="%s" /', $flash_wmode));
                             }
 
                             array_push($flash_html_parts, '', '/object');
@@ -432,7 +432,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         $last_tag = array();
 
-        $single_tags = array('br', 'img', 'hr', 'area', 'flash');
+        $single_tags = array('br', 'img', 'hr', 'area', 'param');
 
         $no_nest = array('p'  => array('table', 'li'),
                          'li' => array('ul', 'ol'),
@@ -832,7 +832,9 @@ function clean_attributes($tag)
 
     $valid['marquee'] = array('direction', 'behavior', 'loop', 'scrollamount', 'scrolldelay', 'height', 'width', 'hspace', 'vspace');
 
-    $valid['flash'] = array('width', 'height', 'wmode', 'src');
+    $valid['object'] = array('data', 'type', 'width', 'height');
+
+    $valid['param'] = array('name', 'value');
 
     $urls = array('href', 'background', 'src', 'pluginspage', 'pluginurl');
 
@@ -1016,7 +1018,7 @@ function tidy_html($html, $linebreaks = true, $links = true)
     $html = preg_replace('/<iframe class="youtube" width="480" height="390" src="[^"]+" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" frameborder="0" allowfullscreen="true"><\/iframe>/isu', '<youtube>\\1</youtube>', $html);
 
     // Flash tag
-    $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1">(<param name="wmode" value="(opaque|transparent)">)?<\/object>/isu', 'tidy_html_flash_tag_callback', $html);
+    $html = preg_replace_callback('/<object type="application\/x-shockwave-flash" data="([^"]+)"( width="([^"]+)")?( height="([^"]+)")?><param name="movie" value="\1" \/>(<param name="wmode" value="(opaque|transparent)" \/>)?<\/object>/isu', 'tidy_html_flash_tag_callback', $html);/**/
 
     return $html;
 }

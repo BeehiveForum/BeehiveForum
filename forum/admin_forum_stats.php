@@ -650,7 +650,7 @@ if (($most_users = stats_get_most_users()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"300\">{$lang['mostuserseveronline']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", sprintf($lang['mostuserseveronlinedetail'], number_format($most_users['MOST_USERS_COUNT'], 0, '.', ','), format_time($most_users['MOST_USERS_DATE'], 1)), "</td>\n";
+    echo "                  <td align=\"left\">", sprintf($lang['mostuserseveronlinedetail'], number_format($most_users['MOST_USERS_COUNT'], 0, '.', ','), format_time($most_users['MOST_USERS_DATE'])), "</td>\n";
     echo "                </tr>\n";
 }
 

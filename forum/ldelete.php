@@ -299,7 +299,7 @@ echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_poll_display($tid, $threaddata['LENGTH'], $threaddata['FID'], false, $threaddata['CLOSED'], false, true);
+    light_poll_display($tid, $threaddata['LENGTH'], $threaddata['FID'], false, $threaddata['CLOSED'], false, false);
 
 }else {
 

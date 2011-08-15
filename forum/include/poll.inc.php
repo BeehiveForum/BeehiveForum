@@ -472,7 +472,7 @@ function poll_get_user_vote($tid)
     return false;
 }
 
-function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
+function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $view_style = POLL_VIEW_TYPE_OPTION, $highlight_array = array())
 {
     $lang = load_language_file();
 
@@ -499,7 +499,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_data['CONTENT'].= "                <div align=\"center\">\n";
     $poll_data['CONTENT'].= "                <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
     $poll_data['CONTENT'].= "                  <tr>\n";
-    $poll_data['CONTENT'].= "                    <td align=\"left\">\n";
+    $poll_data['CONTENT'].= "                    <td align=\"center\">\n";
     $poll_data['CONTENT'].= "                      <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     $poll_data['CONTENT'].= "                        ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
     $poll_data['CONTENT'].= "                        ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
@@ -593,7 +593,22 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
 
-            if ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
+            if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
+
+                $poll_data['CONTENT'].= "  <tr>\n";
+                $poll_data['CONTENT'].= "    <td align=\"center\" class=\"postbody\">\n";
+                $poll_data['CONTENT'].= "      ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
+                $poll_data['CONTENT'].= "      ". form_input_hidden("tid", htmlentities_array($tid)). "\n";
+                $poll_data['CONTENT'].= "      {$lang['viewstyle']}: ". form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""). "&nbsp;". form_submit('go', $lang['goexcmark']). "\n";
+                $poll_data['CONTENT'].= "    </td>\n";
+                $poll_data['CONTENT'].= "  </tr>\n";
+                $poll_data['CONTENT'].= "                          <tr>\n";
+                $poll_data['CONTENT'].= "                            <td align=\"center\" colspan=\"2\">\n";
+                $poll_data['CONTENT'].= poll_public_ballot($tid, $view_style, 0, $poll_user_count);
+                $poll_data['CONTENT'].= "                            </td>\n";
+                $poll_data['CONTENT'].= "                          </tr>\n";
+
+            } else if ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
 
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
@@ -687,7 +702,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['resultdetails']}</span></a></td>\n";
+                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a></td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
@@ -767,16 +782,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
                 if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-
-                    if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['resultdetails']}</span></a>";
-
-                    }else {
-
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
-
-                    }
+                    $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
                 }
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
@@ -813,15 +819,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
                 if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-
-                    if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['resultdetails']}</span></a>";
-
-                    }else {
-
-                        $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
-                    }
+                    $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
                 }
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {

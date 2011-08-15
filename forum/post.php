@@ -1206,7 +1206,7 @@ if (!$new_thread && $reply_to_pid > 0) {
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><br />", poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], $thread_data['CLOSED'], false, $show_sigs, true), "</td>\n";
+        echo "                  <td align=\"left\"><br />", poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, $show_sigs, true), "</td>\n";
         echo "                </tr>\n";
 
     }else {

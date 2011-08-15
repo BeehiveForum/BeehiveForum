@@ -1681,6 +1681,7 @@ $lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
 $lang['answertext'] = "Answer Text";
 $lang['answergroup'] = "Answer Group";
 $lang['previewvotingform'] = "Preview Voting Form";
+$lang['viewstyle'] = "View Style";
 $lang['viewbypolloption'] = "View by poll option";
 $lang['viewbyuser'] = "View by user";
 

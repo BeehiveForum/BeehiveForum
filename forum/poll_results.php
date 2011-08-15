@@ -175,13 +175,13 @@ if (!$poll_data = poll_get($tid)) {
     exit;
 }
 
-if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
+if (isset($_POST['view_style']) && is_numeric($_POST['view_style'])) {
 
-    if ($_GET['view_style'] == POLL_VIEW_TYPE_OPTION) {
+    if ($_POST['view_style'] == POLL_VIEW_TYPE_OPTION) {
 
         $view_style = POLL_VIEW_TYPE_OPTION;
 
-    }elseif ($_GET['view_style'] == POLL_VIEW_TYPE_USER) {
+    }elseif ($_POST['view_style'] == POLL_VIEW_TYPE_USER) {
 
         $view_style = POLL_VIEW_TYPE_USER;
 
@@ -218,7 +218,7 @@ echo "</table>\n";
 echo "<table width=\"100%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td width=\"2%\">&nbsp;</td>\n";
-echo "    <td align=\"left\">", poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true, $highlight_array), "</td>\n";
+echo "    <td align=\"left\">", poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true, $view_style, $highlight_array), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";

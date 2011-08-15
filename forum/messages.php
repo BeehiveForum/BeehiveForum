@@ -352,6 +352,26 @@ if (isset($_GET['font_resize'])) {
     echo "</div>\n";
 }
 
+if (isset($_POST['view_style']) && is_numeric($_POST['view_style'])) {
+
+    if ($_POST['view_style'] == POLL_VIEW_TYPE_OPTION) {
+
+        $view_style = POLL_VIEW_TYPE_OPTION;
+
+    }elseif ($_POST['view_style'] == POLL_VIEW_TYPE_USER) {
+
+        $view_style = POLL_VIEW_TYPE_USER;
+
+    }else {
+
+        $view_style = POLL_VIEW_TYPE_OPTION;
+    }
+
+}else {
+
+    $view_style = POLL_VIEW_TYPE_OPTION;
+}
+
 if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
     echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
@@ -501,7 +521,7 @@ if ($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $view_style, $highlight_array);
             $last_pid = $message['PID'];
 
           }else {

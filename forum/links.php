@@ -83,6 +83,9 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 // Get Webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
@@ -232,7 +235,7 @@ if (isset($_GET['link_added']) && strlen(trim(stripslashes_array($_GET['link_add
 
 // work out where we are in the folder hierarchy and display links to all the higher levels
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
-    
+
     echo "<div align=\"right\">{$lang['viewmode']}: ";
     echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\"><b>{$lang['hierarchical']}</b></a> | ";
     echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\">{$lang['list']}</a>\n";

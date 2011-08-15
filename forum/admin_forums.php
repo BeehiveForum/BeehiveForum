@@ -86,6 +86,9 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Get Webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
@@ -258,12 +261,12 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = $lang['webtaginvalidchars'];
             $valid = false;
         }
-        
+
         if (strlen(trim($t_webtag)) > 32) {
 
             $error_msg_array[] = $lang['webtagmaxlength'];
             $valid = false;
-        }        
+        }
 
     }else {
 
@@ -747,7 +750,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             }else {
                 echo "                  <td align=\"left\">{$lang['unknown']}</td>\n";
             }
-            
+
             echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}&amp;final_uri=admin_forum_settings.php%3Fwebtag%3D{$forum_data['WEBTAG']}\" target=\"", html_get_top_frame_name(), "\"><img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;";
 
             if (isset($forum_data['DEFAULT_FORUM']) && $forum_data['DEFAULT_FORUM'] == 1) {
@@ -755,7 +758,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             }else {
                 echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default={$forum_data['FID']}\"><img src=\"", html_style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></a>\n";
             }
-            
+
             echo "                  </td>\n";
             echo "                </tr>\n";
         }

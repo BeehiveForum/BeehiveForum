@@ -80,6 +80,9 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Get webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Check we're logged in correctly
 $user_sess = session_check();
 
@@ -101,7 +104,7 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
 
     // Load the user prefs
     $user_prefs = user_get_prefs($uid);
-    
+
     // Calculate the new font size.
     switch ($_GET['fontsize']) {
 
@@ -124,17 +127,17 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
 
     // Apply the font size to this forum only.
     $user_prefs_global = array('FONT_SIZE' => false);
-    
+
     // Update the user prefs.
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
+
         header_redirect("messages.php?webtag=$webtag&msg=$tid.$pid&font_resize=1");
-    
+
     } else {
-        
+
         html_draw_top();
         html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
-        html_draw_bottom();        
+        html_draw_bottom();
     }
 
 } else {

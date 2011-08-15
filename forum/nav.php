@@ -82,6 +82,9 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 // Get webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Don't want to redirect the nav.php - frame is too small!
 $user_sess = session_check(false);
 

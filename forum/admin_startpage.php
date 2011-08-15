@@ -86,6 +86,9 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Get Webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
@@ -147,18 +150,18 @@ if (isset($_POST['save'])) {
 
     // New array of forum settings.
     $new_forum_settings = array('start_page' => $startpage_editor_message->getContent());
-    
+
     // Save the settings.
     if (forum_save_settings($new_forum_settings)) {
-    
+
         // Update the admin log.
         admin_add_log_entry(EDITED_START_PAGE);
-        
+
         // Redirect back to self.
         header_redirect("admin_startpage.php?webtag=$webtag&updated=true");
         exit;
     }
-        
+
     // Save failed. Show error message.
     $error_msg_array[] = $lang['startpageerror'];
 
@@ -184,28 +187,28 @@ if (isset($_POST['save'])) {
 
                 // Read the contents of the file.
                 if (($start_page_css = @file_get_contents($_FILES['cssfile']['tmp_name']))) {
-                    
+
                     // New array of forum settings.
                     $new_forum_settings = array('start_page_css' => $start_page_css);
-                    
+
                     // Save the settings.
                     if (forum_save_settings($new_forum_settings)) {
 
                         // Update admin log.
                         admin_add_log_entry(EDITED_START_PAGE);
-                        
+
                         // Redirect back to self.
                         header_redirect("admin_startpage.php?webtag=$webtag&uploaded=true");
                         exit;
                     }
                 }
             }
-            
+
             // Something went wrong above. Show Error message.
             $error_msg_array[] = $lang['uploadcssfilefailed'];
-        
+
         } else {
-        
+
             // File does not look like text/css
             $error_msg_array[] = $lang['invalidfiletypeerror'];
         }

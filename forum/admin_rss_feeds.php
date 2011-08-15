@@ -88,6 +88,9 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 // Get Webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
@@ -301,11 +304,11 @@ if (isset($_POST['delete'])) {
         $valid = false;
         $error_msg_array[] = $lang['mustspecifyrssfeedupdatefrequency'];
     }
-    
+
     if (isset($_POST['t_max_item_count_new']) && in_array($_POST['t_max_item_count_new'], range(1, 10))) {
-        
+
         $t_max_item_count_new = $_POST['t_max_item_count_new'];
-        
+
     } else {
 
         $valid = false;
@@ -422,11 +425,11 @@ if (isset($_POST['delete'])) {
         }else {
             $t_old_frequency = "";
         }
-        
+
         if (isset($_POST['t_max_item_count']) && in_array($_POST['t_max_item_count'], range(1, 10))) {
-            
+
             $t_max_item_count = $_POST['t_max_item_count'];
-            
+
         } else {
 
             $valid = false;
@@ -437,14 +440,14 @@ if (isset($_POST['delete'])) {
             $t_old_max_item_count = $_POST['t_old_max_item_count'];
         } else {
             $t_old_max_item_count = 0;
-        }        
+        }
 
         if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency) || ($t_max_item_count != $t_old_max_item_count))) {
 
             if (($t_user_array = user_get_by_logon($t_new_user))) {
 
                 $t_new_uid = $t_user_array['UID'];
-                
+
                 if (rss_feed_update($feed_id, $t_new_name, $t_new_uid, $t_new_fid, $t_new_url, $t_new_prefix, $t_new_frequency, $t_max_item_count)) {
 
                     $log_data = array($t_new_name, $t_old_name, $t_new_user, $t_old_user, $t_new_fid, $t_old_fid, $t_new_url, $t_old_url, $t_new_prefix, $t_old_prefix, $t_new_frequency, $t_old_frequency);

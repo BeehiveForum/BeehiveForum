@@ -101,6 +101,9 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     }
 }
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Load the user session
 $user_sess = session_check(false);
 

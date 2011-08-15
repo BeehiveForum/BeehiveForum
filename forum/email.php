@@ -82,6 +82,9 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 // Get Webtag
 $webtag = get_webtag();
 
+// See if we can try and logon automatically
+logon_perform_auto();
+
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());
@@ -176,7 +179,7 @@ if (isset($_POST['send'])) {
         $error_msg_array[] = $lang['entercontentformessage'];
         $valid = false;
     }
-    
+
     if (isset($_POST['t_use_email_addr']) && $_POST['t_use_email_addr'] == 'Y') {
         $use_email_addr = true;
     } else {

@@ -93,13 +93,13 @@ if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['f
 
     if (preg_match("/^$available_files_preg/u", basename(trim(stripslashes_array($_REQUEST['final_uri'])))) > 0) {
         $final_uri = sprintf('&final_uri=%s', rawurlencode(basename(trim(stripslashes_array($_REQUEST['final_uri'])))));
-    } 
+    }
 }
 
 session_end();
 
 if (isset($_REQUEST['register'])) {
-    
+
     $final_uri = rawurlencode("register.php?webtag=$webtag$final_uri");
     header_redirect("index.php?webtag=$webtag&final_uri=$final_uri");
     exit;

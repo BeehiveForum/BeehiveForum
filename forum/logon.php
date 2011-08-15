@@ -152,7 +152,7 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
     }else {
 
         html_set_cookie("logon", "1");
-        
+
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);

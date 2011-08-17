@@ -73,10 +73,13 @@ function logon_perform()
         $user_logon = stripslashes_array($_POST['user_logon']);
 
         // Extract the submitted password
-        $user_passhash = md5(stripslashes_array($_POST['user_password']));
+        $user_password = stripslashes_array($_POST['user_password']);
 
         // Try and login the user.
-        if (($uid = user_logon($user_logon, $user_passhash))) {
+        if (($uid = user_logon($user_logon, $user_password))) {
+
+            // Get the hash for the entered password.
+            $passhash = user_get_passhash($uid, $user_password);
 
             // Remove the cookie which shows the logon page.
             html_set_cookie('logon', "", time() - YEAR_IN_SECONDS);
@@ -88,7 +91,7 @@ function logon_perform()
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {
 
                 html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-                html_set_cookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
+                html_set_cookie('user_passhash', $passhash, time() + YEAR_IN_SECONDS);
 
             } else {
 
@@ -126,7 +129,7 @@ function logon_perform_auto($redirect = true)
     if (!($user_passhash = html_get_cookie('user_passhash'))) return false;
 
     // Try and login the user.
-    if (!($uid = user_logon($user_logon, $user_passhash))) return false;
+    if (!($uid = user_logon_passhash($user_logon, $user_passhash))) return false;
 
     // Reset the user_logon and user_passhash cookies
     html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);

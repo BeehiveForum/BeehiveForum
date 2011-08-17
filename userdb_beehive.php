@@ -116,11 +116,8 @@ function ewiki_auth_userdb_beehive($username, $password)
     restore_error_handler();
     error_reporting(E_ALL ^ E_NOTICE);
 
-    // MD5 hash the password.
-    $passhash = md5($password);
-
     // Attempt user logon
-    if (($uid = user_logon($username, $passhash))) {
+    if (($uid = user_logon($username, $password))) {
 
         if (session_init($uid)) {
 

@@ -1982,4 +1982,26 @@ function admin_send_post_approval_notification($fid)
     return $notification_success;
 }
 
+function admin_reset_user_password($uid, $password)
+{
+    if (!$db_admin_reset_user_password = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    $salt = user_password_salt();
+
+    $passhash = user_password_encrypt($password, $salt);
+
+    $salt = db_escape_string($salt);
+
+    $passhash = db_escape_string($passhash);
+
+    $sql = "UPDATE USER SET PASSWD = '$passhash', SALT = '$salt' ";
+    $sql.= "WHERE UID = '$uid'";
+
+    if (!(db_query($sql, $db_admin_reset_user_password))) return false;
+
+    return true;
+}
+
 ?>

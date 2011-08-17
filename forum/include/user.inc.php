@@ -80,10 +80,11 @@ function user_create($logon, $password, $nickname, $email)
 {
     if (!$db_user_create = db_connect()) return false;
 
-    $logon     = db_escape_string($logon);
-    $nickname  = db_escape_string($nickname);
-    $email     = db_escape_string($email);
-    $md5pass   = md5($password);
+    if (!$ipaddress = get_ip_address()) return false;
+
+    $logon = db_escape_string($logon);
+    $nickname = db_escape_string($nickname);
+    $email = db_escape_string($email);
 
     if (($http_referer = session_get_value('REFERER'))) {
         $http_referer = db_escape_string($http_referer);
@@ -91,12 +92,14 @@ function user_create($logon, $password, $nickname, $email)
         $http_referer = "";
     }
 
-    if (!$ipaddress = get_ip_address()) return false;
+    $salt = substr(str_replace('+', '.', base64_encode(pack('N4', mt_rand(), mt_rand(), mt_rand(), mt_rand()))), 0, 22);
+
+    $passhash = user_password_encrypt($password, $salt);
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, REFERER, IPADDRESS) ";
-    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email', CAST('$current_datetime' AS DATETIME), ";
+    $sql = "INSERT INTO USER (LOGON, PASSWD, SALT, NICKNAME, EMAIL, REGISTERED, REFERER, IPADDRESS) ";
+    $sql.= "VALUES ('$logon', '$passhash', '$salt', '$nickname', '$email', CAST('$current_datetime' AS DATETIME), ";
     $sql.= "'$http_referer', '$ipaddress')";
 
     if ((db_query($sql, $db_user_create))) {
@@ -247,38 +250,59 @@ function user_reset_post_count($uid)
     return true;
 }
 
-function user_change_password($user_uid, $password, $old_passhash = false)
+function user_change_password($uid, $new_password, $old_password)
 {
     if (!$db_user_change_password = db_connect()) return false;
 
-    if (!is_numeric($user_uid)) return false;
+    if (!is_numeric($uid)) return false;
 
-    $passhash = db_escape_string(md5($password));
+    $sql = "SELECT PASSWD, SALT FROM USER WHERE UID = '$uid'";
 
-    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (!($result = db_query($sql, $db_user_change_password))) return false;
 
-        $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
-        $sql.= "WHERE UID = '$user_uid'";
+    list($passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if (!db_query($sql, $db_user_change_password)) return false;
+    if (user_password_encrypt($old_password, $salt) != $passhash) return false;
 
-        return true;
+    $salt = user_password_salt();
 
-    }elseif (is_md5($old_passhash)) {
+    $passhash = user_password_encrypt($new_password, $salt);
 
-        $old_passhash = db_escape_string($old_passhash);
+    $salt = db_escape_string($salt);
 
-        if ($old_passhash === $passhash) return true;
+    $passhash = db_escape_string($passhash);
 
-        $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
-        $sql.= "WHERE UID = '$user_uid' AND PASSWD = '$old_passhash'";
+    $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash', ";
+    $sql.= "SALT = '$salt' WHERE UID = '$uid' ";
 
-        if (!db_query($sql, $db_user_change_password)) return false;
+    if (!db_query($sql, $db_user_change_password)) return false;
 
-        return (db_affected_rows($db_user_change_password) > 0);
-    }
+    return true;
+}
 
-    return false;
+function user_reset_password($uid, $new_password, $old_passhash)
+{
+    if (!$db_user_reset_password = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    $old_passhash = db_escape_string($old_passhash);
+
+    $salt = user_password_salt();
+
+    $passhash = user_password_encrypt($new_password, $salt);
+
+    $salt = db_escape_string($salt);
+
+    $passhash = db_escape_string($passhash);
+
+    $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash', ";
+    $sql.= "SALT = '$salt' WHERE UID = '$uid' ";
+    $sql.= "AND PASSWD = '$old_passhash'";
+
+    if (!($result = db_query($sql, $db_user_reset_password))) return false;
+
+    return true;
 }
 
 function user_update_forums($uid, $forum_fid, $allowed)
@@ -289,52 +313,106 @@ function user_update_forums($uid, $forum_fid, $allowed)
     if (!is_numeric($forum_fid)) return false;
     if (!is_numeric($allowed)) return false;
 
-    if (is_numeric($forum_fid) && is_numeric($allowed)) {
+    $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+    $sql.= "VALUES ('$uid', '$forum_fid', '$allowed') ";
+    $sql.= "ON DUPLICATE KEY UPDATE ALLOWED = VALUES(ALLOWED)";
 
-        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-        $sql.= "VALUES ('$uid', '$forum_fid', '$allowed') ";
-        $sql.= "ON DUPLICATE KEY UPDATE ALLOWED = VALUES(ALLOWED)";
-
-        if (!db_query($sql, $db_user_update_forums)) return false;
-    }
+    if (!db_query($sql, $db_user_update_forums)) return false;
 
     return true;
 }
 
-function user_logon($logon, $passhash)
+function user_logon($logon, $password)
 {
     if (!$db_user_logon = db_connect()) return false;
 
-    if (!is_md5($passhash)) return false;
-
     $logon = db_escape_string(mb_strtoupper($logon));
-    $passhash = db_escape_string($passhash);
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
+    $ipaddress = db_escape_string($ipaddress);
 
-    $sql = "SELECT UID, IPADDRESS FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash' ";
+    $sql = "SELECT UID, PASSWD, SALT FROM USER ";
+    $sql.= "WHERE LOGON = '$logon'";
 
-    if (!$result = db_query($sql, $db_user_logon)) return false;
+    if (!($result = db_query($sql, $db_user_logon))) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $user_data = db_fetch_array($result);
+    list($uid, $passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if (isset($user_data['UID']) && is_numeric($user_data['UID'])) {
+    if (is_md5($passhash) && (md5($password) == $passhash)) {
 
-            if (strcmp($user_data['IPADDRESS'], $ipaddress) <> 0) {
+        if (!user_reset_password($uid, $password, $passhash)) return false;
 
-                $sql = "UPDATE LOW_PRIORITY USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
-                if (!$result = db_query($sql, $db_user_logon)) return false;
-            }
-
-            return $user_data['UID'];
-        }
+        return $uid;
     }
 
-    return false;
+    if (user_password_encrypt($password, $salt) != $passhash) return false;
+
+    $sql = "UPDATE LOW_PRIORITY USER SET IPADDRESS = '$ipaddress' WHERE UID = '$uid'";
+
+    if (!($result = db_query($sql, $db_user_logon))) return false;
+
+    return $uid;
+}
+
+function user_logon_passhash($logon, $passhash)
+{
+    if (!$db_user_logon = db_connect()) return false;
+
+    if (!$ipaddress = get_ip_address()) return false;
+
+    if (is_md5($passhash)) return false;
+
+    $logon = db_escape_string(mb_strtoupper($logon));
+
+    $passhash = db_escape_string($passhash);
+
+    $ipaddress = db_escape_string($ipaddress);
+
+    $sql = "SELECT UID FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash'";
+
+    if (!($result = db_query($sql, $db_user_logon))) return false;
+
+    if (db_num_rows($result) == 0) return false;
+
+    list($uid) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "UPDATE LOW_PRIORITY USER SET IPADDRESS = '$ipaddress' WHERE UID = '$uid'";
+
+    if (!($result = db_query($sql, $db_user_logon))) return false;
+
+    return $uid;
+}
+
+function user_get_passhash($uid, $password)
+{
+    if (!$db_user_get_passhash = db_connect()) return false;
+
+    if (!$ipaddress = get_ip_address()) return false;
+
+    $ipaddress = db_escape_string($ipaddress);
+
+    $sql = "SELECT PASSWD, SALT FROM USER WHERE UID = '$uid'";
+
+    if (!($result = db_query($sql, $db_user_get_passhash))) return false;
+
+    list($passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if (user_password_encrypt($password, $salt) != $passhash) return false;
+
+    return $passhash;
+}
+
+function user_password_salt()
+{
+    return substr(str_replace('+', '.', base64_encode(pack('N4', mt_rand(), mt_rand(), mt_rand(), mt_rand()))), 0, 22);
+}
+
+function user_password_encrypt($password, $salt)
+{
+    return crypt($password, $salt);
 }
 
 function user_get($uid)
@@ -379,16 +457,17 @@ function user_get($uid)
     return false;
 }
 
-function user_get_by_password($uid, $passwd_hash)
+function user_get_by_passhash($uid, $passhash)
 {
     if (!$db_user_get = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
-    if (!is_md5($passwd_hash)) return false;
+
+    $passhash = db_escape_string($passhash);
 
     $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, ";
     $sql.= "IPADDRESS, REFERER, APPROVED FROM USER WHERE UID = '$uid' ";
-    $sql.= "AND PASSWD = '$passwd_hash'";
+    $sql.= "AND PASSWD = '$passhash'";
 
     if (!$result = db_query($sql, $db_user_get)) return false;
 

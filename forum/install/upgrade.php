@@ -599,6 +599,21 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+// Add new SALT column to USER table for per-user password salting
+if (!install_column_exists($db_database, "USER", "SALT")) {
+
+    $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) AFTER PASSWD DEFAULT NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+// Increase the
+$sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
+
 if (!install_column_exists($db_database, "USER_PREFS", "REPLY_QUICK")) {
 
     // Add field for reply_quick

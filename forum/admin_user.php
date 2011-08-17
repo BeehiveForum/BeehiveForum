@@ -353,7 +353,7 @@ if (isset($_POST['action_submit'])) {
 
         if (($user_logon = user_get_logon($uid) && $fuid = session_get_value('UID'))) {
 
-            if (user_change_password($uid, $t_new_password)) {
+            if (admin_reset_user_password($uid, $t_new_password)) {
 
                 email_send_new_pw_notification($uid, $fuid, $t_new_password);
 

@@ -863,7 +863,8 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE USER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  LOGON VARCHAR(32) DEFAULT NULL, ";
-$sql.= "  PASSWD VARCHAR(32) DEFAULT NULL, ";
+$sql.= "  PASSWD VARCHAR(255) DEFAULT NULL, ";
+$sql.= "  SALT VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL, ";
 $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL, ";
 $sql.= "  REGISTERED DATETIME DEFAULT NULL, ";
@@ -1325,8 +1326,16 @@ foreach ($timezones_array as $tzid => $tz_data) {
     }
 }
 
-$sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED) ";
-$sql.= "VALUES (UPPER('$admin_username'), MD5('$admin_password'), ";
+$salt = substr(str_replace('+', '.', base64_encode(pack('N4', mt_rand(), mt_rand(), mt_rand(), mt_rand()))), 0, 22);
+
+$admin_passhash = crypt($admin_password, $salt);
+
+$salt = db_escape_string($salt);
+
+$admin_passhash = db_escape_string($passhash);
+
+$sql = "INSERT INTO USER (LOGON, PASSWD, SALT, NICKNAME, EMAIL, REGISTERED) ";
+$sql.= "VALUES (UPPER('$admin_username'), '$admin_passhash', '$salt' ";
 $sql.= "'$admin_username', '$admin_email', NOW())";
 
 if (!$result = @db_query($sql, $db_install)) {

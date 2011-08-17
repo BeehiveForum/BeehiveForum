@@ -121,7 +121,7 @@ if (!isset($uid) || !isset($key)) {
 
 $frame_top_target = html_get_top_frame_name();
 
-if (($user = user_get_by_password($uid, $key))) {
+if (($user = user_get_by_passhash($uid, $key))) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 

@@ -91,9 +91,9 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+    if (isset($_POST['u']) && is_numeric($_POST['u'])) {
 
-        $uid = $_POST['uid'];
+        $uid = $_POST['u'];
 
     }else {
 
@@ -101,9 +101,9 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['key']) && is_md5(trim(stripslashes_array($_POST['key'])))) {
+    if (isset($_POST['h']) && strlen(trim(stripslashes_array($_POST['h']))) > 0) {
 
-        $key = $_POST['key'];
+        $key = $_POST['h'];
 
     }else {
 
@@ -154,7 +154,7 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
 
-        if (user_change_password($uid, $pw, $key)) {
+        if (user_reset_password($uid, $pw, $key)) {
 
             html_draw_top("title={$lang['passwdchanged']}", 'class=window_title');
             html_display_msg($lang['passwdchanged'], $lang['passedchangedexp'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
@@ -169,15 +169,10 @@ if (isset($_POST['save'])) {
     }
 }
 
-if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($_GET['h'])) {
+if (isset($_REQUEST['u']) && isset($_REQUEST['h'])) {
 
     $uid = $_GET['u'];
     $key = $_GET['h'];
-
-}elseif (isset($_POST['uid']) && is_numeric($_POST['uid']) && isset($_POST['key']) && is_md5($_POST['key'])) {
-
-    $uid = $_POST['uid'];
-    $key = $_POST['key'];
 
 }else {
 
@@ -187,7 +182,7 @@ if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($
     exit;
 }
 
-if (!$user = user_get_by_password($uid, $key)) {
+if (!$user = user_get_by_passhash($uid, $key)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['requiredinformationnotfound']);
@@ -207,8 +202,8 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"forgot_pw\" action=\"change_pw.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
-echo "  ", form_input_hidden("key", htmlentities_array($key)), "\n";
+echo "  ", form_input_hidden("u", htmlentities_array($uid)), "\n";
+echo "  ", form_input_hidden("h", htmlentities_array($key)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

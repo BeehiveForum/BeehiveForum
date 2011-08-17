@@ -203,11 +203,8 @@ if (isset($_POST['save'])) {
             // Fetch current logon.
             $logon = session_get_value('LOGON');
 
-            // Generate MD5 hash of the old password
-            $t_old_pass_hash = md5($t_old_pass);
-
             // Update the password and cookie
-            if (user_change_password($uid, $t_new_pass, $t_old_pass_hash)) {
+            if (user_change_password($uid, $t_new_pass, $t_old_pass)) {
 
                 // Force redirect to prevent refreshing the page
                 // prompting to user to resubmit form data.

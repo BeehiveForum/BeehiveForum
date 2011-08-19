@@ -272,8 +272,8 @@ function user_change_password($uid, $new_password, $old_password)
 
     $passhash = db_escape_string($passhash);
 
-    $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash', ";
-    $sql.= "SALT = '$salt' WHERE UID = '$uid' ";
+    $sql = "UPDATE USER SET PASSWD = '$passhash', ";
+    $sql.= "SALT = '$salt' WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_change_password)) return false;
 
@@ -296,9 +296,8 @@ function user_reset_password($uid, $new_password, $old_passhash)
 
     $passhash = db_escape_string($passhash);
 
-    $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash', ";
-    $sql.= "SALT = '$salt' WHERE UID = '$uid' ";
-    $sql.= "AND PASSWD = '$old_passhash'";
+    $sql = "UPDATE USER SET PASSWD = '$passhash', SALT = '$salt' ";
+    $sql.= "WHERE UID = '$uid' AND PASSWD = '$old_passhash'";
 
     if (!($result = db_query($sql, $db_user_reset_password))) return false;
 
@@ -332,8 +331,7 @@ function user_logon($logon, $password)
 
     $ipaddress = db_escape_string($ipaddress);
 
-    $sql = "SELECT UID, PASSWD, SALT FROM USER ";
-    $sql.= "WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, PASSWD, SALT FROM USER WHERE LOGON = '$logon'";
 
     if (!($result = db_query($sql, $db_user_logon))) return false;
 
@@ -341,7 +339,7 @@ function user_logon($logon, $password)
 
     list($uid, $passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
 
-    if (is_md5($passhash) && (md5($password) == $passhash)) {
+    if ((md5($password) == $passhash) && (strlen(trim($salt))) < 1) {
 
         if (!user_reset_password($uid, $password, $passhash)) return false;
 
@@ -354,24 +352,30 @@ function user_logon($logon, $password)
 
     if (!($result = db_query($sql, $db_user_logon))) return false;
 
+    user_prune_expired_tokens($uid);
+
     return $uid;
 }
 
-function user_logon_passhash($logon, $passhash)
+function user_logon_token($logon, $token)
 {
     if (!$db_user_logon = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    if (is_md5($passhash)) return false;
+    if (!is_md5($token)) return false;
 
     $logon = db_escape_string(mb_strtoupper($logon));
 
-    $passhash = db_escape_string($passhash);
+    $token = db_escape_string($token);
 
     $ipaddress = db_escape_string($ipaddress);
 
-    $sql = "SELECT UID FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash'";
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    $sql = "SELECT USER.UID FROM USER INNER JOIN USER_TOKEN ON (USER_TOKEN.UID = USER.UID) ";
+    $sql.= "WHERE USER.LOGON = '$logon' AND USER_TOKEN.TOKEN = '$token' ";
+    $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime'";
 
     if (!($result = db_query($sql, $db_user_logon))) return false;
 
@@ -379,30 +383,71 @@ function user_logon_passhash($logon, $passhash)
 
     list($uid) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "UPDATE LOW_PRIORITY USER SET IPADDRESS = '$ipaddress' WHERE UID = '$uid'";
+    $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '$uid'";
 
     if (!($result = db_query($sql, $db_user_logon))) return false;
+
+    if (!user_renew_token($uid, $token)) return false;
+
+    user_prune_expired_tokens($uid);
 
     return $uid;
 }
 
-function user_get_passhash($uid, $password)
+function user_generate_token($uid)
 {
-    if (!$db_user_get_passhash = db_connect()) return false;
+    if (!is_numeric($uid)) return false;
 
-    if (!$ipaddress = get_ip_address()) return false;
+    if (!$db_user_generate_token = db_connect()) return false;
 
-    $ipaddress = db_escape_string($ipaddress);
+    user_prune_expired_tokens($uid);
 
-    $sql = "SELECT PASSWD, SALT FROM USER WHERE UID = '$uid'";
+    $token = md5(uniqid(mt_rand()));
 
-    if (!($result = db_query($sql, $db_user_get_passhash))) return false;
+    $current_datetime = date(MYSQL_DATETIME, time());
 
-    list($passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
+    $sql = "INSERT INTO USER_TOKEN (UID, TOKEN, EXPIRES) VALUES ('$uid', ";
+    $sql.= "'$token',  DATE_ADD('$current_datetime', INTERVAL 1 MONTH))";
 
-    if (user_password_encrypt($password, $salt) != $passhash) return false;
+    if (!($result = db_query($sql, $db_user_generate_token))) return false;
 
-    return $passhash;
+    return $token;
+}
+
+function user_prune_expired_tokens($uid)
+{
+    if (!is_numeric($uid)) return false;
+
+    if (!$db_user_prune_tokens = db_connect()) return false;
+
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    $sql = "DELETE QUICK FROM USER_TOKEN WHERE UID = '$uid' ";
+    $sql.= "AND EXPIRES < '$current_datetime'";
+
+    if (!($result = db_query($sql, $db_user_prune_tokens))) return false;
+
+    return true;
+}
+
+function user_renew_token($uid, $token)
+{
+    if (!is_numeric($uid)) return false;
+
+    if (!$db_user_renew_token = db_connect()) return false;
+
+    $token = db_escape_string($token);
+
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    $sql = "UPDATE USER_TOKEN SET EXPIRES = DATE_ADD('$current_datetime', INTERVAL 1 MONTH) ";
+    $sql.= "WHERE UID = '$uid' AND TOKEN = '$token'";
+
+    if (!($result = db_query($sql, $db_user_renew_token))) return false;
+
+    user_prune_expired_tokens($uid);
+
+    return true;
 }
 
 function user_password_salt()

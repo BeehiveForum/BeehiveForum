@@ -78,25 +78,27 @@ function logon_perform()
         // Try and login the user.
         if (($uid = user_logon($user_logon, $user_password))) {
 
-            // Get the hash for the entered password.
-            $passhash = user_get_passhash($uid, $user_password);
-
             // Remove the cookie which shows the logon page.
             html_set_cookie('logon', "", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
             session_init($uid);
 
-            // Check if we should save the passhash to allow auto logon,
+            // Check if we should save a token to allow auto logon,
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {
 
+                // Get a token for the entered password.
+                $user_token = user_generate_token($uid);
+
+                // Set a cookie with the logon and the token.
                 html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-                html_set_cookie('user_passhash', $passhash, time() + YEAR_IN_SECONDS);
+                html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
 
             } else {
 
+                // Remove the cookie.
                 html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
-                html_set_cookie('user_passhash', '', time() - YEAR_IN_SECONDS);
+                html_set_cookie('user_token', '', time() - YEAR_IN_SECONDS);
             }
 
             // Success
@@ -125,15 +127,15 @@ function logon_perform_auto($redirect = true)
     // Get the user_logon cookie
     if (!($user_logon = html_get_cookie('user_logon'))) return false;
 
-    // Get the passhash cookie value
-    if (!($user_passhash = html_get_cookie('user_passhash'))) return false;
+    // Get the user_token cookie value
+    if (!($user_token = html_get_cookie('user_token'))) return false;
 
     // Try and login the user.
-    if (!($uid = user_logon_passhash($user_logon, $user_passhash))) return false;
+    if (!($uid = user_logon_token($user_logon, $user_token))) return false;
 
-    // Reset the user_logon and user_passhash cookies
+    // Reset the user_logon and user_token cookies
     html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-    html_set_cookie('user_passhash', $user_passhash, time() + YEAR_IN_SECONDS);
+    html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
 
     // Initialise user session
     session_init($uid);
@@ -220,7 +222,7 @@ function logon_draw_form($logon_options)
         echo "                    </table>\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', '', (html_get_cookie('user_logon') && html_get_cookie('user_passhash'))), "</td>\n";
+        echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', '', (html_get_cookie('user_logon') && html_get_cookie('user_token'))), "</td>\n";
         echo "                        <td align=\"left\"><label for=\"user_remember\">{$lang['rememberme']}</label></td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";

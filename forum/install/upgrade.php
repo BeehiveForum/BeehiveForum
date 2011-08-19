@@ -602,7 +602,7 @@ if (!$result = @db_query($sql, $db_install)) {
 // Add new SALT column to USER table for per-user password salting
 if (!install_column_exists($db_database, "USER", "SALT")) {
 
-    $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) AFTER PASSWD DEFAULT NULL";
+    $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -611,7 +611,24 @@ if (!install_column_exists($db_database, "USER", "SALT")) {
     }
 }
 
-// Increase the
+// Add new OLD_PASSWD column to USER table and set all records
+if (!install_table_exists($db_database, "USER_TOKEN")) {
+
+    $sql = "CREATE TABLE USER_TOKEN (";
+    $sql.= "  UID mediumint(8) unsigned NOT NULL,";
+    $sql.= "  TOKEN varchar(255) NOT NULL,";
+    $sql.= "  EXPIRES datetime NOT NULL,";
+    $sql.= "  PRIMARY KEY (UID, TOKEN)";
+    $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+// Increase the alowed length of the PASSWD column.
 $sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
 if (!install_column_exists($db_database, "USER_PREFS", "REPLY_QUICK")) {

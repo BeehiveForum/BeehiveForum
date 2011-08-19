@@ -882,6 +882,19 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE USER_TOKEN (";
+$sql.= "  UID mediumint(8) unsigned NOT NULL,";
+$sql.= "  TOKEN varchar(255) NOT NULL,";
+$sql.= "  EXPIRES datetime NOT NULL,";
+$sql.= "  PRIMARY KEY (UID, TOKEN)";
+$sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE USER_FORUM (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";

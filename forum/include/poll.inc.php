@@ -732,10 +732,6 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
-                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
-                }
-
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     $poll_data['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
@@ -749,15 +745,18 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $poll_data['CONTENT'].= "                          <tr>\n";
                     $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
                     $poll_data['CONTENT'].= "                          </tr>\n";
+                    $poll_data['CONTENT'].= "                          <tr>\n";
+                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+                    $poll_data['CONTENT'].= "                          </tr>\n";
                 }
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                     $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
                     $poll_data['CONTENT'].= "                          </tr>\n";
                     $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
+                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
                     $poll_data['CONTENT'].= "                          </tr>\n";
                 }
 
@@ -774,21 +773,22 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 }
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-
                     $poll_data['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
-
                 }
 
                 $poll_data['CONTENT'].= "                            </td>\n";
+                $poll_data['CONTENT'].= "                          </tr>\n";
+                $poll_data['CONTENT'].= "                          <tr>\n";
+                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
                 $poll_data['CONTENT'].= "                          </tr>\n";
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                     $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
                     $poll_data['CONTENT'].= "                          </tr>\n";
                     $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
+                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
                     $poll_data['CONTENT'].= "                          </tr>\n";
                 }
             }
@@ -1294,23 +1294,24 @@ function poll_horizontal_graph($tid, $public_ballot = false)
             }
 
             $poll_display.= "                              </tr>\n";
-            $poll_display.= "                              <tr>\n";
-            $poll_display.= "                                <td width=\"280\" class=\"postbody\">\n";
-            $poll_display.= "                                  <table width=\"100%\">\n";
-            $poll_display.= "                                    <tr>\n";
-            $poll_display.= "                                      <td style=\"white-space: nowrap\" width=\"100\" valign=\"top\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). ": ". $poll_results['VOTES'][$option_key]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
 
             if ($public_ballot && isset($user_poll_votes[$poll_results['OPTION_ID'][$option_key]]) && is_array($user_poll_votes[$poll_results['OPTION_ID'][$option_key]])) {
 
                 $user_poll_votes_list = implode(', ', array_map('poll_public_ballot_user_callback', $user_poll_votes[$poll_results['OPTION_ID'][$option_key]]));
 
-                $poll_display.= "                                      <td align=\"right\">{$lang['votes']}: $user_poll_votes_list</td>\n";
-            }
+                $poll_display.= "                              <tr>\n";
+                $poll_display.= "                                <td width=\"280\" class=\"postbody\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). ": ". $poll_results['VOTES'][$option_key]. " {$lang['votes']} (". $vote_percent. "%) - {$lang['votes']}:</td>\n";
+                $poll_display.= "                              </tr>\n";
+                $poll_display.= "                              <tr>\n";
+                $poll_display.= "                                <td width=\"280\" class=\"postbody\">". $user_poll_votes_list. "</td>\n";
+                $poll_display.= "                              </tr>\n";
 
-            $poll_display.= "                                    </tr>\n";
-            $poll_display.= "                                  </table>\n";
-            $poll_display.= "                                </td>\n";
-            $poll_display.= "                              </tr>\n";
+            } else {
+
+                $poll_display.= "                              <tr>\n";
+                $poll_display.= "                                <td width=\"280\" class=\"postbody\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). ": ". $poll_results['VOTES'][$option_key]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
+                $poll_display.= "                              </tr>\n";
+            }
 
             $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
         }
@@ -1551,13 +1552,15 @@ function poll_vertical_graph($tid)
 
             $poll_bar_width = round(400 / $option_count, 2);
 
+            $poll_cell_width = floor(100 / $option_count);
+
             if ($max_values[$poll_results['GROUP_ID'][$option_key]] > 0) {
                 $poll_bar_height = floor(round(200 / $max_values[$poll_results['GROUP_ID'][$option_key]], 2) * $poll_results['VOTES'][$option_key]);
             }
 
             $poll_bar_top = 200 - $poll_bar_height;
 
-            $poll_display.= "                                <td align=\"center\" valign=\"bottom\">\n";
+            $poll_display.= "                                <td align=\"center\" valign=\"bottom\" width=\"$poll_cell_width%\">\n";
             $poll_display.= "                                  <div class=\"poll_bar poll_bar_$bar_color\" style=\"width: {$poll_bar_width}px; height: 200px\">\n";
             $poll_display.= "                                    <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}px; height: {$poll_bar_height}px; top: {$poll_bar_top}px; position: relative\"></div>\n";
             $poll_display.= "                                  </div>\n";

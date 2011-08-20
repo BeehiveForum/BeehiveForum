@@ -355,26 +355,6 @@ if (isset($_GET['font_resize'])) {
     echo "</div>\n";
 }
 
-if (isset($_POST['view_style']) && is_numeric($_POST['view_style'])) {
-
-    if ($_POST['view_style'] == POLL_VIEW_TYPE_OPTION) {
-
-        $view_style = POLL_VIEW_TYPE_OPTION;
-
-    }elseif ($_POST['view_style'] == POLL_VIEW_TYPE_USER) {
-
-        $view_style = POLL_VIEW_TYPE_USER;
-
-    }else {
-
-        $view_style = POLL_VIEW_TYPE_OPTION;
-    }
-
-}else {
-
-    $view_style = POLL_VIEW_TYPE_OPTION;
-}
-
 if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
     echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
@@ -403,6 +383,7 @@ if (($tracking_data_array = thread_get_tracking_data($tid))) {
             }
 
         }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
+
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
@@ -522,23 +503,21 @@ if ($msg_count > 0) {
 
         if ($thread_data['POLL_FLAG'] == 'Y') {
 
-          if ($message['PID'] == 1) {
+            if ($message['PID'] == 1) {
 
-            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $view_style, $highlight_array);
-            $last_pid = $message['PID'];
+                poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
+                $last_pid = $message['PID'];
 
-          }else {
+            }else {
 
-            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
-            $last_pid = $message['PID'];
-
-          }
+                message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
+                $last_pid = $message['PID'];
+            }
 
         }else {
 
-          message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
-          $last_pid = $message['PID'];
-
+            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
+            $last_pid = $message['PID'];
         }
 
         if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {

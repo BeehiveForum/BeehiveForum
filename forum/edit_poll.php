@@ -437,6 +437,12 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
+    if ($valid && $t_poll_vote_type == POLL_VOTE_PUBLIC && $t_poll_type !== POLL_HORIZONTAL_GRAPH) {
+
+        $error_msg_array[] = $lang['publicballethorizontalgraphonly'];
+        $valid = false;
+    }
+
 }else if (isset($_POST['change_count'])) {
 
     if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {

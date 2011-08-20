@@ -503,6 +503,12 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
+    if ($valid && $t_poll_vote_type == POLL_VOTE_PUBLIC && $t_poll_type !== POLL_HORIZONTAL_GRAPH) {
+
+        $error_msg_array[] = $lang['publicballethorizontalgraphonly'];
+        $valid = false;
+    }
+
     if (isset($_POST['t_message_text']) && strlen(trim(stripslashes_array($_POST['t_message_text']))) > 0) {
 
         $t_message_text = trim(stripslashes_array($_POST['t_message_text']));

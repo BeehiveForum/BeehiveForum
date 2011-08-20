@@ -742,23 +742,52 @@ p, h1, h2 {
     font-size: 90%;
 }
 
-.pollbar1 {
+.poll_bar {
+    height: 20px;
+    margin: 5px 0;
+}
+
+.poll_bar_inner {
+    height: 20px;
+}
+
+.poll_bar_1 {
+    border: 1px solid #0000AA;
+}
+
+.poll_bar_2 {
+    border: 1px solid #D40000;
+}
+
+.poll_bar_3 {
+    border: 1px solid #2AAA00;
+}
+
+.poll_bar_4 {
+    border: 1px solid #F4AA00;
+}
+
+.poll_bar_5 {
+    border: 1px solid #D42AD4;
+}
+
+.poll_bar_inner_1 {
     background-color: #0000AA;
 }
 
-.pollbar2 {
+.poll_bar_inner_2 {
     background-color: #D40000;
 }
 
-.pollbar3 {
+.poll_bar_inner_3 {
     background-color: #2AAA00;
 }
 
-.pollbar4 {
+.poll_bar_inner_4 {
     background-color: #F4AA00;
 }
 
-.pollbar5 {
+.poll_bar_inner_5 {
     background-color: #D42AD4;
 }
 

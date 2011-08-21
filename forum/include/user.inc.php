@@ -92,7 +92,7 @@ function user_create($logon, $password, $nickname, $email)
         $http_referer = "";
     }
 
-    $salt = substr(str_replace('+', '.', base64_encode(pack('N4', mt_rand(), mt_rand(), mt_rand(), mt_rand()))), 0, 22);
+    $salt = user_password_salt();
 
     $passhash = user_password_encrypt($password, $salt);
 
@@ -262,6 +262,10 @@ function user_change_password($uid, $new_password, $old_password)
 
     list($passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
 
+    if ((md5($old_password) == $passhash) && (strlen(trim($salt))) == 0) {
+        return user_reset_password($uid, $new_password, $passhash);
+    }
+
     if (user_password_encrypt($old_password, $salt) != $passhash) return false;
 
     $salt = user_password_salt();
@@ -339,7 +343,7 @@ function user_logon($logon, $password)
 
     list($uid, $passhash, $salt) = db_fetch_array($result, DB_RESULT_NUM);
 
-    if ((md5($password) == $passhash) && (strlen(trim($salt))) < 1) {
+    if ((md5($password) == $passhash) && (strlen(trim($salt))) == 0) {
 
         if (!user_reset_password($uid, $password, $passhash)) return false;
 

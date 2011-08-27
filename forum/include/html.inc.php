@@ -965,7 +965,7 @@ function html_draw_top()
 
     echo "<script type=\"text/javascript\" src=\"http://platform.twitter.com/widgets.js\"></script>\n";
 
-    echo "<script src=\"http://connect.facebook.net/en_US/all.js#xfbml=1\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"http://connect.facebook.net/en_US/all.js#xfbml=1\"></script>\n";
 
     echo "</head>\n\n";
 

@@ -89,7 +89,7 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 function form_input_text_search($name, $value = false, $width = false, $maxchars = false, $type = SEARCH_LOGON, $allow_multi = false, $custom_html = false, $class = '')
 {
     $allow_multi = ($allow_multi) ? "allow_multi" : "";
-    
+
     $class = trim(sprintf('%s search_input', $class));
 
     if (!in_array($type, array(SEARCH_LOGON, SEARCH_THREAD))) $type = SEARCH_LOGON;
@@ -399,6 +399,18 @@ function form_button($name, $value, $custom_html = "", $class="button")
     $html = '<input type="button" name="%s" id="%s" class="%s"%s value="%s" />';
 
     return sprintf($html, $name, $id, $class, $custom_html, $value);
+}
+
+// Creates a HTML <button> with custom innerHTML
+function form_button_html($name, $type, $class, $inner_html, $custom_html = "")
+{
+    $id = form_unique_id($name);
+
+    if (strlen(trim($custom_html)) > 0) {
+        $custom_html = sprintf(" %s", trim($custom_html));
+    }
+
+    return sprintf('<button type="%s" name="%s" id="%s" class="%s"%s>%s</button>', $type, $name, $id, $class, $custom_html, $inner_html);
 }
 
 // create a form just to be a link button

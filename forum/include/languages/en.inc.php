@@ -1626,9 +1626,9 @@ $lang['notabletochangevote'] = "You will not be able to change your vote.";
 $lang['pollvotesrandom'] = "Note: Poll votes are randomly generated for preview only.";
 $lang['pollquestion'] = "Poll Question";
 $lang['possibleanswers'] = "Possible Answers";
-$lang['enterpollquestionexp'] = "Enter the answers for your poll question.. If your poll is a &quot;yes/no&quot; question, simply enter &quot;Yes&quot; for Answer 1 and &quot;No&quot; for Answer 2.";
+$lang['enterpollquestionexp'] = "Enter a question and the answers for your poll. If your poll is a &quot;yes/no&quot; question, simply enter &quot;Yes&quot; and &quot;No&quot; as two separate answers.";
 $lang['numberanswers'] = "No. Answers";
-$lang['answerscontainHTML'] = "Answers Contain HTML (not including signature)";
+$lang['answerscontainHTML'] = "Answers Contain HTML";
 $lang['advancedoptions'] = "Advanced Options";
 $lang['optionsdisplay'] = "Answers display type";
 $lang['optionsdisplayexp'] = "How should the answers be presented?";
@@ -1685,6 +1685,11 @@ $lang['previewvotingform'] = "Preview Voting Form";
 $lang['viewstyle'] = "View Style";
 $lang['viewbypolloption'] = "View by poll option";
 $lang['viewbyuser'] = "View by user";
+$lang['addnewquestion'] = "Add new question";
+$lang['addnewanswer'] = "Add new answer";
+$lang['deletequestion'] = "Delete question";
+$lang['deleteanswer'] = "Delete answer";
+$lang['allowmultipleanswers'] = "Allow multiple answers to be selected";
 
 // Profiles (profile.php) ----------------------------------------------
 $lang['editprofile'] = "Edit Profile";

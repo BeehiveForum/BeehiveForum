@@ -2061,4 +2061,38 @@ function poll_check_tabular_votes($tid, $votes_array)
     return true;
 }
 
+function poll_get_question_html($question_number)
+{
+    if (!is_numeric($question_number)) return false;
+
+    $lang = load_language_file();
+
+    $html = "<fieldset class=\"poll_question\">\n";
+    $html.= "  <div>\n";
+    $html.= "    <h2>{$lang['pollquestion']}</h2>\n";
+    $html.= "    <div>\n";
+    $html.= "      ". form_input_text("poll_question[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""). "<br />\n";
+    $html.= "      ". form_checkbox("poll_question[{$question_number}][multi]", "Y", $lang['allowmultipleanswers'], false). "\n";
+    $html.= "      <ol class=\"poll_answer_list\">\n";
+    $html.= "        ". poll_get_answer_html($question_number, 0). "\n";
+    $html.= "      </ol>\n";
+    $html.= "    </div>\n";
+    $html.= "  </div>\n";
+    $html.= "  ". form_button_html("add_answer[{$question_number}]", 'submit', 'button_image add_answer', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewanswer'])). "\n";
+    $html.= "</fieldset>\n";
+
+    return $html;
+}
+
+function poll_get_answer_html($question_number, $answer_number)
+{
+    if (!is_numeric($question_number)) return false;
+
+    if (!is_numeric($answer_number)) return false;
+
+    $lang = load_language_file();
+
+    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_question[{$question_number}][answers][{$answer_number}]", '', 45, 255), form_button_html("delete_answer[{$question_number}][{$answer_number}]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""));
+}
+
 ?>

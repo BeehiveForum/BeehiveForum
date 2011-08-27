@@ -448,6 +448,44 @@ switch ($_GET['action']) {
 
         break;
 
+    case 'poll_add_question':
+
+        if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if (!($content = poll_get_question_html($_GET['question_number']))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        break;
+
+    case 'poll_add_answer':
+
+        if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if (!isset($_GET['answer_number']) || !is_numeric($_GET['answer_number'])) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if (!($content = poll_get_answer_html($_GET['question_number'], $_GET['answer_number']))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        break;
+
     // Unknown action
     default:
 

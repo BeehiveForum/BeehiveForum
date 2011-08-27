@@ -346,6 +346,7 @@ p, h1, h2 {
 .button_image {
     background: transparent;
     border: none;
+    cursor: pointer;
     overflow: visible;
     padding: 0px;
     width: auto;
@@ -354,6 +355,14 @@ p, h1, h2 {
 .button_image span {
     display: block;
     margin: 0px;
+}
+
+.button_image.disabled {
+    opacity: 0.4;
+}
+
+.button_image.add_answer {
+    padding-left: 35px;
 }
 
 .code {
@@ -367,6 +376,22 @@ p, h1, h2 {
     margin-top: 0px;
     overflow: auto;
     padding: 3px;
+}
+
+fieldset.poll_question {
+    margin: 5px 0px;
+}
+
+fieldset.poll_question + fieldset.poll_question {
+    margin: 10px 0px 5px;
+}
+
+ol.poll_answer_list {
+    margin-bottom: 5px;
+}
+
+ol.poll_answer_list li {
+    margin: 3px 0px;
 }
 
 .create_poll_display {

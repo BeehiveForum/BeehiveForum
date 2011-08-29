@@ -53,58 +53,80 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_question, $poll_allow_guests)
+function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests)
 {
     if (!$db_poll_create = db_connect()) return false;
 
+    if (!is_array($poll_question_array)) return false;
+
     if (!is_numeric($tid)) return false;
-
-    if (!is_array($poll_options))  return false;
-    if (!is_array($poll_answer_groups)) return false;
-
-    if (!is_numeric($poll_change_vote))  $poll_change_vote  = POLL_VOTE_CAN_CHANGE;
-    if (!is_numeric($poll_type))         $poll_type         = POLL_HORIZONTAL_GRAPH;
-    if (!is_numeric($poll_show_results)) $poll_show_results = POLL_SHOW_RESULTS;
-    if (!is_numeric($poll_vote_type))    $poll_vote_type    = POLL_VOTE_ANON;
-    if (!is_numeric($poll_option_type))  $poll_option_type  = POLL_OPTIONS_RADIOS;
-    if (!is_numeric($poll_allow_guests)) $poll_allow_guests = POLL_GUEST_DENIED;
-
-    if (!forum_get_setting('poll_allow_guests', false)) $poll_allow_guests = POLL_GUEST_DENIED;
-
-    $poll_question = db_escape_string($poll_question);
+    if (!is_numeric($poll_change_vote)) return false;
+    if (!is_numeric($poll_type)) return false;
+    if (!is_numeric($poll_show_results)) return false;
+    if (!is_numeric($poll_vote_type)) return false;
+    if (!is_numeric($poll_option_type)) return false;
+    if (!is_numeric($poll_allow_guests)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (is_numeric($poll_closes) && $poll_closes !== false) {
+    $poll_answer_count = 0;
+
+    foreach ($poll_question_array as $poll_question) {
+
+        if (!isset($poll_question['question'])) return false;
+
+        if (!isset($poll_question['answers']) || !is_array($poll_question['answers'])) return false;
+
+        $poll_answers_array = array_filter(array_map('trim', $poll_question['answers']), 'strlen');
+
+        if (sizeof($poll_answers_array) == 0) return false;
+
+        $poll_answer_count+= sizeof($poll_answers_array);
+    }
+
+    if (sizeof($poll_answer_count) > 20) return false;
+
+    if (is_numeric($poll_closes) && ($poll_closes > 0)) {
 
         $poll_closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, $poll_closes);
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, POLLTYPE, ";
-        $sql.= "SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) VALUES ('$tid', ";
-        $sql.= "CAST('$poll_closes_datetime' AS DATETIME), '$poll_change_vote', '$poll_type', ";
-        $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_question', ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, ";
+        $sql.= "VOTETYPE, OPTIONTYPE, ALLOWGUESTS) VALUES ('$tid', CAST('$poll_closes_datetime' AS DATETIME), ";
+        $sql.= "'$poll_change_vote', '$poll_type', '$poll_show_results', '$poll_vote_type', '$poll_option_type', ";
         $sql.= "'$poll_allow_guests')";
 
     }else {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, ";
-        $sql.= "POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION, ALLOWGUESTS) ";
-        $sql.= "VALUES ('$tid', NULL, '$poll_change_vote', '$poll_type', ";
-        $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_question', ";
-        $sql.= "'$poll_allow_guests')";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL` (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, ";
+        $sql.= "VOTETYPE, OPTIONTYPE, ALLOWGUESTS) VALUES ('$tid', NULL, '$poll_change_vote', '$poll_type', ";
+        $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_allow_guests')";
     }
 
     if (!db_query($sql, $db_poll_create)) return false;
 
-    foreach ($poll_options as $key => $poll_option) {
+    foreach ($poll_question_array as $poll_question) {
 
-        if (strlen(trim($poll_option)) > 0) {
+        $poll_answers_array = $poll_question['answers'];
 
-            $poll_option_name  = db_escape_string($poll_option);
-            $poll_option_group = (isset($poll_answer_groups[$key]) && is_numeric($poll_answer_groups[$key])) ? $poll_answer_groups[$key] : 1;
+        $poll_question = db_escape_string($poll_question['question']);
 
-            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, OPTION_NAME, GROUP_ID) ";
-            $sql.= "VALUES ('$tid', '$poll_option_name', '$poll_option_group')";
+        $allow_multi = (isset($poll_question['multi']) && ($poll_question['multi'] == 'Y')) ? 'Y' : 'N';
+
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` (TID, QUESTION, ALLOW_MULTI) ";
+        $sql.= "VALUES ('$tid', '$poll_question', '$allow_multi')";
+
+        if (!db_query($sql, $db_poll_create)) return false;
+
+        if (!$poll_question_id = db_insert_id($db_poll_create)) return false;
+
+        $poll_answers_array = array_filter(array_map('trim', $poll_question['answers']), 'strlen');
+
+        foreach ($poll_answers_array as $poll_answer) {
+
+            $poll_answer = db_escape_string($poll_answer);
+
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, QID, OPTION_NAME) ";
+            $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_answer')";
 
             if (!db_query($sql, $db_poll_create)) return false;
         }
@@ -113,36 +135,21 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
     return true;
 }
 
-function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_answer_groups, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests, $poll_delete_votes)
+function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests, $poll_delete_votes)
 {
     if (!$db_poll_edit = db_connect()) return false;
 
+    if (!is_array($poll_question_array)) return false;
+
     if (!is_numeric($tid)) return false;
-
-    if (!is_array($poll_options))  return false;
-    if (!is_array($poll_answer_groups)) return false;
-
-    if (!is_numeric($poll_change_vote))  $poll_change_vote  = POLL_VOTE_CAN_CHANGE;
-    if (!is_numeric($poll_type))         $poll_type         = POLL_HORIZONTAL_GRAPH;
-    if (!is_numeric($poll_show_results)) $poll_show_results = POLL_SHOW_RESULTS;
-    if (!is_numeric($poll_vote_type))    $poll_vote_type    = POLL_VOTE_ANON;
-    if (!is_numeric($poll_option_type))  $poll_option_type  = POLL_OPTIONS_RADIOS;
-    if (!is_numeric($poll_allow_guests)) $poll_allow_guests = POLL_GUEST_DENIED;
-
-    $thread_title = db_escape_string($thread_title);
-
-    $poll_question = db_escape_string($poll_question);
-
-    if (!forum_get_setting('poll_allow_guests', false)) $poll_allow_guests = POLL_GUEST_DENIED;
+    if (!is_numeric($poll_change_vote)) return false;
+    if (!is_numeric($poll_type)) return false;
+    if (!is_numeric($poll_show_results)) return false;
+    if (!is_numeric($poll_vote_type)) return false;
+    if (!is_numeric($poll_option_type)) return false;
+    if (!is_numeric($poll_allow_guests)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $current_datetime = date(MYSQL_DATETIME, time());
-
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}THREAD` SET TITLE = '$thread_title', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
-
-    if (!db_query($sql, $db_poll_edit)) return false;
 
     if ($poll_delete_votes) {
 
@@ -150,24 +157,24 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
         if (!db_query($sql, $db_poll_edit)) return false;
     }
 
-    if (is_numeric($poll_closes) && $poll_closes > 0) {
+    if (is_numeric($poll_closes) && ($poll_closes > 0)) {
 
         $poll_closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, $poll_closes);
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET CHANGEVOTE = '$poll_change_vote', ";
-        $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$poll_show_results', ";
-        $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$poll_option_type', ";
-        $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests', ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` ";
+        $sql.= "SET CHANGEVOTE = '$poll_change_vote', POLLTYPE = '$poll_type', ";
+        $sql.= "SHOWRESULTS = '$poll_show_results', VOTETYPE = '$poll_vote_type', ";
+        $sql.= "OPTIONTYPE = '$poll_option_type', ALLOWGUESTS = '$poll_allow_guests', ";
         $sql.= "CLOSES = CAST('$poll_closes_datetime' AS DATETIME) WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_poll_edit)) return false;
 
     }else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` SET CHANGEVOTE = '$poll_change_vote', ";
-        $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$poll_show_results', ";
-        $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$poll_option_type', ";
-        $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests' ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}POLL` ";
+        $sql.= "SET CHANGEVOTE = '$poll_change_vote', POLLTYPE = '$poll_type', ";
+        $sql.= "SHOWRESULTS = '$poll_show_results', VOTETYPE = '$poll_vote_type', ";
+        $sql.= "OPTIONTYPE = '$poll_option_type', ALLOWGUESTS = '$poll_allow_guests' ";
         $sql.= "WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_poll_edit)) return false;
@@ -177,15 +184,29 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_ans
 
     if (!db_query($sql, $db_poll_edit)) return false;
 
-    foreach ($poll_options as $key => $poll_option) {
+    foreach ($poll_question_array as $poll_question) {
 
-        if (strlen(trim($poll_option)) > 0) {
+        $poll_answers_array = $poll_question['answers'];
 
-            $option_name  = db_escape_string($poll_option);
-            $option_group = (isset($poll_answer_groups[$key]) && is_numeric($poll_answer_groups[$key])) ? $poll_answer_groups[$key] : 1;
+        $poll_question = db_escape_string($poll_question['question']);
 
-            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, OPTION_NAME, GROUP_ID) ";
-            $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
+        $allow_multi = (isset($poll_question['multi']) && ($poll_question['multi'] == 'Y')) ? 'Y' : 'N';
+
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` (TID, QUESTION, ALLOW_MULTI) ";
+        $sql.= "VALUES ('$tid', '$poll_question', '$allow_multi')";
+
+        if (!db_query($sql, $db_poll_edit)) return false;
+
+        if (!$poll_question_id = db_insert_id($db_poll_edit)) return false;
+
+        $poll_answers_array = array_filter(array_map('trim', $poll_question['answers']), 'strlen');
+
+        foreach ($poll_answers_array as $poll_answer) {
+
+            $poll_answer = db_escape_string($poll_answer);
+
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, QID, OPTION_NAME) ";
+            $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_answer')";
 
             if (!db_query($sql, $db_poll_edit)) return false;
         }
@@ -211,7 +232,7 @@ function poll_get($tid)
     $sql.= "POST.MOVED_TID, POST.MOVED_PID, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER.RELATIONSHIP, ";
     $sql.= "USER_PEER.PEER_NICKNAME AS PFNICK, POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
-    $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
+    $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
     $sql.= "POLL.ALLOWGUESTS, POST.EDITED_BY, POST.APPROVED_BY, POST.IPADDRESS ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
@@ -285,45 +306,36 @@ function poll_get_votes($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
-    $sql.= "POLL_VOTES.GROUP_ID, COUNT(USER_POLL_VOTES.UID) AS VOTE_COUNT ";
-    $sql.= "FROM `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES LEFT JOIN ";
-    $sql.= "`{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
-    $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID ";
-    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
-    $sql.= "WHERE POLL_VOTES.TID = '$tid' GROUP BY POLL_VOTES.OPTION_ID";
+    $sql = "SELECT POLL_QUESTIONS.QUESTION_ID, POLL_QUESTIONS.QUESTION, POLL_QUESTIONS.ALLOW_MULTI, ";
+    $sql.= "POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, COUNT(USER_POLL_VOTES.UID) AS VOTE_COUNT ";
+    $sql.= "FROM `{$table_data['PREFIX']}POLL` POLL INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` ";
+    $sql.= "POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` ";
+    $sql.= "POLL_VOTES ON (POLL_VOTES.TID = POLL.TID AND POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID ";
+    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid' ";
+    $sql.= "GROUP BY POLL.TID, POLL_QUESTIONS.QUESTION_ID, POLL_VOTES.OPTION_ID";
 
     if (!$result = db_query($sql, $db_poll_get_votes)) return false;
 
-    $poll_option_id_array    = array();
-    $poll_option_name_array  = array();
-    $poll_option_group_array = array();
-    $poll_option_vote_array  = array();
-    $poll_group_size_array   = array();
+    $poll_votes_array = array();
 
-    $poll_results = array();
+    while (($poll_votes_data = db_fetch_array($result))) {
 
-    while (($poll_data = db_fetch_array($result))) {
+        if (!isset($poll_votes_array[$poll_votes_data['QUESTION_ID']])) {
 
-        $poll_option_id_array[]    = $poll_data['OPTION_ID'];
-        $poll_option_name_array[]  = $poll_data['OPTION_NAME'];
-        $poll_option_group_array[] = $poll_data['GROUP_ID'];
-        $poll_option_vote_array[]  = $poll_data['VOTE_COUNT'];
-
-        if (!isset($poll_group_size_array[$poll_data['GROUP_ID']])) {
-            $poll_group_size_array[$poll_data['GROUP_ID']] = 0;
+            $poll_votes_array[$poll_votes_data['QUESTION_ID']] = array(
+                'question' => $poll_votes_data['QUESTION'],
+                'multi'    => $poll_votes_data['ALLOW_MULTI'],
+                'answers'  => array()
+            );
         }
 
-        $poll_group_size_array[$poll_data['GROUP_ID']]++;
+        if (!isset($poll_votes_array[$poll_votes_data['QUESTION_ID']]['answers'][$poll_votes_data['OPTION_ID']])) {
+            $poll_votes_array[$poll_votes_data['QUESTION_ID']]['answers'][$poll_votes_data['OPTION_ID']] = $poll_votes_data['OPTION_NAME'];
+        }
     }
 
-    $poll_results = array('OPTION_ID'   => $poll_option_id_array,
-                          'OPTION_NAME' => $poll_option_name_array,
-                          'GROUP_ID'    => $poll_option_group_array,
-                          'VOTES'       => $poll_option_vote_array,
-                          'GROUP_SIZE'  => $poll_group_size_array);
-
-    return $poll_results;
+    return $poll_votes_array;
 }
 
 function poll_get_total_votes($tid, &$total_votes, &$guest_votes)
@@ -417,9 +429,14 @@ function poll_get_user_vote($tid)
 
     if (user_is_guest()) return false;
 
-    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "SELECT POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME ";
+    $sql.= "FROM `{$table_data['PREFIX']}POLL` POLL ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ";
+    $sql.= "ON (POLL_QUESTIONS.TID = POLL.TID) INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` ";
+    $sql.= "POLL_VOTES ON (POLL_VOTES.TID = POLL.TID AND POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+    $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
+    $sql.= "WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '$uid'";
 
     if (!$result = db_query($sql, $db_poll_get_user_vote)) return false;
 
@@ -428,8 +445,7 @@ function poll_get_user_vote($tid)
         $user_poll_votes_array = array();
 
         while (($poll_data = db_fetch_array($result))) {
-
-            $user_poll_votes_array[] = $poll_data;
+            $user_poll_votes_array[$poll_data['OPTION_ID']] = $poll_data['OPTION_NAME'];
         }
 
         return $user_poll_votes_array;
@@ -457,316 +473,237 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     }
 
     $total_votes = 0;
+
     $guest_votes = 0;
 
     $request_uri = get_request_uri();
 
     $poll_data['CONTENT'] = "<br />\n";
-    $poll_data['CONTENT'].= "                <div align=\"center\">\n";
-    $poll_data['CONTENT'].= "                <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
-    $poll_data['CONTENT'].= "                  <tr>\n";
-    $poll_data['CONTENT'].= "                    <td align=\"center\">\n";
-    $poll_data['CONTENT'].= "                      <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-    $poll_data['CONTENT'].= "                        ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
-    $poll_data['CONTENT'].= "                        ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
-    $poll_data['CONTENT'].= "                        <table width=\"560\">\n";
-    $poll_data['CONTENT'].= "                          <tr>\n";
-    $poll_data['CONTENT'].= "                            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question)). "</h2></td>\n";
-    $poll_data['CONTENT'].= "                          </tr>\n";
-
-    $poll_group_count = 1;
+    $poll_data['CONTENT'].= "<div align=\"center\">\n";
+    $poll_data['CONTENT'].= "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
+    $poll_data['CONTENT'].= "  <tr>\n";
+    $poll_data['CONTENT'].= "    <td align=\"center\">\n";
+    $poll_data['CONTENT'].= "      <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    $poll_data['CONTENT'].= "        ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
+    $poll_data['CONTENT'].= "        ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
+    $poll_data['CONTENT'].= "        <table width=\"560\">\n";
 
     if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
-        $poll_data['CONTENT'].= "                          <tr>\n";
-        $poll_data['CONTENT'].= "                            <td align=\"left\">\n";
-        $poll_data['CONTENT'].= "                              <table width=\"100%\">\n";
+        foreach ($poll_results as $question_id => $poll_question) {
 
-        array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
+            $poll_data['CONTENT'].= "          <tr>\n";
+            $poll_data['CONTENT'].= "            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['question'])). "</h2></td>\n";
+            $poll_data['CONTENT'].= "          </tr>\n";
+            $poll_data['CONTENT'].= "          <tr>\n";
+            $poll_data['CONTENT'].= "            <td align=\"left\">\n";
+            $poll_data['CONTENT'].= "              <table width=\"100%\">\n";
 
-        $poll_previous_group = false;
+            if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-        $drop_down_data = array();
+                $poll_data['CONTENT'].= "                <tr>\n";
+                $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $poll_question['answers']). "</td>\n";
+                $poll_data['CONTENT'].= "                </tr>\n";
 
-        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+            } else if (sizeof($poll_question['answers']) > 1) {
 
-        foreach ($poll_results_option_id_keys as $key) {
+                foreach ($poll_question['answers'] as $option_id => $option_name) {
 
-            if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$key];
-
-            if (strlen(trim($poll_results['OPTION_NAME'][$key])) > 0) {
-
-                if ($poll_results['GROUP_ID'][$key] <> $poll_previous_group) {
-
-                    if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key - 1]] > 1) {
-
-                        $poll_data['CONTENT'].= "                                <tr>\n";
-                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key - 1]}]", $drop_down_data, false, false). "</td>\n";
-                        $poll_data['CONTENT'].= "                                </tr>\n";
-
-                    }else {
-
-                        $poll_data['CONTENT'].= "                                <tr>\n";
-                        $poll_data['CONTENT'].= "                                  <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                        $poll_data['CONTENT'].= "                                </tr>\n";
-                    }
-
-                    unset($drop_down_data);
-
-                    $poll_group_count++;
+                    $poll_data['CONTENT'].= "                <tr>\n";
+                    $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option_name), false). "</td>\n";
+                    $poll_data['CONTENT'].= "                </tr>\n";
                 }
 
-                if ($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
+            }else {
 
-                    if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
-
-                        $drop_down_data[$poll_results['OPTION_ID'][$key]] = word_filter_add_ob_tags(htmlentities_array($poll_results['OPTION_NAME'][$key]));
-
-                    }else {
-
-                        $poll_data['CONTENT'].= "                                <tr>\n";
-                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false). "</td>\n";
-                        $poll_data['CONTENT'].= "                                </tr>\n";
-                    }
-
-                }else {
-
-                    $poll_data['CONTENT'].= "                                <tr>\n";
-                    $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false). "</td>\n";
-                    $poll_data['CONTENT'].= "                                </tr>\n";
-                }
-
-                $poll_previous_group = $poll_results['GROUP_ID'][$key];
+                $poll_data['CONTENT'].= "                <tr>\n";
+                $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option_name), false). "</td>\n";
+                $poll_data['CONTENT'].= "                </tr>\n";
             }
 
-            if ($key == sizeof($poll_results['OPTION_ID']) - 1) {
-
-                if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
-
-                    $poll_data['CONTENT'].= "                                <tr>\n";
-                    $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key]}]", $drop_down_data, false, false). "</td>\n";
-                    $poll_data['CONTENT'].= "                                </tr>\n";
-
-                }
-            }
+            $poll_data['CONTENT'].= "              </table>\n";
+            $poll_data['CONTENT'].= "            </td>\n";
+            $poll_data['CONTENT'].= "          </tr>\n";
         }
 
-        $poll_data['CONTENT'].= "                              </table>\n";
-        $poll_data['CONTENT'].= "                            </td>\n";
-        $poll_data['CONTENT'].= "                          </tr>\n";
-
-    }else {
+    } else {
 
         if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
 
-            if (($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) || ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC)) {
+            foreach ($poll_results as $question_id => $poll_question) {
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
-                $poll_data['CONTENT'].= poll_horizontal_graph($tid, ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC));
-                $poll_data['CONTENT'].= "                            </td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['question'])). "</h2></td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\">\n";
+                $poll_data['CONTENT'].= "              <table width=\"100%\">\n";
 
-            }else if ($poll_data['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
+                if (($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) || ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC)) {
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
-                $poll_data['CONTENT'].= poll_vertical_graph($tid);
-                $poll_data['CONTENT'].= "                            </td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                    $public_ballot = ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC);
 
-            }else if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
+                    $poll_data['CONTENT'].= "                <tr>\n";
+                    $poll_data['CONTENT'].= "                  <td align=\"left\" colspan=\"2\">horizontal</td>"; //. poll_horizontal_graph($tid, $public_ballot). "</td>\n";
+                    $poll_data['CONTENT'].= "                 </tr>\n";
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
-                $poll_data['CONTENT'].= poll_horizontal_graph($tid); //poll_table_graph($tid);
-                $poll_data['CONTENT'].= "                            </td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                }else if ($poll_data['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
+
+                    $poll_data['CONTENT'].= "                <tr>\n";
+                    $poll_data['CONTENT'].= "                  <td align=\"left\" colspan=\"2\">vertical</td>"; //. poll_vertical_graph($tid). "</td>\n";
+                    $poll_data['CONTENT'].= "                </tr>\n";
+
+                }else if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
+
+                    $poll_data['CONTENT'].= "                <tr>\n";
+                    $poll_data['CONTENT'].= "                  <td align=\"left\" colspan=\"2\">table</td>"; //. poll_table_graph($tid). "</td>\n";
+                    $poll_data['CONTENT'].= "                </tr>\n";
+                }
+
+                $poll_data['CONTENT'].= "              </table>\n";
+                $poll_data['CONTENT'].= "            </td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
             }
 
         }else {
 
-            $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+            foreach ($poll_results as $question_id => $poll_question) {
 
-            foreach ($poll_results_option_id_keys as $option_key) {
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['question'])). "</h2></td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\">\n";
+                $poll_data['CONTENT'].= "              <table width=\"100%\">\n";
 
-                if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+                foreach ($poll_question['answers'] as $option_id => $option_name) {
 
-                if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
-
-                    if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
-
-                        $poll_data['CONTENT'].= "                          <tr>\n";
-                        $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                        $poll_data['CONTENT'].= "                          </tr>\n";
-
-                        $poll_group_count++;
-                    }
-
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
-
-                    $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+                    $poll_data['CONTENT'].= "                <tr>\n";
+                    $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\">". word_filter_add_ob_tags($option_name). "</td>\n";
+                    $poll_data['CONTENT'].= "                </tr>\n";
                 }
+
+                $poll_data['CONTENT'].= "              </table>\n";
+                $poll_data['CONTENT'].= "            </td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
             }
         }
     }
 
     if (!$is_preview) {
 
-        $group_array = array();
-
-        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
-
-        foreach ($poll_results_option_id_keys as $option_key) {
-
-            if (!in_array($poll_results['GROUP_ID'][$option_key], $group_array)) {
-
-                $group_array[] = $poll_results['GROUP_ID'][$option_key];
-            }
-        }
-
         poll_get_total_votes($tid, $total_votes, $guest_votes);
 
-        $poll_group_count = sizeof($group_array);
-
-        $poll_data['CONTENT'].= "                          <tr>\n";
-        $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-        $poll_data['CONTENT'].= "                          </tr>\n";
-        $poll_data['CONTENT'].= "                          <tr>\n";
-        $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</td>\n";
-        $poll_data['CONTENT'].= "                          </tr>\n";
-        $poll_data['CONTENT'].= "                          <tr>\n";
-        $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-        $poll_data['CONTENT'].= "                          </tr>\n";
+        $poll_data['CONTENT'].= "          <tr>\n";
+        $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+        $poll_data['CONTENT'].= "          </tr>\n";
+        $poll_data['CONTENT'].= "          <tr>\n";
+        $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</td>\n";
+        $poll_data['CONTENT'].= "          </tr>\n";
+        $poll_data['CONTENT'].= "          <tr>\n";
+        $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+        $poll_data['CONTENT'].= "          </tr>\n";
 
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
-            $poll_data['CONTENT'].= "                          <tr>\n";
-            $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
-            $poll_data['CONTENT'].= "                          </tr>\n";
+            $poll_data['CONTENT'].= "          <tr>\n";
+            $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
+            $poll_data['CONTENT'].= "          </tr>\n";
 
             if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
-                $poll_data['CONTENT'].= "                          </tr>\n";
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a></td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
+                $poll_data['CONTENT'].= "          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a></td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
+                $poll_data['CONTENT'].= "          </tr>\n";
             }
 
-            if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
+            if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
-                $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+                if (array_diff($user_poll_votes_array, array_map('strip_tags', $user_poll_votes_array))) {
 
-                $user_poll_votes_display_array = array();
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], sprintf("%s: %s", $lang['options'], implode(' &amp; ', array_keys($user_poll_votes_array)))). "</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
 
-                foreach ($user_poll_votes_array_keys as $vote_key) {
+                } else {
 
-                    foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
-
-                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
-
-                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
-
-                                $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
-
-                            }else {
-
-                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
-                            }
-                        }
-                    }
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], implode(' &amp; ', array_map('strip_tags', $user_poll_votes_array))). "</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
                 }
-
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
             }
 
         }else {
 
-            if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
+            if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
-                $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+                if (array_diff($user_poll_votes_array, array_map('strip_tags', $user_poll_votes_array))) {
 
-                $user_poll_votes_display_array = array();
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], sprintf("%s: %s", $lang['options'], implode(' &amp; ', array_keys($user_poll_votes_array)))). "</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
 
-                foreach ($user_poll_votes_array_keys as $vote_key) {
+                } else {
 
-                    foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
-
-                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
-
-                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
-
-                                $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
-
-                            }else {
-
-                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
-                            }
-                        }
-                    }
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], implode(' &amp; ', array_map('strip_tags', $user_poll_votes_array))). "</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
                 }
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
 
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
 
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
                 }
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">";
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-
                     $poll_data['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
                 }
 
-                $poll_data['CONTENT'].= "                            </td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                $poll_data['CONTENT'].= "            </td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
 
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
 
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
                 }
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
                 }
 
             }else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">";
 
                 if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
                     $poll_data['CONTENT'].= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
@@ -776,66 +713,54 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $poll_data['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
                 }
 
-                $poll_data['CONTENT'].= "                            </td>\n";
-                $poll_data['CONTENT'].= "                          </tr>\n";
-                $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
-                $poll_data['CONTENT'].= "                          </tr>\n";
+                $poll_data['CONTENT'].= "            </td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
+                $poll_data['CONTENT'].= "          </tr>\n";
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
-                    $poll_data['CONTENT'].= "                          <tr>\n";
-                    $poll_data['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
-                    $poll_data['CONTENT'].= "                          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
+                    $poll_data['CONTENT'].= "          <tr>\n";
+                    $poll_data['CONTENT'].= "            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+                    $poll_data['CONTENT'].= "          </tr>\n";
                 }
             }
         }
 
     } else {
 
-        if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
+        if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
-            $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+            if (array_diff($user_poll_votes_array, array_map('strip_tags', $user_poll_votes_array))) {
 
-            $user_poll_votes_display_array = array();
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], sprintf("%s: %s", $lang['options'], implode(' &amp; ', array_keys($user_poll_votes_array)))). "</td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
 
-            foreach ($user_poll_votes_array_keys as $vote_key) {
+            } else {
 
-                foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
-
-                    if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
-
-                        if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
-
-                            $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
-
-                        }else {
-
-                            $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
-                        }
-                    }
-                }
+                $poll_data['CONTENT'].= "          <tr>\n";
+                $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], implode(' &amp; ', array_map('strip_tags', $user_poll_votes_array))). "</td>\n";
+                $poll_data['CONTENT'].= "          </tr>\n";
             }
 
-            $poll_data['CONTENT'].= "                          <tr>\n";
-            $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
-            $poll_data['CONTENT'].= "                          </tr>\n";
-            $poll_data['CONTENT'].= "                          <tr>\n";
-            $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-            $poll_data['CONTENT'].= "                          </tr>\n";
+            $poll_data['CONTENT'].= "          <tr>\n";
+            $poll_data['CONTENT'].= "            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+            $poll_data['CONTENT'].= "          </tr>\n";
         }
     }
 
-    $poll_data['CONTENT'].= "                        </table>\n";
-    $poll_data['CONTENT'].= "                      </form>\n";
-    $poll_data['CONTENT'].= "                    </td>\n";
-    $poll_data['CONTENT'].= "                  </tr>\n";
-    $poll_data['CONTENT'].= "                </table>\n";
-    $poll_data['CONTENT'].= "                </div>\n";
-    $poll_data['CONTENT'].= "                <br />\n";
+    $poll_data['CONTENT'].= "        </table>\n";
+    $poll_data['CONTENT'].= "      </form>\n";
+    $poll_data['CONTENT'].= "    </td>\n";
+    $poll_data['CONTENT'].= "  </tr>\n";
+    $poll_data['CONTENT'].= "</table>\n";
+    $poll_data['CONTENT'].= "</div>\n";
+    $poll_data['CONTENT'].= "<br />\n";
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
@@ -850,7 +775,7 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
 
     if ($user_votes == 0) {
         $user_votes_display = $lang['nousersvoted'];
-    }elseif ($user_votes == 1) {
+    } else if ($user_votes == 1) {
         $user_votes_display = $lang['oneuservoted'];
     }else {
         $user_votes_display = sprintf($lang['xusersvoted'], $user_votes);
@@ -858,19 +783,22 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
 
     if ($guest_votes == 0) {
         $guest_votes_display = $lang['noguestsvoted'];
-    }elseif ($guest_votes == 1) {
+    } else if ($guest_votes == 1) {
         $guest_votes_display = $lang['oneguestvoted'];
     }else {
         $guest_votes_display = sprintf($lang['xguestsvoted'], $guest_votes);
     }
 
     if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= time())) {
+
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayclosedpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
             $html.= $lang['nobodyvotedclosedpoll'];
         }
-    }elseif ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > time())) {
+
+    } else if ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > time())) {
+
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayopenpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
@@ -919,97 +847,49 @@ function poll_results_check_data(&$poll_results_array)
 
 function poll_preview_form($poll_results, $poll_data)
 {
-    $poll_group_count = 1;
-
     poll_results_check_data($poll_results);
 
-    $poll_results_group_id_keys = array_keys($poll_results['GROUP_ID']);
+    $poll_display = "<div align=\"center\">\n";
+    $poll_display.= "  <table width=\"100%\">\n";
 
-    foreach ($poll_results_group_id_keys as $group_key) {
+    foreach ($poll_results as $question_id => $poll_question) {
 
-        if (!isset($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]])) {
-            $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]] = 1;
+        $poll_display.= "    <tr>\n";
+        $poll_display.= "      <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['question'])). "</h2></td>\n";
+        $poll_display.= "    </tr>\n";
+        $poll_display.= "    <tr>\n";
+        $poll_display.= "      <td align=\"left\">\n";
+        $poll_display.= "        <table width=\"100%\">\n";
+
+        if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
+
+            $poll_display.= "          <tr>\n";
+            $poll_display.= "            <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $poll_question['answers']). "</td>\n";
+            $poll_display.= "          </tr>\n";
+
+        } else if (sizeof($poll_question['answers']) > 1) {
+
+            foreach ($poll_question['answers'] as $option_id => $option_name) {
+
+                $poll_display.= "          <tr>\n";
+                $poll_display.= "            <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option_name), false). "</td>\n";
+                $poll_display.= "          </tr>\n";
+            }
+
         }else {
-            $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]]++;
+
+            $poll_display.= "          <tr>\n";
+            $poll_display.= "            <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option_name), false). "</td>\n";
+            $poll_display.= "          </tr>\n";
         }
+
+        $poll_display.= "        </table>\n";
+        $poll_display.= "      </td>\n";
+        $poll_display.= "    </tr>\n";
     }
 
-    array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
-
-    $poll_display = "                              <div align=\"center\">\n";
-    $poll_display.= "                              <table width=\"100%\">\n";
-
-    $drop_down_data = array();
-
-    $poll_previous_group = false;
-
-    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
-
-    foreach ($poll_results_option_id_keys as $option_key) {
-
-        if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
-
-        if (strlen(trim($poll_results['OPTION_NAME'][$option_key])) > 0) {
-
-            if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
-
-                if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$option_key - 1]] > 1) {
-
-                    $poll_display.= "                      <tr>\n";
-                    $poll_display.= "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$option_key - 1]}]", $drop_down_data, false, false). "</td>\n";
-                    $poll_display.= "                      </tr>\n";
-
-                }else {
-
-                    $poll_display.= "                      <tr>\n";
-                    $poll_display.= "                        <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                    $poll_display.= "                      </tr>\n";
-                }
-
-                unset($drop_down_data);
-
-                $poll_group_count++;
-            }
-
-            if ($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$option_key]] > 1) {
-
-                if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
-
-                    $drop_down_data[$poll_results['OPTION_ID'][$option_key]] = word_filter_add_ob_tags(htmlentities_array($poll_results['OPTION_NAME'][$option_key]));
-
-                }else {
-
-                    $poll_display.= "                      <tr>\n";
-                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]), false). "</td>\n";
-                    $poll_display.= "                      </tr>\n";
-                }
-
-            }else {
-
-                $poll_display.= "                      <tr>\n";
-                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", htmlentities_array($poll_results['OPTION_ID'][$option_key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]), false). "</td>\n";
-                $poll_display.= "                      </tr>\n";
-            }
-
-            $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
-        }
-
-        if ($option_key == sizeof($poll_results['OPTION_ID']) - 1) {
-
-            if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$option_key]] > 1) {
-
-                $poll_display.= "                      <tr>\n";
-                $poll_display.= "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", $drop_down_data, false, false). "</td>\n";
-                $poll_display.= "                      </tr>\n";
-
-            }
-        }
-    }
-
-    $poll_display.= "                              </table>\n";
-    $poll_display.= "                              </div>\n";
+    $poll_display.= "  </table>\n";
+    $poll_display.= "</div>\n";
 
     return $poll_display;
 }
@@ -2016,20 +1896,17 @@ function thread_is_poll($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CLOSES FROM `{$table_data['PREFIX']}POLL` WHERE TID = '$tid'";
+    $sql = "SELECT TID FROM `{$table_data['PREFIX']}POLL` WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_is_poll)) return false;
 
-    if (db_num_rows($result) > 0) {
-
-        return true;
-    }
-
-    return false;
+    return (db_num_rows($result) > 0);
 }
 
 function poll_check_tabular_votes($tid, $votes_array)
 {
+    throw new Exception('Not working yet');
+
     if (!$db_poll_check_tabular_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
@@ -2070,10 +1947,14 @@ function poll_get_question_html($question_number)
     $html = "<fieldset class=\"poll_question\">\n";
     $html.= "  <div>\n";
     $html.= "    <h2>{$lang['pollquestion']}</h2>\n";
-    $html.= "    <div>\n";
+    $html.= "    <div class=\"poll_question_input\">\n";
     $html.= "      ". form_input_text("poll_question[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""). "<br />\n";
+    $html.= "    </div>\n";
+    $html.= "    <div class=\"poll_question_checkbox\">\n";
     $html.= "      ". form_checkbox("poll_question[{$question_number}][multi]", "Y", $lang['allowmultipleanswers'], false). "\n";
-    $html.= "      <ol class=\"poll_answer_list\">\n";
+    $html.= "    </div>\n";
+    $html.= "    <div class=\"poll_answer_list\">\n";
+    $html.= "      <ol>\n";
     $html.= "        ". poll_get_answer_html($question_number, 0). "\n";
     $html.= "      </ol>\n";
     $html.= "    </div>\n";

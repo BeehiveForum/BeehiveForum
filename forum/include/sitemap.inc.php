@@ -140,10 +140,8 @@ function sitemap_forum_get_threads($forum_fid)
 
 function sitemap_get_dir()
 {
-    // PHP's register_shutdown_function changes the current working
-    // directory on some web servers to the ServerRoot. To get the
-    // forum directory we need get the parent directory of the
-    // current file (sitemap.inc.php).
+    // Get the real forum directory by getting the parent directory of this
+    // files current directory.
     $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
 
     // Once we have the forum directory we can find our sitemaps directory.

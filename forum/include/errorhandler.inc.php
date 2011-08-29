@@ -61,17 +61,11 @@ function bh_error_handler($code, $message, $file = '', $line = 0)
     }
 }
 
-function bh_exception_arg_handler($arg)
+function bh_shutdown_handler()
 {
-    if (is_array($arg)) {
-        return array_map('bh_exception_arg_handler', $arg);
+    if (($error = error_get_last()) && (error_reporting() == 0)) {
+        throw new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
     }
-
-    if (is_bool($arg)) {
-        return $arg ? 'true' : 'false';
-    }
-
-    return $arg;
 }
 
 // Beehive Exception Handler Function
@@ -131,7 +125,9 @@ function bh_exception_handler($exception)
         $error_msg_array[] = '<p><b>Stack trace:</b></p>';
 
         // Stacktrace data.
-        $error_msg_array[] = sprintf('<pre>%s</pre>', print_r(array_map('bh_exception_arg_handler', $exception->getTrace()), true));
+        if (($trace_array = $exception->getTrace())) {
+            $error_msg_array[] = sprintf('<pre>%s</pre>', print_r($trace_array, true));
+        }
 
         // Get the Beehive Forum Version
         if (defined('BEEHIVE_VERSION')) {
@@ -180,7 +176,7 @@ function bh_exception_handler($exception)
 
             $error_msg_array[] = '<p><b>$_GET:</b></p>';
 
-            $get_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_GET), true));
+            $get_vars = htmlentities(print_r($_GET, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
         }
@@ -190,7 +186,7 @@ function bh_exception_handler($exception)
 
             $error_msg_array[] = '<p><b>$_POST:</b></p>';
 
-            $post_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_POST), true));
+            $post_vars = htmlentities(print_r($_POST, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
         }
@@ -200,17 +196,16 @@ function bh_exception_handler($exception)
 
             $error_msg_array[] = '<p><b>$_ENV:</b></p>';
 
-            $environment_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_ENV), true));
+            $environment_vars = htmlentities(print_r($_ENV, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
         }
-
         // Output Server variables.
         if (isset($_SERVER) && sizeof($_SERVER) > 0) {
 
             $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
 
-            $server_vars = htmlentities(print_r(array_map('bh_exception_arg_handler', $_SERVER), true));
+            $server_vars = htmlentities(print_r($_SERVER, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
         }
@@ -237,7 +232,7 @@ function bh_exception_handler($exception)
         @error_log($error_log_message);
 
         // Status error header
-        header_status(500, 'Internal Server Error');
+        //header_status(500, 'Internal Server Error');
 
         // Check for an installation error.
         if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
@@ -402,6 +397,9 @@ function bh_exception_handler($exception)
 }
 
 set_error_handler('bh_error_handler');
+
 set_exception_handler('bh_exception_handler');
+
+register_shutdown_function('bh_shutdown_handler');
 
 ?>

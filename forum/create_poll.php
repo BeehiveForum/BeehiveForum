@@ -165,42 +165,54 @@ $uid = session_get_value('UID');
 $valid = true;
 
 if (isset($_POST['post_emots'])) {
+
     if ($_POST['post_emots'] == "disabled") {
         $emots_enabled = false;
     } else {
         $emots_enabled = true;
     }
+
 } else {
+
     $emots_enabled = true;
 }
 
 if (isset($_POST['post_links'])) {
+
     if ($_POST['post_links'] == "enabled") {
         $links_enabled = true;
     } else {
         $links_enabled = false;
     }
+
 } else {
+
     $links_enabled = false;
 }
 
 if (isset($_POST['check_spelling'])) {
+
     if ($_POST['check_spelling'] == "enabled") {
         $spelling_enabled = true;
     } else {
         $spelling_enabled = false;
     }
+
 } else {
+
     $spelling_enabled = false;
 }
 
 if (isset($_POST['post_interest'])) {
+
     if ($_POST['post_interest'] == "Y") {
         $high_interest = "Y";
     } else {
         $high_interest = "N";
     }
+
 } else {
+
     $high_interest = "N";
 }
 
@@ -283,7 +295,6 @@ if (isset($_POST['sig_html'])) {
 
 } else {
 
-    // Fetch the current user's sig
     if (!user_get_sig($uid, $sig_text, $sig_html)) {
 
         $sig_text = '';
@@ -295,6 +306,105 @@ if (isset($_POST['sig_html'])) {
     $sig_text = tidy_html($sig_text, false);
 
     $fetched_sig = true;
+}
+
+if (isset($_POST['post_html']) && $_POST['post_html'] == 'Y') {
+    $post_html = 'Y';
+} else {
+    $post_html = 'N';
+}
+
+if (isset($_POST['thread_title']) && strlen(trim(stripslashes_array($_POST['thread_title']))) > 0) {
+    $thread_title = trim(stripslashes_array($_POST['thread_title']));
+}
+
+if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+    $fid = $_POST['fid'];
+} else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $fid = $_GET['fid'];
+} else {
+    $fid = 1;
+}
+
+if (isset($_POST['poll_question']) && is_array($_POST['poll_question'])) {
+    $poll_question_array = $_POST['poll_question'];
+} else {
+    $poll_question_array = array(array('question' => '', 'multi' => false, 'answers' => array('')));
+}
+
+if (isset($_POST['add_answer']) && is_array($_POST['add_answer'])) {
+
+    list($question_key) = array_keys($_POST['add_answer']);
+
+    if (isset($poll_question_array[$question_key])) {
+        $poll_question_array[$question_key]['answers'][] = '';
+    }
+}
+
+if (isset($_POST['add_question'])) {
+    $poll_question_array[] = array('question' => '', 'multi' => false, 'answers' => array(''));
+}
+
+if (isset($_POST['delete_answer']) && is_array($_POST['delete_answer'])) {
+
+    foreach ($_POST['delete_answer'] as $question_key => $answer_key_array) {
+
+        if (!is_array($answer_key_array)) continue;
+
+        if (sizeof($poll_question_array[$question_key]['answers']) > 1) {
+
+            foreach(array_keys($answer_key_array) as $answer_key) {
+                unset($poll_question_array[$question_key]['answers'][$answer_key]);
+            }
+        }
+    }
+}
+
+if (isset($_POST['delete_question']) && is_array($_POST['delete_question'])) {
+
+    list($question_key) = array_keys($_POST['delete_question']);
+
+    if (sizeof($poll_question_array) > 1) {
+        unset($poll_question_array[$question_key]);
+    }
+}
+
+if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
+    $poll_type = $_POST['poll_type'];
+}
+
+if (isset($_POST['show_results']) && is_numeric($_POST['show_results'])) {
+    $show_results = $_POST['show_results'];
+}
+
+if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
+    $poll_vote_type = $_POST['poll_vote_type'];
+}
+
+if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
+    $option_type = $_POST['option_type'];
+}
+
+if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
+    $change_vote = $_POST['change_vote'];
+}
+
+if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
+    $allow_guests = $_POST['allow_guests'];
+} else if (!forum_get_setting('poll_allow_guests', false)) {
+    $allow_guests = POLL_GUEST_DENIED;
+}
+
+if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
+    $close_poll = $_POST['close_poll'];
+}
+
+if (isset($_POST['message_text']) && strlen(trim(stripslashes_array($_POST['message_text']))) > 0) {
+    $message_text = trim(stripslashes_array($_POST['message_text']));
+}
+
+if (isset($_POST['sig_text'])) {
+    $sig_text = trim(stripslashes_array($_POST['sig_text']));
 }
 
 $allow_html = true;
@@ -316,178 +426,176 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "discussion.php?webtag=$webtag";
-    header_redirect($uri);
+    header_redirect("discussion.php?webtag=$webtag");
+    exit;
 
 } else if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
 
     $valid = true;
 
-    if (isset($_POST['post_html']) && $_POST['post_html'] == 'Y') {
-        $post_html = 'Y';
-    } else {
-        $post_html = 'N';
-    }
-
-    if (isset($_POST['threadtitle']) && strlen(trim(stripslashes_array($_POST['threadtitle']))) > 0) {
-
-        $threadtitle = trim(stripslashes_array($_POST['threadtitle']));
-
-    } else {
+    if (!isset($thread_title) || strlen(trim($thread_title)) == 0) {
 
         $error_msg_array[] = $lang['mustenterthreadtitle'];
         $valid = false;
     }
 
-    if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+    if (!isset($fid) || !folder_is_valid($fid)) {
 
-        $fid = $_POST['fid'];
-
-        if (!folder_is_valid($fid)) {
-
-            $error_msg_array[] = $lang['unknownfolder'];
-            $valid = false;
-        }
-
-        if (!session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $fid)) {
-
-            $error_msg_array[] = $lang['cannotcreatethreadinfolder'];
-            $valid = false;
-        }
-
-        if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
-
-            $error_msg_array[] = $lang['cannotattachfilesinfolder'];
-            $valid = false;
-        }
-
-    } else {
-
-        $error_msg_array[] = $lang['pleaseselectfolder'];
+        $error_msg_array[] = $lang['unknownfolder'];
         $valid = false;
     }
 
-    /*if (isset($_POST['answers']) && is_array($_POST['answers'])) {
+    if (!session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $fid)) {
 
-        $t_answers_array = array_filter(stripslashes_array($_POST['answers']), "strlen");
+        $error_msg_array[] = $lang['cannotcreatethreadinfolder'];
+        $valid = false;
+    }
 
-        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
+    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
 
-            foreach ($t_answers_array as $key => $t_poll_answer) {
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
+        $valid = false;
+    }
 
-                $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
-                $t_answers_array[$key] = $t_poll_check_html->getContent();
+    if (!folder_thread_type_allowed($fid, FOLDER_ALLOW_POLL_THREAD)) {
 
-                if ($valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+        $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
+        $valid = false;
+    }
 
-                    $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
-                    $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+    $poll_answer_count = 0;
+
+    if (isset($poll_question_array) && sizeof($poll_question_array) > 0) {
+
+        foreach ($poll_question_array as $question_key => $poll_question) {
+
+            if (!isset($poll_question['multi']) || ($poll_question['multi'] != 'Y')) {
+                $poll_question_array[$question_key]['multi'] = 'N';
+            }
+
+            if (!isset($poll_question['question']) || strlen(trim($poll_question['question'])) == 0) {
+
+                if (!isset($poll_question['answers']) || !is_array($poll_question['answers'])) {
+
+                    unset($poll_question_array[$question_key]);
+
+                } else if (sizeof(array_filter(array_map('trim', $poll_question['answers']), 'strlen')) == 0) {
+
+                    unset($poll_question_array[$question_key]);
+
+                } else if (sizeof(array_filter(array_map('trim', $poll_question['answers']), 'strlen')) > 0) {
+
+                    $error_msg_array[] = $lang['youmustprovideaquestionforallanswers'];
                     $valid = false;
+                }
+
+            } else if (!isset($poll_question['answers']) || !is_array($poll_question['answers'])) {
+
+                $error_msg_array[] = $lang['youmustprovideratleast1answerforeachquestion'];
+                $valid = false;
+
+            } else if (sizeof(array_filter(array_map('trim', $poll_question['answers']), 'strlen')) == 0) {
+
+                $error_msg_array[] = $lang['youmustprovideratleast1answerforeachquestion'];
+                $valid = false;
+
+            } else {
+
+                foreach ($poll_question['answers'] as $answer_key => $poll_answer) {
+
+                    if (($allow_html == true) && isset($post_html) && ($post_html == 'Y')) {
+
+                        $poll_answer_check_html = new MessageText(POST_HTML_ENABLED, $poll_answer);
+
+                        $poll_question_array[$question_key]['answers'][$answer_key] = $poll_answer_check_html->getContent();
+
+                        if (strlen(trim($poll_answer_check_html->getContent())) == 0) {
+
+                            $poll_question_array[$question_key]['answers'][$answer_key] = $poll_answer_check_html->getOriginalContent();
+
+                            $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+
+                            $valid = false;
+                        }
+                    }
+
+                    if (attachments_embed_check($poll_answer) && ($post_html == 'Y')) {
+
+                        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
+                        $valid = false;
+                    }
                 }
             }
         }
+    }
 
-        if (!isset($t_answers_array[0]) || strlen(trim(stripslashes_array($t_answers_array[0]))) < 1) {
+    if ($valid && (!isset($poll_type) || !is_numeric($poll_type))) {
 
-            $error_msg_array[] = $lang['mustspecifyvalues1and2'];
-            $valid = false;
-        }
-
-        if (!isset($t_answers_array[1]) || strlen(trim(stripslashes_array($t_answers_array[1]))) < 1) {
-
-            $error_msg_array[] = $lang['mustspecifyvalues1and2'];
-            $valid = false;
-        }
-
-        foreach ($t_answers_array as $t_poll_answer) {
-
-            if (attachments_embed_check($t_poll_answer) && $t_post_html == 'Y') {
-
-                $error_msg_array[] = $lang['notallowedembedattachmentpost'];
-                $valid = false;
-            }
-        }
-    }*/
-
-    if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
-        $poll_type = $_POST['poll_type'];
-    } else {
         $error_msg_array[] = $lang['mustprovidepolltype'];
         $valid = false;
     }
 
-    if (isset($_POST['show_results']) && is_numeric($_POST['show_results'])) {
-        $show_results = $_POST['show_results'];
-    } else {
+    if ($valid && (!isset($show_results) || !is_numeric($show_results))) {
+
         $error_msg_array[] = $lang['mustprovidepollresultsdisplaytype'];
         $valid = false;
     }
 
-    if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
-        $poll_vote_type = $_POST['poll_vote_type'];
-    } else {
+    if ($valid && (!isset($poll_vote_type) || !is_numeric($poll_vote_type))) {
+
         $error_msg_array[] = $lang['mustprovidepollvotetype'];
         $valid = false;
     }
 
-    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
-        $option_type = $_POST['option_type'];
-    } else {
+    if ($valid && (!isset($option_type) || !is_numeric($option_type))) {
+
         $error_msg_array[] = $lang['mustprovidepolloptiontype'];
         $valid = false;
     }
 
-    if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
-        $change_vote = $_POST['change_vote'];
-    } else {
+    if ($valid && (!isset($change_vote) || !is_numeric($change_vote))) {
+
         $error_msg_array[] = $lang['mustprovidepollvotetype'];
         $valid = false;
     }
 
-    if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
-        $allow_guests = $_POST['allow_guests'];
-    } else if (!forum_get_setting('poll_allow_guests', false)) {
-        $allow_guests = POLL_GUEST_DENIED;
-    } else {
+    if ($valid && (!isset($allow_guests) || !is_numeric($allow_guests))) {
+
         $error_msg_array[] = $lang['mustprovidepollguestvotetype'];
         $valid = false;
     }
 
-    if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
-        $close_poll = $_POST['close_poll'];
-    } else {
+    if (!isset($close_poll) || !is_numeric($close_poll)) {
         $close_poll = false;
     }
 
-    if ($valid && $poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($answer_groups)) <> 2) {
+    if ($valid && ($poll_type == POLL_TABLE_GRAPH) && sizeof(array_unique($answer_groups)) <> 2) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
     }
 
-    if ($valid && $poll_type == POLL_TABLE_GRAPH && $change_vote == POLL_VOTE_MULTI) {
+    if ($valid && ($poll_type == POLL_TABLE_GRAPH) && ($change_vote == POLL_VOTE_MULTI)) {
 
         $error_msg_array[] = $lang['nomultivotetabulars'];
         $valid = false;
     }
 
-    if ($valid && $poll_vote_type == POLL_VOTE_PUBLIC && $change_vote == POLL_VOTE_MULTI) {
+    if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($change_vote == POLL_VOTE_MULTI)) {
 
         $error_msg_array[] = $lang['nomultivotepublic'];
         $valid = false;
     }
 
-    if ($valid && $poll_vote_type == POLL_VOTE_PUBLIC && $poll_type !== POLL_HORIZONTAL_GRAPH) {
+    if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($poll_type !== POLL_HORIZONTAL_GRAPH)) {
 
         $error_msg_array[] = $lang['publicballethorizontalgraphonly'];
         $valid = false;
     }
 
-    if (isset($_POST['message_text']) && strlen(trim(stripslashes_array($_POST['message_text']))) > 0) {
+    if (isset($message_text) && strlen(trim(stripslashes_array($message_text))) > 0) {
 
-        $message_text = trim(stripslashes_array($_POST['message_text']));
-
-        if (attachments_embed_check($message_text) && $message_html == "Y") {
+        if (attachments_embed_check($message_text) && ($message_html == 'Y')) {
 
             $error_msg_array[] = $lang['notallowedembedattachmentpost'];
             $valid = false;
@@ -496,36 +604,30 @@ if (isset($_POST['cancel'])) {
 
     if (isset($sig_text)) {
 
-        if (attachments_embed_check($sig_text) && $sig_html == "Y") {
+        if (attachments_embed_check($sig_text) && ($sig_html == 'Y')) {
 
             $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
             $valid = false;
         }
     }
 
-    if ($valid && !folder_thread_type_allowed($fid, FOLDER_ALLOW_POLL_THREAD)) {
+} else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x']) || isset($_POST['poll_additional_message_toggle_x']) || isset($_POST['poll_advanced_toggle_x'])) {
 
-        $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
-        $valid = false;
-    }
-
-} else if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
-
-    if (isset($_POST['message_text']) && strlen(trim(stripslashes_array($_POST['message_text']))) > 0) {
-        $message_text = trim(stripslashes_array($_POST['message_text']));
-    }
-
-    if (isset($_POST['sig_text'])) {
-        $sig_text = trim(stripslashes_array($_POST['sig_text']));
-    }
-
-    if (isset($_POST['emots_toggle'])) {
+    if (isset($_POST['emots_toggle_x'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    } else if (isset($_POST['sig_toggle'])) {
+    } else if (isset($_POST['sig_toggle_x'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
+
+    } else if (isset($_POST['poll_additional_message_toggle_x'])) {
+
+        $page_prefs = (double) $page_prefs ^ POLL_ADDITIONAL_MESSAGE_DISPLAY;
+
+    } else if (isset($_POST['poll_advanced_toggle_x'])) {
+
+        $page_prefs = (double) $page_prefs ^ POLL_ADVANCED_DISPLAY;
     }
 
     $user_prefs = array('POST_PAGE' => $page_prefs);
@@ -536,12 +638,6 @@ if (isset($_POST['cancel'])) {
         $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
-}
-
-if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
-    $answer_count = $_POST['answer_count'];
-} else {
-    $answer_count = 0;
 }
 
 if (isset($fid) && !session_check_perm(USER_PERM_HTML_POSTING, $fid)) {
@@ -576,7 +672,6 @@ if (mb_strlen($sig_text) >= 65535) {
     $valid = false;
 }
 
-// De-dupe key
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
     $dedupe = $_POST['dedupe'];
 }else{
@@ -589,7 +684,6 @@ if ($valid && isset($_POST['post'])) {
 
         if (post_check_ddkey($dedupe)) {
 
-            // Work out when the poll will close.
             if ($close_poll == POLL_CLOSE_ONE_DAY) {
 
                 $poll_closes = time() + DAY_IN_SECONDS;
@@ -608,22 +702,14 @@ if ($valid && isset($_POST['post'])) {
 
             } else if ($close_poll == POLL_CLOSE_NEVER) {
 
-                $t_poll_closes = false;
+                $poll_closes = false;
             }
 
-            if ($allow_html == false || !isset($post_html) || $post_html == 'N') {
-                $answers_array = htmlentities_array($answers_array);
-            }
-
-            // Create the poll thread with the poll_flag set to Y and sticky flag set to N
-            $tid = post_create_thread($fid, $uid, $threadtitle, 'Y', 'N');
+            $tid = post_create_thread($fid, $uid, $thread_title, 'Y', 'N');
 
             $pid = post_create($fid, $tid, 0, $uid, 0, '');
 
-            // Ensure that Tablular polls have
-            if ($poll_type == POLL_TABLE_GRAPH) $poll_vote_type = POLL_VOTE_PUBLIC;
-
-            poll_create($tid, $answers_array, $answer_groups, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $question, $allow_guests);
+            poll_create($tid, $poll_question_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
             post_save_attachment_id($tid, $pid, $aid);
 
@@ -650,14 +736,6 @@ if ($valid && isset($_POST['post'])) {
     } else {
 
         $error_msg_array[] = sprintf($lang['postfrequencytoogreat'], forum_get_setting('minimum_post_frequency', false, 0));
-    }
-}
-
-if (!isset($fid)) {
-    if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-        $fid = $_GET['fid'];
-    } else {
-        $fid = 1;
     }
 }
 
@@ -699,125 +777,102 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
     echo "                </tr>";
 
-    $polldata['TLOGON'] = $lang['allcaps'];
-    $polldata['TNICK'] = $lang['allcaps'];
+    $poll_data['TLOGON'] = $lang['allcaps'];
+    $poll_data['TNICK'] = $lang['allcaps'];
 
     $preview_tuser = user_get($uid);
 
-    $polldata['FLOGON']   = $preview_tuser['LOGON'];
-    $polldata['FNICK']    = $preview_tuser['NICKNAME'];
-    $polldata['FROM_UID'] = $preview_tuser['UID'];
+    $poll_data['FLOGON']   = $preview_tuser['LOGON'];
+    $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
+    $poll_data['FROM_UID'] = $preview_tuser['UID'];
 
-    $polldata['CONTENT'] = "<br />\n";
-    $polldata['CONTENT'].= "<div align=\"center\">\n";
-    $polldata['CONTENT'].= "<table class=\"box\" width=\"475\">\n";
-    $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td align=\"center\">\n";
-    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". htmlentities_array($question). "</h2></td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
+    $poll_data['CONTENT'] = "<br />\n";
+    $poll_data['CONTENT'].= "<div align=\"center\">\n";
+    $poll_data['CONTENT'].= "<table class=\"box\" width=\"475\">\n";
 
-    $pollresults = array();
+    foreach ($poll_question_array as $poll_question) {
 
-    $max_value   = 0;
-    $totalvotes  = 0;
-    $optioncount = 0;
+        $poll_data['CONTENT'].= "  <tr>\n";
+        $poll_data['CONTENT'].= "    <td align=\"center\">\n";
+        $poll_data['CONTENT'].= "      <table width=\"95%\">\n";
+        $poll_data['CONTENT'].= "        <tr>\n";
+        $poll_data['CONTENT'].= "          <td align=\"left\"><h2>". htmlentities_array($poll_question['question']). "</h2></td>\n";
+        $poll_data['CONTENT'].= "        </tr>\n";
+        $poll_data['CONTENT'].= "        <tr>\n";
+        $poll_data['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
 
-    // Poll answers and groups. If HTML is disabled we need to pass
-    // the answers through htmlentities_array.
-    if ($allow_html == false || !isset($post_html) || $post_html == 'N') {
-        $poll_preview_answers_array = htmlentities_array($answers_array);
-    } else {
-        $poll_preview_answers_array = $answers_array;
-    }
-
-    // Get the poll groups.
-    $poll_preview_groups_array = $answer_groups;
-
-    // Generate some random votes
-    $poll_preview_votes_array = rand_array(0, sizeof($answers_array), 1, 10);
-
-    // Construct the pollresults array that will be used to display the graph
-    // Modified to handle the new Group ID.
-    $pollresults = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
-                         'OPTION_NAME' => array_values($poll_preview_answers_array),
-                         'GROUP_ID'    => array_values($poll_preview_groups_array),
-                         'VOTES'       => array_values($poll_preview_votes_array));
-
-    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
-        $pollpreviewdata['OPTIONTYPE'] = $option_type;
-    } else {
-        $pollpreviewdata['OPTIONTYPE'] = 0;
-    }
-
-    if (isset($_POST['preview_form'])) {
-
-        $polldata['CONTENT'].= poll_preview_form($pollresults, $pollpreviewdata);
-
-    } else {
-
-        if ($poll_type == POLL_VERTICAL_GRAPH) {
-            $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
-        } else if ($poll_type == POLL_TABLE_GRAPH) {
-            $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
+        if ($allow_html == false || !isset($post_html) || $post_html == 'N') {
+            $poll_preview_answers_array = htmlentities_array($poll_question['answers']);
         } else {
-            $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+            $poll_preview_answers_array = $poll_question['answers'];
         }
+
+        $poll_preview_votes_array = rand_array(0, sizeof($poll_preview_answers_array), 1, 10);
+
+        $poll_preview_results_array = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
+                                            'OPTION_NAME' => array_values($poll_preview_answers_array),
+                                            'VOTES'       => array_values($poll_preview_votes_array));
+
+        if (!isset($option_type) || !is_numeric($option_type)) {
+            $poll_preview_data['OPTIONTYPE'] = $option_type;
+        } else {
+            $poll_preview_data['OPTIONTYPE'] = 0;
+        }
+
+        if (isset($_POST['preview_form'])) {
+
+            $poll_data['CONTENT'].= poll_preview_form($poll_preview_results_array, $poll_preview_data);
+
+        } else {
+
+            if ($poll_type == POLL_VERTICAL_GRAPH) {
+
+                $poll_data['CONTENT'].= poll_preview_graph_vert($poll_preview_results_array);
+
+            } else if ($poll_type == POLL_TABLE_GRAPH) {
+
+                $poll_data['CONTENT'] .= poll_preview_graph_table($poll_preview_results_array);
+
+            } else {
+
+                $poll_data['CONTENT'].= poll_preview_graph_horz($poll_preview_results_array);
+            }
+        }
+
+        $poll_data['CONTENT'].= "          </td>\n";
+        $poll_data['CONTENT'].= "        </tr>\n";
+        $poll_data['CONTENT'].= "      </table>\n";
+        $poll_data['CONTENT'].= "    </td>\n";
+        $poll_data['CONTENT'].= "  </tr>\n";
     }
 
-    $polldata['CONTENT'].= "          </td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";
-    $polldata['CONTENT'].= "      </table>\n";
-    $polldata['CONTENT'].= "    </td>\n";
-    $polldata['CONTENT'].= "  </tr>\n";
-    $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td align=\"center\">";
-    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
+    $poll_data['CONTENT'].= "</table>\n";
 
-    if ($change_vote == POLL_VOTE_CAN_CHANGE) {
-        $polldata['CONTENT'].= $lang['abletochangevote'];
-    } else if ($change_vote == POLL_VOTE_MULTI) {
-        $polldata['CONTENT'].= $lang['abletovotemultiple'];
-    } else {
-        $polldata['CONTENT'].= $lang['notabletochangevote'];
-    }
+    $poll_data['CONTENT'].= "</div>\n";
 
-    $polldata['CONTENT'].= "          </td>";
-    $polldata['CONTENT'].= "        </tr>\n";
-    $polldata['CONTENT'].= "      </table>\n";
-    $polldata['CONTENT'].= "    </td>";
-    $polldata['CONTENT'].= "  </tr>\n";
-    $polldata['CONTENT'].= "</table>\n";
-    $polldata['CONTENT'].= "</div>\n";
-    $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
+    $poll_data['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
-    // Attachments preview
-    $polldata['AID'] = $aid;
+    $poll_data['AID'] = $aid;
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\"><br />\n";
 
-    message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
+    message_display(0, $poll_data, 0, 0, 0, false, false, false, true, $show_sigs, true);
 
     echo "                  </td>\n";
     echo "                </tr>\n";
 
     if (strlen($message_text) > 0) {
 
-        $polldata['CONTENT'] = $message_text;
+        $poll_data['CONTENT'] = $message_text;
 
         if ($allow_sig == true && strlen(trim($sig_text)) > 0) {
 
-            $polldata['CONTENT'].= "<div class=\"sig\">$sig_text</div>";
+            $poll_data['CONTENT'].= "<div class=\"sig\">$sig_text</div>";
         }
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><br />", message_display(0, $polldata, 0, 0, 0, false, false, false, false, $show_sigs, true), "</td>\n";
+        echo "                  <td align=\"left\"><br />", message_display(0, $poll_data, 0, 0, 0, false, false, false, false, $show_sigs, true), "</td>\n";
         echo "                </tr>\n";
     }
 
@@ -846,7 +901,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_input_text("threadtitle", isset($threadtitle) ? htmlentities_array($threadtitle) : '', 30, 64, false, "thread_title"), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("thread_title", isset($thread_title) ? htmlentities_array($thread_title) : '', 30, 64, false, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
@@ -923,37 +978,33 @@ echo "                          <h2>{$lang['poll']}</h2>\n";
 echo "                          <p>{$lang['enterpollquestionexp']}</p>\n";
 echo "                          <div class=\"poll_question_container\">\n";
 
-$poll_question_array = array(
-    0 => array(
-        'question' => 'Test #1',
-        'multi' => true,
-        'answers_array' => array(
-            0 => 'Yes #1',
-            1 => 'No #1',
-        ),
-    ),
-    1 => array(
-        'question' => 'Test #2',
-        'multi' => false,
-        'answers_array' => array(
-            0 => 'Yes #2',
-            1 => 'No #2',
-        ),
-    ),
-);
-
 foreach ($poll_question_array as $question_key => $poll_question) {
 
     echo "                            <fieldset class=\"poll_question\">\n";
     echo "                              <div>\n";
     echo "                                <h2>{$lang['pollquestion']}</h2>\n";
-    echo "                                <div>\n";
-    echo "                                  ", form_input_text("poll_question[{$question_key}][question]", htmlentities_array($poll_question['question']), 40, 255), "&nbsp;", form_button_html("delete_question[{$question_key}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""), "<br />\n";
+    echo "                                <div class=\"poll_question_input\">\n";
+    echo "                                  ", form_input_text("poll_question[{$question_key}][question]", htmlentities_array($poll_question['question']), 40, 255), "&nbsp;", form_button_html("delete_question[{$question_key}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""), "\n";
+    echo "                                </div>\n";
+    echo "                                <div class=\"poll_question_checkbox\">\n";
     echo "                                  ", form_checkbox("poll_question[{$question_key}][multi]", "Y", $lang['allowmultipleanswers'], (isset($poll_question['multi']) && $poll_question['multi'] == 'Y')), "\n";
-    echo "                                  <ol class=\"poll_answer_list\">\n";
+    echo "                                </div>\n";
+    echo "                                <div class=\"poll_answer_list\">\n";
+    echo "                                  <ol>\n";
 
-    foreach ($poll_question['answers_array'] as $answer_key => $poll_answer) {
-        echo "                                    <li>", form_input_text("poll_question[{$question_key}][answers][{$answer_key}]", htmlentities_array($poll_answer), 45, 255), "&nbsp;", form_button_html("delete_answer[{$question_key}][{$answer_key}]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""), "</li>\n";
+    if (isset($poll_question['answers']) && is_array($poll_question['answers'])) {
+
+        foreach ($poll_question['answers'] as $answer_key => $poll_answer) {
+            echo "                                    <li>", form_input_text("poll_question[{$question_key}][answers][{$answer_key}]", htmlentities_array($poll_answer), 45, 255), "&nbsp;", form_button_html("delete_answer[{$question_key}][{$answer_key}]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""), "</li>\n";
+        }
+
+    } else {
+
+        echo "                                    <li>", form_input_text("poll_question[{$question_key}][answers][0]", '', 45, 255), "&nbsp;", form_button_html("delete_answer[{$question_key}][0]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""), "</li>\n";
+
+        if (isset($_POST['add_answer'][$question_key])) {
+            echo poll_get_answer_html($question_key, 1);
+        }
     }
 
     echo "                                  </ol>\n";

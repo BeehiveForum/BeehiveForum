@@ -365,6 +365,14 @@ p, h1, h2 {
     padding-left: 35px;
 }
 
+.button_image.delete_answer {
+    vertical-align: text-bottom;
+}
+
+.button_image.delete_question {
+    vertical-align: text-bottom;
+}
+
 .code {
     background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
@@ -386,12 +394,12 @@ fieldset.poll_question + fieldset.poll_question {
     margin: 10px 0px 5px;
 }
 
-ol.poll_answer_list {
+div.poll_answer_list ol {
     margin-bottom: 5px;
 }
 
-ol.poll_answer_list li {
-    margin: 3px 0px;
+div.poll_answer_list ol li {
+    margin: 5px 0px;
 }
 
 .create_poll_display {

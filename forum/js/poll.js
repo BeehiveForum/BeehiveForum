@@ -25,12 +25,53 @@ $(beehive).bind('init', function() {
 
     var add_process_running = false;
 
-    var toggle_add_new_buttons = function()
+    var toggle_add_buttons = function()
     {
-        $('button.add_question, button.add_answer').toggleClass('disabled', !($('ol.poll_answer_list li').length < 20));
+        $('button.add_question, button.add_answer').toggleClass('disabled', !($('div.poll_answer_list ol li').length < 20));
     };
 
+    var toggle_delete_buttons = function()
+    {
+        var $poll_questions = $('fieldset.poll_question');
+
+        $poll_questions.each(function() {
+
+            var $delete_buttons = $(this).find('button.delete_answer');
+            $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
+        });
+
+        var $delete_buttons = $poll_questions.find('button.delete_question');
+        $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
+    }
+
+    var hide_delete_buttons = function()
+    {
+        $(this).find('button.delete_question, button.delete_answer').hide();
+    };
+
+    hide_delete_buttons.call($('body'));
+
+    $('div.poll_question_input').live('mouseenter', function() {
+
+        $(this).find('button.delete_question').show();
+
+    }).live('mouseleave', function() {
+
+        $(this).find('button.delete_question').hide();
+    });
+
+    $('div.poll_answer_list ol li').live('mouseenter', function() {
+
+        $(this).find('button.delete_answer').show();
+
+    }).live('mouseleave', function() {
+
+        $(this).find('button.delete_answer').hide();
+    });
+
     $('button.delete_question').live('click', function() {
+
+        if ($(this).hasClass('disabled')) return false;
 
        if (!window.confirm('Are you sure you want to delete this question?')) {
            return false;
@@ -40,13 +81,17 @@ $(beehive).bind('init', function() {
 
            $(this).remove();
 
-           toggle_add_new_buttons();
+           toggle_add_buttons();
+
+           toggle_delete_buttons();
        });
 
        return false;
     });
 
     $('button.delete_answer').live('click', function() {
+
+        if ($(this).hasClass('disabled')) return false;
 
        if (!window.confirm('Are you sure you want to delete this answer?')) {
            return false;
@@ -56,7 +101,9 @@ $(beehive).bind('init', function() {
 
            $(this).remove();
 
-           toggle_add_new_buttons();
+           toggle_add_buttons();
+
+           toggle_delete_buttons();
        });
 
        return false;
@@ -70,7 +117,7 @@ $(beehive).bind('init', function() {
 
         var $poll_question_fieldset = $(this).closest('fieldset.poll_question');
 
-        var $poll_answer_list = $poll_question_fieldset.find('ol.poll_answer_list');
+        var $poll_answer_list = $poll_question_fieldset.find('div.poll_answer_list ol');
 
         var question_number = $('fieldset.poll_question').index($poll_question_fieldset);
 
@@ -94,11 +141,17 @@ $(beehive).bind('init', function() {
 
             'success' : function(data) {
 
-                $(data).hide().appendTo($poll_answer_list).show(200, function() {
+                var $data = $(data);
+
+                hide_delete_buttons.call($data);
+
+                $data.hide().appendTo($poll_answer_list).show(200, function() {
 
                     $(this).css('display', 'list-item');
 
-                    toggle_add_new_buttons();
+                    toggle_add_buttons();
+
+                    toggle_delete_buttons();
 
                     add_process_running = false;
                 });
@@ -135,11 +188,18 @@ $(beehive).bind('init', function() {
 
             'success' : function(data) {
 
-                $(data).hide().appendTo($poll_question_container).show(200);
+                var $data = $(data);
 
-                toggle_add_new_buttons();
+                hide_delete_buttons.call($data);
 
-                add_process_running = false;
+                $data.hide().appendTo($poll_question_container).show(200, function() {
+
+                    toggle_add_buttons();
+
+                    toggle_delete_buttons();
+
+                    add_process_running = false;
+                });
             }
         });
 

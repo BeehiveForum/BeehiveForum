@@ -1672,7 +1672,7 @@ $lang['noguestsvoted'] = "no guests";
 $lang['oneguestvoted'] = "1 guest";
 $lang['xguestsvoted'] = "%s guests";
 $lang['pollhasended'] = "Poll has ended";
-$lang['youvotedforpolloptionsondate'] = "You voted for %s on %s";
+$lang['youvotedforpolloptions'] = "You voted for %s";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";
 $lang['editpoll'] = "Edit Poll";
 $lang['results'] = "Results";
@@ -1690,6 +1690,8 @@ $lang['addnewanswer'] = "Add new answer";
 $lang['deletequestion'] = "Delete question";
 $lang['deleteanswer'] = "Delete answer";
 $lang['allowmultipleanswers'] = "Allow multiple answers to be selected";
+$lang['youmustprovideaquestionforallanswers'] = "You must provider a question for all answers";
+$lang['youmustprovideratleast1answerforeachquestion'] = "You must provider at least 1 answer for each question";
 
 // Profiles (profile.php) ----------------------------------------------
 $lang['editprofile'] = "Edit Profile";

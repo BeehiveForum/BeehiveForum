@@ -41,6 +41,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 
 // Include files we need.
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 function db_get_connection_vars(&$db_server, &$db_port, &$db_username, &$db_password, &$db_database)
 {
@@ -59,24 +60,24 @@ function db_connect()
 
     if (!$connection_id) {
 
-        if (!($connection_id = mysqli_connect($db_server, $db_username, $db_password, $db_database, $db_port))) {
-            throw new Exception('Could not connect to database server');
+        if (!($connection_id = @mysqli_connect($db_server, $db_username, $db_password, $db_database, $db_port))) {
+            throw new Exception('Could not connect to database server. Check your MySQL user credentials', MYSQL_ACCESS_DENIED);
         }
 
         if (!db_set_utf8_charset($connection_id)) {
-            throw new Exception('Could not enable UTF-8 mode');
+            throw new Exception('Could not enable UTF-8 mode. Check your MySQL user permissions.', MYSQL_PERMISSION_DENIED);
         }
 
         if (!db_set_time_zone_utc($connection_id)) {
-            throw new Exception('Could not set MySQL timezone to UTC');
+            throw new Exception('Could not set MySQL timezone to UTC. Check your MySQL user permissions.', MYSQL_PERMISSION_DENIED);
         }
 
         if (!db_enable_compat_mode($connection_id)) {
-            throw new Exception('Could not change MYSQL compatbility options');
+            throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.', MYSQL_PERMISSION_DENIED);
         }
 
         if (!db_enable_no_auto_value($connection_id)) {
-            throw new Exception('Could not set MySQL Session Variable SQL_MODE');
+            throw new Exception('Could not set MySQL Session Variable SQL_MODE. Check your MySQL user permissions.', MYSQL_PERMISSION_DENIED);
         }
     }
 
@@ -220,7 +221,7 @@ function db_fetch_mysql_version()
 
     if (!$mysql_version) {
 
-        if (!($db_fetch_mysql_version = db_connect())) return false;
+        if (!($db_fetch_mysql_version = @db_connect())) return false;
 
         $sql = "SELECT VERSION() AS version";
 
@@ -256,18 +257,9 @@ function db_fetch_mysql_version()
 
 function db_escape_string($str)
 {
-    if (($db_escape_string = db_connect())) {
+    $db_escape_string = db_connect();
 
-        if (function_exists('mysqli_real_escape_string')) {
-            return mysqli_real_escape_string($db_escape_string, $str);
-        }
-
-        if (function_exists('mysqli_escape_string')) {
-            return mysqli_escape_string($db_escape_string, $str);
-        }
-    }
-
-    return addslashes($str);
+    return mysqli_real_escape_string($db_escape_string, $str);
 }
 
 function db_ping($connection_id)

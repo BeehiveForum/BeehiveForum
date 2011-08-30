@@ -61,6 +61,7 @@ function bh_error_handler($code, $message, $file = '', $line = 0)
     }
 }
 
+// Check for unclean shutdown.
 function bh_shutdown_handler()
 {
     if (($error = error_get_last()) && (error_reporting() == 0)) {
@@ -69,7 +70,7 @@ function bh_shutdown_handler()
 }
 
 // Beehive Exception Handler Function
-function bh_exception_handler($exception)
+function bh_exception_handler(Exception $exception)
 {
     if (isset($GLOBALS['error_report_verbose']) && $GLOBALS['error_report_verbose'] == true) {
         $error_report_verbose = true;
@@ -152,10 +153,14 @@ function bh_exception_handler($exception)
         // Get MySQL version if available.
         $mysql_version = '';
 
-        if (function_exists('db_fetch_mysql_version') && ($mysql_version = db_fetch_mysql_version())) {
-            $version_strings[] = sprintf('MySQL/%s', $mysql_version);
-        }else {
-            $version_strings[] = sprintf('MySQL Version Unknown');
+        // Don't try and do this if we are having trouble connecting to the MySQL server.
+        if (!in_array($exception->getCode(), array(MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
+
+            if (($mysql_version = db_fetch_mysql_version())) {
+                $version_strings[] = sprintf('MySQL/%s', $mysql_version);
+            }else {
+                $version_strings[] = sprintf('MySQL Version Unknown');
+            }
         }
 
         // Format the version info into a string.

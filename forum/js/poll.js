@@ -205,4 +205,12 @@ $(beehive).bind('init', function() {
 
         return false;
     });
+
+    $('.poll_bar_vertical .poll_bar_inner').animate({
+        'height' : '100%'
+    }, 2000);
+
+    $('.poll_bar_horizontal .poll_bar_inner').animate({
+        'width' : '100%'
+    }, 2000);
 });

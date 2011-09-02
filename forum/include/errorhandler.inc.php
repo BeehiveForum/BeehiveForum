@@ -127,7 +127,20 @@ function bh_exception_handler(Exception $exception)
 
         // Stacktrace data.
         if (($trace_array = $exception->getTrace())) {
-            $error_msg_array[] = sprintf('<pre>%s</pre>', print_r($trace_array, true));
+
+            foreach ($trace_array as $key => $trace_data) {
+
+                $error_msg_array[] = sprintf(
+                    '#%s %s(%s): %s(%s)<br />',
+                    $key,
+                    $trace_data['file'],
+                    $trace_data['line'],
+                    $trace_data['function'],
+                    implode(', ', array_map('gettype', $trace_data['args']))
+                );
+            }
+
+            $error_msg_array[] = '#' . ++$key . ' {main}<br />';
         }
 
         // Get the Beehive Forum Version
@@ -237,7 +250,7 @@ function bh_exception_handler(Exception $exception)
         @error_log($error_log_message);
 
         // Status error header
-        //header_status(500, 'Internal Server Error');
+        header_status(500, 'Internal Server Error');
 
         // Check for an installation error.
         if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {

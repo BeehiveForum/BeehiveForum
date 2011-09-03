@@ -794,8 +794,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
 
-    echo "    <td align=\"left\">\n";
-    echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "    <td align=\"center\">\n";
+    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
     echo "          <td align=\"left\">\n";
     echo "            <table class=\"posthead\" width=\"100%\">\n";
@@ -1152,6 +1152,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
+
+    if ($in_list && !$is_preview) {
+        echo '<td width=\"2%\">&nbsp;</td>';
+    }
+
     echo "    </tr>\n";
     echo "  </table>\n";
 

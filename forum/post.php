@@ -334,18 +334,17 @@ if (isset($_POST['t_sig_html'])) {
 
 }else {
 
-    // Fetch the current user's sig
     $t_sig = '';
     $t_sig_html = 'N';
 
     if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
 
         $t_sig = '';
-        $t_sig_html = 'Y';
+        $t_sig_html = 'N';
     }
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 
     $t_sig = tidy_html($t_sig, false);
@@ -365,7 +364,7 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = time();
 }
 
-if (!isset($sig_html)) $sig_html = 0;
+if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
 if (isset($_POST['post']) || isset($_POST['preview'])) {
 
@@ -1126,11 +1125,9 @@ if ($allow_html == true) {
 
         echo "                          <h2>{$lang['htmlinmessage']}</h2>\n";
 
-        $tph_radio = $post->getHTML();
-
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $post->getHTML() == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $post->getHTML() == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $post->getHTML() == POST_HTML_ENABLED)." \n";
     }
 
 }else {

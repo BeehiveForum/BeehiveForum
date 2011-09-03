@@ -27,7 +27,7 @@ $(beehive).bind('init', function() {
 
     var toggle_add_buttons = function()
     {
-        $('button.add_question, button.add_option').toggleClass('disabled', !($('div.poll_option_list ol li').length < 20));
+        $('button.add_question, button.add_option').toggleClass('disabled', !($('div.poll_options_list ol li').length < 20));
     };
 
     var toggle_delete_buttons = function()
@@ -60,7 +60,7 @@ $(beehive).bind('init', function() {
         $(this).find('button.delete_question').hide();
     });
 
-    $('div.poll_option_list ol li').live('mouseenter', function() {
+    $('div.poll_options_list ol li').live('mouseenter', function() {
 
         $(this).find('button.delete_option').show();
 
@@ -117,7 +117,7 @@ $(beehive).bind('init', function() {
 
         var $poll_question_fieldset = $(this).closest('fieldset.poll_question');
 
-        var $poll_option_list = $poll_question_fieldset.find('div.poll_option_list ol');
+        var $poll_options_list = $poll_question_fieldset.find('div.poll_options_list ol');
 
         var question_number = $('fieldset.poll_question').index($poll_question_fieldset);
 
@@ -145,7 +145,7 @@ $(beehive).bind('init', function() {
 
                 hide_delete_buttons.call($data);
 
-                $data.hide().appendTo($poll_option_list).show(200, function() {
+                $data.hide().appendTo($poll_options_list).show(200, function() {
 
                     $(this).css('display', 'list-item');
 
@@ -167,9 +167,9 @@ $(beehive).bind('init', function() {
 
         if (add_process_running) return false;
 
-        var $poll_question_container = $('.poll_question_container');
+        var $poll_questions_container = $('.poll_questions_container');
 
-        var question_number = $poll_question_container.find('fieldset.poll_question').length;
+        var question_number = $poll_questions_container.find('fieldset.poll_question').length;
 
         add_process_running = true;
 
@@ -192,7 +192,7 @@ $(beehive).bind('init', function() {
 
                 hide_delete_buttons.call($data);
 
-                $data.hide().appendTo($poll_question_container).show(200, function() {
+                $data.hide().appendTo($poll_questions_container).show(200, function() {
 
                     toggle_add_buttons();
 
@@ -207,10 +207,10 @@ $(beehive).bind('init', function() {
     });
 
     $('.poll_bar_vertical .poll_bar_inner').animate({
-        'height' : '100%'
+        'margin-top' : 0
     }, 2000);
 
     $('.poll_bar_horizontal .poll_bar_inner').animate({
-        'width' : '100%'
+        'margin-left' : 0
     }, 2000);
 });

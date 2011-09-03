@@ -776,6 +776,7 @@ div.poll_option_list ol li {
 .poll_bar {
     height: 20px;
     margin: 5px 0;
+    overflow: hidden;
 }
 
 .poll_bar_inner {

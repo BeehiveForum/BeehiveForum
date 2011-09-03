@@ -75,9 +75,11 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
         if (!isset($poll_question['QUESTION'])) return false;
 
-        if (!isset($poll_question['ANSWERS']) || !is_array($poll_question['ANSWERS'])) return false;
+        if (!isset($poll_question['OPTIONS_ARRAY']) || !is_array($poll_question['OPTIONS_ARRAY'])) return false;
 
-        $poll_options_array = array_filter(array_map('trim', $poll_question['ANSWERS']), 'strlen');
+        throw new Exception('Fix me. Replace array_filter with foreach strlen test.');
+
+        $poll_options_array = array_filter(array_map('trim', $poll_question['OPTIONS_ARRAY']), 'strlen');
 
         if (sizeof($poll_options_array) == 0) return false;
 
@@ -106,7 +108,7 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
     foreach ($poll_question_array as $poll_question) {
 
-        $poll_options_array = $poll_question['ANSWERS'];
+        $poll_options_array = $poll_question['OPTIONS_ARRAY'];
 
         $poll_question = db_escape_string($poll_question['QUESTION']);
 
@@ -119,7 +121,9 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
         if (!$poll_question_id = db_insert_id($db_poll_create)) return false;
 
-        $poll_options_array = array_filter(array_map('trim', $poll_question['ANSWERS']), 'strlen');
+        throw new Exception('Fix me. Remove array filter');
+
+        $poll_options_array = array_filter(array_map('trim', $poll_question['OPTIONS_ARRAY']), 'strlen');
 
         foreach ($poll_options_array as $poll_option) {
 
@@ -186,7 +190,7 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
 
     foreach ($poll_question_array as $poll_question) {
 
-        $poll_options_array = $poll_question['ANSWERS'];
+        $poll_options_array = $poll_question['OPTIONS_ARRAY'];
 
         $poll_question = db_escape_string($poll_question['QUESTION']);
 
@@ -199,7 +203,9 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
 
         if (!$poll_question_id = db_insert_id($db_poll_edit)) return false;
 
-        $poll_options_array = array_filter(array_map('trim', $poll_question['ANSWERS']), 'strlen');
+        throw new Exception('Fix me. Remove array_filter.');
+
+        $poll_options_array = array_filter(array_map('trim', $poll_question['OPTIONS_ARRAY']), 'strlen');
 
         foreach ($poll_options_array as $poll_option) {
 
@@ -558,12 +564,12 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
                 $poll_data['CONTENT'].= "                <tr>\n";
-                $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $poll_question['ANSWERS']). "</td>\n";
+                $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $poll_question['OPTIONS_ARRAY']). "</td>\n";
                 $poll_data['CONTENT'].= "                </tr>\n";
 
-            } else if (sizeof($poll_question['ANSWERS']) > 1) {
+            } else if (sizeof($poll_question['OPTIONS_ARRAY']) > 1) {
 
-                foreach ($poll_question['ANSWERS'] as $option_id => $option) {
+                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
                     $poll_data['CONTENT'].= "                <tr>\n";
                     $poll_data['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false). "</td>\n";
@@ -1230,29 +1236,29 @@ function poll_get_question_html($question_number)
     $html.= "      ". form_input_text("poll_question[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""). "<br />\n";
     $html.= "    </div>\n";
     $html.= "    <div class=\"poll_question_checkbox\">\n";
-    $html.= "      ". form_checkbox("poll_question[{$question_number}][multi]", "Y", $lang['allowmultipleanswers'], false). "\n";
+    $html.= "      ". form_checkbox("poll_question[{$question_number}][multi]", "Y", $lang['allowmultipleoptions'], false). "\n";
     $html.= "    </div>\n";
-    $html.= "    <div class=\"poll_answer_list\">\n";
+    $html.= "    <div class=\"poll_options_list\">\n";
     $html.= "      <ol>\n";
-    $html.= "        ". poll_get_answer_html($question_number, 0). "\n";
+    $html.= "        ". poll_get_option_html($question_number, 0). "\n";
     $html.= "      </ol>\n";
     $html.= "    </div>\n";
     $html.= "  </div>\n";
-    $html.= "  ". form_button_html("add_answer[{$question_number}]", 'submit', 'button_image add_answer', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewanswer'])). "\n";
+    $html.= "  ". form_button_html("add_option[{$question_number}]", 'submit', 'button_image add_option', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewoption'])). "\n";
     $html.= "</fieldset>\n";
 
     return $html;
 }
 
-function poll_get_answer_html($question_number, $answer_number)
+function poll_get_option_html($question_number, $option_number)
 {
     if (!is_numeric($question_number)) return false;
 
-    if (!is_numeric($answer_number)) return false;
+    if (!is_numeric($option_number)) return false;
 
     $lang = load_language_file();
 
-    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_question[{$question_number}][answers][{$answer_number}]", '', 45, 255), form_button_html("delete_answer[{$question_number}][{$answer_number}]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""));
+    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_question[{$question_number}][options][{$option_number}]", '', 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteoption']}\""));
 }
 
 function poll_confirm_close($tid)

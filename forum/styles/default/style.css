@@ -361,11 +361,11 @@ p, h1, h2 {
     opacity: 0.4;
 }
 
-.button_image.add_answer {
+.button_image.add_option {
     padding-left: 35px;
 }
 
-.button_image.delete_answer {
+.button_image.delete_option {
     vertical-align: text-bottom;
 }
 
@@ -394,11 +394,11 @@ fieldset.poll_question + fieldset.poll_question {
     margin: 10px 0px 5px;
 }
 
-div.poll_answer_list ol {
+div.poll_option_list ol {
     margin-bottom: 5px;
 }
 
-div.poll_answer_list ol li {
+div.poll_option_list ol li {
     margin: 5px 0px;
 }
 

@@ -27,7 +27,7 @@ $(beehive).bind('init', function() {
 
     var toggle_add_buttons = function()
     {
-        $('button.add_question, button.add_answer').toggleClass('disabled', !($('div.poll_answer_list ol li').length < 20));
+        $('button.add_question, button.add_option').toggleClass('disabled', !($('div.poll_option_list ol li').length < 20));
     };
 
     var toggle_delete_buttons = function()
@@ -36,7 +36,7 @@ $(beehive).bind('init', function() {
 
         $poll_questions.each(function() {
 
-            var $delete_buttons = $(this).find('button.delete_answer');
+            var $delete_buttons = $(this).find('button.delete_option');
             $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
         });
 
@@ -46,7 +46,7 @@ $(beehive).bind('init', function() {
 
     var hide_delete_buttons = function()
     {
-        $(this).find('button.delete_question, button.delete_answer').hide();
+        $(this).find('button.delete_question, button.delete_option').hide();
     };
 
     hide_delete_buttons.call($('body'));
@@ -60,13 +60,13 @@ $(beehive).bind('init', function() {
         $(this).find('button.delete_question').hide();
     });
 
-    $('div.poll_answer_list ol li').live('mouseenter', function() {
+    $('div.poll_option_list ol li').live('mouseenter', function() {
 
-        $(this).find('button.delete_answer').show();
+        $(this).find('button.delete_option').show();
 
     }).live('mouseleave', function() {
 
-        $(this).find('button.delete_answer').hide();
+        $(this).find('button.delete_option').hide();
     });
 
     $('button.delete_question').live('click', function() {
@@ -89,11 +89,11 @@ $(beehive).bind('init', function() {
        return false;
     });
 
-    $('button.delete_answer').live('click', function() {
+    $('button.delete_option').live('click', function() {
 
         if ($(this).hasClass('disabled')) return false;
 
-       if (!window.confirm('Are you sure you want to delete this answer?')) {
+       if (!window.confirm('Are you sure you want to delete this option?')) {
            return false;
        }
 
@@ -109,7 +109,7 @@ $(beehive).bind('init', function() {
        return false;
     });
 
-    $('button.add_answer').live('click', function() {
+    $('button.add_option').live('click', function() {
 
         if ($(this).hasClass('disabled')) return false;
 
@@ -117,11 +117,11 @@ $(beehive).bind('init', function() {
 
         var $poll_question_fieldset = $(this).closest('fieldset.poll_question');
 
-        var $poll_answer_list = $poll_question_fieldset.find('div.poll_answer_list ol');
+        var $poll_option_list = $poll_question_fieldset.find('div.poll_option_list ol');
 
         var question_number = $('fieldset.poll_question').index($poll_question_fieldset);
 
-        var answer_number = $poll_question_fieldset.find('li').length;
+        var option_number = $poll_question_fieldset.find('li').length;
 
         add_process_running = true;
 
@@ -132,9 +132,9 @@ $(beehive).bind('init', function() {
             'data' : {
                 'webtag' : beehive.webtag,
                 'ajax' : 'true',
-                'action' : 'poll_add_answer',
+                'action' : 'poll_add_option',
                 'question_number' : question_number,
-                'answer_number' : answer_number
+                'option_number' : option_number
             },
 
             'url' : beehive.forum_path + '/ajax.php',
@@ -145,7 +145,7 @@ $(beehive).bind('init', function() {
 
                 hide_delete_buttons.call($data);
 
-                $data.hide().appendTo($poll_answer_list).show(200, function() {
+                $data.hide().appendTo($poll_option_list).show(200, function() {
 
                     $(this).css('display', 'list-item');
 

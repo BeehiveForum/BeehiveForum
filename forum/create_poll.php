@@ -326,35 +326,94 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     $fid = 1;
 }
 
-if (isset($_POST['poll_question']) && is_array($_POST['poll_question'])) {
-    $poll_question_array = $_POST['poll_question'];
-} else {
-    $poll_question_array = array(array('question' => '', 'multi' => false, 'answers' => array('')));
+$poll_questions_array = array();
+
+if (isset($_POST['poll_questions']) && is_array($_POST['poll_questions'])) {
+
+    foreach ($_POST['poll_questions'] as $question) {
+
+        if (isset($question['question']) || isset($question['options'])) {
+
+            $poll_question = array(
+                'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
+                'QUESTION'      => (isset($question['question']) ? $question['question'] : ''),
+                'ALLOW_MULTI'   => (isset($question['allow_multi']) && $question['allow_multi'] == 'Y') ? 'Y' : 'N',
+                'OPTIONS_ARRAY' => array(),
+            );
+
+            if (isset($question['options']) && is_array($question['options'])) {
+
+                foreach ($question['options'] as $option) {
+
+                    if (!is_scalar($option)) continue;
+
+                    $poll_question['OPTIONS_ARRAY'][] = array(
+                        'OPTION_ID'   => sizeof($poll_question['OPTIONS_ARRAY']) + 1,
+                        'OPTION_NAME' => $option,
+                    );
+                }
+            }
+
+            $poll_questions_array[$poll_question['QUESTION_ID']] = $poll_question;
+        }
+    }
 }
 
-if (isset($_POST['add_answer']) && is_array($_POST['add_answer'])) {
+if (sizeof($poll_questions_array) == 0) {
 
-    list($question_key) = array_keys($_POST['add_answer']);
+    $poll_questions_array = array(
+        array(
+            'QUESTION_ID'   => 0,
+            'QUESTION'      => '',
+            'ALLOW_MULTI'   => false,
+            'OPTIONS_ARRAY' => array(
+                array(
+                    'OPTION_ID'   => 0,
+                    'OPTION_NAME' => '',
+                ),
+            ),
+        )
+    );
+}
 
-    if (isset($poll_question_array[$question_key])) {
-        $poll_question_array[$question_key]['answers'][] = '';
+if (isset($_POST['add_option']) && is_array($_POST['add_option'])) {
+
+    list($question_id) = array_keys($_POST['add_option']);
+
+    if (isset($poll_questions_array[$question_id])) {
+
+        $poll_questions_array[$question_id]['OPTIONS_ARRAY'][] = array(
+            'OPTION_ID'   => sizeof($poll_questions_array[$question_id]['OPTIONS_ARRAY']) + 1,
+            'OPTION_NAME' => '',
+        );
     }
 }
 
 if (isset($_POST['add_question'])) {
-    $poll_question_array[] = array('question' => '', 'multi' => false, 'answers' => array(''));
+
+    $poll_questions_array[] = array(
+        'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
+        'QUESTION'      => '',
+        'ALLOW_MULTI'   => false,
+        'OPTIONS_ARRAY' => array(
+            array(
+                'OPTION_ID'   => 0,
+                'OPTION_NAME' => '',
+            ),
+        ),
+    );
 }
 
-if (isset($_POST['delete_answer']) && is_array($_POST['delete_answer'])) {
+if (isset($_POST['delete_option']) && is_array($_POST['delete_option'])) {
 
-    foreach ($_POST['delete_answer'] as $question_key => $answer_key_array) {
+    foreach ($_POST['delete_option'] as $question_id => $option_id_array) {
 
-        if (!is_array($answer_key_array)) continue;
+        if (!is_array($option_id_array)) continue;
 
-        if (sizeof($poll_question_array[$question_key]['answers']) > 1) {
+        if (sizeof($poll_questions_array[$question_id]['OPTIONS_ARRAY']) > 1) {
 
-            foreach(array_keys($answer_key_array) as $answer_key) {
-                unset($poll_question_array[$question_key]['answers'][$answer_key]);
+            foreach(array_keys($option_id_array) as $option_id) {
+                unset($poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]);
             }
         }
     }
@@ -362,10 +421,10 @@ if (isset($_POST['delete_answer']) && is_array($_POST['delete_answer'])) {
 
 if (isset($_POST['delete_question']) && is_array($_POST['delete_question'])) {
 
-    list($question_key) = array_keys($_POST['delete_question']);
+    list($question_id) = array_keys($_POST['delete_question']);
 
-    if (sizeof($poll_question_array) > 1) {
-        unset($poll_question_array[$question_key]);
+    if (sizeof($poll_questions_array) > 1) {
+        unset($poll_questions_array[$question_id]);
     }
 }
 
@@ -463,70 +522,108 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    $poll_answer_count = 0;
+    if (isset($poll_questions_array) && sizeof($poll_questions_array) > 0) {
 
-    if (isset($poll_question_array) && sizeof($poll_question_array) > 0) {
+        foreach ($poll_questions_array as $question_id => $question) {
 
-        foreach ($poll_question_array as $question_key => $poll_question) {
-
-            if (!isset($poll_question['multi']) || ($poll_question['multi'] != 'Y')) {
-                $poll_question_array[$question_key]['multi'] = 'N';
+            if (!isset($question['ALLOW_MULTI']) || ($question['ALLOW_MULTI'] != 'Y')) {
+                $poll_questions_array[$question_id]['ALLOW_MULTI'] = 'N';
             }
 
-            if (!isset($poll_question['question']) || strlen(trim($poll_question['question'])) == 0) {
+            if (!isset($question['QUESTION']) || strlen(trim($question['QUESTION'])) == 0) {
 
-                if (!isset($poll_question['answers']) || !is_array($poll_question['answers'])) {
+                if (!isset($question['OPTIONS_ARRAY']) || !is_array($question['OPTIONS_ARRAY'])) {
 
-                    unset($poll_question_array[$question_key]);
+                    unset($poll_questions_array[$question_id]);
 
-                } else if (sizeof(array_filter(array_map('trim', $poll_question['answers']), 'strlen')) == 0) {
+                } else {
 
-                    unset($poll_question_array[$question_key]);
+                    foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                } else if (sizeof(array_filter(array_map('trim', $poll_question['answers']), 'strlen')) > 0) {
+                        if (!isset($option['OPTION_NAME']) || strlen(trim($option['OPTION_NAME'])) == 0) {
+                            unset($question['OPTIONS_ARRAY'][$option_id]);
+                        }
+                    }
 
-                    $error_msg_array[] = $lang['youmustprovideaquestionforallanswers'];
-                    $valid = false;
+                    if (sizeof($question['OPTIONS_ARRAY']) == 0) {
+
+                        unset($poll_questions_array[$question_id]);
+
+                    } else if (sizeof($question['OPTIONS_ARRAY']) > 0) {
+
+                        $error_msg_array[] = $lang['youmustprovideaquestionforalloptions'];
+                        $valid = false;
+                    }
                 }
 
-            } else if (!isset($poll_question['answers']) || !is_array($poll_question['answers'])) {
+            } else if (!isset($question['OPTIONS_ARRAY']) || !is_array($question['OPTIONS_ARRAY'])) {
 
-                $error_msg_array[] = $lang['youmustprovideratleast1answerforeachquestion'];
-                $valid = false;
-
-            } else if (sizeof(array_filter(array_map('trim', $poll_question['answers']), 'strlen')) == 0) {
-
-                $error_msg_array[] = $lang['youmustprovideratleast1answerforeachquestion'];
+                $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
                 $valid = false;
 
             } else {
 
-                foreach ($poll_question['answers'] as $answer_key => $poll_answer) {
+                foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                    if (($allow_html == true) && isset($post_html) && ($post_html == 'Y')) {
+                    if (!isset($option['OPTION_NAME']) || strlen(trim($option['OPTION_NAME'])) == 0) {
+                        unset($question['OPTIONS_ARRAY'][$option_id]);
+                    }
+                }
 
-                        $poll_answer_check_html = new MessageText(POST_HTML_ENABLED, $poll_answer);
+                if (sizeof($question['OPTIONS_ARRAY']) == 0) {
 
-                        $poll_question_array[$question_key]['answers'][$answer_key] = $poll_answer_check_html->getContent();
+                    $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
+                    $valid = false;
 
-                        if (strlen(trim($poll_answer_check_html->getContent())) == 0) {
+                } else {
 
-                            $poll_question_array[$question_key]['answers'][$answer_key] = $poll_answer_check_html->getOriginalContent();
+                    foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                            $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+                        if (($allow_html == true) && isset($post_html) && ($post_html == 'Y')) {
 
+                            $poll_option_check_html = new MessageText(POST_HTML_ENABLED, $option['OPTION_NAME']);
+
+                            $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = $poll_option_check_html->getContent();
+
+                            if (strlen(trim($poll_option_check_html->getContent())) == 0) {
+
+                                $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = $poll_option_check_html->getOriginalContent();
+
+                                $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+
+                                $valid = false;
+                            }
+                        }
+
+                        if (attachments_embed_check($option['OPTION_NAME']) && ($post_html == 'Y')) {
+
+                            $error_msg_array[] = $lang['notallowedembedattachmentpost'];
                             $valid = false;
                         }
-                    }
-
-                    if (attachments_embed_check($poll_answer) && ($post_html == 'Y')) {
-
-                        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
-                        $valid = false;
                     }
                 }
             }
         }
+    }
+
+    if (sizeof($poll_questions_array) == 0) {
+
+        $error_msg_array[] = $lang['youmustprovideratleast1question'];
+        $valid = false;
+
+        $poll_questions_array = array(
+            array(
+                'QUESTION_ID' => 0,
+                'QUESTION' => '',
+                'ALLOW_MULTI' => false,
+                'OPTIONS_ARRAY' => array(
+                    array(
+                        'OPTION_ID' => 0,
+                        'OPTION_NAME' => '',
+                    ),
+                ),
+            )
+        );
     }
 
     if ($valid && (!isset($poll_type) || !is_numeric($poll_type))) {
@@ -569,7 +666,7 @@ if (isset($_POST['cancel'])) {
         $close_poll = false;
     }
 
-    if ($valid && ($poll_type == POLL_TABLE_GRAPH) && sizeof(array_unique($answer_groups)) <> 2) {
+    if ($valid && ($poll_type == POLL_TABLE_GRAPH) && sizeof($poll_questions_array) <> 2) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
@@ -709,7 +806,7 @@ if ($valid && isset($_POST['post'])) {
 
             $pid = post_create($fid, $tid, 0, $uid, 0, '');
 
-            poll_create($tid, $poll_question_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
+            poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
             post_save_attachment_id($tid, $pid, $aid);
 
@@ -790,19 +887,19 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['CONTENT'].= "<div align=\"center\">\n";
     $poll_data['CONTENT'].= "<table class=\"box\" width=\"475\">\n";
 
-    foreach ($poll_question_array as $poll_question) {
+    foreach ($poll_questions_array as $poll_question) {
 
         $poll_data['CONTENT'].= "  <tr>\n";
         $poll_data['CONTENT'].= "    <td align=\"center\">\n";
         $poll_data['CONTENT'].= "      <table width=\"95%\">\n";
         $poll_data['CONTENT'].= "        <tr>\n";
-        $poll_data['CONTENT'].= "          <td align=\"left\"><h2>". htmlentities_array($poll_question['question']). "</h2></td>\n";
+        $poll_data['CONTENT'].= "          <td align=\"left\"><h2>". htmlentities_array($poll_question['QUESTION']). "</h2></td>\n";
         $poll_data['CONTENT'].= "        </tr>\n";
         $poll_data['CONTENT'].= "        <tr>\n";
         $poll_data['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
 
-        if ($allow_html == false || !isset($post_html) || $post_html == 'N') {
-            $poll_preview_answers_array = htmlentities_array($poll_question['answers']);
+        /*if ($allow_html == false || !isset($post_html) || $post_html == 'N') {
+            $poll_preview_options_array = htmlentities_array($poll_question['OPTIONS_ARRAY']);
         } else {
             $poll_preview_answers_array = $poll_question['answers'];
         }
@@ -837,7 +934,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
                 $poll_data['CONTENT'].= poll_preview_graph_horz($poll_preview_results_array);
             }
-        }
+        }*/
 
         $poll_data['CONTENT'].= "          </td>\n";
         $poll_data['CONTENT'].= "        </tr>\n";
@@ -976,41 +1073,41 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['poll']}</h2>\n";
 echo "                          <p>{$lang['enterpollquestionexp']}</p>\n";
-echo "                          <div class=\"poll_question_container\">\n";
+echo "                          <div class=\"poll_questions_container\">\n";
 
-foreach ($poll_question_array as $question_key => $poll_question) {
+foreach ($poll_questions_array as $question_id => $question) {
 
     echo "                            <fieldset class=\"poll_question\">\n";
     echo "                              <div>\n";
     echo "                                <h2>{$lang['pollquestion']}</h2>\n";
     echo "                                <div class=\"poll_question_input\">\n";
-    echo "                                  ", form_input_text("poll_question[{$question_key}][question]", htmlentities_array($poll_question['question']), 40, 255), "&nbsp;", form_button_html("delete_question[{$question_key}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""), "\n";
+    echo "                                  ", form_input_text("poll_questions[{$question_id}][question]", htmlentities_array($question['QUESTION']), 40, 255), "&nbsp;", form_button_html("delete_question[{$question_id}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""), "\n";
     echo "                                </div>\n";
     echo "                                <div class=\"poll_question_checkbox\">\n";
-    echo "                                  ", form_checkbox("poll_question[{$question_key}][multi]", "Y", $lang['allowmultipleanswers'], (isset($poll_question['multi']) && $poll_question['multi'] == 'Y')), "\n";
+    echo "                                  ", form_checkbox("poll_questions[{$question_id}][allow_multi]", "Y", $lang['allowmultipleoptions'], (isset($question['ALLOW_MULTI']) && $question['ALLOW_MULTI'] == 'Y')), "\n";
     echo "                                </div>\n";
-    echo "                                <div class=\"poll_answer_list\">\n";
+    echo "                                <div class=\"poll_option_list\">\n";
     echo "                                  <ol>\n";
 
-    if (isset($poll_question['answers']) && is_array($poll_question['answers'])) {
+    if (isset($question['OPTIONS_ARRAY']) && is_array($question['OPTIONS_ARRAY'])) {
 
-        foreach ($poll_question['answers'] as $answer_key => $poll_answer) {
-            echo "                                    <li>", form_input_text("poll_question[{$question_key}][answers][{$answer_key}]", htmlentities_array($poll_answer), 45, 255), "&nbsp;", form_button_html("delete_answer[{$question_key}][{$answer_key}]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""), "</li>\n";
+        foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
+            echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][{$option_id}]", htmlentities_array($option['OPTION_NAME']), 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][{$option_id}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteoption']}\""), "</li>\n";
         }
 
     } else {
 
-        echo "                                    <li>", form_input_text("poll_question[{$question_key}][answers][0]", '', 45, 255), "&nbsp;", form_button_html("delete_answer[{$question_key}][0]", 'submit', 'button_image delete_answer', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteanswer']}\""), "</li>\n";
+        echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][0]", '', 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][0]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteoption']}\""), "</li>\n";
 
-        if (isset($_POST['add_answer'][$question_key])) {
-            echo poll_get_answer_html($question_key, 1);
+        if (isset($_POST['add_option'][$question_id])) {
+            echo poll_get_option_html($question_id, 1);
         }
     }
 
     echo "                                  </ol>\n";
     echo "                                </div>\n";
     echo "                              </div>\n";
-    echo "                            ", form_button_html("add_answer[{$question_key}]", 'submit', 'button_image add_answer', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewanswer'])), "\n";
+    echo "                            ", form_button_html("add_option[{$question_id}]", 'submit', 'button_image add_option', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewoption'])), "\n";
     echo "                            </fieldset>\n";
 }
 
@@ -1020,7 +1117,7 @@ echo "                            <tr>\n";
 echo "                              <td>", form_button_html('add_question', 'submit', 'button_image add_question', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewquestion'])), "</td>\n";
 
 if ($allow_html == true) {
-    echo "                              <td align=\"right\">", form_checkbox('post_html', 'Y', $lang['answerscontainHTML'], (isset($post_html) && $post_html == 'Y')), "</td>\n";
+    echo "                              <td align=\"right\">", form_checkbox('post_html', 'Y', $lang['optionscontainHTML'], (isset($post_html) && $post_html == 'Y')), "</td>\n";
 } else {
     echo "                              <td align=\"right\">", form_input_hidden('post_html', 'N'), "</td>\n";
 }

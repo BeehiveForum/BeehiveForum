@@ -464,7 +464,7 @@ switch ($_GET['action']) {
 
         break;
 
-    case 'poll_add_answer':
+    case 'poll_add_option':
 
         if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {
 
@@ -472,13 +472,13 @@ switch ($_GET['action']) {
             exit;
         }
 
-        if (!isset($_GET['answer_number']) || !is_numeric($_GET['answer_number'])) {
+        if (!isset($_GET['option_number']) || !is_numeric($_GET['option_number'])) {
 
             header_status(500, 'Internal Server Error');
             exit;
         }
 
-        if (!($content = poll_get_answer_html($_GET['question_number'], $_GET['answer_number']))) {
+        if (!($content = poll_get_option_html($_GET['question_number'], $_GET['option_number']))) {
 
             header_status(500, 'Internal Server Error');
             exit;

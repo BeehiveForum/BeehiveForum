@@ -260,6 +260,39 @@ switch ($_GET['action']) {
 
         break;
 
+    // Poll Additional message toggle
+    case 'poll_soft_edit_toggle':
+
+        // Get the user's post page preferences.
+        $page_prefs = session_get_post_page_prefs();
+
+        // Get the hide state from the request.
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        // Don't rely on switching the bit, always check the client
+        // request in case the interface is out of sync with the database.
+        if ($_GET['display'] === 'true') {
+            $page_prefs = (double)$page_prefs | POLL_EDIT_SOFT_DISPLAY;
+        } else {
+            $page_prefs = (double)$page_prefs ^ ($page_prefs & POLL_EDIT_SOFT_DISPLAY);
+        }
+
+        // Set the user_prefs array entry to pass to user_update_prefs
+        $user_prefs = array('POST_PAGE' => $page_prefs);
+
+        // Save the user prefs.
+        if (!user_update_prefs($uid, $user_prefs)) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        break;
+
     // Forum stats toggle
     case 'forum_stats_toggle':
 

@@ -86,6 +86,7 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
 $webtag = get_webtag();
@@ -336,7 +337,7 @@ if (isset($_POST['poll_questions']) && is_array($_POST['poll_questions'])) {
         if (isset($question['question']) || isset($question['options'])) {
 
             $poll_question = array(
-                'QUESTION_ID'   => sizeof($poll_questions_array),
+                'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
                 'QUESTION'      => (isset($question['question']) ? $question['question'] : ''),
                 'ALLOW_MULTI'   => (isset($question['allow_multi']) && $question['allow_multi'] == 'Y') ? 'Y' : 'N',
                 'OPTIONS_ARRAY' => array(),
@@ -349,7 +350,7 @@ if (isset($_POST['poll_questions']) && is_array($_POST['poll_questions'])) {
                     if (!is_scalar($option)) continue;
 
                     $poll_question['OPTIONS_ARRAY'][] = array(
-                        'OPTION_ID'   => sizeof($poll_question['OPTIONS_ARRAY']),
+                        'OPTION_ID'   => sizeof($poll_question['OPTIONS_ARRAY']) + 1,
                         'OPTION_NAME' => $option,
                     );
                 }
@@ -363,13 +364,13 @@ if (isset($_POST['poll_questions']) && is_array($_POST['poll_questions'])) {
 if (sizeof($poll_questions_array) == 0) {
 
     $poll_questions_array = array(
-        array(
-            'QUESTION_ID'   => 0,
+        1 => array(
+            'QUESTION_ID'   => 1,
             'QUESTION'      => '',
             'ALLOW_MULTI'   => false,
             'OPTIONS_ARRAY' => array(
-                array(
-                    'OPTION_ID'   => 0,
+                1 => array(
+                    'OPTION_ID'   => 1,
                     'OPTION_NAME' => '',
                 ),
             ),
@@ -384,7 +385,7 @@ if (isset($_POST['add_option']) && is_array($_POST['add_option'])) {
     if (isset($poll_questions_array[$question_id])) {
 
         $poll_questions_array[$question_id]['OPTIONS_ARRAY'][] = array(
-            'OPTION_ID'   => sizeof($poll_questions_array[$question_id]['OPTIONS_ARRAY']),
+            'OPTION_ID'   => sizeof($poll_questions_array[$question_id]['OPTIONS_ARRAY']) + 1,
             'OPTION_NAME' => '',
         );
     }
@@ -393,12 +394,12 @@ if (isset($_POST['add_option']) && is_array($_POST['add_option'])) {
 if (isset($_POST['add_question'])) {
 
     $poll_questions_array[] = array(
-        'QUESTION_ID'   => sizeof($poll_questions_array),
+        'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
         'QUESTION'      => '',
         'ALLOW_MULTI'   => false,
         'OPTIONS_ARRAY' => array(
-            array(
-                'OPTION_ID'   => 0,
+            1 => array(
+                'OPTION_ID'   => 1,
                 'OPTION_NAME' => '',
             ),
         ),
@@ -523,6 +524,8 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
+    $poll_option_count = 0;
+
     if (isset($poll_questions_array) && sizeof($poll_questions_array) > 0) {
 
         foreach ($poll_questions_array as $question_id => $question) {
@@ -559,7 +562,7 @@ if (isset($_POST['cancel'])) {
 
             } else if (!isset($question['OPTIONS_ARRAY']) || !is_array($question['OPTIONS_ARRAY'])) {
 
-                $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
+                $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
                 $valid = false;
 
             } else {
@@ -571,9 +574,11 @@ if (isset($_POST['cancel'])) {
                     }
                 }
 
-                if (sizeof($question['OPTIONS_ARRAY']) == 0) {
+                $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
 
-                    $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
+                if (sizeof($question['OPTIONS_ARRAY']) < 2) {
+
+                    $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
                     $valid = false;
 
                 } else {
@@ -607,7 +612,7 @@ if (isset($_POST['cancel'])) {
         }
     }
 
-    if (sizeof($poll_questions_array) == 0) {
+    if (sizeof($poll_questions_array) < 1) {
 
         $error_msg_array[] = $lang['youmustprovideratleast1question'];
         $valid = false;
@@ -625,6 +630,12 @@ if (isset($_POST['cancel'])) {
                 ),
             )
         );
+    }
+
+    if ($valid && ($poll_option_count > 20)) {
+
+        $error_msg_array[] = $lang['youcanhaveamaximumof20optionsperpoll'];
+        $valid = false;
     }
 
     if ($valid && (!isset($poll_type) || !is_numeric($poll_type))) {
@@ -913,14 +924,14 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
             foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTE_COUNT'] = mt_rand(5, 10);
+                $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTES_ARRAY'] = array_map('mt_rand', range(0, 10));
             }
         }
 
         if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
             $poll_display.= "          <tr>\n";
-            $poll_display.= "            <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_results, $poll_data). "</td>\n";
+            $poll_display.= "            <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_preview_questions_array, $poll_data). "</td>\n";
             $poll_display.= "           </tr>\n";
 
         } else {

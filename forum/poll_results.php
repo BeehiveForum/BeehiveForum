@@ -186,7 +186,7 @@ $poll_user_count = 0;
 
 $poll_results = poll_get_votes($tid);
 
-$user_poll_votes_array = poll_get_user_vote($tid);
+$user_poll_votes_array = poll_get_user_votes($tid);
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 

@@ -994,4 +994,16 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     return preg_replace('/\/\/+/u', '/', $request_uri);
 }
 
+function print_r_pre($expression, $return = false)
+{
+    $result = sprintf('<pre>%s</pre>', print_r($expression, true));
+
+    if (!$return) {
+        echo $result;
+        return;
+    }
+
+    return $result;
+}
+
 ?>

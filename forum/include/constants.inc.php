@@ -176,6 +176,7 @@ define('POST_CHECK_SPELLING', 256);
 define('POST_TINYMCE_DISPLAY', 512);
 define('POLL_ADVANCED_DISPLAY', 1024);
 define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 2048);
+define('POLL_EDIT_SOFT_DISPLAY', 4096);
 
 // Constants for post page HTML in message
 define('POST_HTML_DISABLED', 0);
@@ -236,6 +237,7 @@ define('POLL_CLOSE_THREE_DAYS', 1);
 define('POLL_CLOSE_SEVEN_DAYS', 2);
 define('POLL_CLOSE_THIRTY_DAYS', 3);
 define('POLL_CLOSE_NEVER', 4);
+define('POLL_CLOSE_NO_CHANGE', 5);
 
 // Poll voting types
 define('POLL_VOTE_ANON', 0);

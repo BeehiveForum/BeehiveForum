@@ -783,12 +783,13 @@ div.poll_option_list ol li {
     height: 200px;
 }
 
-.poll_bar_horizontal {
-    height: 20px;
-}
-
 .poll_bar_inner {
     position: absolute;
+}
+
+.poll_bar_horizontal,
+.poll_bar_horizontal .poll_bar_inner {
+    height: 20px;
 }
 
 .poll_bar_1 {

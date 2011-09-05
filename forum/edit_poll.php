@@ -620,7 +620,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
             } else if (!isset($question['OPTIONS_ARRAY']) || !is_array($question['OPTIONS_ARRAY'])) {
 
-                $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
+                $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
                 $valid = false;
 
             } else {
@@ -634,9 +634,9 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
                 $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
 
-                if (sizeof($question['OPTIONS_ARRAY']) < 2) {
+                if (sizeof($question['OPTIONS_ARRAY']) < 1) {
 
-                    $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
+                    $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
                     $valid = false;
 
                 } else {
@@ -754,9 +754,9 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($poll_type !== POLL_HORIZONTAL_GRAPH)) {
+    if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($poll_type != POLL_HORIZONTAL_GRAPH)) {
 
-        $error_msg_array[] = $lang['publicballethorizontalgraphonly'];
+        $error_msg_array[] = $lang['publicballothorizontalgraphonly'];
         $valid = false;
     }
 
@@ -852,19 +852,18 @@ if ($valid && isset($_POST['apply'])) {
             }
         }
 
-        $poll_delete_votes = (array_diff_assoc(poll_get_votes($tid, false), $poll_questions_array) || ($poll_data['POLLTYPE'] != $poll_type) || ($poll_data['VOTETYPE'] != $poll_vote_type));
+        $poll_delete_votes = poll_edit_check_questions($tid, $poll_questions_array) || ($poll_data['POLLTYPE'] != $poll_type) || ($poll_data['VOTETYPE'] != $poll_vote_type);
 
-        if (poll_edit($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $poll_delete_votes)) {
+        poll_edit($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $poll_delete_votes);
 
-            thread_change_title($tid, $thread_title);
+        thread_change_title($tid, $thread_title);
 
-            post_add_edit_text($tid, 1);
+        post_add_edit_text($tid, 1);
 
-            post_save_attachment_id($tid, $pid, $aid);
-        }
+        post_save_attachment_id($tid, $pid, $aid);
     }
 
-    header_redirect("discussion.php?webtag=$webtag&msg=$tid.1");
+    header_redirect("discussion.php?webtag=$webtag&msg=$tid.1&edit_success=$tid.1");
 }
 
 if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "", FOLDER_ALLOW_POLL_THREAD, USER_PERM_POST_EDIT, "", "post_folder_dropdown")) {

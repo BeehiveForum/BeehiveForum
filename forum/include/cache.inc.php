@@ -280,7 +280,7 @@ function cache_check_start_page()
 /**
 * Check cache of messages pane
 *
-* Checks CREATED and TSTAMP columns of POST and USER_POLL_VOTES
+* Checks CREATED and VOTED columns of POST and USER_POLL_VOTES
 * tables to generate last modified HTTP header for caching of
 * messages.php
 *
@@ -324,7 +324,7 @@ function cache_check_messages()
         $sql.= "UNIX_TIMESTAMP(MAX(POST.VIEWED)) AS VIEWED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.TSTAMP)) AS POLL_VOTE ";
+        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.VOTED)) AS VOTED ";
         $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
         $sql.= "ON (USER_POLL_VOTES.TID = POST.TID) WHERE POST.TID = '$tid'";
@@ -341,10 +341,10 @@ function cache_check_messages()
     if (db_num_rows($result) > 0) {
 
         // Get the two modified dates from the query
-        list($created, $viewed, $approved, $edited, $poll_vote) = db_fetch_array($result, DB_RESULT_NUM);
+        list($created, $viewed, $approved, $edited, $voted) = db_fetch_array($result, DB_RESULT_NUM);
 
         // Work out which one is newer (higher).
-        $local_cache_date = max($created, $viewed, $approved, $edited, $poll_vote);
+        $local_cache_date = max($created, $viewed, $approved, $edited, $voted);
 
         // Last Modified Header for cache control
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";

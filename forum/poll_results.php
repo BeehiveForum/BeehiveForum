@@ -190,7 +190,7 @@ $user_poll_votes_array = poll_get_user_votes($tid);
 
 $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
 
-html_draw_top("title=$thread_title", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title=$thread_title", 'pm_popup_disabled', 'class=window_title', 'poll.js');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";

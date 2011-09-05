@@ -78,13 +78,10 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
         if (!isset($poll_question['OPTIONS_ARRAY']) || !is_array($poll_question['OPTIONS_ARRAY'])) return false;
 
         foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
-
-            if (strlen(trim($option['OPTION_NAME'])) < 1) {
-                unset($poll_question['OPTIONS_ARRAY'][$option_id]);
-            }
+            if (strlen(trim($option['OPTION_NAME'])) < 1) return false;
         }
 
-        if (sizeof($poll_question['OPTIONS_ARRAY']) < 1) return false;
+        if (sizeof($poll_question['OPTIONS_ARRAY']) < 2) return false;
 
         $poll_option_count+= sizeof($poll_question['OPTIONS_ARRAY']);
     }
@@ -163,24 +160,15 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
         if (!isset($poll_question['OPTIONS_ARRAY']) || !is_array($poll_question['OPTIONS_ARRAY'])) return false;
 
         foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
-
-            if (strlen(trim($option['OPTION_NAME'])) < 1) {
-                unset($poll_question['OPTIONS_ARRAY'][$option_id]);
-            }
+            if (strlen(trim($option['OPTION_NAME'])) < 1) return false;
         }
 
-        if (sizeof($poll_options_array) < 1) return false;
+        if (sizeof($poll_question['OPTIONS_ARRAY']) < 2) return false;
 
-        $poll_option_count+= sizeof($poll_options_array);
+        $poll_option_count+= sizeof($poll_question['OPTIONS_ARRAY']);
     }
 
     if (sizeof($poll_option_count) > 20) return false;
-
-    if ($poll_delete_votes) {
-
-        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_POLL_VOTES` WHERE TID = '$tid'";
-        if (!db_query($sql, $db_poll_edit)) return false;
-    }
 
     if (is_numeric($poll_closes) && ($poll_closes > 0)) {
 
@@ -205,33 +193,44 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
         if (!db_query($sql, $db_poll_edit)) return false;
     }
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}POLL_VOTES` WHERE TID = '$tid'";
+    if ($poll_delete_votes) {
 
-    if (!db_query($sql, $db_poll_edit)) return false;
-
-    foreach ($poll_question_array as $poll_question) {
-
-        $poll_options_array = $poll_question['OPTIONS_ARRAY'];
-
-        $poll_question = db_escape_string($poll_question['QUESTION']);
-
-        $allow_multi = (isset($poll_question['ALLOW_MULTI']) && ($poll_question['ALLOW_MULTI'] == 'Y')) ? 'Y' : 'N';
-
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` (TID, QUESTION, ALLOW_MULTI) ";
-        $sql.= "VALUES ('$tid', '$poll_question', '$allow_multi')";
+        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}USER_POLL_VOTES` WHERE TID = '$tid'";
 
         if (!db_query($sql, $db_poll_edit)) return false;
 
-        if (!$poll_question_id = db_insert_id($db_poll_edit)) return false;
+        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}POLL_QUESTIONS` WHERE TID = '$tid'";
 
-        foreach ($poll_options_array as $poll_option) {
+        if (!db_query($sql, $db_poll_edit)) return false;
 
-            $poll_option = db_escape_string(trim($poll_option['OPTION_NAME']));
+        $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}POLL_VOTES` WHERE TID = '$tid'";
 
-            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, QID, OPTION_NAME) ";
-            $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_option')";
+        if (!db_query($sql, $db_poll_edit)) return false;
+
+        foreach ($poll_question_array as $poll_question) {
+
+            $poll_options_array = $poll_question['OPTIONS_ARRAY'];
+
+            $poll_question = db_escape_string($poll_question['QUESTION']);
+
+            $allow_multi = (isset($poll_question['ALLOW_MULTI']) && ($poll_question['ALLOW_MULTI'] == 'Y')) ? 'Y' : 'N';
+
+            $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` (TID, QUESTION, ALLOW_MULTI) ";
+            $sql.= "VALUES ('$tid', '$poll_question', '$allow_multi')";
 
             if (!db_query($sql, $db_poll_edit)) return false;
+
+            if (!$poll_question_id = db_insert_id($db_poll_edit)) return false;
+
+            foreach ($poll_options_array as $poll_option) {
+
+                $poll_option = db_escape_string(trim($poll_option['OPTION_NAME']));
+
+                $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, QUESTION_ID, OPTION_NAME) ";
+                $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_option')";
+
+                if (!db_query($sql, $db_poll_edit)) return false;
+            }
         }
     }
 
@@ -359,7 +358,7 @@ function poll_get($tid)
     return false;
 }
 
-function poll_get_votes($tid)
+function poll_get_votes($tid, $include_votes = true)
 {
     if (!$db_poll_get_votes = db_connect()) return false;
 
@@ -397,12 +396,18 @@ function poll_get_votes($tid)
             $poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']] = array(
                 'OPTION_ID'   => $poll_votes_data['OPTION_ID'],
                 'OPTION_NAME' => $poll_votes_data['OPTION_NAME'],
-                'VOTES_ARRAY'  => array()
             );
         }
 
-        if (isset($poll_votes_data['UID']) && is_numeric($poll_votes_data['UID'])) {
-            $poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']]['VOTES_ARRAY'][] = $poll_votes_data['UID'];
+        if ($include_votes === true) {
+
+            if (!isset($poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']]['VOTES_ARRAY'])) {
+                $poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']]['VOTES_ARRAY'] = array();
+            }
+
+            if (isset($poll_votes_data['UID']) && is_numeric($poll_votes_data['UID'])) {
+                $poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']]['VOTES_ARRAY'][] = $poll_votes_data['UID'];
+            }
         }
     }
 
@@ -897,7 +902,7 @@ function poll_horizontal_graph($options_array, $poll_data)
         $poll_display.= "    <tr>\n";
         $poll_display.= "      <td align=\"left\">\n";
         $poll_display.= "        <div class=\"poll_bar poll_bar_horizontal poll_bar_$bar_color\">\n";
-        $poll_display.= "          <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%; margin-left: -{$poll_bar_width}%\"></div>\n";
+        $poll_display.= "          <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%; left: -{$poll_bar_width}%\"></div>\n";
         $poll_display.= "        </div>\n";
         $poll_display.= "      </td>\n";
         $poll_display.= "    </tr>\n";
@@ -951,11 +956,11 @@ function poll_vertical_graph($options_array, $poll_data)
 
         $poll_cell_width = floor(100 / sizeof($options_array));
 
-        $poll_bar_height = ($total_vote_count > 0) ? (200 / $total_vote_count) * sizeof($option['VOTES_ARRAY']) : 0;
+        $poll_bar_height = ($total_vote_count > 0) ? (100 / $total_vote_count) * sizeof($option['VOTES_ARRAY']) : 0;
 
         $poll_display.= "      <td align=\"center\" width=\"$poll_cell_width%\">\n";
-        $poll_display.= "        <div class=\"poll_bar poll_bar_vertical poll_bar_$bar_color\" style=\"width: {$poll_bar_width}px; height: 200px; position: relative\">\n";
-        $poll_display.= "          <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}px; height: 0px; max-height: {$poll_bar_height}px; bottom: 0px; position: absolute\"></div>\n";
+        $poll_display.= "        <div class=\"poll_bar poll_bar_vertical poll_bar_$bar_color\" style=\"width: {$poll_bar_width}px\">\n";
+        $poll_display.= "          <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}px; height: {$poll_bar_height}%; bottom: -{$poll_bar_height}%\"></div>\n";
         $poll_display.= "        </div>\n";
         $poll_display.= "      </td>\n";
 
@@ -970,7 +975,7 @@ function poll_vertical_graph($options_array, $poll_data)
 
         $vote_percent = ((sizeof($option['VOTES_ARRAY']) > 0) && ($total_vote_count > 0)) ? (sizeof($option['VOTES_ARRAY']) / $total_vote_count) * 100 : 0;
 
-        $poll_display.= "      <td class=\"postbody\" align=\"center\">". word_filter_add_ob_tags($option['OPTION_NAME']). ": ". sizeof($option['VOTES_ARRAY']). " {$lang['votes']} (". number_format($vote_percent, 2). "%)</td>\n";
+        $poll_display.= "      <td class=\"postbody\" align=\"center\">". word_filter_add_ob_tags($option['OPTION_NAME']). "<br />". sizeof($option['VOTES_ARRAY']). " {$lang['votes']} (". number_format($vote_percent, 2). "%)</td>\n";
     }
 
     $poll_display.= "    </tr>\n";
@@ -1252,7 +1257,7 @@ function poll_confirm_close($tid)
     echo form_input_hidden("webtag", htmlentities_array($webtag));
     echo form_input_hidden("tid", htmlentities_array($tid));
     echo form_input_hidden("confirm_pollclose", "Y");
-    echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
+    echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;<a href=\"messages.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a></p>";
     echo "</form>\n";
 }
 

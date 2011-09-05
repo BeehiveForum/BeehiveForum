@@ -206,29 +206,6 @@ if (isset($_GET['folder'])) {
     }
 }
 
-// User clicked cancel
-if (isset($_POST['cancel'])) {
-
-    if (isset($t_reply_mid) && is_numeric($t_reply_mid)  && $t_reply_mid > 0) {
-
-        $uri = "pm.php?webtag=$webtag&mid=$t_reply_mid";
-
-    }elseif (isset($t_forward_mid) && is_numeric($t_forward_mid)  && $t_forward_mid > 0) {
-
-        $uri = "pm.php?webtag=$webtag&mid=$t_forward_mid";
-
-    }elseif (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
-
-        $uri = "pm.php?webtag=$webtag&mid=$t_edit_mid";
-
-    }else {
-
-        $uri = "pm.php?webtag=$webtag";
-    }
-
-    header_redirect($uri);
-}
-
 // Assume everything is correct (form input, etc)
 $valid = true;
 
@@ -1045,11 +1022,27 @@ echo "              <br />\n";
 echo "&nbsp;", form_submit('send', $lang['send'], "tabindex=\"2\"");
 echo "&nbsp;", form_submit('save', $lang['save'], "tabindex=\"3\"");
 echo "&nbsp;", form_submit('preview', $lang['preview'], "tabindex=\"4\"");
-echo "&nbsp;", form_submit('cancel', $lang['cancel'], "tabindex=\"5\"");
+
+if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
+
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_reply_mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+
+} else if (isset($t_forward_mid) && is_numeric($t_forward_mid)  && $t_forward_mid > 0) {
+
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_forward_mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+
+} else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
+
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_edit_mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+
+}else {
+
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+}
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo form_input_hidden("aid", htmlentities_array($aid));
 }
 

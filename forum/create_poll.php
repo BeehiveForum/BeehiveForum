@@ -330,34 +330,55 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
 $poll_questions_array = array();
 
-if (isset($_POST['poll_questions']) && is_array($_POST['poll_questions'])) {
+if (isset($_POST['poll_questions'])) {
 
-    foreach ($_POST['poll_questions'] as $question) {
+    if (is_array($_POST['poll_questions'])) {
 
-        if (isset($question['question']) || isset($question['options'])) {
+        foreach ($_POST['poll_questions'] as $question) {
 
-            $poll_question = array(
-                'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
-                'QUESTION'      => (isset($question['question']) ? $question['question'] : ''),
-                'ALLOW_MULTI'   => (isset($question['allow_multi']) && $question['allow_multi'] == 'Y') ? 'Y' : 'N',
-                'OPTIONS_ARRAY' => array(),
-            );
+            if (isset($question['question']) || isset($question['options'])) {
 
-            if (isset($question['options']) && is_array($question['options'])) {
+                $poll_question = array(
+                    'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
+                    'QUESTION'      => (isset($question['question']) ? $question['question'] : ''),
+                    'ALLOW_MULTI'   => (isset($question['allow_multi']) && $question['allow_multi'] == 'Y') ? 'Y' : 'N',
+                    'OPTIONS_ARRAY' => array(),
+                );
 
-                foreach ($question['options'] as $option) {
+                if (isset($question['options']) && is_array($question['options'])) {
 
-                    if (!is_scalar($option)) continue;
+                    foreach ($question['options'] as $option) {
 
-                    $poll_question['OPTIONS_ARRAY'][] = array(
-                        'OPTION_ID'   => sizeof($poll_question['OPTIONS_ARRAY']) + 1,
-                        'OPTION_NAME' => $option,
-                    );
+                        if (!is_scalar($option)) continue;
+
+                        $poll_option = array(
+                            'OPTION_ID'   => sizeof($poll_question['OPTIONS_ARRAY']) + 1,
+                            'OPTION_NAME' => $option,
+                        );
+
+                        $poll_question['OPTIONS_ARRAY'][$poll_option['OPTION_ID']] = $poll_option;
+                    }
                 }
-            }
 
-            $poll_questions_array[$poll_question['QUESTION_ID']] = $poll_question;
+                $poll_questions_array[$poll_question['QUESTION_ID']] = $poll_question;
+            }
         }
+
+    } else {
+
+        $poll_questions_array = array(
+            1 => array(
+                'QUESTION_ID'   => 1,
+                'QUESTION'      => '',
+                'ALLOW_MULTI'   => false,
+                'OPTIONS_ARRAY' => array(
+                    1 => array(
+                        'OPTION_ID'   => 1,
+                        'OPTION_NAME' => '',
+                    ),
+                ),
+            )
+        );
     }
 }
 
@@ -485,12 +506,7 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
     exit;
 }
 
-if (isset($_POST['cancel'])) {
-
-    header_redirect("discussion.php?webtag=$webtag");
-    exit;
-
-} else if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
+if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
 
     $valid = true;
 
@@ -812,6 +828,16 @@ if ($valid && isset($_POST['post'])) {
             } else if ($close_poll == POLL_CLOSE_NEVER) {
 
                 $poll_closes = false;
+            }
+
+            if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+
+                foreach ($poll_questions_array as $question_id => $question) {
+
+                    foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
+                        $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
+                    }
+                }
             }
 
             $tid = post_create_thread($fid, $uid, $thread_title, 'Y', 'N');
@@ -1468,11 +1494,13 @@ echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">\n";
-echo "                                ", form_submit("post", $lang['post']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
+echo "                                ", form_submit("post", $lang['post']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']);
+
+echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo "                                        ", form_input_hidden("aid", htmlentities_array($aid)), "\n";
 }
 

@@ -119,9 +119,9 @@ $(beehive).bind('init', function() {
 
         var $poll_options_list = $poll_question_fieldset.find('div.poll_options_list ol');
 
-        var question_number = $('fieldset.poll_question').index($poll_question_fieldset);
+        var question_number = $('fieldset.poll_question').index($poll_question_fieldset) + 1;
 
-        var option_number = $poll_question_fieldset.find('li').length;
+        var option_number = $poll_question_fieldset.find('li').length + 1;
 
         add_process_running = true;
 
@@ -169,7 +169,7 @@ $(beehive).bind('init', function() {
 
         var $poll_questions_container = $('.poll_questions_container');
 
-        var question_number = $poll_questions_container.find('fieldset.poll_question').length;
+        var question_number = $poll_questions_container.find('fieldset.poll_question').length + 1;
 
         add_process_running = true;
 
@@ -207,10 +207,10 @@ $(beehive).bind('init', function() {
     });
 
     $('.poll_bar_vertical .poll_bar_inner').animate({
-        'margin-top' : 0
+        'bottom' : 0
     }, 2000);
 
     $('.poll_bar_horizontal .poll_bar_inner').animate({
-        'margin-left' : 0
+        'left' : 0
     }, 2000);
 });

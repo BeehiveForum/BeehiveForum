@@ -1052,7 +1052,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
             $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
             $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+            $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
             $sql.= "  PRIMARY KEY  (LID,UID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -1321,7 +1321,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
             $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
             $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+            $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
             $sql.= "  PRIMARY KEY (TID, VOTE_ID),";
             $sql.= "  KEY UID (UID)";
             $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";

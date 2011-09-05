@@ -774,13 +774,21 @@ div.poll_option_list ol li {
 }
 
 .poll_bar {
-    height: 20px;
     margin: 5px 0;
     overflow: hidden;
+    position: relative;
+}
+
+.poll_bar_vertical {
+    height: 200px;
+}
+
+.poll_bar_horizontal {
+    height: 20px;
 }
 
 .poll_bar_inner {
-    height: 20px;
+    position: absolute;
 }
 
 .poll_bar_1 {

@@ -180,12 +180,6 @@ if (thread_is_poll($tid) && $pid == 1) {
     exit;
 }
 
-if (isset($_POST['cancel'])) {
-
-    header_redirect("discussion.php?webtag=$webtag&msg=$edit_msg");
-    exit;
-}
-
 if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_email_confirmation_error();
@@ -834,8 +828,10 @@ if (($tools->get_tinymce())) {
 }
 
 echo form_submit('apply',$lang['apply'], "tabindex=\"2\"");
+
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\"");
-echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\"");
+
+echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg=$edit_msg\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 
 if (forum_get_setting('attachments_enabled', 'Y') && session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 

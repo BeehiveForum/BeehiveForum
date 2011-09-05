@@ -565,7 +565,7 @@ function links_vote($lid, $vote, $uid)
     $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_VOTE` (LID, UID, RATING, TSTAMP) ";
     $sql.= "VALUES ($lid, $uid, $vote, CAST('$current_datetime' AS DATETIME)) ";
     $sql.= "ON DUPLICATE KEY UPDATE RATING = VALUES(RATING), ";
-    $sql.= "TSTAMP = CAST('$current_datetime' AS DATETIME) ";
+    $sql.= "VOTED = CAST('$current_datetime' AS DATETIME) ";
 
     if (!db_query($sql, $db_links_vote)) return false;
 

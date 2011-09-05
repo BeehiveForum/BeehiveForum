@@ -323,6 +323,8 @@ if (isset($_POST['poll_questions'])) {
 
     if (is_array($_POST['poll_questions'])) {
 
+        $poll_questions_array = array();
+
         foreach ($_POST['poll_questions'] as $question) {
 
             if (isset($question['question']) || isset($question['options'])) {
@@ -340,10 +342,12 @@ if (isset($_POST['poll_questions'])) {
 
                         if (!is_scalar($option)) continue;
 
-                        $poll_question['OPTIONS_ARRAY'][] = array(
+                        $poll_option = array(
                             'OPTION_ID'   => sizeof($poll_question['OPTIONS_ARRAY']) + 1,
                             'OPTION_NAME' => $option,
                         );
+
+                        $poll_question['OPTIONS_ARRAY'][$poll_option['OPTION_ID']] = $poll_option;
                     }
                 }
 
@@ -544,12 +548,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = md5(uniqid(mt_rand()));
 }
 
-if (isset($_POST['cancel'])) {
-
-    header_redirect("discussion.php?webtag=$webtag");
-    exit;
-
-} else if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
+if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
 
     $valid = true;
 
@@ -820,78 +819,50 @@ if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
 
 if ($valid && isset($_POST['apply'])) {
 
-    if ($close_poll == POLL_CLOSE_ONE_DAY) {
+    if (post_check_ddkey($dedupe)) {
 
-        $poll_closes = time() + DAY_IN_SECONDS;
+        if ($close_poll == POLL_CLOSE_ONE_DAY) {
 
-    }elseif ($close_poll == POLL_CLOSE_THREE_DAYS) {
+            $poll_closes = time() + DAY_IN_SECONDS;
 
-        $poll_closes = time() + (DAY_IN_SECONDS * 3);
+        } else if ($close_poll == POLL_CLOSE_THREE_DAYS) {
 
-    }elseif ($close_poll == POLL_CLOSE_SEVEN_DAYS) {
+            $poll_closes = time() + (DAY_IN_SECONDS * 3);
 
-        $poll_closes = time() + (DAY_IN_SECONDS * 7);
+        } else if ($close_poll == POLL_CLOSE_SEVEN_DAYS) {
 
-    }elseif ($close_poll == POLL_CLOSE_THIRTY_DAYS) {
+            $poll_closes = time() + (DAY_IN_SECONDS * 7);
 
-        $poll_closes = time() + (DAY_IN_SECONDS * 30);
+        } else if ($close_poll == POLL_CLOSE_THIRTY_DAYS) {
 
-    }elseif ($close_poll == POLL_CLOSE_NEVER) {
+            $poll_closes = time() + (DAY_IN_SECONDS * 30);
 
-        $poll_closes = -1;
+        } else {
 
-    }else {
+            $poll_closes = false;
+        }
 
-        $poll_closes = false;
-    }
+        if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
 
-    $answers = array();
+            foreach ($poll_questions_array as $question_id => $question) {
 
-    $answers_array_html = POST_HTML_DISABLED;
+                foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
+                    $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
+                }
+            }
+        }
 
-    if ($allow_html == true && isset($post_html) && $post_html == 'Y') {
-        $answers_array_html = POST_HTML_ENABLED;
-    }
+        $poll_delete_votes = (array_diff_assoc(poll_get_votes($tid, false), $poll_questions_array) || ($poll_data['POLLTYPE'] != $poll_type) || ($poll_data['VOTETYPE'] != $poll_vote_type));
 
-    foreach ($answers_array as $key => $poll_answer) {
+        if (poll_edit($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $poll_delete_votes)) {
 
-        $answers[$key] = new MessageText($answers_array_html, $poll_answer);
-        $answers_array[$key] = $answers[$key]->getContent();
-    }
+            thread_change_title($tid, $thread_title);
 
-    if ($poll_type == POLL_TABLE_GRAPH) {
+            post_add_edit_text($tid, 1);
 
-        $poll_vote_type = POLL_VOTE_PUBLIC;
-    }
-
-    foreach ($answers_array as $key => $value) {
-
-        if (!isset($poll_results['OPTION_NAME'][$key])) {
-
-            $poll_results['OPTION_NAME'][$key] = "";
+            post_save_attachment_id($tid, $pid, $aid);
         }
     }
-
-    foreach ($answer_groups as $key => $answer_group) {
-
-        if (!isset($poll_results['GROUP_ID'][$key]) && is_numeric($answer_group)) {
-
-            $poll_results['GROUP_ID'][$key] = $answer_group;
-        }
-    }
-
-    $hard_edit = false;
-
-    if ($answers_array != $poll_results['OPTION_NAME'] || $answer_groups != $poll_results['GROUP_ID'] || ($poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH && $poll_type == POLL_TABLE_GRAPH) || ($poll_vote_type == POLL_VOTE_PUBLIC && $poll_data['VOTETYPE'] == POLL_VOTE_ANON)) {
-
-        $hard_edit = true;
-    }
-
-    poll_edit($tid, $threadtitle, $question, $answers_array, $answer_groups, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $hard_edit);
-
-    post_add_edit_text($tid, 1);
-
-    post_save_attachment_id($tid, $pid, $aid);
 
     header_redirect("discussion.php?webtag=$webtag&msg=$tid.1");
 }
@@ -909,7 +880,7 @@ html_draw_top("title={$lang['editpoll']}", "basetarget=_blank", "onUnload=clearF
 echo "<h1>{$lang['editpoll']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '785', 'left');
+    html_display_error_array(array_unique($error_msg_array), '785', 'left');
 }
 
 echo "<br />\n";
@@ -1088,23 +1059,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "</td>\n";
 echo "                      </tr>\n";
-
-if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("closed", "Y", $lang['closeforposting'], ($closed == 'Y')), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("sticky", "Y", $lang['makesticky'], ($sticky == 'Y')), "</td>\n";
-    echo "                      </tr>\n";
-}
-
 echo "                    </table>\n";
 
 if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
@@ -1374,11 +1328,13 @@ echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">\n";
-echo "                                ", form_submit("apply", $lang['apply']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
+echo "                                ", form_submit("apply", $lang['apply']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']);
+
+echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo "                                        ", form_input_hidden("aid", htmlentities_array($aid)), "\n";
 }
 

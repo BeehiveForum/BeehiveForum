@@ -707,7 +707,7 @@ if ($uid == session_get_value('UID')) {
 
         echo "    <tr>\n";
         echo "      <td align=\"center\">";
-        echo "        <a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+        echo "        <a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
         echo "        &nbsp;", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('close', $lang['close']);
         echo "      </td>\n";
         echo "    </tr>\n";
@@ -716,7 +716,7 @@ if ($uid == session_get_value('UID')) {
 
         echo "    <tr>\n";
         echo "      <td align=\"center\">";
-        echo "        <a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+        echo "        <a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
         echo "        &nbsp;", form_submit('delete', $lang['delete']);
         echo "      </td>\n";
         echo "    </tr>\n";

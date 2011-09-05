@@ -171,12 +171,6 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         $uid = session_get_value('UID');
     }
 
-    if (isset($_POST['cancel'])) {
-
-        header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
-        exit;
-    }
-
 }else {
 
     $uid = session_get_value('UID');
@@ -848,7 +842,7 @@ if (forum_get_setting('attachments_enabled', 'Y') && $admin_edit === false) {
 
     echo "    <tr>\n";
     echo "      <td align=\"center\">";
-    echo "        ", form_submit("save", $lang['save']), "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "        ", form_submit("save", $lang['save']), "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo "    </tr>\n";
 
 }else {

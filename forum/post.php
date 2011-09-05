@@ -144,19 +144,6 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     exit;
 }
 
-if (isset($_POST['cancel'])) {
-
-    $uri = "discussion.php?webtag=$webtag";
-
-    if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
-        $uri.= "&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
-    }elseif (isset($_GET['replyto']) && validate_msg($_POST['replyto'])) {
-        $uri.= "&msg={$_GET['replyto']}";
-    }
-
-    header_redirect($uri);
-}
-
 // Check if the user is viewing signatures.
 $show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
@@ -1143,8 +1130,16 @@ if (($tools->get_tinymce())) {
 }
 
 echo form_submit("post", $lang['post'], "tabindex=\"2\"");
+
 echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\"");
-echo "&nbsp;", form_submit("cancel", $lang['cancel'], "tabindex=\"4\"");
+
+if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+} else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+} else {
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+}
 
 if (forum_get_setting('attachments_enabled', 'Y') && (session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 

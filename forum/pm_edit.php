@@ -162,11 +162,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 pm_save_attachment_id($mid, $aid);
 
-// User clicked cancel
-if (isset($_POST['cancel'])) {
-    header_redirect("pm.php?webtag=$webtag&mid=$mid");
-}
-
 $valid = true;
 
 // For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
@@ -575,11 +570,11 @@ echo "              <br />\n";
 
 echo form_submit('apply', $lang['apply'], "tabindex=\"2\"");
 echo "&nbsp;", form_submit('preview', $lang['preview'], "tabindex=\"3\"");
-echo "&nbsp;", form_submit('cancel', $lang['cancel'], "tabindex=\"4\"");
+echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));
 }
 

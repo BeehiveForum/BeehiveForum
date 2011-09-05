@@ -237,6 +237,15 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
     return true;
 }
 
+function poll_edit_check_questions($tid, $poll_questions_array)
+{
+    $poll_questions_array = array_map('serialize', $poll_questions_array);
+
+    $poll_original_questions_array = array_map('serialize', poll_get_votes($tid, false));
+
+    return sizeof(array_diff($poll_original_questions_array, $poll_questions_array)) > 0;
+}
+
 function poll_get_random_users($limit)
 {
     if (!$db_poll_get_random_votes = db_connect()) return false;
@@ -682,7 +691,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
+                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">{$lang['endpoll']}</a>";
                 }
 
                 $poll_display.= "              </td>\n";
@@ -721,7 +730,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 }
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
+                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">{$lang['endpoll']}</a>";
                 }
 
                 $poll_display.= "              </td>\n";
@@ -1203,62 +1212,6 @@ function poll_get_option_html($question_number, $option_number = 1)
     $lang = load_language_file();
 
     return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", '', 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteoption']}\""));
-}
-
-function poll_confirm_close($tid)
-{
-    $lang = load_language_file();
-
-    $webtag = get_webtag();
-
-    if (!$preview_message = messages_get($tid, 1, 1)) {
-
-        post_edit_refuse($tid, 1);
-        return;
-    }
-
-    if (!$threaddata = thread_get($tid)) {
-
-        post_edit_refuse($tid, 1);
-        return;
-    }
-
-    if (session_get_value('UID') != $preview_message['FROM_UID'] && !session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
-
-        post_edit_refuse($tid, 1);
-        return;
-    }
-
-    if ($preview_message['TO_UID'] == 0) {
-
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
-
-    }else {
-
-        $preview_tuser = user_get($preview_message['TO_UID']);
-        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-    }
-
-    $preview_fuser = user_get($preview_message['FROM_UID']);
-    $preview_message['FLOGON'] = $preview_fuser['LOGON'];
-    $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
-
-    $show_sigs = !(session_get_value('VIEW_SIGS'));
-
-    echo "<h1>{$lang['endpoll']}</h1>\n";
-
-    html_display_warning_msg($lang['pollconfirmclose'], '96%', 'center');
-
-    poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, $threaddata['CLOSED'], false, $show_sigs, true);
-
-    echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
-    echo form_input_hidden("webtag", htmlentities_array($webtag));
-    echo form_input_hidden("tid", htmlentities_array($tid));
-    echo form_input_hidden("confirm_pollclose", "Y");
-    echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;<a href=\"messages.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a></p>";
-    echo "</form>\n";
 }
 
 function poll_close($tid)

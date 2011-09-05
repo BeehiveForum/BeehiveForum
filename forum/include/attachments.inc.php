@@ -489,7 +489,7 @@ function attachments_delete($hash)
                 if (session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
                     $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
-                    admin_add_log_entry(attachments_delete, $log_data);
+                    admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
                 }
             }
 
@@ -571,7 +571,7 @@ function attachments_delete_thumbnail($hash)
                 if (session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
                     $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
-                    admin_add_log_entry(attachments_delete, $log_data);
+                    admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
                 }
             }
 

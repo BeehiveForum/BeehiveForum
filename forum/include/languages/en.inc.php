@@ -1617,7 +1617,7 @@ $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two questions";
 $lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
 $lang['nomultivotepublic'] = "Public ballots cannot be multi-vote";
-$lang['publicballethorizontalgraphonly'] = "Public ballots can only be created using horizontal graphs";
+$lang['publicballothorizontalgraphonly'] = "Public ballots can only be created using horizontal graphs";
 $lang['abletochangevote'] = "You will be able to change your vote.";
 $lang['abletovotemultiple'] = "You will be able to vote multiple times.";
 $lang['notabletochangevote'] = "You will not be able to change your vote.";
@@ -1686,7 +1686,7 @@ $lang['deleteoption'] = "Delete option";
 $lang['allowmultipleoptions'] = "Allow multiple options to be selected";
 $lang['youmustprovideratleast1question'] = "Your must provide at least one question";
 $lang['youmustprovideaquestionforalloptions'] = "You must provide a question for all options";
-$lang['youmustprovideratleast2optionsforeachquestion'] = "You must provide at least 2 options for each question";
+$lang['youmustprovideratleast1optionforeachquestion'] = "You must provide at least 1 option for each question";
 $lang['youcanhaveamaximumof20optionsperpoll'] = "You can have a maximum of 20 options per poll";
 
 // Profiles (profile.php) ----------------------------------------------

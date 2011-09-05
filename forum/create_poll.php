@@ -578,7 +578,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
             } else if (!isset($question['OPTIONS_ARRAY']) || !is_array($question['OPTIONS_ARRAY'])) {
 
-                $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
+                $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
                 $valid = false;
 
             } else {
@@ -592,9 +592,9 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
                 $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
 
-                if (sizeof($question['OPTIONS_ARRAY']) < 2) {
+                if (sizeof($question['OPTIONS_ARRAY']) < 1) {
 
-                    $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
+                    $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
                     $valid = false;
 
                 } else {

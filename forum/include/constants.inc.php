@@ -275,32 +275,34 @@ define('ATTACHMENT_THUMB_MEDIUM', 2);
 define('ATTACHMENT_THUMB_LARGE', 3);
 
 // PM Constants
-define('PM_OUTBOX', 1);       // PM located in Outbox
-define('PM_UNREAD', 2);       // Unread PM
-define('PM_READ', 4);         // Read PM
-define('PM_SENT', 8);         // Sent PM
-define('PM_SAVED_IN', 16);    // Saved Received PM
-define('PM_SAVED_OUT', 32);   // Saved Sent PM
-define('PM_SAVED_DRAFT', 64); // Saved Draft
-// PM Folders - defines each folder / view type
-define('PM_FOLDER_NONE',    0);
-define('PM_FOLDER_INBOX',   1);
-define('PM_FOLDER_SENT',    2);
-define('PM_FOLDER_OUTBOX',  3);
-define('PM_FOLDER_SAVED',   4);
-define('PM_FOLDER_DRAFTS',  5);
+define('PM_OUTBOX', 1);
+define('PM_UNREAD', 2);
+define('PM_READ', 4);
+define('PM_SENT', 8);
+define('PM_SAVED_IN', 16);
+define('PM_SAVED_OUT', 32);
+define('PM_SAVED_DRAFT', 64);
+
+// PM Folders
+define('PM_FOLDER_NONE', 0);
+define('PM_FOLDER_INBOX', 1);
+define('PM_FOLDER_SENT', 2);
+define('PM_FOLDER_OUTBOX', 3);
+define('PM_FOLDER_SAVED', 4);
+define('PM_FOLDER_DRAFTS', 5);
 define('PM_SEARCH_RESULTS', 6);
 
-// PM Item types - defines different types of messages
-define('PM_INBOX_ITEMS',  PM_UNREAD | PM_READ); // Inbox
-define('PM_SENT_ITEMS',   PM_SENT); // Sent Items
-define('PM_OUTBOX_ITEMS', PM_OUTBOX); // Outbox
-define('PM_SAVED_ITEMS',  PM_SAVED_IN | PM_SAVED_OUT); // Saved Items
-define('PM_DRAFT_ITEMS',  PM_SAVED_DRAFT); // Drafts.
+// PM Item types
+define('PM_OUTBOX_ITEMS', 1);
+define('PM_INBOX_ITEMS', 6);
+define('PM_SENT_ITEMS', 8);
+define('PM_SAVED_ITEMS', 48);
+define('PM_DRAFT_ITEMS', 64);
+
 // Allowed thread types in folders
 define('FOLDER_ALLOW_NORMAL_THREAD', 1);
 define('FOLDER_ALLOW_POLL_THREAD', 2);
-define('FOLDER_ALLOW_ALL_THREAD', FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD);
+define('FOLDER_ALLOW_ALL_THREAD', 3);
 
 // Profile Item Types
 define('PROFILE_ITEM_LARGE_TEXT', 0);

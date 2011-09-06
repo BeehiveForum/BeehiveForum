@@ -821,4 +821,200 @@ function install_msie_buffer_fix()
     }
 }
 
+/**
+* install_set_default_forum_settings
+*
+* Set the default forum settings for new installs
+*
+* @param void
+* @return boolean
+*/
+function install_set_default_forum_settings()
+{
+    if (!$db_install_set_default_forum_settings = db_connect()) return false;
+
+    $global_settings = array('forum_keywords'             => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
+                             'forum_desc'                 => 'A Beehive Forum',
+                             'forum_email'                => 'admin@abeehiveforum.net',
+                             'forum_noreply_email'        => 'noreply@abeehiveforum.net',
+                             'forum_name'                 => 'A Beehive Forum',
+                             'allow_search_spidering'     => 'Y',
+                             'pm_allow_attachments'       => 'Y',
+                             'pm_auto_prune'              => '-60',
+                             'pm_max_user_messages'       => '100',
+                             'show_pms'                   => 'Y',
+                             'new_user_mark_as_of_int'    => 'Y',
+                             'showpopuponnewpm'           => 'Y',
+                             'new_user_pm_notify_email'   => 'Y',
+                             'new_user_email_notify'      => 'Y',
+                             'text_captcha_key'           => md5(uniqid(mt_rand())),
+                             'text_captcha_enabled'       => 'N',
+                             'require_email_confirmation' => 'N',
+                             'require_unique_email'       => 'N',
+                             'allow_new_registrations'    => 'Y',
+                             'active_sess_cutoff'         => '900',
+                             'session_cutoff'             => '86400',
+                             'search_min_frequency'       => '30',
+                             'guest_account_enabled'      => 'Y',
+                             'guest_auto_logon'           => 'Y',
+                             'attachments_enabled'        => 'N',
+                             'attachment_dir'             => 'attachments',
+                             'attachments_max_user_space' => '1048576',
+                             'attachments_max_post_space' => '1048576',
+                             'attachments_allow_embed'    => 'N',
+                             'attachment_use_old_method'  => 'N',
+                             'message_cache_enabled'      => 'N');
+
+    foreach ($global_settings as $sname => $svalue) {
+
+        $sname = db_escape_string($sname);
+        $svalue = db_escape_string($svalue);
+
+        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+        $sql.= "VALUES (0, '$sname', '$svalue')";
+
+        if (!$result = @db_query($sql, $db_install_set_default_forum_settings)) return false;
+    }
+
+    return true;
+}
+
+/**
+* install_set_search_bots
+*
+* Set up the search bots for a new installation
+*
+* @param void
+* @return boolean
+*/
+function install_set_search_bots()
+{
+    if (!$db_install_set_search_bots = db_connect()) return false;
+
+    $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'http://www.alexa.com/'),
+                        'Ask Jeeves/Teoma' => array('NAME' => 'Ask.com', 'URL' => 'http://www.ask.com/'),
+                        'Baiduspider'      => array('NAME' => 'Baidu', 'URL' => 'http://www.baidu.com/'),
+                        'GameSpyHTTP'      => array('NAME' => 'GameSpy', 'URL' => 'http://www.gamespy.com/'),
+                        'Gigabot'          => array('NAME' => 'Gigablast', 'URL' => 'http://www.gigablast.com/'),
+                        'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
+                        'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
+                        'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
+                        'msnbot'           => array('NAME' => 'Bing', 'URL' => 'http://www.bing.com/'),
+                        'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
+                        'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
+                        'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
+
+    foreach ($bots_array as $agent => $details) {
+
+        $agent = db_escape_string($agent);
+        $name  = db_escape_string($details['NAME']);
+        $url   = db_escape_string($details['URL']);
+
+        $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
+        $sql.= "VALUES ('$name', '$url', '%$agent%')";
+
+        if (!$result = @db_query($sql, $db_install_set_search_bots)) return false;
+    }
+
+    return true;
+}
+
+/**
+* install_set_timezones
+*
+* Set the available timezones for a new install
+*
+* @param void
+* @return boolean
+*/
+function install_set_timezones()
+{
+    if (!$db_install_set_timezones = db_connect()) return false;
+
+    $timezones_array = array(1  => array(-12, 0),  2  => array(-11, 0),  3  => array(-10, 0),
+                             4  => array(-9, 1),   5  => array(-8, 1),   6  => array(-7, 0),
+                             7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0),
+                             10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0),
+                             13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0),
+                             16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1),
+                             19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0),
+                             22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1),
+                             25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1),
+                             28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1),
+                             31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1),
+                             34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0),
+                             37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1),
+                             40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0),
+                             43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1),
+                             46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0),
+                             49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1),
+                             52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0),
+                             55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0),
+                             58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0),
+                             61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0),
+                             64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0),
+                             67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0),
+                             70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0),
+                             73 => array(12, 1),   74 => array(12, 0),   75 => array(13, 0));
+
+    foreach ($timezones_array as $tzid => $tz_data) {
+
+        if (!is_numeric($tzid)) return false;
+
+        if (!isset($tz_data[0]) || !is_numeric($tz_data[0])) return false;
+        if (!isset($tz_data[1]) || !is_numeric($tz_data[1])) return false;
+
+        $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
+        $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
+
+        if (!$result = @db_query($sql, $db_install_set_timezones)) return false;
+    }
+
+    return true;
+}
+
+/**
+* install_import_dictionary
+*
+* Import a dictionary file into the DICTIONARY table
+*
+* @param mixed $dictionary_path
+* @return boolean
+*/
+function install_import_dictionary($dictionary_path)
+{
+    if (!@file_exists("$dictionary_path/english.dic")) return false;
+
+    if (!is_readable("$dictionary_path/english.dic")) return false;
+
+    if (!$db_install_import_dictionary = db_connect()) return false;
+
+    try {
+
+        $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
+        $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
+
+        $result = @db_query($sql, $db_install_import_dictionary);
+
+    } catch (Exception $e) {
+
+        $dictionary_words_array = file($dictionary_path);
+
+        foreach ($dictionary_words_array as $word) {
+
+            $word = db_escape_string(trim($word));
+
+            $sql = "INSERT INTO DICTIONARY (WORD) VALUES('$word')";
+
+            if (!$result = @db_query($sql, $db_install_import_dictionary)) return false;
+        }
+    }
+
+    $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
+
+    if (!$result = @db_query($sql, $db_install_import_dictionary)) return false;
+
+    return true;
+}
+
 ?>

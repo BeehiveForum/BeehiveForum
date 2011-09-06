@@ -901,715 +901,708 @@ function forum_update_unread_data($unread_cutoff_stamp)
     return true;
 }
 
-function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str)
+function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str = '')
 {
     // Load the language
     $lang = load_language_file();
 
-    // If no owner UID specified or UID is 0 change it to current user.
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (!is_numeric($owner_uid)) return false;
+    if (!is_numeric($access)) return false;
 
     // Ensure the variables we've been given are valid
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/Du", $webtag)) return false;
-
-    if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
-    if (!is_numeric($access)) $access = 0;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // Generate table prefix
     $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
 
-    // Only users with acces to the forum tools can create / delete forums.
-    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (!$db_forum_create = db_connect()) return false;
 
-        if (!$db_forum_create = db_connect()) return false;
+    // Check that the WEBTAG is unique.
+    $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-        // Check that the WEBTAG is unique.
-        $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'";
+    if (!($result = @db_query($sql, $db_forum_create))) return false;
 
-        if (!($result = db_query($sql, $db_forum_create))) return false;
+    if (db_num_rows($result) > 0) {
 
-        if (db_num_rows($result) > 0) {
-
-            $error_str = $lang['selectedwebtagisalreadyinuse'];
-            return false;
-        }
-
-        // Check for any conflicting tables.
-        if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false))) {
-
-            $error_str = $lang['selecteddatabasecontainsconflictingtables'];
-            $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
-
-            return false;
-        }
-
-        // Catch SQL Exceptions
-        try {
-
-            // Create the tables
-            $sql = "CREATE TABLE `{$forum_table_prefix}ADMIN_LOG` (";
-            $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  CREATED DATETIME DEFAULT NULL,";
-            $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  ENTRY TEXT,";
-            $sql.= "  PRIMARY KEY  (ID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table ADMIN_LOG');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}BANNED` (";
-            $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-            $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0', ";
-            $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '', ";
-            $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '', ";
-            $sql.= "  EXPIRES DATETIME DEFAULT NULL, ";
-            $sql.= "  PRIMARY KEY (ID), ";
-            $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table BANNED');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}FOLDER` (";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-            $sql.= "  TITLE VARCHAR(32) DEFAULT NULL, ";
-            $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL, ";
-            $sql.= "  CREATED datetime default NULL, ";
-            $sql.= "  MODIFIED datetime default NULL, ";
-            $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
-            $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL, ";
-            $sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0', ";
-            $sql.= "  PRIMARY KEY (FID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table FOLDER');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}FORUM_LINKS` (";
-            $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  URI VARCHAR(255) DEFAULT NULL,";
-            $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
-            $sql.= "  PRIMARY KEY  (LID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table FORUM_LINKS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}LINKS` (";
-            $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  URI VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  TITLE VARCHAR(64) NOT NULL DEFAULT '',";
-            $sql.= "  DESCRIPTION TEXT NOT NULL,";
-            $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
-            $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (LID),";
-            $sql.= "  KEY FID (FID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table LINKS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_COMMENT` (";
-            $sql.= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  COMMENT TEXT NOT NULL,";
-            $sql.= "  PRIMARY KEY  (CID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table LINKS_COMMENT');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_FOLDERS` (";
-            $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1',";
-            $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
-            $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
-            $sql.= "  PRIMARY KEY  (FID),";
-            $sql.= "  KEY PARENT_FID (PARENT_FID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table LINKS_FOLDERS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_VOTE` (";
-            $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  PRIMARY KEY  (LID,UID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table LINKS_VOTE');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}POLL` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  QUESTION VARCHAR(64) DEFAULT NULL,";
-            $sql.= "  CLOSES DATETIME DEFAULT NULL,";
-            $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
-            $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
-            $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
-            $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  ALLOWGUESTS TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (TID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table POLL');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}POLL_VOTES` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table POLL_VOTES');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}POST` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  VIEWED DATETIME DEFAULT NULL,";
-            $sql.= "  CREATED DATETIME DEFAULT NULL,";
-            $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
-            $sql.= "  APPROVED DATETIME DEFAULT NULL,";
-            $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  EDITED DATETIME DEFAULT NULL,";
-            $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
-            $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (TID,PID),";
-            $sql.= "  KEY TO_UID (TO_UID),";
-            $sql.= "  KEY FROM_UID (FROM_UID),";
-            $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
-            $sql.= "  KEY APPROVED (APPROVED),";
-            $sql.= "  KEY CREATED (CREATED)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!($result = db_query($sql, $db_forum_create))) {
-                throw new Exception('Failed to create table POST');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}POST_CONTENT` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  CONTENT TEXT,";
-            $sql.= "  PRIMARY KEY  (TID,PID),";
-            $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table POST_CONTENT');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_ITEM` (";
-            $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  PSID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
-            $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
-            $sql.= "  OPTIONS TEXT NOT NULL, ";
-            $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (PIID),";
-            $sql.= "  KEY PSID (PSID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table PROFILE_ITEM');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-            $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-            $sql.= "VALUES (1, 'Location', 0, '', 1)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create location profile item');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-            $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-            $sql.= "VALUES (1, 'Age', 0, '', 2)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create age profile item');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-            $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
-            $sql.= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create gender profile item');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-            $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-            $sql.= "VALUES (1, 'Quote', 0, '', 4)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create quote profile item');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-            $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-            $sql.= "VALUES (1, 'Occupation', 0, '', 5)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create occupation profile item');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_SECTION` (";
-            $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
-            $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (PSID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table PROFILE_SECTION');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_SECTION` ";
-            $sql.= "(NAME, POSITION) VALUES ('Personal', 1)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create first profile section.');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}RSS_FEEDS` (";
-            $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  NAME VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
-            $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL,";
-            $sql.= "  FREQUENCY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  LAST_RUN DATETIME DEFAULT NULL,";
-            $sql.= "  MAX_ITEM_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  PRIMARY KEY  (RSSID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table RSS_FEEDS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}RSS_HISTORY` (";
-            $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
-            $sql.= "  KEY RSSID (RSSID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table RSS_HISTORY');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}STATS` (";
-            $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-            $sql.= "  MOST_USERS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (ID),";
-            $sql.= "  KEY MOST_POSTS_COUNT (MOST_POSTS_COUNT), ";
-            $sql.= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table STATS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}THREAD` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  TITLE VARCHAR(64) DEFAULT NULL, ";
-            $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL, ";
-            $sql.= "  CREATED DATETIME DEFAULT NULL, ";
-            $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
-            $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
-            $sql.= "  STICKY CHAR(1) DEFAULT NULL, ";
-            $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
-            $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
-            $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
-            $sql.= "  PRIMARY KEY (TID), ";
-            $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
-            $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
-            $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table THREAD');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_STATS` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (TID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table THREAD_STATS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_TRACK` (";
-            $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
-            $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
-            $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
-            $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0', ";
-            $sql.= "  PRIMARY KEY (TID, NEW_TID), ";
-            $sql.= "  KEY NEW_TID (NEW_TID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table THREAD_TRACK');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_FOLDER` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  INTEREST TINYINT(4) DEFAULT '0', ";
-            $sql.= "  PRIMARY KEY (UID, FID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_FOLDER');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_PEER` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL, ";
-            $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
-            $sql.= "  PRIMARY KEY (UID, PEER_UID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_PEER');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_POLL_VOTES` (";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-            $sql.= "  PRIMARY KEY (TID, VOTE_ID),";
-            $sql.= "  KEY UID (UID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_POLL_VOTES');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_PREFS` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  PIC_AID CHAR(32) NOT NULL DEFAULT '',";
-            $sql.= "  AVATAR_URL VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  AVATAR_AID CHAR(32) NOT NULL DEFAULT '',";
-            $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  POSTS_PER_PAGE VARCHAR(3) NOT NULL DEFAULT '20',";
-            $sql.= "  FONT_SIZE VARCHAR(2) NOT NULL DEFAULT '10',";
-            $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
-            $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  START_PAGE VARCHAR(3) NOT NULL DEFAULT '0',";
-            $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
-            $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-            $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-            $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
-            $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
-            $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
-            $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  SHOW_THUMBS VARCHAR(2) NOT NULL DEFAULT '2',";
-            $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT 'N', ";
-            $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT 'N', ";
-            $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT 'Y', ";
-            $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
-            $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
-            $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
-            $sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
-            $sql.= "  LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280',";
-            $sql.= "  SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y',";
-            $sql.= "  PRIMARY KEY  (UID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_PREFS');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_PROFILE` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
-            $sql.= "  PRIVACY TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  PRIMARY KEY  (UID,PIID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_PROFILE');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_SIG` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  CONTENT TEXT,";
-            $sql.= "  HTML CHAR(1) DEFAULT NULL,";
-            $sql.= "  PRIMARY KEY  (UID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_SIG');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_THREAD` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
-            $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
-            $sql.= "  PRIMARY KEY  (UID,TID),";
-            $sql.= "  KEY TID (TID),";
-            $sql.= "  KEY LAST_READ (LAST_READ),";
-            $sql.= "  KEY INTEREST (INTEREST)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_THREAD');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}USER_TRACK` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-            $sql.= "  DDKEY DATETIME DEFAULT NULL,";
-            $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
-            $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
-            $sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
-            $sql.= "  LAST_SEARCH_SORT_BY TINYINT(3) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  LAST_SEARCH_SORT_DIR TINYINT(3) UNSIGNED DEFAULT NULL, ";
-            $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-            $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
-            $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
-            $sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL,";
-            $sql.= "  PRIMARY KEY  (UID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table USER_TRACK');
-            }
-
-            $sql = "CREATE TABLE `{$forum_table_prefix}WORD_FILTER` (";
-            $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-            $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL DEFAULT '', ";
-            $sql.= "  MATCH_TEXT TEXT NOT NULL, ";
-            $sql.= "  REPLACE_TEXT TEXT NOT NULL, ";
-            $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
-            $sql.= "  PRIMARY KEY (UID, FID)";
-            $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create table WORD_FILTER');
-            }
-
-            // Save Webtag, Database name and Access Level.
-            $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
-            $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create FORUMS record');
-            }
-
-            // Get the new FID so we can save the settings
-            if (!$forum_fid = db_insert_id($db_forum_create)) {
-                throw new Exception('Failed to get new forum fid');
-            }
-
-            // Create General Folder
-            $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION) ";
-            $sql.= "VALUES ('General', NOW(), NOW(), 3, 1)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create first folder');
-            }
-
-            if (!$folder_fid = db_insert_id($db_forum_create)) {
-                throw new Exception('Failed to get first folder fid');
-            }
-
-            // Create folder permissions
-            $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-            $sql.= "VALUES (0, '$forum_fid', '$folder_fid', 14588);";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to set folder permissions');
-            }
-
-            // Add some default forum links
-            $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
-            $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create Beehive Forum link');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
-            $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create Beehive Forum Facebook link');
-            }
-
-            $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
-            $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create Teh Forum forum link');
-            }
-
-            // Create user permissions for forum leader
-            if (!perm_update_user_forum_permissions($forum_fid, $owner_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE)) {
-                throw new Exception('Failed to set owner forum permissions');
-            }
-
-            // Get unique ID for this post.
-            $search_id = post_create_sphinx_search_id();
-
-            // Create 'Welcome' Thread
-            $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
-            $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-            $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "CAST('$current_datetime' AS DATETIME), NULL, 'N', NULL, NULL)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create first thread');
-            }
-
-            // Get the Thread ID. It should be 1, but just in case.
-            if (!$new_tid = db_insert_id($db_forum_create)) {
-                throw new Exception('Failed to get first thread tid');
-            }
-
-            // Create the first post in the thread. Make it appear to be from
-            // the Owner UID.
-            $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
-            $sql.= "CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, SEARCH_ID) ";
-            $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '', $search_id)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create first post');
-            }
-
-            // Get the Post ID. Again should be 1, but trying to be tidy here.
-            if (!$new_pid = db_insert_id($db_forum_create)) {
-                throw new Exception('Fauled to fetch new post pid');
-            }
-
-            // First Post content.
-            $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-            $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create first post content');
-            }
-
-            // Create Top Level Links Folder
-            $sql = "INSERT INTO `{$forum_table_prefix}LINKS_FOLDERS` ";
-            $sql.= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to create top level links folder');
-            }
-
-            // Store Forum settings
-            $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wiki/[WikiWord]',
-                                    'enable_wiki_quick_links' => 'Y',
-                                    'enable_wiki_integration' => 'N',
-                                    'minimum_post_frequency'  => '0',
-                                    'maximum_post_length'     => '6226',
-                                    'post_edit_time'          => '0',
-                                    'allow_post_editing'      => 'Y',
-                                    'require_post_approval'   => 'N',
-                                    'forum_dl_saving'         => 'Y',
-                                    'forum_timezone'          => '27',
-                                    'default_language'        => 'en',
-                                    'default_emoticons'       => 'default',
-                                    'default_style'           => 'Default',
-                                    'forum_keywords'          => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
-                                    'forum_desc'              => 'A Beehive Forum',
-                                    'forum_email'             => 'admin@abeehiveforum.net',
-                                    'forum_name'              => $forum_name,
-                                    'show_links'              => 'Y',
-                                    'allow_polls'             => 'Y',
-                                    'show_stats'              => 'Y',
-                                    'allow_search_spidering'  => 'Y',
-                                    'guest_account_enabled'   => 'Y',
-                                    'forum_links_top_link'    => 'Forum Links:');
-
-            foreach ($forum_settings as $setting_name => $setting_value) {
-
-                $setting_name = db_escape_string($setting_name);
-                $setting_value = db_escape_string($setting_value);
-
-                $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-                $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
-
-                if (!db_query($sql, $db_forum_create)) {
-                    throw new Exception('Failed to save forum settings');
-                }
-            }
-
-            // Make sure at least the current user can access the forum
-            // even if it's not protected.
-            $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$uid', $forum_fid, 1)";
-
-            if (!db_query($sql, $db_forum_create)) {
-                throw new Exception('Failed to set user access permissions');
-            }
-
-        } catch (Exception $e) {
-
-            forum_delete_tables($webtag, $database_name);
-
-            return false;
-        }
-
-        return $forum_fid;
+        $error_str = $lang['selectedwebtagisalreadyinuse'];
+        return false;
     }
 
-    return false;
+    // Check for any conflicting tables.
+    if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false))) {
+
+        $error_str = $lang['selecteddatabasecontainsconflictingtables'];
+        $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
+
+        return false;
+    }
+
+    // Catch SQL Exceptions
+    try {
+
+        // Create the tables
+        $sql = "CREATE TABLE `{$forum_table_prefix}ADMIN_LOG` (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
+        $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ENTRY TEXT,";
+        $sql.= "  PRIMARY KEY  (ID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table ADMIN_LOG');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}BANNED` (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0', ";
+        $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '', ";
+        $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '', ";
+        $sql.= "  EXPIRES DATETIME DEFAULT NULL, ";
+        $sql.= "  PRIMARY KEY (ID), ";
+        $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table BANNED');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}FOLDER` (";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql.= "  TITLE VARCHAR(32) DEFAULT NULL, ";
+        $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL, ";
+        $sql.= "  CREATED datetime default NULL, ";
+        $sql.= "  MODIFIED datetime default NULL, ";
+        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
+        $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL, ";
+        $sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0', ";
+        $sql.= "  PRIMARY KEY (FID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table FOLDER');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}FORUM_LINKS` (";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  URI VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (LID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table FORUM_LINKS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}LINKS` (";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  URI VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  TITLE VARCHAR(64) NOT NULL DEFAULT '',";
+        $sql.= "  DESCRIPTION TEXT NOT NULL,";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (LID),";
+        $sql.= "  KEY FID (FID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table LINKS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_COMMENT` (";
+        $sql.= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  COMMENT TEXT NOT NULL,";
+        $sql.= "  PRIMARY KEY  (CID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table LINKS_COMMENT');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_FOLDERS` (";
+        $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1',";
+        $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
+        $sql.= "  PRIMARY KEY  (FID),";
+        $sql.= "  KEY PARENT_FID (PARENT_FID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table LINKS_FOLDERS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_VOTE` (";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  PRIMARY KEY  (LID,UID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table LINKS_VOTE');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}POLL` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  QUESTION VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  CLOSES DATETIME DEFAULT NULL,";
+        $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
+        $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
+        $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
+        $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ALLOWGUESTS TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table POLL');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}POLL_VOTES` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table POLL_VOTES');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  VIEWED DATETIME DEFAULT NULL,";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
+        $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
+        $sql.= "  APPROVED DATETIME DEFAULT NULL,";
+        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  EDITED DATETIME DEFAULT NULL,";
+        $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
+        $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  KEY TO_UID (TO_UID),";
+        $sql.= "  KEY FROM_UID (FROM_UID),";
+        $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
+        $sql.= "  KEY APPROVED (APPROVED),";
+        $sql.= "  KEY CREATED (CREATED)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!($result = db_query($sql, $db_forum_create))) {
+            throw new Exception('Failed to create table POST');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_CONTENT` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CONTENT TEXT,";
+        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table POST_CONTENT');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_ITEM` (";
+        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  PSID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  OPTIONS TEXT NOT NULL, ";
+        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (PIID),";
+        $sql.= "  KEY PSID (PSID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table PROFILE_ITEM');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Location', 0, '', 1)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create location profile item');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Age', 0, '', 2)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create age profile item');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
+        $sql.= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create gender profile item');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Quote', 0, '', 4)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create quote profile item');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Occupation', 0, '', 5)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create occupation profile item');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_SECTION` (";
+        $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (PSID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table PROFILE_SECTION');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_SECTION` ";
+        $sql.= "(NAME, POSITION) VALUES ('Personal', 1)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create first profile section.');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}RSS_FEEDS` (";
+        $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  NAME VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL,";
+        $sql.= "  FREQUENCY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  LAST_RUN DATETIME DEFAULT NULL,";
+        $sql.= "  MAX_ITEM_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  PRIMARY KEY  (RSSID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table RSS_FEEDS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}RSS_HISTORY` (";
+        $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  KEY RSSID (RSSID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table RSS_HISTORY');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}STATS` (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  MOST_USERS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (ID),";
+        $sql.= "  KEY MOST_POSTS_COUNT (MOST_POSTS_COUNT), ";
+        $sql.= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table STATS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}THREAD` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  TITLE VARCHAR(64) DEFAULT NULL, ";
+        $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL, ";
+        $sql.= "  CREATED DATETIME DEFAULT NULL, ";
+        $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
+        $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
+        $sql.= "  STICKY CHAR(1) DEFAULT NULL, ";
+        $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
+        $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
+        $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql.= "  PRIMARY KEY (TID), ";
+        $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
+        $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
+        $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table THREAD');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_STATS` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table THREAD_STATS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_TRACK` (";
+        $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
+        $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
+        $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0', ";
+        $sql.= "  PRIMARY KEY (TID, NEW_TID), ";
+        $sql.= "  KEY NEW_TID (NEW_TID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table THREAD_TRACK');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_FOLDER` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  INTEREST TINYINT(4) DEFAULT '0', ";
+        $sql.= "  PRIMARY KEY (UID, FID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_FOLDER');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_PEER` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL, ";
+        $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
+        $sql.= "  PRIMARY KEY (UID, PEER_UID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_PEER');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_POLL_VOTES` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  PRIMARY KEY (TID, VOTE_ID),";
+        $sql.= "  KEY UID (UID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_POLL_VOTES');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_PREFS` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  PIC_AID CHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  AVATAR_URL VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  AVATAR_AID CHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  POSTS_PER_PAGE VARCHAR(3) NOT NULL DEFAULT '20',";
+        $sql.= "  FONT_SIZE VARCHAR(2) NOT NULL DEFAULT '10',";
+        $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  START_PAGE VARCHAR(3) NOT NULL DEFAULT '0',";
+        $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  SHOW_THUMBS VARCHAR(2) NOT NULL DEFAULT '2',";
+        $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT 'N', ";
+        $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT 'N', ";
+        $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT 'Y', ";
+        $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql.= "  USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql.= "  LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280',";
+        $sql.= "  SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_PREFS');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_PROFILE` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  PRIVACY TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (UID,PIID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_PROFILE');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_SIG` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CONTENT TEXT,";
+        $sql.= "  HTML CHAR(1) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_SIG');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_THREAD` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
+        $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID,TID),";
+        $sql.= "  KEY TID (TID),";
+        $sql.= "  KEY LAST_READ (LAST_READ),";
+        $sql.= "  KEY INTEREST (INTEREST)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_THREAD');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}USER_TRACK` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  DDKEY DATETIME DEFAULT NULL,";
+        $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
+        $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+        $sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
+        $sql.= "  LAST_SEARCH_SORT_BY TINYINT(3) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  LAST_SEARCH_SORT_DIR TINYINT(3) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
+        $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
+        $sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table USER_TRACK');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}WORD_FILTER` (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL DEFAULT '', ";
+        $sql.= "  MATCH_TEXT TEXT NOT NULL, ";
+        $sql.= "  REPLACE_TEXT TEXT NOT NULL, ";
+        $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
+        $sql.= "  PRIMARY KEY (UID, FID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table WORD_FILTER');
+        }
+
+        // Save Webtag, Database name and Access Level.
+        $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
+        $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create FORUMS record');
+        }
+
+        // Get the new FID so we can save the settings
+        if (!$forum_fid = db_insert_id($db_forum_create)) {
+            throw new Exception('Failed to get new forum fid');
+        }
+
+        // Create General Folder
+        $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION) ";
+        $sql.= "VALUES ('General', NOW(), NOW(), 3, 1)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create first folder');
+        }
+
+        if (!$folder_fid = db_insert_id($db_forum_create)) {
+            throw new Exception('Failed to get first folder fid');
+        }
+
+        // Create folder permissions
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES (0, '$forum_fid', '$folder_fid', 14588)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to set folder permissions');
+        }
+
+        // Add some default forum links
+        $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
+        $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create Beehive Forum link');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
+        $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create Beehive Forum Facebook link');
+        }
+
+        $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
+        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create Teh Forum forum link');
+        }
+
+        // Create user permissions for forum leader
+        if (!perm_update_user_forum_permissions($forum_fid, $owner_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE)) {
+            throw new Exception('Failed to set owner forum permissions');
+        }
+
+        // Get unique ID for this post.
+        $search_id = post_create_sphinx_search_id();
+
+        // Create 'Welcome' Thread
+        $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
+        $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), NULL, 'N', NULL, NULL)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create first thread');
+        }
+
+        // Get the Thread ID. It should be 1, but just in case.
+        if (!$new_tid = db_insert_id($db_forum_create)) {
+            throw new Exception('Failed to get first thread tid');
+        }
+
+        // Create the first post in the thread. Make it appear to be from
+        // the Owner UID.
+        $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
+        $sql.= "CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, SEARCH_ID) ";
+        $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '', $search_id)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create first post');
+        }
+
+        // Get the Post ID. Again should be 1, but trying to be tidy here.
+        if (!$new_pid = db_insert_id($db_forum_create)) {
+            throw new Exception('Fauled to fetch new post pid');
+        }
+
+        // First Post content.
+        $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
+        $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create first post content');
+        }
+
+        // Create Top Level Links Folder
+        $sql = "INSERT INTO `{$forum_table_prefix}LINKS_FOLDERS` ";
+        $sql.= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create top level links folder');
+        }
+
+        // Store Forum settings
+        $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wiki/[WikiWord]',
+                                'enable_wiki_quick_links' => 'Y',
+                                'enable_wiki_integration' => 'N',
+                                'minimum_post_frequency'  => '0',
+                                'maximum_post_length'     => '6226',
+                                'post_edit_time'          => '0',
+                                'allow_post_editing'      => 'Y',
+                                'require_post_approval'   => 'N',
+                                'forum_dl_saving'         => 'Y',
+                                'forum_timezone'          => '27',
+                                'default_language'        => 'en',
+                                'default_emoticons'       => 'default',
+                                'default_style'           => 'Default',
+                                'forum_keywords'          => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
+                                'forum_desc'              => 'A Beehive Forum',
+                                'forum_email'             => 'admin@abeehiveforum.net',
+                                'forum_name'              => $forum_name,
+                                'show_links'              => 'Y',
+                                'allow_polls'             => 'Y',
+                                'show_stats'              => 'Y',
+                                'allow_search_spidering'  => 'Y',
+                                'guest_account_enabled'   => 'Y',
+                                'forum_links_top_link'    => 'Forum Links:');
+
+        foreach ($forum_settings as $setting_name => $setting_value) {
+
+            $setting_name = db_escape_string($setting_name);
+            $setting_value = db_escape_string($setting_value);
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
+
+            if (!@db_query($sql, $db_forum_create)) {
+                throw new Exception('Failed to save forum settings');
+            }
+        }
+
+        // Make sure at least the current user can access the forum
+        // even if it's not protected.
+        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$owner_uid', $forum_fid, 1)";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to set user access permissions');
+        }
+
+    } catch (Exception $e) {
+
+        $error_str = $e->getMessage();
+
+        forum_delete_tables($webtag, $database_name);
+
+        return false;
+    }
+
+    return $forum_fid;
 }
 
 function forum_update($fid, $forum_name, $owner_uid, $access_level)

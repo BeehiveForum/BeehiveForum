@@ -49,6 +49,54 @@ $(beehive).bind('init', function() {
         $(this).find('button.delete_question, button.delete_option').hide();
     };
 
+    var option_html = function(question_id, option_id)
+    {
+        return $.vsprintf(
+            '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%(0)d][options][%(1)d]">&nbsp;\
+               <button title="%(2)s" class="button_image delete_option disabled" name="delete_option[%(0)d][%(1)d]" type="submit">\
+                 <img alt="" src="%(3)s">\
+               </button>\
+             </li>', [[ question_id,
+                        option_id,
+                        beehive.lang['deleteoption'],
+                        beehive.images['delete.png']
+                     ]]);
+    };
+
+    var question_html = function(question_id)
+    {
+        return $.vsprintf(
+            '<fieldset class="poll_question">\
+               <div>\
+                 <h2>%(1)s</h2>\
+                 <div class="poll_question_input">\
+                   <input type="text" dir="ltr" maxlength="255" size="40" value="" class="bhinputtext" name="poll_questions[%(0)d][question]">&nbsp;\
+                   <button title="%(2)s" class="button_image delete_question disabled" name="delete_question[%(0)d]" type="submit">\
+                     <img alt="" src="%(3)s">\
+                   </button>\
+                 </div>\
+                 <div class="poll_question_checkbox">\
+                   <span class="bhinputcheckbox">\
+                     <input type="checkbox" value="Y" id="poll_questions1allow_multi" name="poll_questions[%(0)d][allow_multi]">\
+                     <label for="poll_questions1allow_multi">%(4)s</label>\
+                   </span>\
+                 </div>\
+                 <div class="poll_options_list">\
+                   <ol>%(5)s</ol>\
+                 </div>\
+               </div>\
+               <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><img alt="" src="%(6)s">&nbsp;%(7)s</button>\
+             </fieldset>', [[ question_id,
+                              beehive.lang['pollquestion'],
+                              beehive.lang['deletequestion'],
+                              beehive.images['delete.png'],
+                              beehive.lang['allowmultipleoptions'],
+                              option_html(question_id, 1),
+                              beehive.images['add.png'],
+                              beehive.lang['addnewoption']
+                           ]]);
+    };
+
     hide_delete_buttons.call($('body'));
 
     $('div.poll_question_input').live('mouseenter', function() {
@@ -119,43 +167,25 @@ $(beehive).bind('init', function() {
 
         var $poll_options_list = $poll_question_fieldset.find('div.poll_options_list ol');
 
-        var question_number = $('fieldset.poll_question').index($poll_question_fieldset) + 1;
+        var question_id = $('fieldset.poll_question').index($poll_question_fieldset) + 1;
 
-        var option_number = $poll_question_fieldset.find('li').length + 1;
+        var option_id = $poll_question_fieldset.find('li').length + 1;
 
         add_process_running = true;
 
-        $.ajax({
+        var $html = $(option_html(question_id, option_id));
 
-            'cache' : true,
+        hide_delete_buttons.call($html);
 
-            'data' : {
-                'webtag' : beehive.webtag,
-                'ajax' : 'true',
-                'action' : 'poll_add_option',
-                'question_number' : question_number,
-                'option_number' : option_number
-            },
+        $html.hide().appendTo($poll_options_list).show(200, function() {
 
-            'url' : beehive.forum_path + '/ajax.php',
+            $(this).css('display', 'list-item');
 
-            'success' : function(data) {
+            toggle_add_buttons();
 
-                var $data = $(data);
+            toggle_delete_buttons();
 
-                hide_delete_buttons.call($data);
-
-                $data.hide().appendTo($poll_options_list).show(200, function() {
-
-                    $(this).css('display', 'list-item');
-
-                    toggle_add_buttons();
-
-                    toggle_delete_buttons();
-
-                    add_process_running = false;
-                });
-            }
+            add_process_running = false;
         });
 
         return false;
@@ -169,38 +199,21 @@ $(beehive).bind('init', function() {
 
         var $poll_questions_container = $('.poll_questions_container');
 
-        var question_number = $poll_questions_container.find('fieldset.poll_question').length + 1;
+        var question_id = $poll_questions_container.find('fieldset.poll_question').length + 1;
 
         add_process_running = true;
 
-        $.ajax({
+        var $html = $(question_html(question_id));
 
-            'cache' : true,
+        hide_delete_buttons.call($html);
 
-            'data' : {
-                'webtag' : beehive.webtag,
-                'ajax' : 'true',
-                'action' : 'poll_add_question',
-                'question_number' : question_number
-            },
+        $html.hide().appendTo($poll_questions_container).show(200, function() {
 
-            'url' : beehive.forum_path + '/ajax.php',
+            toggle_add_buttons();
 
-            'success' : function(data) {
+            toggle_delete_buttons();
 
-                var $data = $(data);
-
-                hide_delete_buttons.call($data);
-
-                $data.hide().appendTo($poll_questions_container).show(200, function() {
-
-                    toggle_add_buttons();
-
-                    toggle_delete_buttons();
-
-                    add_process_running = false;
-                });
-            }
+            add_process_running = false;
         });
 
         return false;

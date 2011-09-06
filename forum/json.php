@@ -109,7 +109,12 @@ $lang_required = array('fixhtmlexplanation',
                        'searchsuccessfullycompleted',
                        'confirmmarkasread',
                        'waitdotdotdot',
-                       'more');
+                       'more',
+                       'pollquestion',
+                       'deletequestion',
+                       'allowmultipleoptions',
+                       'addnewoption',
+                       'deleteoption');
 
 // Get the user's saved left frame width.
 if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {

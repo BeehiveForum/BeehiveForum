@@ -189,34 +189,6 @@ echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
-
-if ($thread_data['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
-
-    if (($userpollvote = poll_get_user_vote($tid))) {
-
-        if ($userpollvote ^ POLL_VOTE_MULTI) {
-
-            for ($i = 0; $i < sizeof($userpollvote); $i++) {
-
-                $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
-            }
-
-            if (sizeof($userpollvotes_array) > 1) {
-
-                echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
-
-            }else {
-
-                echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
-            }
-        }
-
-    }else {
-
-        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youhavenotvoted']}</td>\n";
-    }
-}
-
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

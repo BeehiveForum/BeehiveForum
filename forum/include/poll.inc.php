@@ -71,8 +71,6 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
     $poll_option_count = 0;
 
-    print_r_pre($poll_question_array);
-
     foreach ($poll_question_array as $poll_question) {
 
         if (!isset($poll_question['QUESTION'])) return false;
@@ -461,14 +459,14 @@ function poll_get_user_votes($tid)
 
     if (user_is_guest()) return false;
 
-    $sql = "SELECT POLL_QUESTIONS.QUESTION_ID, POLL_VOTES.OPTION_ID, ";
-    $sql.= "POLL_VOTES.OPTION_NAME FROM `{$table_data['PREFIX']}POLL` POLL ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ";
-    $sql.= "ON (POLL_QUESTIONS.TID = POLL.TID) INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` ";
-    $sql.= "POLL_VOTES ON (POLL_VOTES.TID = POLL.TID AND POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
-    $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
-    $sql.= "WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '$uid'";
+    $sql = "SELECT UNIX_TIMESTAMP(USER_POLL_VOTES.VOTED) AS VOTED, POLL_QUESTIONS.QUESTION_ID, ";
+    $sql.= "POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME FROM `{$table_data['PREFIX']}POLL` POLL  ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID)  ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID  ";
+    $sql.= "AND POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES`  ";
+    $sql.= "USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL_VOTES.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID  ";
+    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '$uid'  ";
+    $sql.= "ORDER BY USER_POLL_VOTES.VOTED";
 
     if (!$result = db_query($sql, $db_poll_get_user_votes)) return false;
 
@@ -477,7 +475,16 @@ function poll_get_user_votes($tid)
         $user_poll_votes_array = array();
 
         while (($poll_data = db_fetch_array($result))) {
-            $user_poll_votes_array[$poll_data['QUESTION_ID']. '.'. $poll_data['OPTION_ID']] = $poll_data['OPTION_NAME'];
+
+            if (!isset($user_poll_votes_array['VOTED'])) {
+                $user_poll_votes_array['VOTED'] = $poll_data['VOTED'];
+            }
+
+            if (!isset($user_poll_votes_array['VOTES'])) {
+                $user_poll_votes_array['VOTES'] = array();
+            }
+
+            $user_poll_votes_array['VOTES'][$poll_data['QUESTION_ID']. $poll_data['OPTION_ID']] = $poll_data['OPTION_NAME'];
         }
 
         return $user_poll_votes_array;
@@ -660,23 +667,14 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             }
 
             if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
-
-                array_walk($user_poll_votes_array, 'poll_user_poll_votes_callback');
-
-                $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], implode(' &amp; ', $user_poll_votes_array)). "</td>\n";
-                $poll_display.= "            </tr>\n";
+                $poll_display.= poll_display_user_votes($user_poll_votes_array);
             }
 
         }else {
 
             if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
-                array_walk($user_poll_votes_array, 'poll_user_poll_votes_callback');
-
-                $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], implode(' &amp; ', $user_poll_votes_array)). "</td>\n";
-                $poll_display.= "            </tr>\n";
+                $poll_display.= poll_display_user_votes($user_poll_votes_array);
 
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -757,11 +755,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
-            array_walk($user_poll_votes_array, 'poll_user_poll_votes_callback');
-
-            $poll_display.= "            <tr>\n";
-            $poll_display.= "              <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptions'], implode(' &amp; ', $user_poll_votes_array)). "</td>\n";
-            $poll_display.= "            </tr>\n";
+            $poll_display.= poll_display_user_votes($user_poll_votes_array);
 
             $poll_display.= "            <tr>\n";
             $poll_display.= "              <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -782,6 +776,21 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
     message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, $in_list, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
+}
+
+function poll_display_user_votes($user_poll_votes_array)
+{
+    $lang = load_language_file();
+
+    array_walk($user_poll_votes_array['VOTES'], 'poll_user_poll_votes_callback');
+
+    $poll_votes_display = "<tr>\n";
+    $poll_votes_display.= "  <td align=\"left\" colspan=\"2\" class=\"postbody\">";
+    $poll_votes_display.= "      ". sprintf($lang['youvotedforpolloptionsondate'], implode("' &amp; '", $user_poll_votes_array['VOTES']), format_date($user_poll_votes_array['VOTED']));
+    $poll_votes_display.= "  </td>\n";
+    $poll_votes_display.= "</tr>\n";
+
+    return $poll_votes_display;
 }
 
 function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)

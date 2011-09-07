@@ -71,6 +71,8 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
     $poll_option_count = 0;
 
+    print_r_pre($poll_question_array);
+
     foreach ($poll_question_array as $poll_question) {
 
         if (!isset($poll_question['QUESTION'])) return false;
@@ -81,7 +83,7 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
             if (strlen(trim($option['OPTION_NAME'])) < 1) return false;
         }
 
-        if (sizeof($poll_question['OPTIONS_ARRAY']) < 2) return false;
+        if (sizeof($poll_question['OPTIONS_ARRAY']) < 1) return false;
 
         $poll_option_count+= sizeof($poll_question['OPTIONS_ARRAY']);
     }
@@ -119,14 +121,14 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
         if (!db_query($sql, $db_poll_create)) return false;
 
-        if (!$question_id = db_insert_id($db_poll_create)) return false;
+        if (!$poll_question_id = db_insert_id($db_poll_create)) return false;
 
         foreach ($poll_options_array as $poll_option) {
 
             $poll_option = db_escape_string(trim($poll_option['OPTION_NAME']));
 
             $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES` (TID, QUESTION_ID, OPTION_NAME) ";
-            $sql.= "VALUES ('$tid', '$question_id', '$poll_option')";
+            $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_option')";
 
             if (!db_query($sql, $db_poll_create)) return false;
         }
@@ -163,7 +165,7 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
             if (strlen(trim($option['OPTION_NAME'])) < 1) return false;
         }
 
-        if (sizeof($poll_question['OPTIONS_ARRAY']) < 2) return false;
+        if (sizeof($poll_question['OPTIONS_ARRAY']) < 1) return false;
 
         $poll_option_count+= sizeof($poll_question['OPTIONS_ARRAY']);
     }

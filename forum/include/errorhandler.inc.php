@@ -130,13 +130,17 @@ function bh_exception_handler(Exception $exception)
 
             foreach ($trace_array as $key => $trace_data) {
 
+                if (isset($trace_data['function']) && in_array($trace_data['function'], array('bh_error_handler', 'bh_shutdown_handler'))) {
+                    continue;
+                }
+
                 $error_msg_array[] = sprintf(
                     '#%s %s(%s): %s(%s)<br />',
                     $key,
-                    $trace_data['file'],
-                    $trace_data['line'],
-                    $trace_data['function'],
-                    implode(', ', array_map('gettype', $trace_data['args']))
+                    isset($trace_data['file']) ? $trace_data['file'] : $exception->getFile(),
+                    isset($trace_data['line']) ? $trace_data['line'] : $exception->getLine(),
+                    isset($trace_data['line']) ? $trace_data['function'] : 'unknown',
+                    isset($trace_data['args']) ? implode(', ', array_map('gettype', $trace_data['args'])) : 'void'
                 );
             }
 

@@ -946,11 +946,23 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         $poll_display.= "      <td align=\"center\">\n";
         $poll_display.= "        <table width=\"560\">\n";
 
-        foreach ($poll_preview_questions_array as $question_id => $poll_question) {
+        foreach ($poll_preview_questions_array as $question_id => $question) {
 
-            foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
+            foreach (array_keys($question['OPTIONS_ARRAY']) as $option_id) {
+                $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTES_ARRAY'] = array();
+            }
+        }
 
-                $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTES_ARRAY'] = array_map('mt_rand', range(0, 10));
+        if (($random_users_array = poll_get_random_users(mt_rand(10, 20)))) {
+
+            while (($random_user = array_pop($random_users_array))) {
+
+                foreach ($poll_preview_questions_array as $question_id => $question) {
+
+                    $option = $question['OPTIONS_ARRAY'][array_rand($question['OPTIONS_ARRAY'])];
+
+                    $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option['OPTION_ID']]['VOTES_ARRAY'][] = $random_user;
+                }
             }
         }
 

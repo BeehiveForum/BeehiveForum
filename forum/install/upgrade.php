@@ -39,9 +39,6 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 // Stop script timing out
 @set_time_limit(0);
 
-// Current datetime
-$current_datetime = date(MYSQL_DATETIME, time());
-
 // Get list of forums.
 if (!($forum_webtag_array = install_get_webtags())) {
 
@@ -50,30 +47,24 @@ if (!($forum_webtag_array = install_get_webtags())) {
     return;
 }
 
-// Path to styles directory.
-$styles_path = sprintf('%s/styles', rtrim(BH_FORUM_PATH, '/'));
-
 // Create new SPHINX_SEARCH_ID table shared by all forums.
-if (!install_table_exists($db_database, 'SPHINX_SEARCH_ID')) {
+$sql = "CREATE TABLE SPHINX_SEARCH_ID (";
+$sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  PRIMARY KEY (SEARCH_ID)";
+$sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
 
-    $sql = "CREATE TABLE SPHINX_SEARCH_ID (";
-    $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  PRIMARY KEY (SEARCH_ID)";
-    $sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
+if (!$result = @db_query($sql, $db_install)) {
 
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
+    $valid = false;
+    return;
 }
 
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
-    // Removed unused entries from Admin Log.
-    $sql = "DELETE FROM `{$table_data['PREFIX']}ADMIN_LOG` WHERE ACTION IN (6, 61, 68, 69)";
+    // Delete temp POLL_VOTES_NEW table if it exists
+    $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POLL_VOTES_NEW`";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -81,96 +72,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "CREATED")) {
-
-        // Created and Modified dates for folders to aid thread list caching.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD `CREATED` DATETIME NULL DEFAULT NULL AFTER `DESCRIPTION`";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD `MODIFIED` DATETIME NULL DEFAULT NULL AFTER `CREATED`";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // Set the created date to current datetime.
-        $sql = "UPDATE `{$table_data['PREFIX']}FOLDER` SET CREATED = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME)";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "DELETED")) {
-
-        // Better support for deleted threads.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD", "UNREAD_PID")) {
-
-        // Better support for unread cut-off.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD UNREAD_PID MEDIUMINT(8) NULL AFTER LENGTH";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
-
-        // Moved the UNREAD_PID column into the THREAD table.
-        // Make sure the data is up to date - Also fixes the threads that are
-        // inaccessible to due to bug in user delete code.
-        $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, UNREAD_PID) ";
-        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) GROUP BY THREAD.TID ";
-        $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-    }else {
-
-        // Fix the threads which are inaccessible due to a bug in the delete user code.
-        $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, LENGTH) ";
-        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH)";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    // Reset the unread data so that none of the data has LAST_READ > LENGTH
-    $sql = "UPDATE `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = USER_THREAD.TID) ";
-    $sql.= "SET USER_THREAD.LAST_READ = THREAD.LENGTH WHERE USER_THREAD.LAST_READ > THREAD.LENGTH";
+    // Delete temp USER_POLL_VOTES_NEW table if it exists
+    $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -178,9 +81,15 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    // Delete any remaining 0 length threads from the THREADS table so they
-    // don't appear in the thread list.
-    $sql = "DELETE FROM `{$table_data['PREFIX']}THREAD` WHERE LENGTH = 0";
+    // Create new POLL_QUESTIONS table.
+    $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_QUESTIONS`(";
+    $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "    QUESTION VARCHAR(255) NOT NULL,";
+    $sql.= "    ALLOW_MULTI CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "    GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    PRIMARY KEY (TID, QUESTION_ID)";
+    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -188,76 +97,166 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "LEFT_FRAME_WIDTH")) {
+    // CREATE new POLL_VOTES table.
+    $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW`(";
+    $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "    OPTION_NAME VARCHAR(255) NOT NULL,";
+    $sql.= "    OPTION_ID_OLD MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    PRIMARY KEY (TID,QUESTION_ID,OPTION_ID)";
+    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        // Add field for reply_quick
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD LEFT_FRAME_WIDTH SMALLINT(4) NOT NULL DEFAULT '280'";
+    if (!$result = @db_query($sql, $db_install)) {
 
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
+        $valid = false;
+        return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "REPLY_QUICK")) {
+    // Create new USER_POLL_VOTES table
+    $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`(";
+    $sql.= "    VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "    VOTED DATETIME NOT NULL,";
+    $sql.= "    PRIMARY KEY (VOTE_ID),";
+    $sql.= "    KEY TID (TID),";
+    $sql.= "    KEY QUESTION_ID (QUESTION_ID),";
+    $sql.= "    KEY OPTION_ID (OPTION_ID),";
+    $sql.= "    KEY UID (UID)";
+    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        // Add field for reply_quick
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+    if (!$result = @db_query($sql, $db_install)) {
 
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
+        $valid = false;
+        return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "THREADS_BY_FOLDER")) {
+    // Make sure no polls have empty questions.
+    $sql = "UPDATE `{$table_data['PREFIX']}POLL` POLL ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "ON (THREAD.TID = POLL.TID) SET POLL.QUESTION = THREAD.TITLE ";
+    $sql.= "WHERE LENGTH(TRIM(BOTH FROM POLL.QUESTION)) = 0";
 
-        // New User preference for thread list folder order
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
+    if (!$result = @db_query($sql, $db_install)) {
 
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
+        $valid = false;
+        return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "THREAD_LAST_PAGE")) {
+    // Create new question data for existing polls
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` ";
+    $sql.= "SELECT POLL.TID, IF (MIN_GROUP_ID = 0, POLL_VOTES.GROUP_ID + 1, ";
+    $sql.= "POLL_VOTES.GROUP_ID) AS QUESTION_ID, IF (POLL_GROUP_COUNTS.GROUP_COUNT > 1, ";
+    $sql.= "CONCAT(POLL.QUESTION, ' - ', POLL_VOTES.GROUP_ID), COALESCE(POLL.QUESTION, THREAD.TITLE)) AS QUESTION, ";
+    $sql.= "'N' AS ALLOW_MULTI, POLL_VOTES.GROUP_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POLL.TID) ";
+    $sql.= "INNER JOIN (SELECT POLL.TID, COUNT(DISTINCT POLL_VOTES.GROUP_ID) AS GROUP_COUNT, ";
+    $sql.= "MIN(POLL_VOTES.GROUP_ID) AS MIN_GROUP_ID FROM `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL` POLL ON (POLL.TID = POLL_VOTES.TID) ";
+    $sql.= "GROUP BY POLL_VOTES.TID ORDER BY POLL.TID) AS POLL_GROUP_COUNTS ON ";
+    $sql.= "(POLL_GROUP_COUNTS.TID = POLL.TID) GROUP BY POLL.TID, POLL_VOTES.GROUP_ID";
 
-        // Add field for thread_last_page
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N'";
+    if (!$result = @db_query($sql, $db_install)) {
 
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
+        $valid = false;
+        return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "USE_EMAIL_ADDR")) {
+    // Convert old POLL_VOTES into their new format
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES_NEW` ";
+    $sql.= "SELECT POLL.TID, POLL_QUESTIONS.QUESTION_ID, NULL AS OPTION_ID, ";
+    $sql.= "POLL_VOTES.OPTION_NAME, POLL_VOTES.OPTION_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID ";
+    $sql.= "AND POLL_VOTES.GROUP_ID = POLL_QUESTIONS.GROUP_ID)";
 
-        // Add field for thread_last_page
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N'";
+    if (!$result = @db_query($sql, $db_install)) {
 
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
+        $valid = false;
+        return;
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "SHOW_AVATARS")) {
+    // Convert old USER_POLL_VOTES into the new format
+    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` ";
+    $sql.= "SELECT NULL AS VOTE_ID, POLL.TID, POLL_QUESTIONS.QUESTION_ID, ";
+    $sql.= "POLL_VOTES_NEW.OPTION_ID, USER_POLL_VOTES.UID, USER_POLL_VOTES.TSTAMP ";
+    $sql.= "FROM `{$table_data['PREFIX']}POLL` POLL INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ";
+    $sql.= "ON (POLL_QUESTIONS.TID = POLL.TID) INNER JOIN `{$table_data['PREFIX']}POLL_VOTES_NEW` POLL_VOTES_NEW ";
+    $sql.= "ON (POLL_VOTES_NEW.TID = POLL.TID AND POLL_VOTES_NEW.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+    $sql.= "ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES_NEW.OPTION_ID_OLD)";
 
-        // Add field for thread_last_page
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y'";
+    if (!$result = @db_query($sql, $db_install)) {
 
-        if (!$result = @db_query($sql, $db_install)) {
+        $valid = false;
+        return;
+    }
 
-            $valid = false;
-            return;
-        }
+    // Delete QUESTION column from POLL table.
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL` DROP COLUMN QUESTION";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Delete GROUP_ID column from new POLL_QUESTIONS table.
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_QUESTIONS` DROP COLUMN GROUP_ID";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Delete the OPTION_ID_OLD column from new POLL_VOTES table.
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` DROP COLUMN OPTION_ID_OLD";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Delete old POLL_VOTES table
+    $sql = "DROP TABLE `{$table_data['PREFIX']}POLL_VOTES`";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename POLL_VOTES_NEW table to POLL_VOTES
+    $sql = "RENAME TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` TO `{$table_data['PREFIX']}POLL_VOTES`";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Delete the old USER_POLL_VOTES table.
+    $sql = "DROP TABLE `{$table_data['PREFIX']}USER_POLL_VOTES`";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename USER_POLL_VOTES_NEW table to USER_POLL_VOTES
+    $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` TO `{$table_data['PREFIX']}USER_POLL_VOTES`";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
     }
 
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "SHOW_SHARE_LINKS")) {
@@ -272,8 +271,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    // ANON_LOGON column had wrong default value in < 0.9.2
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE `ANON_LOGON` `ANON_LOGON` CHAR(1) NOT NULL DEFAULT '0'";
+    // Add SEARCH_ID column for Sphinx integration.
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -281,8 +280,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    // POST_PAGE needs to change from a varchar(3) to a smallint. Change default to 3271 (see constants.inc.php)
-    $sql = "ALTER TABLE `USER_PREFS` CHANGE `POST_PAGE` `POST_PAGE` SMALLINT(4) DEFAULT '3271' NOT NULL";
+    // Add a unique index to SEARCH_ID.
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -290,14 +289,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
-    $sql = "INSERT INTO `{$table_data['PREFIX']}THREAD` (TID, FID, BY_UID, TITLE, LENGTH, ";
-    $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-    $sql.= "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, THREAD.LENGTH, ";
-    $sql.= "THREAD.POLL_FLAG, THREAD.CREATED, MAX(POST.CREATED), THREAD.CLOSED, THREAD.STICKY, ";
-    $sql.= "THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) GROUP BY THREAD.TID ";
-    $sql.= "ON DUPLICATE KEY UPDATE MODIFIED = VALUES(MODIFIED)";
+    // Declare a MySQL variable to increment the SEARCH_ID column.
+    $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -305,10 +298,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    $sql = "UPDATE `{$table_data['PREFIX']}POST` POST, `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
-    $sql.= "SET POST.APPROVED = CAST('$current_datetime' AS DATETIME), POST.APPROVED_BY = POST.FROM_UID ";
-    $sql.= "WHERE POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID ";
-    $sql.= "AND POST_CONTENT.CONTENT IS NULL ";
+    // UPDATE SEARCH_ID in POST table to assign unique id to every post.
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -316,153 +307,13 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
 
-    // Update existing deleted threads
-    $sql = "UPDATE `{$table_data['PREFIX']}THREAD` SET DELETED = 'Y', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE LENGTH = 0";
+    // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
+    $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
 
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;
         return;
-    }
-
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_BANNED", "EXPIRES")) {
-
-        // New User preference for thread list folder order
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}BANNED` ADD EXPIRES DATETIME NOT NULL";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
-
-        // Add SEARCH_ID column for Sphinx integration.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // Add a unique index to SEARCH_ID.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // Declare a MySQL variable to increment the SEARCH_ID column.
-        $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // UPDATE SEARCH_ID in POST table to assign unique id to every post.
-        $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
-        $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    // Change IPADDRESS column in POST so it can be NULL so the IP Address matching of the
-    // user comparison tools can work more efficiently.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE IPADDRESS IPADDRESS VARCHAR(15) NULL";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Set all empty IPADDRESS records to NULL
-    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET IPADDRESS = NULL WHERE LENGTH(IPADDRESS) = 0";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Remove any existing indexes on THREAD
-    if (!install_remove_indexes($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_THREAD")) {
-
-        $valid = false;
-        return;
-    }
-
-    // Add the FULLTEXT key to TITLE.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD FULLTEXT(TITLE)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Add index for thread sorting
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD INDEX `MODIFIED` (`MODIFIED`, `FID`, `LENGTH`, `DELETED`)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Add index for sticky thread sorting
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD INDEX `STICKY` (`STICKY`, `MODIFIED`, `FID`, `LENGTH`, `DELETED`)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Last Search Sort By
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_BY")) {
-
-        // Add LAST_SEARCH_SORT_BY to USER_TRACK
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_BY TINYINT UNSIGNED NULL AFTER LAST_SEARCH_KEYWORDS";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    // Last Search Sort Dir
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_TRACK", "LAST_SEARCH_SORT_DIR")) {
-
-        // Add LAST_SEARCH_SORT_DIR to USER_TRACK
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_TRACK` ADD LAST_SEARCH_SORT_DIR TINYINT UNSIGNED NULL AFTER LAST_SEARCH_SORT_BY";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
     }
 
     // Purge the USER_TRACK.USER_TIME_TOTAL, USER_TIME_BEST and USER_TIME_UPDATED columns
@@ -474,124 +325,10 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
-
-    // RSS Feed Max Items
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_RSS_FEEDS", "MAX_ITEM_COUNT")) {
-
-        // Better support for deleted threads.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}RSS_FEEDS` ADD MAX_ITEM_COUNT MEDIUMINT(8) NULL AFTER LAST_RUN";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-    // Copy the forum styles back to the styles folder
-    $start_main = sprintf('%s/forums/%s/start_main.php', rtrim(BH_FORUM_PATH, '/'), $table_data['WEBTAG']);
-
-    // Check the file exists and is readable
-    if (file_exists($start_main) && is_readable($start_main)) {
-
-        // Read the contents
-        $start_main_contents = db_escape_string(file_get_contents($start_main));
-
-        // Save it to the database.
-        $sql = "REPLACE INTO FORUM_SETTINGS(FID, SNAME, SVALUE) VALUES ($forum_fid, 'start_page', '$start_main_contents')";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
 }
 
-// We got this far, that means we can now update the global forum tables.
-$sql = "DROP TABLE IF EXISTS GROUP_PERMS_NEW";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE GROUP_PERMS_NEW (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PERM BIGINT(32) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY (GID, FORUM, FID)";
-$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Copy the existing permissions to the new table.
-$sql = "INSERT INTO GROUP_PERMS_NEW (GID, FORUM, FID, PERM) SELECT GID, FORUM, FID, PERM FROM GROUP_PERMS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-if (install_column_exists($table_data['DATABASE_NAME'], "GROUPS", "AUTO_GROUP")) {
-
-    // Remove the unneccesary records from GROUPS.
-    $sql = "DELETE FROM GROUPS WHERE AUTO_GROUP = 1";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // AUTO_GROUP and FORUM have been depreceated in GROUPS.
-    // GID is no longer the auto increment.
-    $sql = "ALTER TABLE GROUPS DROP COLUMN FORUM, DROP COLUMN AUTO_GROUP, CHANGE GID GID MEDIUMINT(8) UNSIGNED NOT NULL";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-// Remove the old GROUP_PERMS table.
-$sql = "DROP TABLE GROUP_PERMS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Rename the new GROUP_PERMS_NEW to GROUP_PERMS.
-$sql = "RENAME TABLE GROUP_PERMS_NEW TO GROUP_PERMS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Dictionary has changed from metaphone to soundex matches
-$sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Check for and fix a bug involving forum owner where Guests
-// can be granted access to admin section of a forum.
-$sql = "DELETE FROM GROUP_USERS WHERE UID = 0";
+// Increase the allowed length of the PASSWD column.
+$sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -600,119 +337,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 // Add new SALT column to USER table for per-user password salting
-if (!install_column_exists($db_database, "USER", "SALT")) {
-
-    $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-// Add new OLD_PASSWD column to USER table and set all records
-if (!install_table_exists($db_database, "USER_TOKEN")) {
-
-    $sql = "CREATE TABLE USER_TOKEN (";
-    $sql.= "  UID mediumint(8) unsigned NOT NULL,";
-    $sql.= "  TOKEN varchar(255) NOT NULL,";
-    $sql.= "  EXPIRES datetime NOT NULL,";
-    $sql.= "  PRIMARY KEY (UID, TOKEN)";
-    $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-// Increase the alowed length of the PASSWD column.
-$sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
-
-if (!install_column_exists($db_database, "USER_PREFS", "REPLY_QUICK")) {
-
-    // Add field for reply_quick
-    $sql = "ALTER TABLE USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (!install_column_exists($db_database, "USER_PREFS", "THREAD_LAST_PAGE")) {
-
-    // Add field for thread_last_page
-    $sql = "ALTER TABLE USER_PREFS ADD THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (!install_column_exists($db_database, "USER_PREFS", "THREADS_BY_FOLDER")) {
-
-    // New User preference for thread list folder order
-    $sql = "ALTER TABLE USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (!install_column_exists($db_database, "USER_PREFS", "USE_EMAIL_ADDR")) {
-
-    // New User preference for thread list folder order
-    $sql = "ALTER TABLE USER_PREFS ADD USE_EMAIL_ADDR CHAR(1) NOT NULL DEFAULT 'N'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (!install_column_exists($db_database, "USER_PREFS", "SHOW_AVATARS")) {
-
-    // New User preference for thread list folder order
-    $sql = "ALTER TABLE USER_PREFS ADD SHOW_AVATARS CHAR(1) NOT NULL DEFAULT 'Y'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
-
-    // New User preference for thread list folder order
-    $sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (install_index_exists($db_database, 'FORUM_SETTINGS', 'SVALUE')) {
-
-    // Remove the index on SVALUE before we convert it to TEXT
-    $sql = "ALTER IGNORE TABLE FORUM_SETTINGS DROP INDEX SVALUE";
-    $result = @db_query($sql, $db_install);
-}
-
-// Convert the SVALUE column to TEXT. This allows it to become big enough
-// to hold things like the forum rules message.
-$sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
+$sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -720,8 +345,14 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// Remove VISITOR_LOG_OLD if it exists.
-$sql = "DROP TABLE IF EXISTS VISITOR_LOG_OLD";
+// Create USER_TOKEN table used for remembering users who tick
+// the Remember me box on the login page.
+$sql = "CREATE TABLE USER_TOKEN (";
+$sql.= "  UID mediumint(8) unsigned NOT NULL,";
+$sql.= "  TOKEN varchar(255) NOT NULL,";
+$sql.= "  EXPIRES datetime NOT NULL,";
+$sql.= "  PRIMARY KEY (UID, TOKEN)";
+$sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -729,82 +360,13 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// Rename the old VISITOR_LOG table to VISITOR_LOG_OLD.
-$sql = "ALTER TABLE VISITOR_LOG RENAME TO VISITOR_LOG_OLD";
+// New User preference for thread list folder order
+$sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
 if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
-}
-
-// Create new VISITOR_LOG TABLE that matches the schema from a new install.
-$sql = "CREATE TABLE VISITOR_LOG (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  LAST_LOGON DATETIME DEFAULT NULL, ";
-$sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL, ";
-$sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
-$sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
-$sql.= "  PRIMARY KEY (UID, VID), ";
-$sql.= "  KEY FORUM (FORUM), ";
-$sql.= "  KEY SID (SID), ";
-$sql.= "  KEY LAST_LOGON (LAST_LOGON)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Copy the old visitor log to the new table, ignoring any errors.
-$sql = "INSERT IGNORE INTO VISITOR_LOG (UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-$sql.= "SELECT UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG_OLD";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Remove VISITOR_LOG_OLD
-$sql = "DROP TABLE IF EXISTS VISITOR_LOG_OLD";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-if (!install_column_exists($db_database, "SESSIONS", "SID")) {
-
-    // Add the SID to the SESSIONS table so we can show Bots on active user list.
-    $sql = "ALTER TABLE SESSIONS ADD SID MEDIUMINT(8) DEFAULT NULL";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
-if (!install_table_exists($db_database, 'PM_FOLDERS')) {
-
-    // New table to store PM Folder names
-    $sql = "CREATE TABLE PM_FOLDERS (";
-    $sql.= "  UID MEDIUMINT(8) NOT NULL,";
-    $sql.= "  FID MEDIUMINT(8) NOT NULL,";
-    $sql.= "  TITLE VARCHAR(32) NOT NULL,";
-    $sql.= "  PRIMARY KEY (UID, FID)";
-    $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
 }
 
 ?>

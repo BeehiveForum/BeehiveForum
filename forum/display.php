@@ -188,7 +188,27 @@ $show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true), "</td>\n";
+echo "    <td align=\"right\">\n";
+
+if ((forum_get_setting('show_share_links', 'Y')) && (session_get_value('SHOW_SHARE_LINKS') == 'Y')) {
+
+    echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
+    echo "        <g:plusone size=\"small\" count=\"false\" href=\"",  htmlentities(html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.1")), "\"></g:plusone>\n";
+    echo "      </div>\n";
+    echo "      <div style=\"display: inline-block; width: 47px; vertical-align: middle; margin-top: 2px; overflow: hidden\">\n";
+    echo "        <iframe src=\"http://www.facebook.com/plugins/like.php?href=", urlencode(html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.1")), "&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>\n";
+    echo "      </div>\n";
+    echo "      <div style=\"display: inline-block; width: 55px; vertical-align: middle; overflow: hidden\">\n";
+    echo "        <a href=\"http://twitter.com/share\" class=\"twitter-share-button\" data-url=\"", htmlentities(html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.1")), "\" data-count=\"none\">Tweet</a>\n";
+    echo "      </div>\n";
+
+} else {
+
+    echo "&nbsp;";
+}
+
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
@@ -196,22 +216,39 @@ echo "</div>\n";
 if ($message) {
 
     $first_msg = $message['PID'];
+
     $message['CONTENT'] = message_get_content($tid, $message['PID']);
+
+    echo "<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" width=\"2%\" valign=\"top\">&nbsp;</td>\n";
+    echo "    <td align=\"center\">\n";
 
     if ($thread_data['POLL_FLAG'] == 'Y') {
 
         if ($message['PID'] == 1) {
 
-            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, true);
 
         }else {
 
-            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, $show_sigs, true);
+            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, true);
         }
 
     }else {
 
-        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, $show_sigs, true);
+        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, true);
+    }
+
+    echo "    </td>\n";
+    echo "    <td width=\"2%\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+
+    if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
+
+        adsense_output_html();
+        echo "<br />\n";
     }
 }
 

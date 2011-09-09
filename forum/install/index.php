@@ -367,7 +367,7 @@ if (isset($_POST['install_method'])) {
                         echo "              <input type=\"hidden\" name=\"db_username\" value=\"", htmlentities_array($db_username), "\">\n";
                         echo "              <input type=\"hidden\" name=\"db_password\" value=\"", htmlentities_array($db_password), "\">\n";
                         echo "              <input type=\"hidden\" name=\"db_database\" value=\"", htmlentities_array($db_database), "\">\n";
-                        echo "              <input type=\"hidden\" name=\"admin_email\" value=\"", htmlentities_array($admin_email), "\">\n";
+                        echo "              <input type=\"hidden\" name=\"admin_email\" value=\"", isset($admin_email) ? htmlentities_array($admin_email) : '', "\">\n";
                         echo "              <input type=\"hidden\" name=\"enable_error_reports\" value=\"", $enable_error_reports ? 'Y' : 'N', "\">\n";
                         echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
                         echo "            </form>\n";

@@ -47,216 +47,222 @@ if (!($forum_webtag_array = install_get_webtags())) {
     return;
 }
 
-// Create new SPHINX_SEARCH_ID table shared by all forums.
-$sql = "CREATE TABLE SPHINX_SEARCH_ID (";
-$sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  PRIMARY KEY (SEARCH_ID)";
-$sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
+if (!install_table_exists($db_database, "SPHINX_SEARCH_ID")) {
 
-if (!$result = @db_query($sql, $db_install)) {
+    // Create new SPHINX_SEARCH_ID table shared by all forums.
+    $sql = "CREATE TABLE SPHINX_SEARCH_ID (";
+    $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  PRIMARY KEY (SEARCH_ID)";
+    $sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
 
-    $valid = false;
-    return;
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
-    // Delete temp POLL_VOTES_NEW table if it exists
-    $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POLL_VOTES_NEW`";
+    if (!install_table_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POLL_QUESTIONS")) {
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete temp POLL_VOTES_NEW table if it exists
+        $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POLL_VOTES_NEW`";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Delete temp USER_POLL_VOTES_NEW table if it exists
-    $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete temp USER_POLL_VOTES_NEW table if it exists
+        $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Create new POLL_QUESTIONS table.
-    $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_QUESTIONS`(";
-    $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "    QUESTION VARCHAR(255) NOT NULL,";
-    $sql.= "    ALLOW_MULTI CHAR(1) NOT NULL DEFAULT 'N',";
-    $sql.= "    GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    PRIMARY KEY (TID, QUESTION_ID)";
-    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Create new POLL_QUESTIONS table.
+        $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_QUESTIONS`(";
+        $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "    QUESTION VARCHAR(255) NOT NULL,";
+        $sql.= "    ALLOW_MULTI CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "    GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    PRIMARY KEY (TID, QUESTION_ID)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // CREATE new POLL_VOTES table.
-    $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW`(";
-    $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "    OPTION_NAME VARCHAR(255) NOT NULL,";
-    $sql.= "    OPTION_ID_OLD MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    PRIMARY KEY (TID,QUESTION_ID,OPTION_ID)";
-    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // CREATE new POLL_VOTES table.
+        $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW`(";
+        $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "    OPTION_NAME VARCHAR(255) NOT NULL,";
+        $sql.= "    OPTION_ID_OLD MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    PRIMARY KEY (TID,QUESTION_ID,OPTION_ID)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Create new USER_POLL_VOTES table
-    $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`(";
-    $sql.= "    VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "    VOTED DATETIME NOT NULL,";
-    $sql.= "    PRIMARY KEY (VOTE_ID),";
-    $sql.= "    KEY TID (TID),";
-    $sql.= "    KEY QUESTION_ID (QUESTION_ID),";
-    $sql.= "    KEY OPTION_ID (OPTION_ID),";
-    $sql.= "    KEY UID (UID)";
-    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Create new USER_POLL_VOTES table
+        $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`(";
+        $sql.= "    VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "    VOTED DATETIME NOT NULL,";
+        $sql.= "    PRIMARY KEY (VOTE_ID),";
+        $sql.= "    KEY TID (TID),";
+        $sql.= "    KEY QUESTION_ID (QUESTION_ID),";
+        $sql.= "    KEY OPTION_ID (OPTION_ID),";
+        $sql.= "    KEY UID (UID)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Make sure no polls have empty questions.
-    $sql = "UPDATE `{$table_data['PREFIX']}POLL` POLL ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "ON (THREAD.TID = POLL.TID) SET POLL.QUESTION = THREAD.TITLE ";
-    $sql.= "WHERE LENGTH(TRIM(BOTH FROM POLL.QUESTION)) = 0";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Make sure no polls have empty questions.
+        $sql = "UPDATE `{$table_data['PREFIX']}POLL` POLL ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
+        $sql.= "ON (THREAD.TID = POLL.TID) SET POLL.QUESTION = THREAD.TITLE ";
+        $sql.= "WHERE LENGTH(TRIM(BOTH FROM POLL.QUESTION)) = 0";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Create new question data for existing polls
-    $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` ";
-    $sql.= "SELECT POLL.TID, IF (MIN_GROUP_ID = 0, POLL_VOTES.GROUP_ID + 1, ";
-    $sql.= "POLL_VOTES.GROUP_ID) AS QUESTION_ID, IF (POLL_GROUP_COUNTS.GROUP_COUNT > 1, ";
-    $sql.= "CONCAT(POLL.QUESTION, ' - ', POLL_VOTES.GROUP_ID), COALESCE(POLL.QUESTION, THREAD.TITLE)) AS QUESTION, ";
-    $sql.= "'N' AS ALLOW_MULTI, POLL_VOTES.GROUP_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POLL.TID) ";
-    $sql.= "INNER JOIN (SELECT POLL.TID, COUNT(DISTINCT POLL_VOTES.GROUP_ID) AS GROUP_COUNT, ";
-    $sql.= "MIN(POLL_VOTES.GROUP_ID) AS MIN_GROUP_ID FROM `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL` POLL ON (POLL.TID = POLL_VOTES.TID) ";
-    $sql.= "GROUP BY POLL_VOTES.TID ORDER BY POLL.TID) AS POLL_GROUP_COUNTS ON ";
-    $sql.= "(POLL_GROUP_COUNTS.TID = POLL.TID) GROUP BY POLL.TID, POLL_VOTES.GROUP_ID";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Create new question data for existing polls
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` ";
+        $sql.= "SELECT POLL.TID, IF (MIN_GROUP_ID = 0, POLL_VOTES.GROUP_ID + 1, ";
+        $sql.= "POLL_VOTES.GROUP_ID) AS QUESTION_ID, IF (POLL_GROUP_COUNTS.GROUP_COUNT > 1, ";
+        $sql.= "CONCAT(POLL.QUESTION, ' - ', POLL_VOTES.GROUP_ID), COALESCE(POLL.QUESTION, THREAD.TITLE)) AS QUESTION, ";
+        $sql.= "'N' AS ALLOW_MULTI, POLL_VOTES.GROUP_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID) ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POLL.TID) ";
+        $sql.= "INNER JOIN (SELECT POLL.TID, COUNT(DISTINCT POLL_VOTES.GROUP_ID) AS GROUP_COUNT, ";
+        $sql.= "MIN(POLL_VOTES.GROUP_ID) AS MIN_GROUP_ID FROM `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL` POLL ON (POLL.TID = POLL_VOTES.TID) ";
+        $sql.= "GROUP BY POLL_VOTES.TID ORDER BY POLL.TID) AS POLL_GROUP_COUNTS ON ";
+        $sql.= "(POLL_GROUP_COUNTS.TID = POLL.TID) GROUP BY POLL.TID, POLL_VOTES.GROUP_ID";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Convert old POLL_VOTES into their new format
-    $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES_NEW` ";
-    $sql.= "SELECT POLL.TID, POLL_QUESTIONS.QUESTION_ID, NULL AS OPTION_ID, ";
-    $sql.= "POLL_VOTES.OPTION_NAME, POLL_VOTES.OPTION_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID ";
-    $sql.= "AND POLL_VOTES.GROUP_ID = POLL_QUESTIONS.GROUP_ID)";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Convert old POLL_VOTES into their new format
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES_NEW` ";
+        $sql.= "SELECT POLL.TID, POLL_QUESTIONS.QUESTION_ID, NULL AS OPTION_ID, ";
+        $sql.= "POLL_VOTES.OPTION_NAME, POLL_VOTES.OPTION_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID ";
+        $sql.= "AND POLL_VOTES.GROUP_ID = POLL_QUESTIONS.GROUP_ID)";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Convert old USER_POLL_VOTES into the new format
-    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` ";
-    $sql.= "SELECT NULL AS VOTE_ID, POLL.TID, POLL_QUESTIONS.QUESTION_ID, ";
-    $sql.= "POLL_VOTES_NEW.OPTION_ID, USER_POLL_VOTES.UID, USER_POLL_VOTES.TSTAMP ";
-    $sql.= "FROM `{$table_data['PREFIX']}POLL` POLL INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ";
-    $sql.= "ON (POLL_QUESTIONS.TID = POLL.TID) INNER JOIN `{$table_data['PREFIX']}POLL_VOTES_NEW` POLL_VOTES_NEW ";
-    $sql.= "ON (POLL_VOTES_NEW.TID = POLL.TID AND POLL_VOTES_NEW.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
-    $sql.= "ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES_NEW.OPTION_ID_OLD)";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Convert old USER_POLL_VOTES into the new format
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` ";
+        $sql.= "SELECT NULL AS VOTE_ID, POLL.TID, POLL_QUESTIONS.QUESTION_ID, ";
+        $sql.= "POLL_VOTES_NEW.OPTION_ID, USER_POLL_VOTES.UID, USER_POLL_VOTES.TSTAMP ";
+        $sql.= "FROM `{$table_data['PREFIX']}POLL` POLL INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ";
+        $sql.= "ON (POLL_QUESTIONS.TID = POLL.TID) INNER JOIN `{$table_data['PREFIX']}POLL_VOTES_NEW` POLL_VOTES_NEW ";
+        $sql.= "ON (POLL_VOTES_NEW.TID = POLL.TID AND POLL_VOTES_NEW.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) ";
+        $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql.= "ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES_NEW.OPTION_ID_OLD)";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Delete QUESTION column from POLL table.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL` DROP COLUMN QUESTION";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete QUESTION column from POLL table.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL` DROP COLUMN QUESTION";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Delete GROUP_ID column from new POLL_QUESTIONS table.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_QUESTIONS` DROP COLUMN GROUP_ID";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete GROUP_ID column from new POLL_QUESTIONS table.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_QUESTIONS` DROP COLUMN GROUP_ID";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Delete the OPTION_ID_OLD column from new POLL_VOTES table.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` DROP COLUMN OPTION_ID_OLD";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete the OPTION_ID_OLD column from new POLL_VOTES table.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` DROP COLUMN OPTION_ID_OLD";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Delete old POLL_VOTES table
-    $sql = "DROP TABLE `{$table_data['PREFIX']}POLL_VOTES`";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete old POLL_VOTES table
+        $sql = "DROP TABLE `{$table_data['PREFIX']}POLL_VOTES`";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Rename POLL_VOTES_NEW table to POLL_VOTES
-    $sql = "RENAME TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` TO `{$table_data['PREFIX']}POLL_VOTES`";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Rename POLL_VOTES_NEW table to POLL_VOTES
+        $sql = "RENAME TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` TO `{$table_data['PREFIX']}POLL_VOTES`";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Delete the old USER_POLL_VOTES table.
-    $sql = "DROP TABLE `{$table_data['PREFIX']}USER_POLL_VOTES`";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Delete the old USER_POLL_VOTES table.
+        $sql = "DROP TABLE `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Rename USER_POLL_VOTES_NEW table to USER_POLL_VOTES
-    $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` TO `{$table_data['PREFIX']}USER_POLL_VOTES`";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Rename USER_POLL_VOTES_NEW table to USER_POLL_VOTES
+        $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` TO `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
-        $valid = false;
-        return;
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "SHOW_SHARE_LINKS")) {
@@ -271,49 +277,52 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    // Add SEARCH_ID column for Sphinx integration.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Add SEARCH_ID column for Sphinx integration.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Add a unique index to SEARCH_ID.
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Add a unique index to SEARCH_ID.
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // Declare a MySQL variable to increment the SEARCH_ID column.
-    $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // Declare a MySQL variable to increment the SEARCH_ID column.
+        $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // UPDATE SEARCH_ID in POST table to assign unique id to every post.
-    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // UPDATE SEARCH_ID in POST table to assign unique id to every post.
+        $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
 
-        $valid = false;
-        return;
-    }
+        if (!$result = @db_query($sql, $db_install)) {
 
-    // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
-    $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
+            $valid = false;
+            return;
+        }
 
-    if (!$result = @db_query($sql, $db_install)) {
+        // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
+        $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
 
-        $valid = false;
-        return;
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     // Purge the USER_TRACK.USER_TIME_TOTAL, USER_TIME_BEST and USER_TIME_UPDATED columns
@@ -327,46 +336,52 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 }
 
-// Increase the allowed length of the PASSWD column.
-$sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
+if (!install_table_exists($db_database, "USER_TOKEN")) {
 
-if (!$result = @db_query($sql, $db_install)) {
+    // Increase the allowed length of the PASSWD column.
+    $sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
-    $valid = false;
-    return;
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add new SALT column to USER table for per-user password salting
+    $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Create USER_TOKEN table used for remembering users who tick
+    // the Remember me box on the login page.
+    $sql = "CREATE TABLE USER_TOKEN (";
+    $sql.= "  UID mediumint(8) unsigned NOT NULL,";
+    $sql.= "  TOKEN varchar(255) NOT NULL,";
+    $sql.= "  EXPIRES datetime NOT NULL,";
+    $sql.= "  PRIMARY KEY (UID, TOKEN)";
+    $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-// Add new SALT column to USER table for per-user password salting
-$sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
+if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
 
-if (!$result = @db_query($sql, $db_install)) {
+    // New User preference for thread list folder order
+    $sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
-    $valid = false;
-    return;
-}
+    if (!$result = @db_query($sql, $db_install)) {
 
-// Create USER_TOKEN table used for remembering users who tick
-// the Remember me box on the login page.
-$sql = "CREATE TABLE USER_TOKEN (";
-$sql.= "  UID mediumint(8) unsigned NOT NULL,";
-$sql.= "  TOKEN varchar(255) NOT NULL,";
-$sql.= "  EXPIRES datetime NOT NULL,";
-$sql.= "  PRIMARY KEY (UID, TOKEN)";
-$sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// New User preference for thread list folder order
-$sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
+        $valid = false;
+        return;
+    }
 }
 
 ?>

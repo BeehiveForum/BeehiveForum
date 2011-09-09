@@ -787,8 +787,7 @@ div.poll_option_list ol li {
     position: absolute;
 }
 
-.poll_bar_horizontal,
-.poll_bar_horizontal .poll_bar_inner {
+.poll_bar_horizontal, .poll_bar_horizontal .poll_bar_inner {
     height: 20px;
 }
 

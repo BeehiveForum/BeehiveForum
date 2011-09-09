@@ -346,6 +346,7 @@ p, h1, h2 {
 .button_image {
     background: transparent;
     border: none;
+    cursor: pointer;
     overflow: visible;
     padding: 0px;
     width: auto;
@@ -354,6 +355,22 @@ p, h1, h2 {
 .button_image span {
     display: block;
     margin: 0px;
+}
+
+.button_image.disabled {
+    opacity: 0.4;
+}
+
+.button_image.add_option {
+    padding-left: 35px;
+}
+
+.button_image.delete_option {
+    vertical-align: text-bottom;
+}
+
+.button_image.delete_question {
+    vertical-align: text-bottom;
 }
 
 .code {
@@ -367,6 +384,22 @@ p, h1, h2 {
     margin-top: 0px;
     overflow: auto;
     padding: 3px;
+}
+
+fieldset.poll_question {
+    margin: 5px 0px;
+}
+
+fieldset.poll_question + fieldset.poll_question {
+    margin: 10px 0px 5px;
+}
+
+div.poll_option_list ol {
+    margin-bottom: 5px;
+}
+
+div.poll_option_list ol li {
+    margin: 5px 0px;
 }
 
 .create_poll_display {
@@ -742,11 +775,20 @@ p, h1, h2 {
 }
 
 .poll_bar {
-    height: 20px;
     margin: 5px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.poll_bar_vertical {
+    height: 200px;
 }
 
 .poll_bar_inner {
+    position: absolute;
+}
+
+.poll_bar_horizontal, .poll_bar_horizontal .poll_bar_inner {
     height: 20px;
 }
 

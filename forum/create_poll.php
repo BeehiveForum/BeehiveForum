@@ -540,6 +540,47 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
+
+    if ($valid && (!isset($poll_type) || !is_numeric($poll_type))) {
+
+        $error_msg_array[] = $lang['mustprovidepolltype'];
+        $valid = false;
+    }
+
+    if ($valid && (!isset($show_results) || !is_numeric($show_results))) {
+
+        $error_msg_array[] = $lang['mustprovidepollresultsdisplaytype'];
+        $valid = false;
+    }
+
+    if ($valid && (!isset($poll_vote_type) || !is_numeric($poll_vote_type))) {
+
+        $error_msg_array[] = $lang['mustprovidepollvotetype'];
+        $valid = false;
+    }
+
+    if ($valid && (!isset($option_type) || !is_numeric($option_type))) {
+
+        $error_msg_array[] = $lang['mustprovidepolloptiontype'];
+        $valid = false;
+    }
+
+    if ($valid && (!isset($change_vote) || !is_numeric($change_vote))) {
+
+        $error_msg_array[] = $lang['mustprovidepollvotetype'];
+        $valid = false;
+    }
+
+    if ($valid && (!isset($allow_guests) || !is_numeric($allow_guests))) {
+
+        $error_msg_array[] = $lang['mustprovidepollguestvotetype'];
+        $valid = false;
+    }
+
+    if (!isset($close_poll) || !is_numeric($close_poll)) {
+        $close_poll = false;
+    }
+
     $poll_option_count = 0;
 
     if (isset($poll_questions_array) && sizeof($poll_questions_array) > 0) {
@@ -548,6 +589,12 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
             if (!isset($question['ALLOW_MULTI']) || ($question['ALLOW_MULTI'] != 'Y')) {
                 $poll_questions_array[$question_id]['ALLOW_MULTI'] = 'N';
+            }
+
+            if (($option_type == POLL_OPTIONS_DROPDOWN) && ($question['ALLOW_MULTI'] == 'Y')) {
+
+                $error_msg_array[] = $lang['cannotallowmultioptiondropdownlist'];
+                $valid = false;
             }
 
             if (!isset($question['QUESTION']) || strlen(trim($question['QUESTION'])) == 0) {
@@ -652,46 +699,6 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
         $error_msg_array[] = $lang['youcanhaveamaximumof20optionsperpoll'];
         $valid = false;
-    }
-
-    if ($valid && (!isset($poll_type) || !is_numeric($poll_type))) {
-
-        $error_msg_array[] = $lang['mustprovidepolltype'];
-        $valid = false;
-    }
-
-    if ($valid && (!isset($show_results) || !is_numeric($show_results))) {
-
-        $error_msg_array[] = $lang['mustprovidepollresultsdisplaytype'];
-        $valid = false;
-    }
-
-    if ($valid && (!isset($poll_vote_type) || !is_numeric($poll_vote_type))) {
-
-        $error_msg_array[] = $lang['mustprovidepollvotetype'];
-        $valid = false;
-    }
-
-    if ($valid && (!isset($option_type) || !is_numeric($option_type))) {
-
-        $error_msg_array[] = $lang['mustprovidepolloptiontype'];
-        $valid = false;
-    }
-
-    if ($valid && (!isset($change_vote) || !is_numeric($change_vote))) {
-
-        $error_msg_array[] = $lang['mustprovidepollvotetype'];
-        $valid = false;
-    }
-
-    if ($valid && (!isset($allow_guests) || !is_numeric($allow_guests))) {
-
-        $error_msg_array[] = $lang['mustprovidepollguestvotetype'];
-        $valid = false;
-    }
-
-    if (!isset($close_poll) || !is_numeric($close_poll)) {
-        $close_poll = false;
     }
 
     if ($valid && ($poll_type == POLL_TABLE_GRAPH) && sizeof($poll_questions_array) <> 2) {

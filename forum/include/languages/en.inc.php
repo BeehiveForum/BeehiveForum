@@ -1616,6 +1616,7 @@ $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely tw
 $lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
 $lang['nomultivotepublic'] = "Public ballots cannot be multi-vote";
 $lang['publicballothorizontalgraphonly'] = "Public ballots can only be created using horizontal graphs";
+$lang['cannotallowmultioptiondropdownlist'] = "Allow multiple option selection is not available with drop-down list options display";
 $lang['abletochangevote'] = "You will be able to change your vote.";
 $lang['abletovotemultiple'] = "You will be able to vote multiple times.";
 $lang['notabletochangevote'] = "You will not be able to change your vote.";

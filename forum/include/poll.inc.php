@@ -534,8 +534,10 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
+                $dropdown_options_array = array_map('poll_dropdown_options_callback', $poll_question['OPTIONS_ARRAY']);
+
                 $poll_display.= "                <tr>\n";
-                $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $poll_question['OPTIONS_ARRAY']). "</td>\n";
+                $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $dropdown_options_array). "</td>\n";
                 $poll_display.= "                </tr>\n";
 
             } else {
@@ -848,8 +850,10 @@ function poll_voting_form($poll_results, $poll_data)
 
         if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
+            $dropdown_options_array = array_map('poll_dropdown_options_callback', $poll_question['OPTIONS_ARRAY']);
+
             $poll_display.= "                <tr>\n";
-            $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $poll_question['OPTIONS_ARRAY']). "</td>\n";
+            $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $dropdown_options_array). "</td>\n";
             $poll_display.= "                </tr>\n";
 
         } else {
@@ -1145,6 +1149,11 @@ function poll_user_poll_votes_callback(&$option_name, $key)
     }
 
     $option_name = strip_tags($option_name);
+}
+
+function poll_dropdown_options_callback($option)
+{
+    return $option['OPTION_NAME'];
 }
 
 function poll_check_tabular_votes($tid, $votes_array)

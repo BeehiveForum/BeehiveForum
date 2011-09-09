@@ -1366,7 +1366,9 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-                $poll_display.= light_form_dropdown_array("pollvote[$question_id]", $poll_question['OPTIONS_ARRAY']);
+                $dropdown_options_array = array_map('poll_dropdown_options_callback', $poll_question['OPTIONS_ARRAY']);
+
+                $poll_display.= light_form_dropdown_array("pollvote[$question_id]", $dropdown_options_array);
 
             } else {
 
@@ -1424,7 +1426,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
-            $poll_data['CONTENT'].= "<div class=\"poll_vote_closed\">{$lang['pollhasended']}</div>\n";
+            $poll_display.= "<div class=\"poll_vote_closed\">{$lang['pollhasended']}</div>\n";
 
             if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
                 $poll_display.= poll_display_user_votes($user_poll_votes_array);

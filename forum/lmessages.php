@@ -164,17 +164,33 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 // Poll stuff
 if (isset($_POST['pollsubmit'])) {
 
-    if (isset($_POST['pollvote'])) {
+    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
 
-        poll_vote($_POST['tid'], $_POST['pollvote']);
-        header_redirect("lmessages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+        $tid = $_POST['tid'];
 
-    }else {
+        if (isset($_POST['pollvote']) && is_array($_POST['pollvote'])) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-        light_html_display_error_msg($lang['mustselectpolloption']);
-        light_html_draw_bottom();
-        exit;
+            $poll_votes = $_POST['pollvote'];
+
+            if (poll_check_tabular_votes($tid, $poll_votes)) {
+
+                poll_vote($tid, $poll_votes);
+
+            }else {
+
+                light_html_draw_top("title={$lang['error']}");
+                light_html_display_error_msg($lang['mustvoteforallgroups']);
+                light_html_draw_bottom();
+                exit;
+            }
+
+        }else {
+
+            light_html_draw_top("title={$lang['error']}");
+            light_html_display_error_msg($lang['mustselectpolloption']);
+            light_html_draw_bottom();
+            exit;
+        }
     }
 
 }elseif (isset($_POST['pollchangevote'])) {

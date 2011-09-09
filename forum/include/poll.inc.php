@@ -505,12 +505,6 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $user_poll_votes_array = poll_get_user_votes($tid);
 
-    if (isset($poll_data['QUESTION']) && strlen(trim($poll_data['QUESTION'])) > 0) {
-        $poll_question = $poll_data['QUESTION'];
-    } else {
-        $poll_question = thread_get_title($tid);
-    }
-
     $total_votes = 0;
 
     $guest_votes = 0;
@@ -619,10 +613,10 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "              <td align=\"left\">\n";
                 $poll_display.= "                <table width=\"100%\">\n";
 
-                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option_name) {
+                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
                     $poll_display.= "                  <tr>\n";
-                    $poll_display.= "                    <td align=\"left\" class=\"postbody\">". word_filter_add_ob_tags($option_name). "</td>\n";
+                    $poll_display.= "                    <td align=\"left\" class=\"postbody\">". word_filter_add_ob_tags($option['OPTION_NAME']). "</td>\n";
                     $poll_display.= "                  </tr>\n";
                 }
 

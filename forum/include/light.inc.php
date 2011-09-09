@@ -1343,108 +1343,43 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $poll_results = poll_get_votes($tid);
 
-    $user_poll_votes_array = poll_get_user_vote($tid);
+    $user_poll_votes_array = poll_get_user_votes($tid);
 
-    if (isset($poll_data['QUESTION']) && strlen(trim($poll_data['QUESTION'])) > 0) {
-        $poll_question = $poll_data['QUESTION'];
-    } else {
-        $poll_question = thread_get_title($tid);
-    }
+    $total_votes = 0;
 
-    $bar_color = 1;
-
-    $total_votes = array();
-    $max_values  = array();
-
-    $bar_color = 1;
-
-    poll_results_check_data($poll_results);
-
-    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
-
-    foreach ($poll_results_option_id_keys as $option_key) {
-
-        if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
-            $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
-        }else {
-            $max_values[$poll_results['GROUP_ID'][$option_key]] += $poll_results['VOTES'][$option_key];
-        }
-
-        if (!isset($total_votes[$poll_results['GROUP_ID'][$option_key]])) {
-            $total_votes[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
-        }else {
-            $total_votes[$poll_results['GROUP_ID'][$option_key]] += $poll_results['VOTES'][$option_key];
-        }
-    }
-
-    array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
+    $guest_votes = 0;
 
     $request_uri = get_request_uri();
 
-    $poll_data['CONTENT'] = "<div class=\"poll\">\n";
-    $poll_data['CONTENT'].= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question)). "</h2>\n";
-    $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-    $poll_data['CONTENT'].= form_input_hidden('webtag', htmlentities_array($webtag)). "\n";
-    $poll_data['CONTENT'].= form_input_hidden('tid', htmlentities_array($tid)). "\n";
+    $poll_display = "<div class=\"poll\">\n";
+    $poll_display.= "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    $poll_display.= form_input_hidden('webtag', htmlentities_array($webtag));
+    $poll_display.= form_input_hidden('tid', htmlentities_array($tid));
 
     $poll_group_count = 1;
 
     if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
-        array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
+        foreach ($poll_results as $question_id => $poll_question) {
 
-        $poll_previous_group = false;
+            $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
 
-        $drop_down_data = array();
+            if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+                $poll_display.= light_form_dropdown_array("pollvote[$question_id]", $poll_question['OPTIONS_ARRAY']);
 
-        foreach ($poll_results_option_id_keys as $key) {
+            } else {
 
-            if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$key];
+                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-            if (strlen(trim($poll_results['OPTION_NAME'][$key])) > 0) {
+                    if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
-                if ($poll_results['GROUP_ID'][$key] <> $poll_previous_group) {
+                        $poll_display.= light_form_checkbox("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false);
 
-                    if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key - 1]] > 1) {
+                    } else {
 
-                        $poll_data['CONTENT'].= light_form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key - 1]}]", $drop_down_data, false, false);
-
-                    }else {
-
-                        $poll_data['CONTENT'].= "<hr />\n";
+                        $poll_display.= light_form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false);
                     }
-
-                    unset($drop_down_data);
-
-                    $poll_group_count++;
-                }
-
-                if ($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
-
-                    if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
-
-                        $drop_down_data[$poll_results['OPTION_ID'][$key]] = word_filter_add_ob_tags(htmlentities_array($poll_results['OPTION_NAME'][$key]));
-
-                    }else {
-
-                        $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false);
-                    }
-
-                }else {
-
-                    $poll_data['CONTENT'].= light_form_checkbox("pollvote[{$poll_results['GROUP_ID'][$key]}]", htmlentities_array($poll_results['OPTION_ID'][$key]), word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]), false);
-                }
-
-                $poll_previous_group = $poll_results['GROUP_ID'][$key];
-            }
-
-            if ($key == sizeof($poll_results['OPTION_ID']) - 1) {
-
-                if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
-
-                    $poll_data['CONTENT'].= light_form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key]}]", $drop_down_data, false, false);
                 }
             }
         }
@@ -1453,189 +1388,125 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
         if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
 
-            $poll_previous_group = false;
+            $poll_display.= "<div class=\"poll_results\">\n";
 
-            $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+            foreach ($poll_results as $question_id => $poll_question) {
 
-            echo "<div class=\"poll_results\">\n";
-
-            foreach ($poll_results_option_id_keys as $option_key) {
-
-                if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
-
-                if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
-
-                    if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
-
-                        $poll_data['CONTENT'].= "<hr />\n";
-                        $poll_group_count++;
-                    }
-
-                    if (isset($total_votes[$poll_results['GROUP_ID'][$option_key]]) && $total_votes[$poll_results['GROUP_ID'][$option_key]] > 0) {
-                        $vote_percent = round((100 / $total_votes[$poll_results['GROUP_ID'][$option_key]]) * $poll_results['VOTES'][$option_key], 2);
-                    }else {
-                        $vote_percent = 0;
-                    }
-
-                    $poll_bar_width = 0;
-
-                    if ($max_values[$poll_results['GROUP_ID'][$option_key]] > 0) {
-                        $poll_bar_width = round(100 / $max_values[$poll_results['GROUP_ID'][$option_key]], 2) * $poll_results['VOTES'][$option_key];
-                    }
-
-                    $poll_data['CONTENT'].= "<div class=\"poll_bar poll_bar_$bar_color\"><div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%\"></div></div>\n";
-                    $poll_data['CONTENT'].= "<div class=\"poll_vote_result\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). ": ";
-                    $poll_data['CONTENT'].= $poll_results['VOTES'][$option_key]. " {$lang['votes']} (". $vote_percent. "%)</div>\n";
-
-                    $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
-
-                    $bar_color++;
-
-                    if ($bar_color > 5) $bar_color = 1;
-                }
+                $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
+                $poll_display.= light_poll_graph_display($poll_question['OPTIONS_ARRAY'], $poll_data);
             }
 
-            echo "</div>\n";
+            $poll_display.= "</div>\n";
 
         }else {
 
-            $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+            $poll_display.= "<div class=\"poll_results\">\n";
 
-            echo "<div class=\"poll_results\">\n";
+            foreach ($poll_results as $question_id => $poll_question) {
 
-            foreach ($poll_results_option_id_keys as $option_key) {
+                $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
 
-                if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
-
-                    if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
-
-                        $poll_data['CONTENT'].= "<hr />\n";
-                        $poll_group_count++;
-                    }
-
-                    $poll_data['CONTENT'].= word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]);
-
-                    $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+                    $poll_display.= word_filter_add_ob_tags($option['OPTION_NAME']);
                 }
             }
 
-            echo "</div>\n";
+            $poll_display.="</div>\n";
         }
     }
 
     if (!$is_preview) {
 
-        $group_array = array();
-
-        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
-
-        foreach ($poll_results_option_id_keys as $option_key) {
-
-            if (!in_array($poll_results['GROUP_ID'][$option_key], $group_array)) {
-
-                $group_array[] = $poll_results['GROUP_ID'][$option_key];
-            }
-        }
-
-        $total_votes = 0;
-        $guest_votes = 0;
-
         poll_get_total_votes($tid, $total_votes, $guest_votes);
 
-        $poll_group_count = sizeof($group_array);
-
-        $poll_data['CONTENT'].= "<div class=\"poll_vote_counts\">". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</div>\n";
+        $poll_display.= "<div class=\"poll_vote_counts\">". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</div>\n";
 
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
             $poll_data['CONTENT'].= "<div class=\"poll_vote_closed\">{$lang['pollhasended']}</div>\n";
 
-            if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
-
-                $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
-
-                $user_poll_votes_display_array = array();
-
-                foreach ($user_poll_votes_array_keys as $vote_key) {
-
-                    foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
-
-                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
-
-                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
-
-                                $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
-
-                            }else {
-
-                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
-                            }
-                        }
-                    }
-                }
-
-                $poll_data['CONTENT'].= sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true));
+            if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
+                $poll_display.= poll_display_user_votes($user_poll_votes_array);
             }
 
         }else {
 
-            if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
+            if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
-                $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
-
-                $user_poll_votes_display_array = array();
-
-                foreach ($user_poll_votes_array_keys as $vote_key) {
-
-                    foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
-
-                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
-
-                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
-
-                                $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
-
-                            }else {
-
-                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_array[$vote_key]['OPTION_ID']);
-                            }
-                        }
-                    }
-                }
-
-                $poll_data['CONTENT'].= sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true));
+                $poll_display.= poll_display_user_votes($user_poll_votes_array);
 
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
-                    $poll_data['CONTENT'].= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
+                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
                 }
 
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
-                    $poll_data['CONTENT'].= "<div class=\"poll_buttons\">". light_form_submit('pollchangevote', $lang['changevote']). "</div>\n";
+                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollchangevote', $lang['changevote']). "</div>\n";
                 }
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-                    $poll_data['CONTENT'].= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
+                    $poll_display.= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
                 }
 
-            }else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
+            } else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
-                $poll_data['CONTENT'].= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
+                $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-                    $poll_data['CONTENT'].= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
+                    $poll_display.= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
                 }
             }
         }
     }
 
-    $poll_data['CONTENT'].= "</form>\n";
-    $poll_data['CONTENT'].= "</div>\n";
+    $poll_display.= "</form>\n";
+    $poll_display.= "</div>\n";
+
+    $poll_data['CONTENT'] = $poll_display;
 
     $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
 
     light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, $in_list, $closed, $limit_text, true, $is_preview);
+}
+
+function light_poll_graph_display($options_array, $poll_data)
+{
+    $lang = load_language_file();
+
+    static $bar_color = 1;
+
+    $max_vote_count = 0;
+
+    $total_vote_count = 0;
+
+    foreach ($options_array as $option) {
+
+        $total_vote_count+= sizeof($option['VOTES_ARRAY']);
+
+        if (sizeof($option['VOTES_ARRAY']) > $max_vote_count) {
+            $max_vote_count = sizeof($option['VOTES_ARRAY']);
+        }
+    }
+
+    $poll_display = '';
+
+    foreach ($options_array as $option_id => $option) {
+
+        $poll_bar_width = ($total_vote_count > 0) ? (100 / $total_vote_count) * sizeof($option['VOTES_ARRAY']) : 0;
+
+        $vote_percent = ((sizeof($option['VOTES_ARRAY']) > 0) && ($total_vote_count > 0)) ? (sizeof($option['VOTES_ARRAY']) / $total_vote_count) * 100 : 0;
+
+        $poll_display.= "<div class=\"poll_bar poll_bar_horizontal poll_bar_$bar_color\">\n";
+        $poll_display.= "  <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%; left: -{$poll_bar_width}%\"></div>\n";
+        $poll_display.= "</div>\n";
+        $poll_display.= "<div class=\"poll_vote_result\">". word_filter_add_ob_tags($option['OPTION_NAME']). ": ". sizeof($option['VOTES_ARRAY']). " {$lang['votes']} (". number_format($vote_percent, 2). "%)</div>\n";
+
+        $bar_color++;
+
+        if ($bar_color > 5) $bar_color = 1;
+    }
+
+    return $poll_display;
 }
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)

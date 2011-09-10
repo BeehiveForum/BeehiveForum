@@ -93,7 +93,9 @@ $uid = session_get_value('UID');
 
 // Check this is an ajax request and we have an action.
 if (!isset($_GET['ajax']) || !isset($_GET['action'])) {
+
     header_status(500, 'Internal Server Error');
+    exit;
 }
 
 // Content buffer

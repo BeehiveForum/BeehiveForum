@@ -430,21 +430,24 @@ function poll_get_total_votes($tid, &$total_votes, &$user_votes, &$guest_votes)
     if (!is_numeric($tid)) return 0;
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(DISTINCT UID) FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
+    $sql = "SELECT COUNT(DISTINCT UID) AS USER_VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID > 0";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
 
     list($user_votes) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT COUNT(UID) FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
+    $sql = "SELECT COUNT(UID) AS GUEST_VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID = 0";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
 
     list($guest_votes) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT COUNT(*) FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
+    $sql = "SELECT COUNT(DISTINCT UID, VOTED) AS TOTAL_VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
@@ -558,7 +561,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
                         $poll_display.= "                <tr>\n";
-                        $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false). "</td>\n";
+                        $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']), false). "</td>\n";
                         $poll_display.= "                </tr>\n";
 
                     } else {
@@ -872,7 +875,7 @@ function poll_voting_form($poll_results, $poll_data)
                 if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
                     $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false). "</td>\n";
+                    $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']), false). "</td>\n";
                     $poll_display.= "                </tr>\n";
 
                 } else {
@@ -1298,18 +1301,39 @@ function poll_vote($tid, $vote_array)
 
     $poll_data = poll_get($tid);
 
+    $poll_results = poll_get_votes($tid);
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if ((!poll_get_user_votes($tid)) || ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) || (user_is_guest() && ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) {
 
-        foreach ($vote_array as $question_id => $option_id) {
+        foreach ($vote_array as $question_id => $option_data) {
 
-            if (!is_numeric($question_id) || !is_numeric($option_id)) continue;
+            if (!is_numeric($question_id) || !isset($poll_results[$question_id])) continue;
 
-            $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
-            $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_id', CAST('$current_datetime' AS DATETIME))";
+            if (is_array($option_data) && sizeof($option_data) > 0) {
 
-            if (!db_query($sql, $db_poll_vote)) return false;
+                foreach ($option_data as $option_id => $option_value) {
+
+                    if (!is_numeric($option_id) || ($option_value != 'Y')) continue;
+
+                    if (!isset($poll_results[$question_id]['OPTIONS_ARRAY'][$option_id])) continue;
+
+                    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
+                    $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_id', CAST('$current_datetime' AS DATETIME))";
+
+                    if (!db_query($sql, $db_poll_vote)) return false;
+                }
+
+            } else if (is_numeric($option_data)) {
+
+                if (!isset($poll_results[$question_id]['OPTIONS_ARRAY'][$option_data])) continue;
+
+                $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
+                $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_data', CAST('$current_datetime' AS DATETIME))";
+
+                if (!db_query($sql, $db_poll_vote)) return false;
+            }
         }
     }
 

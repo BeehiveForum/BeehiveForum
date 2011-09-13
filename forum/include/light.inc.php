@@ -1380,7 +1380,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                     if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
-                        $poll_display.= light_form_checkbox("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false);
+                        $poll_display.= light_form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']), false);
 
                     } else {
 

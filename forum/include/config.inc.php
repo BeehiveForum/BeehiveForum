@@ -25,11 +25,9 @@ USA
 
 // MAIN CONFIGURATION FILE
 
-define('BEEHIVE_INSTALL_NOWARN', 1);
-
 // Database stuff ------------------------------------------------------
-
 $db_server   = "localhost";     // The address of your MySQL server
+$db_port     = "3306";          // The port of your MySQL server
 $db_username = "beehiveforum";  // Your MySQL username
 $db_password = "password";      // Your MySQL password
 $db_database = "beehiveforum";  // The name of your MySQL database
@@ -49,7 +47,7 @@ $mysql_big_selects = false;
 
 // Error Handler -------------------------------------------------------
 
-$error_report_verbose = true;
+$error_report_verbose = false;
 
 // The Beehive Forum Error Handler can be configured to display verbose
 // details about any errors that occur to the end user.

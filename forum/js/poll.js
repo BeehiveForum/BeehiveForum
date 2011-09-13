@@ -37,7 +37,7 @@ $(beehive).bind('init', function() {
         $poll_questions.each(function() {
 
             var $delete_buttons = $(this).find('button.delete_option');
-            $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
+            $delete_buttons.toggleClass('disabled', $delete_buttons.length == 2);
         });
 
         var $delete_buttons = $poll_questions.find('button.delete_question');
@@ -77,27 +77,30 @@ $(beehive).bind('init', function() {
                  </div>\
                  <div class="poll_question_checkbox">\
                    <span class="bhinputcheckbox">\
-                     <input type="checkbox" value="Y" id="poll_questions1allow_multi" name="poll_questions[%(0)d][allow_multi]">\
-                     <label for="poll_questions1allow_multi">%(4)s</label>\
+                     <input type="checkbox" value="Y" id="poll_questions>%(4)sallow_multi" name="poll_questions[%(0)d][allow_multi]">\
+                     <label for="poll_questions>%(4)sallow_multi">%(4)s</label>\
                    </span>\
                  </div>\
                  <div class="poll_options_list">\
-                   <ol>%(5)s</ol>\
+                   <ol>%(5)s%(6)s</ol>\
                  </div>\
                </div>\
-               <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><img alt="" src="%(6)s">&nbsp;%(7)s</button>\
+               <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><img alt="" src="%(7)s">&nbsp;%(8)s</button>\
              </fieldset>', [[ question_id,
                               beehive.lang['pollquestion'],
                               beehive.lang['deletequestion'],
                               beehive.images['delete.png'],
                               beehive.lang['allowmultipleoptions'],
                               option_html(question_id, 1),
+                              option_html(question_id, 2),
                               beehive.images['add.png'],
                               beehive.lang['addnewoption']
                            ]]);
     };
 
     hide_delete_buttons.call($('body'));
+
+    toggle_delete_buttons();
 
     $('div.poll_question_input').live('mouseenter', function() {
 

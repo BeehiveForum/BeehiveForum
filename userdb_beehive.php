@@ -29,6 +29,11 @@ define("BH_INCLUDE_PATH", "../forum/include/");
 // Beehive Forum configuration.
 include_once(BH_INCLUDE_PATH. "config.inc.php");
 
+// Development configuration
+if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+}
+
 // Put Ewiki in protected mode and default to view / browse only
 define("EWIKI_PROTECTED_MODE", 1);
 define("EWIKI_AUTH_DEFAULT_RING", 3);

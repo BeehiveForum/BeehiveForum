@@ -366,37 +366,13 @@ if (isset($_POST['poll_questions'])) {
 
     } else {
 
-        $poll_questions_array = array(
-            1 => array(
-                'QUESTION_ID'   => 1,
-                'QUESTION'      => '',
-                'ALLOW_MULTI'   => false,
-                'OPTIONS_ARRAY' => array(
-                    1 => array(
-                        'OPTION_ID'   => 1,
-                        'OPTION_NAME' => '',
-                    ),
-                ),
-            )
-        );
+        $poll_questions_array = poll_get_default_questions_array();
     }
 }
 
 if (sizeof($poll_questions_array) == 0) {
 
-    $poll_questions_array = array(
-        1 => array(
-            'QUESTION_ID'   => 1,
-            'QUESTION'      => '',
-            'ALLOW_MULTI'   => false,
-            'OPTIONS_ARRAY' => array(
-                1 => array(
-                    'OPTION_ID'   => 1,
-                    'OPTION_NAME' => '',
-                ),
-            ),
-        )
-    );
+    $poll_questions_array = poll_get_default_questions_array();
 }
 
 if (isset($_POST['add_option']) && is_array($_POST['add_option'])) {
@@ -405,26 +381,17 @@ if (isset($_POST['add_option']) && is_array($_POST['add_option'])) {
 
     if (isset($poll_questions_array[$question_id])) {
 
-        $poll_questions_array[$question_id]['OPTIONS_ARRAY'][] = array(
-            'OPTION_ID'   => sizeof($poll_questions_array[$question_id]['OPTIONS_ARRAY']) + 1,
-            'OPTION_NAME' => '',
-        );
+        $option_id = sizeof($poll_questions_array[$question_id]['OPTIONS_ARRAY']) + 1;
+
+        $poll_questions_array[$question_id]['OPTIONS_ARRAY'][] = poll_get_option_array($option_id);
     }
 }
 
 if (isset($_POST['add_question'])) {
 
-    $poll_questions_array[] = array(
-        'QUESTION_ID'   => sizeof($poll_questions_array) + 1,
-        'QUESTION'      => '',
-        'ALLOW_MULTI'   => false,
-        'OPTIONS_ARRAY' => array(
-            1 => array(
-                'OPTION_ID'   => 1,
-                'OPTION_NAME' => '',
-            ),
-        ),
-    );
+    $question_id = sizeof($poll_questions_array) + 1;
+
+    $poll_questions_array[] = poll_get_question_array($question_id);
 }
 
 if (isset($_POST['delete_option']) && is_array($_POST['delete_option'])) {
@@ -625,7 +592,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
             } else if (!isset($question['OPTIONS_ARRAY']) || !is_array($question['OPTIONS_ARRAY'])) {
 
-                $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
+                $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
                 $valid = false;
 
             } else {
@@ -639,9 +606,9 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
                 $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
 
-                if (sizeof($question['OPTIONS_ARRAY']) < 1) {
+                if (sizeof($question['OPTIONS_ARRAY']) < 2) {
 
-                    $error_msg_array[] = $lang['youmustprovideratleast1optionforeachquestion'];
+                    $error_msg_array[] = $lang['youmustprovideratleast2optionsforeachquestion'];
                     $valid = false;
 
                 } else {
@@ -677,22 +644,11 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
     if (sizeof($poll_questions_array) < 1) {
 
-        $error_msg_array[] = $lang['youmustprovideratleast1question'];
-        $valid = false;
+        $poll_questions_array = poll_get_default_questions_array();
 
-        $poll_questions_array = array(
-            array(
-                'QUESTION_ID' => 0,
-                'QUESTION' => '',
-                'ALLOW_MULTI' => false,
-                'OPTIONS_ARRAY' => array(
-                    array(
-                        'OPTION_ID' => 0,
-                        'OPTION_NAME' => '',
-                    ),
-                ),
-            )
-        );
+        $error_msg_array[] = $lang['youmustprovideratleast1question'];
+
+        $valid = false;
     }
 
     if ($valid && ($poll_option_count > 20)) {
@@ -721,7 +677,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
     if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($poll_type !== POLL_HORIZONTAL_GRAPH)) {
 
-        $error_msg_array[] = $lang['publicballethorizontalgraphonly'];
+        $error_msg_array[] = $lang['publicballothorizontalgraphonly'];
         $valid = false;
     }
 
@@ -960,9 +916,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
             }
         }
 
+        $total_vote_count = 0;
+
         if (($random_users_array = poll_get_random_users(mt_rand(10, 20)))) {
 
             while (($random_user = array_pop($random_users_array))) {
+
+                $total_vote_count++;
 
                 foreach ($poll_preview_questions_array as $question_id => $question) {
 
@@ -976,7 +936,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
             $poll_display.= "          <tr>\n";
-            $poll_display.= "            <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_preview_questions_array, $poll_data). "</td>\n";
+            $poll_display.= "            <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_preview_questions_array, $poll_data, $total_vote_count). "</td>\n";
             $poll_display.= "           </tr>\n";
 
         } else {
@@ -993,19 +953,19 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
                 if ($poll_data['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
 
                     $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data). "</td>\n";
+                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
                     $poll_display.= "                </tr>\n";
 
                 } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && (isset($public_ballot_votes_array[$question_id]))) {
 
                     $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $public_ballot_votes_array[$question_id]). "</td>\n";
+                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
                     $poll_display.= "                 </tr>\n";
 
                 } else {
 
                     $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data). "</td>\n";
+                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
                     $poll_display.= "                 </tr>\n";
                 }
 

@@ -99,8 +99,10 @@ function bh_exception_handler(Exception $exception)
         // Clean the output buffer
         while (@ob_end_clean());
 
+        // Recall the gzip output handler
         ob_start("bh_gzhandler");
 
+        // Turn off output buffer flushing
         ob_implicit_flush(0);
 
         // Array to hold the error message strings.
@@ -233,7 +235,7 @@ function bh_exception_handler(Exception $exception)
         }
 
         // Check to see if we need to send the error report by email
-        if (strlen($error_report_email_addr_to) > 0) {
+        if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
             $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
 
@@ -259,7 +261,7 @@ function bh_exception_handler(Exception $exception)
         // Check for an installation error.
         if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
-            if (function_exists('install_incomplete')) {
+            if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
                 install_incomplete();
             }
@@ -268,14 +270,14 @@ function bh_exception_handler(Exception $exception)
         // Check for file include errors
         if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
 
-            if (function_exists('install_missing_files')) {
+            if (function_exists('install_missing_files') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
                 install_missing_files();
             }
         }
 
         // Light mode / AJAX / JSON error reporting.
-        if (defined('BEEHIVEMODE_LIGHT')) {
+        if (defined('BEEHIVEMODE_LIGHT') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
             echo '<p>An error has occured. Please wait a few moments before trying again.</p>';
             echo '<p>Details of the error have been saved to the default error log.</p>';
@@ -343,7 +345,7 @@ function bh_exception_handler(Exception $exception)
         echo "    </tr>\n";
         echo "  </table>\n";
 
-        if (isset($error_report_verbose) && $error_report_verbose == true) {
+        if ((isset($error_report_verbose) && ($error_report_verbose == true)) || defined('BEEHIVE_DEVELOPER_MODE')) {
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

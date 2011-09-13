@@ -249,14 +249,15 @@ if (isset($_POST['install_method'])) {
                     $config_file = str_replace('{db_password}', $db_password, $config_file);
                     $config_file = str_replace('{db_database}', $db_database, $config_file);
 
-                    // Error reporting verbose mode
-                    $config_file = str_replace('\'{error_report_verbose}\'', ($enable_error_reports) ? 'true' : 'false', $config_file);
-
                     // Error reporting to email address.
-                    $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
+                    if (isset($enable_error_reports) && ($enable_error_reports == true)) {
+                        $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
+                    } else {
+                        $config_file = str_replace('{error_report_email_addr_to}', 'false', $config_file);
+                    }
 
                     // Check to see if running in developer mode.
-                    if (!defined('BEEHIVE_INSTALL_NOWARN')) {
+                    if (!defined('BEEHIVE_DEVELOPER_MODE')) {
 
                         if (@file_put_contents('../include/config.inc.php', $config_file)) {
                             $config_saved = true;
@@ -455,11 +456,12 @@ if (isset($_POST['install_method'])) {
             $config_file = str_replace('{db_password}', $db_password, $config_file);
             $config_file = str_replace('{db_database}', $db_database, $config_file);
 
-            // Error reporting verbose mode
-            $config_file = str_replace('\'{error_report_verbose}\'', ($enable_error_reports) ? 'true' : 'false', $config_file);
-
             // Error reporting to email address.
-            $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
+            if (isset($enable_error_reports) && ($enable_error_reports == true)) {
+                $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
+            } else {
+                $config_file = str_replace('{error_report_email_addr_to}', 'false', $config_file);
+            }
 
             header("Content-Type: text/plain; name=\"config.inc.php\"");
             header("Content-disposition: attachment; filename=\"config.inc.php\"");
@@ -773,7 +775,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\"", (isset($skip_dictionary) && $skip_dictionary == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"skip_dictionary\">Skip dictionary setup. Recommended only if install fails to complete.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\"", (isset($enable_error_reports) && $enable_error_reports == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"enable_error_reports\">Send error reports to Admin email address. (New installs only)</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\"", (isset($enable_error_reports) && $enable_error_reports == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"enable_error_reports\">Send error reports to Admin email address.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";

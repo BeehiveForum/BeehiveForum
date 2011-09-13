@@ -35,6 +35,11 @@ define("BEEHIVEMODE_LIGHT", true);
 // Beehive Config
 include_once(BH_INCLUDE_PATH. "config.inc.php");
 
+// Development configuration
+if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+}
+
 // Constants
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 

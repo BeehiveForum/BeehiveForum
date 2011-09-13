@@ -1685,7 +1685,7 @@ $lang['deleteoption'] = "Delete option";
 $lang['allowmultipleoptions'] = "Allow multiple options to be selected";
 $lang['youmustprovideratleast1question'] = "Your must provide at least one question";
 $lang['youmustprovideaquestionforalloptions'] = "You must provide a question for all options";
-$lang['youmustprovideratleast1optionforeachquestion'] = "You must provide at least 1 option for each question";
+$lang['youmustprovideratleast2optionsforeachquestion'] = "You must provide at least 2 options for each question";
 $lang['youcanhaveamaximumof20optionsperpoll'] = "You can have a maximum of 20 options per poll";
 
 // Profiles (profile.php) ----------------------------------------------

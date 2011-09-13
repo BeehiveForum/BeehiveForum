@@ -1339,15 +1339,19 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $webtag = get_webtag();
 
+    $total_votes = 0;
+
+    $user_votes = 0;
+
+    $guest_votes = 0;
+
     $poll_data = poll_get($tid);
 
     $poll_results = poll_get_votes($tid);
 
     $user_poll_votes_array = poll_get_user_votes($tid);
 
-    $total_votes = 0;
-
-    $guest_votes = 0;
+    poll_get_total_votes($tid, $total_votes, $user_votes, $guest_votes);
 
     $request_uri = get_request_uri();
 
@@ -1420,9 +1424,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     if (!$is_preview) {
 
-        poll_get_total_votes($tid, $total_votes, $guest_votes);
-
-        $poll_display.= "<div class=\"poll_vote_counts\">". poll_format_vote_counts($poll_data, $total_votes, $guest_votes). "</div>\n";
+        $poll_display.= "<div class=\"poll_vote_counts\">". poll_format_vote_counts($poll_data, $user_votes, $guest_votes). "</div>\n";
 
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 

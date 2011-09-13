@@ -1055,28 +1055,39 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  QUESTION VARCHAR(64) DEFAULT NULL,";
-        $sql.= "  CLOSES DATETIME DEFAULT NULL,";
-        $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
-        $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
-        $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
-        $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  ALLOWGUESTS TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (TID)";
+        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  `CLOSES` DATETIME DEFAULT NULL,";
+        $sql.= "  `CHANGEVOTE` TINYINT(1) NOT NULL DEFAULT '1',";
+        $sql.= "  `POLLTYPE` TINYINT(1) NOT NULL DEFAULT '0',";
+        $sql.= "  `SHOWRESULTS` TINYINT(1) NOT NULL DEFAULT '1',";
+        $sql.= "  `VOTETYPE` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  `OPTIONTYPE` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  `ALLOWGUESTS` TINYINT(1) NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY (`TID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@db_query($sql, $db_forum_create)) {
             throw new Exception('Failed to create table POLL');
         }
 
+        $sql = "CREATE TABLE `{$forum_table_prefix}POLL_QUESTIONS` (";
+        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  `QUESTION` VARCHAR(255) NOT NULL,";
+        $sql.= "  `ALLOW_MULTI` CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table POLL_QUESTIONS');
+        }
+
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL_VOTES` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
-        $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
+        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `OPTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  `OPTION_NAME` VARCHAR(255) NOT NULL,";
+        $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`,`OPTION_ID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@db_query($sql, $db_forum_create)) {
@@ -1311,13 +1322,17 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_POLL_VOTES` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  VOTED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-        $sql.= "  PRIMARY KEY (TID, VOTE_ID),";
-        $sql.= "  KEY UID (UID)";
+        $sql.= "  `VOTE_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `OPTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `UID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  `VOTED` DATETIME NOT NULL,";
+        $sql.= "  PRIMARY KEY (`VOTE_ID`),";
+        $sql.= "  KEY `TID` (`TID`),";
+        $sql.= "  KEY `QUESTION_ID` (`QUESTION_ID`),";
+        $sql.= "  KEY `OPTION_ID` (`OPTION_ID`),";
+        $sql.= "  KEY `UID` (`UID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@db_query($sql, $db_forum_create)) {
@@ -1586,7 +1601,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         // Make sure at least the current user can access the forum
-        // even if it's not protected.
+        // even if its not protected.
         $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$owner_uid', $forum_fid, 1)";
 
         if (!@db_query($sql, $db_forum_create)) {
@@ -1880,25 +1895,20 @@ function forum_update_default($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+    if (!$db_forum_get_permissions = db_connect()) return false;
 
-        if (!$db_forum_get_permissions = db_connect()) return false;
+    $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 0";
 
-        $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 0";
+    if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
+
+    if ($fid > 0) {
+
+        $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
-
-        if ($fid > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
-
-            if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
-        }
-
-        return $result;
     }
 
-    return false;
+    return true;
 }
 
 function forum_search_array_clean($forum_search)
@@ -1968,7 +1978,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
                     $forum_data['FORUM_DESC'] = "";
                 }
 
-                // Check the LAST_VISIT column to make sure it's OK.
+                // Check the LAST_VISIT column to make sure its OK.
                 if (!isset($forum_data['LAST_VISIT']) || is_null($forum_data['LAST_VISIT'])) {
                     $forum_data['LAST_VISIT'] = 0;
                 }

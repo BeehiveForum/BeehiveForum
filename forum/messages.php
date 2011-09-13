@@ -164,11 +164,11 @@ if (isset($_POST['pollsubmit'])) {
 
         if (isset($_POST['pollvote']) && is_array($_POST['pollvote'])) {
 
-            $poll_votes = $_POST['pollvote'];
+            $poll_votes_array = $_POST['pollvote'];
 
-            if (poll_check_tabular_votes($tid, $poll_votes)) {
+            if (poll_check_tabular_votes($tid, $poll_votes_array)) {
 
-                poll_vote($tid, $poll_votes);
+                poll_vote($tid, $poll_votes_array);
 
             }else {
 

@@ -24,46 +24,44 @@ USA
 /* $Id$ */
 
 // MAIN CONFIGURATION FILE
+
 // Database stuff ------------------------------------------------------
 $db_server   = "{db_server}";    // The address of your MySQL server
-$db_server   = "{db_port}";      // The port of your MySQL server (default: 3306)
+$db_port     = "{db_port}";      // The port of your MySQL server
 $db_username = "{db_username}";  // Your MySQL username
 $db_password = "{db_password}";  // Your MySQL password
 $db_database = "{db_database}";  // The name of your MySQL database
+
 // ---------------------------------------------------------------------
+
 // MySQL Big Selects ---------------------------------------------------
+
 $mysql_big_selects = false;
 
 // Depending on the configuration of the MySQL server you may run into
 // errors along the lines of: "The SELECT would examine too many records
 // and probably take a very long time" when using Beehive. To attempt to
 // prevent this from happening you can try turning this option on.
+
 // ---------------------------------------------------------------------
+
 // Error Handler -------------------------------------------------------
-$show_friendly_errors = true;
 
-// If you want Beehive to display user friendly error messages you can
-// enable this option.
-//
-// Note: Under some circumstances this setting can cause problems
-//       with PHP's error handler that result in blank pages
-//       appearing instead of the appropriate error message.
-//       If you encounter such issues you should consider
-//       disabling this option.
-//
-// ---------------------------------------------------------------------
-// Error Reporting Verbose Mode ----------------------------------------
-$error_report_verbose = '{error_report_verbose}';
+$error_report_verbose = false;
 
-// The Beehive Forum Error Handler can be configured to gather verbose
-// details about any errors that occur, include HTTP Request and Cookie
-// vars.
+// The Beehive Forum Error Handler can be configured to display verbose
+// details about any errors that occur to the end user.
 //
-// WARNING: Verbose error reporting data may include user and system
+// WARNING: This setting is NOT recommended in production environments.
+//          Verbose error reporting data may include user and system
 //          credentials which may be used to compromise your server.
 //          It is recommended that only enable verbose error reporting
-//          on closed systems.
+//          on closed testing environments.
+
+// ---------------------------------------------------------------------
+
 // Error Reporting Email -----------------------------------------------
+
 $error_report_email_addr_to = '{error_report_email_addr_to}';
 $error_report_email_addr_from = 'no-reply@abeehiveforum.net';
 
@@ -78,13 +76,16 @@ $error_report_email_addr_from = 'no-reply@abeehiveforum.net';
 // By default emails will be sent from 'no-reply@beehiveforum.net'.
 // To change this you can also edit the $error_report_email_addr_from
 // variable.
+
 // Note: The no-reply email saved in the database is not used by the
 //       Beehive Forum error handler in order to avoid logging another
 //       error message trying to connect to a database server that is
 //       not available.
 //
 // ---------------------------------------------------------------------
+
 // Cookie Domain -------------------------------------------------------
+
 $cookie_domain = "";
 
 // Specifies the domain name and path that the cookies set by
@@ -116,8 +117,11 @@ $cookie_domain = "";
 // As you may have noticed the string used is common to all of
 // addresses listed above and so any cookies set at any of the domains
 // will be useable at the others.
+
 // ---------------------------------------------------------------------
+
 // GZIP Output Compression ---------------------------------------------
+
 $gzip_compress_output = false;
 
 $gzip_compress_level  = 1;
@@ -131,8 +135,11 @@ $gzip_compress_level  = 1;
 //       to handle the compression of files on your web server,
 //       do not enable the built in gzip compression in Beehive.
 //       To do so can make your forum inaccessible.
+
 // ---------------------------------------------------------------------
+
 // Frame top target ----------------------------------------------------
+
 $frame_top_target = "_top";
 
 // This option allows you to specify the "top" frame for Beehive to use
@@ -146,8 +153,11 @@ $frame_top_target = "_top";
 //       it is running from the same domain as it's parent page
 //       otherwise browsers may refuse the session cookies required
 //       by Beehive and your users will not be able to login.
+
 // ---------------------------------------------------------------------
+
 // HTML client-side cache ----------------------------------------------
+
 $http_cache_enabled = true;
 
 // This option enables HTTP client-side caching of the thread list,
@@ -156,5 +166,7 @@ $http_cache_enabled = true;
 // note that the HTTP client-side caching is designed to help reduce
 // bandwidth usage caused by repeated visits to the same page, and that
 // disabling it may increase your forum's bandwidth usage.
+
 // ---------------------------------------------------------------------
+
 ?>

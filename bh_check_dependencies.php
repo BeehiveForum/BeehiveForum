@@ -38,7 +38,7 @@ $include_files_constants_array = array();
 
 // List of exceptions that we should ignore
 $ignore_functions_array = array();
-$ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_INSTALL_NOWARN', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT');
+$ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_DEVELOPER_MODE', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT');
 
 // Path to source files.
 $source_files_dir_array = array('forum', 'forum\include');

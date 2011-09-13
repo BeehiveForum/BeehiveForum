@@ -63,8 +63,8 @@ function check_install()
     }
 
     // Check if the installer files still exist. Ignore them
-    // if the BEEHIVE_INSTALL_NOWARN constant has been defined.
-    if (@file_exists('./install/index.php') && !defined("BEEHIVE_INSTALL_NOWARN")) {
+    // if the BEEHIVE_DEVELOPER_MODE constant has been defined.
+    if (@file_exists('./install/index.php') && !defined("BEEHIVE_DEVELOPER_MODE")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";

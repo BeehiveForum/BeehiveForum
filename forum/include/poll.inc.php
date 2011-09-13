@@ -698,6 +698,10 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
 
+                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                    $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
+                }
+
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
                     $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">{$lang['endpoll']}</a>";
                 }
@@ -725,7 +729,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $poll_display.= "            </tr>\n";
                 }
 
-            }else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
+            } else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
@@ -762,6 +766,16 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     } else {
 
         if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
+
+            $poll_display.= "            <tr>\n";
+            $poll_display.= "              <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+            $poll_display.= "            </tr>\n";
+            $poll_display.= "            <tr>\n";
+            $poll_display.= "              <td align=\"left\" colspan=\"2\" class=\"postbody\">". poll_format_vote_counts($poll_data, $user_votes, $guest_votes). "</td>\n";
+            $poll_display.= "            </tr>\n";
+            $poll_display.= "            <tr>\n";
+            $poll_display.= "              <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+            $poll_display.= "            </tr>\n";
 
             $poll_display.= poll_display_user_votes($user_poll_votes_array);
 

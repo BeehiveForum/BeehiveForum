@@ -620,7 +620,7 @@ function stats_get_active_user_list()
 
                 $stats['USER_COUNT']++;
 
-                $user_sort[] = $user_data['NICKNAME'];
+                $user_sort[] = $user_data['LOGON'];
 
                 $stats['USERS'][] = array('UID'          => $user_data['UID'],
                                           'LOGON'        => $user_data['LOGON'],

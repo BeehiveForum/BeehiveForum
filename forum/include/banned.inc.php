@@ -118,7 +118,7 @@ function ban_check($user_sess, $user_is_guest = false)
         $current_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
         $sql = "SELECT ID, BANTYPE, BANDATA, $ban_check_select_list ";
-        $sql.= "FROM `{$table_data['PREFIX']}BANNED` WHERE $ban_check_where_query ";
+        $sql.= "FROM `{$table_data['PREFIX']}BANNED` WHERE ($ban_check_where_query) ";
         $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
         if (!$result = db_query($sql, $db_ban_check)) return false;

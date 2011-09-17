@@ -258,10 +258,11 @@ function poll_get_random_users($limit)
 
     $sql = "SELECT UID, LOGON, NICKNAME, PEER_NICKNAME FROM (SELECT USER.UID, USER.LOGON, ";
     $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, VISITOR_LOG.LAST_LOGON, (SELECT COUNT(*) ";
-    $sql.= "FROM VISITOR_LOG WHERE FORUM = 1) AS VISITOR_COUNT FROM USER LEFT JOIN VISITOR_LOG ";
-    $sql.= "VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID AND VISITOR_LOG.FORUM = '{$table_data['FID']}') ";
-    $sql.= "LEFT JOIN DEFAULT_USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "HAVING VISITOR_COUNT = 0 OR VISITOR_LOG.LAST_LOGON > DATE_SUB(NOW(), INTERVAL 14 DAY) ";
+    $sql.= "FROM VISITOR_LOG WHERE FORUM = '{$table_data['FID']}') AS VISITOR_COUNT FROM USER ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID ";
+    $sql.= "AND VISITOR_LOG.FORUM = '{$table_data['FID']}') LEFT JOIN DEFAULT_USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') HAVING VISITOR_COUNT = 0 ";
+    $sql.= "OR VISITOR_LOG.LAST_LOGON > DATE_SUB(NOW(), INTERVAL 14 DAY) ";
     $sql.= "ORDER BY RAND() LIMIT $limit) AS RANDOM_USERS";
 
     if (!$result = db_query($sql, $db_poll_get_random_votes)) return false;
@@ -375,18 +376,26 @@ function poll_get_votes($tid, $include_votes = true)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    if (($uid = session_get_value('UID')) === false) return false;
+
     $sql = "SELECT POLL_QUESTIONS.QUESTION_ID, POLL_QUESTIONS.QUESTION, ";
     $sql.= "POLL_QUESTIONS.ALLOW_MULTI, POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
-    $sql.= "USER_POLL_VOTES.UID FROM `{$table_data['PREFIX']}POLL` POLL ";
+    $sql.= "USER_POLL_VOTES.UID, USER_POLL_VOTES.LOGON, USER_POLL_VOTES.NICKNAME, ";
+    $sql.= "USER_POLL_VOTES.PEER_NICKNAME FROM `{$table_data['PREFIX']}POLL` POLL ";
     $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_QUESTIONS` POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) ";
     $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID AND ";
-    $sql.= "POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` ";
-    $sql.= "USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID AND ";
-    $sql.= "USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid'";
+    $sql.= "POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) LEFT JOIN (SELECT USER_POLL_VOTES.TID, ";
+    $sql.= "USER_POLL_VOTES.QUESTION_ID, USER_POLL_VOTES.OPTION_ID, USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+    $sql.= "INNER JOIN USER ON (USER.UID = USER_POLL_VOTES.UID) LEFT JOIN `{$table_data['PREFIX']}USER_PEER` ";
+    $sql.= "USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') WHERE USER_POLL_VOTES.TID = '$tid') ";
+    $sql.= "AS USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID ";
+    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_get_votes)) return false;
 
     $poll_votes_array = array();
+    $poll_votes_sort = array();
 
     while (($poll_votes_data = db_fetch_array($result))) {
 
@@ -415,8 +424,33 @@ function poll_get_votes($tid, $include_votes = true)
             }
 
             if (isset($poll_votes_data['UID']) && is_numeric($poll_votes_data['UID'])) {
-                $poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']]['VOTES_ARRAY'][] = $poll_votes_data['UID'];
+
+                if (isset($poll_votes_data['LOGON']) && isset($poll_votes_data['PEER_NICKNAME'])) {
+                    if (!is_null($poll_votes_data['PEER_NICKNAME']) && strlen($poll_votes_data['PEER_NICKNAME']) > 0) {
+                        $poll_votes_data['NICKNAME'] = $poll_votes_data['PEER_NICKNAME'];
+                    }
+                }
+
+                $poll_votes_array[$poll_votes_data['QUESTION_ID']]['OPTIONS_ARRAY'][$poll_votes_data['OPTION_ID']]['VOTES_ARRAY'][] = array(
+                    'UID' => $poll_votes_data['UID'],
+                    'LOGON' => $poll_votes_data['LOGON'],
+                    'NICKNAME' => $poll_votes_data['NICKNAME']
+                );
             }
+        }
+    }
+
+    foreach ($poll_votes_array as $question_id => $options_array) {
+
+        foreach ($options_array['OPTIONS_ARRAY'] as $option_id => $option) {
+
+            $poll_votes_sort = array();
+
+            foreach ($option['VOTES_ARRAY'] as $user_vote) {
+                $poll_votes_sort[] = strtolower(format_user_name($user_vote['LOGON'], $user_vote['NICKNAME']));
+            }
+
+            array_multisort($poll_votes_sort, SORT_STRING, SORT_ASC, $poll_votes_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTES_ARRAY']);
         }
     }
 

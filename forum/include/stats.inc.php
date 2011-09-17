@@ -637,6 +637,8 @@ function stats_get_active_user_list()
         }
     }
 
+    $user_sort = array_map('strtolower', $user_sort);
+
     array_multisort($user_sort, SORT_ASC, SORT_STRING, $stats['USERS']);
 
     return $stats;

@@ -1153,9 +1153,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "        </table>\n";
     echo "      </td>\n";
 
-    if ($in_list && !$is_preview) {
-        echo '<td width=\"2%\">&nbsp;</td>';
-    }
+    if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
 
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -1412,6 +1410,9 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     echo "        </tr>\n";
     echo "      </table>\n";
     echo "    </td>\n";
+
+    if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
+
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";
@@ -1441,6 +1442,9 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo "        </tr>\n";
     echo "      </table>\n";
     echo "    </td>\n";
+
+    if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
+
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";

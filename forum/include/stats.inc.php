@@ -506,6 +506,8 @@ function stats_get_active_user_list()
     $stats = array('ANON_USERS' => 0, 'BOTS' => 0, 'GUESTS' => 0,
                    'USER_COUNT' => 0, 'USERS' => array());
 
+    $user_sort = array();
+
     if (!$db_stats_get_active_user_list = db_connect()) return $stats;
 
     $lang = load_language_file();
@@ -535,8 +537,7 @@ function stats_get_active_user_list()
     $sql.= "USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, ";
     $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.URL AS BOT_URL, SEARCH_ENGINE_BOTS.NAME AS BOT_NAME, ";
     $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL, ";
-    $sql.= "COALESCE(USER_PEER2.PEER_NICKNAME, USER.NICKNAME, SEARCH_ENGINE_BOTS.NAME) AS SORT_COLUMN ";
+    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
@@ -546,8 +547,7 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL ";
-    $sql.= "ORDER BY SORT_COLUMN";
+    $sql.= "AND SESSIONS.FID = '$forum_fid' AND (SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL) ";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
 
@@ -577,14 +577,18 @@ function stats_get_active_user_list()
 
         if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-        }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+        } else if (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
+        } else {
+            $user_data['AVATAR_URL'] = null;
         }
 
         if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
             $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
-        }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
+        } else if (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
             $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
+        } else {
+            $user_data['AVATAR_AID'] = null;
         }
 
         if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
@@ -602,8 +606,10 @@ function stats_get_active_user_list()
 
                     $stats['BOTS']++;
 
-                    $stats['USERS'][$user_data['SID']] = array('BOT_NAME' => $user_data['BOT_NAME'],
-                                                               'BOT_URL'  => $user_data['BOT_URL']);
+                    $user_sort[] = $user_data['BOT_NAME'];
+
+                    $stats['USERS'][] = array('BOT_NAME' => $user_data['BOT_NAME'],
+                                              'BOT_URL'  => $user_data['BOT_URL']);
 
                 }else {
 
@@ -614,14 +620,15 @@ function stats_get_active_user_list()
 
                 $stats['USER_COUNT']++;
 
-                $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
-                                                           'LOGON'        => $user_data['LOGON'],
-                                                           'NICKNAME'     => $user_data['NICKNAME'],
-                                                           'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
-                                                           'ANON_LOGON'   => $anon_logon);
+                $user_sort[] = $user_data['NICKNAME'];
 
-                if (isset($user_data['AVATAR_URL'])) $stats['USERS'][$user_data['UID']]['AVATAR_URL'] = $user_data['AVATAR_URL'];
-                if (isset($user_data['AVATAR_AID'])) $stats['USERS'][$user_data['UID']]['AVATAR_AID'] = $user_data['AVATAR_AID'];
+                $stats['USERS'][] = array('UID'          => $user_data['UID'],
+                                          'LOGON'        => $user_data['LOGON'],
+                                          'NICKNAME'     => $user_data['NICKNAME'],
+                                          'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
+                                          'ANON_LOGON'   => $anon_logon,
+                                          'AVATAR_URL'   => $user_data['AVATAR_URL'],
+                                          'AVATAR_AID'   => $user_data['AVATAR_AID']);
             }
 
         }else {
@@ -629,6 +636,8 @@ function stats_get_active_user_list()
             $stats['ANON_USERS']++;
         }
     }
+
+    array_multisort($user_sort, SORT_ASC, SORT_STRING, $stats['USERS']);
 
     return $stats;
 }

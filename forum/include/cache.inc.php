@@ -229,20 +229,15 @@ function cache_check_start_page()
 
     if (($uid = session_get_value('UID')) === false) return false;
 
-    // Get the thread last modified date and user last read date.
-    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED, ";
-    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) FROM VISITOR_LOG) AS LAST_LOGON ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid')";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
+    // Get the thread, folder and user read last modified dates
+    $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK FROM `{$table_data['PREFIX']}THREAD` THREAD) ";
+    $sql.= "AS THREAD_DATA, (SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD WHERE USER_THREAD.UID = '$uid') ";
+    $sql.= "AS USER_THREAD_DATA, (SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
+    $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER) AS FOLDER_DATA";
 
     if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
 
@@ -320,14 +315,12 @@ function cache_check_messages()
 
         list($tid) = explode('.', $_GET['msg']);
 
-        $sql = "SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(POST.VIEWED)) AS VIEWED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.VOTED)) AS VOTED ";
-        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
-        $sql.= "ON (USER_POLL_VOTES.TID = POST.TID) WHERE POST.TID = '$tid'";
+        $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(POST.VIEWED)) AS VIEWED, UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED FROM `{$table_data['PREFIX']}POST` POST ";
+        $sql.= "WHERE POST.TID = '$tid') AS POST_DATA, (SELECT UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.VOTED)) ";
+        $sql.= "AS POLL_VOTE FROM `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql.= "WHERE USER_POLL_VOTES.TID = '$tid') AS POLL_DATA";
 
     }else {
 

@@ -231,9 +231,11 @@ function thread_get_tracking_data($tid)
 
     $tracking_data_array = array();
 
-    $sql = "SELECT TID, NEW_TID, TRACK_TYPE ";
+    $sql = "SELECT * FROM (SELECT TID, NEW_TID, TRACK_TYPE ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD_TRACK` ";
-    $sql.= "WHERE TID = '$tid' OR NEW_TID = '$tid'";
+    $sql.= "WHERE TID = '$tid') AS TRACK_FROM, (SELECT TID, ";
+    $sql.= "NEW_TID, TRACK_TYPE FROM `{$table_data['PREFIX']}THREAD_TRACK` ";
+    $sql.= "WHERE NEW_TID = '$tid') AS TRACK_TO";
 
     if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
 

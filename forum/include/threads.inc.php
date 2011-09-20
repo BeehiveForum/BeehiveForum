@@ -113,7 +113,7 @@ function threads_get_folders()
 function threads_get_all($uid, $folder, $start_from = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
     // If there are any problems with the function arguments we bail out.
-    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($uid)) return array(0, 0, 0);
     if (!is_numeric($start_from)) return array(0, 0, 0);
 
     // Ensure offset is positive.
@@ -1171,7 +1171,7 @@ function threads_get_unread_by_days($uid, $folder, $start_from = 0, $days = 0) /
 
 function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
 {
-    if (!($db_threads_get_recent = db_connect())) return array(0, 0);
+    if (!($db_threads_get_recent = db_connect())) return array(0, 0, 0);
 
     // Language file
     $lang = load_language_file();
@@ -1307,7 +1307,7 @@ function threads_process_list($sql)
 
     if (!($result = db_query($sql, $db_threads_process_list))) return array(0, 0, 0);
 
-    if (db_num_rows($result) == 0) return array(0, 0, 0);
+    if (($thread_count = db_num_rows($result)) == 0) return array(0, 0, 0);
 
     $lang = load_language_file();
 
@@ -1360,7 +1360,7 @@ function threads_process_list($sql)
 
     threads_have_attachments($threads_array);
 
-    return array($threads_array, $folder_order);
+    return array($threads_array, $folder_order, $thread_count);
 }
 
 function threads_get_folder_msgs()

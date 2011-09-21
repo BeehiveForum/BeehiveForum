@@ -144,36 +144,44 @@ function cache_check_thread_list()
 
     if (($uid = session_get_value('UID')) === false) return false;
 
-    // Get the thread last modified date and user last read date.
-    $sql = "SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-
     // If we're looking at a specific folder add it's ID to the query.
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
         $folder = db_escape_string($_GET['folder']);
-        $sql.= "WHERE THREAD.FID = '$folder'";
+
+        $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
+        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD) AS THREAD_DATA, ";
+        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+        $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+        $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
+        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
+        $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+        $sql.= "WHERE FOLDER.FID = '$folder') AS FOLDER_DATA";
+
+    } else {
+
+        $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
+        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD) AS THREAD_DATA, ";
+        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+        $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+        $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
+        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+        $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
+        $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER) AS FOLDER_DATA";
     }
 
     if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        // Get the two modified dates from the query
-        list($last_read, $created, $modified, $closed, $admin_lock, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
+        // Get the modified dates from the query
+        list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
 
         // Work out which one is newer (higher).
-        $local_cache_date = max($last_read, $created, $modified, $closed, $admin_lock, $folder_created, $folder_modified);
+        $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
 
         // Last Modified Header for cache control
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
@@ -231,11 +239,12 @@ function cache_check_start_page()
 
     // Get the thread, folder and user read last modified dates
     $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED, UNIX_TIMESTAMP(MAX(THREAD.CLOSED)) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.ADMIN_LOCK)) AS ADMIN_LOCK FROM `{$table_data['PREFIX']}THREAD` THREAD) ";
-    $sql.= "AS THREAD_DATA, (SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD WHERE USER_THREAD.UID = '$uid') ";
-    $sql.= "AS USER_THREAD_DATA, (SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD) AS THREAD_DATA, ";
+    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
+    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
     $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER) AS FOLDER_DATA";
 
@@ -244,10 +253,10 @@ function cache_check_start_page()
     if (db_num_rows($result) > 0) {
 
         // Get the modified dates from the query
-        list($last_read, $created, $modified, $closed, $last_logon, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
+        list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
 
         // Work out which one is newer (higher).
-        $local_cache_date = max($last_read, $created, $modified, $closed, $last_logon, $folder_created, $folder_modified);
+        $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
 
         // Last Modified Header for cache control
         $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";

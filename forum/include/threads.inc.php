@@ -1371,7 +1371,7 @@ function threads_get_folder_msgs()
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT FID, COUNT(TID) AS TOTAL FROM `{$table_data['PREFIX']}THREAD` GROUP BY FID";
+    $sql = "SELECT FID, COUNT(*) AS TOTAL FROM `{$table_data['PREFIX']}THREAD` GROUP BY FID";
 
     if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
 

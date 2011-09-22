@@ -433,7 +433,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!$db_folder_get_thread_count = db_connect()) return false;
 
-    $sql = "SELECT FID, COUNT(TID) AS THREAD_COUNT FROM `{$table_data['PREFIX']}THREAD` ";
+    $sql = "SELECT FID, COUNT(*) AS THREAD_COUNT FROM `{$table_data['PREFIX']}THREAD` ";
     $sql.= "WHERE FID IN ($fid_list) GROUP BY FID";
 
     if (!$result = db_query($sql, $db_folder_get_thread_count)) return false;

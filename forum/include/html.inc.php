@@ -609,8 +609,8 @@ function html_draw_top()
 
         if (preg_match('/^stylesheet=(([^:]+):([^$]+))?$/Diu', $func_args, $func_matches) > 0) {
 
-            if (isset($func_matches[1]) && isset($func_matches[2])) {
-                $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => $func_matches[2]);
+            if (isset($func_matches[2]) && isset($func_matches[3])) {
+                $stylesheet_array[] = array('filename' => $func_matches[2], 'media' => $func_matches[3]);
             }
 
             unset($arg_array[$key]);

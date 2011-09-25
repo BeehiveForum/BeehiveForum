@@ -245,7 +245,7 @@ if ($message) {
     echo "  </tr>\n";
     echo "</table>\n";
 
-    if (adsense_check_user() && adsense_check_page($message_number, $posts_per_page, $thread_data['LENGTH'])) {
+    if (adsense_check_user() && adsense_check_page($message['PID'], 1, $thread_data['LENGTH'])) {
 
         adsense_output_html();
         echo "<br />\n";

@@ -200,7 +200,7 @@ function bh_exception_handler(Exception $exception)
 
             $error_msg_array[] = '<p><b>$_GET:</b></p>';
 
-            $get_vars = htmlentities(print_r($_GET, true));
+            $get_vars = htmlentities_array(print_r($_GET, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
         }
@@ -210,7 +210,7 @@ function bh_exception_handler(Exception $exception)
 
             $error_msg_array[] = '<p><b>$_POST:</b></p>';
 
-            $post_vars = htmlentities(print_r($_POST, true));
+            $post_vars = htmlentities_array(print_r($_POST, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
         }
@@ -220,7 +220,7 @@ function bh_exception_handler(Exception $exception)
 
             $error_msg_array[] = '<p><b>$_ENV:</b></p>';
 
-            $environment_vars = htmlentities(print_r($_ENV, true));
+            $environment_vars = htmlentities_array(print_r($_ENV, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
         }
@@ -229,7 +229,7 @@ function bh_exception_handler(Exception $exception)
 
             $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
 
-            $server_vars = htmlentities(print_r($_SERVER, true));
+            $server_vars = htmlentities_array(print_r($_SERVER, true));
 
             $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
         }

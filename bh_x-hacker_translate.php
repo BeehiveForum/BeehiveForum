@@ -155,7 +155,7 @@ function translate($matches)
                 if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == '%') && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != '\\')) {
 
                     if (rn(10) > 5) $char = strtoupper($char);
-                    $str_out = $str_out. htmlentities($char);
+                    $str_out = $str_out. htmlentities_array($char);
 
                 }else {
 

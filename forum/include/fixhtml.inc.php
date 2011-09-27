@@ -337,7 +337,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             if (isset($matches_array[1], $matches_array[5])) {
 
-                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"', $matches_array[1], $matches_array[5], htmlentities($matches_array[0]));
+                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"', $matches_array[1], $matches_array[5], htmlentities_array($matches_array[0]));
 
                                 array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
 
@@ -345,7 +345,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             }else if (isset($matches_array[1], $matches_array[4])) {
 
-                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"', $matches_array[1], $matches_array[4], htmlentities($matches_array[0]));
+                                $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"', $matches_array[1], $matches_array[4], htmlentities_array($matches_array[0]));
 
                                 array_splice($html_parts, $i + 1, 2, array('', '/iframe'));
 
@@ -1138,11 +1138,11 @@ function tidy_tiny_mce_youtube_iframe_tag_callback($matches_array)
 {
     if (isset($matches_array[0], $matches_array[6])) {
 
-        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[6], htmlentities($matches_array[1]));
+        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[6], htmlentities_array($matches_array[1]));
 
     } else if (isset($matches_array[0], $matches_array[5])) {
 
-        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[5], htmlentities($matches_array[1]));
+        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[5], htmlentities_array($matches_array[1]));
     }
 
     return '';

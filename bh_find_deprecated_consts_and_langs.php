@@ -110,7 +110,7 @@ if (get_file_list($file_list_array, 'forum', '.php')) {
         echo "\nUnused language strings:\n\n";
 
         foreach ($unused_langs as $lang_key => $lang_value) {
-            printf("\$lang['%s'] = \"%s\";\n", $lang_key, htmlentities($lang_value));
+            printf("\$lang['%s'] = \"%s\";\n", $lang_key, htmlentities_array($lang_value));
         }
 
     }else {

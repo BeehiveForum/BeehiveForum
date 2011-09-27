@@ -323,6 +323,10 @@ function htmlentities_array($var)
         return array_map('htmlentities_array', $var);
     }
 
+    // Strip invalid characters from the string.
+    $var = iconv('UTF-8', 'UTF-8//IGNORE', $var);
+
+    // Pass it through htmlentities.
     return htmlentities($var, ENT_COMPAT, 'UTF-8');
 }
 
@@ -341,6 +345,10 @@ function htmlentities_decode_array($var)
         return array_map('htmlentities_decode_array', $var);
     }
 
+    // Strip invalid characters from the string.
+    $var = iconv('UTF-8', 'UTF-8//IGNORE', $var);
+
+    // Pass it through html_entity_decode
     return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
 }
 

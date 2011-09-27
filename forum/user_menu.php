@@ -141,7 +141,7 @@ echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"postbody\"><hr /></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"edit_email.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", htmlentities($lang['emailandprivacy']), "</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"edit_email.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", htmlentities_array($lang['emailandprivacy']), "</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"forum_options.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['forumoptions']}</a></td>\n";

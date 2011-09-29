@@ -375,11 +375,9 @@ function post_draw_to_dropdown_recent($default_uid)
     return $html;
 }
 
-function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false, $custom_html = "")
+function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false, $class = 'user_in_thread_dropdown', $custom_html = "")
 {
     $lang = load_language_file();
-
-    $class = defined('BEEHIVEMODE_LIGHT') ? 'select' : 'user_in_thread_dropdown';
 
     $html = "<select name=\"t_to_uid_in_thread\" class=\"$class\" $custom_html>";
 

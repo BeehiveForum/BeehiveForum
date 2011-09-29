@@ -569,15 +569,15 @@ if ($thread_data['DELETED'] == 'N') {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '600', 'center');
 
     }else if (isset($_GET['updated'])) {
 
-        html_display_success_msg($lang['updatessavedsuccessfully'], '500', 'center');
+        html_display_success_msg($lang['updatessavedsuccessfully'], '600', 'center');
 
     }else if (thread_is_poll($tid)) {
 
-        html_display_warning_msg($lang['torenamethisthreadyoumusteditthepoll'], '500', 'center');
+        html_display_warning_msg($lang['torenamethisthreadyoumusteditthepoll'], '600', 'center');
     }
 
     echo "<br />\n";
@@ -585,7 +585,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("msg", htmlentities_array($msg)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -599,7 +599,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"260\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array('markasread', range(0, $thread_data['LENGTH']), ($thread_data['LAST_READ'] > $thread_data['LENGTH'] ? $thread_data['LENGTH'] : $thread_data['LAST_READ'])), " {$lang['postsoutof']} {$thread_data['LENGTH']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -646,8 +646,8 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("rename", htmlentities_array($thread_data['TITLE']), 30, 64), "</td>\n";
+            echo "                        <td align=\"left\" width=\"260\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("rename", htmlentities_array($thread_data['TITLE']), 37, 64), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['movethread']}:</td>\n";
@@ -679,7 +679,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['movethread']}:</td>\n";
+            echo "                        <td align=\"left\" width=\"260\" class=\"posthead\">{$lang['movethread']}:</td>\n";
             echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_POLL_THREAD, USER_PERM_THREAD_MOVE, "", "post_folder_dropdown"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
@@ -713,7 +713,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                  <td align=\"center\">\n";
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
+                echo "                        <td align=\"left\" width=\"260\">", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
                 echo "                        <td align=\"left\">", form_dropdown_array('split_thread', $thread_available_pids), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
@@ -754,7 +754,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                  <td align=\"center\">\n";
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
+                echo "                        <td align=\"left\" width=\"260\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
                 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("merge_thread", "", 28, 15, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
@@ -801,8 +801,8 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                  <td align=\"center\">\n";
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
-                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search('merge_thread', '', 26, false, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
+                echo "                        <td align=\"left\" width=\"260\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search('merge_thread', '', 37, false, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -828,7 +828,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                        <td align=\"left\" colspan=\"2\"><hr /></td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
+                echo "                        <td align=\"left\" width=\"260\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
                 echo "                        <td align=\"left\">", form_dropdown_array('split_thread', $thread_available_pids), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
@@ -954,8 +954,8 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">{$lang['deletepostsinthreadbyuser']}:</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", post_draw_to_dropdown_in_thread($tid, 0, false, true), "</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\" width=\"260\">{$lang['deletepostsinthreadbyuser']}:</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\">", post_draw_to_dropdown_in_thread($tid, 0, false, true, 'bhselect', 'style="width: 275px"'), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -984,7 +984,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">{$lang['deletethread']}:</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\" width=\"260\">{$lang['deletethread']}:</td>\n";
             echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delete_thread", -1, $lang['no'], true), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
@@ -1035,11 +1035,11 @@ if ($thread_data['DELETED'] == 'N') {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '600', 'center');
 
     }else if (isset($_GET['updated'])) {
 
-        html_display_success_msg($lang['updatessavedsuccessfully'], '500', 'center');
+        html_display_success_msg($lang['updatessavedsuccessfully'], '600', 'center');
     }
 
     echo "<br />\n";
@@ -1047,7 +1047,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("msg", htmlentities_array($msg)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

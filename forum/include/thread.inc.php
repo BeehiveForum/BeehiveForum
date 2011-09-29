@@ -646,6 +646,34 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         return thread_merge_error(THREAD_MERGE_CREATE_ERROR, $error_str);
     }
 
+    $sql = "SELECT COUNT(*), MAX(PID) + 1 FROM `{$table_data['PREFIX']}POST` ";
+    $sql.= "WHERE TID = $tid AND PID IN ($pid_list)";
+
+    if (!$result = db_query($sql, $db_thread_split)) {
+
+        // Unlock the original thread if it wasn't originally locked.
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+
+        // Return error message.
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+    }
+
+    list($post_count, $max_pid) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "INSERT INTO SPHINX_SEARCH_ID (SEARCH_ID) VALUES ";
+    $sql.= implode(', ', array_fill(1, $post_count, '(NULL)'));
+
+    if (!$result = db_query($sql, $db_thread_split)) {
+
+        // Unlock the original thread if it wasn't originally locked.
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+
+        // Return error message.
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+    }
+
+    $search_id = db_insert_id($db_thread_split);
+
     // Construct query to correctly sort the posts in the new thread.
     switch ($merge_type) {
 
@@ -653,30 +681,36 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
             $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
             $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
-            $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY CREATED";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
+            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
+            $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql.= "PID, ($search_id - $post_count) + ((PID - $max_pid) + $post_count) ";
+            $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID IN ('$tida', '$tidb') ";
+            $sql.= "ORDER BY CREATED";
             break;
 
         case THREAD_MERGE_START:
 
             $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
             $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
-            $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY TID = '$tidb', CREATED";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
+            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
+            $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql.= "PID, ($search_id - $post_count) + ((PID - $max_pid) + $post_count) ";
+            $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID IN ('$tida', '$tidb') ";
+            $sql.= "ORDER BY TID = '$tidb', CREATED";
             break;
 
         case THREAD_MERGE_END:
 
             $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
             $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
-            $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
-            $sql.= "WHERE TID IN ('$tida', '$tidb') ORDER BY TID = '$tida', CREATED";
+            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
+            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
+            $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql.= "PID, ($search_id - $post_count) + ((PID - $max_pid) + $post_count) ";
+            $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID IN ('$tida', '$tidb') ";
+            $sql.= "ORDER BY TID = '$tida', CREATED";
             break;
     }
 
@@ -900,12 +934,42 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     $pid_list = implode(',', $pid_array);
 
+    $sql = "SELECT COUNT(*), MAX(PID) + 1 FROM `{$table_data['PREFIX']}POST` ";
+    $sql.= "WHERE TID = $tid AND PID IN ($pid_list)";
+
+    if (!$result = db_query($sql, $db_thread_split)) {
+
+        // Unlock the original thread if it wasn't originally locked.
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+
+        // Return error message.
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+    }
+
+    list($post_count, $max_pid) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "INSERT INTO SPHINX_SEARCH_ID (SEARCH_ID) VALUES ";
+    $sql.= implode(', ', array_fill(1, $post_count, '(NULL)'));
+
+    if (!$result = db_query($sql, $db_thread_split)) {
+
+        // Unlock the original thread if it wasn't originally locked.
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+
+        // Return error message.
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+    }
+
+    $search_id = db_insert_id($db_thread_split);
+
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
     $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-    $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', ";
-    $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), STATUS, APPROVED, APPROVED_BY, ";
-    $sql.= "EDITED, EDITED_BY, IPADDRESS, TID, PID FROM `{$table_data['PREFIX']}POST` ";
-    $sql.= "WHERE TID = $tid AND PID IN ($pid_list) ORDER BY CREATED";
+    $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
+    $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
+    $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+    $sql.= "PID, ($search_id - $post_count) + ((PID - $max_pid) + $post_count) ";
+    $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID = $tid ";
+    $sql.= "AND PID IN ($pid_list) ORDER BY CREATED";
 
     if (!db_query($sql, $db_thread_split)) {
 

@@ -1513,9 +1513,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (($uid = session_get_value('UID')) === false) return;
 
-    if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+    if ((!isset($message['CONTENT']) || $message['CONTENT'] == "") && !$is_preview) {
 
-        light_message_display_deleted($tid, $message['PID']);
+        light_message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0);
         return;
     }
 

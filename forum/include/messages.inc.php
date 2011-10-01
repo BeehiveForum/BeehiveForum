@@ -670,7 +670,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $quick_reply = 'N';
     }
 
-    if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+    if ((!isset($message['CONTENT']) || $message['CONTENT'] == "") && !$is_preview) {
 
         message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0, $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;

@@ -231,45 +231,6 @@ body {
     padding: 0;
 }
 
-.message_box {
-    background-color: #FDFC9F;
-    border: 1px solid #000000;
-    margin: 10px 0;
-    padding: 10px;
-}
-
-.message_box h2 {
-    display: inline-block;
-    line-height: 160%;
-    margin: 0;
-    padding-left: 25px;
-}
-
-.message_box a {
-    text-decoration: underline;
-}
-
-.message_box p {
-    margin: 10px 0;
-    padding-left: 25px;
-}
-
-.message_question h2 {
-    background: url('images/help.png') transparent no-repeat scroll 0 50%;
-}
-
-.message_error h2 {
-    background: url('images/error.png') transparent no-repeat scroll 0 50%;
-}
-
-.message_success h2 {
-    background: url('images/success.png') transparent no-repeat scroll 0 50%;
-}
-
-.message_warning h2 {
-    background: url('images/warning.png') transparent no-repeat scroll 0 50%;
-}
-
 .folder {
     margin: 10px 0;
 }
@@ -773,4 +734,44 @@ span.user_friend {
 
 span.user_enemy {
     background: url('images/enemy.png') transparent no-repeat scroll 0 2px;
+}
+
+.message_box {
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.message_box h2 {
+    color: #000000;
+    display: inline-block;
+    line-height: 160%;
+    margin: 0;
+    padding-left: 25px;
+}
+
+.message_box a {
+    text-decoration: underline;
+}
+
+.message_box p {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.message_question h2 {
+    background: url('images/help.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_error h2 {
+    background: url('images/error.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_success h2 {
+    background: url('images/success.png') transparent no-repeat scroll 0 50%;
+}
+
+.message_warning h2 {
+    background: url('images/warning.png') transparent no-repeat scroll 0 50%;
 }

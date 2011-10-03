@@ -149,7 +149,7 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               UNLOCKED_THREAD => $lang['threadunlocks'],
                               DELETE_USER_THREAD_POSTS => $lang['usermasspostdeletionsinathread'],
                               DELETE_THREAD => $lang['threaddeletions'],
-                              attachments_delete => $lang['attachmentdeletions'],
+                              ATTACHMENTS_DELETE => $lang['attachmentdeletions'],
                               EDIT_FORUM_LINKS => $lang['forumlinkedits'],
                               APPROVED_POST => $lang['postapprovals'],
                               CREATE_USER_GROUP => $lang['usergroupcreations'],
@@ -564,7 +564,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = sprintf($lang['undeletedthread'], $thread_link);
                 break;
 
-            case attachments_delete:
+            case ATTACHMENTS_DELETE:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[0], $entry_array[1], $entry_array[0], $entry_array[1]);
                 $action_text = sprintf($lang['deletedattachmentfrompost'], $entry_array[2], $thread_link);

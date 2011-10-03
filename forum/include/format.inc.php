@@ -75,7 +75,7 @@ function format_user_name($logon, $nickname)
 /**
 * Format file size.
 *
-* Formats file size of bytes into megabytes (MB), kilobytes (KB) or Bytes.
+* Formats file size of bytes into megabytes (MiB), kilobytes (KiB) or Bytes.
 *
 * @return string
 * @param integer $size - Filesize in bytes.
@@ -83,13 +83,11 @@ function format_user_name($logon, $nickname)
 
 function format_file_size($size)
 {
-    $megabyte = 1024 * 1024;
-
-    if ($size >= $megabyte) {
-        $resized = round($size / $megabyte, 1). " MiB";
-    }else if ($size >= 1024) {
-        $resized = round($size / 1024, 1). " KiB";
-    }else{
+    if ($size >= 1000000) {
+        $resized = round($size / 1048576, 2). " MiB";
+    } else if ($size >= 1000) {
+        $resized = round($size / 1024, 2). " KiB";
+    } else{
         $resized = $size. " bytes";
     }
 

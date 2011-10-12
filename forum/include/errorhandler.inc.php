@@ -173,7 +173,7 @@ function bh_exception_handler(Exception $exception)
         $mysql_version = '';
 
         // Don't try and do this if we are having trouble connecting to the MySQL server.
-        if (!in_array($exception->getCode(), array(MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
+        if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
             if (($mysql_version = db_fetch_mysql_version())) {
                 $version_strings[] = sprintf('MySQL/%s', $mysql_version);

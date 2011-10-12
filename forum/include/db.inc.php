@@ -61,7 +61,7 @@ function db_connect()
     if (!$connection_id) {
 
         if (!($connection_id = @mysqli_connect($db_server, $db_username, $db_password, $db_database, $db_port))) {
-            throw new Exception('Could not connect to database server. Check your MySQL user credentials', db_errno());
+            throw new Exception('Could not connect to database server. Check your MySQL user credentials', MYSQL_CONNECT_ERROR);
         }
 
         if (!db_set_utf8_charset($connection_id)) {

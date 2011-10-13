@@ -175,35 +175,39 @@ function cache_check_thread_list()
 
     if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
 
-    if (db_num_rows($result) > 0) {
+    // Can't send cache headers without any rows.
+    if (db_num_rows($result) == 0) return true;
 
-        // Get the modified dates from the query
-        list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
+    // Get the modified dates from the query
+    list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
 
-        // Work out which one is newer (higher).
-        $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
+    // Work out which one is newer (higher).
+    $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
 
-        // Last Modified Header for cache control
-        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+    // Last Modified Header for cache control
+    $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+    $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
-        header("Expires: $local_cache_expires", true);
-        header("Last-Modified: $local_last_modified", true);
-        header('Cache-Control: private, must-revalidate', true);
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
+        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        if (strtotime($remote_last_modified) >= $local_cache_date) {
 
-            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+            header("Expires: $local_cache_expires", true);
+            header("Last-Modified: $remote_last_modified", true);
+            header('Cache-Control: private, must-revalidate', true);
 
-                header_status(304, 'Not Modified');
-                exit;
-            }
+            header_status(304, 'Not Modified');
+            exit;
         }
     }
 
-    return false;
+    header("Expires: $local_cache_expires", true);
+    header("Last-Modified: $local_last_modified", true);
+    header('Cache-Control: private, must-revalidate', true);
+
+    return true;
 }
 
 /**
@@ -250,35 +254,38 @@ function cache_check_start_page()
 
     if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return true;
 
-        // Get the modified dates from the query
-        list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
+    // Get the modified dates from the query
+    list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
 
-        // Work out which one is newer (higher).
-        $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
+    // Work out which one is newer (higher).
+    $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
 
-        // Last Modified Header for cache control
-        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+    // Last Modified Header for cache control
+    $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+    $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
-        header("Expires: $local_cache_expires", true);
-        header("Last-Modified: $local_last_modified", true);
-        header('Cache-Control: private, must-revalidate', true);
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
+        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        if (strtotime($remote_last_modified) >= $local_cache_date) {
 
-            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+            header("Expires: $local_cache_expires", true);
+            header("Last-Modified: $remote_last_modified", true);
+            header('Cache-Control: private, must-revalidate', true);
 
-                header_status(304, 'Not Modified');
-                exit;
-            }
+            header_status(304, 'Not Modified');
+            exit;
         }
     }
 
-    return false;
+    header("Expires: $local_cache_expires", true);
+    header("Last-Modified: $local_last_modified", true);
+    header('Cache-Control: private, must-revalidate', true);
+
+    return true;
 }
 
 /**
@@ -340,35 +347,38 @@ function cache_check_messages()
 
     if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return true;
 
-        // Get the two modified dates from the query
-        list($created, $viewed, $approved, $edited, $voted) = db_fetch_array($result, DB_RESULT_NUM);
+    // Get the two modified dates from the query
+    list($created, $viewed, $approved, $edited, $voted) = db_fetch_array($result, DB_RESULT_NUM);
 
-        // Work out which one is newer (higher).
-        $local_cache_date = max($created, $viewed, $approved, $edited, $voted);
+    // Work out which one is newer (higher).
+    $local_cache_date = max($created, $viewed, $approved, $edited, $voted);
 
-        // Last Modified Header for cache control
-        $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+    // Last Modified Header for cache control
+    $local_last_modified = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
+    $local_cache_expires = gmdate("D, d M Y H:i:s", $local_cache_date). " GMT";
 
-        header("Expires: $local_cache_expires", true);
-        header("Last-Modified: $local_last_modified", true);
-        header('Cache-Control: private, must-revalidate', true);
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
+        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-            $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        if (strtotime($remote_last_modified) >= $local_cache_date) {
 
-            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+            header("Expires: $local_cache_expires", true);
+            header("Last-Modified: $remote_last_modified", true);
+            header('Cache-Control: private, must-revalidate', true);
 
-                header_status(304, 'Not Modified');
-                exit;
-            }
+            header_status(304, 'Not Modified');
+            exit;
         }
     }
 
-    return false;
+    header("Expires: $local_cache_expires", true);
+    header("Last-Modified: $local_last_modified", true);
+    header('Cache-Control: private, must-revalidate', true);
+
+    return true;
 }
 
 /**

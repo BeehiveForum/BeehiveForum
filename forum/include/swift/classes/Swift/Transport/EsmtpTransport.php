@@ -8,13 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/AbstractSmtpTransport.php';
-//@require 'Swift/Transport/EsmtpHandler.php';
-//@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/SmtpAgent.php';
-//@require 'Swift/TransportException.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Events/EventDispatcher.php';
 
 /**
  * Sends Messages over SMTP with ESMTP support.
@@ -113,6 +106,7 @@ class Swift_Transport_EsmtpTransport
   public function setTimeout($timeout)
   {
     $this->_params['timeout'] = (int) $timeout;
+    $this->_buffer->setParam('timeout', (int) $timeout);
     return $this;
   }
   
@@ -142,6 +136,25 @@ class Swift_Transport_EsmtpTransport
   public function getEncryption()
   {
     return $this->_params['protocol'];
+  }
+  
+  /**
+   * Sets the sourceIp
+   * @param string $source
+   */
+  public function setSourceIp($source)
+  {
+    $this->_params['sourceIp']=$source;
+    return $this;
+  }
+
+  /**
+   * Returns the ip used to connect to the destination
+   * @return string
+   */
+  public function getSourceIp()
+  {
+    return $this->_params['sourceIp'];
   }
   
   /**
@@ -239,16 +252,17 @@ class Swift_Transport_EsmtpTransport
       $response = $this->executeCommand(
         sprintf("EHLO %s\r\n", $this->_domain), array(250)
         );
-      $this->_capabilities = $this->_getCapabilities($response);
-      $this->_setHandlerParams();
-      foreach ($this->_getActiveHandlers() as $handler)
-      {
-        $handler->afterEhlo($this);
-      }
     }
     catch (Swift_TransportException $e)
     {
-      parent::_doHeloCommand();
+      return parent::_doHeloCommand();
+    }
+
+    $this->_capabilities = $this->_getCapabilities($response);
+    $this->_setHandlerParams();
+    foreach ($this->_getActiveHandlers() as $handler)
+    {
+      $handler->afterEhlo($this);
     }
   }
   

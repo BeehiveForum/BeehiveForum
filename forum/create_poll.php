@@ -675,7 +675,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($poll_type !== POLL_HORIZONTAL_GRAPH)) {
+    if ($valid && ($poll_vote_type == POLL_VOTE_PUBLIC) && ($poll_type != POLL_HORIZONTAL_GRAPH)) {
 
         $error_msg_array[] = $lang['publicballothorizontalgraphonly'];
         $valid = false;

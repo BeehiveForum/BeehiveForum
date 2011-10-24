@@ -57,6 +57,7 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
+include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "swift.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
@@ -331,7 +332,7 @@ function html_get_user_style_path()
             $user_style = html_get_cookie('forum_style', false, forum_get_setting('default_style', false, 'default'));
         }
 
-        if (!file_exists(html_get_forum_file_path(sprintf('styles/%s/style.css', $user_style)))) {
+        if (!style_exists($user_style)) {
             $user_style = forum_get_setting('default_style', false, 'default');
         }
     }

@@ -528,8 +528,8 @@ switch ($_GET['action']) {
         exit;
 }
 
-// Check the cache on the content
-cache_check_etag(md5($content));
+// Disable caching.
+cache_disable();
 
 // Output the content.
 echo $content;

@@ -1449,7 +1449,7 @@ if ($allow_sig == true) {
     echo $tools->textarea("sig_text", $sig_text, 5, 75, false, 'tabindex="7"', 'signature_content');
 
     if ($sig->isDiff()) {
-        echo $tools->compare_original("sig_text", $sig_text);
+        echo $tools->compare_original("sig_text", $sig);
     }
 
     echo "                                                    </div>\n";

@@ -491,7 +491,7 @@ function cache_check_etag($local_etag)
         $remote_last_modified = false;
     }
 
-    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($file_path)). "GMT";
+    $local_last_modified  = gmdate("D, d M Y H:i:s", time()). "GMT";
 
     if (strcmp($remote_etag, $local_etag) == 0) {
 

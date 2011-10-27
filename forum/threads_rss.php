@@ -185,7 +185,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }
 
 // Enable caching on RSS Feed
-cache_check_last_modified();
+cache_check_last_modified(time() + 300);
 
 // Language file
 $lang = load_language_file();

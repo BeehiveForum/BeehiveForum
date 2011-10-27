@@ -207,32 +207,9 @@ if (isset($hash) && is_md5($hash)) {
                     header("Content-Type: ". $attachment_details['mimetype'], true);
                 }
 
-                // Etag Header for cache control
-                $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($file_path)). " GMT");
-
-                if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
-                    $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-                }else {
-                    $remote_etag = false;
-                }
-
                 // Last Modified Header for cache control
-                $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($file_path)). "GMT";
+                cache_check_last_modified(filemtime($file_path));
 
-                if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
-                    $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-                }else {
-                    $remote_last_modified = false;
-                }
-
-                if ((strcmp($remote_etag, $local_etag) == 0) && (strcmp($remote_last_modified, $local_last_modified) == 0)) {
-
-                    header_status(304, 'Not Modified');
-                    exit;
-                }
-
-                header("Last-Modified: $local_last_modified", true);
-                header("Etag: \"$local_etag\"", true);
                 header("Content-Length: $file_size", true);
                 header("Content-disposition: inline; filename=\"$file_name\"", true);
 

@@ -434,27 +434,21 @@ function cache_check_enabled()
 * @param string $seconds - Interval to check for cache (default: 5 minutes)
 */
 
-function cache_check_last_modified($seconds = 300)
+function cache_check_last_modified($last_modified)
 {
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 
-    if (!is_numeric($seconds)) return false;
-
     if (browser_check(BROWSER_AOL)) return false;
 
-    // Generate our last-modified and expires date stamps
-    $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
-    $local_cache_expires = gmdate("D, d M Y H:i:s", time()). " GMT";
+    $local_last_modified = gmdate("D, d M Y H:i:s", $last_modified). "GMT";
 
-    // Check to see if the cache header exists.
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
         $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-        // Check to see if the cache is older than 5 minutes.
-        if ((time() - strtotime($remote_last_modified)) < $seconds) {
+        if (strtotime($remote_last_modified) >= $last_modified) {
 
-            header("Expires: $local_cache_expires", true);
+            header("Expires: $local_last_modified", true);
             header("Last-Modified: $remote_last_modified", true);
             header('Cache-Control: private, must-revalidate', true);
 
@@ -463,7 +457,7 @@ function cache_check_last_modified($seconds = 300)
         }
     }
 
-    header("Expires: $local_cache_expires", true);
+    header("Expires: $local_last_modified", true);
     header("Last-Modified: $local_last_modified", true);
     header('Cache-Control: private, must-revalidate', true);
 
@@ -483,20 +477,29 @@ function cache_check_etag($local_etag)
 {
     if (browser_check(BROWSER_AOL)) return false;
 
-    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
-        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-    }else {
-        $remote_etag = false;
-    }
+    $local_last_modified = gmdate("D, d M Y H:i:s", time()). "GMT";
 
-    if (strcmp($remote_etag, $local_etag) == "0") {
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        header_status(304, 'Not Modified');
-        header("Etag: \"$local_etag\"");
-        exit;
+        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+        if (strcmp($remote_etag, $local_etag) == 0) {
+
+            header("Etag: \"$remote_etag\"", true);
+            header("Expires: $local_last_modified", true);
+            header("Last-Modified: $remote_last_modified", true);
+            header('Cache-Control: private, must-revalidate', true);
+
+            header_status(304, 'Not Modified');
+            exit;
+        }
     }
 
     header("Etag: \"$local_etag\"", true);
+    header("Expires: $local_last_modified", true);
+    header("Last-Modified: $local_last_modified", true);
+    header('Cache-Control: private, must-revalidate', true);
+
     return true;
 }
 

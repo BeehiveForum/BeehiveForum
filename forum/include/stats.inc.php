@@ -93,7 +93,7 @@ function stats_update($session_count, $recent_post_count)
 function stats_get_html()
 {
     // Check HTTP cache headers
-    cache_check_last_modified();
+    cache_check_last_modified(time() + 300);
 
     // Load Language file
     $lang = load_language_file();

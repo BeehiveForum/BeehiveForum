@@ -80,11 +80,11 @@ You need web hosting which provides:
 1.1.1 Requirements Notes
 ========================
 
-- Beehive Forum requires PHP 5.2.0 as a minimum. For notes regarding 
+- Beehive Forum requires PHP 5.2.0 as a minimum. For notes regarding
   PHP 5.3.0 please see "PHP 5.3.0 Support" below.
-   
+
 - PCRE runtime compiled with --enable-utf8 --enable-unicode-properties is
-  requried. PCRE support is OS dependent, please check with your host 
+  requried. PCRE support is OS dependent, please check with your host
   for PCRE requirements.
 
 - MySQL 4.1.16 or newer is required by Beehive Forum. As with PHP we recommend
@@ -93,20 +93,20 @@ You need web hosting which provides:
 - As a minimum Beehive Forum requires the following privileges on the
   MySQL database and tables it runs from:
 
-  SELECT, CREATE, CREATE TEMPORARY TABLES, 
+  SELECT, CREATE, CREATE TEMPORARY TABLES,
   INSERT, ALTER, UPDATE, INDEX, DELETE and DROP.
 
   You may optionally grant the FILE permission to speed up the creation
   of the dictionary during installation but Beehive Forum. Once installation
   has completed you may restore the default permissions without suffering
   any reduced functionality.
-  
+
 1.1.2 PHP 5.3.0 Support
 =======================
 
 As of Beehive Forum 0.9.1, functions depreciated in PHP 5.3.0 have been removed
-from or replaced in the code. However, no extensive testing has otherwise been 
-performed. If you are using PHP 5.3.0 and encounter problems with using 
+from or replaced in the code. However, no extensive testing has otherwise been
+performed. If you are using PHP 5.3.0 and encounter problems with using
 Beehive Forum 0.9.1 or newer please contact us.
 
 
@@ -188,24 +188,24 @@ presented with a directory that looks a bit like this:
 As you can see the main distribution contains a docs and forum folder. The main
 forum folder, which actually contains the Beehive Forum files, itself contains
 several more folders with relevant files in them. If they are not extracted
-into the right place subsequently uploading them to your server will result 
+into the right place subsequently uploading them to your server will result
 in your Beehive Forum not working.
 
 
 1.2.2 Database setup
 ====================
 
-There are several different ways you can create a database for your Beehive Forum 
+There are several different ways you can create a database for your Beehive Forum
 to live in. Some hosts will may provide an administrative control panel such as
-CPanel or Plesk, others may offer direct access to phpMyAdmin. If available you 
+CPanel or Plesk, others may offer direct access to phpMyAdmin. If available you
 may also use a program like SQLYog or even the MySQL CLI client.
 
 Use which ever you're most comfortable with. All you need to remember to do is
 to take note of the database name, and any applicable user credentials, as you
 will need them when you come to run the Beehive Forum installer.
 
-Beehive Forum would prefer it if you could provide it with its very own database, 
-and separate user credentials to use, but if you can't provide them it should 
+Beehive Forum would prefer it if you could provide it with its very own database,
+and separate user credentials to use, but if you can't provide them it should
 work in an existing one so long as there are no conflicting table names.
 
 
@@ -230,7 +230,7 @@ take a lot longer to complete.
 ============
 
 You should now upload the forum onto your web space. We recommend that you simply
-upload the "forum" folder directly, either into the root of your web space or 
+upload the "forum" folder directly, either into the root of your web space or
 into another folder of your choosing.
 
 
@@ -245,7 +245,7 @@ http://www.mysite.com/forum/install/index.php
 
 This will then walk you through the creation of your new forum. Note that you will
 need your MySQL database's host address, username and password for this stage, as
-well as the name of the database from step 1.2.2.  You should be able to get the 
+well as the name of the database from step 1.2.2.  You should be able to get the
 information from your hosting provider if you're not running your own server.
 
 
@@ -280,7 +280,7 @@ permissions and so forth.
 Now you're ready to create some folders, so click the admin link near the top of
 the page, then choose folders from the menu on the left, and set them up.
 
-You may also wish to change the access permissions of your forum. In the admin 
+You may also wish to change the access permissions of your forum. In the admin
 section you will find options for restricting access to your Beehive Forum. The
 two main options are restricted, where each user account needs to be given
 permission to access the forum and password protected, where your forum uses
@@ -289,7 +289,7 @@ a common password that can be given to users to allow them access.
 The other links on the left let you set up profile sections and items, where
 your members can provide information about themselves if they like, and do stuff
 to users, like ban them, gag them or promote them. You can also edit the forum
-'start' page, change the forum style, add forum word filters and so forth. It's 
+'start' page, change the forum style, add forum word filters and so forth. It's
 all explained in there.
 
 
@@ -319,21 +319,21 @@ to.
 1.2.12 Enabling email notifications
 ===================================
 
-By default Beehive Forum uses PHP's built-in mail function to send email 
+By default Beehive Forum uses PHP's built-in mail function to send email
 notifications to users. On *nix, PHP is set up to use sendmail. In order to
 send email from your forum you will need to install sendmail or a clone such
-as postfix. On Windows platforms PHP is set up to send mail via SMTP to 
+as postfix. On Windows platforms PHP is set up to send mail via SMTP to
 localhost only. If you are not running a mail server on localhost you will
 need to edit php.ini and change the SMTP setting in the [mail function]
 section. Additionally you may also need to change the sendmail_from setting
 if your ISP / host requires emails to be sent from a specific address.
 
 If your mail server requires SMTP authentication to send email you will need
-to change the settings in Global Forum Settings under Admin on your forum. 
-Please note that Beehive does not support POP before SMTP (sometimes called 
+to change the settings in Global Forum Settings under Admin on your forum.
+Please note that Beehive does not support POP before SMTP (sometimes called
 SMTP after POP). The settings you need to enter will vary depending on your
-hosting provider or ISP. If you do not know this information, you must ask 
-for help from your host. Unless the information is public knowledge, we 
+hosting provider or ISP. If you do not know this information, you must ask
+for help from your host. Unless the information is public knowledge, we
 cannot help you with it.
 
 More information on configuring the mail function can be found in the PHP
@@ -362,10 +362,10 @@ folder with contents.
 ================
 
 To edit the start page you can use the built-in start page editor. This is located
-in Admin > Start Page. 
+in Admin > Start Page.
 
-As of Beehive Forum 1.0 the start page is saved directly to the database and no 
-physical file is saved to the file system. To be able to create more complicated 
+As of Beehive Forum 1.0 the start page is saved directly to the database and no
+physical file is saved to the file system. To be able to create more complicated
 start pages, such as those which include PHP code, you will need to replace the
 saved information in the database by hand using phpMyAdmin or SQLYog.
 
@@ -391,12 +391,12 @@ list you would create a style sheet named thread_list.css and place it in the
 same folder as the main style.css. Beehive will automatically find and use this
 style sheet in preference to the main style.css.
 
-Please note, prior to Beehive Forum 1.0, when Beehive encounters the per-file 
-style sheet it will exclude out the main style.css so any classes you want 
-displayed in all your forum styles must be defined in each of your per-page 
+Please note, prior to Beehive Forum 1.0, when Beehive encounters the per-file
+style sheet it will exclude out the main style.css so any classes you want
+displayed in all your forum styles must be defined in each of your per-page
 .css files. With the release of Beehive Forum 1.0 this functionality has been
 changed to include the per-file CSS file in addition to the main style.css and
-allows you to make use of CSS precedence to defined when the CSS should be 
+allows you to make use of CSS precedence to defined when the CSS should be
 applied.
 
 
@@ -422,17 +422,17 @@ Just keep it 60 pixels high or under.
 
 Beehive Forum uses CSS-styled emoticons. This allows the end-user to have great control,
 being able to choose from options such as completely invisible, text-only, and the
-range of graphic sets which can be installed. 
+range of graphic sets which can be installed.
 
-To create an emoticon pack first add a subdirectory (named whatever you like - for 
-example's sake I'll choose 'mypack') in the /emoticons directory. In this directory 
-create a file definitions.php. This file contains the textual pattern definitions 
-of the emoticons. For example, to add a ':-)' emoticon, one would add the following 
+To create an emoticon pack first add a subdirectory (named whatever you like - for
+example's sake I'll choose 'mypack') in the /emoticons directory. In this directory
+create a file definitions.php. This file contains the textual pattern definitions
+of the emoticons. For example, to add a ':-)' emoticon, one would add the following
 line:
 
 $emoticon[':-)'] = "smile";
 
-Once you have finished adding your pattern definitions you need to create a file 
+Once you have finished adding your pattern definitions you need to create a file
 desc.txt (which contains one line describing your pack, e.g. "My Pack") and a
 style.css file. To add your ':-)' emoticon you will need CSS code similar to this:
 
@@ -448,20 +448,20 @@ style.css file. To add your ':-)' emoticon you will need CSS code similar to thi
 }
 
 Notice the class name 'e_smile' - this is the word you associated with the ':-)'
-pattern in definitions.php ("smile") prefixed by 'e_'. Be careful not to use the 
-same associated word for different emoticons (it's fine to use the same word for, 
-for example, both ':)' and ':-)', however). Also note that every .e_NAME class must 
+pattern in definitions.php ("smile") prefixed by 'e_'. Be careful not to use the
+same associated word for different emoticons (it's fine to use the same word for,
+for example, both ':)' and ':-)', however). Also note that every .e_NAME class must
 also have the .e_NAME span { ... } class.
 
 
 1.3.6 GeSHi
 ===========
 
-Beehive Forum uses several 'custom' HTML tags, including the <code> tag. This tag now 
+Beehive Forum uses several 'custom' HTML tags, including the <code> tag. This tag now
 accepts a 'language' attribute which will highlight your code, thanks to the open-source
 software GeSHi 1.0.6 or later from http://qbnz.com/highlighter/.
 
-To include GeSHi syntax highlighting with your Beehive Forum install simply download 
+To include GeSHi syntax highlighting with your Beehive Forum install simply download
 the latest version of GeSHi and upload it to a subdirectory 'geshi' in your main forum
 folder. For example if your forum was at www.site.com/forum/ you would upload GeSHi to
 www.site.com/forum/geshi/.
@@ -474,11 +474,11 @@ Note: GeSHi is not created by the Beehive Forum developers.
 1.3.7 TinyMCE
 =============
 
-Beehive Forum has a simple HTML toolbar built in, but also allows the use of the 
+Beehive Forum has a simple HTML toolbar built in, but also allows the use of the
 open-source WYSIWYG TinyMCE version 3.1.0 or later by Moxiecode Systems. You can
 downloaded TinyMCE from http://tinymce.moxiecode.com/
 
-To install TinyMCE in to your Beehive Forum simply copy everything from the 
+To install TinyMCE in to your Beehive Forum simply copy everything from the
 tinymce/jscripts/tiny_mce directory into a subdirectory named 'tiny_mce' in your
 main forum folder.
 
@@ -531,7 +531,7 @@ anything does go wrong you can ask them to restore the data.
 
 If your hosting provider is less than cooperative about doing this then your next
 best chance of performing a backup is by using phpMyAdmin and making use of it's
-Export facility to save a copy of the database to your PC using your web browser. 
+Export facility to save a copy of the database to your PC using your web browser.
 Be warned that doing it this way will result in a easily rather large file being
 created on your HDD so make sure you have adequate disc space in order to do
 this. It will also be harder to restore the backup this way.
@@ -548,11 +548,18 @@ then simply a case of uploading the files and overwriting the changes.
 1.4.1.3 Upload new forum files
 ==============================
 
-This step is similar to 1.2.3, though you may wish to upload to a temporary
-directory (e.g. if your forum is currently installed in a subdirectory 'forum',
-you may wish to upload the new files to a subdirectory 'forumtemp' so that 
-you can make any neccesary changes before replacing the old files with the
-newer ones.
+This step is similar to 1.2.4, but you will need to overwrite your existing files
+with the newer ones provided in the Beehive Forum archive you have downloaded.
+
+Note: If you have made any customisations to your existing Beehive Forum
+installation, including styles and emoticons packs and any code modifications,
+you might wish to rename your existing forum directory to something else so that
+you can easily compare the old and news files in order to reapply any of the
+customisations you want to keep.
+
+If you do not have any customised styles, emoticon packs or code modifications
+made to your existing Beehive Forum installation you can simply overwrite all
+of the files with the new ones.
 
 
 1.4.1.4 Run the upgrade script
@@ -633,7 +640,7 @@ upgrade-01-to-02.sql followed by..
 upgrade-02-to-03.sql followed by..
 upgrade-03-to-04.sql.
 
-This will bring the database up to 0.4 compatibility, and from there you can use the 
+This will bring the database up to 0.4 compatibility, and from there you can use the
 upgrade script built into the newer releases of Beehive to bring you bang up to date.
 
 
@@ -652,15 +659,15 @@ sent to the system error log (Apache error_log or similar). This was primarily d
 to reduce the security risk associated with potentially sensitive data being
 released to end users.
 
-Because not everyone has access to their server's error log (shared hosting, etc.) 
+Because not everyone has access to their server's error log (shared hosting, etc.)
 we have also implement error reporting by email. With this option you can continue to
-receive detailed error messages from your Beehive Forum installation with none of the 
+receive detailed error messages from your Beehive Forum installation with none of the
 associated risks. It also means you can continue to report bugs back to the development
 team and get help diagnosing faults.
 
-Due to the nature of the Beehive Forum the error reporter can only be enabled automatically 
+Due to the nature of the Beehive Forum the error reporter can only be enabled automatically
 if you're performing a new installation. To do this you simply tick the relevant box under
-Advanced Options in the installer. The changes will be automatically made to your 
+Advanced Options in the installer. The changes will be automatically made to your
 config.inc.php for you and you are then good to go.
 
 To enable the error reporter for upgrades please follow the instructions below.
@@ -679,7 +686,7 @@ the distribution archive. This is a template file used by the installer and will
 without further changes.
 
 To begin, download the config.inc.php using FTP and save it somewhere on your PC. As good place
-as any is your desktop. Once you have it downloaded make a copy of the file just in case 
+as any is your desktop. Once you have it downloaded make a copy of the file just in case
 something goes wrong and then open it using a text editor. Windows users are recommended to
 use Notepad. Please do not use Microsoft Wordpad or Microsoft Word, or any other word processor
 for that matter, unless you know what you're doing, as these may cause problems with the format
@@ -735,10 +742,10 @@ any questions or queries you have and we'll do our best to answer them.
 3.2 General questions and help
 ==============================
 
-As above, you can try dropping in to http://www.tehforum.co.uk/forum/, 
+As above, you can try dropping in to http://www.tehforum.co.uk/forum/,
 where you can ask for help or check on the progress of the next version and
 see and test previews of the new features. If you need help don't think twice
-about posting, although please keep Beehive-related enquires to the 'Beehive 
+about posting, although please keep Beehive-related enquires to the 'Beehive
 Development' folder.
 
 We've also added a wiki to help us document Beehive. Check it out here:
@@ -794,7 +801,7 @@ None currently
 4.1 Coding
 ==========
 
-Matt Beale, Andy Black, Chris Hodcroft, Mark Rendle, Rowan Hill, 
+Matt Beale, Andy Black, Chris Hodcroft, Mark Rendle, Rowan Hill,
 Andrew Holgate, Peter Kelly, Mike Franklin, Ben Sekulowicz
 
 4.2 Website
@@ -846,9 +853,9 @@ Matt Beale
 
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
-  
+
 - Michael from Hermitscave for taking the time to find all those nasty exploits.
-  
+
 - JimL for beating Mike in our being obsessed with Beehive Forum competition.
 
 - SourceForge (http://sourceforge.net) for providing top-notch facilities to us

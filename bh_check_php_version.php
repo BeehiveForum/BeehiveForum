@@ -27,46 +27,71 @@ USA
 // See: http://www.laurent-laville.org/index.php?module=pear&desc=pci
 require_once 'PHP/CompatInfo.php';
 
-// Set some options
-$options = array('debug'            => false,
-                 'recurse_dir'      => true,
-                 'ignore_files'     => array('forum\include\compat.inc.php'),
-                 'ignore_dirs'      => array('forum\include\db', 'forum\include\languages', 'forum\include\swift', 'forum\geshi', 'forum\tiny_mce'),
-                 'ignore_functions' => array('mb_send_mail', 'mb_strlen', 'mb_strpos', 'mb_strrpos', 
-                                             'mb_stripos', 'mb_substr', 'mb_strtolower', 'mb_strtoupper', 
-                                             'mb_substr_count', 'mb_split', 'sys_get_temp_dir', 
-                                             'file_put_contents', 'array_combine', 'date_default_timezone_set')); 
-                                             
 // Prevent time out
 set_time_limit(0);
 
 // Output the content as text.
-header('Content-Type: text/plain');                                             
+header('Content-Type: text/plain');
 
 // Tell the user what we're doing.
 echo "Please wait checking Minimum PHP Version...\n\n";
 
-// Check the version
+// Instantiate PHP_CompatInfo with null renderer.
 $pci = new PHP_CompatInfo('null');
 
-$res = $pci->parseFolder('forum', $options);
+// Array to store extracted per-file version info.
+$versions_array = array();
 
-// PHP_CompatInfo doesn't like date_default_timezone_set.
-// It reports it as requiring PHP 5.2.0 when it works on
-// PHP 5.1.0. Adding it to the ignore_fuctions list means
-// the reported version number comes back as 5.0.0 which
-// is incorrect, thus this next line.
-if (version_compare($res['version'], "5.1.0", "<")) {
-    $res['version'] = '5.1.0';
+// Array of keys to ignore in result array.
+$ignore_result_keys = array(
+    'ignored_files',
+    'ignored_functions',
+    'ignored_extensions',
+    'ignored_constants',
+    'max_version',
+    'version',
+    'classes',
+    'functions',
+    'extensions',
+    'constants',
+    'tokens',
+    'cond_code'
+);
+
+// Check for command line arguments to individual files.
+if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
+
+    // Parse the specified files only.
+    $results = $pci->parseArray(array_splice($_SERVER['argv'], 1));
+
+} else {
+
+    // Set some options
+    $options = array(
+        'debug'       => false,
+        'recurse_dir' => true,
+        'ignore_dirs' => array(
+            'forum/include/languages',
+            'forum/include/swift',
+            'forum/geshi',
+            'forum/tiny_mce'
+        ),
+    );
+
+    // Parse the forum directory.
+    $results = $pci->parseFolder('forum', $options);
 }
 
 // Output the results.
-printf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $res['version'], implode(", ", $res['extensions']));
+printf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $results['version'], implode(", ", $results['extensions']));
 
-// Iterate over the result array. If the array value contains a subkey named 
-// version it is a file that we can display information about.
-foreach ($res as $script_filename => $version_info) {
-    if (isset($version_info['version'])) {
+// Iterate over the result array.
+foreach ($results as $script_filename => $version_info) {
+
+    // Ignore keys in the ignore_result_keys array.
+    if (!in_array($script_filename, $ignore_result_keys) && isset($version_info['version'])) {
+
+        // If the version info contains a version key, add it to $versions_array.
         $versions_array[$version_info['version']][] = $script_filename;
     }
 }
@@ -75,7 +100,9 @@ ksort($versions_array);
 
 // Display the filenames grouped by version.
 foreach ($versions_array as $version => $script_filenames) {
+
     if (sizeof($script_filename) > 0) {
+
         printf("%s\n%s\n%s\n\n", $version, str_repeat('=', strlen($version)), implode("\n", $script_filenames));
     }
 }

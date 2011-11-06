@@ -159,6 +159,14 @@ function session_check($show_session_fail = true, $init_guest_session = true)
             // or the user has changed forums we should update the user's session data.
             if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid)) {
 
+                // If the user has changed forums we should call session_update_visitor_log
+                // and forum_update_last_visit()
+                if ($user_sess['FID'] != $forum_fid) {
+
+                    session_update_visitor_log($user_sess['UID'], $forum_fid);
+                    forum_update_last_visit($user_sess['UID']);
+                }
+
                 // Update the user time stats before we update the session
                 session_update_user_time($user_sess['UID']);
 
@@ -168,14 +176,6 @@ function session_check($show_session_fail = true, $init_guest_session = true)
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                 if (!$result = db_query($sql, $db_session_check)) return false;
-
-                // If the user has changed forums we should call session_update_visitor_log
-                // and forum_update_last_visit()
-                if ($user_sess['FID'] != $forum_fid) {
-
-                    session_update_visitor_log($user_sess['UID'], $forum_fid);
-                    forum_update_last_visit($user_sess['UID']);
-                }
             }
 
             // Forum self preservation
@@ -670,11 +670,11 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     if ($update_visitor_log === true) {
 
-        session_update_user_time($uid);
-
         session_update_visitor_log($uid, $forum_fid);
 
         forum_update_last_visit($uid);
+
+        session_update_user_time($uid);
     }
 
     if ($skip_cookie === false) html_set_cookie("sess_hash", $user_hash);

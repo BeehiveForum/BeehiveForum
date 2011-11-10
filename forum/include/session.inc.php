@@ -167,15 +167,15 @@ function session_check($show_session_fail = true, $init_guest_session = true)
                     forum_update_last_visit($user_sess['UID']);
                 }
 
-                // Update the user time stats before we update the session
-                session_update_user_time($user_sess['UID']);
-
                 // Update the session time and forum FID.
                 $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
                 $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                 if (!$result = db_query($sql, $db_session_check)) return false;
+
+                // Update the user time stats
+                session_update_user_time($user_sess['UID']);
             }
 
             // Forum self preservation
@@ -469,21 +469,18 @@ function remove_stale_sessions()
 
     if (!$result = db_query($sql, $db_remove_stale_sessions)) return false;
 
-    while (($session_data = db_fetch_array($result))) {
+    if (db_num_rows($result) < 1) return false;
 
-        session_update_user_time($session_data['UID']);
+    while (($session_data = db_fetch_array($result))) {
         $expired_sessions_array[] = $session_data['HASH'];
     }
 
-    if (sizeof($expired_sessions_array) > 0) {
+    $expired_sessions = implode("', '", $expired_sessions_array);
 
-        $expired_sessions = implode("', '", $expired_sessions_array);
+    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
+    $sql.= "AND TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
 
-        $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
-        $sql.= "AND TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
-
-        if (!$result = db_query($sql, $db_remove_stale_sessions)) return false;
-    }
+    if (!$result = db_query($sql, $db_remove_stale_sessions)) return false;
 
     return true;
 }
@@ -577,7 +574,7 @@ function session_update_user_time($uid)
 
     $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
     $sql.= "SELECT UID, FROM_UNIXTIME(USER_TIME_TOTAL + (TIME_END - TIME_START)) AS USER_TIME_TOTAL, ";
-    $sql.= "CAST(NOW() AS DATETIME) AS USER_TIME_UPDATED FROM (SELECT UID, USER_TIME_TOTAL, ";
+    $sql.= "FROM_UNIXTIME(TIME_END) AS USER_TIME_UPDATED FROM (SELECT UID, USER_TIME_TOTAL, ";
     $sql.= "IF (USER_TIME_UPDATED >= LAST_VISIT, USER_TIME_UPDATED, LAST_VISIT) AS TIME_START, ";
     $sql.= "IF (SESSION_TIME >= USER_TIME_UPDATED, SESSION_TIME, USER_TIME_UPDATED) AS TIME_END ";
     $sql.= "FROM (SELECT USER_FORUM.UID, COALESCE(UNIX_TIMESTAMP(USER_TRACK.USER_TIME_UPDATED), 0) AS USER_TIME_UPDATED, ";
@@ -671,10 +668,7 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     if ($update_visitor_log === true) {
 
         session_update_visitor_log($uid, $forum_fid);
-
         forum_update_last_visit($uid);
-
-        session_update_user_time($uid);
     }
 
     if ($skip_cookie === false) html_set_cookie("sess_hash", $user_hash);
@@ -730,10 +724,6 @@ function session_end($remove_cookies = true)
     $ipaddress = db_escape_string($ipaddress);
 
     if (isset($user_hash) && is_md5($user_hash)) {
-
-        // If the user isn't a guest we should update how long
-        // they have been actively logged in.
-        if ($uid > 0) session_update_user_time($uid);
 
         // Delete the user's cookie
         if ($remove_cookies === true) session_remove_cookies();

@@ -230,13 +230,13 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
     }else {
-        $new_forum_settings['forum_email'] = "admin@abeehiveforum.net";
+        $new_forum_settings['forum_email'] = "admin@beehiveforum.co.uk";
     }
 
     if (isset($_POST['forum_noreply_email']) && strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
         $new_forum_settings['forum_noreply_email'] = trim(stripslashes_array($_POST['forum_noreply_email']));
     }else {
-        $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
+        $new_forum_settings['forum_noreply_email'] = "noreply@beehiveforum.co.uk";
     }
 
     if (isset($_POST['content_delivery_domains']) && strlen(trim(stripslashes_array($_POST['content_delivery_domains']))) > 0) {
@@ -794,11 +794,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? htmlentities_array($forum_global_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? htmlentities_array($forum_global_settings['forum_email']) : 'admin@beehiveforum.co.uk'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumnoreplyemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? htmlentities_array($forum_global_settings['forum_noreply_email']) : 'noreply@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? htmlentities_array($forum_global_settings['forum_noreply_email']) : 'noreply@beehiveforum.co.uk'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

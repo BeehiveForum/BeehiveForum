@@ -1490,7 +1490,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Add some default forum links
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
-        $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.net/')";
+        $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.co.uk/')";
         if (!@db_query($sql, $db_forum_create)) {
             throw new Exception('Failed to create Beehive Forum link');
         }
@@ -1578,7 +1578,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                                 'default_style'           => 'default',
                                 'forum_keywords'          => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
                                 'forum_desc'              => 'A Beehive Forum',
-                                'forum_email'             => 'admin@abeehiveforum.net',
+                                'forum_email'             => 'admin@beehiveforum.co.uk',
                                 'forum_name'              => $forum_name,
                                 'show_links'              => 'Y',
                                 'allow_polls'             => 'Y',

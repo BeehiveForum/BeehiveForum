@@ -87,7 +87,7 @@ function bh_exception_handler(Exception $exception)
     if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_from']))) > 0) {
         $error_report_email_addr_from = trim(stripslashes_array($GLOBALS['error_report_email_addr_from']));
     }else {
-        $error_report_email_addr_from = 'no-reply@abeehiveforum.net';
+        $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
     }
 
     // Now we can carry on with any other errors.

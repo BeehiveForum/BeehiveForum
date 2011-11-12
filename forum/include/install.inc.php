@@ -835,8 +835,8 @@ function install_set_default_forum_settings()
 
     $global_settings = array('forum_keywords'             => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
                              'forum_desc'                 => 'A Beehive Forum',
-                             'forum_email'                => 'admin@abeehiveforum.net',
-                             'forum_noreply_email'        => 'noreply@abeehiveforum.net',
+                             'forum_email'                => 'admin@beehiveforum.co.uk',
+                             'forum_noreply_email'        => 'noreply@beehiveforum.co.uk',
                              'forum_name'                 => 'A Beehive Forum',
                              'allow_search_spidering'     => 'Y',
                              'pm_allow_attachments'       => 'Y',

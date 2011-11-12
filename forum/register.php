@@ -774,7 +774,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
         }else if ($text_captcha->make_image()) {
 
-            $forum_owner_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            $forum_owner_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
             $forum_owner_link  = sprintf("<a href=\"mailto:%s\">{$lang['forumowner']}</a>", $forum_owner_email);
 
             echo "  <br />\n";

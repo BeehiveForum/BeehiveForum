@@ -200,7 +200,7 @@ echo "<title>{$feed_title} - {$lang['rssfeed']}</title>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
 echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";
-echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
+echo "<generator>Project Beehive Forum - www.beehiveforum.co.uk</generator>\n";
 echo "<image>\n";
 echo "<title>{$forum_name}</title>\n";
 echo "<url>", html_style_image('rss_icon.png', true, true), "</url>\n";

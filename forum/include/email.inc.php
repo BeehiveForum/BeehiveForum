@@ -545,7 +545,7 @@ function email_send_user_confirmation($tuid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum reply-to email address
-    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
@@ -600,7 +600,7 @@ function email_send_changed_email_confirmation($tuid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum reply-to email address
-    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
@@ -758,7 +758,7 @@ function email_send_user_approved_notification($tuid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum reply-to email address
-    $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+    $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);

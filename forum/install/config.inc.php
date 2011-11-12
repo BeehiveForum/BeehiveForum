@@ -63,7 +63,7 @@ $error_report_verbose = false;
 // Error Reporting Email -----------------------------------------------
 
 $error_report_email_addr_to = '{error_report_email_addr_to}';
-$error_report_email_addr_from = 'no-reply@abeehiveforum.net';
+$error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
 
 // In addition to the error message displayed to end users Beehive can
 // also send error reports to an email address. To enable this
@@ -71,9 +71,9 @@ $error_report_email_addr_from = 'no-reply@abeehiveforum.net';
 //
 // For example:
 //
-// $error_report_email_addr_to = 'support@mybeehiveforum.net'
+// $error_report_email_addr_to = 'support@beehiveforum.co.uk'
 //
-// By default emails will be sent from 'no-reply@beehiveforum.net'.
+// By default emails will be sent from 'no-reply@beehiveforum.co.uk'.
 // To change this you can also edit the $error_report_email_addr_from
 // variable.
 
@@ -100,9 +100,9 @@ $cookie_domain = "";
 // URI for your forum, for example where your forum is accessible
 // from all of the following addresses:
 //
-// http://www.mybeehiveforum.net/forum/
-// http://forum.mybeehiveforum.net/
-// http://mybeehiveforum.net/forum/
+// http://www.beehiveforum.co.uk/forum/
+// http://forum.beehiveforum.co.uk/
+// http://beehiveforum.co.uk/forum/
 //
 // Usually cookies set at one address will be unavailable at the
 // others which forces your users to login multiple times and keep
@@ -112,7 +112,7 @@ $cookie_domain = "";
 // and have them accessible from all addresses you would set the
 // $cookie_domain value as follows:
 //
-// $cookie_domain = "mybeehiveforum.net/forum/";
+// $cookie_domain = "beehiveforum.co.uk/forum/";
 //
 // As you may have noticed the string used is common to all of
 // addresses listed above and so any cookies set at any of the domains

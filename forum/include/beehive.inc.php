@@ -43,12 +43,12 @@ function draw_beehive_bar()
     echo "  <tr>\n";
     echo "    <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
     echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://www.beehiveforum.net/faq/\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://www.beehiveforum.net/docs/\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://www.beehiveforum.net/support/\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://www.beehiveforum.net/donate/\" target=\"_blank\">{$lang['donateexcmark']}</a>\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/faq/\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/docs/\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/support/\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/donate/\" target=\"_blank\">{$lang['donateexcmark']}</a>\n";
     echo "    </td>\n";
-    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date("Y", time()), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
+    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date("Y", time()), " <a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";

@@ -440,17 +440,20 @@ function poll_get_votes($tid, $include_votes = true)
         }
     }
 
-    foreach ($poll_votes_array as $question_id => $options_array) {
+    if ($include_votes === true) {
 
-        foreach ($options_array['OPTIONS_ARRAY'] as $option_id => $option) {
+        foreach ($poll_votes_array as $question_id => $options_array) {
 
-            $poll_votes_sort = array();
+            foreach ($options_array['OPTIONS_ARRAY'] as $option_id => $option) {
 
-            foreach ($option['VOTES_ARRAY'] as $user_vote) {
-                $poll_votes_sort[] = strtolower(format_user_name($user_vote['LOGON'], $user_vote['NICKNAME']));
+                $poll_votes_sort = array();
+
+                foreach ($option['VOTES_ARRAY'] as $user_vote) {
+                    $poll_votes_sort[] = strtolower(format_user_name($user_vote['LOGON'], $user_vote['NICKNAME']));
+                }
+
+                array_multisort($poll_votes_sort, SORT_STRING, SORT_ASC, $poll_votes_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTES_ARRAY']);
             }
-
-            array_multisort($poll_votes_sort, SORT_STRING, SORT_ASC, $poll_votes_array[$question_id]['OPTIONS_ARRAY'][$option_id]['VOTES_ARRAY']);
         }
     }
 

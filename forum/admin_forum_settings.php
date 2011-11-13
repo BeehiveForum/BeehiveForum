@@ -543,7 +543,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
+echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['timezonefromGMT']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", htmlentities_array($available_timezones), (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -891,7 +891,7 @@ if (forum_get_global_setting('allow_forum_google_analytics', 'Y')) {
     echo "                        <td align=\"left\">", form_radio("enable_google_analytics", "Y", $lang['yes'], (isset($forum_settings['enable_google_analytics']) && $forum_settings['enable_google_analytics'] == "Y")), "&nbsp;", form_radio("enable_google_analytics", "N", $lang['no'], (isset($forum_settings['enable_google_analytics']) && $forum_settings['enable_google_analytics'] == "N") || !isset($forum_settings['enable_google_analytics'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['googleanalyticsaccountid']}:</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['googleanalyticsaccountid']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("google_analytics_code", (isset($forum_settings['google_analytics_code']) ? htmlentities_array($forum_settings['google_analytics_code']) : ''), 31, 20), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -944,7 +944,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "                        <td align=\"left\">", form_dropdown_array('adsense_display_users', $adsense_user_type_array, (isset($forum_global_settings['adsense_display_users']) && in_array($forum_global_settings['adsense_display_users'], array_keys($adsense_user_type_array)) ? $forum_global_settings['adsense_display_users'] : ADSENSE_DISPLAY_NONE)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['adsensedisplayadsonpages']}:</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['adsensedisplayadsonpages']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array('adsense_display_pages', $adsense_page_type_array, (isset($forum_global_settings['adsense_display_pages']) && in_array($forum_global_settings['adsense_display_pages'], array_keys($adsense_page_type_array)) ? $forum_global_settings['adsense_display_pages'] : ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";

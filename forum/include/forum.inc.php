@@ -2052,7 +2052,7 @@ function forum_search($forum_search, $offset, $sort_by, $sort_dir)
         }else if ($forums_count > 0) {
 
             $offset = floor(($forums_count - 1) / 10) * 10;
-            return forum_search($forum_search, $offset);
+            return forum_search($forum_search, $offset, $sort_by, $sort_dir);
         }
     }
 

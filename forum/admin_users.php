@@ -345,13 +345,13 @@ echo "                 <tr>\n";
 echo "                   <td class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }
 
 if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
@@ -392,7 +392,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y"), "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT']), "</td>\n";
@@ -434,11 +434,11 @@ echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", page_links(
 
 if (forum_get_setting('require_user_approval', 'Y') && (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
 
-    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" style=\"white-space: nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
 
 }else {
 
-    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" style=\"white-space: nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
 }
 
 echo "    </tr>\n";
@@ -466,13 +466,13 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array[
 
     if (forum_get_setting('require_user_approval', 'Y')) {
 
-        echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
-        echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession'], ADMIN_USER_OPTION_APPROVE => $lang['approve']), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession'], ADMIN_USER_OPTION_APPROVE => $lang['approve']), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
 
     }else {
 
-        echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
-        echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession']), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession']), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
     }
 
     echo "                      </tr>\n";

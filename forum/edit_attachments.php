@@ -474,18 +474,18 @@ if ($attachment_result) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
-                echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
-                    echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                 }else {
 
                     echo "                  <td align=\"left\">&nbsp;</td>\n";
                 }
 
-                echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                  <td align=\"right\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
@@ -502,18 +502,18 @@ if ($attachment_result) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
-                echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
-                    echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                 }else {
 
                     echo "                  <td align=\"left\">&nbsp;</td>\n";
                 }
 
-                echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                  <td align=\"right\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
@@ -582,18 +582,18 @@ if ($uid == session_get_value('UID') && is_md5($aid)) {
 
                     echo "                <tr>\n";
                     echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
-                    echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                     if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
-                        echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                     }else {
 
                         echo "                  <td align=\"left\">&nbsp;</td>\n";
                     }
 
-                    echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                    echo "                  <td align=\"right\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                     echo "                </tr>\n";
 
@@ -610,18 +610,18 @@ if ($uid == session_get_value('UID') && is_md5($aid)) {
 
                     echo "                <tr>\n";
                     echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
-                    echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                     if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
-                        echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                     }else {
 
                         echo "                  <td align=\"left\">&nbsp;</td>\n";
                     }
 
-                    echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                    echo "                  <td align=\"right\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                     echo "                </tr>\n";
 

@@ -328,23 +328,23 @@ echo "              <tr>\n";
 echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
+echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
 echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", mb_strlen($link['URI']) > 35 ? htmlentities_array(mb_substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
+echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
 echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(htmlentities_array(format_user_name($link['LOGON'], $link['NICKNAME']))) : $lang['unknownuser']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
+echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
 echo "                      <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($link['DESCRIPTION'])), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
+echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
 echo "                      <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['clicks']}:</td>\n";
+echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['clicks']}:</td>\n";
 echo "                      <td align=\"left\">{$link['CLICKS']}</td>\n";
 echo "                    </tr>\n";
 
@@ -353,14 +353,14 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
     if ($link['VOTES'] == 1) {
 
         echo "                    <tr>\n";
-        echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
+        echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
         echo "                      <td align=\"left\">", number_format($link['RATING'], 1, ".", ","), " (1 {$lang['vote']})</td>\n";
         echo "                    </tr>\n";
 
     }else {
 
         echo "                    <tr>\n";
-        echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
+        echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
         echo "                      <td align=\"left\">", number_format($link['RATING'], 1, ".", ","), " ({$link['VOTES']} {$lang['votes']})</td>\n";
         echo "                    </tr>\n";
     }
@@ -368,7 +368,7 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
 }else {
 
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
+    echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
     echo "                      <td align=\"left\">{$lang['notratedyet']}</td>\n";
     echo "                    </tr>\n";
 }
@@ -413,7 +413,7 @@ if (!user_is_guest()) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['bad']}&nbsp;</td>\n";
-    echo "                        <td align=\"center\" nowrap=\"nowrap\">", form_radio_array("vote", range(0, 10), $vote), "&nbsp;</td>\n";
+    echo "                        <td align=\"center\" style=\"white-space: nowrap\">", form_radio_array("vote", range(0, 10), $vote), "&nbsp;</td>\n";
     echo "                        <td align=\"left\">{$lang['good']}&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -558,19 +558,19 @@ if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['moveto']}:</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['moveto']}:</td>\n";
     echo "                        <td align=\"left\">", links_folder_dropdown($link['FID'], $folders), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editname']}:</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['editname']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("title", htmlentities_array($link['TITLE']), 45, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editaddress']}:</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['editaddress']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("uri", htmlentities_array($link['URI']), 45, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editdescription']}:</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['editdescription']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("description", htmlentities_array($link['DESCRIPTION']), 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";

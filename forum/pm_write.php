@@ -874,7 +874,7 @@ if (($friends_array = pm_user_get_friends())) {
     echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others'], (isset($to_radio) && $to_radio == "others") ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -886,7 +886,7 @@ if (($friends_array = pm_user_get_friends())) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
     echo "                      </tr>\n";
 }
 

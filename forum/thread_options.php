@@ -755,7 +755,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"260\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
-                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search("merge_thread", "", 28, 15, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
+                echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("merge_thread", "", 28, 15, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -802,7 +802,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"260\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
-                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text_search('merge_thread', '', 37, false, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
+                echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search('merge_thread', '', 37, false, SEARCH_THREAD, false, "", "merge_thread_id"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -889,7 +889,7 @@ if ($thread_data['DELETED'] == 'N') {
                 $sticky_day   = 0;
             }
 
-            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_", $sticky_year_min), "&nbsp;<span class=\"small_optional_text\">{$lang['optionalbrackets']}</span></td>\n";
+            echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_", $sticky_year_min), "&nbsp;<span class=\"small_optional_text\">{$lang['optionalbrackets']}</span></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";

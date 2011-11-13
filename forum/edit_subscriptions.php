@@ -282,7 +282,7 @@ if (sizeof($thread_subscriptions['thread_array']) > 0) {
     foreach ($thread_subscriptions['thread_array'] as $thread) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $thread['TID'], ''), "</td>\n";
+        echo "                  <td align=\"center\" style=\"white-space: nowrap\">", form_checkbox('set_interest[]', $thread['TID'], ''), "</td>\n";
         echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a></td>\n";
 
         if (isset($interest_level_array[$thread['INTEREST']])) {

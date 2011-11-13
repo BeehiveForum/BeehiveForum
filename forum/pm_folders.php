@@ -397,7 +397,7 @@ echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"pmbar_text\" nowrap=\"nowrap\">", sprintf($lang['yourpmfoldersare'], "$pm_used_percent%"), "</td>\n";
+echo "            <td align=\"left\" class=\"pmbar_text\" style=\"white-space: nowrap\">", sprintf($lang['yourpmfoldersare'], "$pm_used_percent%"), "</td>\n";
 echo "          </tr>\n";
 
 if (pm_auto_prune_enabled()) {

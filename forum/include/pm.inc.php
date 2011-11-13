@@ -212,7 +212,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false,
     }else if ($message_count > 0) {
 
         $offset = floor(($message_count - 1) / 10) * 10;
-        return pm_get_inbox($sort_by, $sort_dir, $offset);
+        return pm_get_inbox($sort_by, $sort_dir, $offset, $limit);
     }
 
     pms_have_attachments($pm_get_inbox_array, $messages_array);
@@ -304,7 +304,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     }else if ($message_count > 0) {
 
         $offset = floor(($message_count - 1) / 10) * 10;
-        return pm_get_outbox($sort_by, $sort_dir, $offset);
+        return pm_get_outbox($sort_by, $sort_dir, $offset, $limit);
     }
 
     pms_have_attachments($pm_get_outbox_array, $messages_array);
@@ -396,7 +396,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false, 
     }else if ($message_count > 0) {
 
         $offset = floor(($message_count - 1) / 10) * 10;
-        return pm_get_sent($sort_by, $sort_dir, $offset);
+        return pm_get_sent($sort_by, $sort_dir, $offset, $limit);
     }
 
     pms_have_attachments($pm_get_sent_array, $messages_array);
@@ -490,7 +490,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     }else if ($message_count > 0) {
 
         $offset = floor(($message_count - 1) / 10) * 10;
-        return pm_get_saved_items($sort_by, $sort_dir, $offset);
+        return pm_get_saved_items($sort_by, $sort_dir, $offset, $limit);
     }
 
     pms_have_attachments($pm_get_saved_items_array, $messages_array);
@@ -582,7 +582,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     }else if ($message_count > 0) {
 
         $offset = floor(($message_count - 1) / 10) * 10;
-        return pm_get_drafts($sort_by, $sort_dir, $offset);
+        return pm_get_drafts($sort_by, $sort_dir, $offset, $limit);
     }
 
     pms_have_attachments($pm_get_drafts_array, $messages_array);
@@ -739,7 +739,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     }else if ($message_count > 0) {
 
         $offset = floor(($message_count - 1) / 10) * 10;
-        return pm_fetch_search_results($sort_by, $sort_dir, $offset);
+        return pm_fetch_search_results($sort_by, $sort_dir, $offset, $limit);
     }
 
     return array('message_count' => $message_count,
@@ -1110,13 +1110,13 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
         if ($export_html === true) {
 
-            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</span></td>\n";
+            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</span></td>\n";
 
         }else {
 
-            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</a></span></td>\n";
+            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</a></span></td>\n";
         }
 
     }else {
@@ -1131,8 +1131,8 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
             if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
-            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
+            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
 
         }elseif (is_array($pm_message_array['TLOGON'])) {
 
@@ -1140,25 +1140,25 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
             if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
-            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
+            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
 
         }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
             if ($export_html === true) {
 
-                echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span></td>\n";
+                echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+                echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span></td>\n";
 
             }else {
 
-                echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></span></td>\n";
+                echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+                echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></span></td>\n";
             }
 
         }else {
 
-            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
             echo "                        <td align=\"left\" class=\"postbody\"><i>{$lang['norecipients']}</i></td>\n";
         }
     }
@@ -1169,24 +1169,24 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
+    echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
 
     if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
-        echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(htmlentities_array($pm_message_array['SUBJECT'])), "</span></td>\n";
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(htmlentities_array($pm_message_array['SUBJECT'])), "</span></td>\n";
 
     }else {
 
-        echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><i>{$lang['nosubject']}</i></span></td>\n";
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><i>{$lang['nosubject']}</i></span></td>\n";
     }
 
     if (isset($pm_message_array['TYPE']) && ($pm_message_array['TYPE'] & PM_SAVED_DRAFT) > 0) {
 
-        echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><i>{$lang['notsent']}</i>&nbsp;</span></td>\n";
+        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\"><i>{$lang['notsent']}</i>&nbsp;</span></td>\n";
 
     }else {
 
-        echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_message_array['CREATED']), "&nbsp;</span></td>\n";
+        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">", format_time($pm_message_array['CREATED']), "&nbsp;</span></td>\n";
     }
 
     echo "                      </tr>\n";

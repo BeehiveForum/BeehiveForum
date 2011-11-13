@@ -538,7 +538,7 @@ echo "  <tr>\n";
 
 if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
-    echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\" class=\"postbody\">";
+    echo "    <td width=\"33%\" align=\"left\" style=\"white-space: nowrap\" class=\"postbody\">";
     echo "      <img src=\"". html_style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> ";
     echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" id=\"reply_0\"><b>{$lang['replyall']}</b></a>\n";
     echo "    </td>\n";
@@ -552,11 +552,11 @@ if (!user_is_guest()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
-        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
 
     }else {
 
-        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
     }
 
 }else {
@@ -568,7 +568,7 @@ if ($last_pid < $thread_data['LENGTH']) {
 
     $next_pid = $last_pid + 1;
 
-    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\" class=\"postbody\">", form_quick_button("messages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$next_pid")), "</td>\n";
+    echo "    <td width=\"33%\" align=\"right\" style=\"white-space: nowrap\" class=\"postbody\">", form_quick_button("messages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$next_pid")), "</td>\n";
 
 }else {
 

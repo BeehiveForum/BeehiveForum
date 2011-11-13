@@ -668,7 +668,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"13\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['memberno']}:&nbsp;</td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">{$lang['memberno']}:&nbsp;</td>\n";
 echo "                  <td align=\"left\">#{$user_info['UID']}&nbsp;</td>\n";
 echo "                </tr>\n";
 
@@ -677,40 +677,40 @@ if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid =
     if (forum_get_setting('allow_username_changes', 'Y') || (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
         echo "                  <td align=\"left\">", form_input_text("logon", (isset($user_info['LOGON']) ? htmlentities_array($user_info['LOGON']) : ""), 45, 15, "", "user_pref_field"), "</td>\n";
         echo "                </tr>\n";
 
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
         echo "                  <td align=\"left\">", htmlentities_array($user_info['LOGON']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
     echo "                  <td align=\"left\">", form_input_text("nickname", (isset($user_info['NICKNAME']) ? htmlentities_array($user_info['NICKNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['emailaddress']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\">{$lang['emailaddress']}:&nbsp;</td>\n";
     echo "                  <td align=\"left\">", form_input_text("email", (isset($user_info['EMAIL']) ? htmlentities_array($user_info['EMAIL']) : ""), 45, 80, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['firstname']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\">{$lang['firstname']}:&nbsp;</td>\n";
     echo "                  <td align=\"left\">", form_input_text("firstname", (isset($user_prefs['FIRSTNAME']) ? htmlentities_array($user_prefs['FIRSTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['lastname']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\">{$lang['lastname']}:&nbsp;</td>\n";
     echo "                  <td align=\"left\">", form_input_text("lastname", (isset($user_prefs['LASTNAME']) ? htmlentities_array($user_prefs['LASTNAME']) : ""), 45, 32, "", "user_pref_field"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['dateofbirth']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\">{$lang['dateofbirth']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -719,15 +719,15 @@ if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid =
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
+    echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
     echo "                  <td align=\"left\">", htmlentities_array($user_info['LOGON']), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['homepageURL']}:&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">{$lang['homepageURL']}:&nbsp;</td>\n";
 echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? htmlentities_array($user_prefs['HOMEPAGE_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", '', (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("homepage_url_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", '', (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("homepage_url_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
@@ -763,12 +763,12 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                  <td align=\"left\" rowspan=\"4\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['pictureURL']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">{$lang['pictureURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['selectattachment']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">{$lang['selectattachment']}:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array("pic_aid", $image_attachments_array, (isset($user_prefs['PIC_AID']) ? htmlentities_array($user_prefs['PIC_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -802,26 +802,26 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['avatarURL']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">{$lang['avatarURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['selectattachment']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">{$lang['selectattachment']}:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array("avatar_aid", $image_attachments_array, (isset($user_prefs['AVATAR_AID']) ? htmlentities_array($user_prefs['AVATAR_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
     echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['pictureURL']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">{$lang['pictureURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['avatarURL']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">{$lang['avatarURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 

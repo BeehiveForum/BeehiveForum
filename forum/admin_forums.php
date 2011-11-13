@@ -626,21 +626,21 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepermissions[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_dropdown_array("t_access", array(FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepermissions[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
         echo "                      </tr>\n";
 
     }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepassword[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_dropdown_array("t_access", array(FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepassword[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
         echo "                      </tr>\n";
 
     }else {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_dropdown_array("t_access", array(FORUM_DISABLED => $lang['disabled'], FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -723,10 +723,10 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['webtag']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['name']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['messages']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['accesslevel']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\" width=\"150\">{$lang['webtag']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['name']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['messages']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['accesslevel']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
@@ -751,7 +751,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
                 echo "                  <td align=\"left\">{$lang['unknown']}</td>\n";
             }
 
-            echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}&amp;final_uri=admin_forum_settings.php%3Fwebtag%3D{$forum_data['WEBTAG']}\" target=\"", html_get_top_frame_name(), "\"><img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;";
+            echo "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}&amp;final_uri=admin_forum_settings.php%3Fwebtag%3D{$forum_data['WEBTAG']}\" target=\"", html_get_top_frame_name(), "\"><img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;";
 
             if (isset($forum_data['DEFAULT_FORUM']) && $forum_data['DEFAULT_FORUM'] == 1) {
                 echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default=0\"><img src=\"", html_style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></a>\n";

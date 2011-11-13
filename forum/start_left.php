@@ -176,9 +176,9 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
             echo "                      <tr>\n";
 
             if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
-                echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"25\"><img src=\"", html_style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" /></td>\n";
+                echo "                        <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\"><img src=\"", html_style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" /></td>\n";
             }else {
-                echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" /></td>\n";
+                echo "                        <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" /></td>\n";
             }
 
             if ($thread['LAST_READ'] == 0) {
@@ -247,7 +247,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
             if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", html_style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
 
             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
-            echo "                        <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
+            echo "                        <td valign=\"top\" style=\"white-space: nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
             echo "                      </tr>\n";
         }
 
@@ -298,10 +298,10 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                        <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
+    echo "                              <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
     echo "                            </tr>\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", html_style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
+    echo "                              <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><img src=\"", html_style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
     echo "                            </tr>\n";
     echo "                          </table>\n";
     echo "                        </td>\n";
@@ -393,11 +393,11 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
         if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
 
-            echo "                              <td valign=\"top\"  align=\"right\" nowrap=\"nowrap\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</td>\n";
 
         }else {
 
-            echo "                              <td valign=\"top\"  align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\">{$lang['unknown']}&nbsp;</td>\n";
         }
 
         echo "                            </tr>\n";
@@ -459,9 +459,9 @@ if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
     foreach ($user_birthdays_array as $user_birthday) {
 
         echo "                            <tr>\n";
-        echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        echo "                              <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"20\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_birthday['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_birthday['LOGON'], $user_birthday['NICKNAME']))), "</a></td>\n";
-        echo "                              <td align=\"right\" nowrap=\"nowrap\" valign=\"top\">", format_birthday($user_birthday['DOB']), "&nbsp;</td>\n";
+        echo "                              <td align=\"right\" style=\"white-space: nowrap\" valign=\"top\">", format_birthday($user_birthday['DOB']), "&nbsp;</td>\n";
         echo "                            </tr>\n";
     }
 

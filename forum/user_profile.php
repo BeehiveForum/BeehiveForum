@@ -199,43 +199,43 @@ if (isset($user_profile['HOMEPAGE_URL'])) {
 
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"{$lang['visithomepage']}\"><img src=\"", html_style_image('home.png'), "\" border=\"0\" alt=\"{$lang['visithomepage']}\" title=\"{$lang['visithomepage']}\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"{$lang['visithomepage']}\">{$lang['visithomepage']}</a></td>\n";
+    echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"{$lang['visithomepage']}\">{$lang['visithomepage']}</a></td>\n";
     echo "                                                </tr>\n";
 }
 
 echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"{$lang['sendpm']}\"><img src=\"", html_style_image('pmunread.png'), "\" border=\"0\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" /></a></td>\n";
-echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"{$lang['sendpm']}\">{$lang['sendpm']}</a></td>\n";
+echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"{$lang['sendpm']}\">{$lang['sendpm']}</a></td>\n";
 echo "                                                </tr>\n";
 echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"{$lang['sendemail']}\"><img src=\"", html_style_image('email.png'), "\" border=\"0\" alt=\"{$lang['sendemail']}\" title=\"{$lang['sendemail']}\" /></a></td>\n";
-echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"{$lang['sendemail']}\">{$lang['sendemail']}</a></td>\n";
+echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"{$lang['sendemail']}\">{$lang['sendemail']}</a></td>\n";
 echo "                                                </tr>\n";
 
 if ($uid <> session_get_value('UID')) {
 
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"", html_style_image('enemy.png'), "\" border=\"0\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
+    echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" class=\"opener_top\">", sprintf($lang['findthreadsstartedbyuser'], $logon), "</a></td>\n";
+    echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" class=\"opener_top\">", sprintf($lang['findthreadsstartedbyuser'], $logon), "</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" class=\"opener_top\">", sprintf($lang['findpostsmadebyuser'], $logon), "</a></td>\n";
+    echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" class=\"opener_top\">", sprintf($lang['findpostsmadebyuser'], $logon), "</a></td>\n";
     echo "                                                </tr>\n";
 
 }else {
 
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findthreadsstartedbyme']}\" title=\"{$lang['findthreadsstartedbyme']}\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" class=\"opener_top\">{$lang['findthreadsstartedbyme']}</a></td>\n";
+    echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" class=\"opener_top\">{$lang['findthreadsstartedbyme']}</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['findpostsmadebyme']}\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findpostsmadebyme']}\" title=\"{$lang['findpostsmadebyme']}\" /></a></td>\n";
-    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['sendemail']}\" class=\"opener_top\">{$lang['findpostsmadebyme']}</a></td>\n";
+    echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['sendemail']}\" class=\"opener_top\">{$lang['findpostsmadebyme']}</a></td>\n";
     echo "                                                </tr>\n";
 }
 

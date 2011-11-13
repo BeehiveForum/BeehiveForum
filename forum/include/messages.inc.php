@@ -800,8 +800,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "          <td align=\"left\">\n";
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
-    echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-    echo "                <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+    echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+    echo "                <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if ($message['FROM_UID'] > -1) {
 
@@ -849,7 +849,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     echo "</td>\n";
-    echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+    echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $uid != 0) {
 
@@ -870,8 +870,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "&nbsp;</span></td>\n";
     echo "              </tr>\n";
     echo "              <tr>\n";
-    echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-    echo "                <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+    echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+    echo "                <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
@@ -905,7 +905,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     echo "</td>\n";
-    echo "                <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+    echo "                <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $uid != 0) {
 
@@ -1088,7 +1088,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
             }
 
-            echo "                <td width=\"50%\" nowrap=\"nowrap\">";
+            echo "                <td width=\"50%\" style=\"white-space: nowrap\">";
 
             if ($msg_count > 0) {
 
@@ -1132,7 +1132,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             }
 
             echo "</td>\n";
-            echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
+            echo "                <td width=\"25%\" align=\"right\" style=\"white-space: nowrap\">\n";
             echo "                  <span class=\"post_options\" id=\"post_options_$tid.{$message['PID']}\"></span>\n";
             echo "                </td>\n";
             echo "              </tr>";
@@ -1202,12 +1202,12 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
     if ($quick_reply=='N') {
 
         $html.= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"". html_style_image('quickreply.png'). "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">{$lang['quickreply']}</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">{$lang['quickreply']}</a></td>\n";
 
     }else {
 
         $html.= "                        <td align=\"left\"><img src=\"". html_style_image('post.png'). "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></td>\n";
-        $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" id=\"reply_{$message['PID']}\">{$lang['reply']}</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" id=\"reply_{$message['PID']}\">{$lang['reply']}</a></td>\n";
     }
 
     $html.= "                      </tr>\n";
@@ -1216,28 +1216,28 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
         $html.= "                      <tr>\n";
         $html.= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\"><img src=\"". html_style_image('delete.png'). "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
     $html.= "                      <tr>\n";
     $html.= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"". html_style_image('pmunread.png'). "\" border=\"0\" alt=\"{$lang['pm_reply']}\" title=\"{$lang['pm_reply']}\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\">{$lang['pm_reply']}</a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\">{$lang['pm_reply']}</a></td>\n";
     $html.= "                      </tr>\n";
     $html.= "                      <tr>\n";
     $html.= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"". html_style_image('print.png'). "\" border=\"0\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\">{$lang['print']}</a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\">{$lang['print']}</a></td>\n";
     $html.= "                      </tr>\n";
     $html.= "                      <tr>\n";
     $html.= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"". html_style_image('markasunread.png'). "\" border=\"0\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"{$lang['markasunread']}\">{$lang['markasunread']}</a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"{$lang['markasunread']}\">{$lang['markasunread']}</a></td>\n";
     $html.= "                      </tr>\n";
 
     if ($uid != $message['FROM_UID']) {
 
         $html.= "                      <tr>\n";
         $html.= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"". html_style_image('enemy.png'). "\" border=\"0\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
@@ -1245,7 +1245,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
         $html.= "                      <tr>\n";
         $html.= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"". html_style_image('admintool.png'). "\" border=\"0\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\">{$lang['privileges']}</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\">{$lang['privileges']}</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
@@ -1257,7 +1257,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
                 $html.= "                      <tr>\n";
                 $html.= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['approvepost']}\"><img src=\"". html_style_image('approved.png'). "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a></td>\n";
-                $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a></td>\n";
+                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a></td>\n";
                 $html.= "                      </tr>\n";
             }
         }
@@ -1266,14 +1266,14 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-            $html.= "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
+            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
             $html.= "                      </tr>";
 
         }else {
 
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-            $html.= "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['notlogged']}</td>\n";
+            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['notlogged']}</td>\n";
             $html.= "                      </tr>";
         }
 
@@ -1285,14 +1285,14 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
                 $html.= "                      <tr>\n";
                 $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                $html.= "                        <td align=\"left\" nowrap=\"nowrap\">{$message['IPADDRESS']}</td>\n";
+                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$message['IPADDRESS']}</td>\n";
                 $html.= "                      </tr>";
 
             }else {
 
                 $html.= "                      <tr>\n";
                 $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                $html.= "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['logged']}</td>\n";
+                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['logged']}</td>\n";
                 $html.= "                      </tr>";
             }
 
@@ -1300,7 +1300,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-            $html.= "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['logged']}</td>\n";
+            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['logged']}</td>\n";
             $html.= "                      </tr>";
         }
     }

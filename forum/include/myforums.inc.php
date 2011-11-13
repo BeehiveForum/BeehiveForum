@@ -258,7 +258,7 @@ function get_my_forums($view_type, $offset, $sort_by = 'LAST_VISIT', $sort_dir =
     }else if ($forums_count > 0) {
 
         $offset = floor(($forums_count - 1) / 10) * 10;
-        return get_my_forums($view_type, $offset);
+        return get_my_forums($view_type, $offset, $sort_by, $sort_dir);
     }
 
     return array('forums_array' => $forums_array,

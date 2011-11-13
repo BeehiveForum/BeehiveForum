@@ -524,9 +524,9 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['filtername']}&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['filtertype']}&nbsp;</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\" nowrap=\"nowrap\" width=\"100\">{$lang['filterenabled']}&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" style=\"white-space: nowrap\">{$lang['filtername']}&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" style=\"white-space: nowrap\">{$lang['filtertype']}&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" style=\"white-space: nowrap\" width=\"100\">{$lang['filterenabled']}&nbsp;</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($word_filter_array['word_filter_array']) > 0) {

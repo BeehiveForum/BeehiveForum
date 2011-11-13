@@ -278,14 +278,14 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
     foreach ($user_groups_array['user_groups_array'] as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">", form_checkbox("delete_group[]", $user_group['GID']), "</td>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\" valign=\"top\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", form_checkbox("delete_group[]", $user_group['GID']), "</td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
 
         if (isset($user_group['GROUP_DESC']) && strlen(trim($user_group['GROUP_DESC'])) > 0) {
 
             $group_desc_short = (mb_strlen(trim($user_group['GROUP_DESC'])) > 25) ? mb_substr($user_group['GROUP_DESC'], 0, 22). "&hellip;" : $user_group['GROUP_DESC'];
 
-            echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" nowrap=\"nowrap\"><div title=\"", word_filter_add_ob_tags($user_group['GROUP_DESC']), "\">", word_filter_add_ob_tags($group_desc_short), "</div></td>\n";
+            echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" style=\"white-space: nowrap\"><div title=\"", word_filter_add_ob_tags($user_group['GROUP_DESC']), "\">", word_filter_add_ob_tags($group_desc_short), "</div></td>\n";
 
         }else {
 
@@ -335,7 +335,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\" class=\"posthead\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
-echo "                <td colspan=\"4\" class=\"subhead\" align=\"left\" nowrap=\"nowrap\">Permissions Key</td>\n";
+echo "                <td colspan=\"4\" class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">Permissions Key</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td align=\"center\">\n";

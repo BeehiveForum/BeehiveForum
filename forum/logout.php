@@ -84,7 +84,7 @@ $user_sess = session_check(false);
 $webtag = get_webtag();
 
 // After we've logged out redirect somewhere
-$final_uri = '';
+$final_uri = '&final_uri=logon.php%3Fwebtag%3D$webtag%26logout_success%3Dtrue';
 
 if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
 
@@ -105,20 +105,9 @@ if (isset($_REQUEST['register'])) {
     exit;
 }
 
-html_set_cookie("logon", "1");
-
 html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
 html_set_cookie("user_passhash", "", time() - YEAR_IN_SECONDS);
 
-if (user_is_guest()) {
-
-    header_redirect("index.php?webtag=$webtag$final_uri");
-    exit;
-
-}else {
-
-    header_redirect("index.php?webtag=$webtag&logout_success=true$final_uri");
-    exit;
-}
+header_redirect("index.php?webtag=$webtag$final_uri");
 
 ?>

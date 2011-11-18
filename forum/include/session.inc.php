@@ -692,7 +692,6 @@ function session_remove_cookies()
 
     // Unset the session cookies.
     html_set_cookie("sess_hash", "", time() - YEAR_IN_SECONDS);
-    html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
 
     // Unset the forum password cookie if any.
     if (forum_check_webtag_available($webtag)) {

@@ -81,6 +81,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "sphinx.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
@@ -958,7 +959,7 @@ echo "                        <td align=\"left\" colspan=\"2\">\n";
 
 if (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_settings['sphinx_search_enabled'] == "Y") {
 
-    if (!search_sphinx_connect() || !search_sphinx_search_index()) {
+    if (!sphinx_search_connect() || !sphinx_search_index()) {
 
         html_display_error_msg($lang['sphinxsearchsettingsincorrect'], '95%', 'center');
     }

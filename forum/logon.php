@@ -123,8 +123,6 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
     html_remove_all_cookies();
 
-    html_set_cookie("logon", "1");
-
     if (isset($final_uri)) {
 
         $final_uri = rawurlencode($final_uri);
@@ -150,8 +148,6 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
         }
 
     }else {
-
-        html_set_cookie("logon", "1");
 
         if (isset($final_uri)) {
 

@@ -249,7 +249,7 @@ function db_fetch_mysql_version()
             $version_array[2] = 0;
         }
 
-        $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+        $mysql_version = sprintf('%d.%d.%d', $version_array[0], $version_array[1], intval($version_array[2]));
     }
 
     return $mysql_version;

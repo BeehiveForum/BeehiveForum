@@ -43,6 +43,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "sphinx.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
@@ -96,7 +97,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     user_increment_post_count($fuid);
 
-    search_sphinx_update_index($tid, $new_pid);
+    sphinx_search_update_index($tid, $new_pid);
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
         admin_send_post_approval_notification($fid);
@@ -569,7 +570,7 @@ function post_update($fid, $tid, $pid, $content)
     }
 
     // Update Swiftsearch index.
-    search_sphinx_update_index($tid, $pid);
+    sphinx_search_update_index($tid, $pid);
 
     return true;
 }
@@ -635,7 +636,7 @@ function post_delete($tid, $pid)
     if (!db_query($sql, $db_post_delete)) return false;
 
     // Update Swiftsearch index.
-    search_sphinx_delete_index($tid, $pid);
+    sphinx_search_delete_index($tid, $pid);
 
     return true;
 }

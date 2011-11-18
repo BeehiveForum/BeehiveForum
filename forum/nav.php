@@ -133,7 +133,7 @@ if (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM
 
 if (user_is_guest()) {
 
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['login']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=logon.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['login']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"register.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['register']}</a>\n";
 
 }else {

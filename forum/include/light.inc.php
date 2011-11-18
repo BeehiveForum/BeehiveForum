@@ -272,8 +272,6 @@ function light_draw_logon_form($error_msg_array = array())
 
     forum_check_webtag_available($webtag);
 
-    html_set_cookie("logon", "", time() - YEAR_IN_SECONDS);
-
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
         light_html_display_success_msg($lang['youhavesuccessfullyloggedout']);
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

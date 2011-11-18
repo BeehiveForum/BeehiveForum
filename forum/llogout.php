@@ -90,8 +90,6 @@ $user_sess = session_check();
 
 session_end();
 
-html_set_cookie("logon", "1");
-
 html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
 
 html_set_cookie("user_passhash", "", time() - YEAR_IN_SECONDS);

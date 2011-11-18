@@ -38,6 +38,10 @@ define('BEEHIVE_VERSION', "1.1.0-CVS");
 // Beehive DOB (unixtimestamp)
 define('BEEHIVE_DOB', 1018220400);
 
+// Minimum requirements.
+define('BEEHIVE_PHP_MIN_VERSION', '5.2.1');
+define('BEEHIVE_MYSQL_MIN_VERSION', '5.1.41');
+
 // Constants for date / time.
 define('YEAR_IN_SECONDS', 31536000);
 define('WEEK_IN_SECONDS', 604800);
@@ -154,6 +158,10 @@ define('SEARCH_NO_KEYWORDS', 2);
 define('SEARCH_NO_MATCHES', 3);
 define('SEARCH_FREQUENCY_TOO_GREAT', 4);
 define('SEARCH_SPHINX_UNAVAILABLE', 5);
+
+// Constants for Search date range
+define('SEARCH_DATE_RANGE_ARRAY', 0);
+define('SEARCH_DATE_RANGE_SQL', 1);
 
 // Constants for style creation
 define('STYLE_MODE_NONE', 0);

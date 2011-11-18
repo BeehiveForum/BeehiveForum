@@ -109,6 +109,9 @@ switch ($_GET['action']) {
     // User autocomplete.
     case 'user_autocomplete':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         // Check we have a search query.
         if (!isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
 
@@ -134,6 +137,9 @@ switch ($_GET['action']) {
 
     // Signature input toggle
     case 'sig_toggle':
+
+        // Disabled for guests
+        if (user_is_guest()) break;
 
         // Get the user's post page preferences.
         $page_prefs = session_get_post_page_prefs();
@@ -168,6 +174,9 @@ switch ($_GET['action']) {
     // Emoticons box toggle.
     case 'emots_toggle':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         // Get the user's post page preferences.
         $page_prefs = session_get_post_page_prefs();
 
@@ -200,6 +209,9 @@ switch ($_GET['action']) {
 
     // Poll Advanced Options toggle
     case 'poll_advanced_toggle':
+
+        // Disabled for guests
+        if (user_is_guest()) break;
 
         // Get the user's post page preferences.
         $page_prefs = session_get_post_page_prefs();
@@ -234,6 +246,9 @@ switch ($_GET['action']) {
     // Poll Additional message toggle
     case 'poll_additional_message_toggle':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         // Get the user's post page preferences.
         $page_prefs = session_get_post_page_prefs();
 
@@ -266,6 +281,9 @@ switch ($_GET['action']) {
 
     // Poll Additional message toggle
     case 'poll_soft_edit_toggle':
+
+        // Disabled for guests
+        if (user_is_guest()) break;
 
         // Get the user's post page preferences.
         $page_prefs = session_get_post_page_prefs();
@@ -300,6 +318,9 @@ switch ($_GET['action']) {
     // Forum stats toggle
     case 'forum_stats_toggle':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         // Get the hide state from the request.
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
 
@@ -332,6 +353,9 @@ switch ($_GET['action']) {
     // Left frame resize
     case 'frame_resize':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         // Get the size from the request
         if (!isset($_GET['size']) || !is_numeric($_GET['size'])) {
 
@@ -356,6 +380,9 @@ switch ($_GET['action']) {
 
     // PM Notifications
     case 'pm_check_messages':
+
+        // Disabled for guests
+        if (user_is_guest()) break;
 
         // Get the PM notification data.
         if (($pm_notification_data = pm_check_messages()) !== false) {
@@ -405,6 +432,9 @@ switch ($_GET['action']) {
 
     case 'font_size_larger':
     case 'font_size_smaller':
+
+        // Disabled for guests
+        if (user_is_guest()) break;
 
         // Get the current message TID.PID
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
@@ -459,6 +489,9 @@ switch ($_GET['action']) {
 
     case 'post_options':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         // Get the msg from the request
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
 
@@ -487,6 +520,9 @@ switch ($_GET['action']) {
 
     case 'poll_add_question':
 
+        // Disabled for guests
+        if (user_is_guest()) break;
+
         if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {
 
             header_status(500, 'Internal Server Error');
@@ -502,6 +538,9 @@ switch ($_GET['action']) {
         break;
 
     case 'poll_add_option':
+
+        // Disabled for guests
+        if (user_is_guest()) break;
 
         if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {
 

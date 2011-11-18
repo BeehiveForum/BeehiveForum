@@ -65,6 +65,7 @@ $forum_global_settings = forum_get_global_settings();
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "sphinx.inc.php");
 
 $table_data_array = get_all_table_prefixes();
 
@@ -72,7 +73,7 @@ $script_version_text = sprintf("Beehive Forum %s Sphinx Search Integration", BEE
 
 echo "\r\n", $script_version_text, "\r\n", str_repeat('=', strlen($script_version_text)), "\r\n\r\n";
 
-if (!($sphinx_connection = search_sphinx_connect()) || !($sphinx_search_index = search_sphinx_search_index())) {
+if (!($sphinx_connection = sphinx_search_connect()) || !($sphinx_search_index = sphinx_search_index())) {
 
     echo "ERROR: Could not connect to Sphinx Search server. Please check the\r\n";
     echo "       Sphinx Search server settings in your Beehive Forum's Default\r\n";

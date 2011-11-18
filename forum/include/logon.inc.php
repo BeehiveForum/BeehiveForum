@@ -58,9 +58,6 @@ function logon_perform()
             html_set_cookie("thread_mode_{$webtag}", '', time() - YEAR_IN_SECONDS);
         }
 
-        // Remove cookie that shows the logon screen.
-        html_set_cookie('logon', '', time() - YEAR_IN_SECONDS);
-
         // Initialise Guest user session.
         session_init(0);
 
@@ -77,9 +74,6 @@ function logon_perform()
 
         // Try and login the user.
         if (($uid = user_logon($user_logon, $user_password))) {
-
-            // Remove the cookie which shows the logon page.
-            html_set_cookie('logon', "", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
             session_init($uid);
@@ -158,9 +152,6 @@ function logon_draw_form($logon_options)
 
     // Make sure logon form argument is valid.
     if (!is_numeric($logon_options)) $logon_options = LOGON_FORM_DEFAULT;
-
-    // Clean the logon cookie so we don't bounce to the logon screen.
-    html_set_cookie('logon', "", time() - YEAR_IN_SECONDS);
 
     // Check for previously failed logon.
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {

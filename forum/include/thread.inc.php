@@ -41,6 +41,7 @@ include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "sphinx.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 
 function thread_get_title($tid)
@@ -484,7 +485,7 @@ function thread_change_folder($tid, $new_fid)
 
     if (!db_query($sql, $db_thread_set_closed)) return false;
 
-    search_sphinx_update_index($tid);
+    sphinx_search_update_index($tid);
 
     return true;
 }
@@ -507,7 +508,7 @@ function thread_change_title($tid, $new_title)
 
     if (!db_query($sql, $db_thread_change_title)) return false;
 
-    search_sphinx_update_index($tid);
+    sphinx_search_update_index($tid);
 
     return true;
 }
@@ -816,7 +817,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     thread_undelete($new_tid);
 
     // Index our new thread with Sphinx
-    search_sphinx_update_index($new_tid);
+    sphinx_search_update_index($new_tid);
 
     // Return the admin log data.
     return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
@@ -1087,7 +1088,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     thread_set_closed($new_tid, ($thread_data['CLOSED'] > 0));
 
-    search_sphinx_update_index($new_tid);
+    sphinx_search_update_index($new_tid);
 
     return array($tid, $spid, $new_tid, $thread_new['TITLE']);
 }

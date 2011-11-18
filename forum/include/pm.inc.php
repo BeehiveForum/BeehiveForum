@@ -1956,6 +1956,9 @@ function pm_check_messages()
     // Get the number of messages.
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
+    // Disabled for Guests
+    if (user_is_guest()) return false;
+
     // Check if the user wants Javascript notifcation.
     if (session_get_value('PM_NOTIFY') == 'Y') {
 

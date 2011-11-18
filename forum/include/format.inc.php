@@ -95,6 +95,28 @@ function format_file_size($size)
 }
 
 /**
+* Format version number
+*
+* Formats an integer version number into major.minor.build
+* e.g. 12345 becomes 1.23.45
+*
+* @param mixed $version
+* @return string
+*/
+function format_version_number($version, $glue = '.')
+{
+    $version_array = array();
+
+    while (($version % 100) > 0) {
+
+        array_unshift($version_array, $version % 100);
+        $version = floor($version / 100);
+    }
+
+    return implode($glue, $version_array);
+}
+
+/**
 * Format time display
 *
 * Formats time display from a UNIX timestamp to one of:

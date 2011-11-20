@@ -9,7 +9,11 @@
 <body style="margin: 0px; background-color: rgb(36,55,74);">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <td align="left" valign="middle"><a target="_blank" href="/"><img src="./images/beehive_logo.png" border="0" alt="Beehive Forum Logo" /></a></td>
+    <?php if ((date('md') > '1201' && date('md') < '1231') || (date('md') > '0101' && date('md') < '0131')) { ?>
+        <td align="left" valign="middle"><a target="_blank" href="/"><img src="./images/beehive_logo_snow.png" border="0" alt="Beehive Forum Logo" /></a></td>
+    <?php } else { ?>
+        <td align="left" valign="middle"><a target="_blank" href="/"><img src="./images/beehive_logo.png" border="0" alt="Beehive Forum Logo" /></a></td>
+    <?php } ?>
     <td align="right" valign="middle"><object type="application/x-shockwave-flash" data="./images/beehive_header.swf" width="400" height="60"><param name="movie" value="./images/beehive_header.swf" /></object></td>
   </tr>
 </table>

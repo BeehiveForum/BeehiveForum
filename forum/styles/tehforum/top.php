@@ -9,8 +9,8 @@
 <body style="margin: 0px; background-color: rgb(36,55,74);">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <?php if ((date('md') > '1201' && date('md') < '1231') || (date('md') > '0101' && date('md') < '0131')) { ?>
-        <td align="left" valign="middle"><a target="_blank" href="/"><img src="./images/beehive_logo_snow.png" border="0" alt="Beehive Forum Logo" /></a></td>
+    <?php if ((date('md') >= '1201' && date('md') <= '1231') || (date('md') >= '0101' && date('md') <= '0131')) { ?>
+        <td align="left" valign="middle"><a target="_blank" href="/"><img src="./images/beehive_logo_winter.png" border="0" alt="Beehive Forum Logo" /></a></td>
     <?php } else { ?>
         <td align="left" valign="middle"><a target="_blank" href="/"><img src="./images/beehive_logo.png" border="0" alt="Beehive Forum Logo" /></a></td>
     <?php } ?>

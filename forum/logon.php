@@ -151,12 +151,13 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
 
         if (isset($final_uri)) {
 
-            $final_uri = rawurlencode($final_uri);
-            header_redirect("index.php?webtag=$webtag&logon_failed=true&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
+            $final_uri = rawurlencode(sprintf("logon.php?webtag=$webtag&logon_failed=true&final_uri=%s", rawurlencode($final_uri)));
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
 
         }else {
 
-            header_redirect("index.php?webtag=$webtag&logon_failed=true", $lang['usernameorpasswdnotvalid']);
+            $final_uri = rawurlencode("logon.php?webtag=$webtag&logon_failed=true");
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
         }
     }
 

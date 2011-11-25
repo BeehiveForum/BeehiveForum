@@ -979,6 +979,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
         $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL, ";
         $sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0', ";
+        $sql.= "  PERM INT(32) UNSIGNED DEFAULT NULL, ";
         $sql.= "  PRIMARY KEY (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
@@ -1469,23 +1470,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         // Create General Folder
-        $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION) ";
-        $sql.= "VALUES ('General', NOW(), NOW(), 3, 1)";
+        $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION, PERM) ";
+        $sql.= "VALUES ('General', NOW(), NOW(), 3, 1, 14588)";
 
         if (!@db_query($sql, $db_forum_create)) {
             throw new Exception('Failed to create first folder');
-        }
-
-        if (!$folder_fid = db_insert_id($db_forum_create)) {
-            throw new Exception('Failed to get first folder fid');
-        }
-
-        // Create folder permissions
-        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-        $sql.= "VALUES (0, '$forum_fid', '$folder_fid', 14588)";
-
-        if (!@db_query($sql, $db_forum_create)) {
-            throw new Exception('Failed to set folder permissions');
         }
 
         // Add some default forum links

@@ -75,10 +75,6 @@ function db_connect()
         if (!db_enable_compat_mode($connection_id)) {
             throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.', db_errno());
         }
-
-        if (!db_enable_no_auto_value($connection_id)) {
-            throw new Exception('Could not set MySQL Session Variable SQL_MODE. Check your MySQL user permissions.', db_errno());
-        }
     }
 
     return $connection_id;
@@ -110,23 +106,6 @@ function db_enable_compat_mode($connection_id)
     }
 
     return true;
-}
-
-function db_enable_no_auto_value($connection_id)
-{
-    $sql = "SET SESSION SQL_MODE = NO_AUTO_VALUE_ON_ZERO";
-
-    if (!db_query($sql, $connection_id)) return false;
-
-    $sql = "SHOW SESSION VARIABLES LIKE 'SQL_MODE'";
-
-    if (!($result = db_query($sql, $connection_id))) return false;
-
-    if (db_num_rows($result) < 1) return false;
-
-    list(, $value) = db_fetch_array($result, DB_RESULT_NUM);
-
-    return ($value === 'NO_AUTO_VALUE_ON_ZERO');
 }
 
 function db_query($sql, $connection_id)

@@ -754,13 +754,13 @@ function session_get_perm_array($uid, $forum_fid)
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($forum_fid)) return false;
+    
+    if (!$table_data = forum_get_table_prefix($forum_fid)) return false;
 
     $user_perm_array = array();
 
-    $sql = "SELECT GROUP_PERMS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS FOLDER_PERM_COUNT FROM GROUP_PERMS ";
-    $sql.= "WHERE GROUP_PERMS.GID = 0 AND FORUM IN (0, $forum_fid) ";
-    $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
+    $sql = "SELECT FID, PERM, IF (PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM `{$table_data['PREFIX']}FOLDER`";
 
     if (!$result = db_query($sql, $db_session_get_perm_array)) return false;
 
@@ -770,7 +770,7 @@ function session_get_perm_array($uid, $forum_fid)
 
             if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
 
-                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = (double)$permission_data['PERM'];
+                $user_perm_array[$forum_fid][$permission_data['FID']] = (double)$permission_data['PERM'];
             }
         }
     }

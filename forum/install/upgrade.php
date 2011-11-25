@@ -65,6 +65,38 @@ if (!install_table_exists($db_database, "SPHINX_SEARCH_ID")) {
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
+    
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "PERM")) {
+        
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD COLUMN `PERM` INT(32) UNSIGNED DEFAULT NULL";
+        
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }        
+    
+        $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (FID, PERM) SELECT FOLDER.FID, ";
+        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+        $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0) GROUP BY FOLDER.FID ";
+        $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
+        
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+          
+        $sql = "DELETE FROM GROUP_PERMS WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
+        $sql.= "AND GROUP_PERMS.GID = 0 ";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
 
     if (!install_table_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POLL_QUESTIONS")) {
 

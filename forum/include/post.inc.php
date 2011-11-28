@@ -841,6 +841,8 @@ class MessageTextParse {
         }else {
             $links = $links_enabled;
         }
+        
+        $message = tidy_html($message, true, $links, $this->tiny_mce);
 
         $message_check_html = strip_tags($message, '<p><br>');
 
@@ -854,10 +856,8 @@ class MessageTextParse {
 
         }else {
 
-            $message = htmlentities_decode_array(tidy_html($message_check_html, true, $links, $this->tiny_mce));
+            $message = htmlentities_decode_array($message);
         }
-
-        $message = trim($message);
 
         $this->message = $message;
         $this->sig = $signature;

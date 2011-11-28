@@ -200,7 +200,9 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     if (sizeof($error_list_array) == 0) return;
 
     if (sizeof($error_list_array) == 1) {
+
         html_display_error_msg(array_shift($error_list_array), $width, $align, $id);
+        return;
     }
 
     $available_alignments = array('left', 'center', 'right');

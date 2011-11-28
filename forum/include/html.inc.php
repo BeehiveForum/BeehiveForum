@@ -197,10 +197,10 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 
-    if (sizeof($error_list_array) == 0) return '';
+    if (sizeof($error_list_array) == 0) return;
 
     if (sizeof($error_list_array) == 1) {
-        return html_display_error_msg(array_shift($error_list_array), $width, $align, $id);
+        html_display_error_msg(array_shift($error_list_array), $width, $align, $id);
     }
 
     $available_alignments = array('left', 'center', 'right');
@@ -344,7 +344,7 @@ function html_get_user_style_path()
 function html_get_style_sheet()
 {
     if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path('styles/style.css');
+        return html_get_forum_file_path('styles/default/style.css');
     }
 
     return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
@@ -353,7 +353,7 @@ function html_get_style_sheet()
 function html_get_mobile_style_sheet()
 {
     if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path('styles/mobile.css');
+        return html_get_forum_file_path('styles/default/mobile.css');
     }
 
     return html_get_forum_file_path(sprintf('styles/%s/mobile.css', basename($user_style)));
@@ -373,7 +373,7 @@ function html_get_script_style_sheet()
 function html_get_top_page()
 {
     if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path('styles/top.php');
+        return html_get_forum_file_path('styles/default/top.php');
     }
 
     return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)));
@@ -715,7 +715,7 @@ function html_draw_top()
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread_data = thread_get($tid)) && ($folder_data = thread_get_folder($tid))) {
+        if (($thread_data = thread_get($tid))) {
 
             $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
             $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
@@ -839,7 +839,7 @@ function html_draw_top()
         }
     }
 
-    $style_path_ie6 = html_get_forum_file_path('styles/style_ie6.css');
+    $style_path_ie6 = html_get_forum_file_path('styles/default/style_ie6.css');
 
     echo "<!--[if IE 6]>\n";
     echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
@@ -1227,7 +1227,7 @@ function html_js_safe_str($str)
 function html_style_image($img, $allow_cdn = true, $use_full_path = false)
 {
     if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path(sprintf('styles/default/images/%s', basename($user_style), $img), $allow_cdn, $use_full_path);
+        return html_get_forum_file_path(sprintf('styles/default/images/%s', $img), $allow_cdn, $use_full_path);
     }
 
     return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img), $allow_cdn, $use_full_path);

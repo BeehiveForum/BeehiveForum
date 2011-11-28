@@ -648,15 +648,16 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
 
     $sql = "SELECT COUNT(*), MAX(PID) + 1 FROM `{$table_data['PREFIX']}POST` ";
-    $sql.= "WHERE TID = $tid AND PID IN ($pid_list)";
+    $sql.= "WHERE TID = $new_tid";
 
-    if (!$result = db_query($sql, $db_thread_split)) {
+    if (!$result = db_query($sql, $db_thread_merge)) {
 
         // Unlock the original thread if it wasn't originally locked.
-        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
     list($post_count, $max_pid) = db_fetch_array($result, DB_RESULT_NUM);
@@ -664,16 +665,17 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql = "INSERT INTO SPHINX_SEARCH_ID (SEARCH_ID) VALUES ";
     $sql.= implode(', ', array_fill(1, $post_count, '(NULL)'));
 
-    if (!$result = db_query($sql, $db_thread_split)) {
+    if (!$result = db_query($sql, $db_thread_merge)) {
 
         // Unlock the original thread if it wasn't originally locked.
-        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
 
         // Return error message.
-        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
-    $search_id = db_insert_id($db_thread_split);
+    $search_id = db_insert_id($db_thread_merge);
 
     // Construct query to correctly sort the posts in the new thread.
     switch ($merge_type) {

@@ -802,7 +802,7 @@ function search_date_range($from, $to, $return = SEARCH_DATE_RANGE_SQL)
             return array($from_timestamp, $to_timestamp);
             break;
 
-        case SEARCH_DATE_RANGE_SQL:
+        default:
 
             $range = '';
 

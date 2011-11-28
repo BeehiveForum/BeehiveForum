@@ -81,7 +81,7 @@ function check_install()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Installation Error</h1>\n";
@@ -151,7 +151,7 @@ function install_incomplete()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo html_include_css(html_get_forum_file_path('styles/install.css')), "\n";
+    echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
     echo "</head>\n";
     echo "<body>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
@@ -221,7 +221,7 @@ function install_missing_files()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo html_include_css(html_get_forum_file_path('styles/install.css')), "\n";
+    echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
     echo "</head>\n";
     echo "<body>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
@@ -286,7 +286,7 @@ function install_check_mysql_version()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
@@ -369,7 +369,7 @@ function install_check_php_extensions()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
@@ -461,7 +461,7 @@ function install_check_php_version()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
@@ -880,7 +880,7 @@ function install_set_default_forum_settings()
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES (0, '$sname', '$svalue')";
 
-        if (!$result = @db_query($sql, $db_install_set_default_forum_settings)) return false;
+        if (!@db_query($sql, $db_install_set_default_forum_settings)) return false;
     }
 
     return true;
@@ -920,7 +920,7 @@ function install_set_search_bots()
         $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
         $sql.= "VALUES ('$name', '$url', '%$agent%')";
 
-        if (!$result = @db_query($sql, $db_install_set_search_bots)) return false;
+        if (!@db_query($sql, $db_install_set_search_bots)) return false;
     }
 
     return true;
@@ -974,7 +974,7 @@ function install_set_timezones()
         $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
         $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 
-        if (!$result = @db_query($sql, $db_install_set_timezones)) return false;
+        if (!@db_query($sql, $db_install_set_timezones)) return false;
     }
 
     return true;
@@ -1001,7 +1001,7 @@ function install_import_dictionary($dictionary_path)
         $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
         $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
 
-        $result = @db_query($sql, $db_install_import_dictionary);
+        @db_query($sql, $db_install_import_dictionary);
 
     } catch (Exception $e) {
 
@@ -1013,13 +1013,13 @@ function install_import_dictionary($dictionary_path)
 
             $sql = "INSERT INTO DICTIONARY (WORD) VALUES('$word')";
 
-            if (!$result = @db_query($sql, $db_install_import_dictionary)) return false;
+            if (!@db_query($sql, $db_install_import_dictionary)) return false;
         }
     }
 
     $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
 
-    if (!$result = @db_query($sql, $db_install_import_dictionary)) return false;
+    if (!@db_query($sql, $db_install_import_dictionary)) return false;
 
     return true;
 }

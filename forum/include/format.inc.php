@@ -170,8 +170,8 @@ function format_time($time)
     // Get the numerical parts for $time
     list($time_min, $time_hour, $time_day, $time_month, $time_year) = explode(" ", gmdate("i G j n Y", $time));
 
-    // Get the numerical parts for the current time
-    list($current_min, $current_hour, $current_day, $current_month, $current_year) = explode(' ', gmdate('i G j n Y', $current_time));
+    // Get the numerical parts for the current month and year
+    list($current_day, $current_month, $current_year) = explode(' ', gmdate('j n Y', $current_time));
 
     // Get the month string for $time
     $time_month = $lang['month_short'][$time_month];
@@ -248,7 +248,7 @@ function format_date($time)
     list($time_day, $time_month, $time_year) = explode(" ", gmdate("j n Y", $time));
 
     // Get the numerical parts for the current time
-    list($current_day, $current_year) = explode(' ', gmdate('j Y', $current_time));
+    $current_year = gmdate('Y', $current_time);
 
     // Get the month string for $time
     $time_month = $lang['month_short'][$time_month];
@@ -1028,7 +1028,7 @@ function print_r_pre($expression, $return = false)
 
     if (!$return) {
         echo $result;
-        return;
+        return true;
     }
 
     return $result;

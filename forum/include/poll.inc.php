@@ -77,7 +77,7 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
         if (!isset($poll_question['OPTIONS_ARRAY']) || !is_array($poll_question['OPTIONS_ARRAY'])) return false;
 
-        foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
+        foreach ($poll_question['OPTIONS_ARRAY'] as $option) {
             if (strlen(trim($option['OPTION_NAME'])) < 1) return false;
         }
 
@@ -159,7 +159,7 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
 
         if (!isset($poll_question['OPTIONS_ARRAY']) || !is_array($poll_question['OPTIONS_ARRAY'])) return false;
 
-        foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
+        foreach ($poll_question['OPTIONS_ARRAY'] as $option) {
             if (strlen(trim($option['OPTION_NAME'])) < 1) return false;
         }
 
@@ -622,7 +622,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             if (($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) && ($poll_data['VOTETYPE'] != POLL_VOTE_PUBLIC)) {
 
                 $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_results, $poll_data, $total_votes). "</td>\n";
+                $poll_display.= "              <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_results, $total_votes). "</td>\n";
                 $poll_display.= "             </tr>\n";
 
             } else {
@@ -645,7 +645,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     } else {
 
                         $poll_display.= "                  <tr>\n";
-                        $poll_display.= "                    <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_votes). "</td>\n";
+                        $poll_display.= "                    <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $total_votes). "</td>\n";
                         $poll_display.= "                  </tr>\n";
                     }
 
@@ -961,7 +961,7 @@ function poll_horizontal_graph($options_array, $poll_data, $total_votes)
     $poll_display = "<div align=\"center\">\n";
     $poll_display.= "  <table width=\"100%\">\n";
 
-    foreach ($options_array as $option_id => $option) {
+    foreach ($options_array as $option) {
 
         $poll_bar_width = ($total_votes > 0) ? (100 / $total_votes) * sizeof($option['VOTES_ARRAY']) : 0;
 
@@ -995,7 +995,7 @@ function poll_horizontal_graph($options_array, $poll_data, $total_votes)
     return $poll_display;
 }
 
-function poll_vertical_graph($options_array, $poll_data, $total_votes)
+function poll_vertical_graph($options_array, $total_votes)
 {
     $lang = load_language_file();
 
@@ -1005,7 +1005,7 @@ function poll_vertical_graph($options_array, $poll_data, $total_votes)
     $poll_display.= "  <table width=\"560\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $poll_display.= "    <tr>\n";
 
-    foreach ($options_array as $option_id => $option) {
+    foreach ($options_array as $option) {
 
         $poll_bar_width = floor(400 / sizeof($options_array));
 
@@ -1026,7 +1026,7 @@ function poll_vertical_graph($options_array, $poll_data, $total_votes)
     $poll_display.= "    </tr>\n";
     $poll_display.= "    <tr>\n";
 
-    foreach ($options_array as $option_id => $option) {
+    foreach ($options_array as $option) {
 
         $vote_percent = ((sizeof($option['VOTES_ARRAY']) > 0) && ($total_votes > 0)) ? (sizeof($option['VOTES_ARRAY']) / $total_votes) * 100 : 0;
 
@@ -1040,7 +1040,7 @@ function poll_vertical_graph($options_array, $poll_data, $total_votes)
     return $poll_display;
 }
 
-function poll_table_graph($poll_results, $poll_data, $total_votes)
+function poll_table_graph($poll_results, $total_votes)
 {
     list($row_question, $col_question) = array_values($poll_results);
 
@@ -1159,6 +1159,8 @@ function poll_table_graph($poll_results, $poll_data, $total_votes)
 function poll_public_ballot_user_callback($user_data)
 {
     $webtag = get_webtag();
+    
+    $lang = load_language_file();
 
     if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
 
@@ -1173,6 +1175,8 @@ function poll_public_ballot_user_callback($user_data)
 
         return $user_data;
     }
+    
+    return $lang['unknownuser'];
 }
 
 function poll_user_poll_votes_callback(&$option_name, $key)

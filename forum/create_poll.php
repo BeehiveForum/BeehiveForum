@@ -793,7 +793,7 @@ if ($valid && isset($_POST['post'])) {
                 $poll_closes = false;
             }
 
-            if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+            if ($allow_html == false || !isset($message_html) || $message_html == POST_HTML_DISABLED) {
 
                 foreach ($poll_questions_array as $question_id => $question) {
 
@@ -956,7 +956,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
                     $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
                     $poll_display.= "                </tr>\n";
 
-                } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && (isset($public_ballot_votes_array[$question_id]))) {
+                } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC) {
 
                     $poll_display.= "                <tr>\n";
                     $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";

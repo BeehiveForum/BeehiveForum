@@ -168,8 +168,6 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $forum_fid = $table_data['FID'];
-
     $sql = "SELECT MAX(POSITION) + 1 AS NEW_POS FROM `{$table_data['PREFIX']}FOLDER`";
 
     if (!$result = db_query($sql, $db_folder_create)) return false;
@@ -207,8 +205,6 @@ function folder_update($fid, $folder_data)
     if (!is_array($folder_data)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
 
     $folder_data = array_merge(folder_get($fid), $folder_data);
 
@@ -334,8 +330,6 @@ function folder_get_all()
 
     if (!$table_data = get_table_prefix()) return array();
 
-    $forum_fid = $table_data['FID'];
-
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, ";
     $sql.= "FOLDER.POSITION, FOLDER.PREFIX, FOLDER.PERM AS FOLDER_PERMS, ";
     $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
@@ -367,8 +361,6 @@ function folder_get_all_by_page($offset)
     $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return array();
-
-    $forum_fid = $table_data['FID'];
 
     $folder_array = array();
 
@@ -458,8 +450,6 @@ function folder_get($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_fid = $table_data['FID'];
-
     if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
@@ -489,8 +479,6 @@ function folder_get_available_details()
     if (!$db_folder_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
 
     if (($uid = session_get_value('UID')) === false) return false;
 

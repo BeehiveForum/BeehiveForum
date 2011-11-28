@@ -1888,13 +1888,13 @@ function forum_update_default($fid)
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 0";
 
-    if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
+    if (!db_query($sql, $db_forum_get_permissions)) return false;
 
     if ($fid > 0) {
 
         $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
 
-        if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
+        if (!db_query($sql, $db_forum_get_permissions)) return false;
     }
 
     return true;

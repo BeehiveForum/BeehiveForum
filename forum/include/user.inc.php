@@ -303,7 +303,7 @@ function user_reset_password($uid, $new_password, $old_passhash)
     $sql = "UPDATE USER SET PASSWD = '$passhash', SALT = '$salt' ";
     $sql.= "WHERE UID = '$uid' AND PASSWD = '$old_passhash'";
 
-    if (!($result = db_query($sql, $db_user_reset_password))) return false;
+    if (!(db_query($sql, $db_user_reset_password))) return false;
 
     return true;
 }
@@ -413,7 +413,7 @@ function user_generate_token($uid)
     $sql = "INSERT INTO USER_TOKEN (UID, TOKEN, EXPIRES) VALUES ('$uid', ";
     $sql.= "'$token',  DATE_ADD('$current_datetime', INTERVAL 1 MONTH))";
 
-    if (!($result = db_query($sql, $db_user_generate_token))) return false;
+    if (!(db_query($sql, $db_user_generate_token))) return false;
 
     return $token;
 }
@@ -429,7 +429,7 @@ function user_prune_expired_tokens($uid)
     $sql = "DELETE QUICK FROM USER_TOKEN WHERE UID = '$uid' ";
     $sql.= "AND EXPIRES < '$current_datetime'";
 
-    if (!($result = db_query($sql, $db_user_prune_tokens))) return false;
+    if (!(db_query($sql, $db_user_prune_tokens))) return false;
 
     return true;
 }
@@ -447,7 +447,7 @@ function user_renew_token($uid, $token)
     $sql = "UPDATE USER_TOKEN SET EXPIRES = DATE_ADD('$current_datetime', INTERVAL 1 MONTH) ";
     $sql.= "WHERE UID = '$uid' AND TOKEN = '$token'";
 
-    if (!($result = db_query($sql, $db_user_renew_token))) return false;
+    if (!(db_query($sql, $db_user_renew_token))) return false;
 
     user_prune_expired_tokens($uid);
 

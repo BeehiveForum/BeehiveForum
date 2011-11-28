@@ -1443,7 +1443,7 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo "      </table>\n";
     echo "    </td>\n";
 
-    if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
+    if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
 
     echo "  </tr>\n";
     echo "</table>\n";

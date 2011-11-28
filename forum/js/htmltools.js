@@ -213,7 +213,7 @@ var htmltools = function()
 
             attributes = $.map(attributes, function(value, index) {
                 return index + '="' + value + '"';
-            }).join(' ').trim();
+            }).join(' ');
 
             return (attributes.length > 0) ? ' ' + attributes : '';
         },

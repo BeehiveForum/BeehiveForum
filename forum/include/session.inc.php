@@ -463,7 +463,7 @@ function remove_stale_sessions()
 
     $expired_sessions_array = array();
 
-    $sql = "SELECT HASH, UID, NOW() FROM SESSIONS WHERE ";
+    $sql = "SELECT HASH FROM SESSIONS WHERE ";
     $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND UID > 0 LIMIT 0, 5";
 
@@ -557,8 +557,6 @@ function session_update_user_time($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-
-    $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$db_session_update_user_time = db_connect()) return false;
 
@@ -712,8 +710,6 @@ function session_remove_cookies()
 function session_end($remove_cookies = true)
 {
     if (!$db_session_end = db_connect()) return false;
-
-    if (($uid = session_get_value('UID')) === false) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
 

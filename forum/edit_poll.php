@@ -244,7 +244,7 @@ $page_prefs = session_get_post_page_prefs();
 
 $uid = session_get_value('UID');
 
-if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -252,7 +252,7 @@ if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FR
     exit;
 }
 
-if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -748,24 +748,6 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if (isset($message_text) && strlen(trim(stripslashes_array($message_text))) > 0) {
-
-        if (attachments_embed_check($message_text) && ($message_html == 'Y')) {
-
-            $error_msg_array[] = $lang['notallowedembedattachmentpost'];
-            $valid = false;
-        }
-    }
-
-    if (isset($sig_text)) {
-
-        if ($sig_html && attachments_embed_check($sig_text)) {
-
-            $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
-            $valid = false;
-        }
-    }
-
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x']) || isset($_POST['poll_additional_message_toggle_x']) || isset($_POST['poll_advanced_toggle_x'])) {
 
     if (isset($_POST['emots_toggle_x'])) {
@@ -830,7 +812,7 @@ if ($valid && isset($_POST['apply'])) {
             $poll_closes = false;
         }
 
-        if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+        if ($allow_html == false || !isset($options_html) || $options_html == 'N') {
 
             foreach ($poll_questions_array as $question_id => $question) {
 
@@ -974,7 +956,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
                     $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
                     $poll_display.= "                </tr>\n";
 
-                } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && (isset($public_ballot_votes_array[$question_id]))) {
+                } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC) {
 
                     $poll_display.= "                <tr>\n";
                     $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";

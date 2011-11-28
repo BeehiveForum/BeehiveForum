@@ -899,6 +899,11 @@ function light_draw_pm_inbox()
     forum_check_webtag_available($webtag);
 
     $lang = load_language_file();
+    
+    // Default values
+    $pm_new_count = 0;
+    $pm_outbox_count = 0;
+    $pm_unread_count = 0;
 
     // Check for new PMs
     pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
@@ -1340,8 +1345,6 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $poll_display.= form_input_hidden('webtag', htmlentities_array($webtag));
     $poll_display.= form_input_hidden('tid', htmlentities_array($tid));
 
-    $poll_group_count = 1;
-
     if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         foreach ($poll_results as $question_id => $poll_question) {
@@ -1379,7 +1382,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
             foreach ($poll_results as $question_id => $poll_question) {
 
                 $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
-                $poll_display.= light_poll_graph_display($poll_question['OPTIONS_ARRAY'], $poll_data);
+                $poll_display.= light_poll_graph_display($poll_question['OPTIONS_ARRAY']);
             }
 
             $poll_display.= "</div>\n";
@@ -1453,7 +1456,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, $in_list, $closed, $limit_text, true, $is_preview);
 }
 
-function light_poll_graph_display($options_array, $poll_data)
+function light_poll_graph_display($options_array)
 {
     $lang = load_language_file();
 
@@ -1474,7 +1477,7 @@ function light_poll_graph_display($options_array, $poll_data)
 
     $poll_display = '';
 
-    foreach ($options_array as $option_id => $option) {
+    foreach ($options_array as $option) {
 
         $poll_bar_width = ($total_vote_count > 0) ? (100 / $total_vote_count) * sizeof($option['VOTES_ARRAY']) : 0;
 

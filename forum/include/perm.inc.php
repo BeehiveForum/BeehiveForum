@@ -187,7 +187,7 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, GROUP_DATA.PERM AS GROUP_PERMS, ";
-    $sql.= "GROUP_DATA.PERM_COUNT AS GROUP_PERM_COUNT, FOLDER.PERM AS FOLDER_PERMS, ";
+    $sql.= "GROUP_DATA.PERM_COUNT AS USER_PERM_COUNT, FOLDER.PERM AS FOLDER_PERMS, ";
     $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER LEFT JOIN (SELECT GROUP_PERMS.FID, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.PERM) AS PERM_COUNT ";

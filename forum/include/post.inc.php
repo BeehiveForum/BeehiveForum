@@ -728,17 +728,13 @@ class MessageText {
 
         }else if ($this->html > POST_HTML_DISABLED) {
 
-            $text = fix_html($text, $this->emoticons, $this->links);
-
             if ($this->tiny_mce) {
-
-                if (strcmp($text, $this->original_text) <> 0) {
-                    $this->diff = true;
-                }
-
+                
                 $text = fix_tiny_mce_html($text);
 
             }else {
+                
+                $text = fix_html($text, $this->emoticons, $this->links);
 
                 $tidy_text = tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false);
 
@@ -762,16 +758,13 @@ class MessageText {
 
     function getTidyContent()
     {
-        if ($this->html > POST_HTML_DISABLED) {
+        if ($this->tiny_mce) {
 
-            if ($this->tiny_mce) {
+            return htmlentities_array(tidy_tiny_mce($this->text));        
+            
+        } else if ($this->html > POST_HTML_DISABLED) {
 
-                return htmlentities_array(tidy_tiny_mce($this->text));
-
-            } else {
-
-                return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
-            }
+            return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
         }
 
         return strip_tags($this->text);

@@ -38,9 +38,11 @@ var YoutubeDialog = {
 
         html = tinyMCEPopup.editor.selection.getContent();
 
-        matches = html.match(/<img class="mceItem youtube" title="((http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" src="[^"]+" alt="[^"]+" \s?\/>/);
-
-        f.youtubeURL.value = matches[1];
+        matches = html.match(/<img class="mceItem youtube" title="(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" src="[^"]+" alt="[^"]+" \s?\/>/);
+        
+        if (matches[1] !== undefined) {
+            f.youtubeURL.value = matches[1];
+        }
     },
 
     insert: function () {
@@ -51,21 +53,19 @@ var YoutubeDialog = {
             return;
         }
 
-        var html, matches = url.match(/(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+))/);
+        var html, matches = url.match(/(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))/);
 
         if (matches === null) {
             return;
         }
 
-        console.log(matches);
+        if (matches[7] !== undefined) {
 
-        if (matches[4] !== undefined) {
+            html = '<img src="http://img.youtube.com/vi/' + matches[7] + '/0.jpg" class="mceItem youtube" alt="' + matches[7] + '" title="' + matches[0] + '" />';
 
-            html = '<img src="http://img.youtube.com/vi/' + matches[4] + '/0.jpg" class="mceItem youtube" alt="' + matches[4] + '" title="' + matches[0] + '" />';
+        } else if (matches[6] !== undefined) {
 
-        } else if (matches[5] !== undefined) {
-
-            html = '<img src="http://img.youtube.com/vi/' + matches[5] + '/0.jpg" class="mceItem youtube" alt="' + matches[5] + '" title="' + matches[0] + '" />';
+            html = '<img src="http://img.youtube.com/vi/' + matches[6] + '/0.jpg" class="mceItem youtube" alt="' + matches[6] + '" title="' + matches[0] + '" />';
 
         } else {
 

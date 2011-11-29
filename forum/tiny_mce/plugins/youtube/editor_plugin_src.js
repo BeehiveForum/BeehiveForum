@@ -71,7 +71,9 @@ USA
 
                         var alt = n.attributes['alt'].value;
 
-                        var matches = title.match(/(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+))/);
+                        var matches = title.match(/(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))/);
+                        
+                        console.log(matches);
 
                         if (matches[4] !== undefined) {
 

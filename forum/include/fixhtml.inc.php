@@ -1126,13 +1126,17 @@ function tidy_tiny_mce_flash_object_tag_callback($matches_array)
 
 function tidy_tiny_mce_youtube_img_tag_callback($matches_array)
 {
-    if (isset($matches_array[6], $matches_array[7]) && ($matches_array[6] == $matches_array[7])) {
+    if (!isset($matches_array[2]) || strlen(trim($matches_array[2])) == 0) {
+        $matches_array[2] = 'http://';
+    }    
+    
+    if (isset($matches_array[7], $matches_array[8]) && ($matches_array[7] == $matches_array[8])) {
 
-        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"></iframe>', $matches_array[2], $matches_array[6], $matches_array[1]);
+        return sprintf('<iframe class="youtube" width="480" height="390" src="%swww.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"></iframe>', $matches_array[2], $matches_array[8], $matches_array[1]);
 
-    } else if (isset($matches_array[5], $matches_array[7]) && ($matches_array[5] == $matches_array[7])) {
+    } else if (isset($matches_array[6], $matches_array[8]) && ($matches_array[6] == $matches_array[8])) {
 
-        return sprintf('<iframe class="youtube" width="480" height="390" src="%s://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"></iframe>', $matches_array[2], $matches_array[5], $matches_array[1]);
+        return sprintf('<iframe class="youtube" width="480" height="390" src="%swww.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen="true"></iframe>', $matches_array[2], $matches_array[8], $matches_array[1]);
     }
 
     return '';
@@ -1140,13 +1144,13 @@ function tidy_tiny_mce_youtube_img_tag_callback($matches_array)
 
 function tidy_tiny_mce_youtube_iframe_tag_callback($matches_array)
 {
-    if (isset($matches_array[0], $matches_array[6])) {
+    if (isset($matches_array[1], $matches_array[7])) {
+
+        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[7], htmlentities_array($matches_array[1]));
+
+    } else if (isset($matches_array[1], $matches_array[6])) {
 
         return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[6], htmlentities_array($matches_array[1]));
-
-    } else if (isset($matches_array[0], $matches_array[5])) {
-
-        return sprintf('<img src="http://img.youtube.com/vi/%1$s/0.jpg" class="mceItem youtube" alt="%1$s" title="%2$s" />', $matches_array[5], htmlentities_array($matches_array[1]));
     }
 
     return '';

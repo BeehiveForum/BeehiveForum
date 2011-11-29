@@ -71,15 +71,15 @@ USA
 
                         var alt = n.attributes['alt'].value;
 
-                        var matches = title.match(/(http|https):\/\/(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+))/);
+                        var matches = title.match(/(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))/);
 
-                        if (matches[4] !== undefined) {
+                        if (matches[7] !== undefined) {
 
-                            active = matches[4] === alt;
+                            active = matches[7] === alt;
 
-                        } else if (matches[5] !== undefined) {
+                        } else if (matches[6] !== undefined) {
 
-                            active = matches[5] === alt;
+                            active = matches[6] === alt;
 
                         } else {
 

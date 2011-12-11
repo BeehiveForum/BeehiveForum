@@ -971,14 +971,17 @@ function html_draw_top()
         echo "  })();\n\n";
         echo "</script>\n";
     }
+    
+    if ((forum_get_setting('show_share_links', 'Y')) && (session_get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
-    echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">\n";
-    echo "{lang: 'en-GB'}\n";
-    echo "</script>\n";
+        echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">\n";
+        echo "{lang: 'en-GB'}\n";
+        echo "</script>\n";
 
-    echo "<script type=\"text/javascript\" src=\"http://platform.twitter.com/widgets.js\"></script>\n";
+        echo "<script type=\"text/javascript\" src=\"http://platform.twitter.com/widgets.js\"></script>\n";
 
-    echo "<script type=\"text/javascript\" src=\"http://connect.facebook.net/en_US/all.js#xfbml=1\"></script>\n";
+        echo "<script type=\"text/javascript\" src=\"http://connect.facebook.net/en_US/all.js#xfbml=1\"></script>\n";
+    }
 
     echo "</head>\n\n";
 

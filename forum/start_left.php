@@ -151,7 +151,7 @@ $folder_info = threads_get_folders();
 
 if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -165,7 +165,6 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
     if (($thread_array = threads_get_most_recent())) {
 
@@ -173,6 +172,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
             $tid = $thread['TID'];
 
+            echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
             echo "                      <tr>\n";
 
             if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
@@ -249,16 +249,20 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
             echo "                        <td valign=\"top\" style=\"white-space: nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
             echo "                      </tr>\n";
+            echo "                    </table>\n";
         }
 
-    }else {
+    } else {
 
+        echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"center\">{$lang['nomessages']}</td>\n";
         echo "                      </tr>\n";
+        echo "                    </table>\n";
     }
 
     // Display "Start Reading" button
+    echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
@@ -279,7 +283,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -322,7 +326,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "  <br />\n";
 }
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -437,7 +441,7 @@ echo "  <br />\n";
 
 if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -492,7 +496,7 @@ if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
 
 if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

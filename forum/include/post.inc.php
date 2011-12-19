@@ -835,7 +835,7 @@ class MessageTextParse {
             $links = $links_enabled;
         }
         
-        $message = tidy_html($message, true, $links, $this->tiny_mce);
+        $message = tidy_html($message, false, $links, $this->tiny_mce);
 
         $message_check_html = strip_tags($message, '<p><br>');
 
@@ -849,7 +849,7 @@ class MessageTextParse {
 
         }else {
 
-            $message = htmlentities_decode_array($message);
+            $message = htmlentities_decode_array(tidy_html_linebreaks($message));
         }
 
         $this->message = $message;

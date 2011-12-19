@@ -975,6 +975,23 @@ function clean_attributes($tag)
 }
 
 /**
+* Convert line breaks.
+* 
+* Convert HTML line breaks (<p>, <br />) into real line-breaks (\n)
+* 
+* @param mixed $html
+*/
+function tidy_html_linebreaks($html)
+{
+    $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
+    $html = preg_replace("/<p( [^>]*)?>/iu", '', $html);
+    $html = preg_replace("/<\\/p( [^>]*)?>(\n\n)?/iu", "\n\n", $html);    
+    $html = preg_replace("/\n\s*\n\s*\n\s*/", "\n\n", $html);
+    
+    return $html;
+}
+
+/**
 * Literally tidies HTML
 *
 * After fix_html is run this function reverses the conversion of custom BH tags like
@@ -993,10 +1010,7 @@ function tidy_html($html, $linebreaks = true, $links = true)
     // turn <br /> and <p>...</p> back into linebreaks
     // only if auto-linebreaks is enabled
     if ($linebreaks == true) {
-
-        $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
-        $html = preg_replace("/<p( [^>]*)?>/iu", '', $html);
-        $html = preg_replace("/<\\/p( [^>]*)?>(\n\n)?/iu", "\n\n", $html);
+        $html = tidy_html_linebreaks($html);
     }
 
     // turn autoconverted links back into text

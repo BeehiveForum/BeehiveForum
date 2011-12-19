@@ -172,7 +172,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
             $tid = $thread['TID'];
 
-            echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+            echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
             echo "                      <tr>\n";
 
             if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
@@ -297,14 +297,16 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"80%\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
     echo "                      <tr>\n";
     echo "                        <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
-    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
+    echo "                              <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\">&nbsp;</td>\n";
     echo "                              <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
     echo "                            </tr>\n";
     echo "                            <tr>\n";
+    echo "                              <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\">&nbsp;</td>\n";
     echo "                              <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><img src=\"", html_style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
     echo "                            </tr>\n";
     echo "                          </table>\n";
@@ -340,32 +342,39 @@ echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
 // Get recent visitors
 if (($recent_visitors_array = visitor_log_get_recent())) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
-    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">\n";
 
     foreach ($recent_visitors_array as $recent_visitor) {
 
-        echo "                            <tr>\n";
+        if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
+        
+            echo "                            <tr>\n";
 
-        if (session_get_value('SHOW_AVATARS') == 'Y') {
+            if (session_get_value('SHOW_AVATARS') == 'Y') {
 
-            if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
+                if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                    echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
-            }else if (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
+                }else if (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
-                $attachment = attachments_get_by_hash($recent_visitor['AVATAR_AID']);
+                    $attachment = attachments_get_by_hash($recent_visitor['AVATAR_AID']);
 
-                if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+                    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                    echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                        echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+
+                    }else {
+
+                        echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+                    }
 
                 }else {
 
@@ -377,31 +386,20 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
                 echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
 
-        }else {
+            if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID']) && forum_get_setting('searchbots_show_recent', 'Y')) {
 
-            echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        }
+                echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($recent_visitor['NAME'])), "</a></td>\n";
 
-        if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID']) && forum_get_setting('searchbots_show_recent', 'Y')) {
+            }elseif ($recent_visitor['UID'] > 0) {
 
-            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($recent_visitor['NAME'])), "</a></td>\n";
+                echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
 
-        }elseif ($recent_visitor['UID'] > 0) {
+            }else {
 
-            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
+                echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
+            }
 
-        }else {
-
-            echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
-        }
-
-        if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
-
-            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</td>\n";
-
-        }else {
-
-            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\">{$lang['unknown']}&nbsp;</td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;<span class=\"threadtime\"></td>\n";
         }
 
         echo "                            </tr>\n";
@@ -455,17 +453,17 @@ if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
-    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">\n";
 
     foreach ($user_birthdays_array as $user_birthday) {
 
         echo "                            <tr>\n";
-        echo "                              <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"20\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        echo "                              <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_birthday['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_birthday['LOGON'], $user_birthday['NICKNAME']))), "</a></td>\n";
-        echo "                              <td align=\"right\" style=\"white-space: nowrap\" valign=\"top\">", format_birthday($user_birthday['DOB']), "&nbsp;</td>\n";
+        echo "                              <td align=\"right\" style=\"white-space: nowrap\" valign=\"top\"><span class=\"threadtime\">", format_birthday($user_birthday['DOB']), "&nbsp;</span></td>\n";
         echo "                            </tr>\n";
     }
 
@@ -510,11 +508,12 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"80%\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
+    echo "                              <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\">&nbsp;</td>\n";
     echo "                              <td align=\"left\">\n";
     echo "                                <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"", html_get_frame_name('main'), "\">\n";
     echo "                                  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";

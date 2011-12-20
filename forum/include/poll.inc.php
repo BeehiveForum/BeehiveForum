@@ -1229,7 +1229,7 @@ function poll_check_tabular_votes($tid, $votes_array)
 
 function poll_get_default_questions_array()
 {
-    return array(poll_get_question_array(1));
+    return array(1 => poll_get_question_array(1));
 }
 
 function poll_get_question_array($question_id)

@@ -1131,7 +1131,7 @@ span.spoiler {
     padding: 0px 3px;
 }
 
-span.spoiler * {
+span.spoiler > span {
     visibility: hidden;
 }
 
@@ -1148,7 +1148,7 @@ span.spoiler_reveal {
     color: #000000;
 }
 
-span.spoiler_reveal * {
+span.spoiler_reveal > span {
     visibility: visible;
 }
 

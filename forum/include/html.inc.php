@@ -68,8 +68,10 @@ function html_guest_error()
     $frame_top_target = html_get_top_frame_name();
 
     $lang = load_language_file();
+    
+    $webtag = get_webtag();
 
-    $final_uri = basename(get_request_uri(true, false));
+    $final_uri = sprintf("logon.php?webtag=%s&final_uri=%s", $webtag, rawurlencode(basename(get_request_uri(true, false))));
 
     $popup_files_preg = get_available_js_popup_files_preg();
 

@@ -928,7 +928,7 @@ function search_output_opensearch_xml()
 
     $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $forum_opensearch_uri = html_get_forum_uri("/search.php?webtag=$webtag&amp;search_string={searchTerms}");
+    $forum_opensearch_uri = html_get_forum_uri("search.php?webtag=$webtag&amp;search_string={searchTerms}");
 
     header('Content-type: text/xml; charset=UTF-8', true);
 

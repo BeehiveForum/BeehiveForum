@@ -909,117 +909,37 @@ function path_info_query($path)
 }
 
 /**
-* Parse an array into a string
-*
-* Parses an [multi-dimensional] array specified in $array into a string seperated by $sep.
-*
-* @return bool
-* @param array $array - Array to parse
-* @param string $sep - seperator to use to seperate array key and value pairs.
-* @param string $result_var - By reference result variable which the result is appended to.
-*/
-
-function parse_array($array, $sep, &$result_var)
-{
-    if (!is_array($array)) return false;
-
-    if (!is_string($result_var)) $result_var = "";
-    if (!is_string($sep) || strlen($sep) < 1) $sep = "&";
-
-    $array_keys = array();
-    $array_values = array();
-
-    flatten_array($array, $array_keys, $array_values);
-
-    $result_array = array();
-
-    foreach ($array_keys as $key => $key_name) {
-
-        if (($key_name != 'webtag') && isset($array_values[$key])) {
-
-            if (strlen($array_values[$key]) > 0) {
-
-                $result_array[] = sprintf("%s=%s", $key_name, urlencode($array_values[$key]));
-
-            }else {
-
-                $result_array[] = $key_name;
-            }
-        }
-    }
-
-    $result_var.= implode($sep, $result_array);
-
-    return true;
-}
-
-/**
 * Return request URI
 *
-* IIS doesn't support the REQUEST_URI server var so we use this function to generate our own.
+* IIS doesn't support the REQUEST_URI server var
+* so we use this function to generate our own.
 *
+* @param bool $include_webtag
+* @param bool $encoded_uri_query
 * @return string
-* @param bool $encoded_uri_query - Specify whether or not we want URL encoded seperator in the URL (& vs. &amp;)
 */
-
-function get_request_uri($include_webtag = true, $encoded_uri_query = true)
+function get_request_uri($include_webtag = true, $encode_uri_query = true)
 {
     if (!is_bool($include_webtag)) $include_webtag = true;
-    if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
+    if (!is_bool($encode_uri_query)) $encode_uri_query = true;
 
     $webtag = get_webtag();
 
-    $query_string = "";
-
     forum_check_webtag_available($webtag);
-
-    if ($encoded_uri_query) {
-
-        if ($include_webtag) {
-
-            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag";
-            parse_array($_GET, "&amp;", $query_string);
-
-            if (strlen(trim($query_string)) > 0) {
-                $request_uri.= "&amp;$query_string";
-            }
-
-        }else {
-
-            $request_uri = "{$_SERVER['PHP_SELF']}";
-            parse_array($_GET, "&amp;", $query_string);
-
-            if (strlen(trim($query_string)) > 0) {
-                $request_uri.= "?$query_string";
-            }
-        }
-
-    }else {
-
-        if ($include_webtag) {
-
-            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag";
-            parse_array($_GET, "&", $query_string);
-
-            if (strlen(trim($query_string)) > 0) {
-                $request_uri.= "&$query_string";
-            }
-
-        }else {
-
-            $request_uri = "{$_SERVER['PHP_SELF']}";
-            parse_array($_GET, "&", $query_string);
-
-            if (strlen(trim($query_string)) > 0) {
-                $request_uri.= "?$query_string";
-            }
-        }
+    
+    $request_uri = html_get_forum_uri(basename($_SERVER['PHP_SELF']));
+    
+    $query_string_array = array();
+    
+    if ($include_webtag) {
+        $query_string_array['webtag'] = $webtag;
     }
-
-    // Fix the slashes for forum running from sub-domain.
-    // Rather dirty hack this, but it's the only idea I've got.
-    // Any suggestions are welcome on how to handle this better.
-    return preg_replace('/\/\/+/u', '/', $request_uri);
+    
+    $query_string_array+= array_diff($_GET, $query_string_array);
+    
+    $query_string = http_build_query($query_string_array, null, (($encode_uri_query) ? '&amp;' : '&'));
+    
+    return sprintf('%s?%s', $request_uri, $query_string);
 }
 
 function print_r_pre($expression, $return = false)

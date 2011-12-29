@@ -106,10 +106,10 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
 
     // Generate link to the forum itself
-    $forum_link = html_get_forum_uri("/index.php?webtag=$webtag");
+    $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
     // Generate the message link.
-    $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+    $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['msgnotificationemail'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
@@ -213,7 +213,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
         $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $to_user['UID']);
 
         // Generate the message link.
-        $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+        $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         // Generate the message body.
         $message_body = wordwrap(sprintf($lang['threadsubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $message_link));
@@ -314,10 +314,10 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
         $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $to_user['UID']);
 
         // Generate link to the forum itself
-        $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid");
+        $forum_link = html_get_forum_uri("index.php?webtag=$webtag&fid=$fid");
 
         // Generate the message link.
-        $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+        $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         // Generate the message body.
         $message_body = wordwrap(sprintf($lang['foldersubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
@@ -393,10 +393,10 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     $message_subject = word_filter_apply($pm_subject, $tuid);
 
     // Generate link to the forum itself
-    $forum_link = html_get_forum_uri("/index.php?webtag=$webtag");
+    $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
     // Generate the message link.
-    $message_link = html_get_forum_uri("/index.php?webtag=$webtag&pmid=$mid");
+    $message_link = html_get_forum_uri("index.php?webtag=$webtag&pmid=$mid");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['pmnotification'], $recipient, $message_author, $forum_name, $message_subject, $message_link, $forum_link));
@@ -449,7 +449,7 @@ function email_send_pw_reminder($logon)
 
     // Generate the change password link.
     $change_pw_link = rawurlencode("/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
-    $change_pw_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$change_pw_link");
+    $change_pw_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['forgotpwemail'], $recipient, $forum_name, $change_pw_link));
@@ -555,7 +555,7 @@ function email_send_user_confirmation($tuid)
 
     // Generate the confirmation link.
     $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
-    $confirm_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$confirm_link");
+    $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['confirmemail'], $recipient, $forum_name, $confirm_link, $forum_name, $forum_email));
@@ -610,7 +610,7 @@ function email_send_changed_email_confirmation($tuid)
 
     // Generate the confirmation link.
     $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
-    $confirm_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$confirm_link");
+    $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['confirmchangedemail'], $recipient, $forum_name, $confirm_link, $forum_name, $forum_email));
@@ -661,7 +661,7 @@ function email_send_user_approval_notification($tuid)
 
     // Generate the confirmation link.
     $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
-    $admin_users_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$admin_users_link");
+    $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['newuserapprovalemail'], $recipient, $forum_name, $admin_users_link));
@@ -713,7 +713,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     // Generate the confirmation link.
     $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
-    $admin_user_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$admin_user_link");
+    $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['newuserregistrationemail'], $recipient, $forum_name, $admin_user_link));
@@ -766,7 +766,7 @@ function email_send_user_approved_notification($tuid)
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
 
     // Generate the confirmation link.
-    $forum_link = html_get_forum_uri("/index.php?webtag=$webtag");
+    $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['useraccountapprovedemail'], $recipient, $forum_name, $forum_link, $forum_name, $forum_email));
@@ -817,7 +817,7 @@ function email_send_post_approval_notification($tuid)
 
     // Generate the confirmation link.
     $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
-    $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
+    $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['newpostapprovalemail'], $recipient, $forum_name, $admin_post_approval_link));

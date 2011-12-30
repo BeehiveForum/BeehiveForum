@@ -931,6 +931,8 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
     
     $query_string_array = array();
     
+    unset($_GET['webtag']);
+    
     if ($include_webtag) {
         $query_string_array['webtag'] = $webtag;
     }

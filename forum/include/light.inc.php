@@ -788,12 +788,13 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_time($thread['MODIFIED']);
-
+                            
+                            echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
-
-                            echo "<span>";
+                            
+                            echo "<span class=\"thread_detail\">";
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"{$lang['subscribed']}\">[S]</span>";
@@ -804,9 +805,11 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<span class=\"thread_merge\" title=\"{$lang['threadhasbeenmerged']}\">[TM]</span>";
                             if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<span class=\"thread_attachment\" title=\"{$lang['attachment']}\">[A]</span>";
 
-                            echo $number." ";
-                            echo $thread_time." ";
+                            echo "<span class=\"thread_length\">$number</span>";
                             echo "</span>";
+                            echo "</span>";
+                            
+                            echo "<span class=\"thread_time\">$thread_time</span>";
                             echo "</li>\n";
                         }
                     }
@@ -1090,9 +1093,11 @@ function light_draw_pm_inbox()
                     } else {
                         echo "<li class=\"pm_read\">";
                     }
-
-                    echo "  <a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
-                    echo "  <span>", format_time($message['CREATED']), "</span>\n";
+                    
+                    echo "<span class=\"pm_title\">";
+                    echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
+                    echo "</span>";
+                    echo "<span class=\"pm_time\">", format_time($message['CREATED']), "</span>";
                     echo "</li>\n";
                 }
 
@@ -1158,8 +1163,12 @@ function light_draw_my_forums()
             foreach ($forums_array['forums_array'] as $forum) {
 
                 echo "<div class=\"forum\">\n";
-                echo "  <h3><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-                echo "  <div class=\"forum_info\">\n";
+                echo "<h3><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                echo "<div class=\"forum_inner\">\n";
+                echo "<div class=\"forum_info\">", $forum['FORUM_DESC'], "</div>";
+                echo "<ul>\n";
+                echo "<li>\n";
+                echo "<span class=\"forum_messages\">";
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
 
@@ -1180,14 +1189,20 @@ function light_draw_my_forums()
 
                     echo $lang['forumnounreadmessages'];
                 }
+                
+                echo "</span>\n";
+                echo "</li>\n";
+                echo "<li>";
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
-                    echo "<span>{$lang['lastvisited']}: ", format_time($forum['LAST_VISIT']), "</span>\n";
+                    echo "<span class=\"forum_last_visit\">{$lang['lastvisited']}: ", format_time($forum['LAST_VISIT']), "</span>\n";
                 }else {
-                    echo "<span>{$lang['lastvisited']}: {$lang['never']}</span>\n";
+                    echo "<span class=\"forum_last_visit\">{$lang['lastvisited']}: {$lang['never']}</span>\n";
                 }
-
-                echo "  </div>\n";
+                
+                echo "</li>\n";
+                echo "</ul>\n";
+                echo "</div>\n";
                 echo "</div>\n";
             }
 

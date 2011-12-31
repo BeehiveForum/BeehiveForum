@@ -231,17 +231,12 @@ body {
     padding: 0;
 }
 
-.message_box {
-    background-color: #FDFC9F;
-    border: 1px solid #000000;
-    margin: 10px 0;
-    padding: 10px;
-}
-
+.forum,
 .folder {
     margin: 10px 0;
 }
 
+.forum h3,
 .folder h3 {
     background: url('images/folder.png') transparent no-repeat scroll 0 0;
     font-size: 110%;
@@ -249,12 +244,15 @@ body {
     margin: 0;
     padding: 0 0 0 20px;
 }
+
+.forum_inner,
 .folder_inner {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     padding: 2px;
 }
 
+.forum_info,
 .folder_info,
 .folder_pagination {
     background-color: #996699;
@@ -263,22 +261,55 @@ body {
     padding: 3px 3px 0;
 }
 
+.forum_info span,
 .folder_info span {
     float: right;
 }
 
+.forum ul,
 .folder ul {
     background-color: #996699;
     border: 1px solid #996699;
     list-style: none;
     margin: 0;
-    padding: 0 0 3px;
+    padding: 0;
 }
 
+.forum ul li,
 .folder ul li {
     background: url('images/bullet.png') transparent no-repeat scroll 0 0;
+    display: table;
     line-height: 150%;
+    padding: 0;
+    width: 100%;
+}
+
+.folder ul li > span.thread_title,
+.folder ul li > span.thread_time,
+.folder ul li > span.pm_title,
+.folder ul li > span.pm_time,
+.forum ul li > span.forum_messages,
+.forum ul li > span.forum_last_visit {
+    display: table-cell;
+}
+
+.folder ul li > span.thread_title,
+.folder ul li > span.pm_title,
+.forum ul li > span.forum_messages,
+.forum ul li > span.forum_last_visit {
     padding-left: 20px;
+}
+
+.folder ul li > span.thread_time,
+.folder ul li > span.pm_time {
+    font-size: 90%;
+    padding: 0 3px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.folder ul li > span.thread_detail {
+    white-space: nowrap;
 }
 
 .folder ul li.pm_unread {
@@ -289,7 +320,7 @@ body {
     background: url('images/pmread.png') transparent no-repeat scroll 0 0;
 }
 
-.folder ul li > span {
+.folder ul li > span.thread_title > span {
     margin-left: 3px;
     white-space: nowrap;
 }

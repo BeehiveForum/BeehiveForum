@@ -283,6 +283,10 @@ define('ATTACHMENT_THUMB_SMALL', 1);
 define('ATTACHMENT_THUMB_MEDIUM', 2);
 define('ATTACHMENT_THUMB_LARGE', 3);
 
+// Attachment thumbnail methods.
+define('ATTACHMENT_THUMBNAIL_PHPGD', 0);
+define('ATTACHMENT_THUMBNAIL_IMAGEMAGICK', 1);
+
 // PM Constants
 define('PM_OUTBOX', 1);
 define('PM_UNREAD', 2);

@@ -159,6 +159,10 @@ $adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adse
 $mail_functions_array = array(MAIL_FUNCTION_PHP      => $lang['phpmailfunction'],
                               MAIL_FUNCTION_SMTP     => $lang['smtpmailserver'],
                               MAIL_FUNCTION_SENDMAIL => $lang['sendmail']);
+                              
+// Array of valid attachment thumbnail methods.
+$attachment_thumbnail_methods = array(ATTACHMENT_THUMBNAIL_IMAGEMAGICK => $lang['useimagemagick'], 
+                                      ATTACHMENT_THUMBNAIL_PHPGD       => $lang['usephpgdlibrary']);
 
 // Submit code.
 if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
@@ -541,7 +545,19 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }else {
         $new_forum_settings['attachment_mime_types'] = "";
     }
+    
+    if (isset($_POST['attachment_thumbnail_method']) && in_array($_POST['attachment_thumbnail_method'], array_keys($attachment_thumbnail_methods))) {
+        $new_forum_settings['attachment_thumbnail_method'] = trim(stripslashes_array($_POST['attachment_thumbnail_method'])); 
+    } else {
+        $new_forum_settings['attachment_thumbnail_method'] = ATTACHMENT_THUMBNAIL_PHPGD;
+    }
 
+    if (isset($_POST['attachment_imagemagick_path']) && strlen(trim(stripslashes_array($_POST['attachment_imagemagick_path']))) > 0) {
+        $new_forum_settings['attachment_imagemagick_path'] = trim(stripslashes_array($_POST['attachment_imagemagick_path']));
+    }else {
+        $new_forum_settings['attachment_imagemagick_path'] = "";
+    }
+    
     if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
         $new_forum_settings['attachments_max_user_space'] = ($_POST['attachments_max_user_space'] * 1024) * 1024;
     }else {
@@ -1582,6 +1598,9 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['enableatt
 echo "                        <td align=\"left\">", form_radio("attachment_thumbnails", "Y", $lang['yes'], (isset($forum_global_settings['attachment_thumbnails']) && $forum_global_settings['attachment_thumbnails'] == 'Y') || !isset($forum_global_settings['attachment_thumbnails'])), "&nbsp;", form_radio("attachment_thumbnails", "N", $lang['no'], isset($forum_global_settings['attachment_thumbnails']) && $forum_global_settings['attachment_thumbnails'] == 'N'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['allowembeddingofattachments']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("attachments_allow_embed", "Y", $lang['yes'], (isset($forum_global_settings['attachments_allow_embed']) && $forum_global_settings['attachments_allow_embed'] == 'Y')), "&nbsp;", form_radio("attachments_allow_embed", "N", $lang['no'], (isset($forum_global_settings['attachments_allow_embed']) && $forum_global_settings['attachments_allow_embed'] == 'N') || !isset($forum_global_settings['attachments_allow_embed'])), "</td>\n";
 echo "                      </tr>\n";
@@ -1594,12 +1613,29 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['allowgues
 echo "                        <td align=\"left\">", form_radio("attachment_allow_guests", "Y", $lang['yes'], (isset($forum_global_settings['attachment_allow_guests']) && $forum_global_settings['attachment_allow_guests'] == 'Y')), "&nbsp;", form_radio("attachment_allow_guests", "N", $lang['no'], (isset($forum_global_settings['attachment_allow_guests']) && $forum_global_settings['attachment_allow_guests'] == 'N') || !isset($forum_global_settings['attachment_allow_guests'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['attachmentdir']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("attachment_dir", (isset($forum_global_settings['attachment_dir'])) ? htmlentities_array($forum_global_settings['attachment_dir']) : "attachments", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['allowedattachmentmimetypes']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("attachment_mime_types", (isset($forum_global_settings['attachment_mime_types'])) ? htmlentities_array($forum_global_settings['attachment_mime_types']) : '', 35), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['attachmentthumbnailmethod']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('attachment_thumbnail_method', $attachment_thumbnail_methods, (isset($forum_global_settings['attachment_thumbnail_method']) ? $forum_global_settings['attachment_thumbnail_method'] : ATTACHMENT_THUMBNAIL_PHPGD)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['imagemagickconvertbinary']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachment_imagemagick_path", (isset($forum_global_settings['attachment_imagemagick_path'])) ? htmlentities_array($forum_global_settings['attachment_imagemagick_path']) : '', 35, 255), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['userattachmentspace']}:</td>\n";
@@ -1637,6 +1673,7 @@ echo "                          <p class=\"smalltext\">{$lang['forum_settings_he
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_25']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_26']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_74']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

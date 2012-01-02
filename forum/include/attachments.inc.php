@@ -1200,7 +1200,7 @@ function attachments_create_thumb($filehash, $max_width = 150, $max_height = 150
     switch ($attachment_thumbnail_method) {
 
         // Use external ImageMagick binary.
-        case 'imagemagick':
+        case ATTACHMENT_THUMBNAIL_IMAGEMAGICK:
 
             return attachments_create_thumb_im($filehash, $max_width, $max_height);
             break;
@@ -1218,7 +1218,6 @@ function attachments_create_thumb($filehash, $max_width = 150, $max_height = 150
 *
 * Create attachment thumbnail using ImageMagick.
 *
-* @param string $imagemagick_path
 * @param string $filepath
 * @param mixed $max_width
 * @param mixed $max_height
@@ -1229,10 +1228,19 @@ function attachments_create_thumb_im($filehash, $max_width, $max_height)
     if (!is_numeric($max_height)) $max_height = 150;
 
     // Get the imagemagick path from settings.
-    if (!($imagemagick_path = forum_get_global_setting('imagemagick_path'))) return false;
+    if (!($imagemagick_path = forum_get_global_setting('attachment_imagemagick_path'))) return false;
+    
+    // Check that imagemagick is executable.
+    if (!is_executable($imagemagick_path)) return false;
 
     // Check the attachments dir is available.
     if (!$attachment_dir = attachments_check_dir()) return false;
+    
+    // Relative attachment file path.
+    $file_path = "$attachment_dir/$filehash";
+    
+    // Check the file exists and we can get some image data from it.
+    if (!file_exists($file_path) || !($image_info = @getimagesize($file_path))) return false;    
 
     // Get the real path to the attachments directory.
     if (!($attachment_real_path = realpath($attachment_dir))) return false;
@@ -1242,34 +1250,6 @@ function attachments_create_thumb_im($filehash, $max_width, $max_height)
 
     // Full attachment file path.
     $file_full_path = "$attachment_real_path/$filehash";
-
-    // Relative attachment file path.
-    $file_relative_path = "$attachment_dir/$filehash";
-
-    // Check the image filepath exists
-    if (!file_exists($file_relative_path)) return false;
-
-    // Check it looks like something we can use.
-    if (!($image_info = @getimagesize($file_relative_path))) return false;
-
-    // Get the current directory.
-    $current_dir = getcwd();
-
-    // Change to the Imagemagick directory.
-    chdir($imagemagick_path);
-
-    // Array to store the results from ImageMagick
-    $imagemagick_info = array();
-
-    // Run imagemagick's convert with it's -version command line to see if it
-    // really is imagemagick. Not really an authoritative test, but it'll do.
-    exec('convert -version', $imagemagick_info);
-
-    // Convert result into a string.
-    $imagemagick_info = trim(implode("\n", $imagemagick_info));
-
-    // Check it contains the string "Version: ImageMagick"
-    if (strstr($imagemagick_info, 'Version: ImageMagick') === false) return false;
 
     // If we're dealing with a GIF image, we need to
     // process it to correctly resize all the frames it
@@ -1291,12 +1271,9 @@ function attachments_create_thumb_im($filehash, $max_width, $max_height)
                                                        escapeshellarg("$file_full_path.thumb")));
     }
 
-    // Change back to the original directory.
-    chdir($current_dir);
-
-    // if imagemagick baulks, it won't create the final image, so we
+    // if imagemagick fails, it won't create the final image, so we
     // test that exists before returning the result.
-    if (!file_exists(sprintf('%s.thumb', $file_relative_path))) return false;
+    if (!file_exists(sprintf('%s.thumb', $file_full_path))) return false;
 
     // Success
     return true;

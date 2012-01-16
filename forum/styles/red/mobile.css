@@ -692,7 +692,7 @@ a.folder_list_link {
 .logon_password,
 .logon_remember,
 .logon_buttons {
-    margin: 0 0 10px;
+    margin: 0 10px 10px 0;
 }
 
 .logon_username .text,

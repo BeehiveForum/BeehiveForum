@@ -216,6 +216,7 @@ body {
 #thread_view li .select,
 #thread_mark_read li .select,
 #folder_view li .select {
+    border-radius: 0;
     width: 100%;
 }
 

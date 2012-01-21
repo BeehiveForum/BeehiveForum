@@ -182,23 +182,18 @@ $(beehive).bind('init', function() {
         if (beehive.uid == 0) return true;
 
         $.ajax({
-
             'cache' : true,
-
             'data' : {
                 'webtag' : beehive.webtag,
                 'ajax'   : 'true',
                 'action' : $this.attr('class'),
                 'msg'    : $this.attr('rel')
             },
-
+            'dataType' : 'json',
             'url' : beehive.forum_path + '/ajax.php',
-
             'success' : function(data) {
 
                 try {
-
-                    var data = JSON.parse(data);
 
                     $parent.html(data.html);
 

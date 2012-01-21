@@ -298,11 +298,17 @@ if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
     $emots_enabled = true;
 }
 
+if (($page_prefs & POST_AUTO_LINKS) > 0) {
+    $links_enabled = true;
+}else {
+    $links_enabled = false;
+}
+
 if (!isset($t_content)) $t_content = "";
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($post_html, $t_content, $emots_enabled);
-$sig = new MessageText($sig_html, $t_sig);
+$post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+$sig = new MessageText($sig_html, $t_sig, $emots_enabled, $links_enabled, false);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();

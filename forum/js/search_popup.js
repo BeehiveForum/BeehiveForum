@@ -67,12 +67,12 @@ $(beehive).bind('init', function() {
                 },
                 
                 formatItem : function(item) {
-                    var data = JSON.parse(item);
+                    var data = $.parseJSON(item);
                     return $.sprintf('%s (%s)', data.NICKNAME, data.LOGON);
                 },
                 
                 formatResult : function(item) {
-                    var data = JSON.parse(item);
+                    var data = $.parseJSON(item);
                     return data.LOGON;
                 }
             });

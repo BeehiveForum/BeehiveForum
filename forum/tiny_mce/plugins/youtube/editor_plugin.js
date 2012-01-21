@@ -62,35 +62,11 @@ USA
             ed.onNodeChange.add(function (ed, cm, n) {
 
                 var active = false;
-
-                if (n.nodeName == 'IMG') {
-
-                    try {
-
-                        var title = n.attributes['title'].value;
-
-                        var alt = n.attributes['alt'].value;
-
-                        var matches = title.match(/(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))/);
-
-                        if (matches[7] !== undefined) {
-
-                            active = matches[7] === alt;
-
-                        } else if (matches[6] !== undefined) {
-
-                            active = matches[6] === alt;
-
-                        } else {
-
-                            active = false;
-                        }
-
-                    } catch (err) {
-
-                    }
+                
+                if (n.nodeName == 'IMG' && n.attributes['class'].value.match(/^mceItem youtube$/)) {
+                    active = true;
                 }
-
+                
                 cm.setActive('youtube', active);
             });
         },

@@ -865,11 +865,11 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    html_include_javascript(html_get_forum_file_path('js/jquery-1.6.1.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery-1.7.1.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
-    html_include_javascript(html_get_forum_file_path('js/json2.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.url.js'));
     html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     if ($frame_set_html === false) {

@@ -300,7 +300,7 @@ function rss_feed_check_feeds()
 
                         $rss_feed_item_description = htmlentities_decode_array($rss_feed_item->description);
 
-                        $rss_feed_item_post = new MessageText(true, $rss_feed_item_description);
+                        $rss_feed_item_post = new MessageText(true, $rss_feed_item_description, false, true, false);
                         $rss_feed_item_post->setHTML(POST_HTML_AUTO);
 
                         $rss_content = $rss_feed_item_post->getContent();

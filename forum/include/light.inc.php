@@ -188,9 +188,8 @@ function light_html_draw_top()
         printf("<link rel=\"shortcut icon\" type=\"image/ico\"href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.6.1.min.js\"></script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.7.1.min.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/json2.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',

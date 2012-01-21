@@ -317,7 +317,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 post_save_attachment_id($tid, $pid, $aid);
 
 $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
-$sig = new MessageText($sig_html, "", true, false);
+$sig = new MessageText($sig_html, "", $emots_enabled, $links_enabled, false);
 
 $allow_html = true;
 $allow_sig = true;
@@ -620,21 +620,21 @@ if (isset($_POST['preview'])) {
             $to_uid = $edit_message['TO_UID'];
 
             $from_uid = $edit_message['FROM_UID'];
-
-            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled);
-
+            
+            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled, $links_enabled);
+            
             $emots_enabled = $parsed_message->getEmoticons();
 
             $links_enabled = $parsed_message->getLinks();
 
             $t_content = $parsed_message->getMessage();
-
+            
             $post_html = $parsed_message->getMessageHTML();
 
             $t_sig = $parsed_message->getSig();
 
             $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled, $links_enabled);
-            $sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false);
+            $sig = new MessageText($allow_html ? $sig_html : false, $t_sig, $emots_enabled, $links_enabled, false);
 
             $post->diff = false;
             $sig->diff = false;

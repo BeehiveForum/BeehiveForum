@@ -837,7 +837,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
         $forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
     }
 
-    $forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_rules, true, true);
+    $forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_rules, true, true, false);
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";

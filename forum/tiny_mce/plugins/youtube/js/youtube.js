@@ -31,6 +31,15 @@ USA
 tinyMCEPopup.requireLangPack();
 
 var YoutubeDialog = {
+    
+    decode : function(html) {
+        
+        span = document.createElement('span');
+
+        span.innerHTML = html;
+
+        return span.firstChild.nodeValue;        
+    },
 
     init: function () {
 
@@ -38,34 +47,38 @@ var YoutubeDialog = {
 
         html = tinyMCEPopup.editor.selection.getContent();
 
-        matches = html.match(/<img class="mceItem youtube" title="(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))" src="[^"]+" alt="[^"]+" \s?\/>/);
+        matches = html.match(/<img class="mceItem youtube" src="[^"]+" alt="([^"]+)" \s?\/>/);
         
-        if (matches[1] !== undefined) {
-            f.youtubeURL.value = matches[1];
+        if (matches && matches[1]) {
+            f.youtubeURL.value = 'http://www.youtube.com/watch?v=' + matches[1];
         }
     },
 
     insert: function () {
 
-        var url = document.forms[0].youtubeURL.value;
+        var url = YoutubeDialog.decode(document.forms[0].youtubeURL.value),
+            html,
+            matches;
 
         if (url === null) {
             return;
         }
-
-        var html, matches = url.match(/(((http|https):\/\/)?(www\.)?(youtube\.com\/watch\?v=([^&|"]+)|youtu\.be\/([^"]+)))/);
-
-        if (matches === null) {
+        
+        if (!(matches = url.match(/^((http|https):\/\/)?(www\.)?((youtube\.com\/watch\?(feature=([^&]+)&)?v=([^&]+))|youtu\.be\/(.+))/))) {
             return;
         }
+        
+        if (!matches[2]) {
+            matches[2] = 'http';
+        }
+        
+        if (matches[9] !== undefined) {
 
-        if (matches[7] !== undefined) {
+            html = '<img src="http://img.youtube.com/vi/' + matches[9] + '/0.jpg" class="mceItem youtube" alt="' + matches[9] + '" />';
 
-            html = '<img src="http://img.youtube.com/vi/' + matches[7] + '/0.jpg" class="mceItem youtube" alt="' + matches[7] + '" title="' + matches[0] + '" />';
+        } else if (matches[8] !== undefined) {
 
-        } else if (matches[6] !== undefined) {
-
-            html = '<img src="http://img.youtube.com/vi/' + matches[6] + '/0.jpg" class="mceItem youtube" alt="' + matches[6] + '" title="' + matches[0] + '" />';
+            html = '<img src="http://img.youtube.com/vi/' + matches[8] + '/0.jpg" class="mceItem youtube" alt="' + matches[8] + '" />';
 
         } else {
 

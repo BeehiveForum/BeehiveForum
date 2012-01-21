@@ -654,16 +654,18 @@ class MessageText {
     private $original_text = "";
     private $emoticons = true;
     private $links = true;
-    private $tiny_mce = false;
+    private $tiny_mce;
 
     public $diff = false;
 
-    function MessageText ($html = 0, $content = "", $emoticons = true, $links = true)
+    function MessageText ($html = 0, $content = "", $emoticons = true, $links = true, $tiny_mce = null)
     {
         $post_prefs = session_get_post_page_prefs();
-
-        if (($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
-            $this->tiny_mce = true;
+        
+        if (is_bool($tiny_mce)) {
+            $this->tiny_mce = $tiny_mce;
+        } else {
+            $this->tiny_mce = ($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT');
         }
 
         $this->diff = false;
@@ -728,13 +730,13 @@ class MessageText {
 
         }else if ($this->html > POST_HTML_DISABLED) {
 
+            $text = fix_html($text, $this->emoticons, $this->links);
+            
             if ($this->tiny_mce) {
                 
                 $text = fix_tiny_mce_html($text);
 
             }else {
-                
-                $text = fix_html($text, $this->emoticons, $this->links);
 
                 $tidy_text = tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false);
 
@@ -790,16 +792,18 @@ class MessageTextParse {
     private $original = "";
     private $tiny_mce = false;
 
-    function MessageTextParse($message, $emots_default = true, $links_enabled = true)
+    function MessageTextParse($message, $emots_default = true, $links_enabled = true, $tiny_mce = null)
     {
         $this->original = $message;
 
         $post_prefs = session_get_post_page_prefs();
 
-        if (($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
-            $this->tiny_mce = true;
+        if (is_bool($tiny_mce)) {
+            $this->tiny_mce = $tiny_mce;
+        } else {
+            $this->tiny_mce = ($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT');
         }
-
+        
         $message_parts = preg_split('/(<[^<>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $signature_parts = array();
@@ -835,22 +839,33 @@ class MessageTextParse {
             $links = $links_enabled;
         }
         
-        $message = tidy_html($message, false, $links, $this->tiny_mce);
-
-        $message_check_html = strip_tags($message, '<p><br>');
-
-        if (strcmp($message_check_html, $message) <> 0) {
+        if ($this->tiny_mce) {
+            
+            $message = tidy_tiny_mce($message);
 
             $html = POST_HTML_ENABLED;
+        
+        } else {
+            
+            $message = tidy_html($message, false, $links);
+            
+            $message_check_html = strip_tags($message, '<p><br>');
 
-            if (add_paragraphs($message) == $message) {
-                $html = POST_HTML_AUTO;
+            if (strcmp($message_check_html, $message) <> 0) {
+
+                $html = POST_HTML_ENABLED;
+
+                if (add_paragraphs($message) == $message) {
+                    $html = POST_HTML_AUTO;
+                }
+
+            }else {
+
+                $message = htmlentities_decode_array(tidy_html_linebreaks($message));
             }
-
-        }else {
-
-            $message = htmlentities_decode_array(tidy_html_linebreaks($message));
         }
+        
+        $signature = tidy_html($signature);        
 
         $this->message = $message;
         $this->sig = $signature;

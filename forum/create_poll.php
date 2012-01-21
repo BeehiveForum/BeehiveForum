@@ -741,8 +741,7 @@ if (!isset($message_text)) $message_text = "";
 if (!isset($sig_text)) $sig_text = "";
 
 $post = new MessageText($message_html, $message_text, $emots_enabled, $links_enabled);
-
-$sig = new MessageText($sig_html, $sig_text, true, false);
+$sig = new MessageText($sig_html, $sig_text, $emots_enabled, $links_enabled, false);
 
 $message_text = $post->getContent();
 

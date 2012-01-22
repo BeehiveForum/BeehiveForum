@@ -7,7 +7,11 @@ input,
 .select,
 .textarea,
 .text {
-    /*font-weight: normal;*/
+    font-weight: normal;
+}
+
+select {
+    border-radius: 0;
 }
 
 .button {
@@ -216,7 +220,6 @@ body {
 #thread_view li .select,
 #thread_mark_read li .select,
 #folder_view li .select {
-    border-radius: 0;
     width: 100%;
 }
 
@@ -640,6 +643,10 @@ a.folder_list_link {
 .post_content,
 .post_html span {
     font-weight: bold;
+}
+
+.post_html span {
+    display: block;
 }
 
 .post_html label {

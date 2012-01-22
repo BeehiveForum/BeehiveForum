@@ -201,6 +201,7 @@ $lang['print'] = "pR1N+";
 $lang['sticky'] = "s+iCky";
 $lang['polls'] = "p0lL5";
 $lang['user'] = "u\$Er";
+$lang['auto'] = "@ut0";
 $lang['enabled'] = "eN@BLed";
 $lang['disabled'] = "diS@8leD";
 $lang['options'] = "oP+IONs";

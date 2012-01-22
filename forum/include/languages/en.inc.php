@@ -202,6 +202,7 @@ $lang['print'] = "Print";
 $lang['sticky'] = "Sticky";
 $lang['polls'] = "Polls";
 $lang['user'] = "User";
+$lang['auto'] = "Auto";
 $lang['enabled'] = "Enabled";
 $lang['disabled'] = "Disabled";
 $lang['options'] = "Options";

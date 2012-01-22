@@ -201,6 +201,7 @@ $lang['print'] = "Imprimer";
 $lang['sticky'] = "Collant";
 $lang['polls'] = "Scrutins";
 $lang['user'] = "Utilisateur";
+$lang['auto'] = "Auto";
 $lang['enabled'] = "Activé";
 $lang['disabled'] = "Désactivé";
 $lang['options'] = "Options";

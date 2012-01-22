@@ -687,7 +687,7 @@ if ($allow_html == true) {
 
     echo "<div class=\"post_html\"><span>{$lang['htmlinmessage']}:</span>\n";
     echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO);
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['auto'], $tph_radio == POST_HTML_AUTO);
     echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED);
     echo "</div>";
 

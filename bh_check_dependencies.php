@@ -41,7 +41,7 @@ $ignore_functions_array = array();
 $ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_DEVELOPER_MODE', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT');
 
 // Path to source files.
-$source_files_dir_array = array('forum', 'forum\include');
+$source_files_dir_array = array('forum', 'forum/include');
 
 // Prevent time out
 set_time_limit(0);
@@ -57,12 +57,12 @@ foreach ($source_files_dir_array as $include_file_dir) {
 
         while (($file = readdir($dir)) !== false) {
 
-            $path_info_array = pathinfo("$include_file_dir\\$file");
+            $path_info_array = pathinfo("$include_file_dir/$file");
 
             if (isset($path_info_array['extension']) && $path_info_array['extension'] == 'php') {
 
-                $source_files_array[] = "$include_file_dir\\$file";
-                $source_file_contents = file_get_contents("$include_file_dir\\$file");
+                $source_files_array[] = "$include_file_dir/$file";
+                $source_file_contents = file_get_contents("$include_file_dir/$file");
 
                 $ignore_functions = implode("|", array_map('preg_quote_callback', $ignore_functions_array));
                 $ignore_constants = implode("|", array_map('preg_quote_callback', $ignore_constants_array));

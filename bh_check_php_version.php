@@ -23,9 +23,9 @@ USA
 
 /* $Id$ */
 
-// Requires PHP PEAR to be installed and PHP_CompatInfo Class.
-// See: http://www.laurent-laville.org/index.php?module=pear&desc=pci
-require_once 'PHP/CompatInfo.php';
+// Requires PHP PEAR to be installed and Bartlett/PHP_CompatInfo.
+// See: https://github.com/llaville/php-compat-info
+require_once 'Bartlett/PHP/CompatInfo.php';
 
 // Prevent time out
 set_time_limit(0);
@@ -37,10 +37,16 @@ header('Content-Type: text/plain');
 echo "Please wait checking Minimum PHP Version...\n\n";
 
 // Instantiate PHP_CompatInfo with null renderer.
-$pci = new PHP_CompatInfo('null');
+$pci = new PHP_CompatInfo();
+
+// Minimum version required
+$minimum_version = "0";
 
 // Array to store extracted per-file version info.
 $versions_array = array();
+
+// Array to store extensions needed.
+$extensions_array = array();
 
 // Array of keys to ignore in result array.
 $ignore_result_keys = array(
@@ -62,7 +68,7 @@ $ignore_result_keys = array(
 if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
 
     // Parse the specified files only.
-    $results = $pci->parseArray(array_splice($_SERVER['argv'], 1));
+    $pci->parse(array_splice($_SERVER['argv'], 1));
 
 } else {
 
@@ -79,24 +85,44 @@ if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
     );
 
     // Parse the forum directory.
-    $results = $pci->parseFolder('forum', $options);
+    $pci->parse('forum');
 }
 
-// Output the results.
-printf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $results['version'], implode(", ", $results['extensions']));
+// Fetch the results as an array
+$results = $pci->toArray();    
 
 // Iterate over the result array.
 foreach ($results as $script_filename => $version_info) {
 
-    // Ignore keys in the ignore_result_keys array.
-    if (!in_array($script_filename, $ignore_result_keys) && isset($version_info['version'])) {
-
-        // If the version info contains a version key, add it to $versions_array.
-        $versions_array[$version_info['version']][] = $script_filename;
+    if (!isset($versions_array[$version_info['versions'][0]])) {
+        $versions_array[$version_info['versions'][0]] = array();
+    }
+    
+    $versions_array[$version_info['versions'][0]][] = $script_filename;
+    
+    if (version_compare($version_info['versions'][0], $minimum_version, '>')) {
+        $minimum_version = $version_info['versions'][0];
+    }
+    
+    foreach ($version_info['extensions'] as $extension_name => $extension_info) {
+        
+        if (in_array($extension_name, array('Core', 'standard'))) {
+            continue;
+        }
+        
+        if (!isset($extensions_array[$extension_name][$extension_info['versions'][0]])) {
+            $extensions_array[$extension_name][$extension_info['versions'][0]] = array();
+        }
+        
+        $extensions_array[$extension_name][$extension_info['versions'][0]][] = $script_filename;
     }
 }
 
+// Sort the results
 ksort($versions_array);
+
+// Output the results.
+printf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $minimum_version, implode(", ", array_keys($extensions_array)));
 
 // Display the filenames grouped by version.
 foreach ($versions_array as $version => $script_filenames) {

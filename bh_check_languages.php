@@ -24,7 +24,7 @@ USA
 /* $Id$ */
 
 // Compare two language files.
-function load_language_file($filename)
+function get_language_file($filename)
 {
     $lang = array();
 
@@ -109,13 +109,13 @@ set_time_limit(0);
 header('Content-Type: text/plain');
 
 // Master Language File.
-$master_lang = load_language_file("en.inc.php");
+$master_lang = get_language_file("en.inc.php");
 
 // Slave Language Files.
-$slave_langs = array("en-us.inc.php"    => array('lang' => load_language_file("en-us.inc.php"), 'showut' => false),
-                     "x-hacker.inc.php" => array('lang' => load_language_file("x-hacker.inc.php"), 'showut' => false),
-                     "fr-ca.inc.php"    => array('lang' => load_language_file("fr-ca.inc.php"), 'showut' => true),
-                     "de.inc.php"       => array('lang' => load_language_file("de.inc.php"), 'showut' => true));
+$slave_langs = array("en-us.inc.php"    => array('lang' => get_language_file("en-us.inc.php"), 'showut' => false),
+                     "x-hacker.inc.php" => array('lang' => get_language_file("x-hacker.inc.php"), 'showut' => false),
+                     "fr-ca.inc.php"    => array('lang' => get_language_file("fr-ca.inc.php"), 'showut' => true),
+                     "de.inc.php"       => array('lang' => get_language_file("de.inc.php"), 'showut' => true));
 
 foreach ($slave_langs as $lang_name => $slave_lang) {
 

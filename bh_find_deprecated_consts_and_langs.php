@@ -23,13 +23,22 @@ USA
 
 /* $Id$ */
 
-define("BH_INCLUDE_PATH", "forum/include/");
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./forum/include/");
+
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+
+// Prevent time out
+set_time_limit(0);
+
+// Output the content as text.
+header('Content-Type: text/plain');
 
 $exclude_files_array = array();
 
 $exclude_dirs_array = array('forum/include/languages', 'forum/include/swift');
 
-function load_language_file($filename)
+function get_language_file($filename)
 {
     $lang = array();
 
@@ -75,7 +84,7 @@ $unused_constants = get_defined_constants(true);
 
 $unused_constants = isset($unused_constants['user']) ? $unused_constants['user'] : array();
 
-$unused_langs = load_language_file("en.inc.php");
+$unused_langs = get_language_file("en.inc.php");
 
 if (get_file_list($file_list_array, 'forum', '.php')) {
 

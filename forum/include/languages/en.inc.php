@@ -1041,7 +1041,7 @@ $lang['forum_settings_help_71'] = "A <b>Content Delivery Network</b> or CDN can 
 $lang['forum_settings_help_72'] = "You should enter any CDN paths in the text box above, one per line. Your Beehive Forum will automatically prefix every static content request with each of the CDN paths in turn.";
 $lang['forum_settings_help_73'] = "Please Note: Your CDN paths should be to the root of the Beehive Forum content. For example, if you enter <i>cdn01.beehiveforum.co.uk</i>, requests for the user's CSS styles will be made to <i>cdn01.beehiveforum.co.uk/styles/[user_style]/style.css</i>";
 $lang['forum_settings_help_74'] = "Enabling <b>Show Share Links</b> adds social network share links for Google+, Facebook and Twitter, at the top of each thread. Users can opt-out of displaying these buttons from their My Controls area. By disabling it here, they will be hidden for all users.";
-$lang['forum_settings_help_74'] = "<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. To specify multiple mime-types, separate them using semi-colons. <b>Note:</b> Beehive doesn't perform strict analysis of the uploaded files uploaded and renamed files may be able to circumvent this restriction. ";
+$lang['forum_settings_help_74'] = "<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. To specify multiple mime-types, separate them using semi-colons. <b>Note:</b> Beehive doesn't perform strict analysis of the uploaded files uploaded and renamed files may be able to circumvent this restriction.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 $lang['aidnotspecified'] = "AID not specified.";
@@ -1689,7 +1689,7 @@ $lang['addnewoption'] = "Add new option";
 $lang['deletequestion'] = "Delete question";
 $lang['deleteoption'] = "Delete option";
 $lang['allowmultipleoptions'] = "Allow multiple options to be selected";
-$lang['youmustprovideratleast1question'] = "Your must provide at least one question";
+$lang['youmustprovideratleast1question'] = "You must provide at least one question";
 $lang['youmustprovideaquestionforalloptions'] = "You must provide a question for all options";
 $lang['youmustprovideratleast2optionsforeachquestion'] = "You must provide at least 2 options for each question";
 $lang['youcanhaveamaximumof20optionsperpoll'] = "You can have a maximum of 20 options per poll";

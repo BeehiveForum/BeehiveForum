@@ -23,11 +23,16 @@ USA
 
 /* $Id$ */
 
-// Callback function to escape array of strings.
-function preg_quote_callback($str)
-{
-    return preg_quote($str, "/");
-}
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./forum/include/");
+
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+
+// Prevent time out
+set_time_limit(0);
+
+// Output the content as text.
+header('Content-Type: text/plain');
 
 // Array to hold source files
 $source_files_array = array();

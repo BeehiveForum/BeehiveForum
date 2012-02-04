@@ -29,7 +29,7 @@ $exclude_files_array = array();
 
 $exclude_dirs_array = array('forum/include/languages', 'forum/include/swift');
 
-function load_language_file($filename)
+function get_language_file($filename)
 {
     $lang = array();
 
@@ -69,7 +69,7 @@ set_time_limit(0);
 
 header('Content-Type: text/plain');
 
-if (($lang = load_language_file('en.inc.php'))) {
+if (($lang = get_language_file('en.inc.php'))) {
 
     if (get_file_list($file_list_array, 'forum', '.php')) {
 

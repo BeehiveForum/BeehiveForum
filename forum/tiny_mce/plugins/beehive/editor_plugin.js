@@ -40,8 +40,8 @@
             return {
                 longname : 'Beehive Forum TinyMCE 3.x Plugin',
                 author : 'Project Beehive Forum',
-                authorurl : 'http://www.beehiveforum.net',
-                infourl : 'http://www.beehiveforum.net',
+                authorurl : 'http://www.beehiveforum.co.uk',
+                infourl : 'http://www.beehiveforum.co.uk',
                 version : '2.0'
             };
         },

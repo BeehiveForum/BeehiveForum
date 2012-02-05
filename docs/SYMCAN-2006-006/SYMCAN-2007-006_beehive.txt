@@ -61,7 +61,7 @@ Vendor Response:
   this threat.
 
   Project Beehive Forum is available for download from the project
-  website at http://www.beehiveforum.net/
+  website at http://www.beehiveforum.co.uk/
 
   If there are any further questions about this statement, please 
   contact a member of the development team.
@@ -72,7 +72,7 @@ Recommendation:
   It is recommend all users immediately obtain the newest version of  
   Beehive Forum to protect against this threat.  Project Beehive  
   Forum is available for download from the project website at  
-  http://www.beehiveforum.net/.
+  http://www.beehiveforum.co.uk/.
 
 Common Vulnerabilities and Exposures (CVE) Information:
 

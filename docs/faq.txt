@@ -146,7 +146,7 @@ discussion media in its time. And this is our favourite. Sorry.
 ==================================================
 
 We welcome feedback, bug reports, and requests for extra features etc. The best
-place is to ask is probably the forum at http://beehiveforum.net/forum/. But 
+place is to ask is probably the forum at http://beehiveforum.co.uk/forum/. But 
 bear in mind that we do this in our spare time.
 
 Of course, since Beehive is open source, you could always implement whatever 

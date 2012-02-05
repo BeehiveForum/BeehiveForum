@@ -1,37 +1,65 @@
 Beehive Forum Release Notes
 
+What's new in 1.1.0 (Released 5th February 2012)
+====================
+
+- Changes from 1.0.1
+
+    - New domain name: www.beehiveforum.co.uk.
+      Please update your links!
+
+    - Fixed various XSS injection attacks.
+
+    - New Poll creation and editing pages with
+      support for multiple questions per poll.
+
+    - New Mobile mode with visual theme designed
+      to compliment the full desktop Beehive Forum
+      experience.
+
+    - New Flash and Youtube tags to facilitate the
+      easy embedding of these content types.
+
+    - New inline spoiler tag.
+
+    - Imagemagick support for attachment thumbnails
+
+    - Experimental Sphinx Search support. Please see
+      sphinx_setup.txt for instructions.
+
+
 What's new in 1.0.1 (Released 14th February 2011)
 ====================
 
 - Changes from 1.0
 
-	- RSS Feeds weren't updating due to hard-coded
+    - RSS Feeds weren't updating due to hard-coded
           date in SQL query.
 
-	- Window resize event firing for guests and
+    - Window resize event firing for guests and
           causing error in IE7.
 
-        - Emoticons not added by clicking on them in 
+        - Emoticons not added by clicking on them in
           pm_edit.php and pm_write.php
 
-        - Duplicate messages displaying if post author 
+        - Duplicate messages displaying if post author
           had more than 1 active session.
 
         - Profile and Avatar attachments would count up
-          views due to missing profile_picture or 
+          views due to missing profile_picture or
           avatar_picture URL parameter.
 
-        - Cast perm value to a double to stop max integer 
+        - Cast perm value to a double to stop max integer
           size corrupting permissions.
 
-        - Apple Touch Icon not displaying on Android 
-          devices because they require absolute path to 
+        - Apple Touch Icon not displaying on Android
+          devices because they require absolute path to
           the image.
 
-        - Permission USER_PERM_THREAD_MOVE was being 
+        - Permission USER_PERM_THREAD_MOVE was being
           overridden by user permissions.
 
-        - folder_draw_dropdown wasn't allowing the 
+        - folder_draw_dropdown wasn't allowing the
           current folder
 
 
@@ -40,38 +68,38 @@ What's new in 1.0 (Released 9th January 2011)
 
 - Notes
 
-	- Beehive Forum 1.0 changes how forum styles
-	  and start page are stored. Styles are now
-	  stored only in the main styles directory and
-	  start pages are saved to the database.
+    - Beehive Forum 1.0 changes how forum styles
+      and start page are stored. Styles are now
+      stored only in the main styles directory and
+      start pages are saved to the database.
 
-	  The Beehive Forum installer will NOT move the
-	  forum styles for you, it will however attempt
-	  to import the forum start pages. After you have
-	  upgraded please copy any styles you wish to keep
-	  to the main styles directory.
+      The Beehive Forum installer will NOT move the
+      forum styles for you, it will however attempt
+      to import the forum start pages. After you have
+      upgraded please copy any styles you wish to keep
+      to the main styles directory.
 
 - Changes from 0.9.1
 
-	- Beehive Forum now uses JQuery as it's Javascript
-	  library, which allows for greater compatibility and
-	  extra features.
+    - Beehive Forum now uses JQuery as it's Javascript
+      library, which allows for greater compatibility and
+      extra features.
 
-        - New icons. Beehive Forum now ships with the famfamfam 
+        - New icons. Beehive Forum now ships with the famfamfam
           silkicon set.
 
         - New logon page allows the browser to save user
-	  credentials and helps cut down on the number of
-	  cookies that Beehive Forum uses.
+      credentials and helps cut down on the number of
+      cookies that Beehive Forum uses.
 
-	- IE9 Beta Jumplist support (Windows 7 only). You can
-	  now pin your Beehive Forum to your Windows Superbar
-	  and make use of quick shortcuts to various sections
-	  including Messages, PM Inbox and Admin Tools.
+    - IE9 Beta Jumplist support (Windows 7 only). You can
+      now pin your Beehive Forum to your Windows Superbar
+      and make use of quick shortcuts to various sections
+      including Messages, PM Inbox and Admin Tools.
 
         - Lots and lots of bugs fixed!
 
-- For comprehensive list of changes please see the change log.        
+- For comprehensive list of changes please see the change log.
 
 
 What's new in 0.9.1 (Released 15th July 2009)
@@ -80,24 +108,24 @@ What's new in 0.9.1 (Released 15th July 2009)
 - Notes
 
         - Beehive Forum 0.9.1 is intended to fix bugs found since
-          the release of Beehive Forum 0.9. There are no new 
+          the release of Beehive Forum 0.9. There are no new
           features in this version.
-  
+
 - Changes from 0.9
 
         - Fixed: Admin Forums not setting forum name if the forum
                  already had a name saved.
-                 
+
         - Fixed: Debugging output of SQL query left in pm.inc.php
                  is visible on IIS servers.
 
         - Fixed: Error during install if no FILE permission on MySQL
                  account.
-                 
+
         - Fixed: Forum doesn't work if GeSHi is not installed.
-        
-- For comprehensive list of changes please see the change log.        
-  
+
+- For comprehensive list of changes please see the change log.
+
 
 What's new in 0.9 (Released 5th July 2009)
 =================
@@ -107,11 +135,11 @@ What's new in 0.9 (Released 5th July 2009)
         - Beehive Forum 0.9 introduces news client-side HTML
           caching of the page output for the most frequently
           visited pages on your forum including thread list,
-          message pane and the start pages. If you encounter 
+          message pane and the start pages. If you encounter
           problems with stale content showing on the pages
           you can disable this option by modifying the
           $http_cache_enabled setting and changing it to false.
-          
+
         - Beehive Forum 0.9 requires PHP 5.1.0 and PCRE 6.6
           compiled with --enable-utf8 --enable-unicode-properties.
 
@@ -121,7 +149,7 @@ What's new in 0.9 (Released 5th July 2009)
                  with other PHP applications now.
 
         - Added: Google Analytics code support added to Beehive.
-        
+
         - Added: Support for Google Adsense adverts with various
                  settings and options to change how they appear.
 
@@ -129,12 +157,12 @@ What's new in 0.9 (Released 5th July 2009)
                  so you can set your forum to be general, 14+,
                  mature or restricted.
 
-        - Added: Bans can now be set to expire on a set date.    
-                 
+        - Added: Bans can now be set to expire on a set date.
+
         - Fixed: Deleting a user was physically deleting a user's
                  posts from the database instead of NULL-ing the
                  content resulting in errors when accesing affected
-                 threads.                 
+                 threads.
 
 - For comprehensive list of changes please see the change log.
 
@@ -144,7 +172,7 @@ What's new in 0.8.4 (Released 07th August 2008)
 
 - Beehive Forum 0.8.4 is primarily intended to fix bugs
   found since the release of Beehive Forum 0.8.3.
-  
+
   New features for this release include Admin Forum Stats
   Display, Improved Admin User Alias pages, Start Page CSS
   style sheet uploader, Folder Subscriptions, Thread List
@@ -168,8 +196,8 @@ What's new in 0.8.2 (Released 19th January 2008)
 =================
 
 - Beehive Forum 0.8.2 fixes several bugs found since the
-  release of Beehive Forum 0.8.1. Upgrading to 
-  Beehive Forum 0.8.2 is possible from 0.6.x, 0.7.x 
+  release of Beehive Forum 0.8.1. Upgrading to
+  Beehive Forum 0.8.2 is possible from 0.6.x, 0.7.x
   and 0.8.x and should be performed using the installer
   as normal.
 
@@ -182,7 +210,7 @@ What's new in 0.8 (Released 4th November 2007)
 - Important Notes
 
         - Beehive Forum 0.8 fixes a security vulnerability that
-          could allow for user logon and password MD5 hash disclosure. 
+          could allow for user logon and password MD5 hash disclosure.
           It is recommend all users immediately obtain the newest
           version of Beehive Forum to protect against this threat.
 
@@ -198,7 +226,7 @@ What's new in 0.7.1 (Released 13th October 2006)
 
         - 0.7.1 replaces the original 0.7 release of 1st October.
           The database schema for 0.7.1 is identical to 0.7. To
-          upgrade from 0.7 to 0.7.1 simply extract the archive 
+          upgrade from 0.7 to 0.7.1 simply extract the archive
           over your existing installation and delete the installer
           files. Upgrades from 0.6.x to 0.7.1 will still require
           running the installer as normal.
@@ -234,7 +262,7 @@ What's new in 0.7.1 (Released 13th October 2006)
                  correctly in RSS feed.
         - Added: More intuitive controls for moving folders, forum
                  links and profile sections and items.
-                
+
 
 What's new in 0.7 (Released 1st October 2006)
 =================
@@ -824,7 +852,7 @@ What's new in 0.7 (Released 1st October 2006)
                    rather than load list and call mutiple times everytime
                    apply_wordfilter is called.
         - Changed: Removed function
-                   messages_get_most_recent_unread function and updated 
+                   messages_get_most_recent_unread function and updated
                    messages_get_most_recent function to find both read and
                    unread messages.
         - Changed: admin_post_approve.php, delete.php and edit.php
@@ -1450,7 +1478,7 @@ What's new in 0.6.1 (Released 22nd Aug 2005)
 - Changes from 0.6
 
         - Fixed: Forum level admins were able to remove the global
-                 privilleges of another user without having global 
+                 privilleges of another user without having global
                  forum privilleges themselves.
 
         - Fixed: Upgrading from 0.5 to 0.6 sometimes results in an
@@ -1470,7 +1498,7 @@ What's new in 0.6.1 (Released 22nd Aug 2005)
         - Fixed: Missing SEARCH_RESULTS table when performing a new
                  installation of BeehiveForum 0.6 or upgrading from
                  a 0.5 installation.
-        
+
         - Fixed: Missing FORUM column in SEARCH_RESULTS table when
                  upgrading from 0.6RC1 / RC2 to 0.6 final.
 
@@ -1482,9 +1510,9 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
 
         - BeehiveForum 0.6 introduces a new search indexing procedure
           which will unfortunately skew the search results of your forum
-          while it catches up and performs the indexing. If you have a 
+          while it catches up and performs the indexing. If you have a
           lot of posts this will take a long time to complete. To help
-          reduce the time required in the indexing your old posts, 
+          reduce the time required in the indexing your old posts,
           included is search_index.php which is suitable for running
           from a cron or schedule job. Posts created after upgrading
           to 0.6 will be indexed as they are created.
@@ -1520,7 +1548,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
           as per 0.5's behaviour.
         - WikiWiki integration allows Beehive to automatically hyperlink
           CamalCase words as used by most popular Wiki sites.
-        - Wiki-esq quick links for linking to a specific post using 
+        - Wiki-esq quick links for linking to a specific post using
           msg:1.1 or to user's profile using user:Logon.
         - Attachments allow for the creation of thumbnails in posts for
           supported file types (*.png, *.jpg, *.gif). Requires GD library
@@ -1571,7 +1599,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - Improved user permissions allow for separate Links section
           and Post moderators as well as better global Admin who
           can optionally moderate over all forums.
-        - Improved emoticons support makes it easier to create and 
+        - Improved emoticons support makes it easier to create and
           distribute emoticon packs that are easy to install.
         - Attachments now always open in a new window / tab.
         - New improved attachments popup with G-mail-a-like multiple
@@ -1596,7 +1624,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - Better detection for when a user's session expires, giving them
           more control over logging back in with minimal fuss.
         - Fixed all user preference updates so they don't affect all
-          forums. Changing things like post page settings, font size, 
+          forums. Changing things like post page settings, font size,
           toggling stats display now only affects the forum a user is
           currently visiting rather than all of them.
         - Re-added display of Guests to Recent Visitors list.
@@ -1625,8 +1653,8 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
 
 - Changes from 0.6RC2
 
-        - Added: 4th table to search (SEARCH_RESULTS) which stores a 
-                 users search results for quicker retrieval across 
+        - Added: 4th table to search (SEARCH_RESULTS) which stores a
+                 users search results for quicker retrieval across
                  result pages and to get around the problem with the
                  search frequency.
         - Added: Upgrade script for 0.6RCx (will work for both RC1 and
@@ -1652,7 +1680,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
                  there were no links.
         - Fixed: forums page showing 0 unread threads if you've never
                  visited the forum in question
-        - Fixed: Differentiated between Downloaded: 1 time and 
+        - Fixed: Differentiated between Downloaded: 1 time and
                  Downloaded: x times for foreign langs.
         - Fixed: months not displaying correctly as per bug #1227704
         - Fixed: edit_prefs.php not accepting a hyphen in PIC_URL and
@@ -1695,7 +1723,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - Changed: Removed scripted file types from upload dialog on
                    admin_startpage.php. It will now only accept *.txt,
                    *.htm and *.html
-        - Changed: Added IP Address display with link to 
+        - Changed: Added IP Address display with link to
                    admin_banned.php to admin_user.php
         - Changed: Added check for unban_ipaddress on URL query which
                    automatically highlights the banned address in
@@ -1704,7 +1732,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
                    number of matches rather than assume true / false
         - Changed: bh_setcookie() now matches many schemas by using a
                    regular expression.
-        - Changed: Reworded the help text for $cookie_domain and 
+        - Changed: Reworded the help text for $cookie_domain and
                    $gzip_compress_output in config.inc.php.
         - Changed: Updated language files and removed unneeded strings.
         - Changed: Optimised the visible discussions mark as read so
@@ -1725,11 +1753,11 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - Changed: Language strings updated. Better grammar and
                    spelling hopefully.
         - Changed: Mark as read function now fetch all the threads to
-                   mark as read first before passing them to 
+                   mark as read first before passing them to
                    message_mark_read.
-        - Changed: Removed redirect on direct access from 
+        - Changed: Removed redirect on direct access from
                    config.inc.php and constants.inc.php
-        - Changed: Removed _htmlentities_decode calls from 
+        - Changed: Removed _htmlentities_decode calls from
                    threads_rss.php
         - Changed: Added functions to get a forum's WEBTAG and table
                    prefix. Works the same as get_table_prefix but takes
@@ -1778,7 +1806,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - Fixed: PM's always showing as having attachments. Added a new
                  function to pm.inc.php called pm_has_attachments()
                  which will actually check the POST_ATTACHMENT_FILES
-                 table for attachments same as the 
+                 table for attachments same as the
                  thread_has_attachments() does.
         - Fixed: user_get_aliases() no longer include empty IPAddress
                  matches in the check.
@@ -1843,10 +1871,10 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - Changed: Added CDATA tags to the <title> element of the RSS
                    Feed which should help with FireFox not being able
                    to use the output.
-        - Changed: Added an exclude_keys array list to 
+        - Changed: Added an exclude_keys array list to
                    form_input_hidden_array so you can specify named
                    keys to skip.
-        - Changed: Added _array_chunk function which mimics 
+        - Changed: Added _array_chunk function which mimics
                    PHP > 4.2.0's own function.
         - Changed: search indexing to ignore keywords with numerals
                    only (like: '000', '999', '911', '666' etc)
@@ -1855,9 +1883,9 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
                    in order to stop MySQL failing when the number of
                    words to index in one query is greater than the
                    highest extended query count.
-        - Changed: Removed directory creation functionality from 
-                   admin_default_forum_settings.php and added a 
-                   function that is called by the script and all 
+        - Changed: Removed directory creation functionality from
+                   admin_default_forum_settings.php and added a
+                   function that is called by the script and all
                    the other attachment scripts to check and create
                    the directory. The text captcha class already does
                    this.
@@ -1890,9 +1918,9 @@ What's new in 0.5 ("What You Have Is Enough", released 10th Dec 2004)
         - Forums can be open/closed/restricted/passworded.
         - Install/upgrade script simplifies installation process.
         - Comprehensive user permissions - users can be given/denied access
-          to post/read/moderate etc. in specific folders, as well as having 
+          to post/read/moderate etc. in specific folders, as well as having
           HTML/sig privileges given/denied.
-        - As well as per-folder moderators, a user can be assigned as a 
+        - As well as per-folder moderators, a user can be assigned as a
           'Global moderator', who can moderate in all folders.
         - User groups can be created to help moderation of large forums.
         - New 'Forum Links' drop-down in the top frame allows for linking
@@ -1917,7 +1945,7 @@ the left
         - New 'Reply as PM' link on every post will quickly create a new PM
           addressed to the post author, with the thread title as the subject.
         - Number of PMs per user can be restricted by the admin.
-        - PM auto-pruning - messages not in the 'saved' folder can be 
+        - PM auto-pruning - messages not in the 'saved' folder can be
           automatically deleted after a certain time has passed.
         - Option to reply a PM with the in-reply-to PM's text quoted.
         - New user option to change all images embedded into a post by
@@ -1963,8 +1991,8 @@ the left
           start page editing. Can't get enough of that HTML toolbar.
         - Slicker HTML integration - <quote>/<code>/<spoiler> tags won't show
           their innards, for example.
-        - Better editing page. No longer will you have to toggle between a 
-          plain-text/HTML version of your post - BH will automatically 
+        - Better editing page. No longer will you have to toggle between a
+          plain-text/HTML version of your post - BH will automatically
           approximoguesstimate what settings you originally posted your
           message with.
         - Polls can now be 'soft-edited' - minor edits which won't reset the
@@ -1996,8 +2024,8 @@ the left
 - Known Issues
 
         - Content created prior to the installation of 0.5 will be
-          incorrectly escaped (all ' and " characters will appear as 
-          \'and \" respectively). This is due to a major bug in 
+          incorrectly escaped (all ' and " characters will appear as
+          \'and \" respectively). This is due to a major bug in
           versions prior to 0.5 which meant content inserted into
           the database was double-escaped.
 
@@ -2040,7 +2068,7 @@ What's new in 0.4 ("In The Flesh", released 10th December 2003)
           narrowband friendly, more secure and less bandwidth hungry.
         - New cookie domain setting allows Beehive to set it's cookies so
           that they will work across all sub-domains of a web site.
-        - Users can now choose to display their age and/or birthday in both 
+        - Users can now choose to display their age and/or birthday in both
           their profile pop-up and also on the Start page.
         - Folders can now have a restriction placed upon them which prevents
           users from posting polls / posts in them.
@@ -2185,10 +2213,10 @@ What's new in 0.2 ("Let It Bee", released 12th September 2002)
   new documented features has resulted in the accidental addition of
   new undocumented features. If you believe you have found an
   undocumented feature, please let us know in the test forum at
-  http://beehiveforum.net/forum
+  http://beehiveforum.co.uk/forum
 
 - \o/ Domain name \o/: We got the domain name registered, so you can
-  now use http://beehiveforum.net for all your Beehive URL needs.
+  now use http://beehiveforum.co.uk for all your Beehive URL needs.
   It's still hosted on SourceForge (http://sf.net), lovely people that
   they are.
 

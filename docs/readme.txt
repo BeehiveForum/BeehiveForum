@@ -1,8 +1,8 @@
 Beehive Forum Readme
 
-http://www.beehiveforum.net/
+http://www.beehiveforum.co.uk/
 
-Version 1.0.1 / 14th February 2011
+Version 1.1.0 / 5th February 2012
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -13,7 +13,6 @@ in release.txt.
 1.    Installation
   1.1    Requirements
   1.1.1  Requirements Notes
-  1.1.2  PHP 5.3.0 Support
   1.2    Instructions
     1.2.1    Archive Extraction
     1.2.2    Database setup
@@ -73,21 +72,22 @@ in release.txt.
 
 You need web hosting which provides:
 
-  - PHP 5.2.0 or above
+  - PHP 5.2.1 or above
   - MySQL 5.1.41 or above
   - PCRE 6.6 compiled with --enable-utf8 --enable-unicode-properties
 
 1.1.1 Requirements Notes
 ========================
 
-- Beehive Forum requires PHP 5.2.0 as a minimum. For notes regarding
-  PHP 5.3.0 please see "PHP 5.3.0 Support" below.
+- Beehive Forum requires PHP 5.2.1 as a minimum. However, the Beehive Forum 
+  team highly recommend using the latest available PHP version available
+  for your platform.
 
 - PCRE runtime compiled with --enable-utf8 --enable-unicode-properties is
   requried. PCRE support is OS dependent, please check with your host
   for PCRE requirements.
 
-- MySQL 4.1.16 or newer is required by Beehive Forum. As with PHP we recommend
+- MySQL 5.1.41 or newer is required by Beehive Forum. As with PHP we recommend
   installing the latest release of MySQL 5 if possible.
 
 - As a minimum Beehive Forum requires the following privileges on the
@@ -100,14 +100,6 @@ You need web hosting which provides:
   of the dictionary during installation but Beehive Forum. Once installation
   has completed you may restore the default permissions without suffering
   any reduced functionality.
-
-1.1.2 PHP 5.3.0 Support
-=======================
-
-As of Beehive Forum 0.9.1, functions depreciated in PHP 5.3.0 have been removed
-from or replaced in the code. However, no extensive testing has otherwise been
-performed. If you are using PHP 5.3.0 and encounter problems with using
-Beehive Forum 0.9.1 or newer please contact us.
 
 
 1.2 Instructions
@@ -309,7 +301,7 @@ an error message, paste that in as well.
 ============================================
 
 If you like, you can add your shiny new forum to our list of live copies by
-going to http://beehiveforum.net/forums.php
+going to http://beehiveforum.co.uk/forums.php
 
 It could be a bit of publicity for your site, and it helps us to be able to say
 "Look, all these people are using it!", but if you don't want to, you don't have

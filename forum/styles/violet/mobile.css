@@ -11,7 +11,10 @@ input,
 }
 
 select {
-	border-radius: 0;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 0px;
+    margin: 0px;
 }
 
 .button {

@@ -203,9 +203,9 @@ function svn_mysql_output_log($log_filename = null)
 
             if (preg_match('/^(Fixed:|Changed:|Added:)(.+)/i', $svn_log_entry_array['COMMENTS'], $svn_log_entry_matches) > 0) {
 
-                $svn_log_comment = trim(preg_replace("/(\r\n|\n|\r)/", "\r\n", $svn_log_entry_matches[2]));
+                $svn_log_comment = trim(preg_replace("/(\r\n|\n|\r)/", '', $svn_log_entry_matches[2]));
 
-                $svn_log_comment_array = explode("\r\n", wordwrap($svn_log_comment, 100 - strlen($svn_log_entry_matches[1]), "\r\n"));
+                $svn_log_comment_array = explode("\r\n", wordwrap($svn_log_comment, 91, "\r\n"));
 
                 foreach ($svn_log_comment_array as $line => $svn_log_comment_line) {
 

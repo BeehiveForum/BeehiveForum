@@ -81,8 +81,8 @@ USA
 
                 longname: 'Youtube TinyMCE plugin',
                 author: 'Beehive Forum',
-                authorurl: 'http://beehiveforum.net',
-                infourl: 'http://beehiveforum.net',
+                authorurl: 'http://beehiveforum.co.uk',
+                infourl: 'http://beehiveforum.co.uk',
                 version: "2.0"
             };
         }

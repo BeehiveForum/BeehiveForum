@@ -76,8 +76,8 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }        
     
-        $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (FID, PERM) SELECT FOLDER.FID, ";
-        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}FOLDER` (FID, PERM) SELECT FOLDER.FID, ";
+        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
         $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
         $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0) GROUP BY FOLDER.FID ";
         $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";

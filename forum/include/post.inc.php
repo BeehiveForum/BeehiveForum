@@ -865,7 +865,7 @@ class MessageTextParse {
             }
         }
         
-        $signature = tidy_html($signature);        
+        $signature = tidy_html($signature, ($html == POST_HTML_AUTO), $links);        
 
         $this->message = $message;
         $this->sig = $signature;

@@ -1820,54 +1820,73 @@ function light_message_display_approval_req($tid, $pid)
     echo "</div>\n";
 }
 
-function light_messages_nav_strip($tid,$pid,$length,$ppp)
+function light_messages_nav_strip($tid, $pid, $length, $ppp)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag();
-
+    
     forum_check_webtag_available($webtag);
 
-    // Less than 20 messages, no nav needed
-    if ($pid == 1 && $length < $ppp) return;
+    if ($pid < 2 && $length < $ppp) {
+        return;
+    }else if ($pid < 1) {
+        $pid = 1;
+    }
 
-    // Modulus to get base for links, e.g. ppp = 20, pid = 28, base = 8
+    $c = 0;
+
     $spid = $pid % $ppp;
 
-    // The first section, 1-x
     if ($spid > 1) {
+
         if ($pid > 1) {
-            $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
-        } else {
+            
+            $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">". mess_nav_range(1, $spid - 1). "</a>";
+
+        }else {
+
             $c = 0;
-            $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
+            $navbits[0] = mess_nav_range(1,$spid-1);
         }
+
         $i = 1;
-    } else {
+
+    }else {
+
         $i = 0;
     }
 
-    // The middle section(s)
-    while ($spid + ($ppp - 1) <= $length){
+    while ($spid + ($ppp - 1) < $length) {
+
         if ($spid == $pid) {
+
             $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
-        } else {
-            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">" . mess_nav_range($spid==0 ? 1 : $spid,$spid+($ppp - 1)) . "</a>";
+            $navbits[$i] = mess_nav_range($spid, $spid + ($ppp - 1));
+
+        }else {
+
+            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.". ($spid == 0 ? 1 : $spid). "\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
         }
+
         $spid += $ppp;
+
         $i++;
     }
 
-    // The final section, x-n
     if ($spid <= $length) {
+
         if ($spid == $pid) {
+
             $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
-        } else {
-            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
+            $navbits[$i] = mess_nav_range($spid,$length);
+
+        }else {
+
+            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">". mess_nav_range($spid,$length). "</a>";
         }
     }
+
     $max = $i;
 
     $html = "<span>{$lang['showmessages']}:</span>";
@@ -1880,10 +1899,13 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
         if (isset($navbits[$i])) {
 
-            if ((abs($c - $i) < 4) || $i == 0 || $i == $max){
-                $html .= "\n&nbsp;" . $navbits[$i];
-            } else if (abs($c - $i) == 4){
-                $html .= "\n&nbsp;&hellip;";
+            if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
+
+                $html.= "\n&nbsp;". $navbits[$i];
+
+            }else if (abs($c - $i) == 4) {
+
+                $html.= "\n&nbsp;&hellip;";
             }
         }
     }

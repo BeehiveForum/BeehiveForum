@@ -590,22 +590,22 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
-            echo sprintf("<h3>{$lang['messagewasnotfound']}</h3>\n", $edit_msg);
+            echo sprintf("<h3>{$lang['editmessage']}</h3>\n", $edit_msg);
+            echo sprintf("<p>{$lang['messagewasnotfound']}</p>\n", $edit_msg);
             exit;
         }
 
     }else{
 
-        echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
-        echo sprintf("<h3>{$lang['messagewasnotfound']}</h3>\n", $edit_msg);
+        echo sprintf("<h3>{$lang['editmessage']}</h3>\n", $edit_msg);
+        echo sprintf("<p>{$lang['messagewasnotfound']}</p>\n", $edit_msg);
         exit;
     }
 }
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['messagepreview']}</h2>";
+    echo "<h3>{$lang['messagepreview']}</h3>";
 
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
 }
@@ -617,7 +617,7 @@ echo form_input_hidden("t_to_uid", htmlentities_array($to_uid));
 echo form_input_hidden("t_from_uid", htmlentities_array($from_uid));
 
 echo "<div class=\"post\">\n";
-echo sprintf("<h2>{$lang['editmessage']}</h2>\n", $edit_msg);
+echo sprintf("<h3>{$lang['editmessage']}</h3>\n", $edit_msg);
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

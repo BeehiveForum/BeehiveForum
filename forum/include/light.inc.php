@@ -164,7 +164,7 @@ function light_html_draw_top()
     if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true))) {
         echo "<link rel=\"stylesheet\" href=\"$emoticon_stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
-
+    
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
 
     printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
@@ -256,7 +256,7 @@ function light_html_draw_bottom()
         echo "    <a href=\"#top\">{$lang['top']}</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">{$lang['desktopversion']}</a>\n";
         echo "  </div>\n";
     }
-
+    
     echo "  <h6><a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Beehive Forum ", BEEHIVE_VERSION, "<br />&copy; ", date('Y'), " Project Beehive Forum</a></h6>\n";
     echo "</div>\n";
     echo "</body>\n";
@@ -282,7 +282,7 @@ function light_draw_logon_form($error_msg_array = array())
     $passhash_array = array();
 
     echo "<div class=\"logon\">\n";
-    echo "<h2>{$lang['logon']}</h2>\n";
+    echo "<h3>{$lang['logon']}</h3>\n";
     echo "<div class=\"logon_inner\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
@@ -1278,7 +1278,7 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
 
     forum_check_webtag_available($webtag);
 
-    echo "<h2 class=\"thread_title\">";
+    echo "<h3 class=\"thread_title\">";
     echo "<a href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
 
     if ($closed) echo "<span class=\"thread_closed\" title=\"{$lang['closed']}\">[C]</span>\n";
@@ -1288,7 +1288,7 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
     if ($locked) echo "<span class=\"thread_locked\" title=\"{$lang['locked']}\">[L]</span>\n";
     if ($deleted) echo "<span class=\"thread_deleted\" title=\"{$lang['deleted']}\">[D]</span>\n";
 
-    echo "</h2>\n";
+    echo "</h3>\n";
 }
 
 function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
@@ -1363,7 +1363,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
         foreach ($poll_results as $question_id => $poll_question) {
 
-            $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
+            $poll_display.= "<h3>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h3>\n";
 
             if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
@@ -1395,7 +1395,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             foreach ($poll_results as $question_id => $poll_question) {
 
-                $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
+                $poll_display.= "<h3>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h3>\n";
                 $poll_display.= light_poll_graph_display($poll_question['OPTIONS_ARRAY']);
             }
 
@@ -1407,7 +1407,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             foreach ($poll_results as $question_id => $poll_question) {
 
-                $poll_display.= "<h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2>\n";
+                $poll_display.= "<h3>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h3>\n";
 
                 foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
@@ -2149,7 +2149,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     }
 
     echo "<div class=\"message_box message_question\">\n";
-    echo "  <h2>", $header_text, "</h2>\n";
+    echo "  <h3>", $header_text, "</h3>\n";
     echo "  <p>", $string_msg, "</p>\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
@@ -2184,7 +2184,7 @@ function light_html_display_error_array($error_list_array)
     if (sizeof($error_list_array) < 1) return;
 
     echo "<div class=\"message_box message_error\">\n";
-    echo "  <h2>{$lang['thefollowingerrorswereencountered']}</h2>\n";
+    echo "  <h3>{$lang['thefollowingerrorswereencountered']}</h3>\n";
     echo "  <ul>\n";
     echo "    <li>", implode("</li>\n<li>", $error_list_array), "</li>\n";
     echo "  </ul>\n";
@@ -2196,7 +2196,7 @@ function light_html_display_success_msg($string_msg)
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"message_box message_success\">\n";
-    echo "  <h2>", $string_msg, "</h2>\n";
+    echo "  <h3>", $string_msg, "</h3>\n";
     echo "</div>\n";
 }
 
@@ -2205,7 +2205,7 @@ function light_html_display_warning_msg($string_msg)
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"message_box message_warning\">\n";
-    echo "  <h2>", $string_msg, "</h2>\n";
+    echo "  <h3>", $string_msg, "</h3>\n";
     echo "</div>\n";
 }
 
@@ -2214,7 +2214,7 @@ function light_html_display_error_msg($string_msg)
     if (!is_string($string_msg)) return;
 
     echo "<div class=\"message_box message_error\">\n";
-    echo "  <h2>", $string_msg, "</h2>\n";
+    echo "  <h3>", $string_msg, "</h3>\n";
     echo "</div>\n";
 }
 

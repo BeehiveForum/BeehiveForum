@@ -654,7 +654,7 @@ light_html_draw_top("title={$lang['sendnewpm']}", "robots=noindex,nofollow");
 // preview message
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['messagepreview']}</h2>\n";
+    echo "<h3>{$lang['messagepreview']}</h3>\n";
 
     $pm_preview_array['TLOGON'] = $t_new_recipient_array['LOGON'];
     $pm_preview_array['TNICK']  = $t_new_recipient_array['NICK'];
@@ -681,7 +681,7 @@ echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
 
 echo "<div class=\"post\">\n";
-echo "<h2>{$lang['sendnewpm']}</h2>\n";
+echo "<h3>{$lang['sendnewpm']}</h3>\n";
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -733,7 +733,7 @@ echo "</form>\n";
 
 if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    echo "<h2>{$lang['inreplyto']}:</h2>\n";
+    echo "<h3>{$lang['inreplyto']}:</h3>\n";
     light_pm_display($pm_data, PM_FOLDER_INBOX, true);
 }
 

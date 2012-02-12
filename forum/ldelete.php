@@ -273,7 +273,7 @@ if (isset($_POST['delete'])) {
 
 light_html_draw_top("title={$lang['deletemessage']} {$tid}.{$pid}", "robots=noindex,nofollow");
 
-echo "<h2>{$lang['deletemessage']} {$tid}.{$pid}</h2>\n";
+echo "<h3>{$lang['deletemessage']} {$tid}.{$pid}</h3>\n";
 
 if ($preview_message['TO_UID'] == 0) {
 

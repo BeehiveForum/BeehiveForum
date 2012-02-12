@@ -372,7 +372,7 @@ light_html_draw_top("title={$lang['editpm']}");
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['messagepreview']}</h2>\n";
+    echo "<h3>{$lang['messagepreview']}</h3>\n";
     light_pm_display($pm_message_array, PM_FOLDER_OUTBOX, true);
 }
 
@@ -381,7 +381,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
 
 echo "<div class=\"post\">\n";
-echo "<h2>{$lang['editpm']}</h2>\n";
+echo "<h3>{$lang['editpm']}</h3>\n";
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

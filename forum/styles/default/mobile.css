@@ -1,19 +1,19 @@
 * {
 	font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 100%;
 }
 
 input,
 .select,
 .textarea,
 .text {
-	font-weight: normal;
+	font-size: 13px;
+    font-weight: normal;
 }
 
 select {
+	border-radius: 0px;
     height: 24px;
     line-height: 24px;
-    border-radius: 0px;
     margin: 0px;
 }
 
@@ -56,7 +56,6 @@ a {
 	background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
     font-family: monospace;
-    font-size: 120%;
     margin: 0 10px 0 20px;
     overflow: scroll;
     padding: 3px;
@@ -140,21 +139,23 @@ body {
 
 #header {
 	background-color: #5483B1;
+    font-size: 13px;
     position: relative;
 }
 
 #footer {
-	padding-bottom: 10px;
+	font-size: 13px;
     text-align: center;
 }
 
 #footer > #footer_links {
 	font-weight: bold;
+    margin: 20px 0;
 }
 
 #footer h6 {
-	margin: 0;
-    padding-top: 10px;
+	font-size: 11px;
+    margin: 20px 0;
 }
 
 #nav {
@@ -176,7 +177,6 @@ body {
     border-width: 1px;
     color: #FFFFFF;
     display: table-cell;
-    font-size: 100%;
     font-weight: bold;
     padding: 0 10px;
 }
@@ -199,7 +199,7 @@ body {
 }
 
 #content {
-	font-size: 120%;
+	font-size: 13px;
     margin: 10px 5px;
     padding-bottom: 5px;
 }
@@ -246,7 +246,6 @@ body {
 .forum h3,
 .folder h3 {
 	background: url('images/folder.png') transparent no-repeat scroll 0 0;
-    font-size: 110%;
     line-height: 150%;
     margin: 0;
     padding: 0 0 0 20px;
@@ -264,7 +263,6 @@ body {
 .folder_pagination {
 	background-color: #C8D7E6;
     border: 1px solid #C8D7E6;
-    font-size: 90%;
     padding: 3px 3px 0;
 }
 
@@ -309,8 +307,7 @@ body {
 
 .folder ul li > span.thread_time,
 .folder ul li > span.pm_time {
-	font-size: 90%;
-    padding: 0 3px;
+	padding: 0 3px;
     text-align: right;
     white-space: nowrap;
 }
@@ -333,8 +330,7 @@ body {
 }
 
 h2.thread_title {
-	font-size: 130%;
-    line-height: 150%;
+	line-height: 150%;
 }
 
 .message {
@@ -369,8 +365,7 @@ h2.thread_title {
 }
 
 .message_to span.message_read {
-	font-size: 90%;
-    padding-left: 10px;
+	padding-left: 10px;
     white-space: nowrap;
 }
 
@@ -418,7 +413,7 @@ h2.thread_title {
 }
 
 .message .edit_text {
-	font-size: 80%;
+	font-size: 10px;
     margin: 10px 0;
 }
 
@@ -526,9 +521,8 @@ a.folder_list_link {
 	margin: 10px 0;
 }
 
-.poll h2 {
-	font-size: 110%;
-    line-height: 200%;
+.poll h3 {
+	line-height: 200%;
     margin: 0;
 }
 
@@ -538,8 +532,7 @@ a.folder_list_link {
 }
 
 .poll .poll_vote_counts {
-	font-size: 90%;
-    line-height: 250%;
+	line-height: 250%;
 }
 
 .poll .poll_buttons {
@@ -605,7 +598,7 @@ a.folder_list_link {
     padding: 2px;
 }
 
-.post h2 {
+.post h3 {
 	background-color: #A6BED7;
     color: #FFFFFF;
     font-weight: normal;
@@ -657,8 +650,7 @@ a.folder_list_link {
 }
 
 .pm_folder_usage {
-	font-size: 90%;
-    text-align: center;
+	text-align: center;
 }
 
 .pm_bar {
@@ -677,11 +669,12 @@ a.folder_list_link {
 	background-color: #FFFFFF;
     border: 1px solid #000000;
     margin: 20px auto 0;
+    max-width: 350px;
     padding: 2px;
     width: 75%;
 }
 
-.logon h2 {
+.logon h3 {
 	background-color: #A6BED7;
     color: #FFFFFF;
     font-weight: normal;
@@ -788,9 +781,10 @@ span.user_enemy {
     padding: 10px;
 }
 
-.message_box h2 {
+.message_box h3 {
 	color: #000000;
     display: inline-block;
+    font-size: 13px;
     line-height: 160%;
     margin: 0;
     padding-left: 25px;
@@ -805,18 +799,18 @@ span.user_enemy {
     padding-left: 25px;
 }
 
-.message_question h2 {
+.message_question h3 {
 	background: url('images/help.png') transparent no-repeat scroll 0 50%;
 }
 
-.message_error h2 {
+.message_error h3 {
 	background: url('images/error.png') transparent no-repeat scroll 0 50%;
 }
 
-.message_success h2 {
+.message_success h3 {
 	background: url('images/success.png') transparent no-repeat scroll 0 50%;
 }
 
-.message_warning h2 {
+.message_warning h3 {
 	background: url('images/warning.png') transparent no-repeat scroll 0 50%;
 }

@@ -571,7 +571,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['messagepreview']}</h2>";
+    echo "<h3>{$lang['messagepreview']}</h3>";
 
     if ($t_to_uid == 0) {
 
@@ -602,11 +602,11 @@ if (!$new_thread) {
 
         if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            echo "<h2>{$lang['moderatorthreadclosed']}</h2>\n";
+            echo "<h3>{$lang['moderatorthreadclosed']}</h3>\n";
 
         }else {
 
-            echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
+            echo "<h3>{$lang['threadisclosedforposting']}</h3>\n";
             light_html_draw_bottom();
             exit;
         }
@@ -631,7 +631,7 @@ if ($new_thread) {
 
     echo form_input_hidden("t_newthread", "Y");
 
-    echo "<h2>{$lang['createnewthread']}</h2>\n";
+    echo "<h3>{$lang['createnewthread']}</h3>\n";
     echo "<div class=\"post_inner\">\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -660,7 +660,7 @@ if ($new_thread) {
 
     }else {
 
-        echo "<h2>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h2>\n";
+        echo "<h3>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h3>\n";
         echo "<div class=\"post_inner\">\n";
 
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -708,7 +708,7 @@ echo "</form>\n";
 
 if (!$new_thread && $reply_to_pid > 0) {
 
-    echo "<h2>{$lang['inreplyto']}:</h2>\n";
+    echo "<h3>{$lang['inreplyto']}:</h3>\n";
 
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 

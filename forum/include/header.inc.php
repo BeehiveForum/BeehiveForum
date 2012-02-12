@@ -63,7 +63,7 @@ function header_redirect($uri, $reason = false)
 
     }else {
 
-        html_draw_top();
+        defined('BEEHIVEMODE_LIGHT') ? light_html_draw_top() : html_draw_top();
 
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
@@ -78,12 +78,16 @@ function header_redirect($uri, $reason = false)
         if (is_string($reason)) {
             echo "<p>$reason</p>";
         }
-
-        echo form_quick_button($uri, $lang['continue'], false, "_top");
+        
+        if (defined('BEEHIVEMODE_LIGHT')) {
+            echo light_form_quick_button($uri, $lang['continue'], false, '_top');
+        } else {
+            echo form_quick_button($uri, $lang['continue'], false, "_top");    
+        }
 
         echo "</div>\n";
 
-        html_draw_bottom();
+        defined('BEEHIVEMODE_LIGHT') ? light_html_draw_bottom() : html_draw_bottom();
         exit;
     }
 }

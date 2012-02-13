@@ -130,7 +130,8 @@ div.spoiler_reveal * {
 }
 
 body {
-	background-color: #C9C9E4;
+	-webkit-text-size-adjust: none;
+    background-color: #C9C9E4;
     color: #000000;
     font-size: 62.5%;
     margin: 0;
@@ -282,9 +283,9 @@ body {
 
 .forum ul li,
 .folder ul li {
-	background: url('images/bullet.png') transparent no-repeat scroll 0 0;
+    background: url('images/bullet.png') transparent no-repeat scroll 0 4px;
     display: table;
-    line-height: 150%;
+    line-height: 200%;
     padding: 0;
     width: 100%;
 }

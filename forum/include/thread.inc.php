@@ -597,6 +597,11 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 {
     if (!$db_thread_merge = db_connect()) return false;
 
+    if (!is_numeric($tida)) return false;
+    if (!is_numeric($tidb)) return false;
+    
+    if (!in_array($merge_type, array(THREAD_MERGE_BY_CREATED, THREAD_MERGE_START, THREAD_MERGE_END))) return false;
+    
     // Get Forum Data
     if (!$table_data = get_table_prefix()) {
         return thread_merge_error(THREAD_MERGE_FORUM_ERROR, $error_str);
@@ -648,7 +653,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
 
     $sql = "SELECT COUNT(*), MAX(PID) + 1 FROM `{$table_data['PREFIX']}POST` ";
-    $sql.= "WHERE TID = $new_tid";
+    $sql.= "WHERE TID IN ('$tida', '$tidb') ";
 
     if (!$result = db_query($sql, $db_thread_merge)) {
 
@@ -687,7 +692,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
             $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
             $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
             $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-            $sql.= "PID, $search_id + (($max_pid - $post_count) + PID)";
+            $sql.= "PID, $search_id + (PID - ($max_pid - $post_count)) AS SEARCH_ID ";
             $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID IN ('$tida', '$tidb') ";
             $sql.= "ORDER BY CREATED";
             break;
@@ -699,7 +704,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
             $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
             $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
             $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-            $sql.= "PID, $search_id + (($max_pid - $post_count) + PID)";
+            $sql.= "PID, $search_id + (PID - ($max_pid - $post_count)) AS SEARCH_ID ";
             $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID IN ('$tida', '$tidb') ";
             $sql.= "ORDER BY TID = '$tidb', CREATED";
             break;
@@ -711,7 +716,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
             $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
             $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
             $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-            $sql.= "PID, $search_id + (($max_pid - $post_count) + PID)";
+            $sql.= "PID, $search_id + (PID - ($max_pid - $post_count)) AS SEARCH_ID ";
             $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID IN ('$tida', '$tidb') ";
             $sql.= "ORDER BY TID = '$tida', CREATED";
             break;
@@ -878,6 +883,11 @@ function thread_merge_error($error_code, &$error_str)
 function thread_split($tid, $spid, $split_type, &$error_str)
 {
     if (!$db_thread_split = db_connect()) return false;
+    
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($spid)) return false;
+    
+    if (!in_array($split_type, array(THREAD_SPLIT_REPLIES, THREAD_SPLIT_FOLLOWING))) return false;
 
     if (!$table_data = get_table_prefix()) {
         return thread_split_error(THREAD_SPLIT_FORUM_ERROR, $error_str);
@@ -964,17 +974,17 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     }
 
     $search_id = db_insert_id($db_thread_split);
-
+    
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, ";
     $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
     $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID, SEARCH_ID) ";
     $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
     $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-    $sql.= "PID, $search_id + (($max_pid - $post_count) + PID)";
+    $sql.= "PID, $search_id + (PID - ($max_pid - $post_count)) AS SEARCH_ID ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` WHERE TID = $tid ";
     $sql.= "AND PID IN ($pid_list) ORDER BY CREATED";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$result = db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));

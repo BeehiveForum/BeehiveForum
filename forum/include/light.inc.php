@@ -216,16 +216,16 @@ function light_html_draw_top()
     echo "    <ul>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
-        echo "      <li><a href=\"lforums.php\">", $lang['myforums'], "</a></li>\n";
+        echo "      <li><a href=\"lforums.php?webtag=$webtag\">", $lang['myforums'], "</a></li>\n";
     }
 
-    echo "      <li><a href=\"lthread_list.php\">", $lang['messages'], "</a></li>\n";
-    echo "      <li><a href=\"lpm.php\">", $lang['pminbox'], "</a></li>\n";
+    echo "      <li><a href=\"lthread_list.php?webtag=$webtag\">", $lang['messages'], "</a></li>\n";
+    echo "      <li><a href=\"lpm.php?webtag=$webtag\">", $lang['pminbox'], "</a></li>\n";
 
     if (user_is_guest()) {
-        echo "      <li><a href=\"llogon.php\">", $lang['login'], "</a></li>\n";
+        echo "      <li><a href=\"llogon.php?webtag=$webtag\">", $lang['login'], "</a></li>\n";
     } else {
-        echo "      <li><a href=\"llogout.php\">", $lang['logout'], "</a></li>\n";
+        echo "      <li><a href=\"llogout.php?webtag=$webtag\">", $lang['logout'], "</a></li>\n";
     }
 
     echo "    </ul>\n";

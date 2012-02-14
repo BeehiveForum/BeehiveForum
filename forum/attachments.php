@@ -201,51 +201,55 @@ if (isset($_POST['upload'])) {
 
                 }else {
 
-                    $filesize = $_FILES['userfile']['size'][$i];
-                    $tempfile = $_FILES['userfile']['tmp_name'][$i];
-                    $filetype = $_FILES['userfile']['type'][$i];
+                    $file_size = $_FILES['userfile']['size'][$i];
+                    $temp_file = $_FILES['userfile']['tmp_name'][$i];
+                    $file_type = $_FILES['userfile']['type'][$i];
+                    
+                    if (function_exists('mime_content_type') && ($magic_mime_type = mime_content_type($temp_file))) {
+                        $file_type = $magic_mime_type;
+                    }
 
-                    if (sizeof($attachment_mime_types) > 0 && !in_array($filetype, $attachment_mime_types)) {
+                    if (sizeof($attachment_mime_types) > 0 && !in_array($file_type, $attachment_mime_types)) {
 
                         $upload_not_allowed[] = $filename;
 
-                        if (@file_exists($tempfile)) {
+                        if (@file_exists($temp_file)) {
 
-                            unlink($tempfile);
+                            unlink($temp_file);
                         }
 
-                    }else if (($max_attachment_space > 0) && ($users_free_space < $filesize)) {
+                    }else if (($max_attachment_space > 0) && ($users_free_space < $file_size)) {
 
                         $upload_failure[] = $filename;
 
-                        if (@file_exists($tempfile)) {
+                        if (@file_exists($temp_file)) {
 
-                            unlink($tempfile);
+                            unlink($temp_file);
                         }
 
                     }else {
 
-                        $uniqfileid = md5(uniqid(mt_rand()));
+                        $unique_file_id = md5(uniqid(mt_rand()));
 
-                        $filehash = md5("{$aid}{$uniqfileid}{$filename}");
-                        $filepath = "$attachment_dir/$filehash";
+                        $file_hash = md5("{$aid}{$unique_file_id}{$filename}");
+                        $file_path = "$attachment_dir/$file_hash";
 
-                        if (@move_uploaded_file($tempfile, $filepath)) {
+                        if (@move_uploaded_file($temp_file, $file_path)) {
 
-                            attachments_add($uid, $aid, $uniqfileid, $filename, $filetype);
+                            attachments_add($uid, $aid, $unique_file_id, $filename, $file_type);
 
-                            attachments_create_thumb($filehash);
+                            attachments_create_thumb($file_hash);
 
                             if (($users_free_space > 0)) {
-                                $users_free_space -= $filesize;
+                                $users_free_space -= $file_size;
                             }
 
                             $upload_success[] = $filename;
 
                         }else {
 
-                            if (@file_exists($tempfile)) {
-                                unlink($tempfile);
+                            if (@file_exists($temp_file)) {
+                                unlink($temp_file);
                             }
 
                             $upload_failure[] = $filename;

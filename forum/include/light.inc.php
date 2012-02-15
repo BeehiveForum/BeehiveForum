@@ -146,7 +146,7 @@ function light_html_draw_top()
     echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$meta_description\" />\n";
     echo "<meta name=\"MobileOptimized\" content=\"0\" />\n";
-    echo "<meta name=\"viewport\" content=\"width=\"width=device-width, minimum-scale=1.0\" />\n";
+    echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
 

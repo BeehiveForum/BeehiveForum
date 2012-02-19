@@ -146,15 +146,17 @@ function browser_mobile()
     }
 
     // User Agent from https://code.google.com/p/the-devices-detection/source/list
-    $mobile_agents = array('iPhone', 'iPad', 'iPod', 'Palm', 'EudoraWeb', 'Blazer',
-                           'AvantGo', 'Android', 'Windows CE', 'Cellphone', 'Small',
-                           'MMEF20', 'Danger', 'hiptop', 'Proxinet', 'ProxiNet', 'Newt',
-                           'PalmOS', 'NetFront', 'SHARP-TQ-GX10', 'SonyEricsson',
-                           'SymbianOS', 'UP.Browser', 'UP.Link', 'TS21i-10', 'MOT-V',
-                           'portalmmm', 'DoCoMo', 'Opera Mini', 'Palm', 'Handspring',
-                           'Nokia', 'Kyocera', 'Samsung', 'Motorola', 'Mot', 'Smartphone',
-                           'Blackberry', 'WAP', 'SonyEricsson', 'PlayStation Portable',
-                           'LG', 'MMP', 'OPWV', 'Symbian', 'EPOC');
+    $mobile_agents = array('iPhone', 'iPad', 'iPod', 'incognito', 'webmate', 'dream', 
+                           'CUPCAKE', 'webOS', 's8000', 'Googlebot-Mobile', 'Palm', 
+                           'EudoraWeb', 'Blazer', 'AvantGo', 'Android', 'Windows CE', 
+                           'Cellphone', 'Small', 'MMEF20', 'Danger', 'hiptop', 'Proxinet', 
+                           'ProxiNet', 'Newt', 'PalmOS', 'NetFront', 'SHARP-TQ-GX10', 
+                           'SonyEricsson', 'SymbianOS', 'UP.Browser', 'UP.Link', 
+                           'TS21i-10', 'MOT-V', 'portalmmm', 'DoCoMo', 'Opera Mini', 
+                           'Palm', 'Handspring', 'Nokia', 'Kyocera', 'Samsung', 
+                           'Motorola', 'Mot', 'Smartphone', 'Blackberry', 'WAP', 
+                           'SonyEricsson', 'PlayStation Portable', 'LG', 'MMP', 
+                           'OPWV', 'Symbian', 'EPOC');
 
     $mobile_agents_preg = implode('|', array_map('preg_quote_callback', $mobile_agents));
 

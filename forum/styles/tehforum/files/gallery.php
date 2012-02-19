@@ -369,7 +369,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
     $modified_time = filemtime("$images_dir/$image");
 
     echo "<h1>", mb_convert_case($image, MB_CASE_TITLE), "</h1>\n";
-    echo "<div align=\"profile_image\">\n";
+    echo "<div class=\"profile_image\">\n";
     echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a>\n";
     echo "</div>\n";
     echo "<div class=\"profile_link\">\n";

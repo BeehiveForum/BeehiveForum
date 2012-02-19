@@ -1,3 +1,15 @@
+.profile_image,
+.profile_link,
+.footer {
+    margin: 20px auto;
+    text-align: center;
+    width: 630px;
+}
+
+.footer {
+    clear: both;
+}
+
 ul.gallery *
 { 
     border-width: 0;

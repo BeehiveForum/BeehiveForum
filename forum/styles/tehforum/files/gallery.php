@@ -327,7 +327,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
     }
 
     echo "</ul>\n";
-    echo "<div class=\"page_footer\">\n";
+    echo "<div class=\"footer\">\n";
 
     if (session_get_value('UID') > 0) {
 
@@ -368,17 +368,14 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
 
     $modified_time = filemtime("$images_dir/$image");
 
-    echo "<h1>Some random person</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
+    echo "<h1>", mb_convert_case($image, MB_CASE_TITLE), "</h1>\n";
+    echo "<div align=\"profile_image\">\n";
     echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a>\n";
     echo "</div>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
+    echo "<div class=\"profile_link\">\n";
     echo "  <a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a>\n";
     echo "</div>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
+    echo "<div class=\"footer\">\n";
 
     if (session_get_value('UID') > 0) {
 
@@ -404,7 +401,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
     echo "<h1>Convicts Gallery</h1>\n";
 
     if (session_get_value('UID') > 0) {
-        echo "<div align=\"center\"><p>[<a href=\"?upload\">Upload an image</a>]</p></div>\n";
+        echo "<div align=\"center\"><p><a href=\"?upload\">Upload an image</a></p></div>\n";
     }else {
         echo "<div align=\"center\"><p>Gallery is empty</p></div>\n";
     }

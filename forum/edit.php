@@ -194,7 +194,7 @@ if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
+if (!$thread_data = thread_get($tid)) {
 
     html_draw_top("title={$lang['error']}");
     html_error_msg($lang['threadcouldnotbefound']);
@@ -691,7 +691,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "              </tr>\n";
     echo "              <tr>\n";
-    echo "                <td align=\"left\"><br />", message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, $show_sigs, true), "</td>\n";
+    echo "                <td align=\"left\"><br />", message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, $show_sigs, true), "</td>\n";
     echo "              </tr>\n";
     echo "              <tr>\n";
     echo "                <td align=\"left\">&nbsp;</td>\n";
@@ -709,9 +709,9 @@ echo "                  <table class=\"posthead\" width=\"210\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
 echo "                        <h2>{$lang['folder']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(htmlentities_array($threaddata['FOLDER_TITLE'])), "\n";
+echo "                        ", word_filter_add_ob_tags(htmlentities_array($thread_data['FOLDER_TITLE'])), "\n";
 echo "                        <h2>{$lang['threadtitle']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "\n";
+echo "                        ", word_filter_add_ob_tags(htmlentities_array($thread_data['TITLE'])), "\n";
 echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {

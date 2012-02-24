@@ -103,7 +103,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     $subject        = word_filter_apply(sprintf($lang['msgnotification_subject'], $forum_name), $tuid);
     $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
     $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-    $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+    $thread_title   = word_filter_apply($thread['TITLE'], $tuid);
 
     // Generate link to the forum itself
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
@@ -210,7 +210,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
         $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $to_user['UID']);
         $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
         $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID']);
-        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $to_user['UID']);
+        $thread_title   = word_filter_apply($thread['TITLE'], $to_user['UID']);
 
         // Generate the message link.
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
@@ -311,7 +311,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
         $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $to_user['UID']);
         $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
         $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID']);
-        $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $to_user['UID']);
+        $thread_title   = word_filter_apply($thread['TITLE'], $to_user['UID']);
 
         // Generate link to the forum itself
         $forum_link = html_get_forum_uri("index.php?webtag=$webtag&fid=$fid");

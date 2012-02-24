@@ -304,7 +304,7 @@ if (sizeof($selected_array) > 0) {
         } else if (($thread_data = thread_get($selected_option))) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("selected", $thread_data['TID'], '', true), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("selected", $thread_data['TID'], '', true), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($thread_data['TITLE'])), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }
@@ -339,7 +339,7 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
         } else if (($type == SEARCH_THREAD) && !in_array($search_result['TID'], $selected_array)) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("selected", $search_result['TID'], '', false), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("selected", $search_result['TID'], '', false), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($search_result['TITLE'])), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }

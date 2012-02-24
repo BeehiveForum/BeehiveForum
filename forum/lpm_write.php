@@ -173,9 +173,9 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (is_numeric($tid) && is_numeric($pid)) {
 
-        if (($threaddata = thread_get($tid))) {
+        if (($thread_data = thread_get($tid))) {
 
-            $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
+            $thread_title = trim($thread_data['TITLE']);
             $thread_index = "[$tid.$pid]";
 
             if (mb_strlen($thread_title) > (55 - mb_strlen($thread_index))) {

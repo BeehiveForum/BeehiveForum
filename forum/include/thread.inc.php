@@ -81,11 +81,12 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
-    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, ";
+    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE, ";
+    $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "THREAD.BY_UID, UNIX_TIMESTAMP(THREAD.CLOSED) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.ADMIN_LOCK) AS ADMIN_LOCK, FOLDER.PREFIX, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.ADMIN_LOCK) AS ADMIN_LOCK, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.UID, USER.LOGON, ";
@@ -1279,11 +1280,9 @@ function thread_search($thread_search, $selected_array = array())
 
     $selected_array = array_filter($selected_array, 'is_numeric');
 
-    $sql = "SELECT DISTINCT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.TITLE LIKE '$thread_search%' ";
+    $sql = "SELECT DISTINCT THREAD.TID, TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TITLE LIKE '$thread_search%' ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
 
     if (sizeof($selected_array) > 0) {
@@ -1313,15 +1312,6 @@ function thread_search($thread_search, $selected_array = array())
 
     return array('results_count' => $results_count,
                  'results_array' => $results_array);
-}
-
-function thread_format_prefix($prefix, $thread_title)
-{
-    if (strlen(trim($prefix)) > 0) {
-        return "{$prefix} {$thread_title}";
-    }
-
-    return $thread_title;
 }
 
 function thread_get_last_page_pid($length, $posts_per_page)

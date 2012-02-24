@@ -484,9 +484,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                 $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
-                if (($threaddata = thread_get($search_result['TID']))) {
+                if (($thread_data = thread_get($search_result['TID']))) {
 
-                    $message['TITLE']   = trim(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
+                    $message['TITLE']   = trim($thread_data['TITLE']);
                     $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
 
                     // Limit thread title to 20 characters.

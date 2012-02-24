@@ -208,7 +208,7 @@ if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
+if (!$thread_data = thread_get($tid)) {
 
     light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
@@ -302,11 +302,11 @@ echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_poll_display($tid, $threaddata['LENGTH'], $threaddata['FID'], false, $threaddata['CLOSED'], false, false);
+    light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], false, $thread_data['CLOSED'], false, false);
 
 }else {
 
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, $threaddata['CLOSED'], false, false, true);
+    light_message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, true);
 }
 
 echo "<div class=\"post_buttons\">";

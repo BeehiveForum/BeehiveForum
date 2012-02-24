@@ -159,7 +159,7 @@ if (($folder_most_threads = stats_get_folder_with_most_threads()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">{$lang['folderwithmostthreads']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_threads['FID']}\">", htmlentities_array($folder_most_threads['TITLE']), "</a> (", number_format($folder_most_threads['THREAD_COUNT'], 0, '.', ','), " {$lang['threads']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_threads['FID']}\">", word_filter_add_ob_tags(htmlentities_array($folder_most_threads['TITLE'])), "</a> (", number_format($folder_most_threads['THREAD_COUNT'], 0, '.', ','), " {$lang['threads']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -167,7 +167,7 @@ if (($folder_most_posts = stats_get_folder_with_most_posts()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">{$lang['folderwithmostposts']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_posts['FID']}\">", htmlentities_array($folder_most_posts['TITLE']), "</a> (", number_format($folder_most_posts['POST_COUNT'], 0, '.', ','), " {$lang['posts']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_posts['FID']}\">", word_filter_add_ob_tags(htmlentities_array($folder_most_posts['TITLE'])), "</a> (", number_format($folder_most_posts['POST_COUNT'], 0, '.', ','), " {$lang['posts']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -212,7 +212,7 @@ if (($longest_thread = stats_get_longest_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">{$lang['longestthread']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " {$lang['posts']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", word_filter_add_ob_tags(htmlentities_array($longest_thread['TITLE'])), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " {$lang['posts']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -220,7 +220,7 @@ if (($most_read_thread = stats_get_most_read_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">{$lang['mostreadthread']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", htmlentities_array(thread_format_prefix($most_read_thread['PREFIX'], $most_read_thread['TITLE'])), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " {$lang['threadviews']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", word_filter_add_ob_tags(htmlentities_array($most_read_thread['TITLE'])), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " {$lang['threadviews']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -236,7 +236,7 @@ if (($most_subscribed_thread = stats_get_most_subscribed_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">{$lang['mostpopularthreadbysubscription']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", htmlentities_array(thread_format_prefix($most_subscribed_thread['PREFIX'], $most_subscribed_thread['TITLE'])), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " {$lang['subscribers']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", word_filter_add_ob_tags(htmlentities_array($most_subscribed_thread['TITLE'])), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " {$lang['subscribers']})</td>\n";
     echo "                </tr>\n";
 
 }else {

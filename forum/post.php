@@ -965,7 +965,7 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), form_input_hidden("t_tid", htmlentities_array($reply_to_tid)), form_input_hidden("t_rpid", htmlentities_array($reply_to_pid)), "</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($thread_data['TITLE'])), form_input_hidden("t_tid", htmlentities_array($reply_to_tid)), form_input_hidden("t_rpid", htmlentities_array($reply_to_pid)), "</td>\n";
     echo "                      </tr>\n";
 }
 

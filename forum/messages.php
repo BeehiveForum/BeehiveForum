@@ -255,9 +255,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     exit;
 }
 
-$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
-
-html_draw_top("title=$thread_title", "class=window_title", "post.js", "poll.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "post.js", "poll.js", "htmltools.js", "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
@@ -283,7 +281,7 @@ if (isset($_GET['highlight'])) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true, $highlight_array), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true, $highlight_array), "</td>\n";
 echo "    <td align=\"right\">\n";
 
 if ((forum_get_setting('show_share_links', 'Y')) && (session_get_value('SHOW_SHARE_LINKS') == 'Y')) {

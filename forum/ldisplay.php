@@ -178,11 +178,9 @@ if (!$message = messages_get($tid, $pid, 1)) {
     exit;
 }
 
-$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
+light_html_draw_top("title={$thread_data['TITLE']}");
 
-light_html_draw_top("title=$thread_title");
-
-light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
+light_messages_top($msg, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
 $first_msg = $message['PID'];
 $message['CONTENT'] = message_get_content($tid, $message['PID']);

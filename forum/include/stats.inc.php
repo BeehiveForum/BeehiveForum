@@ -294,7 +294,7 @@ function stats_get_html()
         $html.= "    <td width=\"35\">&nbsp;</td>\n";
         $html.= "    <td>";
 
-        $longest_thread_title = word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
+        $longest_thread_title = word_filter_add_ob_tags(htmlentities_array($longest_thread['TITLE']));
 
         $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
         $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], $longest_thread['LENGTH']) : $lang['onepostcreated'];
@@ -710,7 +710,8 @@ function stats_get_longest_thread()
 
     list($highest_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH, FOLDER.PREFIX ";
+    $sql = "SELECT THREAD.TID, THREAD.LENGTH, ";
+    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
@@ -980,7 +981,8 @@ function stats_get_most_read_thread()
 
     $thread_data = array();
 
-    $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, THREAD_STATS.VIEWCOUNT ";
+    $sql = "SELECT THREAD.TID, THREAD_STATS.VIEWCOUNT ";
+    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD_STATS` THREAD_STATS ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "ON (THREAD.TID = THREAD_STATS.TID) ";
@@ -1024,8 +1026,9 @@ function stats_get_most_subscribed_thread()
 
     $thread_data = array();
 
-    $sql = "SELECT THREAD.TID, THREAD.TITLE, COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS, ";
-    $sql.= "FOLDER.PREFIX FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql = "SELECT THREAD.TID, COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS, ";
+    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
+    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = USER_THREAD.TID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE USER_THREAD.INTEREST = 2 GROUP BY USER_THREAD.TID ";

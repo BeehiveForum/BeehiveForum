@@ -121,11 +121,11 @@ function light_html_draw_top()
             echo "<link rel=\"last\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
             echo "<link rel=\"up\" href=\"lthread_list.php?webtag=$webtag&amp;folder={$folder_data['FID']}\" />\n";
 
-            echo "<title>", thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags($thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
 
         } else if (strlen(trim($title)) > 0) {
 
-            echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags(htmlentities_array($title)), " - ", htmlentities_array($forum_name), "</title>\n";
 
         } else {
 
@@ -134,7 +134,7 @@ function light_html_draw_top()
 
     } else if (strlen(trim($title)) > 0) {
 
-        echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", word_filter_add_ob_tags(htmlentities_array($title)), " - ", htmlentities_array($forum_name), "</title>\n";
 
     } else {
 
@@ -143,8 +143,8 @@ function light_html_draw_top()
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
-    echo "<meta name=\"description\" content=\"$meta_description\" />\n";
+    echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_keywords)), "\" />\n";
+    echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_description)), "\" />\n";
     echo "<meta name=\"MobileOptimized\" content=\"0\" />\n";
     echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n";
 
@@ -336,9 +336,7 @@ function light_draw_messages($tid, $pid)
 
     $msg_count = count($messages);
 
-    $thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
-
-    light_messages_top($tid, $pid, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
+    light_messages_top($tid, $pid, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
     if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
@@ -791,7 +789,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                             echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-                            echo word_filter_add_ob_tags(htmlentities_array(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
+                            echo word_filter_add_ob_tags(htmlentities_array($thread['TITLE'])), "</a> ";
                             
                             echo "<span class=\"thread_detail\">";
 

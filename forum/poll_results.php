@@ -188,14 +188,12 @@ $poll_results = poll_get_votes($tid);
 
 $user_poll_votes_array = poll_get_user_votes($tid);
 
-$thread_title = thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']);
-
-html_draw_top("title=$thread_title", 'pm_popup_disabled', 'class=window_title', 'poll.js');
+html_draw_top("title={$thread_data['TITLE']}", 'pm_popup_disabled', 'class=window_title', 'poll.js');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), false, array()), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), false, array()), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<table width=\"100%\" border=\"0\">\n";

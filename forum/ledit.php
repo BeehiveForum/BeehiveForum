@@ -204,7 +204,7 @@ if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
+if (!$thread_data = thread_get($tid)) {
 
     light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
@@ -607,7 +607,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "<h3>{$lang['messagepreview']}</h3>";
 
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, false, true);
+    light_message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, true);
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";

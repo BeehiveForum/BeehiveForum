@@ -1021,7 +1021,8 @@ function admin_get_post_approval_queue($offset = 0)
 
     $post_approval_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TITLE, FOLDER.TITLE AS FOLDER_TITLE, FOLDER.PREFIX, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.TITLE AS FOLDER_TITLE, ";
+    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE, ";
     $sql.= "USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";

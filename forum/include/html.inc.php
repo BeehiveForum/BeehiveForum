@@ -690,8 +690,8 @@ function html_draw_top()
     if (!isset($resize_width)) $resize_width = 0;
 
     // Default Meta keywords and description.
-    $meta_keywords = html_get_forum_keywords();
-    $meta_description = html_get_forum_description();
+    $meta_keywords = word_filter_add_ob_tags(html_get_forum_keywords());
+    $meta_description = word_filter_add_ob_tags(html_get_forum_description());
 
     // Get the page meta keywords and description
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -716,7 +716,7 @@ function html_draw_top()
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
-
+        
         list($tid, $pid) = explode('.', $_GET['msg']);
 
         if (($thread_data = thread_get($tid))) {
@@ -729,11 +729,11 @@ function html_draw_top()
             echo "<link rel=\"next\" href=\"index.php?webtag=$webtag&amp;msg=$tid.$next_page\" />\n";
             echo "<link rel=\"last\" href=\"index.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
 
-            echo "<title>", thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags($thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
 
         } else if (strlen(trim($title)) > 0) {
 
-            echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags(htmlentities_array($title)), " - ", htmlentities_array($forum_name), "</title>\n";
 
         } else {
 
@@ -742,7 +742,7 @@ function html_draw_top()
 
     } else if (strlen(trim($title)) > 0) {
 
-        echo "<title>", htmlentities_array($title), " - ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", word_filter_add_ob_tags(htmlentities_array($title)), " - ", htmlentities_array($forum_name), "</title>\n";
 
     } else {
 
@@ -750,8 +750,8 @@ function html_draw_top()
     }
 
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"keywords\" content=\"$meta_keywords\" />\n";
-    echo "<meta name=\"description\" content=\"$meta_description\" />\n";
+    echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_keywords)), "\" />\n";
+    echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_description)), "\" />\n";
     echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
@@ -767,8 +767,8 @@ function html_draw_top()
         echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url={$meta_refresh_url}\" />\n";
     }
 
-    printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array($forum_name));
-    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array($meta_description));
+    printf("<meta name=\"application-name\" content=\"%s\" />\n", word_filter_add_ob_tags(htmlentities_array($forum_name)));
+    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", word_filter_add_ob_tags(htmlentities_array($meta_description)));
 
     if (forum_check_webtag_available($webtag)) {
 

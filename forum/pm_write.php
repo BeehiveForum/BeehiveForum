@@ -354,7 +354,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
-        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+        $post->setContent($t_content);
 
         $t_content = $post->getContent();
 
@@ -485,7 +485,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_content = trim(stripslashes_array($_POST['t_content']));
 
-        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+        $post->setContent($t_content);
 
         $t_content = $post->getContent();
 
@@ -561,7 +561,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             // Set the HTML mode to 'with automatic line breaks' so
             // the quote is handled correctly when the user previews
             // the message.
-            $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
+            $post->setHTML(POST_HTML_AUTO);
 
             $t_content = $post->getContent();
 
@@ -604,7 +604,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         // Set the HTML mode to 'with automatic line breaks' so
         // the quote is handled correctly when the user previews
         // the message.
-        $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
+        $post->setHTML(POST_HTML_AUTO);
 
         $t_content = $post->getContent();
 
@@ -634,7 +634,11 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $t_content = $parsed_message->getMessage();
         $post_html = $parsed_message->getMessageHTML();
 
-        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+        $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
+
+        $post->setContent($t_content);
+        $post->setEmoticons($emots_enabled);
+        $post->setLinks($links_enabled);
 
         $post->diff = false;
 

@@ -265,9 +265,6 @@ if (isset($_POST['t_check_spelling'])) {
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
-$post_html = POST_HTML_DISABLED;
-$sig_html = POST_HTML_ENABLED;
-
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
@@ -308,6 +305,10 @@ if (isset($_POST['t_sig_html'])) {
     if ($t_sig_html != "N") {
         $sig_html = POST_HTML_ENABLED;
     }
+
+} else {
+    
+    $sig_html = POST_HTML_DISABLED;
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -318,6 +319,8 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = md5(uniqid(mt_rand()));
 }
+
+if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
 post_save_attachment_id($tid, $pid, $aid);
 
@@ -338,10 +341,13 @@ if (isset($t_fid) && !session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
 if ($allow_html == false) {
 
     if ($post->getHTML() > 0) {
+
         $post->setHTML(false);
+        $t_content = $post->getContent();
     }
 
     $sig->setHTML(false, true);
+    $t_sig = $sig->getContent();
 }
 
 if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
@@ -569,18 +575,33 @@ if (isset($_POST['preview'])) {
             $preview_message = $edit_message;
 
             $to_uid = $edit_message['TO_UID'];
+
             $from_uid = $edit_message['FROM_UID'];
-
-            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled);
-
+            
+            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled, $links_enabled);
+            
             $emots_enabled = $parsed_message->getEmoticons();
-            $links_enabled = $parsed_message->getLinks();
-            $t_content = $parsed_message->getMessage();
-            $post_html = $parsed_message->getMessageHTML();
-            $t_sig = $parsed_message->getSig();
 
-            $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled, $links_enabled);
-            $sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false, false);
+            $links_enabled = $parsed_message->getLinks();
+
+            $t_content = $parsed_message->getMessage();
+            
+            $post_html = $parsed_message->getMessageHTML();
+
+            $t_sig = $parsed_message->getSig();
+            
+            $sig_html = $parsed_message->getSigHTML();
+            
+            $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
+            $sig->setHTML($allow_html ? $sig_html : POST_HTML_DISABLED, true);
+
+            $post->setContent($t_content);
+            $post->setEmoticons($emots_enabled);
+            $post->setLinks($links_enabled);
+            
+            $sig->setContent($t_sig);
+            $sig->setEmoticons($emots_enabled);
+            $sig->setLinks($links_enabled);
 
             $post->diff = false;
             $sig->diff = false;
@@ -629,7 +650,7 @@ echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_c
 if ($allow_sig == true) {
 
     echo form_input_hidden("t_sig", $sig->getTidyContent());
-    echo form_input_hidden("t_sig_html", htmlentities_array($sig->getHTML()));
+    echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 }
 
 if ($allow_html == true) {

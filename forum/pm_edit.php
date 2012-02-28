@@ -379,8 +379,12 @@ if ($valid && isset($_POST['preview'])) {
         $links_enabled = $parsed_message->getLinks();
         $t_content = $parsed_message->getMessage();
         $post_html = $parsed_message->getMessageHTML();
+        
+        $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
 
-        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+        $post->setContent($t_content);
+        $post->setEmoticons($emots_enabled);
+        $post->setLinks($links_enabled);        
 
         $post->diff = false;
 

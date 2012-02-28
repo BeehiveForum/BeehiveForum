@@ -785,12 +785,14 @@ class MessageText {
 
 class MessageTextParse {
 
-    private $html = "";
-    private $links = "";
-    private $message = "";
-    private $sig = "";
-    private $original = "";
-    private $tiny_mce = false;
+    private $message;
+    private $message_html;
+    private $sig;
+    private $sig_html;
+    private $original;
+    private $tiny_mce;
+    private $emoticons;
+    private $links;
 
     function MessageTextParse($message, $emots_default = true, $links_enabled = true, $tiny_mce = null)
     {
@@ -827,7 +829,7 @@ class MessageTextParse {
             $emoticons = false;
         }
 
-        $html = POST_HTML_DISABLED;
+        $message_html = POST_HTML_DISABLED;
 
         $links_replace_count = 0;
 
@@ -843,7 +845,7 @@ class MessageTextParse {
             
             $message = tidy_tiny_mce($message);
 
-            $html = POST_HTML_ENABLED;
+            $message_html = POST_HTML_ENABLED;
         
         } else {
             
@@ -853,10 +855,10 @@ class MessageTextParse {
 
             if (strcmp($message_check_html, $message) <> 0) {
 
-                $html = POST_HTML_ENABLED;
+                $message_html = POST_HTML_ENABLED;
 
                 if (add_paragraphs($message) == $message) {
-                    $html = POST_HTML_AUTO;
+                    $message_html = POST_HTML_AUTO;
                 }
 
             }else {
@@ -865,12 +867,26 @@ class MessageTextParse {
             }
         }
         
-        $signature = tidy_html($signature);        
+        $signature_check_html = strip_tags($signature);
+        
+        if (strcmp($signature_check_html, $signature) <> 0) {
+            
+            $sig_html = POST_HTML_ENABLED;
+            $signature = tidy_html($signature, false, false);
+        
+        } else {
+            
+            $sig_html = POST_HTML_DISABLED;        
+            $signature = htmlentities_decode_array($signature);
+        }
 
         $this->message = $message;
+        $this->message_html = $message_html;
+        
         $this->sig = $signature;
+        $this->sig_html = $sig_html;
+        
         $this->emoticons = $emoticons;
-        $this->html = $html;
         $this->links = $links;
     }
 
@@ -886,7 +902,12 @@ class MessageTextParse {
 
     function getMessageHTML ()
     {
-        return $this->html;
+        return $this->message_html;
+    }
+    
+    function getSigHTML ()
+    {
+        return $this->sig_html;
     }
 
     function getEmoticons ()

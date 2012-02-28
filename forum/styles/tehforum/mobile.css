@@ -156,7 +156,7 @@ body {
 
 #footer h6 {
 	font-size: 11px;
-    margin: 0;
+    margin: 20px 0;
 }
 
 #nav {
@@ -200,7 +200,7 @@ body {
 }
 
 #content {
-	font-size: 120%;
+	font-size: 13px;
     margin: 10px 5px;
     padding-bottom: 5px;
 }
@@ -414,7 +414,7 @@ h2.thread_title {
 }
 
 .message .edit_text {
-	font-size: 80%;
+	font-size: 10px;
     margin: 10px 0;
 }
 

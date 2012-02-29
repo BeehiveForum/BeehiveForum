@@ -180,8 +180,6 @@ $allow_html = true;
 
 $t_content = "";
 
-$post_html = POST_HTML_DISABLED;
-
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
@@ -190,6 +188,8 @@ if (isset($_POST['t_post_html'])) {
         $post_html = POST_HTML_AUTO;
     }else if ($t_post_html == "enabled") {
         $post_html = POST_HTML_ENABLED;
+    } else {
+        $post_html = POST_HTML_DISABLED;
     }
 
 } else {

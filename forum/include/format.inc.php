@@ -909,6 +909,22 @@ function path_info_query($path)
     return $path_parts;
 }
 
+function build_url_str($uri_array)
+{
+    if (!is_array($uri_array)) {
+        throw new Exception('$uri_array needs to be an array');
+    }
+    
+    $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
+    $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
+    $uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
+    $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
+    $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
+    $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';    
+    
+    return $uri;
+}
+
 /**
 * Return request URI
 *

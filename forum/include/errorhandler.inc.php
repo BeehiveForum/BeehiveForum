@@ -64,13 +64,38 @@ function bh_error_handler($code, $message, $file = '', $line = 0)
 // Check for unclean shutdown.
 function bh_shutdown_handler()
 {
-    if (($error = error_get_last()) && (error_reporting() == 0)) {
-        throw new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+    if (($error = error_get_last()) && (error_reporting() !== 0)) {
+        
+        bh_exception_processor(
+            $error['message'], 
+            0, 
+            $error['file'], 
+            $error['line'], 
+            debug_backtrace()
+        );
     }
 }
 
-// Beehive Exception Handler Function
+// Exception Handler
 function bh_exception_handler(Exception $exception)
+{
+    bh_exception_processor(
+        $exception->getMessage(), 
+        $exception->getCode(), 
+        $exception->getFile(), 
+        $exception->getLine(), 
+        $exception->getTrace()
+    );    
+}
+
+// Remove some unneccesary data from the stack trace.
+function exception_stack_trace_tidy($trace_data)
+{
+    return !(isset($trace_data['function']) && in_array($trace_data['function'], array('bh_exception_handler', 'bh_error_handler', 'bh_shutdown_handler')));
+}
+
+// Error / Exception Processor
+function bh_exception_processor($message, $code, $file, $line, $stack_trace)
 {
     if (isset($GLOBALS['error_report_verbose']) && $GLOBALS['error_report_verbose'] == true) {
         $error_report_verbose = true;
@@ -112,41 +137,40 @@ function bh_exception_handler(Exception $exception)
         $version_strings = array();
 
         // Generate the error message itself.
-        $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $exception->getMessage());
+        $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $message);
 
         // Add the file and line number to the error message array
-        if (strlen(trim(basename($exception->getFile()))) > 0) {
+        if (strlen(trim(basename($file))) > 0) {
 
             $error_msg_array[] = '<p><b>Error Message:</b></p>';
-            $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $exception->getLine(), basename($exception->getFile()));
+            $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $line, basename($file));
         }
 
         // Separator
         $error_msg_array[] = '<hr />';
-
-        // Stacktrace header
-        $error_msg_array[] = '<p><b>Stack trace:</b></p>';
+        
+        // Tidy up the stack trace
+        $stack_trace = array_filter($stack_trace, 'exception_stack_trace_tidy');
 
         // Stacktrace data.
-        if (($trace_array = $exception->getTrace())) {
+        if (count($stack_trace) > 0) {
 
-            foreach ($trace_array as $key => $trace_data) {
+            // Stacktrace header
+            $error_msg_array[] = '<p><b>Stack trace:</b></p>';
 
-                if (isset($trace_data['function']) && in_array($trace_data['function'], array('bh_error_handler', 'bh_shutdown_handler'))) {
-                    continue;
-                }
-
+            foreach ($stack_trace as $key => $trace_data) {
+                
                 $error_msg_array[] = sprintf(
-                    '#%s %s(%s): %s(%s)<br />',
+                    '#%s %s(%s): %s%s%s(%s)<br />',
                     $key,
-                    isset($trace_data['file']) ? $trace_data['file'] : $exception->getFile(),
-                    isset($trace_data['line']) ? $trace_data['line'] : $exception->getLine(),
-                    isset($trace_data['line']) ? $trace_data['function'] : 'unknown',
+                    isset($trace_data['file']) ? $trace_data['file'] : 'unknown',
+                    isset($trace_data['line']) ? $trace_data['line'] : 'unknown',
+                    isset($trace_data['class']) ? $trace_data['class'] : '',
+                    isset($trace_data['type']) ? $trace_data['type'] : '',
+                    isset($trace_data['function']) ? $trace_data['function'] : 'unknown',
                     isset($trace_data['args']) ? implode(', ', array_map('gettype', $trace_data['args'])) : 'void'
                 );
             }
-
-            $error_msg_array[] = '#' . ++$key . ' {main}<br />';
         }
 
         // Get the Beehive Forum Version
@@ -173,7 +197,7 @@ function bh_exception_handler(Exception $exception)
         $mysql_version = '';
 
         // Don't try and do this if we are having trouble connecting to the MySQL server.
-        if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
+        if (!in_array($code, array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
             if (($mysql_version = db_fetch_mysql_version())) {
                 $version_strings[] = sprintf('MySQL/%s', $mysql_version);
@@ -259,7 +283,7 @@ function bh_exception_handler(Exception $exception)
         header_status(500, 'Internal Server Error');
 
         // Check for an installation error.
-        if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
+        if (($code == MYSQL_ERROR_NO_SUCH_TABLE) || ($code == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
             if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
@@ -268,7 +292,7 @@ function bh_exception_handler(Exception $exception)
         }
 
         // Check for file include errors
-        if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
+        if ((preg_match('/include|include_once/u', $message) > 0)) {
 
             if (function_exists('install_missing_files') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 

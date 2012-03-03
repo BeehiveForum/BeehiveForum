@@ -396,6 +396,7 @@ define('BAN_HIT_TYPE_EMAIL', 73);
 define('BAN_HIT_TYPE_REF', 74);
 define('USER_PERMS_CHANGED', 75);
 define('USER_FOLDER_PERMS_CHANGED', 76);
+define('BAN_HIT_TYPE_SFS', 77);
 
 // Link viewmode constants
 define('LINKS_VIEW_HIERARCHICAL', 0);
@@ -461,6 +462,7 @@ define('BAN_TYPE_LOGON', 2);
 define('BAN_TYPE_NICK', 3);
 define('BAN_TYPE_EMAIL', 4);
 define('BAN_TYPE_REF', 5);
+define('BAN_TYPE_SFS', 6);
 
 // Search Popup types
 define('SEARCH_LOGON', 1);

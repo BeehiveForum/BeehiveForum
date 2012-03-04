@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php 4861 2011-11-28 21:28:10Z decoyduck $ */
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");

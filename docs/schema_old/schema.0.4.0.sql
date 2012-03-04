@@ -6,8 +6,6 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Dec 07, 2003 at 21:15 PM
 #
-# $Id$
-#
 # --------------------------------------------------------
 
 #

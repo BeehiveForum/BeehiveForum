@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php 4828 2011-09-29 20:27:59Z decoyduck $ */
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");

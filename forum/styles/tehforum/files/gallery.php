@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.31 2007/11/01 20:46:58 decoyduck Exp $ */
-
 // Set the default timezone
 date_default_timezone_set('UTC');
 
@@ -143,7 +141,7 @@ function resize_image($image_file_path, $max_width, $max_height)
         imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
                            $target_height, $image_info[0], $image_info[1]);
 
-    }else {
+    } else {
 
         $dst = imagecreate($target_width, $target_height);
         $dst = attachments_thumb_transparency($dst);
@@ -252,7 +250,7 @@ if (isset($_GET['delete'])) {
         exit;
     }
 
-}elseif (isset($_GET['confirm_delete'])) {
+} else if (isset($_GET['confirm_delete'])) {
 
     $image = basename($_GET['confirm_delete']);
     $logon = session_get_value('LOGON');
@@ -291,7 +289,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
     echo "  <li>Image will be automatically resized down to a max of 300x300px.</li>\n";
     echo "</ol>\n";
 
-}elseif (isset($_GET['gallery'])) {
+} else if (isset($_GET['gallery'])) {
 
     $images_array = array_pad($images_array, ceil(sizeof($images_array) / 3) * 3, '');
 
@@ -300,7 +298,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
 
     foreach($images_array as $key => $image) {
 
-        if (@($image_info = getimagesize("$images_dir/$image"))) {
+        if ((@$image_info = getimagesize("$images_dir/$image"))) {
 
             $target_width  = $image_info[0];
             $target_height = $image_info[1];
@@ -319,13 +317,10 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
             echo "    <a href=\"gallery.php?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
             echo "    <label><a href=\"", html_get_forum_file_path("user_profile.php?webtag=$webtag&amp;logon=$image"), "\" target=\"_blank\" class=\"popup 650x500\">", formatname($image), "</a></label>\n";
             echo "  </li>\n";
-
-        }elseif (strlen(trim($image)) < 1) {
-
-            echo "<li><div style=\"height: 174px;\"></div><label>&nbsp;</label></li>\n";
         }
     }
 
+    echo "  <div class=\"clearer\"></div>\n";
     echo "</ul>\n";
     echo "<div class=\"footer\">\n";
 
@@ -335,7 +330,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
         echo "  <a href=\"gallery.php?gallery\">Gallery</a>&nbsp;|&nbsp;\n";
         echo "  <a href=\"gallery.php?upload\">Upload an image</a>\n";
 
-    }else {
+    } else {
 
         echo "  <a href=\"gallery.php\">Random Image</a>&nbsp;|&nbsp;\n";
         echo "  <a href=\"gallery.php?gallery\">Gallery</a>\n";
@@ -343,7 +338,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
 
     echo "</div>\n";
 
-}elseif (is_array($images_array) && sizeof($images_array) > 0) {
+} else if (is_array($images_array) && sizeof($images_array) > 0) {
 
     $logon = session_get_value('LOGON');
 
@@ -360,7 +355,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
             exit;
         }
 
-    }else {
+    } else {
 
         $random_image_id = mt_rand(0, sizeof($images_array) - 1);
         $image = $images_array[$random_image_id];
@@ -388,7 +383,7 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
             echo "&nbsp;|&nbsp;\n<a href=\"?delete=$image\">Delete</a>\n";
         }
 
-    }else {
+    } else {
 
         echo "  <a href=\"gallery.php\">Random Image</a>&nbsp;|&nbsp;\n";
         echo "  <a href=\"gallery.php?gallery\">Gallery</a>\n";
@@ -396,13 +391,13 @@ if ((isset($_GET['upload'])) && (session_get_value('UID') > 0)) {
 
     echo "</div>\n";
 
-}else {
+} else {
 
     echo "<h1>Convicts Gallery</h1>\n";
 
     if (session_get_value('UID') > 0) {
         echo "<div align=\"center\"><p><a href=\"?upload\">Upload an image</a></p></div>\n";
-    }else {
+    } else {
         echo "<div align=\"center\"><p>Gallery is empty</p></div>\n";
     }
 }

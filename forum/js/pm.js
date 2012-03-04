@@ -19,8 +19,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
-
 $(beehive).bind('init', function() {
 
     $('#pm_delete_messages,#pm_save_messages,#pm_export_messages').bind('click', function() {

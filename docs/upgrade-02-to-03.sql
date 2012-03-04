@@ -4,8 +4,6 @@
 #
 # Generation Time: Jan 14, 2003 at 10:56 PM
 #
-# $Id$
-#
 # --------------------------------------------------------#
 
 CREATE TABLE BANNED_IP (

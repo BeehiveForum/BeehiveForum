@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_function_names.php 4448 2010-05-03 14:17:05Z decoyduck $ */
-
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 

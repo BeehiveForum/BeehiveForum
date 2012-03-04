@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php 4783 2011-08-15 19:28:12Z decoyduck $ */
-
 // Set the default timezone
 date_default_timezone_set('UTC');
 

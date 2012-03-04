@@ -4,5 +4,3 @@
 # which you will find located at /forum/install/install.php
 #
 # --------------------------------------------------------
-#
-# $Id$

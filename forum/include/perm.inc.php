@@ -185,14 +185,17 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, GROUP_DATA.PERM AS GROUP_PERMS, ";
-    $sql.= "GROUP_DATA.PERM_COUNT AS USER_PERM_COUNT, FOLDER.PERM AS FOLDER_PERMS, ";
-    $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER LEFT JOIN (SELECT GROUP_PERMS.FID, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.PERM) AS PERM_COUNT ";
-    $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID)) ";
-    $sql.= "AS GROUP_DATA ON (GROUP_DATA.FID = FOLDER.FID)";
+    
+    $forum_fid = $table_data['FID'];
+    
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, USER_DATA.PERM AS USER_PERMS, ";
+    $sql.= "COALESCE(USER_DATA.PERM_COUNT, 0) AS USER_PERM_COUNT, FOLDER.PERM AS FOLDER_PERMS, ";
+    $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "LEFT JOIN (SELECT GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
+    $sql.= "COUNT(GROUP_PERMS.PERM) AS PERM_COUNT FROM GROUP_USERS  INNER JOIN GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID) WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
+    $sql.= "AND GROUP_USERS.UID = '$uid' GROUP BY GROUP_PERMS.FID) AS USER_DATA ";
+    $sql.= "ON (USER_DATA.FID = FOLDER.FID) WHERE FOLDER.FID = '$fid'";
 
     if (!$result = db_query($sql, $db_perm_check_folder_permissions)) return false;
 

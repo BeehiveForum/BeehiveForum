@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
-
 // Requires PHP PEAR to be installed and Bartlett/PHP_CompatInfo.
 // See: https://github.com/llaville/php-compat-info
 require_once 'Bartlett/PHP/CompatInfo.php';

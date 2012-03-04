@@ -4,8 +4,6 @@
 #
 # Generation Time: Aug 27, 2002 at 05:16 PM
 #
-# $Id$
-#
 # --------------------------------------------------------#
 
 INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('GUEST', MD5('guest'), 'Guest', 'guest@email.com', 0, NOW());

@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
-
 // British English language file
 // Language character set and text direction options -------------------
 $lang['_isocode'] = "de";

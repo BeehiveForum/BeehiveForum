@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
-
 /** A range of functions for filtering/cleaning posted HTML
 *
 * fix_html - strips illegal tags; enforces correct nesting of tags; converts BH custom tags; more!

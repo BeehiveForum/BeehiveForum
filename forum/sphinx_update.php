@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php 4701 2011-04-28 17:59:35Z decoyduck $ */
-
 // Check we're running from php-cli
 if (!defined('STDIN')) {
 

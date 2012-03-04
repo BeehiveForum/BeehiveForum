@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id$ */
-
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
 // http://www.geocities.com/mnstr_2000/translate.html

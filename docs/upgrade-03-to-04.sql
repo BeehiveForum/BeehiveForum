@@ -4,8 +4,6 @@
 #
 # Generation Time: Nov 09, 2003 at 03:58 PM
 #
-# $Id$
-#
 # --------------------------------------------------------#
 
 ALTER TABLE USER_PREFS ADD DOB date default '0000-00-00' NULL AFTER LASTNAME;

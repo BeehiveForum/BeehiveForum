@@ -935,10 +935,13 @@ function search_output_opensearch_xml()
     echo "<ShortName>$title</ShortName>\n";
     echo "<Description>$title</Description>\n";
     echo "<InputEncoding>UTF-8</InputEncoding>\n";
-    echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">", html_get_favicon(), "</Image>\n";
+
+    if (($user_style_path = html_get_user_style_path())) {
+        printf("<Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
+    }    
+    
     echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
     echo "</OpenSearchDescription>\n";
-
     exit;
 }
 

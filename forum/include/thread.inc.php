@@ -80,7 +80,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, ";
-    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE, ";
+    $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
     $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "THREAD.BY_UID, UNIX_TIMESTAMP(THREAD.CLOSED) AS CLOSED, ";
@@ -1278,7 +1278,7 @@ function thread_search($thread_search, $selected_array = array())
 
     $selected_array = array_filter($selected_array, 'is_numeric');
 
-    $sql = "SELECT DISTINCT THREAD.TID, TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
+    $sql = "SELECT DISTINCT THREAD.TID, TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TITLE LIKE '$thread_search%' ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";

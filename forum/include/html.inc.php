@@ -66,7 +66,7 @@ function html_guest_error()
     $frame_top_target = html_get_top_frame_name();
 
     $lang = load_language_file();
-    
+
     $webtag = get_webtag();
 
     $final_uri = sprintf("logon.php?webtag=%s&final_uri=%s", $webtag, rawurlencode(basename(get_request_uri(true, false))));
@@ -714,7 +714,7 @@ function html_draw_top()
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
-        
+
         list($tid, $pid) = explode('.', $_GET['msg']);
 
         if (($thread_data = thread_get($tid))) {
@@ -971,7 +971,7 @@ function html_draw_top()
         echo "  })();\n\n";
         echo "</script>\n";
     }
-    
+
     if ((forum_get_setting('show_share_links', 'Y')) && (session_get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
         echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">\n";

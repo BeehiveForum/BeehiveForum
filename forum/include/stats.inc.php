@@ -709,13 +709,10 @@ function stats_get_longest_thread()
     list($highest_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT THREAD.TID, THREAD.LENGTH, ";
-    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.LENGTH = '$highest_thread_count' ";
-    $sql.= "AND THREAD.DELETED = 'N' ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.LENGTH = '$highest_thread_count' ";
+    $sql.= "AND THREAD.DELETED = 'N' LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_stats_get_longest_thread)) return false;
 
@@ -977,25 +974,17 @@ function stats_get_most_read_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $thread_data = array();
-
     $sql = "SELECT THREAD.TID, THREAD_STATS.VIEWCOUNT ";
-    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD_STATS` THREAD_STATS ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "ON (THREAD.TID = THREAD_STATS.TID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "ORDER BY THREAD_STATS.VIEWCOUNT DESC ";
+    $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD_STATS` THREAD_STATS LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "ON (THREAD.TID = THREAD_STATS.TID) LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) ORDER BY THREAD_STATS.VIEWCOUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_stats_get_most_read_threads)) return false;
 
     if (db_num_rows($result) > 0) {
-
-        $thread_data = db_fetch_array($result);
-
-        return $thread_data;
+        return db_fetch_array($result);
     }
 
     return false;
@@ -1022,10 +1011,8 @@ function stats_get_most_subscribed_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $thread_data = array();
-
     $sql = "SELECT THREAD.TID, COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS, ";
-    $sql.= "TRIM(CONCAT(FOLDER.PREFIX, ' ', THREAD.TITLE)) AS TITLE ";
+    $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
     $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = USER_THREAD.TID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
@@ -1035,10 +1022,7 @@ function stats_get_most_subscribed_thread()
     if (!$result = db_query($sql, $db_stats_get_most_subscribed_threads)) return false;
 
     if (db_num_rows($result) > 0) {
-
-        $thread_data = db_fetch_array($result);
-
-        return $thread_data;
+        return db_fetch_array($result);
     }
 
     return false;

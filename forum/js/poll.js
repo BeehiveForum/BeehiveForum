@@ -40,7 +40,7 @@ $(beehive).bind('init', function() {
 
         var $delete_buttons = $poll_questions.find('button.delete_question');
         $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
-    }
+    };
 
     var hide_delete_buttons = function()
     {

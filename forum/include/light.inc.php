@@ -107,7 +107,7 @@ function light_html_draw_top()
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread_data = thread_get($tid)) && ($folder_data = thread_get_folder($tid))) {
+        if (($thread_data = thread_get($tid)) && ($fid = thread_get_folder($tid))) {
 
             $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
             $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
@@ -117,7 +117,7 @@ function light_html_draw_top()
             echo "<link rel=\"previous\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}\" />\n";
             echo "<link rel=\"next\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$next_page\" />\n";
             echo "<link rel=\"last\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
-            echo "<link rel=\"up\" href=\"lthread_list.php?webtag=$webtag&amp;folder={$folder_data['FID']}\" />\n";
+            echo "<link rel=\"up\" href=\"lthread_list.php?webtag=$webtag&amp;folder=$fid\" />\n";
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
 

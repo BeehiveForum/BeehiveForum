@@ -31,7 +31,7 @@ USA
 */
 
 // Beehive Version
-define('BEEHIVE_VERSION', "1.1.0-CVS");
+define('BEEHIVE_VERSION', "1.1.0-GIT");
 
 // Beehive DOB (unixtimestamp)
 define('BEEHIVE_DOB', 1018220400);

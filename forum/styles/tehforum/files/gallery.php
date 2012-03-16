@@ -157,7 +157,7 @@ function resize_image($image_file_path, $max_width, $max_height)
 $lang = load_language_file();
 
 // Where are the images stored?
-$images_dir = "../../../forumites";
+$images_dir = "/home/tehforum/forumites";
 
 // Initialise the array to store the images in
 $images_array = array();

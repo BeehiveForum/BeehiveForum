@@ -379,6 +379,7 @@ $lang['withselected'] = "With selected";
 $lang['onlineusers'] = "Online users";
 $lang['offlineusers'] = "Offline users";
 $lang['usersawaitingapproval'] = "Users awaiting approval";
+$lang['banipaddress'] = "Ban IP Address";
 $lang['bannedusers'] = "Banned users";
 $lang['lastlogon'] = "Last Logon";
 $lang['sessionreferer'] = "Session Referer";

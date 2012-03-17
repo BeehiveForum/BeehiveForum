@@ -1106,7 +1106,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  EDITED DATETIME DEFAULT NULL,";
         $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
+        $sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL,";
         $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED DEFAULT '0',";

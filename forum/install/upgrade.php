@@ -60,10 +60,42 @@ if (!install_table_exists($db_database, "SPHINX_SEARCH_ID")) {
     }
 }
 
+$sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE `VISITOR_LOG` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+        
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "PERM")) {
         
         $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD COLUMN `PERM` INT(32) UNSIGNED DEFAULT NULL";

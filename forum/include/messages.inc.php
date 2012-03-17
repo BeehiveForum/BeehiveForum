@@ -1264,7 +1264,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
+            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banipaddress']}</a></td>\n";
             $html.= "                      </tr>";
 
         }else {
@@ -1272,33 +1272,6 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
             $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['notlogged']}</td>\n";
-            $html.= "                      </tr>";
-        }
-
-    }else {
-
-        if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
-
-            if ($uid == $message['FROM_UID']) {
-
-                $html.= "                      <tr>\n";
-                $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$message['IPADDRESS']}</td>\n";
-                $html.= "                      </tr>";
-
-            }else {
-
-                $html.= "                      <tr>\n";
-                $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['logged']}</td>\n";
-                $html.= "                      </tr>";
-            }
-
-        }else {
-
-            $html.= "                      <tr>\n";
-            $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['logged']}</td>\n";
             $html.= "                      </tr>";
         }
     }

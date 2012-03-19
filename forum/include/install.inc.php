@@ -1003,7 +1003,7 @@ function install_import_dictionary($dictionary_path)
 
     } catch (Exception $e) {
 
-        $dictionary_words_array = file($dictionary_path);
+        $dictionary_words_array = file("$dictionary_path/english.dic");
 
         foreach ($dictionary_words_array as $word) {
 

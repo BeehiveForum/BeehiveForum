@@ -52,8 +52,8 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 
-// Disable cache on AOL
-cache_disable_aol();
+// Disable caching.
+cache_disable();
 
 // Check the PHP version
 install_check_php_version();
@@ -213,28 +213,28 @@ if (isset($_POST['install_method'])) {
     if ($valid) {
 
         $sql = "";
+        
+        try {
 
-        if (($db_install = db_connect())) {
+            $db_install = db_connect();
 
-            // Check the MySQL version
             install_check_mysql_version();
+            
+            try {
 
-            // Check the install method
-            if (($install_method == 3) && (@file_exists('upgrade.php'))) {
+                if (($install_method == 3) && (@file_exists('upgrade.php'))) {
 
-                include_once("upgrade.php");
+                    include_once("upgrade.php");
 
-            } else if (($install_method == 1) && (@file_exists('new-install.php'))) {
+                } else if (($install_method == 1) && (@file_exists('new-install.php'))) {
 
-                $remove_conflicts = true;
-                include_once("new-install.php");
+                    $remove_conflicts = true;
+                    include_once("new-install.php");
 
-            } else if (($install_method == 0) && (@file_exists('new-install.php'))) {
+                } else if (($install_method == 0) && (@file_exists('new-install.php'))) {
 
-                include_once("new-install.php");
-            }
-
-            if ($valid) {
+                    include_once("new-install.php");
+                }
 
                 $config_file = "";
 
@@ -265,147 +265,136 @@ if (isset($_POST['install_method'])) {
 
                         $config_saved = true;
                     }
+                }
 
-                    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-                    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-                    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-                    echo "<head>\n";
-                    echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
-                    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-                    echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
-                    echo "</head>\n";
-                    echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
-                    echo "<br />\n";
-                    echo "<div align=\"center\">\n";
+                echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+                echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+                echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+                echo "<head>\n";
+                echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
+                echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+                echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
+                echo "</head>\n";
+                echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
+                echo "<br />\n";
+                echo "<div align=\"center\">\n";
 
-                    if ($config_saved) {
+                if ($config_saved) {
 
-                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"left\" width=\"525\">\n";
-                        echo "      <table class=\"box\" width=\"100%\">\n";
-                        echo "        <tr>\n";
-                        echo "          <td align=\"left\" class=\"posthead\">\n";
-                        echo "            <table class=\"posthead\" width=\"100%\">\n";
-                        echo "              <tr>\n";
-                        echo "                <td align=\"left\" class=\"subhead\">Installation Complete</td>\n";
-                        echo "              </tr>\n";
-                        echo "              <tr>\n";
-                        echo "                <td align=\"center\" colspan=\"2\">\n";
-                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-                        echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">Installation of your Beehive Forum has completed successfully, but before you can use it you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
-                        echo "                    </tr>\n";
-                        echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        echo "                    </tr>\n";
-                        echo "                  </table>\n";
-                        echo "                </td>\n";
-                        echo "              </tr>\n";
-                        echo "            </table>\n";
-                        echo "          </td>\n";
-                        echo "        </tr>\n";
-                        echo "      </table>\n";
-                        echo "    </td>\n";
-                        echo "  </tr>\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"left\">&nbsp;</td>\n";
-                        echo "  </tr>\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"center\"><a class=\"button\" href=\"../index.php\"><span>Continue</span</a></td>\n";
-                        echo "  </tr>\n";
-                        echo "</table>\n";
-
-                    }else {
-
-                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"left\" width=\"525\">\n";
-                        echo "      <table class=\"box\" width=\"100%\">\n";
-                        echo "        <tr>\n";
-                        echo "          <td align=\"left\" class=\"posthead\">\n";
-                        echo "            <table class=\"posthead\" width=\"100%\">\n";
-                        echo "              <tr>\n";
-                        echo "                <td align=\"left\" class=\"subhead\">Database Setup Complete</td>\n";
-                        echo "              </tr>\n";
-                        echo "              <tr>\n";
-                        echo "                <td align=\"center\" colspan=\"2\">\n";
-                        echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-                        echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
-                        echo "                    </tr>\n";
-                        echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        echo "                    </tr>\n";
-                        echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
-                        echo "                    </tr>\n";
-                        echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        echo "                    </tr>\n";
-                        echo "                  </table>\n";
-                        echo "                </td>\n";
-                        echo "              </tr>\n";
-                        echo "            </table>\n";
-                        echo "          </td>\n";
-                        echo "        </tr>\n";
-                        echo "      </table>\n";
-                        echo "    </td>\n";
-                        echo "  </tr>\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"left\">&nbsp;</td>\n";
-                        echo "  </tr>\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"center\">\n";
-                        echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
-                        echo "        <tr>\n";
-                        echo "          <td width=\"55%\" align=\"right\">\n";
-                        echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_server\" value=\"", htmlentities_array($db_server), "\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_port\" value=\"", htmlentities_array($db_port), "\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_username\" value=\"", htmlentities_array($db_username), "\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_password\" value=\"", htmlentities_array($db_password), "\">\n";
-                        echo "              <input type=\"hidden\" name=\"db_database\" value=\"", htmlentities_array($db_database), "\">\n";
-                        echo "              <input type=\"hidden\" name=\"admin_email\" value=\"", isset($admin_email) ? htmlentities_array($admin_email) : '', "\">\n";
-                        echo "              <input type=\"hidden\" name=\"enable_error_reports\" value=\"", $enable_error_reports ? 'Y' : 'N', "\">\n";
-                        echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
-                        echo "            </form>\n";
-                        echo "          </td>\n";
-                        echo "          <td align=\"left\" width=\"45%\">\n";
-                        echo "            <a class=\"button\" href=\"../index.php\" /><span>Continue</span></a>\n";
-                        echo "          </td>\n";
-                        echo "        </tr>\n";
-                        echo "      </table>\n";
-                        echo "    </td>\n";
-                        echo "  </tr>\n";
-                        echo "</table>\n";
-
-                    }
-
-                    echo "</div>\n";
-                    echo "</body>\n";
-                    echo "</html>\n";
-                    exit;
+                    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+                    echo "  <tr>\n";
+                    echo "    <td align=\"left\" width=\"525\">\n";
+                    echo "      <table class=\"box\" width=\"100%\">\n";
+                    echo "        <tr>\n";
+                    echo "          <td align=\"left\" class=\"posthead\">\n";
+                    echo "            <table class=\"posthead\" width=\"100%\">\n";
+                    echo "              <tr>\n";
+                    echo "                <td align=\"left\" class=\"subhead\">Installation Complete</td>\n";
+                    echo "              </tr>\n";
+                    echo "              <tr>\n";
+                    echo "                <td align=\"center\" colspan=\"2\">\n";
+                    echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+                    echo "                    <tr>\n";
+                    echo "                      <td align=\"left\" class=\"postbody\">Installation of your Beehive Forum has completed successfully, but before you can use it you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
+                    echo "                    </tr>\n";
+                    echo "                    <tr>\n";
+                    echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+                    echo "                    </tr>\n";
+                    echo "                  </table>\n";
+                    echo "                </td>\n";
+                    echo "              </tr>\n";
+                    echo "            </table>\n";
+                    echo "          </td>\n";
+                    echo "        </tr>\n";
+                    echo "      </table>\n";
+                    echo "    </td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr>\n";
+                    echo "    <td align=\"left\">&nbsp;</td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr>\n";
+                    echo "    <td align=\"center\"><a class=\"button\" href=\"../index.php\"><span>Continue</span</a></td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
 
                 }else {
 
-                    $error_array[] = "Could not complete installation. Error was: failed to read config.inc.php\n";
-                    $valid = false;
+                    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+                    echo "  <tr>\n";
+                    echo "    <td align=\"left\" width=\"525\">\n";
+                    echo "      <table class=\"box\" width=\"100%\">\n";
+                    echo "        <tr>\n";
+                    echo "          <td align=\"left\" class=\"posthead\">\n";
+                    echo "            <table class=\"posthead\" width=\"100%\">\n";
+                    echo "              <tr>\n";
+                    echo "                <td align=\"left\" class=\"subhead\">Database Setup Complete</td>\n";
+                    echo "              </tr>\n";
+                    echo "              <tr>\n";
+                    echo "                <td align=\"center\" colspan=\"2\">\n";
+                    echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+                    echo "                    <tr>\n";
+                    echo "                      <td align=\"left\" class=\"postbody\">Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
+                    echo "                    </tr>\n";
+                    echo "                    <tr>\n";
+                    echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+                    echo "                    </tr>\n";
+                    echo "                    <tr>\n";
+                    echo "                      <td align=\"left\" class=\"postbody\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
+                    echo "                    </tr>\n";
+                    echo "                    <tr>\n";
+                    echo "                      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+                    echo "                    </tr>\n";
+                    echo "                  </table>\n";
+                    echo "                </td>\n";
+                    echo "              </tr>\n";
+                    echo "            </table>\n";
+                    echo "          </td>\n";
+                    echo "        </tr>\n";
+                    echo "      </table>\n";
+                    echo "    </td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr>\n";
+                    echo "    <td align=\"left\">&nbsp;</td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr>\n";
+                    echo "    <td align=\"center\">\n";
+                    echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+                    echo "        <tr>\n";
+                    echo "          <td width=\"55%\" align=\"right\">\n";
+                    echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
+                    echo "              <input type=\"hidden\" name=\"db_server\" value=\"", htmlentities_array($db_server), "\">\n";
+                    echo "              <input type=\"hidden\" name=\"db_port\" value=\"", htmlentities_array($db_port), "\">\n";
+                    echo "              <input type=\"hidden\" name=\"db_username\" value=\"", htmlentities_array($db_username), "\">\n";
+                    echo "              <input type=\"hidden\" name=\"db_password\" value=\"", htmlentities_array($db_password), "\">\n";
+                    echo "              <input type=\"hidden\" name=\"db_database\" value=\"", htmlentities_array($db_database), "\">\n";
+                    echo "              <input type=\"hidden\" name=\"admin_email\" value=\"", isset($admin_email) ? htmlentities_array($admin_email) : '', "\">\n";
+                    echo "              <input type=\"hidden\" name=\"enable_error_reports\" value=\"", $enable_error_reports ? 'Y' : 'N', "\">\n";
+                    echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
+                    echo "            </form>\n";
+                    echo "          </td>\n";
+                    echo "          <td align=\"left\" width=\"45%\">\n";
+                    echo "            <a class=\"button\" href=\"../index.php\" /><span>Continue</span></a>\n";
+                    echo "          </td>\n";
+                    echo "        </tr>\n";
+                    echo "      </table>\n";
+                    echo "    </td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
                 }
 
-            }else {
+                echo "</div>\n";
+                echo "</body>\n";
+                echo "</html>\n";
+                exit;
 
-                if (($errno = db_errno($db_install)) > 0) {
+            } catch (Exception $e) {
 
-                    $error_array[] = "<h2>Could not complete installation. Error was: ". db_error($db_install). " $sql</h2>\n";
-                    $valid = false;
-                }
+                $error_array[] = "<h2>Could not complete installation. Error was: ". $e->getMessage(). "</h2>\n";
             }
 
-        }elseif ($valid) {
+        } catch (Exception $e) {
 
             $error_array[] = "<p>Database connection to ". htmlentities_array($db_server). ":". htmlentities_array($db_port). " could not be established. Please check your MySQL Database Configuration settings are correct and that you have permisison to access the database you've entered.</p>\n<p><b>Note:</b> The database must be created manually prior to the installation of the Beehive Forum software!</p>\n";
-            $valid = false;
         }
     }
 
@@ -565,7 +554,6 @@ if (isset($_POST['install_method'])) {
     }else {
 
         $error_array[] = "Could not complete installation. Error was: failed to read config.inc.php\n";
-        $valid = false;
     }
 }
 
@@ -576,7 +564,7 @@ echo "<head>\n";
 echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/jquery-1.4.1.js\"></script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/jquery-1.7.1.min.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/general.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/install.js\"></script>\n";
 echo "</head>\n";

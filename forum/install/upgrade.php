@@ -53,7 +53,7 @@ if (!install_table_exists($db_database, "SPHINX_SEARCH_ID")) {
     $sql.= "  PRIMARY KEY (SEARCH_ID)";
     $sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -62,7 +62,7 @@ if (!install_table_exists($db_database, "SPHINX_SEARCH_ID")) {
 
 $sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -70,7 +70,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -78,7 +78,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE `VISITOR_LOG` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -90,7 +90,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -100,7 +100,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         
         $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD COLUMN `PERM` INT(32) UNSIGNED DEFAULT NULL";
         
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -112,7 +112,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0) GROUP BY FOLDER.FID ";
         $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
         
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -121,7 +121,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql = "DELETE FROM GROUP_PERMS WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
         $sql.= "AND GROUP_PERMS.GID = 0 ";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -133,7 +133,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete temp POLL_VOTES_NEW table if it exists
         $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POLL_VOTES_NEW`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -142,7 +142,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete temp USER_POLL_VOTES_NEW table if it exists
         $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -158,7 +158,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "    PRIMARY KEY (TID, QUESTION_ID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -174,7 +174,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "    PRIMARY KEY (TID,QUESTION_ID,OPTION_ID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -195,7 +195,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "    KEY UID (UID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -207,7 +207,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "ON (THREAD.TID = POLL.TID) SET POLL.QUESTION = THREAD.TITLE ";
         $sql.= "WHERE LENGTH(TRIM(BOTH FROM POLL.QUESTION)) = 0";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -227,7 +227,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "GROUP BY POLL_VOTES.TID ORDER BY POLL.TID) AS POLL_GROUP_COUNTS ON ";
         $sql.= "(POLL_GROUP_COUNTS.TID = POLL.TID) GROUP BY POLL.TID, POLL_VOTES.GROUP_ID";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -241,7 +241,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID ";
         $sql.= "AND POLL_VOTES.GROUP_ID = POLL_QUESTIONS.GROUP_ID)";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -257,7 +257,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
         $sql.= "ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES_NEW.OPTION_ID_OLD)";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -266,7 +266,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete QUESTION column from POLL table.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL` DROP COLUMN QUESTION";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -275,7 +275,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete GROUP_ID column from new POLL_QUESTIONS table.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_QUESTIONS` DROP COLUMN GROUP_ID";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -284,7 +284,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete the OPTION_ID_OLD column from new POLL_VOTES table.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` DROP COLUMN OPTION_ID_OLD";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -293,7 +293,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete old POLL_VOTES table
         $sql = "DROP TABLE `{$table_data['PREFIX']}POLL_VOTES`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -302,7 +302,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Rename POLL_VOTES_NEW table to POLL_VOTES
         $sql = "RENAME TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` TO `{$table_data['PREFIX']}POLL_VOTES`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -311,7 +311,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Delete the old USER_POLL_VOTES table.
         $sql = "DROP TABLE `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -320,7 +320,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Rename USER_POLL_VOTES_NEW table to USER_POLL_VOTES
         $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` TO `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -332,7 +332,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Add field for thread_last_page
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -344,7 +344,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Add SEARCH_ID column for Sphinx integration.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -353,7 +353,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Add a unique index to SEARCH_ID.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -362,7 +362,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // Declare a MySQL variable to increment the SEARCH_ID column.
         $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -371,7 +371,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // UPDATE SEARCH_ID in POST table to assign unique id to every post.
         $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -380,7 +380,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
         $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -391,7 +391,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     // as they were totally calculated incorrectly prior to Beehive Forum 1.1
     $sql = "UPDATE `{$table_data['PREFIX']}USER_TRACK` SET USER_TIME_TOTAL = NULL, USER_TIME_BEST = NULL, USER_TIME_UPDATED = NULL";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -403,7 +403,7 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
     // Increase the allowed length of the PASSWD column.
     $sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -412,7 +412,7 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
     // Add new SALT column to USER table for per-user password salting
     $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -427,7 +427,7 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
     $sql.= "  PRIMARY KEY (UID, TOKEN)";
     $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -439,7 +439,7 @@ if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
     // New User preference for thread list folder order
     $sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;

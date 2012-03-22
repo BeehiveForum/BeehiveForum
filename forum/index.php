@@ -87,9 +87,6 @@ define('BEEHIVE_LIGHT_INCLUDE', true);
 // Don't cache this page - fixes problems with Opera.
 cache_disable();
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Start user session
 $user_sess = session_check(false);
 

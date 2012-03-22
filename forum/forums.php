@@ -78,9 +78,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Load the user session
 $user_sess = session_check(false);
 

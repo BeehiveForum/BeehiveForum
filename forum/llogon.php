@@ -90,11 +90,6 @@ $webtag = get_webtag();
 // Validate the webtag
 forum_check_webtag_available($webtag);
 
-// See if we can try and logon automatically
-if (logon_perform_auto(false)) {
-    header_redirect("lthread_list.php?webtag=$webtag");
-}
-
 // Start user session
 $user_sess = session_check(false);
 

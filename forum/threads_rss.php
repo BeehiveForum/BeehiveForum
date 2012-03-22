@@ -138,9 +138,6 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
     $sort_created = 'N';
 }
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Load the user session
 $user_sess = session_check(false);
 

@@ -93,9 +93,6 @@ if (isset($_GET['opensearch'])) {
     search_output_opensearch_xml();
 }
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());

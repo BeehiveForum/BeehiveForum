@@ -77,9 +77,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 // Get webtag
 $webtag = get_webtag();
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {
     $request_uri = rawurlencode(get_request_uri());

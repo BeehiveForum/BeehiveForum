@@ -85,14 +85,8 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Get Webtag
 $webtag = get_webtag();
-
-// See if we can try and logon automatically
-logon_perform_auto();
 
 // Check we're logged in correctly
 if (!$user_sess = session_check()) {

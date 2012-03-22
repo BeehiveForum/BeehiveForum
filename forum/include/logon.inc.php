@@ -102,46 +102,6 @@ function logon_perform()
     return false;
 }
 
-function logon_perform_auto($redirect = true)
-{
-    // Get webtag
-    $webtag = get_webtag();
-
-    // Validate the webtag
-    forum_check_webtag_available($webtag);
-
-    // If we're logging in we don't want to try this.
-    if (html_get_cookie('logon')) return false;
-
-    // Check if we're already logged in.
-    if (session_check(false, false)) return false;
-
-    // Get the user_logon cookie
-    if (!($user_logon = html_get_cookie('user_logon'))) return false;
-
-    // Get the user_token cookie value
-    if (!($user_token = html_get_cookie('user_token'))) return false;
-
-    // Try and login the user.
-    if (!($uid = user_logon_token($user_logon, $user_token))) return false;
-
-    // Reset the user_logon and user_token cookies
-    html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-    html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
-
-    // Initialise user session
-    session_init($uid);
-
-    // Check if we're automatically redirecting
-    if (!$redirect) return true;
-
-    // Reload the current page.
-    header_redirect(get_request_uri(true, false));
-
-    // Success
-    exit;
-}
-
 function logon_draw_form($logon_options)
 {
     $lang = load_language_file();

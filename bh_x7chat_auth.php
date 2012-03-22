@@ -61,9 +61,6 @@ $auth_register_link = "../register.php";
 // Disable Guest access to X7Chat
 $auth_disable_guest = true;
 
-// See if we can try and logon automatically
-logon_perform_auto();
-
 // Check the session is active
 if (($user_sess = session_check())) {
 

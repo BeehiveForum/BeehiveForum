@@ -82,12 +82,12 @@ function session_get($sess_hash)
     $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS ";
     $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.HASH = '$sess_hash'";
-
+    
     if (!$result = db_query($sql, $db_session_get)) return false;
 
     if (db_num_rows($result) == 0) return false;
     
-    return db_fetch_array($result);
+    return db_fetch_array($result, DB_RESULT_ASSOC);
 }
 
 /**
@@ -146,7 +146,7 @@ function session_check($show_session_fail = true, $init_guest_session = true)
     
     // Check to see if we have a session cookie.
     $sess_hash = html_get_cookie('sess_hash', 'is_md5');
-        
+    
     // Try and load session data with the sess_hash cookie.
     if (!($user_sess = session_get($sess_hash))) {
         
@@ -163,9 +163,9 @@ function session_check($show_session_fail = true, $init_guest_session = true)
             if ($init_guest_session === true) {
                 return guest_session_init();
             }        
+            
+            return false;
         }
-        
-        return false;
     }
     
     // Check for a webtag and get the forum FID.

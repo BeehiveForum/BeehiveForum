@@ -122,8 +122,11 @@ function bh_exception_processor($message, $code, $file, $line, $stack_trace)
         // Clean the output buffer
         while (@ob_end_clean());
 
-        // Recall the gzip output handler
-        ob_start("bh_gzhandler");
+        // Determine the correct output handler to use.
+        $output_handler = function_exists('bh_gzhandler') ? 'bh_gzhandler' : null;
+        
+        // Restart output handler
+        ob_start($output_handler);
 
         // Turn off output buffer flushing
         ob_implicit_flush(0);

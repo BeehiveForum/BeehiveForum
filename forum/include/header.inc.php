@@ -92,6 +92,8 @@ function header_redirect($uri, $reason = false)
 
 function header_status($status, $message)
 {
+    if (headers_sent()) return false;
+    
     if (substr(php_sapi_name(), 0, 3) == 'cgi') {
         header(sprintf('Status: %s %s', $status, $message), true);
     } else {

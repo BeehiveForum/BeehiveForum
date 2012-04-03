@@ -55,6 +55,11 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 */
 function check_install()
 {
+    // Check the config file exists.
+    if (!file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
+        header_redirect('./install/index.php');
+    }
+
     // Check the PHP version
     install_check_php_version();
 
@@ -63,12 +68,7 @@ function check_install()
 
     // Check the MySQL version
     install_check_mysql_version();
-
-    // Check the config file exists.
-    if (!file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-        header_redirect('./install/index.php');
-    }
-
+    
     // Check if the installer files still exist. Ignore them
     // if the BEEHIVE_DEVELOPER_MODE constant has been defined.
     if (@file_exists('./install/index.php') && !defined("BEEHIVE_DEVELOPER_MODE")) {

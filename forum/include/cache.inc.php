@@ -62,6 +62,8 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function cache_disable()
 {
+    if (headers_sent()) return false;
+    
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT", true);               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);  // always modified
     header("Content-Type: text/html; charset=UTF-8", true);               // Internet Explorer Bug
@@ -133,6 +135,8 @@ function cache_check_thread_list()
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
+    
+    if (headers_sent()) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -230,6 +234,8 @@ function cache_check_start_page()
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
+    
+    if (headers_sent()) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -308,6 +314,8 @@ function cache_check_messages()
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
+    
+    if (headers_sent()) return false;
 
     // Disable cache on these URL queries.
     if (isset($_GET['delete_success'])) return false;
@@ -437,6 +445,8 @@ function cache_check_last_modified($last_modified)
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 
     if (browser_check(BROWSER_AOL)) return false;
+    
+    if (headers_sent()) return false;
 
     $local_last_modified = gmdate("D, d M Y H:i:s", $last_modified). "GMT";
 
@@ -474,6 +484,8 @@ function cache_check_last_modified($last_modified)
 function cache_check_etag($local_etag)
 {
     if (browser_check(BROWSER_AOL)) return false;
+    
+    if (headers_sent()) return false;
 
     $local_last_modified = gmdate("D, d M Y H:i:s", time()). "GMT";
 

@@ -398,6 +398,23 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 }
 
+if (!install_table_exists($db_database, "SFS_CACHE")) {
+    
+    $sql = "CREATE TABLE SFS_CACHE (";
+    $sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
+    $sql.= "  RESPONSE longblob NOT NULL, ";
+    $sql.= "  CREATED datetime NOT NULL, ";
+    $sql.= "  EXPIRES datetime NOT NULL, ";
+    $sql.= "  PRIMARY KEY (REQUEST_MD5) ";
+    $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }    
+}
+
 if (!install_table_exists($db_database, "USER_TOKEN")) {
 
     // Increase the allowed length of the PASSWD column.

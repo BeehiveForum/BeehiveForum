@@ -328,6 +328,20 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE SFS_CACHE (";
+$sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
+$sql.= "  RESPONSE longblob NOT NULL, ";
+$sql.= "  CREATED datetime NOT NULL, ";
+$sql.= "  EXPIRES datetime NOT NULL, ";
+$sql.= "  PRIMARY KEY (REQUEST_MD5) ";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE SPHINX_SEARCH_ID (";
 $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  PRIMARY KEY (SEARCH_ID)";

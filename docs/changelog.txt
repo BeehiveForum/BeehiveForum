@@ -1,629 +1,168 @@
-Project Beehive Forum Change Log (Generated: Sun, 05 Feb 2012 12:49:12)
+Project Beehive Forum Change Log (Generated: Sat, 14 Apr 2012 13:34:04)
 
-Author: decoyduck
-Date: Sun, 05 Feb 2012 12:27:58
+Author: Matt Beale
+Date: Sun, 08 Apr 2012 09:31:36
 -----------------------
-Fixed:   SQL error in upgrade script.
+Added:   bh_git_log_parse.php for parsing git-log output into MySQL database for changelog
+         generation.
+Fixed:   Undefined index SERVER_PROTOCOL caused by error handler triggering in non-HTTP execution
+         mode.
 
-
-Date: Sun, 05 Feb 2012 10:43:49
------------------------
-Changed: Increased height of select boxes on mobile display.
-
-
-Date: Sat, 04 Feb 2012 13:34:39
------------------------
-Fixed:   Several support scripts were defining functions that were already defined or calling
-         functions but not including required files.
-
-
-Date: Sun, 29 Jan 2012 15:33:50
------------------------
-Changed: Updated bh_check_dependencies.php to work with Linux path separator.
-
-
-Date: Sun, 29 Jan 2012 12:55:27
------------------------
-Changed: Updated bh_check_styles.php to support mobile.css and put selectors on new lines.
-
-
-Date: Tue, 24 Jan 2012 20:02:14
------------------------
-Fixed:   Missing dependency in format.inc.php.
-
-
-Date: Sun, 22 Jan 2012 15:49:17
------------------------
-Changed: Mobile mode "Enabled with auto-line-breaks" now reads "Auto" to save space.
-
-
-Date: Sat, 21 Jan 2012 17:11:47
------------------------
-Changed: Simplified the HTML created for Youtube videos.
-
-
-Date: Mon, 16 Jan 2012 20:53:06
------------------------
-Changed: Added margin to Logon input containers to stop the input fields overflowing the box.
-
-
-Date: Mon, 16 Jan 2012 20:29:45
------------------------
-Fixed:   Select boxes look broken on Android ICS. Fixed by removing border-radius from them.
-
-
-Date: Sun, 08 Jan 2012 19:55:41
------------------------
-Changed: Duplicate maximum-scale option from viewport meta tag was preventing some mobile browsers
-         from zooming in on Beehive's mobile view.
-
-
-Date: Mon, 02 Jan 2012 16:00:49
------------------------
-Changed: Plumbed the Imagemagick functionality into Default Forum Settings.
-
-
-Date: Sat, 31 Dec 2011 16:21:14
------------------------
-Changed: Sync'd Mobile style changes across different colour themes.
-
-
-Date: Sat, 31 Dec 2011 16:03:53
------------------------
-Fixed:   Mobile Forums page was largely unstyled.
-
-
-Date: Fri, 30 Dec 2011 11:03:35
------------------------
-Fixed:   get_request_uri was including webtag from $_GET even if $include_webtag was set to false.
-
-
-Date: Thu, 29 Dec 2011 17:09:12
------------------------
-Changed: html_get_forum_uri $append_path argument no longer needs initial directory separator.
-
-
-Date: Tue, 27 Dec 2011 19:52:25
------------------------
-Fixed:   Guest Error logon button didn't display logon page, just sent you around in a loop.
-
-
-Date: Thu, 22 Dec 2011 19:05:24
------------------------
-Fixed:   Spoiler tag within spoiler tag didn't render correctly.
-
-
-Date: Wed, 21 Dec 2011 22:17:34
------------------------
-Fixed:   Changed paths to content to allow fully encrypted SSL connections to beehiveforum.co.uk
-
-
-Date: Tue, 20 Dec 2011 21:46:31
------------------------
-Fixed:   Incorrect question array index in poll_get_default_questions_array().
-
-
-Date: Mon, 19 Dec 2011 19:00:56
------------------------
-Fixed:   tidy_html stripping paragraph tags messing with auto line break detection.
-
-
-Date: Mon, 12 Dec 2011 20:35:43
------------------------
-Fixed:   Recent Messages thread titles were squashed to the left if a thread with a verbose date was
-         shown.
-
-
-Date: Sun, 11 Dec 2011 21:12:53
------------------------
-Fixed:   Google+, Twitter and Facebook JS was included even if you disabled the option in My
-         Controls.
-
-
-Date: Tue, 29 Nov 2011 19:16:22
------------------------
-Fixed:   TinyMCE Youtube plugin didn't allow shorter URLs without http://
-
-
-Date: Mon, 28 Nov 2011 22:41:51
------------------------
-Changed: Updated Uservoice widget code.
-
-
-Date: Mon, 28 Nov 2011 22:20:29
------------------------
-Fixed:   Undefined index USER_PERM_COUNT in perm_check_folder_permissions.
-
-
-Date: Mon, 28 Nov 2011 21:28:10
------------------------
-Fixed:   Javascript trim() method not working on IE8.
-
-
-Date: Fri, 25 Nov 2011 23:24:01
------------------------
-Changed: Moved default folder perms back into FOLDER table.
-
-
-Date: Mon, 21 Nov 2011 20:54:16
------------------------
-Fixed:   Only show approved forum listing entries.
-
-
-Date: Mon, 21 Nov 2011 20:41:14
------------------------
-Added:   Email notification when Forum listing is added.
-
-
-Date: Mon, 21 Nov 2011 20:12:37
------------------------
-Fixed:   Broken link to styles.css in header.php
-
-
-Date: Sun, 20 Nov 2011 18:11:43
------------------------
-Fixed:   Entering incorrect username or password bounced to logon page without showing error
-         message.
-
-
-Date: Sun, 20 Nov 2011 17:41:33
------------------------
-Added:   Winter logo to top.php during December and January.
-
-
-Date: Sun, 20 Nov 2011 14:54:59
------------------------
-Added:   Screenshot gallery added to Beehive site.
-
-
-Date: Fri, 18 Nov 2011 21:37:21
------------------------
-Fixed:   Guest account requesting ajax.php serve registered user content if the page is cached.
-
-
-Date: Sun, 13 Nov 2011 12:03:32
------------------------
-Fixed:   Invalid page query argument in pm_messages.php caused page to incorrectly display all
-         messages without pagination.
-
-
-Date: Sat, 12 Nov 2011 19:02:31
------------------------
-Fixed:   Broken FAQ on website.
-
-
-Date: Sat, 12 Nov 2011 19:01:08
------------------------
-Changed: Removed references to beehiveforum.net and replaced them with beehiveforum.co.uk
-
-
-Date: Thu, 10 Nov 2011 12:51:54
------------------------
-Changed: Call session_update_user_time() after updating SESSION table with new time.
-
-
-Date: Tue, 08 Nov 2011 18:03:44
------------------------
-Fixed:   display.php was wrongly limiting the message text length.
-
-
-Date: Sun, 06 Nov 2011 20:46:20
------------------------
-Changed: Call forum_update_last_visit() before session_update_user_time().
-
-
-Date: Sat, 05 Nov 2011 16:01:06
------------------------
-Changed: Trying some different code for USER_TIME_TOTAL calculation.
-
-
-Date: Sun, 30 Oct 2011 16:33:12
------------------------
-Changed: Clarification on the uploading of new files to indicate that forumtemp isn't strictly
-         necessary.
-
-
-Date: Sun, 30 Oct 2011 16:22:51
------------------------
-Changed: Updated dependencies. Increased minimum PHP version to 5.2.1.
-
-
-Date: Thu, 27 Oct 2011 20:21:14
------------------------
-Fixed:   Undefined variable $file_time in cache.inc.php
-
-
-Date: Thu, 27 Oct 2011 20:12:49
------------------------
-Fixed:   Undefined variable $remote_etag in cache.inc.php.
-
-
-Date: Thu, 27 Oct 2011 19:31:36
------------------------
-Changed: Removed manual cache checking from get_attachment.php and use cache_check_last_modified().
-
-
-Date: Thu, 27 Oct 2011 19:05:38
------------------------
-Fixed:   Incorrect arguments to compare_original in create_poll.php.
-
-
-Date: Mon, 24 Oct 2011 18:59:00
------------------------
-Fixed:   Incorrect use of html_get_forum_file_path in html_get_user_style_path. Should be using
-         style_exists.
-
-
-Date: Fri, 21 Oct 2011 19:56:15
------------------------
-Fixed:   Warning about public ballot and horizontal graphs when previewing poll.
-
-
-Date: Tue, 18 Oct 2011 20:25:17
------------------------
-Fixed:   The default_style forum setting was set to Default instead of default.
-
-
-Date: Fri, 14 Oct 2011 19:35:18
------------------------
-Changed: html_style_image now uses html_get_user_style_path to get path to user style.
-
-
-Date: Thu, 13 Oct 2011 18:01:00
------------------------
-Fixed:   Send cache headers with existing Modified-Since header if it is newer than the calculated
-         time.
-
-
-Date: Wed, 12 Oct 2011 21:14:06
------------------------
-Fixed:   When mysqli_connect fails due to server uncontactable, we would try to use db_error() which
-         wouldn't work.
-
-
-Date: Mon, 03 Oct 2011 18:03:05
------------------------
-Changed: format_filesize now checks on KB/MB boundary and converts to KiB/MiB, resulting in 0.99MiB
-         for a 1020K file.
-
-
-Date: Mon, 03 Oct 2011 17:27:03
------------------------
-Fixed:   Undefined constants attachments_delete in admin_viewlog.php
-
-
-Date: Sun, 02 Oct 2011 10:38:01
------------------------
-Changed: iconv calls now use both //TRANSLIT and //IGNORE. This will probably trash non-UTF8
-         characters.
-
-
-Date: Sat, 01 Oct 2011 18:11:46
------------------------
-Fixed:   Undefined index PID when post doesn't have any content after fixhtml runs.
-
-
-Date: Thu, 29 Sep 2011 20:27:59
------------------------
-Changed: Increased width of Thread Options page and tidied it up a bit.
-
-
-Date: Tue, 27 Sep 2011 17:13:24
------------------------
-Fixed:   Calls to htmlentities should all be going through htmlentities_array to ensure UTF-8.
-
-
-Date: Sun, 25 Sep 2011 10:27:05
------------------------
-Fixed:   Undefined variables in display.php preventing Guests from using print option.
-
-
-Date: Thu, 22 Sep 2011 18:26:06
------------------------
-Changed: SQL queries changed to use COUNT(*) to allow use of index.
-
-
-Date: Wed, 21 Sep 2011 19:36:22
------------------------
-Changed: Cache checking queries modified to only use CREATED and MODIFIED from THREAD table.
-
-
-Date: Tue, 20 Sep 2011 20:03:33
------------------------
-Changed: Hide next 50 threads link if the thread list query returns less than 50 threads (assumes
-         that is all there is)
-
-
-Date: Mon, 19 Sep 2011 20:19:11
------------------------
-Changed: Removed SQL_CALC_FOUND_ROWS from thread list queries.
-
-
-Date: Sat, 17 Sep 2011 20:23:03
------------------------
-Fixed:   Sort order of users wasn't working with peer nicknames (fix #4)
-
-
-Date: Sat, 17 Sep 2011 19:51:33
------------------------
-Fixed:   Sort order of users wasn't working with peer nicknames (fix #3)
-
-
-Date: Sat, 17 Sep 2011 19:49:46
------------------------
-Fixed:   Sort order of users wasn't working with peer nicknames (fix #2)
-
-
-Date: Sat, 17 Sep 2011 19:42:55
------------------------
-Fixed:   Bots with SID matching active user UID would force the user to not show in the active user
-         list.
-
-
-Date: Sat, 17 Sep 2011 16:56:59
------------------------
-Fixed:   Broken AND OR clause meaning the ban check expiry only worked on email address.
-
-
-Date: Sat, 17 Sep 2011 08:46:06
------------------------
-Changed: Added quick navigation links to the right side of messages too.
-
-
-Date: Tue, 13 Sep 2011 15:23:59
------------------------
-Fixed:   Mobile mode poll vote form not setting checkboxes correctly.
-
-
-Date: Tue, 13 Sep 2011 14:35:04
------------------------
-Fixed:   Results button missing on multi-vote poll that you have already voted on.
-
-
-Date: Tue, 13 Sep 2011 14:16:26
------------------------
-Fixed:   Revert changes to checkboxes and radio buttons in poll voting form.
-
-
-Date: Tue, 13 Sep 2011 13:59:51
+Date: Fri, 06 Apr 2012 16:54:12
 -----------------------
-Fixed:   Revert changes to checkboxes and radio buttons in poll voting form.
+Changed: Remove some more really old files that we don't need.
 
-
-Date: Tue, 13 Sep 2011 12:58:44
------------------------
-Changed: BH_INSTALL_NO_WARN is now a more generic BEEHIVE_DEVELOPER_MODE used by lots of things,
-         most notably the error handler.
-
-
-Date: Sat, 10 Sep 2011 09:00:54
------------------------
-Fixed:   Undefined index action in ajax.php.
-
-
-Date: Fri, 09 Sep 2011 14:43:50
------------------------
-Fixed:   Undefined index caused by reference to $poll_data['CONTENT']
-
-
-Date: Fri, 09 Sep 2011 13:43:10
------------------------
-Changed: Prevent allowing multiple option selection when using drop-down lists.
-
-
-Date: Fri, 09 Sep 2011 11:14:24
------------------------
-Fixed:   Display of messages on display.php wasn't the same as messages.php.
-
-
-Date: Fri, 09 Sep 2011 09:26:27
------------------------
-Added:   Missing add.png for each style.
-
-
-Date: Fri, 09 Sep 2011 08:28:27
------------------------
-Changed: Updated styles to match default.
-
-
-Date: Fri, 09 Sep 2011 08:26:25
------------------------
-Fixed:   Undefined variable $admin_email when performing an upgrade
-
-
-Date: Fri, 09 Sep 2011 07:52:39
------------------------
-Changed: Updated Mobile mode to use new Poll code.
-
-
-Date: Wed, 07 Sep 2011 21:40:11
------------------------
-Fixed:   Removed broken poll vote header stuff on display.php.
-
-
-Date: Wed, 07 Sep 2011 19:08:08
------------------------
-Fixed:   Random vote generation on create_poll.php wasn't working.
-
-
-Date: Tue, 06 Sep 2011 20:36:44
------------------------
-Fixed:   Missing permissions checks on close_poll.php and edit_poll.php allowed anyone to edit /
-         close a poll!
-
-
-Date: Mon, 05 Sep 2011 22:17:32
+Date: Fri, 06 Apr 2012 16:50:51
 -----------------------
-Changed: ATTACHMENTS_DELETE constant not being in capitals.
+Changed: Remove some really old files that we don't need any more.
+Changed: Increased version number to 1.2.0.
 
-
-Date: Mon, 05 Sep 2011 19:33:02
------------------------
-Changed: Some more changes towards new poll schema.
-
-
-Date: Sun, 04 Sep 2011 21:43:49
+Date: Tue, 03 Apr 2012 19:16:56
 -----------------------
-Changed: Even more new poll schema gubbins. Edit Poll page displays, but is bugged and won't save or
-         preview.
+Changed: Added chat (AjaxChat) directory to .gitignore
+Fixed:   Failure redirecting to installer if config.inc.php missing due to trying to check MySQL
+         version.
+Fixed:   Disable HTTP caching if headers already sent.
+Fixed:   Error Handler causing problems if gzip handler doesn't exist (3rd party integration only)
 
-
-Date: Sat, 03 Sep 2011 21:30:48
------------------------
-Changed: Some more Poll changes. Polls now validate and post correctly. Edit not working.
-
-
-Date: Sat, 03 Sep 2011 14:57:36
+Date: Sun, 25 Mar 2012 08:20:00
 -----------------------
-Changed: More work on new poll table schema. All existing polls should display. Still not possible
-         to create new polls or edit existing ones.
-
+Fixed:   Initial page request fails to retrieve session due to failure to return session data from
+         session_restore().
 
-Date: Sat, 03 Sep 2011 08:51:27
+Date: Thu, 22 Mar 2012 20:34:30
 -----------------------
-Changed: New Public Ballot code now with percentages. Need to add Questions to the display
-         somewhere.
+Changed: Removed logon_perform_auto function and implement functionality directly in session_check.
 
-
-Date: Fri, 02 Sep 2011 21:30:00
+Date: Mon, 19 Mar 2012 21:28:56
 -----------------------
-Fixed:   db_query not passing db_errno into exception code when query fails.
-
+Fixed:   Missing filename for english.dic in install_import_dictionary().
+Fixed:   Incorrect path to jQuery, still referencing 1.4.1 in installer.
+Changed: Use try catch blocks instead of if else checks and error suppressors in installer.
+Changed: Disable caching in installer even though it should never cache.
+Changed: Readded website directory to .gitignore.
 
-Date: Tue, 30 Aug 2011 18:58:58
+Date: Sat, 17 Mar 2012 14:06:26
 -----------------------
-Fixed:   Error Handler was broken if connection to MySQL server failed.
+Changed: IPv6 support using filter_var and increasing the column sizes in the database.
+Changed: Replaced IP address in Post menu with text "Ban IP Address"
 
-
-Date: Mon, 29 Aug 2011 18:58:51
+Date: Fri, 16 Mar 2012 20:23:36
 -----------------------
-Changed: Changed Poll code to support new schema (not yet finalised).
-
+Changed: Removed years old reference to CVS in constants.inc.php.
+Changed: Path to forumites gallery changed example code changed.
 
-Date: Sat, 27 Aug 2011 20:12:09
+Date: Fri, 16 Mar 2012 20:09:27
 -----------------------
-Changed: New Create Poll page (WIP)
+Changed: Update .gitignore to exclude full development environment set-up.
 
-
-Date: Sun, 21 Aug 2011 12:00:59
+Date: Wed, 14 Mar 2012 20:17:08
 -----------------------
-Fixed:   Already logged in user couldn't change password if they logged in prior to password
-         encryption changes.
-
+Fixed:   Incorrect use of thread_get_folder result causing problems in PHP 5.4.
 
-Date: Sat, 20 Aug 2011 21:20:20
+Date: Sat, 10 Mar 2012 16:44:58
 -----------------------
-Changed: Public Ballot results so they're display on a new row below the result details.
+Fixed:   Empty thread titles when folder prefix is NULL.
+Fixed:   Missing semi-colon in poll.js breaking IE create_poll.php.
 
-
-Date: Sat, 20 Aug 2011 15:18:56
+Date: Thu, 08 Mar 2012 18:56:51
 -----------------------
-Changed: Public Ballots can now only be created with horizontal graph.
+Fixed:   Call to deprecated function html_get_favicon() in search.inc.php.
+Changed: Added config-dev.inc.php to .gitignore.
 
-
-Date: Sat, 20 Aug 2011 15:15:03
+Date: Tue, 06 Mar 2012 21:43:30
 -----------------------
-Changed: Implemented poll display changes from Mobile view into Full view.
-
+Changed: Cleaned-up .gitignore.
 
-Date: Fri, 19 Aug 2011 22:59:33
+Date: Sun, 04 Mar 2012 21:46:38
 -----------------------
-Changed: Removed OLD_PASSWD check and derive the value from SALT column instead.
+Changed: Removed SVN Revision tags from files. Git doesn't do them. Added .gitignore file.
 
-
-Date: Wed, 17 Aug 2011 19:03:49
+Date: Sun, 04 Mar 2012 18:09:37
 -----------------------
-Changed: Replaced Password hashing with one way per-user salted encryption. Requires PHP crypt
-         support.
-
+Changed: Correcting file permissions after svn2git run.
 
-Date: Mon, 15 Aug 2011 19:28:12
+Date: Sun, 04 Mar 2012 14:01:25
 -----------------------
-Changed: Allow logon_perform_auto() on all scripts except logon, logout.
+Fixed:   SQL was completely wrong and not returning expected results always resulting in folder
+         permissions being used.
 
-
-Date: Mon, 15 Aug 2011 19:19:51
+Date: Sat, 03 Mar 2012 16:29:34
 -----------------------
-Fixed:   Untranslated string "View Style"
-
+Added:   Experimental stopforumspam.com support.
+Fixed:   Shutdown Error handler wasn't correctly.
 
-Date: Tue, 09 Aug 2011 17:28:05
+Date: Wed, 29 Feb 2012 08:11:18
 -----------------------
-Fixed:   "Wait..." text not working on Search button when clicked.
+Fixed:   Undefined variable $post_html when editing a post or PM.
 
-
-Date: Tue, 02 Aug 2011 20:53:50
+Date: Tue, 28 Feb 2012 21:02:32
 -----------------------
-Fixed:   format_date not obeying DST and timezone settings.
-
+Fixed:   Editing a post would still trash HTML paragraphs in the signature if the post itself didn't
+         contain paragraphs.
 
-Date: Tue, 02 Aug 2011 20:18:24
+Date: Tue, 28 Feb 2012 18:52:00
 -----------------------
-Fixed:   Flash tag wasn't correctly setting it's param children as single-tags which caused them to
-         get clobbered.
+Changed: Revert change to MessageTextParse that was trying to determine HTML mode from the post
+         body.
+Fixed:   Teh Forum CSS had incorrect font sizes and margins.
 
-
-Date: Sat, 23 Jul 2011 12:30:48
+Date: Fri, 24 Feb 2012 12:11:19
 -----------------------
-Fixed:   Added table SPHINX_SEARCH_ID to list of tables used by Beehive for collision detection in
-         installer.
+Fixed:   Word Filter not applying to meta keywords, description and title.
+Changed: Removed thread_format_prefix and use CONCAT in SQL queries.
 
-
-Date: Thu, 21 Jul 2011 17:34:00
+Date: Sun, 19 Feb 2012 14:40:53
 -----------------------
-Added:   html_style_image now has optional arguments $allow_cdn and $use_full_path which it passes
-         to html_get_forum_uri.
-
+Changed: Some more style changes on Teh Forum gallery (attempt #4)
 
-Date: Wed, 20 Jul 2011 17:32:27
+Date: Sun, 19 Feb 2012 14:33:03
 -----------------------
-Fixed:   PM link on Mobile version didn't work unless you visited Inbox first.
+Changed: Some more style changes on Teh Forum gallery (attempt #3)
 
-
-Date: Fri, 15 Jul 2011 12:22:47
+Date: Sun, 19 Feb 2012 14:30:35
 -----------------------
-Fixed:   Spacing around posts not in message list wasn't correct.
-
+Changed: Some more style changes on Teh Forum gallery.
 
-Date: Fri, 15 Jul 2011 09:48:35
+Date: Sun, 19 Feb 2012 14:09:09
 -----------------------
-Changed: Detect main frame-set title from thread title if msg URL query var is set.
+Changed: Added a few more user-agents to mobile mode detection list.
+Changed: Some style changes on Teh Forum gallery.css.
 
-
-Date: Tue, 12 Jul 2011 18:45:58
+Date: Wed, 15 Feb 2012 22:29:06
 -----------------------
-Changed: Plumbed in the user preference to hide the Social buttons.
+Fixed:   Broken meta tag causing Android Chrome to break (but not stock browser?!)
 
-
-Date: Tue, 12 Jul 2011 14:54:59
+Date: Tue, 14 Feb 2012 21:38:57
 -----------------------
-Changed: Social links now always point to post 1 of the thread.
-
+Changed: Added mime_content_type support if function is available to aid attachment mine-type
+         discovery.
 
-Date: Tue, 12 Jul 2011 14:52:19
+Date: Tue, 14 Feb 2012 20:12:46
 -----------------------
-Fixed:   Include URL of index.php instead of the allowing the social buttons to determine the link.
+Fixed:   Incorrect h3 colour on mobile classes.
+Fixed:   Incorrect colour on poll_accordian class.
+Fixed:   Missing webtag on Mobile mode top banner links.
 
-
-Date: Tue, 12 Jul 2011 14:02:20
+Date: Mon, 13 Feb 2012 19:03:25
 -----------------------
-Added:   Social Network Share links to top right of each thread.
-
+Fixed:   Removed device-height argument from Mobile Mode meta viewport. Set minimum scale to 1.0.
+Fixed:   Sphinx Search ID calculation was miles off.
+Changed: Increased line height on thread list to make it easier for people with big thumbs.
 
-Date: Sun, 10 Jul 2011 10:47:34
+Date: Sun, 12 Feb 2012 14:05:26
 -----------------------
-Fixed:   Pseudo HTML tags were being stripped of their invalid attributes, i.e. <does something>
-         became <does>
+Fixed:   Mobile mode support for header_redirect on Microsoft IIS.
+Changed: Some H2 tags are now H3 on mobile mode pages.
+Changed: Increased font-size on Mobile pages.
 
-
-Date: Sun, 10 Jul 2011 09:54:48
+Date: Fri, 10 Feb 2012 20:26:18
 -----------------------
-Fixed:   Workaround for broken Sphinx search if the keywords contain --.
+Fixed:   Mobile mode nav links started at zero when viewing from post #10 onwards.
+Fixed:   Signature HTML was stripping paragraphs regardless of HTML detection in post.
 
-
-Date: Sat, 09 Jul 2011 16:21:19
+Date: Mon, 06 Feb 2012 15:03:06
 -----------------------
-Added:   Optional (default: 3306) MySQL server port installer and config.inc.php option added by
-         request.
-
+Fixed:   Splitting or merging threads incorrectly calculated SEARCH_ID for the new posts, resulting
+         in empty target thread.
 

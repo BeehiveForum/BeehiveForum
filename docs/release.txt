@@ -1,5 +1,32 @@
 Beehive Forum Release Notes
 
+What's new in 1.2.0 (Released 15th April 2012)
+====================
+
+- Changes from 1.1.0
+
+    - We got the beehiveforum.net domain back. Hooray!
+
+    - Added IPv6 support.
+    
+    - Fixed merging and splitting threads created empty
+      target threads and left the source threads
+      locked.
+      
+    - Some PHP 5.4.0 fixes.
+    
+    - Experimental StopForumSpam integration.
+    
+    - Fixed editing posts would strip some HTML in 
+      signature even if HTML was enabled.
+    
+    - Word Filter wasn't being applied to HTML meta
+      keywords, description and title.
+
+    - We've switched to GIT for version control.
+      Find us at github.com/beehiveforum
+
+
 What's new in 1.1.0 (Released 5th February 2012)
 ====================
 

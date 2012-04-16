@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 1.2.0 (Released 15th April 2012)
+What's new in 1.2.0 (Released 16th April 2012)
 ====================
 
 - Changes from 1.1.0

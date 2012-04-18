@@ -95,8 +95,6 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     user_increment_post_count($fuid);
 
-    sphinx_search_update_index($tid, $new_pid);
-
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
         admin_send_post_approval_notification($fid);
     }
@@ -567,9 +565,6 @@ function post_update($fid, $tid, $pid, $content)
         if (!db_query($sql, $db_post_update)) return false;
     }
 
-    // Update Swiftsearch index.
-    sphinx_search_update_index($tid, $pid);
-
     return true;
 }
 
@@ -632,9 +627,6 @@ function post_delete($tid, $pid)
     $sql.= "AND PID = '$pid'";
 
     if (!db_query($sql, $db_post_delete)) return false;
-
-    // Update Swiftsearch index.
-    sphinx_search_delete_index($tid, $pid);
 
     return true;
 }

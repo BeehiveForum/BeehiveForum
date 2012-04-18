@@ -484,8 +484,6 @@ function thread_change_folder($tid, $new_fid)
 
     if (!db_query($sql, $db_thread_set_closed)) return false;
 
-    sphinx_search_update_index($tid);
-
     return true;
 }
 
@@ -506,8 +504,6 @@ function thread_change_title($tid, $new_title)
     $sql.= "WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_thread_change_title)) return false;
-
-    sphinx_search_update_index($tid);
 
     return true;
 }
@@ -822,9 +818,6 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     // Undelete the thread.
     thread_undelete($new_tid);
 
-    // Index our new thread with Sphinx
-    sphinx_search_update_index($new_tid);
-
     // Return the admin log data.
     return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
 }
@@ -1098,8 +1091,6 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
     thread_set_closed($new_tid, ($thread_data['CLOSED'] > 0));
-
-    sphinx_search_update_index($new_tid);
 
     return array($tid, $spid, $new_tid, $thread_new['TITLE']);
 }

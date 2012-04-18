@@ -326,7 +326,7 @@ class captcha {
 
     protected function is_font($file)
     {
-        return (mb_substr($file, -3) == 'ttf');
+        return (mb_substr(mb_strtolower($file), -3) == 'ttf');
     }
 
     protected function generate_public_key()

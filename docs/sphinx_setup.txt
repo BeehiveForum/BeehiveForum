@@ -1,124 +1,199 @@
 0. Requirements
 ================
 
-To enable searching via Sphinx on your Beehive Forum you are going to need:
+To enable searching via Sphinx on your Beehive Forum you are going 
+to need:
 
- - Sphinx Search version 2.0.1-beta.
- - Beehive Forum 1.1.0.
- - The ability to edit sphinx.conf and add new indexes.
+ - Sphinx Search version 2.0.4
+ - Beehive Forum 1.2.0.
+ - The ability to edit sphinx.conf and add new sources and indexes.
 
 
 1. Install Sphinx
 =================
 
-Beehive Forum requires Sphinx 2.0.1-beta or newer. If your package manager
-doesn't provide a new enough version of Sphinx (or your OS doesn't provide
-a package manager) you can download the source and / or binaries from:
+Beehive Forum requires Sphinx 2.0.4 or newer. If your package manager
+doesn't provide a new enough version of Sphinx (or your OS doesn't 
+provide a package manager) you can download the source and / or 
+binaries from:
 
-  http://sphinxsearch.com/downloads/beta/
+    http://sphinxsearch.com/downloads/release/    
 
-Once you have downloaded Sphinx follow the instructions for installing it /
-compiling it for your OS.
+Once you have downloaded Sphinx follow the instructions for 
+installing it / compiling it for your OS.
 
 
 2. Setting up Sphinx
 ====================
 
-To make Beehive work with Sphinx you need to enable MySQL protocol support,
-hence the requirement for 2.0.1-beta. To do this you need to ensure your
-sphinx.conf contains a listen directive which reads:
+To make Beehive work with Sphinx you need to enable MySQL protocol 
+support, hence the requirement for 2.0.4. To do this you need to 
+ensure your sphinx.conf contains a listen directive which reads:
 
   listen = 9306:mysql41
 
-Port 9306 is what Sphinx will listen on for MySQL protocol connections. You 
-can change this if you want, but don't change it to the same port as the 
-real MySQL as that would be really, really silly.
+Port 9306 is what Sphinx will listen on for MySQL protocol 
+connections. You can change this if you want, but don't change it 
+to the same port as the real MySQL as that would be really, really
+silly.
 
-As an example, here is the entire searchd section of the sphinx.conf as used
-on Teh Forum:
-
+First thing you need to do is set up the global 'searchd' section
+of the sphinx.conf. Below you will find an example which you can use
+as a base. If you plan to customise the sphinx.conf, please ensure it
+contains the required listen directive otherwise your Beehive Forum 
+will be unable to communicate with Sphinx.
 
     searchd
     {
-        listen              = 9312
-        listen              = 9306:mysql41
-
-        log                 = /var/log/searchd.log
-
-        query_log           = /var/log/query.log
+        listen              = 127.0.0.1:9312
+        listen              = 127.0.0.1:9306:mysql41
 
         read_timeout        = 5
-
         client_timeout      = 30
 
         max_children        = 10
-
-        pid_file            = /var/log/searchd.pid
-
         max_matches         = 1000
+        
+        pid_file            = /var/run/searchd.pid
 
         seamless_rotate     = 1
-
         preopen_indexes     = 0
-
         unlink_old          = 1
 
         workers             = threads
     }
+    
 
+3. Creating a Sphinx source
+===========================
 
-In addition to the listen directive changes you also need to create an index
-in Sphinx for your Beehive Forum installation to index it's posts in. The name
-of the index can be whatever you choose, for simplicity sake it is shown here
-as 'beehiveforum'.
+To allow Sphinx to index your Beehive Forum posts you need to create
+a source. This source needs to be set-up so that Sphinx's indexer 
+knows where to find the posts in your Beehive Forum's database.
 
-Again, here is the index section from Teh Forum that you can use as reference:
+Below is an example of suitable source definition for Sphinx. In 
+this example the WEBTAG used is DEFAULT and is used as the prefix for
+each table. If your WEBTAG is different be sure to substitue it here. 
+If you have more than one forum (WEBTAG) you will need to create a
+source for each of them:
 
-
-    index beehiveforum
+    source beehiveforum
     {
-        type              = rt
+        type                = mysql
 
-        path              = /var/data/sphinx/beehive
+        sql_host            = localhost
+        sql_user            = beehiveforum
+        sql_pass            = password
+        sql_db              = beehiveforum
+        sql_port            = 3306
 
-        rt_field          = title
-        rt_field          = content
+        mysql_connect_flags = 32
 
-        rt_attr_uint      = forum
-        rt_attr_uint      = fid
-        rt_attr_uint      = tid
-        rt_attr_uint      = pid
-        rt_attr_uint      = by_uid
-        rt_attr_uint      = from_uid
-        rt_attr_uint      = to_uid
+        sql_query_pre       = SET NAMES utf8
+        sql_query_pre       = SET SESSION time_zone = '+0:00'
 
-        rt_attr_timestamp = created
+        sql_query           = \
+                SELECT DEFAULT_POST.SEARCH_ID AS id, \
+                       COALESCE(DEFAULT_THREAD.TITLE, '') AS title, \
+                       COALESCE(DEFAULT_POST_CONTENT.CONTENT, '') AS content, \
+                       1 AS forum, \
+                       COALESCE(DEFAULT_THREAD.FID, 0) AS fid, \
+                       COALESCE(DEFAULT_THREAD.TID, 0) AS tid, \
+                       COALESCE(DEFAULT_POST.PID, 0) AS pid, \
+                       COALESCE(DEFAULT_THREAD.BY_UID, 0) AS by_uid, \
+                       COALESCE(DEFAULT_POST.FROM_UID, 0) AS from_uid, \
+                       COALESCE(DEFAULT_POST.TO_UID, 0) AS to_uid, \
+                       UNIX_TIMESTAMP(DEFAULT_POST.CREATED) AS created \
+                  FROM DEFAULT_POST \
+            INNER JOIN DEFAULT_POST_CONTENT ON (DEFAULT_POST_CONTENT.TID = DEFAULT_POST.TID AND DEFAULT_POST_CONTENT.PID = DEFAULT_POST.PID) \
+            INNER JOIN DEFAULT_THREAD ON (DEFAULT_THREAD.TID = DEFAULT_POST.TID) \
+            INNER JOIN DEFAULT_FOLDER ON (DEFAULT_FOLDER.FID = DEFAULT_THREAD.FID) \
+                 WHERE DEFAULT_POST.SEARCH_ID IS NOT NULL \
+                   AND DEFAULT_POST.SEARCH_ID >= $start \
+                   AND DEFAULT_POST.SEARCH_ID <= $end
 
-        charset_type      = utf-8
+        sql_query_range    = \
+                SELECT MIN(DEFAULT_POST.SEARCH_ID), \
+                       MAX(DEFAULT_POST.SEARCH_ID) \
+                  FROM DEFAULT_POST \
+            INNER JOIN DEFAULT_POST_CONTENT ON (DEFAULT_POST_CONTENT.TID = DEFAULT_POST.TID AND DEFAULT_POST_CONTENT.PID = DEFAULT_POST.PID) \
+            INNER JOIN DEFAULT_THREAD ON (DEFAULT_THREAD.TID = DEFAULT_POST.TID) \
+            INNER JOIN DEFAULT_FOLDER ON (DEFAULT_FOLDER.FID = DEFAULT_THREAD.FID) \
+                 WHERE DEFAULT_POST.SEARCH_ID IS NOT NULL
 
-        html_strip        = 1
+        sql_attr_uint       = forum
+        sql_attr_uint       = fid
+        sql_attr_uint       = tid
+        sql_attr_uint       = pid
+        sql_attr_uint       = by_uid
+        sql_attr_uint       = from_uid
+        sql_attr_uint       = to_uid
+
+        sql_attr_timestamp  = created
+
+        sql_query_killlist  = \
+                SELECT DEFAULT_POST.SEARCH_ID AS id \
+                  FROM DEFAULT_POST \
+                 WHERE EDITED >= @last_reindex
+    }
+    
+
+4. Creating a Sphinx Index
+==========================    
+
+In addition to the searchd and source definitions you also need to 
+create an index. An index is where Sphinx will store the post data 
+that Beehive will search. Once again, here is the index section 
+from Teh Forum that you can use as reference:
+
+    index tehforum
+    {
+        type                = plain
+        
+        source              = tehforum
+
+        path                = /var/lib/sphinxsearch/data/tehforum
+
+        rt_field            = title
+        rt_field            = content
+
+        rt_attr_uint        = forum
+        rt_attr_uint        = fid
+        rt_attr_uint        = tid
+        rt_attr_uint        = pid
+        rt_attr_uint        = by_uid
+        rt_attr_uint        = from_uid
+        rt_attr_uint        = to_uid
+
+        rt_attr_timestamp   = created
+
+        charset_type        = utf-8
+
+        html_strip          = 1
     }
 
+Please feel free to change the path directive, this is where Sphinx 
+will store the physical index files, but please, please don't change
+anything else about the index definition, except its name of course. 
+If you do change anything your Beehive Forum may not be able to 
+communicate correctly with Sphinx.
 
-Please feel free to change the path directive, this is where Sphinx will store
-the physical index files, but please, please don't change anything else about
-the index definition, except its name of course. If you do change anything your
-Beehive Forum may not be able to communicate with Sphinx.
-
-Once Sphinx is all set up all that is left to do is to start the Sphinx searchd
-daemon / service as per the Sphinx documentation for your OS.
+Once Sphinx is all set up all that is left to do is to start the 
+Sphinx searchd daemon / service as per the Sphinx documentation 
+for your OS.
 
 
-3. Enabling Sphinx support in Beehive Forum
+5. Enabling Sphinx support in Beehive Forum
 ===========================================
 
-To enable Sphinx support in your Beehive Forum, simply visit the Global Forum 
-Settings of your Beehive Forum and look for the Sphinx Search Integration section.
-Here you will find 3 text fields where you can enter the Sphinx index name you
-created in your sphinx.conf and the Sphinx server address and port number.
+To enable Sphinx support in your Beehive Forum, simply visit the 
+Global Forum Settings of your Beehive Forum and look for the Sphinx 
+Search Integration section. Here you will find 3 text fields where 
+you can enter the Sphinx index name you created in your sphinx.conf 
+and the Sphinx server address and port number.
 
-Additionally there is a set of radio buttons to quickly and easily enable or 
-disable the integration.
+Additionally there is a set of radio buttons to quickly and easily 
+enable or disable the integration.
 
 Once you've entered the values, scroll to the bottom and click save.
 
@@ -126,39 +201,39 @@ Once you've entered the values, scroll to the bottom and click save.
 4. Filling the Sphinx index
 ===========================
 
-Once Sphinx support is enabled on your Beehive Forum any new threads and posts 
-will be automatically indexed. However, any threads and posts created before the 
-switch-on will not be indexed and thus will be unsearchable.
+The first time you try to start Sphinx it will complain that the 
+index cannot be loaded. It is therefore neccesary to run the indexer 
+tool with the name of the index to populate.
 
-If you're enabling Sphinx for an existing well established Beehive Forum, you'll
-probably be want to index all the old threads and posts and not just new ones.
-Fortunately, we've made this easy by the inclusion of a PHP script you can run
-from the shell named sphinx_update.php
+e.g.: indexer beehiveforum
 
-You will find this script in the main forum folder. To run it simply use the CLI
-version of PHP from a shell / Command Prompt, i.e.:
+If you have named your index differently, substitute it in the 
+command. 
 
-    php sphinx_update.php
+To enable periodic updating of the index you will need to add the 
+indexer command to your crontab or scheduled tasks otherwise the 
+index will be out of date.
 
-This script may take quite a while to run, if you're on Linux it is recommended
-you make use of screen (or byobu) to run this in a detatachable window that you
-can come back to later to check on.
+If you have more than one index you will need to run the command 
+and add relevant crontab / scheduler entries for each of them.
 
-Note that you will only need to run this script once. After it is run, new posts 
-will automatically be added to the index. If they don't then something has gone
-wrong with your configuration or you've found bug.
+Note: Prior to Beehive Forum 1.2.1, we used a real-time Sphinx index,
+but this caused problems with performance on heavilly visited sites.
+Now we recommend running the indexer periodically to have it update
+the indexes.
 
 
 5. Help. It didn't work!
 ========================
 
-Don't panic! Pop over to Teh Forum (http://www.tehforum.co.uk) and ask for help. 
-Please help us to help you by indicating any error messages you received and how 
-far along this guide you've manage to get. 
+Don't panic! Pop over to Teh Forum (http://www.tehforum.co.uk) and
+ask for help. Please help us to help you by indicating any error 
+messages you received and how far along this guide you've manage 
+to get. 
 
-Please be paitient in getting a reply, we'll try to get to you ASAP, but please 
-be aware that we don't monitor the forum 24/7 (it's our hobby, not our job), so 
-you might have to wait for someone to reply.
+Please be paitient in getting a reply, we'll try to get to you ASAP,
+but please be aware that we don't monitor the forum 24/7 (it's our 
+hobby, not our job), so you might have to wait for someone to reply.
 
-If you don't get a reply without 24 hours then you can feel free to bump the
-thread.
+If you don't get a reply without 24 hours then you can feel free to
+bump the thread.

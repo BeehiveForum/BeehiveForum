@@ -35,6 +35,10 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 function sfs_check_banned($ip_address = null, $username = null, $email = null)
 {
+    if (forum_get_setting('sfs_enabled', 'N')) {
+        return false;
+    }
+    
     $request = array(
         'f' => 'json',
     );

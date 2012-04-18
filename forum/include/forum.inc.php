@@ -656,7 +656,8 @@ function forum_check_global_setting_name($setting_name)
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled',
                                          'mail_function', 'sendmail_path', 'smtp_server', 'smtp_port', 'smtp_username',
                                          'smtp_password', 'sphinx_search_enabled', 'sphinx_search_host', 'sphinx_search_index',
-                                         'sphinx_search_port', 'use_minified_scripts');
+                                         'sphinx_search_port', 'use_minified_scripts', 'sfs_enabled', 'sfs_api_url',
+                                         'sfs_min_confidence');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }

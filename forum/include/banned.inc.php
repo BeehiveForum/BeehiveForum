@@ -136,13 +136,18 @@ function ban_check($user_sess, $user_is_guest = false)
     if (($user_banned === false) && ($ipaddress = get_ip_address())) {
         
         if ($user_is_guest === false) {
-            $user_banned = sfs_check_banned($ipaddress, $user_sess['LOGON'], $user_sess['EMAIL']);
-        } else {
-            $user_banned = sfs_check_banned($ipaddress);
-        }
+            
+            if (($user_banned = sfs_check_banned($ipaddress, $user_sess['LOGON'], $user_sess['EMAIL']))) {
+                
+                admin_add_log_entry(BAN_HIT_TYPE_SFS, array($ipaddress, $user_sess['LOGON'], $user_sess['EMAIL'], $user_sess['UID']));    
+            }
         
-        if ($user_banned === true) {
-            admin_add_log_entry(BAN_HIT_TYPE_SFS, $user_sess);    
+        } else {
+            
+            if (($user_banned = sfs_check_banned($ipaddress))) {
+                
+                admin_add_log_entry(BAN_HIT_TYPE_SFS, array($ipaddress));
+            }
         }
     }
     

@@ -724,6 +724,7 @@ $lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
 $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '%s'";
 $lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
 $lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
+$lang['sfsbanhit'] = "User '%s' is banned by StopForumSpam. Matched ban data '%s'";
 
 $lang['modifiedpermsforuser'] = "Modified perms for user '%s'";
 $lang['modifiedfolderpermsforuser'] = "Modified folder perms for user '%s'";
@@ -807,6 +808,7 @@ $lang['logonbancheckresults'] = "Logon Ban Check Results";
 $lang['nicknamebancheckresults'] = "Nickname Ban Check Results";
 $lang['emailbancheckresults'] = "Email Ban Check Results";
 $lang['httprefererbancheckresults'] = "HTTP Referer Ban Check Results";
+$lang['sfsbancheckresults'] = "StopForumSpam Ban Check Results";
 
 $lang['removeentriesrelatingtoaction'] = "Remove Entries Relating to Action";
 $lang['removeentriesolderthandays'] = "Remove Entries Older Than (Days)";

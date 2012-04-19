@@ -179,7 +179,8 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
                               BAN_HIT_TYPE_NICK => $lang['nicknamebancheckresults'],
                               BAN_HIT_TYPE_EMAIL => $lang['emailbancheckresults'],
-                              BAN_HIT_TYPE_REF => $lang['httprefererbancheckresults']);
+                              BAN_HIT_TYPE_REF => $lang['httprefererbancheckresults'],
+                              BAN_HIT_TYPE_SFS => $lang['sfsbancheckresults']);
 
 // Column sorting stuff
 if (isset($_GET['sort_by'])) {
@@ -782,6 +783,25 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $action_text = sprintf($lang['refererbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
+                
+            case BAN_HIT_TYPE_SFS:
+            
+                $auto_update = true;
+
+                $index_link = "<a href=\"index.php?webtag=$webtag&amp;final_uri=%s\" target=\"_blank\">%s</a>";
+
+                if (isset($entry_array[3])) {
+
+                    $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
+                    $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[1]);
+
+                }else {
+
+                    $admin_user_link = $lang['guest'];
+                }
+
+                $action_text = sprintf($lang['sfsbanhit'], $admin_user_link, implode("', '", array_slice($entry_array, 0, 3)));
+                break;          
 
             case USER_PERMS_CHANGED:
 

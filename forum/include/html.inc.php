@@ -441,7 +441,7 @@ function html_get_forum_email()
 function html_get_frame_name($basename)
 {
     // Forum URL
-    $forum_uri = html_get_forum_uri(null, true, true);
+    $forum_uri = html_get_forum_uri();
 
     // Get the webtag
     $webtag = get_webtag();
@@ -1253,7 +1253,7 @@ function html_set_cookie($name, $value, $expires = 0)
         if (isset($GLOBALS['cookie_domain']) && strlen(trim($GLOBALS['cookie_domain'])) > 0) {
             $cookie_domain = trim($GLOBALS['cookie_domain']);
         } else {
-            $cookie_domain = html_get_forum_uri(null, false);
+            $cookie_domain = html_get_forum_uri();
         }
 
         // Try and parse the cookie_domain config.inc.php setting.
@@ -1436,18 +1436,11 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_forum_uri($append_path = null, $use_forum_uri = true)
+function html_get_forum_uri($append_path = null)
 {
-    if (($use_forum_uri === true) && ($forum_uri = rtrim(forum_get_global_setting('forum_uri', 'strlen', false), '/'))) {
+    $uri_array = @parse_url($_SERVER['PHP_SELF']);
 
-        $uri_array = @parse_url($forum_uri);
-
-    } else {
-
-        $uri_array = @parse_url($_SERVER['PHP_SELF']);
-
-        $uri_array['path'] = dirname($uri_array['path']);
-    }
+    $uri_array['path'] = dirname($uri_array['path']);
 
     if (!isset($uri_array['scheme'])) {
 

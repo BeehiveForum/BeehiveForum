@@ -127,37 +127,54 @@ function admin_prune_log($remove_type, $remove_days)
 * @param string $sort_dir - Direction to sort the results by
 */
 
-function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC')
+function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED', $sort_dir = 'DESC')
 {
     if (!$db_admin_get_log_entries = db_connect()) return false;
 
     $lang = load_language_file();
 
-    $sort_by_array  = array('CREATED', 'UID', 'ACTION');
+    $group_by_array = array(
+        ADMIN_LOG_GROUP_NONE   => 'ADMIN_LOG.ID',
+        ADMIN_LOG_GROUP_YEAR   => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y')",
+        ADMIN_LOG_GROUP_MONTH  => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m')",
+        ADMIN_LOG_GROUP_DAY    => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d')",
+        ADMIN_LOG_GROUP_HOUR   => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H')",
+        ADMIN_LOG_GROUP_MINUTE => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H%i')",
+        ADMIN_LOG_GROUP_SECOND => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H%i%s')",
+    );
+    
+    $sort_by_array = array('CREATED', 'UID', 'ACTION', 'COUNT');
+    
     $sort_dir_array = array('ASC', 'DESC');
 
     $admin_log_array = array();
 
     if (!is_numeric($offset)) $offset = 0;
 
-    // Ensure offset is positive.
     $offset = abs($offset);
+    
+    if (!isset($group_by_array[$group_by])) $group_by = ADMIN_LOG_GROUP_NONE;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ";
+    $sql.=" ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED, ";
+    $sql.= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED ";
     $sql.= "FROM `{$table_data['PREFIX']}ADMIN_LOG` ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "ORDER BY ADMIN_LOG.$sort_by $sort_dir LIMIT $offset, 10";
+    $sql.= "GROUP BY GROUP_BY, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 

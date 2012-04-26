@@ -644,7 +644,7 @@ function forum_check_global_setting_name($setting_name)
                                          'cache_dir', 'content_delivery_domains', 'forum_desc',  'forum_email', 'forum_keywords',
                                          'forum_name', 'forum_noreply_email', 'forum_rules_enabled', 'forum_rules_message',
                                          'forum_maintenance_function', 'forum_maintenance_schedule', 'forum_timezone',
-                                         'forum_uri', 'pm_system_prune_folders_last_run', 'thread_auto_prune_unread_data_last_run',
+                                         'pm_system_prune_folders_last_run', 'thread_auto_prune_unread_data_last_run',
                                          'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'enable_google_analytics',
                                          'allow_forum_google_analytics', 'google_analytics_code', 'guest_account_enabled',
                                          'guest_show_recent', 'message_cache_enabled', 'messages_unread_cutoff',

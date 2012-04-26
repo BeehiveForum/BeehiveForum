@@ -396,6 +396,15 @@ define('USER_PERMS_CHANGED', 75);
 define('USER_FOLDER_PERMS_CHANGED', 76);
 define('BAN_HIT_TYPE_SFS', 77);
 
+// Admin log grouping
+define('ADMIN_LOG_GROUP_NONE', 0);
+define('ADMIN_LOG_GROUP_YEAR', 1);
+define('ADMIN_LOG_GROUP_MONTH', 2);
+define('ADMIN_LOG_GROUP_DAY', 3);
+define('ADMIN_LOG_GROUP_HOUR', 4);
+define('ADMIN_LOG_GROUP_MINUTE', 5);
+define('ADMIN_LOG_GROUP_SECOND', 6);
+
 // Link viewmode constants
 define('LINKS_VIEW_HIERARCHICAL', 0);
 define('LINKS_VIEW_LIST', 1);

@@ -819,6 +819,18 @@ $lang['failedtopruneadminlog'] = "Failed To Prune Admin Log";
 $lang['successfullyprunedvisitorlog'] = "Successfully Pruned Visitor Log";
 $lang['failedtoprunevisitorlog'] = "Failed To Prune Visitor Log";
 
+$lang['grouplogentries'] = "Group Similar Log Entries";
+
+$lang['count'] = "Count";
+
+$lang['donotgroup'] = "Do Not Group";
+$lang['groupbyyear'] = "Group by Year";
+$lang['groupbymonth'] = "Group by Month";
+$lang['groupbyday'] = "Group by Day";
+$lang['groupbyhour'] = "Group by Hour";
+$lang['groupbyminute'] = "Group by Minute";
+$lang['groupbysecond'] = "Group by Second";
+
 $lang['prunelog'] = "Prune Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------

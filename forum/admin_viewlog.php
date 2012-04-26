@@ -113,98 +113,120 @@ if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 // Types of admin log entries
-$admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
-                              CHANGE_USER_STATUS => $lang['userstatuschanges'],
-                              CHANGE_FORUM_ACCESS => $lang['forumaccesschanges'],
-                              DELETE_ALL_USER_POSTS => $lang['usermasspostdeletion'],
-                              EDIT_THREAD_OPTIONS => $lang['threadtitleedits'],
-                              MOVED_THREADS => $lang['massthreadmoves'],
-                              CREATE_FOLDER => $lang['foldercreations'],
-                              DELETE_FOLDER => $lang['folderdeletions'],
-                              CHANGE_PROFILE_SECT => $lang['profilesectionchanges'],
-                              ADDED_PROFILE_SECT => $lang['profilesectionadditions'],
-                              DELETE_PROFILE_SECT => $lang['profilesectiondeletions'],
-                              CHANGE_PROFILE_ITEM => $lang['profileitemchanges'],
-                              ADDED_PROFILE_ITEM => $lang['profileitemadditions'],
-                              DELETE_PROFILE_ITEM => $lang['profileitemdeletions'],
-                              EDITED_START_PAGE => $lang['startpagechanges'],
-                              CREATED_NEW_STYLE => $lang['forumstylecreations'],
-                              MOVED_THREAD => $lang['threadmoves'],
-                              CLOSED_THREAD => $lang['threadclosures'],
-                              OPENED_THREAD => $lang['threadopenings'],
-                              RENAME_THREAD => $lang['threadrenames'],
-                              DELETE_POST => $lang['postdeletions'],
-                              EDIT_POST => $lang['postedits'],
-                              EDIT_WORD_FILTER => $lang['wordfilteredits'],
-                              CREATE_THREAD_STICKY => $lang['threadstickycreations'],
-                              REMOVE_THREAD_STICKY => $lang['threadstickydeletions'],
-                              END_USER_SESSION => $lang['usersessiondeletions'],
-                              EDIT_FORUM_SETTINGS => $lang['forumsettingsedits'],
-                              LOCKED_THREAD => $lang['threadlocks'],
-                              UNLOCKED_THREAD => $lang['threadunlocks'],
-                              DELETE_USER_THREAD_POSTS => $lang['usermasspostdeletionsinathread'],
-                              DELETE_THREAD => $lang['threaddeletions'],
-                              ATTACHMENTS_DELETE => $lang['attachmentdeletions'],
-                              EDIT_FORUM_LINKS => $lang['forumlinkedits'],
-                              APPROVED_POST => $lang['postapprovals'],
-                              CREATE_USER_GROUP => $lang['usergroupcreations'],
-                              DELETE_USER_GROUP => $lang['usergroupdeletions'],
-                              ADD_USER_TO_GROUP => $lang['usergroupuseraddition'],
-                              REMOVE_USER_FROM_GROUP => $lang['usergroupuserremoval'],
-                              CHANGE_USER_PASSWD => $lang['userpasswordchange'],
-                              ADD_BANNED_IP => $lang['ipaddressbanadditions'],
-                              REMOVE_BANNED_IP => $lang['ipaddressbandeletions'],
-                              ADD_BANNED_LOGON => $lang['logonbanadditions'],
-                              REMOVE_BANNED_LOGON => $lang['logonbandeletions'],
-                              ADD_BANNED_NICKNAME => $lang['nicknamebanadditions'],
-                              REMOVE_BANNED_NICKNAME => $lang['nicknamebanadditions'],
-                              ADD_BANNED_EMAIL => $lang['e-mailbanadditions'],
-                              REMOVE_BANNED_EMAIL => $lang['e-mailbandeletions'],
-                              ADDED_RSS_FEED => $lang['rssfeedadditions'],
-                              EDITED_RSS_FEED => $lang['rssfeedchanges'],
-                              UNDELETE_THREAD => $lang['threadundeletions'],
-                              ADD_BANNED_REFERER => $lang['httprefererbanadditions'],
-                              REMOVE_BANNED_REFERER => $lang['httprefererbandeletions'],
-                              DELETED_RSS_FEED => $lang['rssfeeddeletions'],
-                              UPDATED_BAN => $lang['banchanges'],
-                              THREAD_SPLIT => $lang['threadsplits'],
-                              THREAD_MERGE => $lang['threadmerges'],
-                              ADD_FORUM_LINKS => $lang['forumlinkadditions'],
-                              DELETE_FORUM_LINKS => $lang['forumlinkdeletions'],
-                              EDIT_TOP_LINK_CAPTION => $lang['forumlinktopcaptionchanges'],
-                              DELETE_USER => $lang['userdeletions'],
-                              DELETE_USER_DATA => $lang['userdatadeletions'],
-                              UPDATE_USER_GROUP => $lang['usergroupchanges'],
-                              BAN_HIT_TYPE_IP => $lang['ipaddressbancheckresults'],
-                              BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
-                              BAN_HIT_TYPE_NICK => $lang['nicknamebancheckresults'],
-                              BAN_HIT_TYPE_EMAIL => $lang['emailbancheckresults'],
-                              BAN_HIT_TYPE_REF => $lang['httprefererbancheckresults'],
-                              BAN_HIT_TYPE_SFS => $lang['sfsbancheckresults']);
+$admin_log_type_array = array(
+    ALL_LOG_ENTIES => $lang['alllogentries'],
+    CHANGE_USER_STATUS => $lang['userstatuschanges'],
+    CHANGE_FORUM_ACCESS => $lang['forumaccesschanges'],
+    DELETE_ALL_USER_POSTS => $lang['usermasspostdeletion'],
+    EDIT_THREAD_OPTIONS => $lang['threadtitleedits'],
+    MOVED_THREADS => $lang['massthreadmoves'],
+    CREATE_FOLDER => $lang['foldercreations'],
+    DELETE_FOLDER => $lang['folderdeletions'],
+    CHANGE_PROFILE_SECT => $lang['profilesectionchanges'],
+    ADDED_PROFILE_SECT => $lang['profilesectionadditions'],
+    DELETE_PROFILE_SECT => $lang['profilesectiondeletions'],
+    CHANGE_PROFILE_ITEM => $lang['profileitemchanges'],
+    ADDED_PROFILE_ITEM => $lang['profileitemadditions'],
+    DELETE_PROFILE_ITEM => $lang['profileitemdeletions'],
+    EDITED_START_PAGE => $lang['startpagechanges'],
+    CREATED_NEW_STYLE => $lang['forumstylecreations'],
+    MOVED_THREAD => $lang['threadmoves'],
+    CLOSED_THREAD => $lang['threadclosures'],
+    OPENED_THREAD => $lang['threadopenings'],
+    RENAME_THREAD => $lang['threadrenames'],
+    DELETE_POST => $lang['postdeletions'],
+    EDIT_POST => $lang['postedits'],
+    EDIT_WORD_FILTER => $lang['wordfilteredits'],
+    CREATE_THREAD_STICKY => $lang['threadstickycreations'],
+    REMOVE_THREAD_STICKY => $lang['threadstickydeletions'],
+    END_USER_SESSION => $lang['usersessiondeletions'],
+    EDIT_FORUM_SETTINGS => $lang['forumsettingsedits'],
+    LOCKED_THREAD => $lang['threadlocks'],
+    UNLOCKED_THREAD => $lang['threadunlocks'],
+    DELETE_USER_THREAD_POSTS => $lang['usermasspostdeletionsinathread'],
+    DELETE_THREAD => $lang['threaddeletions'],
+    ATTACHMENTS_DELETE => $lang['attachmentdeletions'],
+    EDIT_FORUM_LINKS => $lang['forumlinkedits'],
+    APPROVED_POST => $lang['postapprovals'],
+    CREATE_USER_GROUP => $lang['usergroupcreations'],
+    DELETE_USER_GROUP => $lang['usergroupdeletions'],
+    ADD_USER_TO_GROUP => $lang['usergroupuseraddition'],
+    REMOVE_USER_FROM_GROUP => $lang['usergroupuserremoval'],
+    CHANGE_USER_PASSWD => $lang['userpasswordchange'],
+    ADD_BANNED_IP => $lang['ipaddressbanadditions'],
+    REMOVE_BANNED_IP => $lang['ipaddressbandeletions'],
+    ADD_BANNED_LOGON => $lang['logonbanadditions'],
+    REMOVE_BANNED_LOGON => $lang['logonbandeletions'],
+    ADD_BANNED_NICKNAME => $lang['nicknamebanadditions'],
+    REMOVE_BANNED_NICKNAME => $lang['nicknamebanadditions'],
+    ADD_BANNED_EMAIL => $lang['e-mailbanadditions'],
+    REMOVE_BANNED_EMAIL => $lang['e-mailbandeletions'],
+    ADDED_RSS_FEED => $lang['rssfeedadditions'],
+    EDITED_RSS_FEED => $lang['rssfeedchanges'],
+    UNDELETE_THREAD => $lang['threadundeletions'],
+    ADD_BANNED_REFERER => $lang['httprefererbanadditions'],
+    REMOVE_BANNED_REFERER => $lang['httprefererbandeletions'],
+    DELETED_RSS_FEED => $lang['rssfeeddeletions'],
+    UPDATED_BAN => $lang['banchanges'],
+    THREAD_SPLIT => $lang['threadsplits'],
+    THREAD_MERGE => $lang['threadmerges'],
+    ADD_FORUM_LINKS => $lang['forumlinkadditions'],
+    DELETE_FORUM_LINKS => $lang['forumlinkdeletions'],
+    EDIT_TOP_LINK_CAPTION => $lang['forumlinktopcaptionchanges'],
+    DELETE_USER => $lang['userdeletions'],
+    DELETE_USER_DATA => $lang['userdatadeletions'],
+    UPDATE_USER_GROUP => $lang['usergroupchanges'],
+    BAN_HIT_TYPE_IP => $lang['ipaddressbancheckresults'],
+    BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
+    BAN_HIT_TYPE_NICK => $lang['nicknamebancheckresults'],
+    BAN_HIT_TYPE_EMAIL => $lang['emailbancheckresults'],
+    BAN_HIT_TYPE_REF => $lang['httprefererbancheckresults'],
+    BAN_HIT_TYPE_SFS => $lang['sfsbancheckresults']
+);
 
-// Column sorting stuff
+$admin_log_group_type_array = array(
+    ADMIN_LOG_GROUP_NONE   => $lang['donotgroup'],
+    ADMIN_LOG_GROUP_YEAR   => $lang['groupbyyear'],
+    ADMIN_LOG_GROUP_MONTH  => $lang['groupbymonth'],
+    ADMIN_LOG_GROUP_DAY    => $lang['groupbyday'],
+    ADMIN_LOG_GROUP_HOUR   => $lang['groupbyhour'],
+    ADMIN_LOG_GROUP_MINUTE => $lang['groupbyminute'],
+    ADMIN_LOG_GROUP_SECOND => $lang['groupbysecond']
+);
+
+$group_by = ADMIN_LOG_GROUP_NONE;
+
+$sort_by = "CREATED";
+
+$sort_dir = "DESC";
+
+if (isset($_GET['group_by']) && is_numeric($_GET['group_by'])) {
+
+    if (isset($admin_log_group_type_array[$_GET['group_by']])) {
+        $group_by = $_GET['group_by'];
+    }
+}
+
 if (isset($_GET['sort_by'])) {
+
     if ($_GET['sort_by'] == "CREATED") {
         $sort_by = "CREATED";
-    } elseif ($_GET['sort_by'] == "UID") {
+    } else if ($_GET['sort_by'] == "UID") {
         $sort_by = "UID";
-    } elseif ($_GET['sort_by'] == "ACTION") {
+    } else if ($_GET['sort_by'] == "ACTION") {
         $sort_by = "ACTION";
-    } else {
-        $sort_by = "CREATED";
+    } else if ($_GET['sort_by'] == "COUNT") {
+        $sort_by = "COUNT";
     }
-} else {
-    $sort_by = "CREATED";
 }
 
 if (isset($_GET['sort_dir'])) {
+
     if ($_GET['sort_dir'] == "DESC") {
         $sort_dir = "DESC";
     } else {
         $sort_dir = "ASC";
     }
-} else {
-    $sort_dir = "DESC";
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -244,7 +266,7 @@ if (isset($_POST['prune_log'])) {
 
         if (admin_prune_log($remove_type, $remove_days)) {
 
-            header_redirect("admin_viewlog.php?webtag=$webtag&pruned=true");
+            header_redirect("admin_viewlog.php?webtag=$webtag&sort_dir=$sort_dir&sort_by=$sort_by&group_by=$group_by&pruned=true");
             exit;
 
         }else {
@@ -257,7 +279,7 @@ if (isset($_POST['prune_log'])) {
 
 html_draw_top("title={$lang['admin']} - {$lang['adminaccesslog']}", 'class=window_title');
 
-$admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
+$admin_log_array = admin_get_log_entries($start, $group_by, $sort_by, $sort_dir);
 
 echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['adminaccesslog']}</h1>\n";
 
@@ -289,33 +311,46 @@ echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }elseif ($sort_by == 'UID' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
 }elseif ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
+}
+
+if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
+
+    if ($sort_by == 'COUNT' && $sort_dir == 'ASC') {
+        echo "                    <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+    }elseif ($sort_by == 'COUNT' && $sort_dir == 'DESC') {
+        echo "                    <td class=\"subhead_sort_desc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+    }else {
+        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+    }    
 }
 
 echo "                  </tr>\n";
@@ -327,7 +362,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         $auto_update = false;
 
         echo "                  <tr>\n";
-        echo "                    <td align=\"left\" valign=\"top\"><span title=\"", format_time($admin_log_entry['CREATED']), "\">", format_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                    <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><span title=\"", format_time($admin_log_entry['CREATED']), "\">", format_date($admin_log_entry['CREATED']), "</td>\n";
 
         $entry_array = htmlentities_array(explode("\x00", $admin_log_entry['ENTRY']));
 
@@ -842,6 +877,11 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         }
 
         echo "                    <td align=\"left\">", $action_text, "</td>\n";
+        
+        if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
+            echo "                    <td align=\"center\">{$admin_log_entry['COUNT']}</td>\n";
+        }
+        
         echo "                  </tr>\n";
     }
 }
@@ -859,12 +899,49 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir", $start, $admin_log_array['admin_log_count'], 20), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&group_by=$group_by", $start, $admin_log_array['admin_log_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <br />\n";
+echo "  <form accept-charset=\"utf-8\" action=\"admin_viewlog.php\" method=\"get\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";
+echo "  ", form_input_hidden("sort_dir", htmlentities_array($sort_dir)), "\n";
+echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">{$lang['grouplogentries']}:&nbsp;</td>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("group_by", array(ADMIN_LOG_GROUP_NONE => $lang['donotgroup'], ADMIN_LOG_GROUP_YEAR => $lang['groupbyyear'], ADMIN_LOG_GROUP_MONTH => $lang['groupbymonth'], ADMIN_LOG_GROUP_DAY => $lang['groupbyday'], ADMIN_LOG_GROUP_HOUR => $lang['groupbyhour'], ADMIN_LOG_GROUP_MINUTE => $lang['groupbyminute'], ADMIN_LOG_GROUP_SECOND => $lang['groupbysecond']), $group_by, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  </form>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_viewlog.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
@@ -876,7 +953,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['prunelog']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
@@ -887,7 +964,7 @@ echo "                        <td align=\"left\">", form_dropdown_array('remove_
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "&nbsp;", form_submit("prune_log", $lang['prunelog']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -903,9 +980,6 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", $lang['prunelog']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

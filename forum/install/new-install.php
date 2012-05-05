@@ -333,7 +333,8 @@ $sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
 $sql.= "  RESPONSE longblob NOT NULL, ";
 $sql.= "  CREATED datetime NOT NULL, ";
 $sql.= "  EXPIRES datetime NOT NULL, ";
-$sql.= "  PRIMARY KEY (REQUEST_MD5) ";
+$sql.= "  PRIMARY KEY (REQUEST_MD5), ";
+$sql.= "  KEY EXPIRES (EXPIRES) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = db_query($sql, $db_install)) {

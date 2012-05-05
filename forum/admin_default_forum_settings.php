@@ -257,12 +257,6 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['sphinx_search_enabled'] = "N";
     }
 
-    if (isset($_POST['sphinx_search_index']) && preg_match('/^[a-z]+[a-z0-9]+$/Diu', trim(stripslashes_array($_POST['sphinx_search_index'])))) {
-        $new_forum_settings['sphinx_search_index'] = trim(stripslashes_array($_POST['sphinx_search_index']));
-    }else {
-        $new_forum_settings['sphinx_search_index'] = "";
-    }
-
     if (isset($_POST['sphinx_search_host']) && strlen(trim(stripslashes_array($_POST['sphinx_search_host']))) > 0) {
         $new_forum_settings['sphinx_search_host'] = trim(stripslashes_array($_POST['sphinx_search_host']));
     }else {
@@ -960,7 +954,7 @@ echo "                        <td align=\"left\" colspan=\"2\">\n";
 
 if (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_settings['sphinx_search_enabled'] == "Y") {
 
-    if (!sphinx_search_connect() || !sphinx_search_index()) {
+    if (!sphinx_search_connect()) {
 
         html_display_error_msg($lang['sphinxsearchsettingsincorrect'], '95%', 'center');
     }
@@ -971,10 +965,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['enablesphinxsearchintegration']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("sphinx_search_enabled", "Y", $lang['yes'], (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_settings['sphinx_search_enabled'] == 'Y')), "&nbsp;", form_radio("sphinx_search_enabled", "N", $lang['no'], (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_settings['sphinx_search_enabled'] == 'N') || !isset($forum_global_settings['sphinx_search_enabled'])), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['sphinxsearchindexname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("sphinx_search_index", (isset($forum_global_settings['sphinx_search_index'])) ? htmlentities_array($forum_global_settings['sphinx_search_index']) : '', 35), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['sphinxsearchhostname']}:</td>\n";

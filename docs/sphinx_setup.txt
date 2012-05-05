@@ -54,7 +54,8 @@ will be unable to communicate with Sphinx.
         max_children        = 10
         max_matches         = 1000
         
-        pid_file            = /var/run/searchd.pid
+        pid_file            = /var/run/sphinxsearch/searchd.pid
+        log                 = /var/log/sphinxsearch/searchd.log
 
         seamless_rotate     = 1
         preopen_indexes     = 0
@@ -143,16 +144,16 @@ source for each of them:
 
 In addition to the searchd and source definitions you also need to 
 create an index. An index is where Sphinx will store the post data 
-that Beehive will search. Once again, here is the index section 
-from Teh Forum that you can use as reference:
+that Beehive will search. Here is an example of a Sphinx index
+suitable for Beehive:
 
-    index tehforum
+    index beehiveforum
     {
         type                = plain
         
-        source              = tehforum
+        source              = beehiveforum
 
-        path                = /var/lib/sphinxsearch/data/tehforum
+        path                = /var/lib/sphinxsearch/data/beehiveforum
 
         rt_field            = title
         rt_field            = content

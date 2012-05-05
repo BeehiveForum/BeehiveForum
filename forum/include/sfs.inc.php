@@ -140,7 +140,7 @@ function sfs_cache_put($request_md5, $response)
     
     $expires_datetime = date(MYSQL_DATETIME, time() + DAY_IN_SECONDS);
     
-    $sql = "INSERT IGNORE INTO SFS_CACHE (REQUEST_MD5, RESPONSE, CREATED, EXPIRES) ";
+    $sql = "REPLACE INTO SFS_CACHE (REQUEST_MD5, RESPONSE, CREATED, EXPIRES) ";
     $sql.= "VALUES('$request_md5', '$response', '$current_datetime', '$expires_datetime')";
     
     if (!db_query($sql, $db_sfs_cache_put)) return false;

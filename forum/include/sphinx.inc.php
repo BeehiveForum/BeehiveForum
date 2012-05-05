@@ -50,15 +50,6 @@ function sphinx_search_connect()
     return $sphinx_link;
 }
 
-function sphinx_search_index()
-{
-    if (!($sphinx_search_index = forum_get_global_setting('sphinx_search_index'))) return false;
-
-    if (!preg_match('/^[a-z]+[a-z0-9]+$/Diu', $sphinx_search_index)) return false;
-
-    return $sphinx_search_index;
-}
-
 function sphinx_search_execute($search_arguments, &$error)
 {
     if (($uid = session_get_value('UID')) === false) return false;
@@ -74,8 +65,8 @@ function sphinx_search_execute($search_arguments, &$error)
         return false;
     }
 
-    // Get the Sphinx Search index name.
-    if (!$sphinx_search_index = sphinx_search_index()) {
+    // Sphinx Search index name is the forum's webtag.
+    if (!($sphinx_search_index = get_webtag())) {
 
         $error = SEARCH_SPHINX_UNAVAILABLE;
         return false;

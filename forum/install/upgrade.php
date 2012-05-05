@@ -398,22 +398,30 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 }
 
-if (!install_table_exists($db_database, "SFS_CACHE")) {
-    
-    $sql = "CREATE TABLE SFS_CACHE (";
-    $sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
-    $sql.= "  RESPONSE longblob NOT NULL, ";
-    $sql.= "  CREATED datetime NOT NULL, ";
-    $sql.= "  EXPIRES datetime NOT NULL, ";
-    $sql.= "  PRIMARY KEY (REQUEST_MD5) ";
-    $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+// Drop the old SFS_CACHE table.
+$sql = "DROP TABLE IF EXISTS SFS_CACHE";
 
-    if (!$result = db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
-        $valid = false;
-        return;
-    }    
-}
+    $valid = false;
+    return;
+}    
+
+// CREATE new SFS_CACHE table.
+$sql = "CREATE TABLE SFS_CACHE (";
+$sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
+$sql.= "  RESPONSE longblob NOT NULL, ";
+$sql.= "  CREATED datetime NOT NULL, ";
+$sql.= "  EXPIRES datetime NOT NULL, ";
+$sql.= "  PRIMARY KEY (REQUEST_MD5), ";
+$sql.= "  KEY EXPIRES (EXPIRES) ";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}    
 
 if (!install_table_exists($db_database, "USER_TOKEN")) {
 

@@ -655,9 +655,8 @@ function forum_check_global_setting_name($setting_name)
                                          'searchbots_show_recent', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled',
                                          'mail_function', 'sendmail_path', 'smtp_server', 'smtp_port', 'smtp_username',
-                                         'smtp_password', 'sphinx_search_enabled', 'sphinx_search_host', 'sphinx_search_index',
-                                         'sphinx_search_port', 'use_minified_scripts', 'sfs_enabled', 'sfs_api_url',
-                                         'sfs_min_confidence');
+                                         'smtp_password', 'sphinx_search_enabled', 'sphinx_search_host', 'sphinx_search_port', 
+                                         'use_minified_scripts', 'sfs_enabled', 'sfs_api_url', 'sfs_min_confidence');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }
@@ -1110,7 +1109,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL,";
         $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (TID,PID),";
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY FROM_UID (FROM_UID),";
@@ -1129,6 +1127,18 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  CONTENT TEXT,";
         $sql.= "  PRIMARY KEY  (TID,PID),";
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create table POST_CONTENT');
+        }
+        
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_SEARCH_ID` (";
+        $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  INDEXED DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (SID,TID,PID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@db_query($sql, $db_forum_create)) {
@@ -1500,9 +1510,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             throw new Exception('Failed to set owner forum permissions');
         }
 
-        // Get unique ID for this post.
-        $search_id = post_create_sphinx_search_id();
-
         // Create 'Welcome' Thread
         $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
         $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
@@ -1521,9 +1528,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         // Create the first post in the thread. Make it appear to be from
         // the Owner UID.
         $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
-        $sql.= "CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, SEARCH_ID) ";
+        $sql.= "CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
         $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '', $search_id)";
+        $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '')";
 
         if (!@db_query($sql, $db_forum_create)) {
             throw new Exception('Failed to create first post');
@@ -1540,6 +1547,14 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         if (!@db_query($sql, $db_forum_create)) {
             throw new Exception('Failed to create first post content');
+        }
+        
+        // First Post search ID
+        $sql = "INSERT INTO `{$forum_table_prefix}POST_SEARCH_ID` (TID, PID) ";
+        $sql.= "VALUES ('$new_tid', '$new_pid')";
+
+        if (!@db_query($sql, $db_forum_create)) {
+            throw new Exception('Failed to create first post search index');
         }
 
         // Create Top Level Links Folder
@@ -1681,14 +1696,6 @@ function forum_delete($fid)
 
             if (!db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE QUICK FROM GROUPS WHERE GID IN (SELECT GID FROM GROUP_PERMS WHERE FORUM = '$fid')";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
-            $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID IN (SELECT GID FROM GROUP_PERMS WHERE FORUM = '$fid')";
-
-            if (!db_query($sql, $db_forum_delete)) return false;
-
             $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
 
             if (!db_query($sql, $db_forum_delete)) return false;
@@ -1713,17 +1720,18 @@ function forum_delete_tables($webtag, $database_name)
 
         $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
 
-        $table_array = array('ADMIN_LOG',     'BANNED',          'FOLDER',
-                             'FORUM_LINKS',   'GROUPS',          'GROUP_PERMS',
-                             'GROUP_USERS',   'LINKS',           'LINKS_COMMENT',
-                             'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',
-                             'POLL_VOTES',    'POST',            'POST_CONTENT',
-                             'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
-                             'RSS_HISTORY',   'STATS',           'THREAD',
-                             'THREAD_STATS',  'THREAD_TRACK',    'USER_TRACK',
-                             'USER_FOLDER',   'USER_PEER',       'USER_POLL_VOTES',
-                             'USER_PREFS',    'USER_PROFILE',    'USER_SIG',
-                             'USER_THREAD',   'VISITOR_LOG',     'WORD_FILTER');
+        $table_array = array('ADMIN_LOG',       'BANNED',       'FOLDER',
+                             'FORUM_LINKS',     'GROUPS',       'GROUP_PERMS',
+                             'GROUP_USERS',     'LINKS',        'LINKS_COMMENT',
+                             'LINKS_FOLDERS',   'LINKS_VOTE',   'POLL',
+                             'POLL_VOTES',      'POST',         'POST_CONTENT',
+                             'POST_SEARCH_ID',  'PROFILE_ITEM', 'PROFILE_SECTION', 
+                             'RSS_FEEDS',       'RSS_HISTORY',  'STATS',
+                             'THREAD',          'THREAD_STATS', 'THREAD_TRACK',
+                             'USER_TRACK',      'USER_FOLDER',  'USER_PEER',
+                             'USER_POLL_VOTES', 'USER_PREFS',   'USER_PROFILE',    
+                             'USER_SIG',        'USER_THREAD',  'VISITOR_LOG',
+                             'WORD_FILTER');
 
         foreach ($table_array as $table_name) {
 

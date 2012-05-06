@@ -616,47 +616,44 @@ function pm_search_execute($search_string, &$error)
 
     $search_keywords_array = search_extract_keywords($search_string);
 
-    $filtered_count   = $search_keywords_array['filtered_count'];
-    $unfiltered_count = $search_keywords_array['unfiltered_count'];
-
-    if ($filtered_count > 0 && $filtered_count == $unfiltered_count) {
-
-        $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords_array']));
-
-        $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', false, 100));
-        $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
-
-        $pm_inbox_items  = PM_INBOX_ITEMS;
-        $pm_sent_items   = PM_SENT_ITEMS;
-        $pm_outbox_items = PM_OUTBOX_ITEMS;
-        $pm_saved_out    = PM_SAVED_OUT;
-        $pm_saved_in     = PM_SAVED_IN;
-        $pm_draft_items  = PM_DRAFT_ITEMS;
-
-        $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, TYPE, FROM_UID, TO_UID, ";
-        $sql.= "SUBJECT, RECIPIENTS, CREATED) SELECT $uid, PM.MID, PM.TYPE, ";
-        $sql.= "PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.RECIPIENTS, PM.CREATED ";
-        $sql.= "FROM PM LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-        $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
-        $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
-        $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
-        $sql.= "OR ((PM.TYPE = $pm_saved_out AND PM.FROM_UID = '$uid') OR ";
-        $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') OR ";
-        $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid'))) ";
-        $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked' IN BOOLEAN MODE) ";
-        $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
-        $sql.= "ORDER BY CREATED LIMIT $limit";
-
-        if (!db_query($sql, $db_pm_search_execute)) return false;
-
-        if (db_affected_rows($db_pm_search_execute) > 0) return true;
-
+    if ($search_keywords_array['filtered_count'] == 0) {
+        
         $error = SEARCH_NO_MATCHES;
-
         return false;
     }
 
-    $error = SEARCH_NO_KEYWORDS;
+    $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords_array']));
+
+    $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', false, 100));
+    $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
+
+    $pm_inbox_items  = PM_INBOX_ITEMS;
+    $pm_sent_items   = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_saved_out    = PM_SAVED_OUT;
+    $pm_saved_in     = PM_SAVED_IN;
+    $pm_draft_items  = PM_DRAFT_ITEMS;
+
+    $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, TYPE, FROM_UID, TO_UID, ";
+    $sql.= "SUBJECT, RECIPIENTS, CREATED) SELECT $uid, PM.MID, PM.TYPE, ";
+    $sql.= "PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.RECIPIENTS, PM.CREATED ";
+    $sql.= "FROM PM LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
+    $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
+    $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
+    $sql.= "OR ((PM.TYPE = $pm_saved_out AND PM.FROM_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid'))) ";
+    $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked' IN BOOLEAN MODE) ";
+    $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
+    $sql.= "ORDER BY CREATED LIMIT $limit";
+
+    if (!db_query($sql, $db_pm_search_execute)) return false;
+
+    if (db_affected_rows($db_pm_search_execute) > 0) return true;
+
+    $error = SEARCH_NO_MATCHES;
+
     return false;
 }
 

@@ -152,10 +152,9 @@ define('USER_ANON_FRIENDS_ONLY', 2);
 // Constants for Search Dialog Errors
 define('SEARCH_NO_ERROR', 0);
 define('SEARCH_USER_NOT_FOUND', 1);
-define('SEARCH_NO_KEYWORDS', 2);
-define('SEARCH_NO_MATCHES', 3);
-define('SEARCH_FREQUENCY_TOO_GREAT', 4);
-define('SEARCH_SPHINX_UNAVAILABLE', 5);
+define('SEARCH_NO_MATCHES', 2);
+define('SEARCH_FREQUENCY_TOO_GREAT', 3);
+define('SEARCH_SPHINX_UNAVAILABLE', 4);
 
 // Constants for Search date range
 define('SEARCH_DATE_RANGE_ARRAY', 0);

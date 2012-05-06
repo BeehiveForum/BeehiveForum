@@ -71,7 +71,7 @@ function sphinx_search_execute($search_arguments, &$error)
         $error = SEARCH_SPHINX_UNAVAILABLE;
         return false;
     }
-
+    
     // Regular Database connection.
     if (!$db_search_results = db_connect()) return false;
 
@@ -120,7 +120,7 @@ function sphinx_search_execute($search_arguments, &$error)
 
         if (!isset($search_arguments['user_uid_array']) || sizeof($search_arguments['user_uid_array']) < 1) {
 
-            $error = SEARCH_NO_KEYWORDS;
+            $error = SEARCH_NO_MATCHES;
             return false;
         }
     }
@@ -158,9 +158,13 @@ function sphinx_search_execute($search_arguments, &$error)
             $order_sql = "ORDER BY created $sort_dir";
             break;
     }
-
-    // Build the final query.
-    $sql = "SELECT * FROM $sphinx_search_index $where_sql $group_sql $order_sql LIMIT 1000";
+    
+    // Prepend _DELTA to the end of the index name.
+    $sphinx_search_index_delta = sprintf('%s_DELTA', $sphinx_search_index);
+    
+    // Build query including main and delta indexes.
+    $sql = "SELECT * FROM $sphinx_search_index, $sphinx_search_index_delta ";
+    $sql.= "$where_sql $group_sql $order_sql LIMIT 1000";
 
     // If the user has performed a search within the last x minutes bail out
     if (!check_search_frequency()) {

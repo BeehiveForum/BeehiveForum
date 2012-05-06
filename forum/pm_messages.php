@@ -378,16 +378,9 @@ if (isset($_POST['search'])) {
         $search_string = '';
     }
 
-    $min_length = 4;
-    $max_length = 84;
-
     $error = SEARCH_NO_ERROR;
 
     if (!pm_search_execute($search_string, $error)) {
-
-        search_get_word_lengths($min_length, $max_length);
-
-        $search_frequency = forum_get_setting('search_min_frequency', false, 0);
 
         switch($error) {
 
@@ -396,41 +389,9 @@ if (isset($_POST['search'])) {
                 header_redirect("pm_messages.php?webtag=$webtag&folder=6&search_no_results=true");
                 exit;
 
-            case SEARCH_NO_KEYWORDS:
-
-                if (isset($search_string) && strlen(trim($search_string)) > 0) {
-
-                    $keywords_error_array = search_extract_keywords($search_string, true);
-                    $keywords_error_array['keywords_array'] = search_strip_special_chars($keywords_error_array['keywords_array'], false);
-
-                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords_array']));
-
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
-
-                    $error_msg = sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link);
-                    $error_msg.= "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
-                    $error_msg.= "<p><ul><li>". implode("</li>\n        <li>", $keywords_error_array['keywords_array']). "</li></ul></p>\n";
-
-                    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-                    html_error_msg($error_msg);
-                    html_draw_bottom();
-                    exit;
-
-                }else {
-
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
-
-                    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-                    html_error_msg(sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link));
-                    html_draw_bottom();
-                    exit;
-                }
-
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-                html_error_msg(sprintf($lang['searchfrequencyerror'], $search_frequency));
-                html_draw_bottom();
+                header_redirect("pm_messages.php?webtag=$webtag&folder=6&search_frequency_error=true");
                 exit;
         }
     }
@@ -494,6 +455,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['search_no_results'])) {
 
     html_display_warning_msg($lang['searchreturnednoresults'], '96%', 'center');
+
+}else if (isset($_GET['search_frequency_error'])) {
+
+    $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+    html_display_warning_msg(sprintf($lang['searchfrequencyerror'], $search_frequency), '96%', 'center');
 
 }else if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) < 1) {
 

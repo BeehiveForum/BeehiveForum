@@ -64,22 +64,19 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    // Get a new unique Sphinx Search ID for this post.
-    if (!$sphinx_search_id = post_create_sphinx_search_id()) return -1;
-
     // Check that the post needs approval. If the user is a moderator their posts are self-approved.
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, ";
-        $sql.= "CREATED, APPROVED, IPADDRESS, SEARCH_ID) VALUES ($tid, $reply_pid, $fuid, $tuid, ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), NULL, '$ipaddress', $sphinx_search_id)";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
+        $sql.= "TO_UID, CREATED, APPROVED, IPADDRESS) VALUES ($tid, $reply_pid, $fuid, ";
+        $sql.= "$tuid, CAST('$current_datetime' AS DATETIME), NULL, '$ipaddress')";
 
     }else {
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, ";
-        $sql.= "CREATED, APPROVED, APPROVED_BY, IPADDRESS, SEARCH_ID) VALUES ($tid, $reply_pid, $fuid, ";
-        $sql.= "$tuid, CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "$fuid, '$ipaddress', $sphinx_search_id)";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}POST` (TID, REPLY_TO_PID, FROM_UID, ";
+        $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
+        $sql.= "$fuid, $tuid, CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), $fuid, '$ipaddress')";
     }
 
     if (!db_query($sql, $db_post_create)) return -1;
@@ -89,6 +86,11 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
     $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
+    if (!db_query($sql, $db_post_create)) return -1;
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_SEARCH_ID` (TID, PID) ";
+    $sql.= "VALUES('$tid', '$new_pid')";
+    
     if (!db_query($sql, $db_post_create)) return -1;
 
     post_update_thread_length($tid, $new_pid);
@@ -100,17 +102,6 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
     }
 
     return $new_pid;
-}
-
-function post_create_sphinx_search_id()
-{
-    $db_post_create_sphinx_search_id = db_connect();
-
-    $sql = "INSERT INTO SPHINX_SEARCH_ID (SEARCH_ID) VALUES(NULL)";
-
-    if (!db_query($sql, $db_post_create_sphinx_search_id)) return false;
-
-    return db_insert_id($db_post_create_sphinx_search_id);
 }
 
 function post_approve($tid, $pid)

@@ -232,7 +232,7 @@ function search_mysql_execute($search_arguments, &$error)
 
         if (!isset($search_arguments['user_uid_array']) || sizeof($search_arguments['user_uid_array']) < 1) {
 
-            $error = SEARCH_NO_KEYWORDS;
+            $error = SEARCH_NO_MATCHES;
             return false;
         }
     }
@@ -304,12 +304,6 @@ function search_mysql_execute($search_arguments, &$error)
 
 function search_extract_keywords($search_string, $strip_valid = false)
 {
-    // Array to hold our MySQL stop words
-    $mysql_fulltext_stopwords = array();
-
-    // Get the MySQL stop words.
-    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
-
     // Split the search string into boolean parts
     $keywords_array = preg_split('/([\+|-]?["][^"]+["])|([\+|-]?[\pL\pN\pP]+)/u', $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -327,28 +321,19 @@ function search_extract_keywords($search_string, $strip_valid = false)
 
     // Take a count of the words before we remove the stop words.
     $unfiltered_count = sizeof($keywords_array);
-
-    // Preg-quote the MySQL stopwords array
-    array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
-
-    // Construct regex to match MySQL stop words in keywords array.
-    $mysql_fulltext_stopwords = implode('[\"]?$|^[\+|-]?[\"]?', $mysql_fulltext_stopwords);
-
+    
     // Filter the boolean parts through the MySQL Full-Text stop word list
     // and by checking individual words lengths.
     if ($strip_valid === true) {
 
         $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
-        $keywords_array_swords = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/Diu', $mysql_fulltext_stopwords), $keywords_array);
-
         $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
 
     }else {
-
+        
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
-        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/Diu', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
     }
-
+    
     // Remove any duplicate words, reindex the array.
     $keywords_array = array_values(array_unique($keywords_array));
 
@@ -462,7 +447,7 @@ function search_get_keywords($remove_non_matches = true)
 
     $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_data['PREFIX']}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
-
+    
     if (!$result = db_query($sql, $db_search_get_keywords)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -943,11 +928,6 @@ function search_output_opensearch_xml()
     echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
     echo "</OpenSearchDescription>\n";
     exit;
-}
-
-function mysql_fulltext_callback(&$item, $key, $delimiter)
-{
-    if (isset($key)) $item = preg_quote($item, $delimiter);
 }
 
 ?>

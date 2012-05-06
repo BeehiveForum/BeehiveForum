@@ -664,25 +664,25 @@ function install_get_table_names(&$global_tables, &$forum_tables)
                                      'PM',                  'PM_ATTACHMENT_IDS',   'PM_CONTENT',
                                      'PM_FOLDERS',          'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES',
                                      'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
-                                     'SESSIONS',            'SPHINX_SEARCH_ID',    'TIMEZONES',
-                                     'USER',                'USER_FORUM',          'USER_HISTORY',
-                                     'USER_PREFS',          'VISITOR_LOG');
+                                     'SESSIONS',            'TIMEZONES',           'USER',
+                                     'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
+                                     'VISITOR_LOG');
     }
 
     // Check the per-forum store has been initialised.
     if (!is_array($forum_tables_store)) {
 
         // Initialise the store.
-        $forum_tables_store = array('ADMIN_LOG',     'BANNED',          'FOLDER',
-                                    'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
-                                    'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',
-                                    'POLL_VOTES',    'POST',            'POST_CONTENT',
-                                    'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
-                                    'RSS_HISTORY',   'STATS',           'THREAD',
-                                    'THREAD_STATS',  'THREAD_TRACK',    'USER_FOLDER',
-                                    'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                                    'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
-                                    'USER_TRACK',    'WORD_FILTER');
+        $forum_tables_store = array('ADMIN_LOG',      'BANNED',       'FOLDER',
+                                    'FORUM_LINKS',    'LINKS',        'LINKS_COMMENT',
+                                    'LINKS_FOLDERS',  'LINKS_VOTE',   'POLL',
+                                    'POLL_VOTES',     'POST',         'POST_CONTENT',
+                                    'POST_SEARCH_ID', 'PROFILE_ITEM', 'PROFILE_SECTION', 
+                                    'RSS_FEEDS',      'RSS_HISTORY',  'STATS',
+                                    'THREAD',         'THREAD_STATS', 'THREAD_TRACK',
+                                    'USER_FOLDER',    'USER_PEER',    'USER_POLL_VOTES', 
+                                    'USER_PREFS',     'USER_PROFILE', 'USER_SIG',
+                                    'USER_THREAD',    'USER_TRACK',   'WORD_FILTER');
     }
 
     // Set the by-ref var to the global tables store.

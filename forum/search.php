@@ -219,20 +219,13 @@ if (!$folder_dropdown = folder_search_dropdown($search_folder_fid)) {
 
 if (isset($_GET['show_stop_words'])) {
 
-    $highlight_keywords_array = array();
-
     html_draw_top("title={$lang['mysqlstopwordlist']}", 'pm_popup_disabled');
-
-    if (isset($_GET['keywords']) && strlen(trim(stripslashes_array($_GET['keywords']))) > 0) {
-
-        $highlight_keywords_array = explode(" ", trim(stripslashes_array($_GET['keywords'])));
-        array_walk($highlight_keywords_array, 'mysql_fulltext_callback', '/');
-        $highlight_keywords_preg = implode('$|^', $highlight_keywords_array);
-    }
 
     $mysql_fulltext_stopwords = array();
 
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
+    
+    $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
 
     echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
     echo "<br />\n";
@@ -255,24 +248,15 @@ if (isset($_GET['show_stop_words'])) {
     echo "                    <table width=\"95%\" border=\"0\">\n";
     echo "                      <tr>\n";
 
-    $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
+    foreach ($mysql_fulltext_stopwords as $index => $mysql_fulltext_stopword) {
 
-    for ($i = 0; $i < sizeof($mysql_fulltext_stopwords); $i++) {
-
-        if ($i > 0 && (!($i % 4))) {
+        if ((($index++) % 4) == 0) {
 
             echo "                      </tr>\n";
             echo "                      <tr>\n";
         }
 
-        if (isset($highlight_keywords_preg) && preg_match("/^$highlight_keywords_preg$/Diu", $mysql_fulltext_stopwords[$i]) > 0) {
-
-            echo "                        <td align=\"left\" class=\"postbody\"><span class=\"search_keyword_highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
-
-        }else {
-
-            echo "                        <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
-        }
+        echo "                        <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopword}</td>\n";
     }
 
     echo "                      </tr>\n";
@@ -412,33 +396,6 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                 $valid = false;
 
                 break;
-
-            case SEARCH_NO_KEYWORDS:
-
-                if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
-
-                    $search_string = trim(stripslashes_array($search_arguments['search_string']));
-
-                    $keywords_error_array = search_extract_keywords($search_string, true);
-                    $keywords_error_array['keywords_array'] = search_strip_special_chars($keywords_error_array['keywords_array'], false);
-
-                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords_array']));
-
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
-                    $error_msg_array[] = sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link);
-
-                    $keywords_error_str = implode(", ", $keywords_error_array['keywords_array']);
-                    $error_msg_array[] = sprintf($lang['keywordscontainingerrors'], $keywords_error_str);
-
-                    break;
-
-                }else {
-
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
-                    $error_msg_array[] = sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link);
-
-                    break;
-                }
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
@@ -617,12 +574,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         case SEARCH_USER_NOT_FOUND:
 
             html_display_error_msg($lang['usernamenotfound'], '500', 'center');
-            break;
-
-        case SEARCH_NO_KEYWORDS:
-
-            $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" class=\"popup 580x450\">{$lang['mysqlstopwordlist']}</a>";
-            html_display_error_msg(sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link));
             break;
 
         case SEARCH_FREQUENCY_TOO_GREAT:

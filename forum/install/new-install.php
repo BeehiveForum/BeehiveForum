@@ -343,17 +343,6 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE SPHINX_SEARCH_ID (";
-$sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  PRIMARY KEY (SEARCH_ID)";
-$sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
 $sql = "CREATE TABLE TIMEZONES (";
 $sql.= "  TZID INT(11) NOT NULL DEFAULT '0', ";
 $sql.= "  GMT_OFFSET DOUBLE DEFAULT '0', ";

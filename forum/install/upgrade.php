@@ -45,21 +45,16 @@ if (!($forum_webtag_array = install_get_webtags())) {
     return;
 }
 
-if (!install_table_exists($db_database, "SPHINX_SEARCH_ID")) {
+// Remove old global Sphinx Search SPHINX_SEARCH_ID table
+$sql = "DROP TABLE IF EXISTS SPHINX_SEARCH_ID";
 
-    // Create new SPHINX_SEARCH_ID table shared by all forums.
-    $sql = "CREATE TABLE SPHINX_SEARCH_ID (";
-    $sql.= "  SEARCH_ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  PRIMARY KEY (SEARCH_ID)";
-    $sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=UTF8";
+if (!$result = db_query($sql, $db_install)) {
 
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
+    $valid = false;
+    return;
 }
 
+// IPv6 compatibility on IPADDRESS columns.
 $sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -94,6 +89,24 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
         $valid = false;
         return;
+    }
+    
+    // New per-forum Sphinx Search ID table.
+    if (!install_table_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST_SEARCH_ID")) {
+        
+        $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_SEARCH_ID` (";
+        $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  INDEXED DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (SID,TID,PID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";        
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }        
     }
         
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "PERM")) {
@@ -339,47 +352,11 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
+    // Remove old Sphinx Search SEARCH_ID column.
+    if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
 
-        // Add SEARCH_ID column for Sphinx integration.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD SEARCH_ID BIGINT(20) UNSIGNED NULL";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // Add a unique index to SEARCH_ID.
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD UNIQUE SEARCH_ID (SEARCH_ID)";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // Declare a MySQL variable to increment the SEARCH_ID column.
-        $sql = "SELECT @search_id:= COALESCE(MAX(SEARCH_ID), 0) FROM SPHINX_SEARCH_ID";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // UPDATE SEARCH_ID in POST table to assign unique id to every post.
-        $sql = "UPDATE `{$table_data['PREFIX']}POST` SET SEARCH_ID = @search_id:= @search_id + 1";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        // UPDATE SPHINX_SEARCH_ID with all the new post search ids.
-        $sql = "INSERT INTO `SPHINX_SEARCH_ID` SELECT SEARCH_ID FROM `{$table_data['PREFIX']}POST`";
-
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN SEARCH_ID";
+        
         if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;

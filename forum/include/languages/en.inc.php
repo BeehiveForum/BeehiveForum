@@ -981,13 +981,14 @@ $lang['adsenseguestsonly'] = "Guests only";
 $lang['adsensenoone'] = "No-one (disabled)";
 $lang['adsensedisplayadsforusers'] = "Display AdSense Ads for";
 $lang['adsensedisplayadsonpages'] = "Display AdSense Ads on";
-$lang['adsenseallpages'] = "Top of every page";
+$lang['adsensedisplaymessage'] = "Display AdSense Ads after post";
+$lang['adsensetopallpages'] = "Top of every page";
+$lang['adsensebottomallpages'] = "Bottom of every page";
 $lang['adsensetopofmessages'] = "Top of messages";
-$lang['adsenseafterfirstmessage'] = "After 1st message";
-$lang['adsenseafterthirdmessage'] = "After 3rd message";
-$lang['adsenseafterfifthmessage'] = "After 5th message";
-$lang['adsenseaftertenthmessage'] = "After 10th message";
-$lang['adsenseafterrandommessage'] = "After a random message";
+$lang['adsensebottomofmessages'] = "Bottom of messages";
+$lang['adsenseonceafternthmessage'] = "Once only after the nth post";
+$lang['adsenseaftereverynthmessage'] = "After every nth post";
+$lang['adsenseafterrandommessage'] = "Once after a random post";
 $lang['registertoremoveadverts'] = "Register to remove these adverts.";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------

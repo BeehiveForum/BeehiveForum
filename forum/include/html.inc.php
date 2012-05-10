@@ -1006,6 +1006,10 @@ function html_draw_bottom($frame_set_html = false)
         if (($page_footer = html_get_page_footer())) {
             echo fix_html($page_footer);
         }
+        
+        if (adsense_publisher_id() && adsense_check_user() && adsense_check_page_bottom()) {
+            adsense_output_html();
+        }
 
         if (($google_analytics_code = html_get_google_analytics_code())) {
 
@@ -1190,31 +1194,26 @@ function html_output_adsense_settings()
     // Check the required settings!
     if (($adsense_publisher_id = adsense_publisher_id())) {
 
-        // No idea what format the client ID should be in
-        // So we'll just assume it's right if it's a non-empty string.
-        if (strlen(trim($adsense_publisher_id)) > 0) {
+        // Default banner size and type
+        $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
 
-            // Default banner size and type
-            $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
+        // Get banner size and type
+        adsense_get_banner_type($ad_type, $ad_width, $ad_height);
 
-            // Get banner size and type
-            adsense_get_banner_type($ad_type, $ad_width, $ad_height);
+        // Get the slot id from the forum settings.
+        $ad_slot_id = adsense_slot_id($ad_type);
 
-            // Get the slot id from the forum settings.
-            $ad_slot_id = adsense_slot_id($ad_type);
+        // Output the settings Javascript.
+        echo "<script type=\"text/javascript\">\n";
+        echo "<!--\n\n";
+        echo "google_ad_client = \"$adsense_publisher_id\";\n";
+        echo "google_ad_slot = \"$ad_slot_id\";\n";
+        echo "google_ad_width = $ad_width\n";
+        echo "google_ad_height = $ad_height\n\n";
+        echo "//-->\n";
+        echo "</script>\n";
 
-            // Output the settings Javascript.
-            echo "<script type=\"text/javascript\">\n";
-            echo "<!--\n\n";
-            echo "google_ad_client = \"$adsense_publisher_id\";\n";
-            echo "google_ad_slot = \"$ad_slot_id\";\n";
-            echo "google_ad_width = $ad_width\n";
-            echo "google_ad_height = $ad_height\n\n";
-            echo "//-->\n";
-            echo "</script>\n";
-
-            return true;
-        }
+        return true;
     }
 
     return false;

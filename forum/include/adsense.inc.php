@@ -121,6 +121,8 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
     static $random_pid = false;
 
     $adsense_display_pages = adsense_display_pages();
+    
+    $adsense_message_number = forum_get_setting('adsense_message_number', 1);
 
     $admin_area_files_array = get_available_admin_files();
     $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', $admin_area_files_array));
@@ -136,20 +138,43 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
             if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_MESSAGES)) return true;
 
         }else {
+            
+            if (($adsense_display_pages == ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES)) {
+                return (($pid + 1) == $thread_length);
+            }
+            
+            if ($adsense_display_pages == ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG) {
+                return ($adsense_message_number == ($pid + 1));
+            }
+            
+            if ($adsense_display_pages == ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG) {
+                return (($pid + 1) % $adsense_message_number) == 0;
+            }
 
             if ($random_pid === false) {
                 $random_pid = min(mt_rand(0, $posts_per_page), $thread_length);
             }
-
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIRST_MSG) && ($pid == 0)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_THIRD_MSG) && ($pid == 2)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_FIFTH_MSG) && ($pid == 4)) return true;
-            if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_TENTH_MSG) && ($pid == 9)) return true;
-
+            
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_RANDOM_MSG) && ($pid == $random_pid)) return true;
         }
     }
 
+    return false;
+}
+
+function adsense_check_page_bottom()
+{
+    $adsense_display_pages = adsense_display_pages();
+    
+    $adsense_message_number = forum_get_setting('adsense_message_number', 1);
+
+    $admin_area_files_array = get_available_admin_files();
+    $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', $admin_area_files_array));
+
+    if (preg_match("/^nav\\.php|^logon\\.php|^logout\\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
+
+    if (($adsense_display_pages == ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES)) return true;    
+    
     return false;
 }
 

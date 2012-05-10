@@ -131,12 +131,12 @@ $adsense_user_type_array = array(ADSENSE_DISPLAY_NONE      => $lang['adsensenoon
                                  ADSENSE_DISPLAY_GUESTS    => $lang['adsenseguestsonly']);
 
 // Array of valid Google Adsense ad page types
-$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adsenseallpages'],
-                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES  => $lang['adsensetopofmessages'],
-                                 ADSENSE_DISPLAY_AFTER_FIRST_MSG  => $lang['adsenseafterfirstmessage'],
-                                 ADSENSE_DISPLAY_AFTER_THIRD_MSG  => $lang['adsenseafterthirdmessage'],
-                                 ADSENSE_DISPLAY_AFTER_FIFTH_MSG  => $lang['adsenseafterfifthmessage'],
-                                 ADSENSE_DISPLAY_AFTER_TENTH_MSG  => $lang['adsenseaftertenthmessage'],
+$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adsensetopallpages'],
+                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES => $lang['adsensetopofmessages'],
+                                 ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES => $lang['adsensebottomallpages'],
+                                 ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES => $lang['adsensebottomofmessages'],
+                                 ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG => $lang['adsenseonceafternthmessage'],
+                                 ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG => $lang['adsenseaftereverynthmessage'],
                                  ADSENSE_DISPLAY_AFTER_RANDOM_MSG => $lang['adsenseafterrandommessage']);
 
 // Array to hold error messages.

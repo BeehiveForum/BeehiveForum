@@ -143,12 +143,12 @@ $adsense_user_type_array = array(ADSENSE_DISPLAY_NONE      => $lang['adsensenoon
                                  ADSENSE_DISPLAY_GUESTS    => $lang['adsenseguestsonly']);
 
 // Array of valid Google Adsense ad page types
-$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adsenseallpages'],
-                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES  => $lang['adsensetopofmessages'],
-                                 ADSENSE_DISPLAY_AFTER_FIRST_MSG  => $lang['adsenseafterfirstmessage'],
-                                 ADSENSE_DISPLAY_AFTER_THIRD_MSG  => $lang['adsenseafterthirdmessage'],
-                                 ADSENSE_DISPLAY_AFTER_FIFTH_MSG  => $lang['adsenseafterfifthmessage'],
-                                 ADSENSE_DISPLAY_AFTER_TENTH_MSG  => $lang['adsenseaftertenthmessage'],
+$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => $lang['adsensetopallpages'],
+                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES => $lang['adsensetopofmessages'],
+                                 ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES => $lang['adsensebottomallpages'],
+                                 ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES => $lang['adsensebottomofmessages'],
+                                 ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG => $lang['adsenseonceafternthmessage'],
+                                 ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG => $lang['adsenseaftereverynthmessage'],
                                  ADSENSE_DISPLAY_AFTER_RANDOM_MSG => $lang['adsenseafterrandommessage']);
 
 $mail_functions_array = array(MAIL_FUNCTION_PHP      => $lang['phpmailfunction'],
@@ -368,6 +368,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['adsense_display_pages'] = $_POST['adsense_display_pages'];
     }else {
         $new_forum_settings['adsense_display_pages'] = ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
+    }
+
+    if (isset($_POST['adsense_message_number']) && is_numeric($_POST['adsense_message_number'])) {
+        $new_forum_settings['adsense_message_number'] = $_POST['adsense_message_number'];
+    }else {
+        $new_forum_settings['adsense_message_number'] = 1;
     }
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
@@ -1224,6 +1230,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['adsensedisplayadsonpages']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array('adsense_display_pages', $adsense_page_type_array, (isset($forum_global_settings['adsense_display_pages']) && in_array($forum_global_settings['adsense_display_pages'], array_keys($adsense_page_type_array)) ? $forum_global_settings['adsense_display_pages'] : ADSENSE_DISPLAY_TOP_OF_ALL_PAGES)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['adsensedisplaymessage']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text('adsense_message_number', (isset($forum_global_settings['adsense_message_number']) && is_numeric($forum_global_settings['adsense_message_number']) ? $forum_global_settings['adsense_message_number'] : 1), 15, 40), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

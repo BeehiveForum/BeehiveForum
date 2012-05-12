@@ -485,18 +485,17 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE VISITOR_LOG (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL, ";
-$sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL, ";
+$sql.= "  IPADDRESS VARCHAR(255) NOT NULL, ";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
-$sql.= "  PRIMARY KEY (UID, VID), ";
+$sql.= "  PRIMARY KEY (VID), ";
 $sql.= "  KEY FORUM (FORUM), ";
-$sql.= "  KEY SID (SID), ";
 $sql.= "  KEY LAST_LOGON (LAST_LOGON)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = db_query($sql, $db_install)) {
 

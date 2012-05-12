@@ -71,7 +71,51 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE `VISITOR_LOG` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+$sql = "DROP TABLE IF EXISTS VISITOR_LOG_NEW";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE VISITOR_LOG_NEW (";
+$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  LAST_LOGON DATETIME DEFAULT NULL, ";
+$sql.= "  IPADDRESS VARCHAR(255) NOT NULL, ";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
+$sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
+$sql.= "  PRIMARY KEY (VID), ";
+$sql.= "  KEY FORUM (FORUM), ";
+$sql.= "  KEY LAST_LOGON (LAST_LOGON)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO VISITOR_LOG_NEW (UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+$sql.= "SELECT UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS VISITOR_LOG";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "RENAME TABLE VISITOR_LOG_NEW TO VISITOR_LOG";
 
 if (!$result = db_query($sql, $db_install)) {
 

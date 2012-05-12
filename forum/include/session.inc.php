@@ -22,14 +22,14 @@ USA
 ======================================================================*/
 
 /**
-* session.inc.php - session functions
-*
-* Contains session related functions.
-*/
+ * session.inc.php - session functions
+ *
+ * Contains session related functions.
+ */
 
 /**
-*
-*/
+ *
+ */
 
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
@@ -63,8 +63,8 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 /**
  * Get session data
  * 
- * Get data from the SESSIONS table for the specified hash.
- * If no match is found, returns false.
+ * Get data from the SESSIONS table for the specified
+ * hash. If no match is found, returns false.
  * 
  * @param mixed $sess_hash
  * @return mixed
@@ -75,11 +75,17 @@ function session_get($sess_hash)
     
     if (!is_md5($sess_hash)) return false;
     
+    if (($table_data = get_table_prefix())) {
+        $forum_fid = $table_data['FID'];
+    }else {
+        $forum_fid = 0;
+    }      
+    
     $sess_hash = db_escape_string($sess_hash);
     
     $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.REFERER, SESSIONS.FID, ";
     $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD FROM SESSIONS ";
     $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.HASH = '$sess_hash'";
     
@@ -87,158 +93,223 @@ function session_get($sess_hash)
 
     if (db_num_rows($result) == 0) return false;
     
-    return db_fetch_array($result, DB_RESULT_ASSOC);
+    if (!($user_sess = db_fetch_array($result, DB_RESULT_ASSOC))) return false;
+    
+    if (($user_prefs = user_get_prefs($user_sess['UID']))) {
+        $user_sess = array_merge($user_sess, $user_prefs);
+    }    
+    
+    if (($user_perms = session_get_perm_array($user_sess['UID'], $forum_fid))) {
+        $user_sess['PERMS'] = $user_perms;
+    }
+
+    if (isset($user_prefs['STYLE'])) {
+        html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+    }
+    
+    $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
+
+    if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
+    
+    return $user_sess;    
 }
 
 /**
  * Restore a saved session
  * 
- * Restore or reinitialise a session started with "remember me"
- * login option.
+ * Restore or reinitialise a session started 
+ * with "remember me" login option.
  * 
  * @param void
  * @return mixed
  */
 function session_restore()
 {
-    // Get the user_logon cookie
     if (!($user_logon = html_get_cookie('user_logon'))) return false;
 
-    // Get the user_token cookie value
     if (!($user_token = html_get_cookie('user_token'))) return false;
 
-    // Try and login the user.
     if (!($uid = user_logon_token($user_logon, $user_token))) return false;
     
-    // Reset the user_logon and user_token cookies
     html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
     html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
 
-    // Initialise user session and get the hash.
     if (!($sess_hash = session_init($uid))) return false;
     
-    // Try and load the session data.
     if (!($user_sess = session_get($sess_hash))) return false;
     
     return $user_sess;
 }
 
 /**
-* Checks the current user's session is valid.
-*
-* Check that the current user's session is valid. If successfully returns the user's session
-* as an array, otherwise a variety of outcomes is possible. If the user's session has expired
-* they are redirected to a page to re-initialise the session.
-*
-* @return mixed - array on success, false on fail
-* @param string $show_session_fail - Disable the default behaviour of showing the session expired page.
-*/
-function session_check($show_session_fail = true, $init_guest_session = true)
+ * Update a session
+ * 
+ * Updates a session to ensure it contains up to date
+ * information about the user, including IP address,
+ * which forum they are visiting and the last time
+ * they viewed a page (within cut-off)
+ * 
+ * @param mixed $user_sess
+ * @return bool
+ */
+function session_update($user_sess)
 {
-    // Database connection.
-    if (!$db_session_check = db_connect()) return false;
-
-    // Fetch the user's IP Address
+    if (!$db_session_update = db_connect()) return false;
+    
     if (!$ipaddress = get_ip_address()) return false;
-
-    // Session cut off timestamp
+    
+    if (($table_data = get_table_prefix())) {
+        $forum_fid = $table_data['FID'];
+    }else {
+        $forum_fid = 0;
+    }    
+    
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
     
-    // Check to see if we have a session cookie.
-    $sess_hash = html_get_cookie('sess_hash', 'is_md5');
+    if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid)) {
+
+        if ($user_sess['FID'] != $forum_fid) {
+
+            session_update_visitor_log($user_sess['UID'], $forum_fid);
+
+            forum_update_last_visit($user_sess['UID']);
+        }
+        
+        $sess_hash = db_escape_string($user_sess['HASH']);
+        
+        $ipaddress = db_escape_string($ipaddress);
+        
+        $current_datetime = date(MYSQL_DATETIME, time());
+
+        $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
+        $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$sess_hash'";
+
+        if (!$result = db_query($sql, $db_session_update)) return false;
+
+        session_update_user_time($user_sess['UID']);
+    }
     
-    // Try and load session data with the sess_hash cookie.
+    return true;    
+}
+
+/**
+ * Checks the current user's session is valid.
+ *
+ * Check that the current user's session is valid. 
+ * If successfully returns the user's session as 
+ * an array. If the user's session has expired
+ * they are redirected to a page to re-initialise
+ * the session.
+ *
+ * @param bool $show_session_fail
+ * @param bool $init_guest_session
+ * @return mixed
+ */
+function session_check($show_session_fail = true, $init_guest_session = true)
+{
+    if (!$db_session_check = db_connect()) return false;
+
+    if (!$ipaddress = get_ip_address()) return false;
+
+    $sess_hash = html_get_cookie('sess_hash', 'is_md5', md5($ipaddress));
+    
     if (!($user_sess = session_get($sess_hash))) {
         
-        // If we have what looks like a valid session hash
-        // show the session expired page.
         if (isset($sess_hash) && is_md5($sess_hash) && $show_session_fail) {
             session_expired();
         }
 
-        // Try and restore the session from saved logon.
         if (!($user_sess = session_restore())) {
-        
-            // Only try to login as a guest if we're told to.
-            if ($init_guest_session === true) {
-                return guest_session_init();
-            }        
             
-            return false;
+            if (!$init_guest_session) return false;
+        
+            if (!($sess_hash = session_init(0))) return false;
+            
+            if (!($user_sess = session_get($sess_hash))) return false;
         }
     }
     
-    // Check for a webtag and get the forum FID.
+    session_update($user_sess);
+    
+    ban_check($user_sess);
+
+    forum_check_maintenance();
+
+    return $user_sess;
+}
+
+/**
+ * Initialises a user session.
+ *
+ * Initialises a user session by constructing a 
+ * unique MD5 hash and assigning the hash to the 
+ * user's UID and setting a cookie. Returns
+ * session hash on success of false on failure.
+ *
+ * @param integer $uid
+ * @param bool $update_visitor_log
+ * @param bool $skip_cookie
+ * @return mixed
+ */
+function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
+{
+    if (!$db_session_init = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$ipaddress = get_ip_address()) return false;
+
     if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
     }
 
+    $sess_hash = md5(uniqid(mt_rand()));
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    // If the session belongs to a guest pass control to guest_session_init();
-    if ($user_sess['UID'] == 0) {
-        return guest_session_init();
-    }
+    $http_referer = session_get_referer();
 
-    // check to see if the user's credentials match the
-    // ban data set up on this forum.
-    ban_check($user_sess);
+    $http_referer = db_escape_string($http_referer);
 
-    // Add preference settings
-    if (($user_prefs = user_get_prefs($user_sess['UID']))) {
-        $user_sess = array_merge($user_sess, $user_prefs);
-    }
+    $ipaddress = db_escape_string($ipaddress);
+    
+    $search_id = session_is_search_engine();
+    
+    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
+    $sql.= "VALUES ('$sess_hash', '$uid', '$forum_fid', '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
+    $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
 
-    // Add user perms
-    if (($user_perms = session_get_perm_array($user_sess['UID'], $forum_fid))) {
-        $user_sess['PERMS'] = $user_perms;
-    }
+    if (!db_query($sql, $db_session_init)) return false;
 
-    // A unique MD5 has for some purposes (word filter, etc)
-    $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
-
-    // Check the forum FID the user is currently visiting
-    if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
-
-    // Save a cookie for the forum style
-    if (isset($user_prefs['STYLE'])) {
-        html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
-    }
-
-    // Check the session time. If it is higher than 'active_sess_cutoff'
-    // or the user has changed forums we should update the user's session data.
-    if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || ($user_sess['FID'] != $forum_fid)) {
-
-        // If the user has changed forums we should call session_update_visitor_log
-        // and forum_update_last_visit()
-        if ($user_sess['FID'] != $forum_fid) {
-
-            session_update_visitor_log($user_sess['UID'], $forum_fid);
-            forum_update_last_visit($user_sess['UID']);
-        }
+    if ($update_visitor_log === true) {
         
-        $ipaddress = db_escape_string($ipaddress);
+        session_update_visitor_log($uid, $forum_fid);
 
-        // Update the session time and forum FID.
-        $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
-        $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$sess_hash'";
-
-        if (!$result = db_query($sql, $db_session_check)) return false;
-
-        // Update the user time stats
-        session_update_user_time($user_sess['UID']);
+        forum_update_last_visit($uid);
     }
 
-    // Forum self preservation
-    forum_check_maintenance();
+    if ($skip_cookie === false) {
+        html_set_cookie("sess_hash", $sess_hash);
+    }
 
-    // Return session data
-    return $user_sess;
+    return $sess_hash;
 }
 
+/**
+ * Display session expired message
+ * 
+ * Displays a HTML message to the user indicating
+ * that their session has expired, i.e. they have
+ * a cookie but we no longer have a record that
+ * matches it.
+ * 
+ * @param void
+ * @return void
+ */
 function session_expired()
 {
     $webtag = get_webtag();
@@ -320,150 +391,16 @@ function session_expired()
     exit;
 }
 
-function guest_session_init()
-{
-    static $user_sess = false;
-
-    if (is_array($user_sess)) return $user_sess;
-
-    if (!$db_guest_session_init = db_connect()) return false;
-
-    if (!$ipaddress = get_ip_address()) return false;
-
-    // Session cut off timestamp
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
-
-    // Check to see if we have a session cookie.
-    $sess_hash = html_get_cookie('sess_hash', 'is_md5', md5($ipaddress));
-
-    $ipaddress = db_escape_string($ipaddress);
-
-    $current_datetime = date(MYSQL_DATETIME, time());
-
-    if (user_guest_enabled()) {
-
-        // Guest user sessions are handled a bit differently.
-        // Rather than the cookie which holds their HASH we
-        // keep track of guest sessions based on the user's IP
-        // address. Of course this means that the guest counter
-        // will be out if there is more than one guest coming
-        // from a single IP address.
-        if (($table_data = get_table_prefix())) {
-            $forum_fid = $table_data['FID'];
-        }else {
-            $forum_fid = 0;
-        }
-
-        $sql = "SELECT HASH, 0 AS UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "FID, IPADDRESS, 'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, REFERER ";
-        $sql.= "FROM SESSIONS WHERE HASH = '$sess_hash'";
-
-        if (!$result = db_query($sql, $db_guest_session_init)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $user_sess = db_fetch_array($result);
-
-            // Add user perms
-            if (($user_perms = session_get_perm_array($user_sess['UID'], $forum_fid))) {
-                $user_sess['PERMS'] = $user_perms;
-            }
-
-            // A unique MD5 has for some purposes (word filter, etc)
-            $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
-
-            // Check the forum FID the user is currently visiting
-            if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
-
-            // Check the session time. If it is higher than 'active_sess_cutoff'
-            // or the user has changed forums we should update the user's session data.
-            if (((time() - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
-
-                // Update the session time and forum FID.
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$forum_fid', ";
-                $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
-                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$sess_hash'";
-
-                if (!$result = db_query($sql, $db_guest_session_init)) return false;
-
-                // If the user has changed forums we should call session_update_visitor_log
-                // and forum_update_last_visit()
-                if ($user_sess['FID'] != $forum_fid) {
-
-                    session_update_visitor_log(0, $forum_fid);
-                }
-            }
-
-        }else {
-
-            // HTTP referer
-            $http_referer = session_get_referer();
-
-            // Session array of default values.
-            $user_sess = array('UID'         => 0,
-                               'TIME'        => time(),
-                               'SERVER_TIME' => time(),
-                               'LOGON'       => 'GUEST',
-                               'PASSWD'      => md5('GUEST'),
-                               'FID'         => $forum_fid,
-                               'IPADDRESS'   => $ipaddress,
-                               'REFERER'     => $http_referer,
-                               'RAND_HASH'   => md5(uniqid(mt_rand())));
-
-            // Add user perms
-            if (($user_perms = session_get_perm_array($user_sess['UID'], $forum_fid))) {
-                $user_sess['PERMS'] = $user_perms;
-            }
-
-            // HTTP Referer.
-            $http_referer = db_escape_string($http_referer);
-
-            // Start a session for the new guest user
-            if (($search_id = session_is_search_engine()) !== false) {
-
-                $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
-                $sql.= "VALUES ('$sess_hash', 0, $forum_fid, '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-                $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
-                $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
-
-                if (!db_query($sql, $db_guest_session_init)) return false;
-
-            }else {
-
-                $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-                $sql.= "VALUES ('$sess_hash', 0, $forum_fid, '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-                $sql.= "'$http_referer') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
-                $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
-
-                if (!db_query($sql, $db_guest_session_init)) return false;
-            }
-
-            // Update visitor log.
-            session_update_visitor_log(0, $forum_fid);
-        }
-
-        // Forum self-preservation
-        forum_check_maintenance();
-
-        // Check to see if the user's credentials match the
-        // ban data set up on this forum.
-        ban_check($user_sess, true);
-    }
-
-    return $user_sess;
-}
-
 /**
-* Fetch a value from the user session
-*
-* Fetches a named value from the user session for the current user.
-* If value being fetches is 'UID' and the setting is not set for
-* the user 0 is returned, otherwise false.
-*
-* @return mixed
-* @param string $session_key - Named key of the session variable to fetch.
-*/
-
+ * Fetch a value from the user session
+ *
+ * Fetches a named value from the user session for the current user.
+ * If value being fetches is 'UID' and the setting is not set for
+ * the user 0 is returned, otherwise false.
+ *
+ * @param string $session_key
+ * @return mixed
+ */
 function session_get_value($session_key)
 {
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
@@ -478,14 +415,14 @@ function session_get_value($session_key)
 }
 
 /**
-* Delete expired sessions
-*
-* Automatically remove any sessions which have been idle longer than the time out
-* value specified in the Forum's session_cutoff setting.
-*
-* @return void
-* @param void
-*/
+ * Delete expired sessions
+ *
+ * Automatically remove any sessions which have been idle longer than the time out
+ * value specified in the Forum's session_cutoff setting.
+ *
+ * @param void
+ * @return void
+ */
 function remove_stale_sessions()
 {
     if (!$db_remove_stale_sessions = db_connect()) return false;
@@ -526,21 +463,21 @@ function remove_stale_sessions()
 }
 
 /**
-* Updates the visitor log
-*
-* Updates the visitor log for the specified UID.
-*
-* @return void
-* @param integer $uid - UID of the user account we're updating the visitor log for.
-*/
-
+ * Updates the visitor log
+ *
+ * Updates the visitor log for the specified UID.
+ *
+ * @param integer $uid
+ * @return bool
+ */
 function session_update_visitor_log($uid, $forum_fid)
 {
     if (!$db_session_update_visitor_log = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
-    if (!is_numeric($forum_fid)) return false;
 
+    if (!is_numeric($forum_fid)) return false;
+    
     if (!$ipaddress = get_ip_address()) return false;
 
     $http_referer = db_escape_string(session_get_referer());
@@ -548,48 +485,28 @@ function session_update_visitor_log($uid, $forum_fid)
     $ipaddress = db_escape_string($ipaddress);
 
     $current_datetime = date(MYSQL_DATETIME, time());
+    
+    $search_id = session_is_search_engine();
 
-    if ($uid > 0) {
+    $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+    $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', ";
+    $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), ";
+    $sql.= "LAST_LOGON = CAST('$current_datetime' AS DATETIME), IPADDRESS = VALUES(IPADDRESS), ";
+    $sql.= "REFERER = VALUES(REFERER), SID = VALUES(SID)";
 
-        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER) ";
-        $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer') ";
-        $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
+    if (!db_query($sql, $db_session_update_visitor_log)) return false;
 
-        if (db_query($sql, $db_session_update_visitor_log)) return true;
-
-    }else {
-
-        if (($search_id = session_is_search_engine()) !== false) {
-
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, VID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', 1, CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer', '$search_id') ";
-            $sql.= "ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
-
-            if (db_query($sql, $db_session_update_visitor_log)) return true;
-
-        }else if (isset($_POST['guest_logon'])) {
-
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', '$http_referer')";
-
-            if (db_query($sql, $db_session_update_visitor_log)) return true;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 /**
-* Updates user's session statistics
-*
-* Updates the total time spent logged in and longest session time.
-*
-* @return void
-* @param integer $uid - UID of the user account we're updating.
-*/
-
+ * Updates user's session statistics
+ *
+ * Updates the total time spent logged in and longest session time.
+ *
+ * @param int $uid
+ * @return bool
+ */
 function session_update_user_time($uid)
 {
     if (!is_numeric($uid)) return false;
@@ -630,100 +547,14 @@ function session_update_user_time($uid)
 }
 
 /**
-* Initialises a user session.
-*
-* Initialises a user session by constructing a unique MD5 hash and assigning
-* the hash to the user's UID and setting a cookie.
-*
-* @return void
-* @param integer $uid - UID of the user account we're initialising a session for.
-* @param bool $update_visitor_log - Optionally update the visitor log if needed.
-* @param bool $skip_cookie - Optionally skips setting of cookie if needed.
-*/
-
-function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
-{
-    if (!$db_session_init = db_connect()) return false;
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$ipaddress = get_ip_address()) return false;
-
-    if (($table_data = get_table_prefix())) {
-        $forum_fid = $table_data['FID'];
-    }else {
-        $forum_fid = 0;
-    }
-
-    $http_referer = session_get_referer();
-
-    $sess_hash = md5($ipaddress);
-
-    $current_datetime = date(MYSQL_DATETIME, time());
-
-    $ipaddress = db_escape_string($ipaddress);
-
-    // Delete any guest sessions this user might have.
-    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$sess_hash'";
-
-    if (!db_query($sql, $db_session_init)) return false;
-
-    // Check for an existing user session.
-    $sql = "SELECT HASH FROM SESSIONS WHERE UID = '$uid'";
-
-    if (!$result = db_query($sql, $db_session_init)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        list($sess_hash) = db_fetch_array($result, DB_RESULT_NUM);
-
-    }else {
-
-        $sess_hash = md5(uniqid(mt_rand()));
-
-        $http_referer = db_escape_string($http_referer);
-
-        if (($uid == 0) && ($search_id = session_is_search_engine()) !== false) {
-
-            $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
-            $sql.= "VALUES ('$sess_hash', '$uid', '$forum_fid', '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
-            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
-
-            if (!db_query($sql, $db_session_init)) return false;
-
-        }else {
-
-            $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-            $sql.= "VALUES ('$sess_hash', '$uid', '$forum_fid', '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-            $sql.= "'$http_referer') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
-            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
-
-            if (!db_query($sql, $db_session_init)) return false;
-        }
-    }
-
-    if ($update_visitor_log === true) {
-
-        session_update_visitor_log($uid, $forum_fid);
-        forum_update_last_visit($uid);
-    }
-
-    if ($skip_cookie === false) html_set_cookie("sess_hash", $sess_hash);
-
-    return $sess_hash;
-}
-
-/**
-* Ends current user session.
-*
-* Ends session for current logged in user by destroying their cookie.
-* DOES NOT remove the data from the SESSION table.
-*
-* @return void
-* @param void
-*/
-
+ * Ends current user session.
+ *
+ * Ends session for current logged in user by destroying their cookie.
+ * DOES NOT remove the data from the SESSION table.
+ *
+ * @param void
+ * @return void
+ */
 function session_remove_cookies()
 {
     $webtag = get_webtag();
@@ -738,32 +569,30 @@ function session_remove_cookies()
 }
 
 /**
-* Ends current user session.
-*
-* Ends session for current logged in user by destroying their cookie.
-* and removing the data from the SESSION table.
-*
-* @return void
-* @param void
-*/
-
+ * Ends current user session.
+ *
+ * Ends session for current logged in user by destroying their cookie.
+ * and removing the data from the SESSION table.
+ *
+ * @param void
+ * @return bool
+ */
 function session_end($remove_cookies = true)
 {
     if (!$db_session_end = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    // Session cookie
     $sess_hash = html_get_cookie('sess_hash', 'is_md5', md5($ipaddress));
 
     $ipaddress = db_escape_string($ipaddress);
 
     if (isset($sess_hash) && is_md5($sess_hash)) {
 
-        // Delete the user's cookie
-        if ($remove_cookies === true) session_remove_cookies();
+        if ($remove_cookies === true) {
+            session_remove_cookies();
+        }
 
-        // Remove the user session.
         $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$sess_hash'";
 
         if (!db_query($sql, $db_session_end)) return false;
@@ -773,17 +602,17 @@ function session_end($remove_cookies = true)
 }
 
 /**
-* Returns user perm array from database
-*
-* Processes GROUP_PERM and GROUP_USERS tables to fetch the user's perm array
-* and return it as an indexed array in the format:
-*
-* $perm_array['FORUM_FID']['FOLDER_FID'] = PERM_VALUE;
-*
-* @return mixed
-* @param integer $uid
-* @param integer $forum_fid
-*/
+ * Returns user perm array from database
+ *
+ * Processes GROUP_PERM and GROUP_USERS tables to fetch the user's perm array
+ * and return it as an indexed array in the format:
+ *
+ * $perm_array['FORUM_FID']['FOLDER_FID'] = PERM_VALUE;
+ *
+ * @param integer $uid
+ * @param integer $forum_fid
+ * @return mixed
+ */
 function session_get_perm_array($uid, $forum_fid)
 {
     if (!$db_session_get_perm_array = db_connect()) return false;
@@ -841,17 +670,16 @@ function session_get_perm_array($uid, $forum_fid)
 }
 
 /**
-* Checks user perm array in current user session
-*
-* Checks the user session perms against the provided perm value.
-* See constants.inc.php for perm values to use.
-*
-* @return bool
-* @param integer $perm - Perm value to check
-* @param integer $folder_fid - FID of the folder to check.
-* @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
-*/
-
+ * Checks user perm array in current user session
+ *
+ * Checks the user session perms against the provided perm value.
+ * See constants.inc.php for perm values to use.
+ *
+ * @param integer $perm
+ * @param integer $folder_fid
+ * @param integer $forum_fid
+ * @return bool
+ */
 function session_check_perm($perm, $folder_fid, $forum_fid = false)
 {
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
@@ -895,15 +723,13 @@ function session_check_perm($perm, $folder_fid, $forum_fid = false)
 }
 
 /**
-* Get the user session current perm value.
-*
-* Gets the current perm value for the selected forum and folder.
-*
-* @return integer
-* @param integer $folder_fid - FID of the folder to check.
-* @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
-*/
-
+ * Get the user session current perm value.
+ *
+ * Gets the current perm value for the selected forum and folder.
+ *
+ * @param integer $folder_fid
+ * @return integer
+ */
 function session_get_perm($folder_fid)
 {
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
@@ -938,16 +764,15 @@ function session_get_perm($folder_fid)
 }
 
 /**
-* Check user is banned.
-*
-* Checks the current user session perms to see if the is banned. Checks both
-* the global and per-forum bans (even though it's currently only possible to
-* ban at the per-forum level)
-*
-* @return bool - true if banned, false if not.
-* @param void
-*/
-
+ * Check user is banned.
+ *
+ * Checks the current user session perms to see if the is banned. Checks both
+ * the global and per-forum bans (even though it's currently only possible to
+ * ban at the per-forum level)
+ *
+ * @param void
+ * @return bool
+ */
 function session_user_banned()
 {
     if (session_check_perm(USER_PERM_BANNED, 0)) {
@@ -958,16 +783,15 @@ function session_user_banned()
 }
 
 /**
-* Check to see if user has been approved to access the current forum.
-*
-* Checks the forum settings to see if user approval is enabled and that the user
-* has been approved. This setting applies only at the per-forum level. Users
-* awaiting approval can still access "My Forums", "PM Inbox" and login and out.
-*
-* @return bool - true if approved or setting disabled, false if approval required.
-* @param void
-*/
-
+ * Check to see if user has been approved to access the current forum.
+ *
+ * Checks the forum settings to see if user approval is enabled and that the user
+ * has been approved. This setting applies only at the per-forum level. Users
+ * awaiting approval can still access "My Forums", "PM Inbox" and login and out.
+ *
+ * @param void
+ * @return bool
+ */
 function session_user_approved()
 {
     if (user_is_guest()) return true;
@@ -983,16 +807,15 @@ function session_user_approved()
 }
 
 /**
-* Return an array of folder fids in the user session that match the provided permission.
-*
-* Iterates through the USER_PERMS array and finds folders that match the user permission
-* provided in $perm or false if no results.
-*
-* @return mixed - array on success, false on no results.
-* @param integer $perm - Perm value to test (see constants.inc.php)
-* @param integer $forum_fid = Optional forum fid otherwise  uses current forum FID.
-*/
-
+ * Return an array of folder fids in the user session that match the provided permission.
+ *
+ * Iterates through the USER_PERMS array and finds folders that match the user permission
+ * provided in $perm or false if no results.
+ *
+ * @param integer $perm
+ * @param integer $forum_fid
+ * @return mixed
+ */
 function session_get_folders_by_perm($perm, $forum_fid = false)
 {
     if (!is_numeric($perm)) return false;
@@ -1043,24 +866,23 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 }
 
 /**
-* Fetches user's post page preference
-*
-* Fetches the user's post page (POST_PAGE) setting from their user preferences.
-* If no user preference is available it returns a default value of 3271 which
-* includes:
-*
-* POST_TOOLBAR_DISPLAY
-* POST_EMOTICONS_DISPLAY
-* POST_TEXT_DEFAULT
-* POST_AUTO_LINKS
-* POST_SIGNATURE_DISPLAY
-* POLL_ADVANCED_DISPLAY
-* POLL_ADDITIONAL_MESSAGE_DISPLAY
-*
-* @return integer(32)
-* @param void
-*/
-
+ * Fetches user's post page preference
+ *
+ * Fetches the user's post page (POST_PAGE) setting from their user preferences.
+ * If no user preference is available it returns a default value of 3271 which
+ * includes:
+ *
+ * POST_TOOLBAR_DISPLAY
+ * POST_EMOTICONS_DISPLAY
+ * POST_TEXT_DEFAULT
+ * POST_AUTO_LINKS
+ * POST_SIGNATURE_DISPLAY
+ * POLL_ADVANCED_DISPLAY
+ * POLL_ADDITIONAL_MESSAGE_DISPLAY
+ *
+ * @param void
+ * @return int
+ */
 function session_get_post_page_prefs()
 {
     if (!$page_prefs = session_get_value('POST_PAGE')) {
@@ -1072,6 +894,16 @@ function session_get_post_page_prefs()
     return $page_prefs;
 }
 
+/**
+ * Determine if session belongs to search engine
+ * 
+ * Queries the HTTP_USER_AGENT against a list of known
+ * Search Engine bots and returns a unique ID if a
+ * match is found.
+ * 
+ * @param void
+ * @return mixed
+ */
 function session_is_search_engine()
 {
     if (!$db_session_is_search_engine = db_connect()) return false;
@@ -1095,6 +927,16 @@ function session_is_search_engine()
     return false;
 }
 
+/**
+ * Get HTTP referrer
+ * 
+ * Get the HTTP referer that was used to initialise
+ * a session. If the session does not contain an existing
+ * referer, it is determined from the HTTP headers.
+ * 
+ * @param void
+ * @return string
+ */
 function session_get_referer()
 {
     if (($http_referer = session_get_value('REFERER')) === false) {

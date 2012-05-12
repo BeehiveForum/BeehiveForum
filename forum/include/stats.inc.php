@@ -521,7 +521,7 @@ function stats_get_active_user_list()
     if (($uid = session_get_value('UID')) === false) return $stats;
 
     // Current active number of guests
-    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
+    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID = 0 ";
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
@@ -545,7 +545,7 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = '$forum_fid' AND (SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL) ";
+    $sql.= "AND SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
 

@@ -266,7 +266,7 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         $forum_fid = 0;
     }
 
-    $sess_hash = md5(uniqid(mt_rand()));
+    $sess_hash = ($uid == 0) ? md5($ipaddress) : md5(uniqid(mt_rand()));
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -584,8 +584,6 @@ function session_end($remove_cookies = true)
     if (!$ipaddress = get_ip_address()) return false;
 
     $sess_hash = html_get_cookie('sess_hash', 'is_md5', md5($ipaddress));
-
-    $ipaddress = db_escape_string($ipaddress);
 
     if (isset($sess_hash) && is_md5($sess_hash)) {
 

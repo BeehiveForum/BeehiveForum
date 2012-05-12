@@ -1008,7 +1008,7 @@ function html_draw_bottom($frame_set_html = false)
         }
         
         if (adsense_publisher_id() && adsense_check_user() && adsense_check_page_bottom()) {
-            adsense_output_html();
+            echo '<br>'; adsense_output_html();
         }
 
         if (($google_analytics_code = html_get_google_analytics_code())) {

@@ -38,117 +38,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function visitor_log_get_recent()
-{
-    if (!$db_visitor_log_get_recent = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    $lang = load_language_file();
-
-    $uid = session_get_value('UID');
-
-    if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
-
-        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
-        $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";
-        $sql.= "SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.SID, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON,  ";
-        $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, ";
-        $sql.= "USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-        $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, ";
-        $sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
-        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
-        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
-        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
-        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
-        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
-
-    }else {
-
-        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
-        $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";
-        $sql.= "SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.SID, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON,  ";
-        $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, ";
-        $sql.= "USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-        $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, ";
-        $sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
-        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
-        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
-        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID > 0 ";
-        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
-        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
-    }
-
-    if (!$result = db_query($sql, $db_visitor_log_get_recent)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $users_get_recent_array = array();
-
-        while (($visitor_array = db_fetch_array($result))) {
-
-            if ($visitor_array['UID'] == 0) {
-
-                $visitor_array['LOGON']    = $lang['guest'];
-                $visitor_array['NICKNAME'] = $lang['guest'];
-
-            }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
-
-                $visitor_array['LOGON'] = $lang['unknownuser'];
-                $visitor_array['NICKNAME'] = "";
-            }
-
-            if (isset($visitor_array['AVATAR_URL_FORUM']) && strlen($visitor_array['AVATAR_URL_FORUM']) > 0) {
-                $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_FORUM'];
-            }elseif (isset($visitor_array['AVATAR_URL_GLOBAL']) && strlen($visitor_array['AVATAR_URL_GLOBAL']) > 0) {
-                $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_GLOBAL'];
-            }
-
-            if (isset($visitor_array['AVATAR_AID_FORUM']) && is_md5($visitor_array['AVATAR_AID_FORUM'])) {
-                $visitor_array['AVATAR_AID'] = $visitor_array['AVATAR_AID_FORUM'];
-            }elseif (isset($visitor_array['AVATAR_AID_GLOBAL']) && is_md5($visitor_array['AVATAR_AID_GLOBAL'])) {
-                $visitor_array['AVATAR_AID'] = $visitor_array['AVATAR_AID_GLOBAL'];
-            }
-
-            if (isset($visitor_array['PEER_NICKNAME'])) {
-
-                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
-
-                    $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
-                }
-            }
-
-            $users_get_recent_array[] = $visitor_array;
-        }
-
-        return $users_get_recent_array;
-    }
-
-    return false;
-}
-
 function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdown_array)
 {
     if (!$db_visitor_log_get_profile_items = db_connect()) return false;
@@ -456,33 +345,33 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
             $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', $profile_entry_array));
 
-            $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
-            $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
+            $sql = "(". implode(",", $query_array_merge). "$from_sql $join_sql ";
+            $sql.= "$where_sql GROUP BY USER.UID $having_sql) ";
+            $sql.= "UNION (SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
             $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
             $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
             $sql.= "UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, NULL AS REGISTERED, ";
-            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
-            $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
-            $sql.= "'' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, $profile_item_columns, ";
-            $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
-            $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
-            $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
+            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, '' AS AVATAR_URL_FORUM, ";
+            $sql.= "'' AS AVATAR_AID_FORUM, '' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
+            $sql.= "$profile_item_columns, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
+            $sql.= "SEARCH_ENGINE_BOTS.URL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT ";
+            $sql.= "FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+            $sql.= "$where_visitor_sql GROUP BY VISITOR_LOG.VID $having_visitor_sql) $order_sql $limit_sql";
 
         }else {
 
-            $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
-            $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
+            $sql = "(". implode(",", $query_array_merge). "$from_sql $join_sql ";
+            $sql.= "$where_sql GROUP BY USER.UID $having_sql) ";
+            $sql.= "UNION (SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
             $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
             $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
             $sql.= "UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, NULL AS REGISTERED, ";
-            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
-            $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
-            $sql.= "'' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
+            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, '' AS AVATAR_URL_FORUM, ";
+            $sql.= "'' AS AVATAR_AID_FORUM, '' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
             $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
             $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
             $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
+            $sql.= "$where_visitor_sql GROUP BY VISITOR_LOG.VID $having_visitor_sql) $order_sql $limit_sql";
         }
     }
     
@@ -572,6 +461,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
                 $user_data['POST_COUNT'] = 0;
             }
+            
+            unset($user_data['AVATAR_AID_FORUM'], $user_data['AVATAR_URL_FORUM']);
+            unset($user_data['AVATAR_AID_GLOBAL'], $user_data['AVATAR_URL_GLOBAL']);
 
             $user_array[] = $user_data;
         }

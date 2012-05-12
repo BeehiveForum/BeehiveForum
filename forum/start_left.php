@@ -340,15 +340,17 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
 // Get recent visitors
-if (($recent_visitors_array = visitor_log_get_recent())) {
+$recent_visitors_array = visitor_log_browse_items('', array('LAST_VISIT' => $lang['lastvisit']), 0, 'LAST_VISIT', 'DESC', true, false);
+
+if (sizeof($recent_visitors_array['user_array']) > 0) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">\n";
 
-    foreach ($recent_visitors_array as $recent_visitor) {
+    foreach ($recent_visitors_array['user_array'] as $recent_visitor) {
 
-        if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
+        if (isset($recent_visitor['LAST_VISIT']) && $recent_visitor['LAST_VISIT'] > 0) {
         
             echo "                            <tr>\n";
 
@@ -394,7 +396,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
                 echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
             }
 
-            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;<span class=\"threadtime\"></td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", $recent_visitor['LAST_VISIT'], "&nbsp;<span class=\"threadtime\"></td>\n";
         }
 
         echo "                            </tr>\n";

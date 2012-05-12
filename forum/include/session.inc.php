@@ -212,7 +212,7 @@ function session_check($show_session_fail = true, $init_guest_session = true)
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    $sess_hash = html_get_cookie('sess_hash', 'is_md5', md5($ipaddress));
+    $sess_hash = html_get_cookie('sess_hash', 'is_md5');
     
     if (!($user_sess = session_get($sess_hash))) {
         
@@ -223,10 +223,15 @@ function session_check($show_session_fail = true, $init_guest_session = true)
         if (!($user_sess = session_restore())) {
             
             if (!$init_guest_session) return false;
-        
-            if (!($sess_hash = session_init(0))) return false;
             
-            if (!($user_sess = session_get($sess_hash))) return false;
+            $sess_hash = md5($ipaddress);
+            
+            if (!($user_sess = session_get($sess_hash))) {
+        
+                if (!($sess_hash = session_init(0))) return false;
+            
+                if (!($user_sess = session_get($sess_hash))) return false;
+            }
         }
     }
     

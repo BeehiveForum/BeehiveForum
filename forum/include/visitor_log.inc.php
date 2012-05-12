@@ -104,7 +104,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $timezone_id = forum_get_setting('forum_timezone', false, 27);
 
     // Permitted columns to sort the results by
-    $sort_by_array  = array_keys($profile_items_array);
+    $sort_by_array = array_keys($profile_items_array);
 
     // Permitted sort directions.
     $sort_dir_array = array('ASC', 'DESC');
@@ -150,16 +150,11 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-    $select_sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, ";
-    $select_sql.= "USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, ";
-    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
-
-    // User's Last Visit
-    $last_visit_sql = "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT ";
-
-    // Search Engine Bot Details
-    $search_bot_sql = "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
+    $select_sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL, ";
+    $select_sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
+    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT, ";
+    $select_sql.= "COALESCE(SEARCH_ENGINE_BOTS.NAME, USER.LOGON, VISITOR_LOG.VID) AS GROUPING ";
 
     // Include the selected numeric (PIID) profile items
     $profile_entry_array = array();
@@ -169,9 +164,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $profile_item_options_array = array();
 
     // Iterate through them.
-    $profile_items_array_keys = array_keys($profile_items_array);
-
-    foreach ($profile_items_array_keys as $column) {
+    foreach ($sort_by_array as $column) {
 
         if (is_numeric($column)) {
 
@@ -182,7 +175,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // From portion which selects users and guests from the VISITOR_LOG table.
-    $from_sql = "FROM USER LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID AND VISITOR_LOG.FORUM = '$forum_fid') ";
+    $from_sql = "FROM VISITOR_LOG LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
 
     // Join to get the user's DOB.
     $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_DOB ON (USER_PREFS_DOB.UID = USER.UID ";
@@ -201,10 +194,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $join_sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
 
     // Join to fetch the LAST_LOGON using the ANON_LOGON data
-    $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.UID = USER.UID ";
-    $join_sql.= "AND VISITOR_LOG_TIME.VID = VISITOR_LOG.VID AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL ";
-    $join_sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
-    $join_sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
+    $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.VID = VISITOR_LOG.VID ";
+    $join_sql.= "AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) AND ";
+    $join_sql.= "(USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
 
     // Join for the POST_COUNT.
     $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
@@ -221,9 +213,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
 
     // Joins on the selected numeric (PIID) profile items.
-    $profile_items_array_keys = array_keys($profile_items_array);
-
-    foreach ($profile_items_array_keys as $column) {
+    foreach ($sort_by_array as $column) {
 
         if (is_numeric($column)) {
 
@@ -239,11 +229,10 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // The Where clause
-    $where_query_array = array();
+    $where_query_array = array("VISITOR_LOG.FORUM = '$forum_fid'");
+    
+    // Having clause for filtering NULL columns.
     $having_query_array = array();
-
-    // Where clause for UNION with VISITOR_LOG.
-    $where_visitor_array = array("VISITOR_LOG.UID = '0'");
 
     // Null column filtering for Guests
     $having_visitor_array = array();
@@ -257,26 +246,17 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $user_search_sql.= "USER.NICKNAME LIKE '$user_search%')";
 
         $where_query_array[] = $user_search_sql;
-
-        if ($hide_guests === false) {
-
-            $where_visitor_sql = "SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%'";
-            $where_visitor_array[] = $where_visitor_sql;
-        }
     }
 
     // Hide Guests
     if ($hide_guests === true) {
-
         $where_query_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
     }
 
     // Hide empty or NULL values
     if ($hide_empty === true) {
 
-        $profile_items_array_keys = array_keys($profile_items_array);
-
-        foreach ($profile_items_array_keys as $column) {
+        foreach ($sort_by_array as $column) {
 
             if (is_numeric($column)) {
 
@@ -303,14 +283,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }else {
         $where_sql = "";
     }
-
-    // Guest NULL column filtering
-    if (sizeof($where_visitor_array) > 0) {
-        $where_visitor_sql = sprintf("WHERE %s", implode(" AND ", $where_visitor_array));
-    }else {
-        $where_visitor_sql = "";
-    }
-
+    
     if (sizeof($having_visitor_array) > 0) {
         $having_visitor_sql = sprintf("HAVING %s", implode(" AND ", $having_visitor_array));
     }else {
@@ -326,54 +299,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Array to store our results in.
     $user_array = array();
 
-    // Perform a different query if we're hiding guests.
-    if ($hide_guests === true) {
+    // Combine the profile columns with the main select SQL.
+    $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array, $profile_item_options_array);
 
-        $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
-        $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
-
-        $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
-
-    }else {
-
-        $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
-        $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
-
-        $profile_entry_array = array_filter(array_keys($profile_items_array), 'is_numeric');
-        
-        if (sizeof($profile_entry_array) > 0) {
-
-            $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', $profile_entry_array));
-
-            $sql = "(". implode(",", $query_array_merge). "$from_sql $join_sql ";
-            $sql.= "$where_sql GROUP BY USER.UID $having_sql) ";
-            $sql.= "UNION (SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
-            $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
-            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
-            $sql.= "UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, NULL AS REGISTERED, ";
-            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, '' AS AVATAR_URL_FORUM, ";
-            $sql.= "'' AS AVATAR_AID_FORUM, '' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
-            $sql.= "$profile_item_columns, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
-            $sql.= "SEARCH_ENGINE_BOTS.URL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT ";
-            $sql.= "FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql GROUP BY VISITOR_LOG.VID $having_visitor_sql) $order_sql $limit_sql";
-
-        }else {
-
-            $sql = "(". implode(",", $query_array_merge). "$from_sql $join_sql ";
-            $sql.= "$where_sql GROUP BY USER.UID $having_sql) ";
-            $sql.= "UNION (SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
-            $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
-            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
-            $sql.= "UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, NULL AS REGISTERED, ";
-            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, '' AS AVATAR_URL_FORUM, ";
-            $sql.= "'' AS AVATAR_AID_FORUM, '' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
-            $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
-            $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
-            $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql GROUP BY VISITOR_LOG.VID $having_visitor_sql) $order_sql $limit_sql";
-        }
-    }
+    // Construct final SQL query.
+    $sql = implode(",", $query_array_merge). "$from_sql $join_sql ";
+    $sql.= "$where_sql GROUP BY GROUPING $having_sql $order_sql $limit_sql";
     
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 
@@ -385,93 +316,91 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-    if (db_num_rows($result) > 0) {
-
-        while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
-
-            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                }
-            }
-
-            if ($user_data['UID'] == 0) {
-
-                $user_data['LOGON']    = $lang['guest'];
-                $user_data['NICKNAME'] = $lang['guest'];
-
-            }elseif (!isset($user_data['LOGON']) || is_null($user_data['LOGON'])) {
-
-                $user_data['LOGON'] = $lang['unknownuser'];
-                $user_data['NICKNAME'] = "";
-            }
-
-            if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
-                $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-            }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
-                $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
-            }
-
-            if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
-                $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
-            }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
-                $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
-            }
-
-            if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
-                $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
-            }else {
-                $user_data['LAST_VISIT'] = $lang['unknown'];
-            }
-
-            if (isset($user_data['REGISTERED']) && is_numeric($user_data['REGISTERED'])) {
-                $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
-            }else {
-                $user_data['REGISTERED'] = $lang['unknown'];
-            }
-
-            if (isset($user_data['USER_TIME_BEST']) && is_numeric($user_data['USER_TIME_BEST'])) {
-                $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
-            }else {
-                $user_data['USER_TIME_BEST'] = $lang['unknown'];
-            }
-
-            if (isset($user_data['USER_TIME_TOTAL']) && is_numeric($user_data['USER_TIME_TOTAL'])) {
-                $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
-            }else {
-                $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
-            }
-
-            if (!isset($user_data['AGE']) || !is_numeric($user_data['AGE'])) {
-                $user_data['AGE'] = $lang['unknown'];
-            }
-
-            if (!$user_data['DOB'] = format_birthday($user_data['DOB'])) {
-                $user_data['DOB'] = $lang['unknown'];
-            }
-
-            $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
-
-            if (isset($user_data['LOCAL_TIME']) && is_numeric($user_data['LOCAL_TIME'])) {
-                $user_data['LOCAL_TIME'] = format_time($user_data['LOCAL_TIME']);
-            }else {
-                $user_data['LOCAL_TIME'] = $lang['unknown'];
-            }
-
-            if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
-                $user_data['POST_COUNT'] = 0;
-            }
-            
-            unset($user_data['AVATAR_AID_FORUM'], $user_data['AVATAR_URL_FORUM']);
-            unset($user_data['AVATAR_AID_GLOBAL'], $user_data['AVATAR_URL_GLOBAL']);
-
-            $user_array[] = $user_data;
-        }
-
-    }elseif ($user_count > 0) {
-
+    if (db_num_rows($result) == 0) {
+        
         $offset = floor(($user_count - 1) / 10) * 10;
         return visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);
+    }
+        
+    while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+            }
+        }
+
+        if ($user_data['UID'] == 0) {
+
+            $user_data['LOGON']    = $lang['guest'];
+            $user_data['NICKNAME'] = $lang['guest'];
+
+        }elseif (!isset($user_data['LOGON']) || is_null($user_data['LOGON'])) {
+
+            $user_data['LOGON'] = $lang['unknownuser'];
+            $user_data['NICKNAME'] = "";
+        }
+
+        if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
+        }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
+        }
+
+        if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
+            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
+        }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
+            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
+        }
+
+        if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
+            $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+        }else {
+            $user_data['LAST_VISIT'] = $lang['unknown'];
+        }
+
+        if (isset($user_data['REGISTERED']) && is_numeric($user_data['REGISTERED'])) {
+            $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+        }else {
+            $user_data['REGISTERED'] = $lang['unknown'];
+        }
+
+        if (isset($user_data['USER_TIME_BEST']) && is_numeric($user_data['USER_TIME_BEST'])) {
+            $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
+        }else {
+            $user_data['USER_TIME_BEST'] = $lang['unknown'];
+        }
+
+        if (isset($user_data['USER_TIME_TOTAL']) && is_numeric($user_data['USER_TIME_TOTAL'])) {
+            $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
+        }else {
+            $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+        }
+
+        if (!isset($user_data['AGE']) || !is_numeric($user_data['AGE'])) {
+            $user_data['AGE'] = $lang['unknown'];
+        }
+
+        if (!$user_data['DOB'] = format_birthday($user_data['DOB'])) {
+            $user_data['DOB'] = $lang['unknown'];
+        }
+
+        $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
+
+        if (isset($user_data['LOCAL_TIME']) && is_numeric($user_data['LOCAL_TIME'])) {
+            $user_data['LOCAL_TIME'] = format_time($user_data['LOCAL_TIME']);
+        }else {
+            $user_data['LOCAL_TIME'] = $lang['unknown'];
+        }
+
+        if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
+            $user_data['POST_COUNT'] = 0;
+        }
+        
+        unset($user_data['AVATAR_AID_FORUM'], $user_data['AVATAR_URL_FORUM']);
+        unset($user_data['AVATAR_AID_GLOBAL'], $user_data['AVATAR_URL_GLOBAL']);
+
+        $user_array[] = $user_data;
     }
 
     return array('user_count' => $user_count,

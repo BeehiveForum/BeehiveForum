@@ -69,9 +69,8 @@ class captcha {
     private $current_font;
 
     private $error = false;
-    private $text_captcha_dir = "";
+    private $text_captcha_dir = false;
 
-    // PUBLIC //
     public function __construct($num_chars = 6, $min_char_size = 15, $max_char_size = 25, $noise_factor = 9, $max_rotation = 30)
     {
         if (!is_numeric($num_chars)) $num_chars = 6;
@@ -86,10 +85,14 @@ class captcha {
 
         $this->max_rotation = $max_rotation;
 
-        $this->key = forum_get_setting('text_captcha_key', false, '');
+        $this->key = forum_get_setting('text_captcha_key', false);
 
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
+        
+        if (($text_captcha_dir = forum_get_setting('text_captcha_dir', false))) {
+            $this->text_captcha_dir = rtrim($text_captcha_dir, '/');
+        }
 
         if ($noise_factor > 0) {
 
@@ -124,6 +127,21 @@ class captcha {
         $this->generate_private_key();
         return (mb_strtolower($private_key_check) == mb_strtolower($this->private_key));
     }
+    
+    public function get_image_data()
+    {
+        if (!$this->check_working_dir()) {
+            $this->error = TEXT_CAPTCHA_DIR_ERROR;
+            return false;
+        }
+
+        if (!$this->check_keys()) {
+            $this->error = TEXT_CAPTCHA_KEY_ERROR;
+            return false;
+        }
+
+        return file_get_contents("{$this->text_captcha_dir}/images/{$this->public_key}.jpg");
+    }
 
     public function get_image_filename()
     {
@@ -137,7 +155,7 @@ class captcha {
             return false;
         }
 
-        return "text_captcha/images/{$this->public_key}.jpg";
+        return "{$this->text_captcha_dir}/images/{$this->public_key}.jpg";
     }
 
     public function get_num_chars()
@@ -286,17 +304,15 @@ class captcha {
 
     protected function check_working_dir()
     {
-        $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
-        $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
+        if (!$this->text_captcha_dir) return false;
+        
+        mkdir_recursive("{$this->text_captcha_dir}/fonts", 0775);
+        mkdir_recursive("{$this->text_captcha_dir}/images", 0775);
 
-        mkdir_recursive("$text_captcha_dir/fonts", 0755);
-        mkdir_recursive("$text_captcha_dir/images", 0755);
+        if (@is_dir("{$this->text_captcha_dir}/fonts") && @is_dir("{$this->text_captcha_dir}/images")) {
 
-        if (@is_dir("$text_captcha_dir/fonts") && @is_dir("$text_captcha_dir/images")) {
+            if (is_writable("{$this->text_captcha_dir}/images")) {
 
-            if (is_writable("$text_captcha_dir/images")) {
-
-                $this->text_captcha_dir = $text_captcha_dir;
                 return true;
             }
         }
@@ -306,6 +322,8 @@ class captcha {
 
     protected function load_fonts()
     {
+        if (!$this->text_captcha_dir) return false;
+        
         if (!$this->fonts_loaded) {
 
             if ((@$dir = opendir("{$this->text_captcha_dir}/fonts"))) {
@@ -407,12 +425,10 @@ class captcha {
 function captcha_clean_up()
 {
     $unlink_count = 0;
+    
+    if (!($text_captcha_dir = forum_get_setting('text_captcha_dir'))) return false;
 
-    $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
-
-    $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
-
-    if (!(@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. 'images'))) return false;
+    if (!(@$dir = opendir("$text_captcha_dir/images"))) return false;
 
     while ((($file = @readdir($dir)) !== false) && ($unlink_count < 20)) {
 

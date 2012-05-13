@@ -550,7 +550,10 @@ $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 $lang['requireemailconfirmation'] = "Require email confirmation";
+$lang['textcaptcha'] = "Text-captcha";
+$lang['textcaptchadir'] = "Text-captcha Dir";
 $lang['usetextcaptcha'] = "Use text-captcha";
+$lang['textcaptchadirblank'] = "You must supply a directory to save text-captcha images in";
 $lang['textcaptchafonterror'] = "Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>text_captcha/fonts</b> on your server.";
 $lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
 $lang['textcaptchagderror'] = "Text-captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text-captcha support.";
@@ -1055,7 +1058,7 @@ $lang['forum_settings_help_71'] = "A <b>Content Delivery Network</b> or CDN can 
 $lang['forum_settings_help_72'] = "You should enter any CDN paths in the text box above, one per line. Your Beehive Forum will automatically prefix every static content request with each of the CDN paths in turn.";
 $lang['forum_settings_help_73'] = "Please Note: Your CDN paths should be to the root of the Beehive Forum content. For example, if you enter <i>cdn01.beehiveforum.co.uk</i>, requests for the user's CSS styles will be made to <i>cdn01.beehiveforum.co.uk/styles/[user_style]/style.css</i>";
 $lang['forum_settings_help_74'] = "Enabling <b>Show Share Links</b> adds social network share links for Google+, Facebook and Twitter, at the top of each thread. Users can opt-out of displaying these buttons from their My Controls area. By disabling it here, they will be hidden for all users.";
-$lang['forum_settings_help_74'] = "<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. To specify multiple mime-types, separate them using semi-colons. <b>Note:</b> Beehive doesn't perform strict analysis of the uploaded files uploaded and renamed files may be able to circumvent this restriction.";
+$lang['forum_settings_help_75'] = "<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. To specify multiple mime-types, separate them using semi-colons. <b>Note:</b> Beehive doesn't perform strict analysis of the uploaded files uploaded and renamed files may be able to circumvent this restriction.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 $lang['aidnotspecified'] = "AID not specified.";

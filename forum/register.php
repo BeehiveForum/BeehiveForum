@@ -790,7 +790,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf($lang['textcaptchaexplain'], $forum_owner_link), "</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><img src=\"data:image/jpeg;base64,", base64_encode($text_captcha->get_image_data()), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", html_style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";

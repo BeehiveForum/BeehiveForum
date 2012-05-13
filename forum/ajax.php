@@ -415,9 +415,14 @@ switch ($_GET['action']) {
         if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
 
             // Construct array to send as JSON response.
-            $text_captcha_data = array('image' => $text_captcha->get_image_filename(),
-                                       'chars' => $text_captcha->get_num_chars(),
-                                       'key'   => $text_captcha->get_public_key());
+            $text_captcha_data = array(
+                'image' => sprintf(
+                    "data:image/jpeg;base64,%s", 
+                    base64_encode($text_captcha->get_image_data())
+                ),
+                'chars' => $text_captcha->get_num_chars(),
+                'key'   => $text_captcha->get_public_key()
+            );
 
             // Send the JSON encoded array.
             $content.= json_encode($text_captcha_data);

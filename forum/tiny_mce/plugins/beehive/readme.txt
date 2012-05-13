@@ -1,5 +1,5 @@
- Beehive plugin for TinyMCE
------------------------------
+Beehive plugin for TinyMCE
+--------------------------
 
 About:
   This plugin adds toolbar icons for the following Beehive features:

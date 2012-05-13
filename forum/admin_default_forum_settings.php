@@ -118,12 +118,8 @@ if (!(session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 // Array to hold error messages
 $error_msg_array = array();
 
-// Variable to track creation of text-captcha directories.
-$text_captcha_dir_created = false;
-
 // Text captcha class
 $text_captcha = new captcha(6, 15, 25, 9, 30);
-
 
 // Array of valid periods for the unread cutoff
 $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableunreadmessages'],
@@ -381,6 +377,16 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }else {
         $new_forum_settings['text_captcha_enabled'] = "N";
     }
+    
+    if (isset($_POST['text_captcha_dir']) && strlen(trim(stripslashes_array($_POST['text_captcha_dir']))) > 0) {
+
+        $new_forum_settings['text_captcha_dir'] = trim(stripslashes_array($_POST['text_captcha_dir']));
+
+    }elseif (mb_strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
+
+        $error_msg_array[] = $lang['textcaptchadirblank'];
+        $valid = false;
+    }    
 
     if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
         $new_forum_settings['new_user_email_notify'] = "Y";
@@ -1076,8 +1082,50 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['sendnewus
 echo "                        <td align=\"left\">", form_radio("send_new_user_email", "Y", $lang['yes'] , (isset($forum_global_settings['send_new_user_email']) && $forum_global_settings['send_new_user_email'] == 'Y')), "&nbsp;", form_radio("send_new_user_email", "N", $lang['no'] , (isset($forum_global_settings['send_new_user_email']) && ($forum_global_settings['send_new_user_email'] == 'N') || !isset($forum_global_settings['send_new_user_email']))), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['textcaptcha']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"250\">{$lang['usetextcaptcha']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("text_captcha_enabled", "Y", $lang['yes'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'Y')), "&nbsp;", form_radio("text_captcha_enabled", "N", $lang['no'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'N') || !isset($forum_global_settings['text_captcha_enabled'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['textcaptchadir']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("text_captcha_dir", (isset($forum_global_settings['text_captcha_dir'])) ? htmlentities_array($forum_global_settings['text_captcha_dir']) : "text_captcha", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
@@ -1112,14 +1160,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -1658,7 +1699,7 @@ echo "                          <p class=\"smalltext\">{$lang['forum_settings_he
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_25']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_26']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_74']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_75']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

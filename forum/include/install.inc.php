@@ -853,6 +853,7 @@ function install_set_default_forum_settings()
                              'new_user_pm_notify_email'   => 'Y',
                              'new_user_email_notify'      => 'Y',
                              'text_captcha_key'           => md5(uniqid(mt_rand())),
+                             'text_captcha_dir'           => 'text_captcha',
                              'text_captcha_enabled'       => 'N',
                              'require_email_confirmation' => 'N',
                              'require_unique_email'       => 'N',

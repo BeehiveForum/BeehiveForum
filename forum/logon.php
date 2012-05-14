@@ -88,17 +88,21 @@ $webtag = get_webtag();
 // Retrieve the final_uri request
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-    $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));;
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
+        $final_uri = trim(stripslashes_array($_GET['final_uri']));
+    }
+
+}else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $final_uri = "discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
 
-}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+}else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $final_uri = "discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
 
-}elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+}else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
     $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
 }

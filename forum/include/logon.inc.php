@@ -214,8 +214,17 @@ function logon_draw_form($logon_options)
         }
 
         if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+            
+            $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-            $final_uri = rawurlencode(trim(stripslashes_array($_GET['final_uri'])));
+            if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
+                $final_uri = trim(stripslashes_array($_GET['final_uri']));
+            }            
+        }
+        
+        if (isset($final_uri)) {
+
+            $final_uri = rawurlencode($final_uri);
 
             $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
             $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");

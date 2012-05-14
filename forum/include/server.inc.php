@@ -164,7 +164,7 @@ function get_available_files()
                  'user_font.php', 'user_main.php',
                  'user_menu.php', 'user_profile.php',
                  'user_rel.php', 'user_stats.php',
-                 'visitor_log.php');
+                 'visitor_log.php', 'chat/index.php');
 }
 
 /**

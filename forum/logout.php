@@ -86,11 +86,10 @@ $final_uri = '&final_uri=logon.php%3Fwebtag%3D$webtag%26logout_success%3Dtrue';
 
 if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
 
-    $available_files = get_available_files();
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-    if (preg_match("/^$available_files_preg/u", basename(trim(stripslashes_array($_REQUEST['final_uri'])))) > 0) {
-        $final_uri = sprintf('&final_uri=%s', rawurlencode(basename(trim(stripslashes_array($_REQUEST['final_uri'])))));
+    if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
+        $final_uri = sprintf('&final_uri=%s', rawurlencode(trim(stripslashes_array($_REQUEST['final_uri']))));
     }
 }
 

@@ -140,20 +140,15 @@ if (!browser_mobile() && !session_is_search_engine()) {
 
     if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-        $final_uri_check = basename(trim(stripslashes_array($_GET['final_uri'])));
+        $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-        $available_files = get_available_files();
-        $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+        $available_admin_files_preg = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
 
-        $available_admin_files = get_available_admin_files();
-        $available_admin_files_preg = implode("|^", array_map('preg_quote_callback', $available_admin_files));
+        $my_controls_preg = implode("|^", array_map('preg_quote_callback', get_available_user_control_files()));
 
-        $my_controls_files = get_available_user_control_files();
-        $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
+        if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-        if (preg_match("/^$available_files_preg/u", $final_uri_check) > 0) {
-
-            $final_uri = basename(trim(stripslashes_array($_GET['final_uri'])));
+            $final_uri = trim(stripslashes_array($_GET['final_uri']));
 
             if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
 

@@ -137,12 +137,17 @@ if (isset($_POST['forum_password'])) {
 
 // Check for a returning page.
 if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_uri']))) > 0) {
+    
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-    $final_uri = basename(trim(stripslashes_array($_POST['final_uri'])));
+    if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_POST['final_uri']))) > 0) {
+        $final_uri = trim(stripslashes_array($_POST['final_uri']));
+    }
+}
+
+if (isset($final_uri)) {
     $redirect_uri = "index.php?webtag=$webtag&final_uri=". rawurlencode($final_uri);
-
 }else {
-
     $redirect_uri = "index.php?webtag=$webtag";
 }
 

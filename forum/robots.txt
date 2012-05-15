@@ -19,6 +19,9 @@
 # USA
 # ======================================================================
 
+User-agent: Mediapartners-Google
+Disallow: 
+
 User-agent: *
 Disallow: /forum/admin.php
 Disallow: /forum/admin_banned.php
@@ -107,3 +110,4 @@ Disallow: /forum/user_menu.php
 Disallow: /forum/user_rel.php
 Disallow: /forum/user_stats.php
 Disallow: /forum/visitor_log.php
+Allow: /

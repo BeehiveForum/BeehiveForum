@@ -104,6 +104,10 @@ if (forum_check_webtag_available($webtag)) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
+    
+    if (forum_get_setting('ajax_chat_enabled', 'Y')) {
+        echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">{$lang['chat']}</a>&nbsp;|&nbsp;\n";
+    } 
 
     if (forum_get_setting('show_links', 'Y')) {
         echo "<a href=\"links.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";

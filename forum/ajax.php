@@ -412,13 +412,13 @@ switch ($_GET['action']) {
         $text_captcha = new captcha(6, 15, 25, 9, 30);
 
         // Generate keys and image.
-        if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
+        if (($text_captcha->generate_keys() && ($text_captcha_image = $text_captcha->make_image()))) {
 
             // Construct array to send as JSON response.
             $text_captcha_data = array(
                 'image' => sprintf(
                     "data:image/jpeg;base64,%s", 
-                    base64_encode($text_captcha->get_image_data())
+                    base64_encode(file_get_contents($text_captcha_image))
                 ),
                 'chars' => $text_captcha->get_num_chars(),
                 'key'   => $text_captcha->get_public_key()

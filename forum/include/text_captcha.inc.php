@@ -128,36 +128,6 @@ class captcha {
         return (mb_strtolower($private_key_check) == mb_strtolower($this->private_key));
     }
     
-    public function get_image_data()
-    {
-        if (!$this->check_working_dir()) {
-            $this->error = TEXT_CAPTCHA_DIR_ERROR;
-            return false;
-        }
-
-        if (!$this->check_keys()) {
-            $this->error = TEXT_CAPTCHA_KEY_ERROR;
-            return false;
-        }
-
-        return file_get_contents("{$this->text_captcha_dir}/images/{$this->public_key}.jpg");
-    }
-
-    public function get_image_filename()
-    {
-        if (!$this->check_working_dir()) {
-            $this->error = TEXT_CAPTCHA_DIR_ERROR;
-            return false;
-        }
-
-        if (!$this->check_keys()) {
-            $this->error = TEXT_CAPTCHA_KEY_ERROR;
-            return false;
-        }
-
-        return "{$this->text_captcha_dir}/images/{$this->public_key}.jpg";
-    }
-
     public function get_num_chars()
     {
         return $this->num_chars;
@@ -283,9 +253,12 @@ class captcha {
 
                     $text_x += (int)($text_size + ($this->min_char_size / 5));
                 }
+                
+                $image_filename = tempnam(sys_get_temp_dir(), 'bhtc');
 
-                imagejpeg($image, $this->get_image_filename());
-                return @file_exists($this->get_image_filename());
+                imagejpeg($image, $image_filename);
+                
+                return $image_filename;
             }
         }
 
@@ -293,28 +266,14 @@ class captcha {
         return false;
     }
 
-    public function destroy_image()
-    {
-        $this->generate_private_key();
-
-        if (@file_exists($this->get_image_filename())) {
-            @unlink($this->get_image_filename());
-        }
-    }
-
     protected function check_working_dir()
     {
         if (!$this->text_captcha_dir) return false;
         
         mkdir_recursive("{$this->text_captcha_dir}/fonts", 0775);
-        mkdir_recursive("{$this->text_captcha_dir}/images", 0775);
 
-        if (@is_dir("{$this->text_captcha_dir}/fonts") && @is_dir("{$this->text_captcha_dir}/images")) {
-
-            if (is_writable("{$this->text_captcha_dir}/images")) {
-
-                return true;
-            }
+        if (@is_dir("{$this->text_captcha_dir}/fonts")) {
+            return true;
         }
 
         return false;
@@ -420,32 +379,6 @@ class captcha {
 
         $this->color_blue = intval(mt_rand($min, $max));
     }
-}
-
-function captcha_clean_up()
-{
-    $unlink_count = 0;
-    
-    if (!($text_captcha_dir = forum_get_setting('text_captcha_dir'))) return false;
-
-    if (!(@$dir = opendir("$text_captcha_dir/images"))) return false;
-
-    while ((($file = @readdir($dir)) !== false) && ($unlink_count < 20)) {
-
-        $captcha_image_file = "$text_captcha_dir/images/$file";
-
-        if ($file[0] == '.' || is_dir($captcha_image_file)) continue;
-
-        if (!file_exists($captcha_image_file)) continue;
-
-        if ((time() - filemtime($captcha_image_file)) < DAY_IN_SECONDS) continue;
-
-        @unlink($captcha_image_file);
-
-        $unlink_count++;
-    }
-
-    return true;
 }
 
 ?>

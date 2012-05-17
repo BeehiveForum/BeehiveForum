@@ -1424,6 +1424,7 @@ $lang['pmsentitems'] = "Sent Items";
 $lang['pmoutbox'] = "Outbox";
 $lang['pmsaveditems'] = "Saved Items";
 $lang['pmdrafts'] = "Drafts";
+$lang['chat'] = "Chat";
 $lang['links'] = "Links";
 $lang['admin'] = "Admin";
 $lang['login'] = "Login";

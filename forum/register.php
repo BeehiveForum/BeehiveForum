@@ -765,7 +765,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo form_input_hidden("private_key", htmlentities_array($text_captcha_private_key));
             echo form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key()));
 
-        }else if ($text_captcha->make_image()) {
+        }else if (($text_captcha_image = $text_captcha->make_image())) {
 
             $forum_owner_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
             $forum_owner_link  = sprintf("<a href=\"mailto:%s\">{$lang['forumowner']}</a>", $forum_owner_email);
@@ -789,7 +789,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf($lang['textcaptchaexplain'], $forum_owner_link), "</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\"><img src=\"data:image/jpeg;base64,", base64_encode($text_captcha->get_image_data()), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><img src=\"data:image/jpeg;base64,", base64_encode(file_get_contents($text_captcha_image)), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", html_style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";

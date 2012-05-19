@@ -60,24 +60,14 @@ function sitemap_get_available_forums()
 {
     if (!$db_sitemap_get_available_forums = db_connect()) return false;
 
-    // Array to hold the results.
-    $forum_fids_array = array();
-
     // Query the database to get list of available forums.
     $sql = "SELECT FID, WEBTAG FROM FORUMS WHERE ACCESS_LEVEL = '0'";
 
     if (!$result = db_query($sql, $db_sitemap_get_available_forums)) return false;
 
-    if (db_num_rows($result) > 0) {
-
-        while (($forum_data = db_fetch_array($result))) {
-            $forum_fids_array[$forum_data['FID']] = $forum_data['WEBTAG'];
-        }
-
-        return $forum_fids_array;
-    }
-
-    return false;
+    if (db_num_rows($result) == 0) return false;
+    
+    return $result;
 }
 
 /**
@@ -96,34 +86,24 @@ function sitemap_forum_get_threads($forum_fid)
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($forum_fid)) return false;
 
-    // Array to hold the results.
-    $threads_array = array();
-
     // Constant for Guest access.
     $user_perm_guest_access = USER_PERM_GUEST_ACCESS;
 
     // Get the table prefix from the forum fid
-    if (($table_data = forum_get_table_prefix($forum_fid))) {
+    if (!($table_data = forum_get_table_prefix($forum_fid))) return false;
 
-        $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD INNER JOIN GROUP_PERMS ";
-        $sql.= "ON (GROUP_PERMS.FID = THREAD.FID) WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
-        $sql.= "AND GROUP_PERMS.PERM & $user_perm_guest_access > 0 ";
-        $sql.= "ORDER BY THREAD.TID";
+    $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
+    $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE FOLDER.PERM & $user_perm_guest_access > 0 ";
+    $sql.= "ORDER BY THREAD.TID";
 
-        if (!$result = db_query($sql, $db_sitemap_forum_get_threads)) return false;
+    if (!($result = db_query($sql, $db_sitemap_forum_get_threads))) return false;
+    
+    if (db_num_rows($result) == 0) return false;
 
-        if (db_num_rows($result) > 0) {
-
-            while (($thread_data = db_fetch_array($result))) {
-                $threads_array[$thread_data['TID']] = $thread_data['MODIFIED'];
-            }
-
-            return $threads_array;
-        }
-    }
-
-    return false;
+    return $result;
 }
 
 /**
@@ -178,11 +158,12 @@ function sitemap_create_file()
     // Header for the sitemap index file
     $sitemap_index_header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $sitemap_index_header.= "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+
     // Sitemap index entry
-    $sitemap_index_entry = "  <sitemap>\n";
-    $sitemap_index_entry.= "    <loc>%s/sitemaps/sitemap%s.xml</loc>\n";
-    $sitemap_index_entry.= "    <lastmod>%s</lastmod>\n";
-    $sitemap_index_entry.= "  </sitemap>\n";
+    $sitemap_index_entry = "<sitemap>\n";
+    $sitemap_index_entry.= "<loc>%s/sitemaps/sitemap%s.xml</loc>\n";
+    $sitemap_index_entry.= "<lastmod>%s</lastmod>\n";
+    $sitemap_index_entry.= "</sitemap>\n";
 
     // Sitemap index footer.
     $sitemap_index_footer = "</sitemapindex>";
@@ -190,12 +171,13 @@ function sitemap_create_file()
     // Header for the sitemap file
     $sitemap_header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $sitemap_header.= "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+
     // Sitemap URL entry
-    $sitemap_url_entry = "  <url>\n";
-    $sitemap_url_entry.= "    <loc>%s/index.php?webtag=%s&amp;msg=%s.1</loc>\n";
-    $sitemap_url_entry.= "    <lastmod>%s</lastmod>\n";
-    $sitemap_url_entry.= "    <changefreq>%s</changefreq>\n";
-    $sitemap_url_entry.= "  </url>\n";
+    $sitemap_url_entry = "<url>\n";
+    $sitemap_url_entry.= "<loc>%s/index.php?webtag=%s&amp;msg=%s.1</loc>\n";
+    $sitemap_url_entry.= "<lastmod>%s</lastmod>\n";
+    $sitemap_url_entry.= "<changefreq>%s</changefreq>\n";
+    $sitemap_url_entry.= "</url>\n";
 
     // Footer for the sitemap file.
     $sitemap_footer = "</urlset>";
@@ -207,13 +189,13 @@ function sitemap_create_file()
     $forum_location = html_get_forum_uri();
 
     // Check that search engine spidering is enabled
-    if (forum_get_setting('allow_search_spidering', 'N')) return false;
+    if (forum_get_setting('allow_search_spidering', 'N')) return __LINE__;
 
     // Check that the sitemap setting is enabled.
-    if (forum_get_setting('sitemap_enabled', 'N')) return false;
+    if (forum_get_setting('sitemap_enabled', 'N')) return __LINE__;
 
     // Fetch the sitemap path.
-    if (!$sitemap_path = sitemap_get_dir()) return false;
+    if (!$sitemap_path = sitemap_get_dir()) return __LINE__;
 
     // Get the sitemap update frequencey (default: 24 hours)
     $sitemap_freq = forum_get_setting('sitemap_freq', false, DAY_IN_SECONDS);
@@ -226,7 +208,7 @@ function sitemap_create_file()
 
         if ((@$file_modified = filemtime("$sitemap_path/sitemap.xml"))) {
 
-            if ((time() - $file_modified) < $sitemap_freq) return false;
+            if ((time() - $file_modified) < $sitemap_freq) return __LINE__;
         }
     }
 
@@ -234,40 +216,40 @@ function sitemap_create_file()
     $bytes_written = 0;
 
     // Open the index file for writing.
-    if (!(@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w'))) return false;
+    if (!(@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w'))) return __LINE__;
 
     // Write the sitemap index header to the index file
     fwrite($fp_index, $sitemap_index_header);
 
     // Open the sitemap file for writing.
-    if (!(@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) return false;
+    if (!(@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) return __LINE__;
 
     // Write the header to the file
     $bytes_written+= fwrite($fp, $sitemap_header);
 
-    // Fetch the data from the database, process it and add it to the sitemap.
-    if (!($available_forums_array = sitemap_get_available_forums())) return false;
-
+    // Query the database to find available forums.
+    if (!($result_forums = sitemap_get_available_forums())) return __LINE__;
+    
     // Iterate over each of the forums.
-    foreach ($available_forums_array as $forum_fid => $webtag) {
+    while (($forum_data = db_fetch_array($result_forums))) {
 
-        // Get the thread data for the current forum.
-        if (!($threads_array = sitemap_forum_get_threads($forum_fid))) return false;
-
+        // Get the MySQL result set for the current forum's threads.
+        if (!($result_threads = sitemap_forum_get_threads($forum_data['FID']))) return __LINE__;
+        
         // Iterate over the threads and add them to the sitemap file.
-        foreach ($threads_array as $thread_tid => $thread_modified) {
+        while (($thread_data = db_fetch_array($result_threads))) {
 
-            $thread_last_modified = date(MYSQL_DATE, $thread_modified);
+            $thread_last_modified = date(MYSQL_DATE, $thread_data['MODIFIED']);
 
-            if ($thread_modified < time() - (90 * DAY_IN_SECONDS)) {
+            if ($thread_last_modified < time() - (90 * DAY_IN_SECONDS)) {
 
                 $change_frequency = "yearly";
 
-            }else if ($thread_modified < time() - (30 * DAY_IN_SECONDS)) {
+            }else if ($thread_last_modified < time() - (30 * DAY_IN_SECONDS)) {
 
                 $change_frequency = "monthly";
 
-            }else if ($thread_modified < time() - (4 * DAY_IN_SECONDS)) {
+            }else if ($thread_last_modified < time() - (4 * DAY_IN_SECONDS)) {
 
                 $change_frequency = "weekly";
 
@@ -277,11 +259,11 @@ function sitemap_create_file()
             }
 
             // Generate the sitemap entry and write it to the file.
-            $sitemap_entry = sprintf($sitemap_url_entry, $forum_location, $webtag, $thread_tid, $thread_last_modified, $change_frequency);
+            $sitemap_entry = sprintf($sitemap_url_entry, $forum_location, $forum_data['WEBTAG'], $thread_data['TID'], $thread_last_modified, $change_frequency);
 
             // If the sitemap file is going to be larger than the 10MB max file size
             // We need to close the current file and open the next in sequence.
-            if ($bytes_written + ((mb_strlen($sitemap_entry) + mb_strlen($sitemap_footer)) * 2) >= 10485760) {
+            if ($bytes_written + ((mb_strlen($sitemap_entry) + mb_strlen($sitemap_footer))) >= 10000000) {
 
                 // Write the footer to the file
                 fwrite($fp, $sitemap_footer);
@@ -308,7 +290,7 @@ function sitemap_create_file()
 
                     fclose($fp_index);
 
-                    return false;
+                    return __LINE__;
                 }
             }
 

@@ -366,10 +366,6 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
         $entry_array = htmlentities_array(explode("\x00", $admin_log_entry['ENTRY']));
 
-        foreach ($entry_array as $key => $value) {
-            if (strlen($value) < 1) $entry_array[$key] = "Unknown";
-        }
-
         switch ($admin_log_entry['ACTION']) {
 
             case CHANGE_USER_STATUS:
@@ -825,7 +821,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $index_link = "<a href=\"index.php?webtag=$webtag&amp;final_uri=%s\" target=\"_blank\">%s</a>";
 
-                if (isset($entry_array[3])) {
+                if (isset($entry_array[3]) && $entry_array[3] > 0) {
 
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[1]);
@@ -834,8 +830,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                     $admin_user_link = $lang['guest'];
                 }
+                
+                $ban_data_match = implode("', '", array_filter(array_slice($entry_array, 0, 3)));
 
-                $action_text = sprintf($lang['sfsbanhit'], $admin_user_link, implode("', '", array_slice($entry_array, 0, 3)));
+                $action_text = sprintf($lang['sfsbanhit'], $admin_user_link, $ban_data_match);
                 break;          
 
             case USER_PERMS_CHANGED:

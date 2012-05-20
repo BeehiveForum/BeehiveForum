@@ -86,6 +86,7 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL, ";
 $sql.= "  IPADDRESS VARCHAR(255) NOT NULL, ";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
+$sql.= "  USER_AGENT VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (VID), ";
 $sql.= "  KEY FORUM (FORUM), ";
@@ -473,6 +474,18 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
     $sql.= "  PRIMARY KEY (UID, TOKEN)";
     $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
 
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+if (!install_column_exists($db_database, "SESSIONS", "USER_AGENT")) {
+    
+    // New USER_AGENT column on SESSIONS table.
+    $sql = "ALTER TABLE SESSIONS ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
+    
     if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;

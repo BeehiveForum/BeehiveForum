@@ -942,7 +942,7 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
 
     forum_check_webtag_available($webtag);
     
-    $request_uri = html_get_forum_uri(basename($_SERVER['PHP_SELF']));
+    $request_uri = basename($_SERVER['PHP_SELF']);
     
     $query_string_array = array();
     

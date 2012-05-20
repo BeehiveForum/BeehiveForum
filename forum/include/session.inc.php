@@ -83,10 +83,10 @@ function session_get($sess_hash)
     
     $sess_hash = db_escape_string($sess_hash);
     
-    $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.REFERER, SESSIONS.FID, ";
-    $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD FROM SESSIONS ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
+    $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.REFERER, ";
+    $sql.= "SESSIONS.USER_AGENT, SESSIONS.FID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+    $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER.EMAIL, USER.PASSWD FROM SESSIONS LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.HASH = '$sess_hash'";
     
     if (!$result = db_query($sql, $db_session_get)) return false;
@@ -133,12 +133,10 @@ function session_restore()
     
     html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
     html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
-
+    
     if (!($sess_hash = session_init($uid))) return false;
     
-    if (!($user_sess = session_get($sess_hash))) return false;
-    
-    return $user_sess;
+    return $sess_hash;
 }
 
 /**
@@ -208,20 +206,24 @@ function session_update($user_sess)
  */
 function session_check($show_session_fail = true, $init_guest_session = true)
 {
-    if (!$db_session_check = db_connect()) return false;
-
-    if (!$ipaddress = get_ip_address()) return false;
-
-    $sess_hash = html_get_cookie('sess_hash', 'is_md5');
+    static $user_sess = false;
     
-    if (!($user_sess = session_get($sess_hash))) {
-        
-        if (isset($sess_hash) && is_md5($sess_hash) && $show_session_fail) {
-            session_expired();
-        }
+    if (!is_array($user_sess)) {
+    
+        if (!$db_session_check = db_connect()) return false;
 
-        if (!($user_sess = session_restore())) {
+        if (!$ipaddress = get_ip_address()) return false;
+        
+        if (!($sess_hash = html_get_cookie('sess_hash'))) {
+            $sess_hash = session_restore();
+        }
+        
+        if (!($user_sess = session_get($sess_hash))) {
             
+            if (is_md5($sess_hash) && $show_session_fail) {
+                session_expired();
+            }
+
             if (!$init_guest_session) return false;
             
             $sess_hash = md5($ipaddress);
@@ -275,7 +277,9 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $http_referer = session_get_referer();
+    $http_referer = db_escape_string(session_get_referer());
+    
+    $http_user_agent = db_escape_string(session_get_user_agent());
 
     $http_referer = db_escape_string($http_referer);
 
@@ -283,10 +287,11 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     
     $search_id = session_is_search_engine();
     
-    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, SID) ";
+    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER, USER_AGENT, SID) ";
     $sql.= "VALUES ('$sess_hash', '$uid', '$forum_fid', '$ipaddress', CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
-    $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), SID = VALUES(SID)";
+    $sql.= "'$http_referer', '$http_user_agent', '$search_id') ON DUPLICATE KEY ";
+    $sql.= "UPDATE FID = VALUES(FID), TIME = VALUES(TIME), IPADDRESS = VALUES(IPADDRESS), ";
+    $sql.= "REFERER = VALUES(REFERER), USER_AGENT = VALUES(USER_AGENT), SID = VALUES(SID)";
 
     if (!db_query($sql, $db_session_init)) return false;
 
@@ -486,6 +491,8 @@ function session_update_visitor_log($uid, $forum_fid)
     if (!$ipaddress = get_ip_address()) return false;
 
     $http_referer = db_escape_string(session_get_referer());
+    
+    $http_user_agent = db_escape_string(session_get_user_agent());
 
     $ipaddress = db_escape_string($ipaddress);
 
@@ -493,11 +500,12 @@ function session_update_visitor_log($uid, $forum_fid)
     
     $search_id = session_is_search_engine();
 
-    $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+    $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT, SID) ";
     $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', ";
-    $sql.= "'$http_referer', '$search_id') ON DUPLICATE KEY UPDATE FORUM = VALUES(FORUM), ";
-    $sql.= "LAST_LOGON = CAST('$current_datetime' AS DATETIME), IPADDRESS = VALUES(IPADDRESS), ";
-    $sql.= "REFERER = VALUES(REFERER), SID = VALUES(SID)";
+    $sql.= "'$http_referer', '$http_user_agent', '$search_id') ON DUPLICATE KEY UPDATE ";
+    $sql.= "FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), USER_AGENT = VALUES(USER_AGENT), ";
+    $sql.= "SID = VALUES(SID)";
 
     if (!db_query($sql, $db_session_update_visitor_log)) return false;
 
@@ -952,6 +960,33 @@ function session_get_referer()
             if (preg_match("/^$forum_uri_preg/iu", $http_referer) > 0) $http_referer = "";
 
         }else {
+
+            $http_referer = "";
+        }
+    }
+
+    return $http_referer;
+}
+
+/**
+ * Get HTTP user agent
+ * 
+ * Get the HTTP user agent that was used to initialise
+ * a session. If the session does not contain an existing
+ * user agent, it is determined from the HTTP headers.
+ * 
+ * @param void
+ * @return string
+ */
+function session_get_user_agent()
+{
+    if (($http_referer = session_get_value('USER_AGENT')) === false) {
+
+        if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
+
+            return $_SERVER['HTTP_USER_AGENT'];
+
+        } else {
 
             $http_referer = "";
         }

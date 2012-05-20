@@ -61,15 +61,19 @@ include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function html_guest_error()
+function html_guest_error($final_uri = null)
 {
     $frame_top_target = html_get_top_frame_name();
 
     $lang = load_language_file();
 
     $webtag = get_webtag();
-
-    $final_uri = sprintf("logon.php?webtag=%s&final_uri=%s", $webtag, rawurlencode(basename(get_request_uri(true, false))));
+    
+    if (!isset($final_uri)) {
+        $final_uri = get_request_uri(true, false);
+    }
+        
+    $final_uri = sprintf("logon.php?webtag=%s&final_uri=%s", $webtag, rawurlencode($final_uri));
 
     $popup_files_preg = get_available_js_popup_files_preg();
 
@@ -79,7 +83,7 @@ function html_guest_error()
     if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
         html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg($lang['guesterror'], $final_uri, 'post', array('close_popup' => $lang['close']));
+        html_error_msg($lang['guesterror'], false, 'post', array('close_popup' => $lang['close']));
         html_draw_bottom();
 
     }else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
@@ -91,7 +95,7 @@ function html_guest_error()
     }else {
 
         html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg($lang['guesterror'], 'logout.php', 'post', array('submit' => $lang['loginnow'], 'register' => $lang['register']), array('final_uri' => $final_uri), $frame_top_target);
+        html_error_msg($lang['guesterror'], html_get_forum_file_path('logout.php'), 'post', array('submit' => $lang['loginnow'], 'register' => $lang['register']), array('final_uri' => $final_uri), $frame_top_target);
         html_draw_bottom();
     }
 }
@@ -687,17 +691,6 @@ function html_draw_top()
 
     if (!isset($resize_width)) $resize_width = 0;
 
-    // Default Meta keywords and description.
-    $meta_keywords = word_filter_add_ob_tags(html_get_forum_keywords());
-    $meta_description = word_filter_add_ob_tags(html_get_forum_description());
-
-    // Get the page meta keywords and description
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
-    }
-
-    $forum_content_rating = html_get_forum_content_rating();
-
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     if ($frame_set_html === false) {
@@ -710,6 +703,10 @@ function html_draw_top()
     echo "<head>\n";
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+    
+    // Default Meta keywords and description.
+    $meta_keywords = html_get_forum_keywords();
+    $meta_description = html_get_forum_description();
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -722,10 +719,10 @@ function html_draw_top()
             $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
             $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
 
-            echo "<link rel=\"first\" href=\"index.php?webtag=$webtag&amp;msg=$tid.1\" />\n";
-            echo "<link rel=\"previous\" href=\"index.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}\" />\n";
-            echo "<link rel=\"next\" href=\"index.php?webtag=$webtag&amp;msg=$tid.$next_page\" />\n";
-            echo "<link rel=\"last\" href=\"index.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
+            echo "<link rel=\"first\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+            echo "<link rel=\"previous\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}"), "\" />\n";
+            echo "<link rel=\"next\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
+            echo "<link rel=\"last\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
 
@@ -746,6 +743,8 @@ function html_draw_top()
 
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
+    
+    $forum_content_rating = html_get_forum_content_rating();
 
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_keywords)), "\" />\n";
@@ -770,26 +769,26 @@ function html_draw_top()
 
     if (forum_check_webtag_available($webtag)) {
 
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_forum_uri(html_style_image('msie/unread_thread.ico')));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_style_image('msie/unread_thread.ico', true, true));
 
         if (forum_get_setting('show_links', 'Y')) {
-            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_forum_uri(html_style_image('msie/link.ico')));
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_style_image('msie/link.ico', true, true));
         }
     }
 
     if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_forum_uri(html_style_image('msie/pmunread.ico')));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_style_image('msie/pmunread.ico', true, true));
     }
 
     if (forum_check_webtag_available($webtag)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_forum_uri(html_style_image('msie/user_controls.ico')));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_style_image('msie/user_controls.ico', true, true));
     }
 
     if (session_check(false, false) && (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_forum_uri(html_style_image('msie/admintool.ico')));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admintool.ico', true, true));
     }
 
-    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_uri("index.php?webtag=$webtag"));
+    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_file_path("index.php?webtag=$webtag"));
 
     if ((basename($_SERVER['PHP_SELF']) == "index.php") && session_check(false, false)) {
 
@@ -808,9 +807,9 @@ function html_draw_top()
 
     if (($user_style_path = html_get_user_style_path())) {
 
-        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path), true, true));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path), true, true));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path), true, true));
+        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path)));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path)));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path)));
 
         printf("<link rel=\"shortcut icon\" type=\"image/ico\"href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
@@ -1228,13 +1227,13 @@ function html_js_safe_str($str)
     return strtr($str, $unsafe_chars_tbl);
 }
 
-function html_style_image($img, $allow_cdn = true, $use_full_path = false)
+function html_style_image($img, $allow_cdn = true)
 {
     if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path(sprintf('styles/default/images/%s', $img), $allow_cdn, $use_full_path);
+        return html_get_forum_file_path(sprintf('styles/default/images/%s', $img), $allow_cdn);
     }
 
-    return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img), $allow_cdn, $use_full_path);
+    return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img), $allow_cdn);
 }
 
 function html_set_cookie($name, $value, $expires = 0)
@@ -1518,7 +1517,7 @@ function html_get_forum_uri($append_path = null)
     return $server_uri;
 }
 
-function html_get_forum_file_path($file_path, $allow_cdn = true, $use_full_path = false)
+function html_get_forum_file_path($file_path, $allow_cdn = true)
 {
     // Cache of requested file paths.
     static $file_path_cache_array = array();
@@ -1540,8 +1539,6 @@ function html_get_forum_file_path($file_path, $allow_cdn = true, $use_full_path 
         // If CDN is allowed, get the CDN path including the domain.
         if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
             $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
-        } else if (($use_full_path === true) && ($forum_uri = html_get_forum_uri())) {
-            $final_file_path = sprintf('%s/%s', $forum_uri, ltrim($file_path, '/'));
         } else {
             $final_file_path = preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
         }

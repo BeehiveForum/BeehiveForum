@@ -125,6 +125,8 @@ function session_get($sess_hash)
  */
 function session_restore()
 {
+    if (!($db_session_restore = db_connect())) return false;
+    
     if (!($user_logon = html_get_cookie('user_logon'))) return false;
 
     if (!($user_token = html_get_cookie('user_token'))) return false;
@@ -133,7 +135,7 @@ function session_restore()
     
     html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
     html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
-    
+
     if (!($sess_hash = session_init($uid))) return false;
     
     return $sess_hash;
@@ -200,11 +202,10 @@ function session_update($user_sess)
  * they are redirected to a page to re-initialise
  * the session.
  *
- * @param bool $show_session_fail
  * @param bool $init_guest_session
  * @return mixed
  */
-function session_check($show_session_fail = true, $init_guest_session = true)
+function session_check($init_guest_session = true)
 {
     static $user_sess = false;
     
@@ -212,27 +213,26 @@ function session_check($show_session_fail = true, $init_guest_session = true)
     
         if (!$db_session_check = db_connect()) return false;
 
-        if (!$ipaddress = get_ip_address()) return false;
+        $sess_hash = html_get_cookie('sess_hash', 'is_md5');
         
-        if (!($sess_hash = html_get_cookie('sess_hash'))) {
+        if (!($user_sess = session_get($sess_hash)) || ($user_sess['UID'] == 0)) {
+        
             $sess_hash = session_restore();
-        }
-        
-        if (!($user_sess = session_get($sess_hash))) {
-            
-            if (is_md5($sess_hash) && $show_session_fail) {
-                session_expired();
-            }
-
-            if (!$init_guest_session) return false;
-            
-            $sess_hash = md5($ipaddress);
             
             if (!($user_sess = session_get($sess_hash))) {
-        
-                if (!($sess_hash = session_init(0))) return false;
+                
+                if (!$init_guest_session) return false;
+                
+                if (!$ipaddress = get_ip_address()) return false;
+                
+                $sess_hash = md5($ipaddress);
+
+                if (!($user_sess = session_get($sess_hash))) {
             
-                if (!($user_sess = session_get($sess_hash))) return false;
+                    if (!($sess_hash = session_init(0))) return false;
+                
+                    if (!($user_sess = session_get($sess_hash))) return false;
+                }
             }
         }
     }
@@ -307,98 +307,6 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     }
 
     return $sess_hash;
-}
-
-/**
- * Display session expired message
- * 
- * Displays a HTML message to the user indicating
- * that their session has expired, i.e. they have
- * a cookie but we no longer have a record that
- * matches it.
- * 
- * @param void
- * @return void
- */
-function session_expired()
-{
-    $webtag = get_webtag();
-
-    $lang = load_language_file();
-
-    if (defined("BEEHIVEMODE_LIGHT")) {
-
-        $final_uri = rawurlencode(get_request_uri());
-        header_redirect("llogon.php?webtag=$webtag&final_uri=$final_uri");
-    }
-
-    cache_disable();
-
-    html_draw_top('logon.js');
-
-    if (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
-
-        if (logon_perform()) {
-
-            unset($_POST['user_logon'], $_POST['user_password'], $_POST['logon'], $_POST['webtag'], $_POST['register']);
-
-            $request_uri = get_request_uri(true, false);
-
-            if ((isset($_POST) && is_array($_POST) && sizeof($_POST) > 0)) {
-
-                html_draw_top('logon.js');
-
-                echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
-
-                html_display_warning_msg($lang['presscontinuetoresend'], '600', 'center');
-
-                echo "<div align=\"center\">\n";
-
-                if (stristr($request_uri, 'logon.php')) {
-
-                    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
-
-                }else {
-
-                    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-                }
-
-                echo form_input_hidden('webtag', htmlentities_array($webtag));
-
-                echo form_input_hidden_array(stripslashes_array($_POST));
-
-                echo form_submit('continue', $lang['continue']), "&nbsp;";
-                echo "<a href=\"$request_uri\" class=\"button\"><span>{$lang['cancel']}</span></a>\n";
-                echo "</form>\n";
-                echo "</div>\n";
-
-                html_draw_bottom();
-                exit;
-
-            }else {
-
-                header_redirect($request_uri, $lang['loggedinsuccessfully']);
-                exit;
-            }
-
-        }else {
-
-            html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');
-        }
-
-    }else {
-
-        html_display_error_msg($lang['yoursessionhasexpired'], '500', 'center');
-    }
-
-    echo "<div align=\"center\">\n";
-
-    logon_draw_form(LOGON_FORM_SESSION_EXPIRED);
-
-    echo "</div>\n";
-
-    html_draw_bottom();
-    exit;
 }
 
 /**
@@ -563,51 +471,28 @@ function session_update_user_time($uid)
  * Ends current user session.
  *
  * Ends session for current logged in user by destroying their cookie.
- * DOES NOT remove the data from the SESSION table.
- *
- * @param void
- * @return void
- */
-function session_remove_cookies()
-{
-    $webtag = get_webtag();
-
-    // Unset the session cookies.
-    html_set_cookie("sess_hash", "", time() - YEAR_IN_SECONDS);
-
-    // Unset the forum password cookie if any.
-    if (forum_check_webtag_available($webtag)) {
-        html_set_cookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
-    }
-}
-
-/**
- * Ends current user session.
- *
- * Ends session for current logged in user by destroying their cookie.
  * and removing the data from the SESSION table.
  *
  * @param void
  * @return bool
  */
-function session_end($remove_cookies = true)
+function session_end()
 {
     if (!$db_session_end = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    $sess_hash = html_get_cookie('sess_hash', 'is_md5', md5($ipaddress));
+    $sess_hash = html_get_cookie('sess_hash', 'is_md5');
+    
+    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$sess_hash'";
+    
+    if (!db_query($sql, $db_session_end)) return false;
+    
+    html_set_cookie("sess_hash", "", time() - YEAR_IN_SECONDS);
 
-    if (isset($sess_hash) && is_md5($sess_hash)) {
-
-        if ($remove_cookies === true) {
-            session_remove_cookies();
-        }
-
-        $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$sess_hash'";
-
-        if (!db_query($sql, $db_session_end)) return false;
-    }
+    if (($webtag = get_webtag())) {
+        html_set_cookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
+    }    
 
     return true;
 }
@@ -832,7 +717,7 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
     if (!is_numeric($perm)) return false;
 
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
-
+    
     if (!isset($user_sess['UID'])) return false;
 
     if ($forum_fid === false) {
@@ -841,7 +726,7 @@ function session_get_folders_by_perm($perm, $forum_fid = false)
 
         $forum_fid = $table_data['FID'];
     }
-
+    
     if (!isset($user_sess['PERMS'][$forum_fid])) {
 
         $user_sess['PERMS'][$forum_fid] = array();

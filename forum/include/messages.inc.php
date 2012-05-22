@@ -1352,7 +1352,7 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
 
     echo "    <td align=\"left\">\n";
-    echo "      <table width=\"98%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
     echo "          <td align=\"left\">\n";
     echo "            <table class=\"posthead\" width=\"100%\">\n";

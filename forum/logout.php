@@ -89,7 +89,7 @@ if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['f
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
-        $final_uri = sprintf('&final_uri=%s', rawurlencode(trim(stripslashes_array($_REQUEST['final_uri']))));
+        $final_uri = sprintf('&final_uri=%s', rawurlencode(href_cleanup_query_keys($_REQUEST['final_uri'])));
     }
 }
 

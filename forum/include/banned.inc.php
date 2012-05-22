@@ -42,14 +42,26 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "sfs.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function ban_check($user_sess, $user_is_guest = false)
+function ban_check($user_data, $send_error = true)
 {
     if (!$db_ban_check = db_connect()) return false;
 
-    if (!is_array($user_sess)) return false;
-    if (!is_bool($user_is_guest)) $user_is_guest = false;
+    if (!is_array($user_data)) return false;
+    
+    $user_data_keys = array(
+        'IPADDRESS', 
+        'REFERER', 
+        'LOGON', 
+        'NICKNAME', 
+        'EMAIL'
+    );
+    
+    $user_data = array_intersect_key(
+        $user_data, 
+        array_flip($user_data_keys)
+    );
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_data = get_table_prefix())) return false;
 
     $admin_log_types_array = array(
         BAN_TYPE_IP    => BAN_HIT_TYPE_IP,
@@ -64,37 +76,34 @@ function ban_check($user_sess, $user_is_guest = false)
     
     $user_banned = false;
     
-    if (($ipaddress = get_ip_address())) {
+    if (isset($user_data['IPADDRESS']) && strlen(trim($user_data['IPADDRESS'])) > 0) {
 
-        $ban_check_select_array[] = sprintf("'%s' AS IPADDRESS", db_escape_string($ipaddress));
-        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($ipaddress), BAN_TYPE_IP);
+        $ban_check_select_array[] = sprintf("'%s' AS IPADDRESS", db_escape_string($user_data['IPADDRESS']));
+        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_data['IPADDRESS']), BAN_TYPE_IP);
     }
 
-    if (isset($user_sess['REFERER']) && strlen(trim($user_sess['REFERER'])) > 0) {
+    if (isset($user_data['REFERER']) && strlen(trim($user_data['REFERER'])) > 0) {
 
-        $ban_check_select_array[] = sprintf("'%s' AS REFERER", db_escape_string($user_sess['REFERER']));
-        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_sess['REFERER']), BAN_TYPE_REF);
+        $ban_check_select_array[] = sprintf("'%s' AS REFERER", db_escape_string($user_data['REFERER']));
+        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_data['REFERER']), BAN_TYPE_REF);
     }
 
-    if ($user_is_guest === false) {
+    if (isset($user_data['LOGON']) && strlen(trim($user_data['LOGON'])) > 0) {
 
-        if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
+        $ban_check_select_array[] = sprintf("'%s' AS LOGON", db_escape_string($user_data['LOGON']));
+        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_data['LOGON']), BAN_TYPE_LOGON);
+    }
 
-            $ban_check_select_array[] = sprintf("'%s' AS LOGON", db_escape_string($user_sess['LOGON']));
-            $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_sess['LOGON']), BAN_TYPE_LOGON);
-        }
+    if (isset($user_data['NICKNAME']) && strlen(trim($user_data['NICKNAME'])) > 0) {
 
-        if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
+        $ban_check_select_array[] = sprintf("'%s' AS NICKNAME", db_escape_string($user_data['NICKNAME']));
+        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_data['NICKNAME']), BAN_TYPE_NICK);
+    }
 
-            $ban_check_select_array[] = sprintf("'%s' AS NICKNAME", db_escape_string($user_sess['NICKNAME']));
-            $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_sess['NICKNAME']), BAN_TYPE_NICK);
-        }
+    if (isset($user_data['EMAIL']) && strlen(trim($user_data['EMAIL'])) > 0) {
 
-        if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
-
-            $ban_check_select_array[] = sprintf("'%s' AS EMAIL", db_escape_string($user_sess['EMAIL']));
-            $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_sess['EMAIL']), BAN_TYPE_EMAIL);
-        }
+        $ban_check_select_array[] = sprintf("'%s' AS EMAIL", db_escape_string($user_data['EMAIL']));
+        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", db_escape_string($user_data['EMAIL']), BAN_TYPE_EMAIL);
     }
 
     $ban_check_select_list = implode(", ", $ban_check_select_array);
@@ -122,8 +131,8 @@ function ban_check($user_sess, $user_is_guest = false)
 
                     if (($ban_check_data = ban_check_process_data($ban_check_result_array))) {
 
-                        if ($user_is_guest === false) {
-                            array_push($ban_check_data, $user_sess['UID'], $user_sess['LOGON']);
+                        if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
+                            array_push($ban_check_data, $user_data['UID'], $user_data['LOGON']);
                         }
 
                         admin_add_log_entry($admin_log_types_array[$ban_check_type], $ban_check_data);
@@ -133,31 +142,21 @@ function ban_check($user_sess, $user_is_guest = false)
         }
     }
     
-    if (($user_banned === false) && ($ipaddress = get_ip_address())) {
+    if ($user_banned !== true) {
         
-        if ($user_is_guest === false) {
+        if (($user_banned = sfs_check_banned($user_data))) {
             
-            if (($user_banned = sfs_check_banned($ipaddress, $user_sess['LOGON'], $user_sess['EMAIL']))) {
-                
-                admin_add_log_entry(BAN_HIT_TYPE_SFS, array($ipaddress, $user_sess['LOGON'], $user_sess['EMAIL'], $user_sess['UID']));    
-            }
-        
-        } else {
-            
-            if (($user_banned = sfs_check_banned($ipaddress))) {
-                
-                admin_add_log_entry(BAN_HIT_TYPE_SFS, array($ipaddress));
-            }
+            admin_add_log_entry(BAN_HIT_TYPE_SFS, $user_data);    
         }
     }
     
-    if ($user_banned === true) {
+    if (($user_banned === true) && ($send_error === true)) {
         
         header_status(500, 'Internal Server Error');
         exit;                
     }
     
-    return true;
+    return $user_banned;
 }
 
 function ban_check_process_data($ban_result)

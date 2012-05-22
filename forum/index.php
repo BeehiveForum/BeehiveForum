@@ -148,19 +148,15 @@ if (!browser_mobile() && !session_is_search_engine()) {
 
         if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
-            $final_uri = trim(stripslashes_array($_GET['final_uri']));
+            $final_uri = href_cleanup_query_keys($_GET['final_uri']);
 
-            if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
-
-                $final_uri = href_cleanup_query_keys($final_uri);
-
-            } else if (preg_match("/^logon.php/u", $final_uri) > 0) {
+            if (preg_match("/^logon.php/u", $final_uri) > 0) {
 
                 $hide_navigation = true;
 
             } else if (preg_match("/^$available_admin_files_preg/u", $final_uri) > 0) {
 
-                $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
+                $final_uri = rawurlencode($final_uri);
                 $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
 
             } else if (preg_match("/^$my_controls_preg/u", $final_uri) > 0) {

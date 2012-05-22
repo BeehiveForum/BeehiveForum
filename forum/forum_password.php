@@ -141,7 +141,7 @@ if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_u
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_POST['final_uri']))) > 0) {
-        $final_uri = trim(stripslashes_array($_POST['final_uri']));
+        $final_uri = href_cleanup_query_keys($_POST['final_uri']);
     }
 }
 

@@ -33,7 +33,7 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-function sfs_check_banned($ip_address = null, $username = null, $email = null)
+function sfs_check_banned($user_data)
 {
     if (forum_get_setting('sfs_enabled', 'N')) {
         return false;
@@ -43,16 +43,16 @@ function sfs_check_banned($ip_address = null, $username = null, $email = null)
         'f' => 'json',
     );
     
-    if (isset($ip_address)) {
-        $request['ip'] = $ip_address;
+    if (isset($user_data['IPADDRESS']) && strlen(trim($user_data['IPADDRESS'])) > 0) {
+        $request['ip'] = $user_data['IPADDRESS'];
     }
     
-    if (isset($username)) {
-        $request['username'] = $username;
+    if (isset($user_data['LOGON']) && strlen(trim($user_data['LOGON'])) > 0) {
+        $request['username'] = $user_data['LOGON'];
     }
     
-    if (isset($email)) {
-        $request['email'] = $email;
+    if (isset($user_data['EMAIL']) && strlen(trim($user_data['EMAIL'])) > 0) {
+        $request['email'] = $user_data['EMAIL'];
     }
     
     if (sizeof($request) < 2) {

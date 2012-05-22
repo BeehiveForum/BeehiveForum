@@ -1148,7 +1148,7 @@ class html_frame
 
     function output_html()
     {
-        echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", $this->src, $this->name, $this->frameborder);
+        echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", htmlentities_array($this->src), htmlentities_array($this->name), htmlentities_array($this->frameborder));
         echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
         echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
         echo sprintf("%s/>\n", $this->allowtransparency);

@@ -94,7 +94,7 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
-        $final_uri = trim(stripslashes_array($_GET['final_uri']));
+        $final_uri = href_cleanup_query_keys($_GET['final_uri']);
     }
 }
 
@@ -415,7 +415,6 @@ if (isset($_POST['register'])) {
             if ($valid) {
 
                 $text_captcha->set_public_key($public_key);
-                $text_captcha->destroy_image();
 
                 if (!$text_captcha->verify_keys($private_key)) {
 
@@ -454,6 +453,23 @@ if (isset($_POST['register'])) {
         }
     }
 
+    if ($valid) {
+        
+        $user_data = array(
+            'IPADDRESS' => get_ip_address(),
+            'REFERER' => session_get_referer(),
+            'LOGON' => $logon,
+            'NICKNAME' => $nickname,
+            'EMAIL' => $email
+        );
+        
+        if (ban_check($user_data)) {
+        
+            $error_msg_array[] = $lang['usernameorpasswdnotvalid'];
+            $valid = false;
+        }
+    }
+    
     if ($valid) {
 
         if (($new_uid = user_create($logon, $password, $nickname, $email))) {

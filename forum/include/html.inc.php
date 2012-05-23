@@ -1148,7 +1148,7 @@ class html_frame
 
     function output_html()
     {
-        echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", htmlentities_array($this->src), htmlentities_array($this->name), htmlentities_array($this->frameborder));
+        echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", $this->src, $this->name, $this->frameborder);
         echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
         echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
         echo sprintf("%s/>\n", $this->allowtransparency);
@@ -1261,7 +1261,7 @@ function html_set_cookie($name, $value, $expires = 0)
             if (isset($cookie_domain_array['host']) && isset($cookie_domain_array['path'])) {
 
                 // Set the cookie with hostname and path.
-                return setcookie($name, $value, $expires, $cookie_domain_array['path'], ".{$cookie_domain_array['host']}", $cookie_secure);
+                return setcookie($name, $value, $expires, $cookie_domain_array['path'], ".{$cookie_domain_array['host']}", $cookie_secure, true);
             }
         }
     }
@@ -1300,7 +1300,7 @@ function html_remove_all_cookies()
 
 // Remove named $keys from the query of a URI
 // $keys can be an array or a single key to remove
-function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;")
+function href_cleanup_query_keys($uri, $remove_keys = null)
 {
     $uri_array = parse_url($uri);
 
@@ -1309,37 +1309,14 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri_query_array = array();
 
         parse_str($uri_array['query'], $uri_query_array);
-
-        unset($uri_array['query']);
-
-        $uri_query_keys = array();
-        $uri_query_values = array();
-
-        flatten_array($uri_query_array, $uri_query_keys, $uri_query_values);
-
-        $new_uri_query_array = array();
-
-        foreach ($uri_query_keys as $key => $key_name) {
-
-            if (strlen($key_name) > 0) {
-
-                if ($remove_keys === false || (is_array($remove_keys) && !in_array($key_name, $remove_keys)) || $key_name != $remove_keys) {
-
-                    if (isset($uri_query_values[$key]) && strlen($uri_query_values[$key]) > 0) {
-
-                        $new_uri_query_array[] = sprintf('%s=%s', urlencode($key_name), urlencode($uri_query_values[$key]));
-
-                    }else {
-
-                        $new_uri_query_array[] = urlencode($key_name);
-                    }
-                }
-            }
+        
+        if (is_array($remove_keys)) {
+            $uri_query_array = array_diff_key($uri_query_array, $remove_keys);
+        } else if (is_string($remove_keys)) {
+            unset($uri_query_array[$remove_keys]);
         }
 
-        if (sizeof($new_uri_query_array) > 0) {
-            $uri_array['query'] = implode($seperator, $new_uri_query_array);
-        }
+        $uri_array['query'] = http_build_query($uri_query_array, null, '&');
     }
 
     return build_url_str($uri_array);

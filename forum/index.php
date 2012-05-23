@@ -101,24 +101,6 @@ $webtag = get_webtag();
 
 forum_check_webtag_available($webtag);
 
-if (isset($_GET['logon_failed'])) {
-    $logon_failed = '&amp;logon_failed=true';
-}else {
-    $logon_failed = false;
-}
-
-if (isset($_GET['logout_success'])) {
-    $logout_success = '&amp;logout_success=true';
-}else {
-    $logout_success = false;
-}
-
-if (isset($_GET['other_logon'])) {
-    $other_logon = '&amp;other_logon=true';
-}else {
-    $other_logon = false;
-}
-
 if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
 
     html_set_cookie('view', 'full');
@@ -161,7 +143,7 @@ if (!browser_mobile() && !session_is_search_engine()) {
 
             } else if (preg_match("/^$my_controls_preg/u", $final_uri) > 0) {
 
-                $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
+                $final_uri = rawurlencode(href_cleanup_query_keys($final_uri));
                 $final_uri = "user.php?webtag=$webtag&amp;page=$final_uri";
             }
         }

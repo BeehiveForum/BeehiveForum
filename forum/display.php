@@ -183,26 +183,7 @@ echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true), "</td>\n";
-echo "    <td align=\"right\">\n";
-
-if ((forum_get_setting('show_share_links', 'Y')) && (session_get_value('SHOW_SHARE_LINKS') == 'Y')) {
-
-    echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
-    echo "        <g:plusone size=\"small\" count=\"false\" href=\"",  htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "\"></g:plusone>\n";
-    echo "      </div>\n";
-    echo "      <div style=\"display: inline-block; width: 47px; vertical-align: middle; margin-top: 2px; overflow: hidden\">\n";
-    echo "        <iframe src=\"http://www.facebook.com/plugins/like.php?href=", urlencode(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>\n";
-    echo "      </div>\n";
-    echo "      <div style=\"display: inline-block; width: 55px; vertical-align: middle; overflow: hidden\">\n";
-    echo "        <a href=\"http://twitter.com/share\" class=\"twitter-share-button\" data-url=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "\" data-count=\"none\">Tweet</a>\n";
-    echo "      </div>\n";
-
-} else {
-
-    echo "&nbsp;";
-}
-
-echo "    </td>\n";
+echo "    <td align=\"right\">", messages_social_links($tid), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

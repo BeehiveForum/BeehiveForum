@@ -177,7 +177,7 @@ if (user_is_guest()) {
 
     } else {
 
-        $thread_mode = html_get_cookie("thread_mode_{$webtag}", false, UNREAD_DISCUSSIONS);
+        $thread_mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
 
         if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $thread_mode = ALL_DISCUSSIONS;

@@ -326,7 +326,7 @@ function forum_check_password($forum_fid)
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
 
     // Check the stored cookie against the known hash of the forum password.
-    if (html_get_cookie("sess_hash_{$webtag}") == $forum_passhash) return true;
+    if (html_get_cookie("sess_hash_{$webtag}", 'is_md5') == $forum_passhash) return true;
 
     // Load language file.
     $lang = load_language_file();

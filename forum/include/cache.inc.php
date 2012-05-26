@@ -401,7 +401,7 @@ function cache_check_logon_hash()
 {
     $logon_hash_check = md5(session_get_value('LOGON'));
 
-    if (($logon_hash = html_get_cookie('cache_hash', 'strlen', ''))) {
+    if (($logon_hash = html_get_cookie('cache_hash', 'is_md5', ''))) {
         if ($logon_hash === $logon_hash_check) return true;
     }
 

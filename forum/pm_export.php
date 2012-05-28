@@ -163,7 +163,7 @@ if (isset($_POST['export'])) {
         $options_array['PM_EXPORT_FILE'] = 0;
     }
 
-    if (isset($_POST['pm_export_type']) && in_array($_POST['pm_export_file'], range(0, 1))) {
+    if (isset($_POST['pm_export_type']) && in_array($_POST['pm_export_type'], range(0, 1))) {
         $options_array['PM_EXPORT_TYPE'] = $_POST['pm_export_type'];
     }else {
         $options_array['PM_EXPORT_TYPE'] = 0;

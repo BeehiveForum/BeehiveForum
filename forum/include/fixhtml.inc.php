@@ -112,7 +112,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                     $close = true;
                     $tag = mb_substr($tag[0], 1);
 
-                }else {
+                } else {
 
                     $close = false;
                     $tag = $tag[0];
@@ -126,7 +126,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $html_parts[$i] = '/pre';
 
-                    }else if ($tag == 'code') {
+                    } else if ($tag == 'code') {
 
                         $lang_tmp = array();
 
@@ -156,7 +156,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                         if (strlen($lang_geshi) > 0) {
                                             $code_highlighter->set_language($lang_geshi);
-                                        }else {
+                                        } else {
                                             $code_highlighter->set_language(strtolower($lang));
                                         }
 
@@ -173,19 +173,19 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                         break;
 
-                                    }else {
+                                    } else {
 
                                         $open_code--;
                                     }
 
-                                }else if (substr($html_parts[$j], 0, 4) == 'code') {
+                                } else if (substr($html_parts[$j], 0, 4) == 'code') {
 
                                     $open_code++;
                                 }
 
                                 $tmpcode.= '<'. $html_parts[$j]. '>';
 
-                            }else {
+                            } else {
 
                                 $tmpcode.= $html_parts[$j];
                             }
@@ -201,11 +201,11 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $i += 10;
 
-                    }else if ($tag == 'quote' && $close == true) {
+                    } else if ($tag == 'quote' && $close == true) {
 
                         $html_parts[$i] = '/div';
 
-                    }else if ($tag == 'quote') {
+                    } else if ($tag == 'quote') {
 
                         $source_name = stristr($html_parts[$i], ' source=');
                         $source_name = mb_substr($source_name, 8);
@@ -218,7 +218,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                 $source_pos = 1;
 
-                            }else {
+                            } else {
 
                                 $source_pos = 0;
                                 $qu = false;
@@ -240,7 +240,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             $source_name = mb_substr($source_name, $source_pos, $j);
 
-                        }else {
+                        } else {
 
                             $source_name = '';
                         }
@@ -256,7 +256,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                 $url_pos = 1;
 
-                            }else {
+                            } else {
 
                                 $url_pos = 0;
                                 $qu = false;
@@ -278,7 +278,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             $url_name = mb_substr($url_name, $url_pos, $j);
 
-                        }else {
+                        } else {
 
                             $url_name = '';
                         }
@@ -296,14 +296,14 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             $i += 12;
 
-                        }else {
+                        } else {
 
                             $html_parts[$i] = "div class=\"quote\"";
                             array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", '', 'b', "$fix_html_quote_text ", '/b', $source_name, '/div', ''));
                             $i += 8;
                         }
 
-                    }else if ($tag == 'spoiler' && $close == true) {
+                    } else if ($tag == 'spoiler' && $close == true) {
 
                         $html_parts[$i] = '/span';
 
@@ -311,7 +311,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $i+= 2;
 
-                    }else if ($tag == 'spoiler') {
+                    } else if ($tag == 'spoiler') {
 
                         $html_parts[$i] = 'span';
 
@@ -319,7 +319,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $i+= 2;
 
-                    }else if ($tag == 'youtube') {
+                    } else if ($tag == 'youtube') {
 
                         if (!isset($html_parts[$i + 1], $html_parts[$i + 2]) || ($html_parts[$i + 2] !== '/youtube')) {
 
@@ -345,7 +345,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                 $i+= 3;
 
-                            }else if (isset($matches_array[9])) {
+                            } else if (isset($matches_array[9])) {
 
                                 $html_parts[$i] = sprintf('iframe class="youtube" width="480" height="390" src="%1$s://www.youtube.com/embed/%2$s" title="%2$s" frameborder="0" allowfullscreen="true"', $matches_array[2], $matches_array[9]);
 
@@ -361,7 +361,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             }
                         }
 
-                    }else if ($tag == 'flash') {
+                    } else if ($tag == 'flash') {
 
                         $matches_array = array();
 
@@ -415,13 +415,13 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         }
                     }
 
-                }else {
+                } else {
 
                     $html_parts[$i - 1].= '&lt;'. $html_parts[$i]. '&gt;';
                     $html_parts[$i] = '';
                 }
 
-            }else {
+            } else {
 
                 $html_parts[$i] = str_replace('<', '&lt;', $html_parts[$i]);
                 $html_parts[$i] = str_replace('>', '&gt;', $html_parts[$i]);
@@ -485,7 +485,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $i -= 2;
 
-                    }else {
+                    } else {
 
                         $last_tag2 = array_pop($last_tag);
 
@@ -495,7 +495,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             $open_tags[$tag]--;
 
                         // tag hasn't been opened
-                        }else if ($open_tags[$tag] <= 0) {
+                        } else if ($open_tags[$tag] <= 0) {
 
                             $html_parts[$i - 1].= $html_parts[$i + 1];
 
@@ -506,7 +506,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             array_push($last_tag, $last_tag2);
 
                         // previous tag hasn't been closed
-                        }else if ($last_tag2 != $tag) {
+                        } else if ($last_tag2 != $tag) {
 
                             // wrap white-text
                             $ta = array('/'. $last_tag2, '');
@@ -525,7 +525,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         }
                     }
 
-                }else {
+                } else {
 
                     if (substr($html_parts[$i], -1) == '/') {
 
@@ -538,7 +538,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $tag = mb_substr($html_parts[$i], 0, $first_space);
 
-                    }else {
+                    } else {
 
                         $tag = mb_strtolower($html_parts[$i]);
 
@@ -558,7 +558,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         $i -= 2;
 
-                    }else if (!in_array($tag, $single_tags)) {
+                    } else if (!in_array($tag, $single_tags)) {
 
                         if (in_array($tag, array_keys($nest))) {
 
@@ -570,13 +570,13 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                         $tmptmptmp = 1;
 
-                                    }else {
+                                    } else {
 
                                         $tmptmptmp = 0;
                                         break;
                                     }
 
-                                }else {
+                                } else {
 
                                     $tmptmptmp = 1;
                                 }
@@ -621,7 +621,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                                 $open_tags[$tmp_tags[$j]]++;
 
-                                            }else {
+                                            } else {
 
                                                 $open_tags[$tmp_tags[$j]] = 1;
                                             }
@@ -658,7 +658,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                                         array_splice($last_tag, $j, 1);
                                         break;
 
-                                    }else {
+                                    } else {
 
                                         array_splice($html_parts, $i, 0, array('/'. $last_tag[$j], ''));
 
@@ -687,13 +687,13 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             }
                         }
 
-                    }else if(substr($html_parts[$i], -2) != ' /') {
+                    } else if(substr($html_parts[$i], -2) != ' /') {
 
                         if (substr($html_parts[$i], -1) != '/') {
 
                             $html_parts[$i].= ' /';
 
-                        }else {
+                        } else {
 
                             $html_parts[$i] = mb_substr($html_parts[$i], 0, -1). ' /';
                         }
@@ -723,42 +723,42 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                     if (($tag == 'noemots' && $noemots > 0) || ($tag == '/noemots' && $noemots > 1)) {
                         // disallows <noemots> nesting
-                    }else {
+                    } else {
                         $ret_text.= '<'. $tag. '>';
                     }
 
                     if ($tag == 'noemots') {
                         $noemots++;
-                    }else if ($tag == '/noemots') {
+                    } else if ($tag == '/noemots') {
                         $noemots--;
                     }
 
                     if ($tag == 'pre class="code"') {
                         $tag_code = true;
-                    }else if ($tag == 'div class="quotetext"') {
+                    } else if ($tag == 'div class="quotetext"') {
                         $tag_quote = true;
                     }
 
                     if ($tag == 'span class="spoiler"' || (substr($tag, 0, 3) == 'span' && $spoiler > 0)) {
                         $spoiler++;
-                    }else if ($spoiler > 0 && $tag == '/span') {
+                    } else if ($spoiler > 0 && $tag == '/span') {
                         $spoiler--;
                     }
 
                     if ($tag_code == true && $tag == '/pre') {
                         $tag_code = false;
-                    }else if ($tag_quote == true && $tag == '/div') {
+                    } else if ($tag_quote == true && $tag == '/div') {
                         $tag_quote = false;
                     }
 
                     if (substr($tag, 0, 2) == 'a ' || $tag == 'a') {
                         $atags++;
-                    }else if ($tag == '/a') {
+                    } else if ($tag == '/a') {
                         $atags--;
                     }
                 }
 
-            }else {
+            } else {
 
                 if ($links == true && $atags == 0 && $tag_code == false && $spoiler == 0) {
                     $html_parts[$i] = make_links($html_parts[$i]);
@@ -780,7 +780,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         return $ret_text;
 
-    }else{
+    } else{
 
         return '';
     }
@@ -887,7 +887,7 @@ function clean_attributes($tag)
                 array_splice($split_tag, $i, 1);
                 $i--;
 
-            }else {
+            } else {
 
                 $tmp_attrib = mb_strtolower($attrib[0]). "=";
                 $attrib_value = mb_substr($split_tag[$i], mb_strlen($tmp_attrib));
@@ -921,7 +921,7 @@ function clean_attributes($tag)
             }
         }
 
-    }else {
+    } else {
 
         for($i = 1; $i < count($split_tag); $i++) {
 
@@ -932,7 +932,7 @@ function clean_attributes($tag)
                 array_splice($split_tag, $i, 1);
                 $i--;
 
-            }else {
+            } else {
 
                 $tmp_attrib = mb_strtolower($attrib[0]). '=';
                 $attrib_value = mb_substr($split_tag[$i], mb_strlen($tmp_attrib));
@@ -1310,7 +1310,7 @@ function clean_styles_restrict($value)
                     break;
             }
 
-        }else {
+        } else {
 
             if ($matches[2] < 0) return 0;
             if ($matches[2] > 350) return 350;
@@ -1400,12 +1400,12 @@ function add_paragraphs($html, $br_only = true)
 
                 break;
 
-            }else if ($close < $open) {
+            } else if ($close < $open) {
 
                 $open_num--;
                 $open = $close;
 
-            }else {
+            } else {
 
                 $open_num++;
             }
@@ -1465,12 +1465,12 @@ function add_paragraphs($html, $br_only = true)
 
                                     break;
 
-                                }else if ($close < $open) {
+                                } else if ($close < $open) {
 
                                     $open_num--;
                                     $open = $close;
 
-                                }else {
+                                } else {
 
                                     $open_num++;
                                 }
@@ -1492,7 +1492,7 @@ function add_paragraphs($html, $br_only = true)
                         }
                     }
 
-                }else if ($tags_nest[$tag[1]][0] == true) {
+                } else if ($tags_nest[$tag[1]][0] == true) {
 
                     $cur_pos = mb_strpos($html_a[$i], '>') + 1;
                     $close = mb_strrpos($html_a[$i], '<');
@@ -1509,23 +1509,23 @@ function add_paragraphs($html, $br_only = true)
                 }
             }
 
-            if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {
+            if (isset($tag[1], $tags_nest[$tag[1]], $tags_nest[$tag[1]][1]) && ($tags_nest[$tag[1]][1] != true)) {
 
                 if (trim($html_a[$i + 1]) == '') {
 
                     $return.= $html_a[$i]. "\n";
 
-                }else {
+                } else {
 
                     $return.= $html_a[$i]. "\n\n";
                 }
 
-            }else {
+            } else {
 
                 $return.= $html_a[$i];
             }
 
-        }else if ($br_only == false) {
+        } else if ($br_only == false) {
 
             $html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/iu", "$1\n$3", $html_a[$i]);
             $html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/iu", "$1\n\n$2", $html_a[$i]);
@@ -1564,7 +1564,7 @@ function add_paragraphs($html, $br_only = true)
 
                     $j++;
 
-                }else if (!preg_match("/<br( [^>]*)?>$/Diu", $tmp[$j])) {
+                } else if (!preg_match("/<br( [^>]*)?>$/Diu", $tmp[$j])) {
 
                     $tmp[$j + 1] = preg_replace("/^<p( [^>]*)?>/iu", '', $tmp[$j + 1]);
                     $tmp[$j + 1] = preg_replace("/<br( [^>]*)?>$/Diu", '', $tmp[$j + 1]);
@@ -1587,11 +1587,12 @@ function add_paragraphs($html, $br_only = true)
 
                         $j++;
 
-                    }else {
+                    } else {
+                        
                         $tmp[$j].= '<br />';
                     }
 
-                }else {
+                } else {
 
                     $tmp[$j + 1] = preg_replace("/^<p( [^>]*)?>/iu", '', $tmp[$j + 1]);
                     $tmp[$j + 1] = preg_replace("/<br( [^>]*)?>$/Diu", '', $tmp[$j + 1]);
@@ -1622,7 +1623,7 @@ function add_paragraphs($html, $br_only = true)
 
             $return.= $html_a[$i];
 
-        }else {
+        } else {
 
             $html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/iu", "$1\n$3", $html_a[$i]);
             $html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/iu", "$1\n$2", $html_a[$i]);

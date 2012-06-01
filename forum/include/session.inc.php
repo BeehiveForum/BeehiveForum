@@ -130,15 +130,40 @@ function session_restore()
     if (!($user_logon = html_get_cookie('user_logon'))) return false;
 
     if (!($user_token = html_get_cookie('user_token'))) return false;
-
+    
     if (!($uid = user_logon_token($user_logon, $user_token))) return false;
-    
-    html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-    html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
 
-    if (!($sess_hash = session_init($uid))) return false;
+    if (!($user_agent = session_get_user_agent())) return false;
+
+    $user_logon = db_escape_string($user_logon);
+
+    $user_token = db_escape_string($user_token);
+
+    $user_agent = db_escape_string($user_agent);
     
-    return $sess_hash;
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
+    $sql = "SELECT SESSIONS.HASH FROM SESSIONS INNER JOIN USER ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "INNER JOIN USER_TOKEN ON (USER_TOKEN.UID = USER.UID) WHERE USER.LOGON = '$user_logon' ";
+    $sql.= "AND USER_TOKEN.TOKEN = '$user_token' AND USER_TOKEN.EXPIRES > '$current_datetime' ";    
+    $sql.= "AND SESSIONS.USER_AGENT = '$user_agent' AND USER.UID = '$uid' ";
+    $sql.= "ORDER BY SESSIONS.TIME DESC LIMIT 1";
+    
+    if (!($result = db_query($sql, $db_session_restore))) return false;
+    
+    if (db_num_rows($result) > 0) {
+    
+        list($sess_hash) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
+        html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
+        
+    } else {
+        
+        if (!($sess_hash = session_init($uid))) return false;
+    }
+    
+    return session_get($sess_hash);
 }
 
 /**
@@ -188,6 +213,8 @@ function session_update($user_sess)
         if (!$result = db_query($sql, $db_session_update)) return false;
 
         session_update_user_time($user_sess['UID']);
+        
+        session_prune_expired();
     }
     
     return true;    
@@ -217,9 +244,7 @@ function session_check($init_guest_session = true)
         
         if (!($user_sess = session_get($sess_hash)) || ($user_sess['UID'] == 0)) {
         
-            $sess_hash = session_restore();
-            
-            if (!($user_sess = session_get($sess_hash))) {
+            if (!($user_sess = session_restore())) {
                 
                 if (!$init_guest_session) return false;
                 
@@ -333,49 +358,28 @@ function session_get_value($session_key)
 }
 
 /**
- * Delete expired sessions
+ * Prune expired sessions
  *
- * Automatically remove any sessions which have been idle longer than the time out
- * value specified in the Forum's session_cutoff setting.
+ * Automatically remove any sessions which have 
+ * been idle longer than the time out value 
+ * specified in the session_cutoff setting.
  *
  * @param void
- * @return void
+ * @return bool
  */
-function remove_stale_sessions()
+function session_prune_expired()
 {
-    if (!$db_remove_stale_sessions = db_connect()) return false;
+    if (!$db_session_prune_expired = db_connect()) return false;
 
-    if (!($session_cutoff = forum_get_setting('session_cutoff', false, 86400))) {
-        return true;
-    }
+    $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
 
     $session_cutoff_datetime = date(MYSQL_DATE_HOUR_MIN, time() - $session_cutoff);
 
-    $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
-    $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql = "DELETE QUICK FROM SESSIONS ";
+    $sql.= "WHERE TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "LIMIT 10";
 
-    if (!db_query($sql, $db_remove_stale_sessions)) return false;
-
-    $expired_sessions_array = array();
-
-    $sql = "SELECT HASH FROM SESSIONS WHERE ";
-    $sql.= "TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND UID > 0 LIMIT 0, 5";
-
-    if (!$result = db_query($sql, $db_remove_stale_sessions)) return false;
-
-    if (db_num_rows($result) < 1) return false;
-
-    while (($session_data = db_fetch_array($result))) {
-        $expired_sessions_array[] = $session_data['HASH'];
-    }
-
-    $expired_sessions = implode("', '", $expired_sessions_array);
-
-    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
-    $sql.= "AND TIME < CAST('$session_cutoff_datetime' AS DATETIME) ";
-
-    if (!$result = db_query($sql, $db_remove_stale_sessions)) return false;
+    if (!db_query($sql, $db_session_prune_expired)) return false;
 
     return true;
 }
@@ -470,24 +474,15 @@ function session_update_user_time($uid)
 /**
  * Ends current user session.
  *
- * Ends session for current logged in user by destroying their cookie.
- * and removing the data from the SESSION table.
+ * Ends session for current logged in user by 
+ * destroying their cookie. Does not remove the 
+ * data from the SESSION table.
  *
  * @param void
  * @return bool
  */
 function session_end()
 {
-    if (!$db_session_end = db_connect()) return false;
-
-    if (!$ipaddress = get_ip_address()) return false;
-
-    $sess_hash = html_get_cookie('sess_hash', 'is_md5');
-    
-    $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$sess_hash'";
-    
-    if (!db_query($sql, $db_session_end)) return false;
-    
     html_set_cookie("sess_hash", "", time() - YEAR_IN_SECONDS);
 
     if (($webtag = get_webtag())) {

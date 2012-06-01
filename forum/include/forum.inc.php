@@ -641,13 +641,12 @@ function forum_check_global_setting_name($setting_name)
                                          'attachment_thumbnails', 'attachment_thumbnail_method', 'attachments_max_user_space', 
                                          'attachments_max_post_space', 'attachment_allow_guests', 'attachment_dir', 
                                          'attachment_mime_types', 'attachment_use_old_method', 'attachment_imagemagick_path', 
-                                         'remove_stale_sessions_last_run', 'cache_dir', 'content_delivery_domains', 'forum_desc',  
-                                         'forum_email', 'forum_keywords', 'forum_name', 'forum_noreply_email', 
-                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function', 
-                                         'forum_maintenance_schedule', 'forum_timezone', 'pm_system_prune_folders_last_run', 
-                                         'thread_auto_prune_unread_data_last_run', 'sitemap_create_file_last_run', 
-                                         'enable_google_analytics', 'allow_forum_google_analytics', 'google_analytics_code', 
-                                         'guest_account_enabled', 'guest_show_recent', 'message_cache_enabled', 
+                                         'cache_dir', 'content_delivery_domains', 'forum_desc',  'forum_email', 
+                                         'forum_keywords', 'forum_name', 'forum_noreply_email', 'forum_rules_enabled', 
+                                         'forum_rules_message', 'forum_maintenance_function', 'forum_maintenance_schedule', 
+                                         'forum_timezone', 'pm_system_prune_folders_last_run', 'thread_auto_prune_unread_data_last_run', 
+                                         'sitemap_create_file_last_run', 'enable_google_analytics', 'allow_forum_google_analytics', 
+                                         'google_analytics_code', 'guest_account_enabled', 'guest_show_recent', 'message_cache_enabled', 
                                          'messages_unread_cutoff', 'messages_unread_cutoff_custom', 'new_user_email_notify', 
                                          'new_user_mark_as_of_int', 'new_user_pm_notify_email', 'new_user_pm_notify', 
                                          'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages', 
@@ -2261,10 +2260,11 @@ function forum_self_clean_check_ajax()
 function forum_check_maintenance()
 {
     // Array of functions that we run one at a time.
-    $forum_maintenance_functions_array = array('pm_system_prune_folders',
-                                               'remove_stale_sessions',
-                                               'thread_auto_prune_unread_data',
-                                               'sitemap_create_file');
+    $forum_maintenance_functions_array = array(
+        'pm_system_prune_folders',
+        'thread_auto_prune_unread_data',
+        'sitemap_create_file'
+    );
 
     // Array to hold the forum settings we need to update.
     $new_forum_settings = array();

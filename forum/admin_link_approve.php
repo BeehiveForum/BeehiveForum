@@ -78,7 +78,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
+include_once(BH_INCLUDE_PATH. "links.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
@@ -130,17 +130,17 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 } else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = href_cleanup_query_keys($_POST['ret']);
 } else {
-    $ret = "admin_post_approve.php?webtag=$webtag";
+    $ret = "admin_link_approve.php?webtag=$webtag";
 }
 
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_files = array('admin_post_approve.php', 'messages.php');
+    $available_files = array('admin_link_approve.php', 'links_detail.php', 'links.php');
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
     if (!preg_match("/^$available_files_preg/u", $ret)) {
-        $ret = "admin_post_approve.php?webtag=$webtag";
+        $ret = "admin_link_approve.php?webtag=$webtag";
     }
 }
 
@@ -149,172 +149,121 @@ if (isset($_POST['cancel'])) {
 }
 
 // Check POST and GET for message ID and check it is valid.
-if (isset($_POST['msg'])) {
+if (isset($_POST['lid'])) {
 
-    if (validate_msg($_POST['msg'])) {
+    if (is_numeric($_POST['lid'])) {
 
-        $msg = $_POST['msg'];
+        $lid = $_POST['lid'];
 
     } else {
 
         html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_error_msg($lang['invalidlinkidorlinknotfound'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
 
-} else if (isset($_GET['msg'])) {
+} else if (isset($_GET['lid'])) {
 
-    if (validate_msg($_GET['msg'])) {
+    if (is_numeric($_GET['lid'])) {
 
-        $msg = $_GET['msg'];
+        $lid = $_GET['lid'];
 
     } else {
 
         html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_error_msg($lang['invalidlinkidorlinknotfound'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
 }
 
-if (isset($msg) && validate_msg($msg)) {
+if (isset($lid) && is_numeric($lid)) {
 
-    $valid = true;
-
-    list($tid, $pid) = explode('.', $msg);
-
-    if (!$t_fid = thread_get_folder($tid, $pid)) {
+    if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
         html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_error_msg($lang['cannoteditlinks'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
-
-    if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
-
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
-    }
-
-    if (!session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
-    }
-
-    if (!$thread_data = thread_get($tid)) {
-
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
-    }
-
-    if (($preview_message = messages_get($tid, $pid, 1))) {
-
-        if (isset($preview_message['APPROVED']) && ($preview_message['APPROVED'] > 0)) {
+    
+    if (($link = links_get_single($lid, false))) {
+        
+        if (isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
 
             html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['postdoesnotrequireapproval'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+            html_error_msg($lang['linkdoesnotrequireapproval'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
             html_draw_bottom();
             exit;
         }
+        
+        if (isset($_POST['approve'])) {
 
-        $preview_message['CONTENT'] = message_get_content($tid, $pid);
+            if (links_approve($lid)) {
 
-        if (isset($_POST['approve']) && is_numeric($tid) && is_numeric($pid)) {
+                admin_add_log_entry(APPROVED_LINK, array($lid));
 
-            if (post_approve($tid, $pid)) {
+                if (preg_match("/^links_detail.php/u", $ret) > 0) {
 
-                admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
-
-                if (preg_match("/^messages.php/u", basename($ret)) > 0) {
-
-                    header_redirect("messages.php?webtag=$webtag&msg=$msg&post_approve_success=$msg");
+                    header_redirect("links_detail.php?webtag=$webtag&lid=$lid&link_approve_success=$lid");
                     exit;
 
                 } else {
 
-                    html_draw_top("title={$lang['approvepost']}", 'class=window_title');
-                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_top("title={$lang['approvelink']}", 'class=window_title');
+                    html_display_msg($lang['approvelink'], sprintf($lang['successfullyapprovedlink'], $lid), "admin_link_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             } else {
 
-                $error_msg_array[] = $lang['postapprovalfailed'];
+                $error_msg_array[] = $lang['linkapprovalfailed'];
             }
 
         } else if (isset($_POST['delete'])) {
 
-            if (post_delete($tid, $pid)) {
+            if (links_delete($lid)) {
 
-                post_add_edit_text($tid, $pid);
-
-                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session_get_value('UID')) {
-                    admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
+                    admin_add_log_entry(DELETE_LINK, array($lid));
                 }
 
-                if (preg_match("/^messages.php/", basename($ret)) > 0) {
+                if (preg_match("/^links_detail.php/u", $ret) > 0) {
 
-                    header_redirect("messages.php?webtag=$webtag&msg=$msg&delete_success=$msg");
+                    header_redirect("links_detail.php?webtag=$webtag&lid=$lid&link_approve_success=$lid");
                     exit;
 
                 } else {
 
-                    html_draw_top("title={$lang['deleteposts']}", 'class=window_title');
-                    html_display_msg($lang['deleteposts'], sprintf($lang['successfullydeletedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_top("title={$lang['approvelink']}", 'class=window_title');
+                    html_display_msg($lang['approvelink'], sprintf($lang['successfullydeletedlink'], $lid), "admin_link_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             } else {
 
-                $error_msg_array[] = $lang['errordelpost'];
+                $error_msg_array[] = $lang['errordellink'];
             }
-        }
-
-        html_draw_top("title={$lang['admin']} - {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
-
-        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['approvepost']}</h1>\n";
-
-        if ($preview_message['TO_UID'] == 0) {
-
-            $preview_message['TLOGON'] = $lang['allcaps'];
-            $preview_message['TNICK']  = $lang['allcaps'];
-
-        } else {
-
-            $preview_tuser = user_get($preview_message['TO_UID']);
-            $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-            $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-        }
-
-        $preview_tuser = user_get($preview_message['FROM_UID']);
-
-        $preview_message['FLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-
-        $show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
-
+        }        
+        
+        html_draw_top("title={$lang['admin']} - {$lang['approvelink']}", 'class=window_title', "post.js", "resize_width=86%");
+        
+        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['approvelink']}</h1>\n";
+        
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             html_display_error_array($error_msg_array, '86%', 'left');
-        }
-
+        }        
+        
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
+        echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
         echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-        echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+        echo "  ", form_input_hidden('lid', htmlentities_array($lid)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -322,24 +271,32 @@ if (isset($msg) && validate_msg($msg)) {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['approvepost']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['linkdetails']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><br />\n";
-
-        if (thread_is_poll($tid) && $pid == 1) {
-
-            poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
-
-        } else {
-
-            message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, $show_sigs, true);
-        }
-
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
+        echo "                        <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", mb_strlen($link['URI']) > 35 ? htmlentities_array(mb_substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
+        echo "                        <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(htmlentities_array(format_user_name($link['LOGON'], $link['NICKNAME']))) : $lang['unknownuser']), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($link['DESCRIPTION'])), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
+        echo "                        <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
         echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -348,28 +305,28 @@ if (isset($msg) && validate_msg($msg)) {
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";        
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit("approve", $lang['approve']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-        echo "    </tr>\n";
+        echo "    </tr>\n";        
         echo "  </table>\n";
         echo "</form>\n";
-        echo "</div>\n";
-
+        echo "</div>\n";    
+        
         html_draw_bottom();
-
-    } else {
+    
+    } else {        
 
         html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['postdoesnotexist'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_error_msg($lang['invalidlinkID'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
-    }
+    }    
 
 } else {
 
-    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+    if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
         html_draw_top("title={$lang['error']}");
         html_error_msg($lang['accessdeniedexp']);
@@ -377,14 +334,14 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} - {$lang['postapprovalqueue']}", 'class=window_title');
+    html_draw_top("title={$lang['admin']} - {$lang['linkapprovalqueue']}", 'class=window_title');
 
-    $post_approval_array = admin_get_post_approval_queue($start);
+    $link_approval_array = admin_get_link_approval_queue($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['linkapprovalqueue']}</h1>\n";
 
-    if (sizeof($post_approval_array['post_array']) < 1) {
-        html_display_warning_msg($lang['nopostsawaitingapproval'], '86%', 'center');
+    if (sizeof($link_approval_array['link_array']) < 1) {
+        html_display_warning_msg($lang['nolinksawaitingapproval'], '86%', 'center');
     }
 
     echo "<br />\n";
@@ -398,22 +355,22 @@ if (isset($msg) && validate_msg($msg)) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">{$lang['threadtitle']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">{$lang['name']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\">{$lang['folder']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['user']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['datetime']}</td>\n";
     echo "                 </tr>\n";
 
-    if (sizeof($post_approval_array['post_array']) > 0) {
+    if (sizeof($link_approval_array['link_array']) > 0) {
 
-        foreach ($post_approval_array['post_array'] as $post_approval_entry) {
+        foreach ($link_approval_array['link_array'] as $link_approval_entry) {
 
             echo "                 <tr>\n";
             echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($post_approval_entry['TITLE'])), "</a></td>\n";
-            echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
-            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']))) . "</a></td>\n";
-            echo "                   <td align=\"left\">", format_time($post_approval_entry['CREATED']), "</td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_link_approve.php?webtag=$webtag&lid={$link_approval_entry['LID']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($link_approval_entry['TITLE'])), "</a></td>\n";
+            echo "                   <td align=\"left\">{$link_approval_entry['FOLDER_TITLE']}</td>\n";
+            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$link_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($link_approval_entry['LOGON'], $link_approval_entry['NICKNAME']))) . "</a></td>\n";
+            echo "                   <td align=\"left\">", format_time($link_approval_entry['CREATED']), "</td>\n";
             echo "                 </tr>\n";
         }
     }
@@ -431,7 +388,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_post_approve.php?webtag=$webtag&ret=$ret", $start, $post_approval_array['post_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $start, $link_approval_array['link_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

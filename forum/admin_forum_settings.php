@@ -368,6 +368,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['show_links'] = "N";
     }
 
+    if (isset($_POST['require_link_approval']) && $_POST['require_link_approval'] == "Y") {
+        $new_forum_settings['require_link_approval'] = "Y";
+    }else {
+        $new_forum_settings['require_link_approval'] = "N";
+    }
+
     if (isset($_POST['show_share_links']) && $_POST['show_share_links'] == "Y") {
         $new_forum_settings['show_share_links'] = "Y";
     }else {
@@ -981,6 +987,10 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['enablelinkssection']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("show_links", "Y", $lang['yes'], (isset($forum_settings['show_links']) && $forum_settings['show_links'] == "Y")), "&nbsp;", form_radio("show_links", "N", $lang['no'], (isset($forum_settings['show_links']) && $forum_settings['show_links'] == "N") || !isset($forum_settings['show_links'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['requirelinksapproval']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("require_link_approval", "Y", $lang['yes'], (isset($forum_settings['require_link_approval']) && $forum_settings['require_link_approval'] == "Y")), "&nbsp;", form_radio("require_link_approval", "N", $lang['no'], (isset($forum_settings['require_link_approval']) && $forum_settings['require_link_approval'] == "N") || !isset($forum_settings['require_link_approval'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

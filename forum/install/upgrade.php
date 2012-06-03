@@ -418,6 +418,36 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
+    
+    // Add new APPROVED and APPROVED_BY columns for link approval by moderator
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_LINKS", 'APPROVED')) {
+    
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS ADD COLUMN `APPROVED` DATETIME NULL AFTER CREATED";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS ADD COLUMN `APPROVED_BY` MEDIUMINT(8) NULL AFTER `APPROVED`";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+        
+        $approved_datetime = date(MYSQL_DATETIME, time());
+        
+        $sql = "UPDATE `{$table_data['PREFIX']}LINKS SET APPROVED = '$approved_datetime', APPROVED_BY = UID";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }        
+    }
 }
 
 // Drop the old SFS_CACHE table.

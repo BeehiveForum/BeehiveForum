@@ -67,7 +67,8 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM `{$table_data['PREFIX']}LINKS` LINKS ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_VOTE` LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
         $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.FID = '$fid' ";
-        $sql.= "AND LINKS.VISIBLE = 'Y' GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir ";
+        $sql.= "AND LINKS.VISIBLE = 'Y' AND LINKS.APPROVED IS NOT NULL ";
+        $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir ";
         $sql.= "LIMIT $offset, 20";
 
     }else {
@@ -77,7 +78,8 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM `{$table_data['PREFIX']}LINKS` LINKS ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_VOTE` LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
         $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.FID = '$fid' ";
-        $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql.= "AND LINKS.APPROVED IS NOT NULL GROUP BY LINKS.LID ";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
@@ -115,15 +117,17 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
                  'links_array' => $links_array);
 }
 
-function links_folders_get($invisible = false)
+function links_folders_get($visible = true)
 {
     if (!$db_links_folders_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
+    
+    $visible = ($visible) ? "AND VISIBLE = 'Y'" : '';
+    
     $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_data['PREFIX']}LINKS_FOLDERS` ";
-    $sql.= "WHERE PARENT_FID IS NULL";
-
+    $sql.= "WHERE PARENT_FID IS NULL $visible ORDER BY FID LIMIT 1";
+        
     if (!$result = db_query($sql, $db_links_folders_get)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -131,18 +135,11 @@ function links_folders_get($invisible = false)
         $links_data = db_fetch_array($result);
 
         $top_level = $links_data['FID'];
+
         $folders[$links_data['FID']] =  $links_data;
 
-        if ($invisible) {
-
-            $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_data['PREFIX']}LINKS_FOLDERS` ";
-            $sql.= "WHERE FID NOT IN ($top_level) ORDER BY NAME";
-
-        }else {
-
-            $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_data['PREFIX']}LINKS_FOLDERS` ";
-            $sql.= "WHERE VISIBLE = 'Y' AND FID NOT IN ($top_level) ORDER BY FID";
-        }
+        $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_data['PREFIX']}LINKS_FOLDERS` ";
+        $sql.= "WHERE FID NOT IN ($top_level) $visible ORDER BY NAME";
 
         if (!$result = db_query($sql, $db_links_folders_get)) return false;
 
@@ -163,6 +160,7 @@ function links_folders_get($invisible = false)
 function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 {
     if (!is_numeric($fid)) return false;
+
     if (!is_numeric($uid)) return false;
 
     $uri = db_escape_string($uri);
@@ -177,9 +175,20 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    if (forum_get_setting('require_link_approval', 'Y') && !perm_is_links_moderator($uid)) {
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS` (URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
-    $sql.= "VALUES ('$uri', '$title', '$description', '$fid', '$uid', '$visible', CAST('$current_datetime' AS DATETIME))";
+        $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS` (URI, TITLE, DESCRIPTION, FID, ";
+        $sql.= "UID, VISIBLE, CREATED, APPROVED) VALUES ('$uri', '$title', '$description', ";
+        $sql.= "'$fid', '$uid', '$visible', CAST('$current_datetime' AS DATETIME), NULL)";
+        
+    } else {
+        
+        $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS` (URI, TITLE, DESCRIPTION, FID, ";
+        $sql.= "UID, VISIBLE, CREATED, APPROVED, APPROVED_BY) VALUES ('$uri', '$title', ";
+        $sql.= "'$description', '$fid', '$uid', '$visible', CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), '$uid')";
+    }
 
     if (!db_query($sql, $db_links_add)) return false;
 
@@ -194,17 +203,19 @@ function links_create_top_folder($name)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_FOLDERS` (FID, PARENT_FID, NAME, VISIBLE) ";
-    $sql.= "VALUES (1, NULL, '$name', 'Y')";
+    $sql = "REPLACE INTO `{$table_data['PREFIX']}LINKS_FOLDERS` (FID, PARENT_FID, ";
+    $sql.= "NAME, VISIBLE) VALUES (1, NULL, '$name', 'Y')";
 
     if (!db_query($sql, $db_links_create_top_folder)) return false;
 
     return true;
 }
 
-function links_add_folder($fid, $name, $visible = false)
+function links_add_folder($fid, $name, $uid, $visible = false)
 {
     if (!is_numeric($fid)) return false;
+    
+    if (!is_numeric($uid)) return false;
 
     $name = db_escape_string($name);
 
@@ -213,26 +224,33 @@ function links_add_folder($fid, $name, $visible = false)
     $visible = $visible ? "Y" : "N";
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_FOLDERS` (FID, PARENT_FID, NAME, VISIBLE) ";
-    $sql.= "VALUES (NULL, $fid, '$name', '$visible')";
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
+    $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_FOLDERS` (PARENT_FID, NAME, ";
+    $sql.= "VISIBLE) VALUES ($fid, '$name', '$visible')";
 
     if (!db_query($sql, $db_links_add_folder)) return false;
 
     return true;
 }
 
-function links_update_folder($fid, $name)
+function links_update_folder($fid, $uid, $name)
 {
     if (!$db_links_update_folder = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
+    
+    if (!is_numeric($uid)) return false;
 
     $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS_FOLDERS` SET NAME = '$name' WHERE FID = '$fid'";
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+    
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS_FOLDERS` ";
+    $sql.= "SET NAME = '$name' WHERE FID = '$fid'";  
 
     if (!db_query($sql, $db_links_update_folder)) return false;
 
@@ -244,7 +262,10 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
     $webtag = get_webtag();
 
     if (!is_numeric($fid)) return false;
+
     if (!is_array($folders)) return false;
+    
+    if (!isset($folders[$fid])) return false;
 
     $tree_fid = $fid; $tree_array = array();
 
@@ -281,15 +302,19 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
 function links_get_folder_page_title($fid, $folders, $link_title = false)
 {
     if (!is_numeric($fid)) return false;
+    
     if (!is_array($folders)) return false;
+    
+    if (!isset($folders[$fid])) return false;
 
     $tree_fid = $fid;
 
     $tree_array = array();
 
     list($key) = array_keys($folders);
-
+    
     while ($tree_fid != $key) {
+        
         $tree_array[] = $tree_fid;
         $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
@@ -329,13 +354,15 @@ function links_get_subfolders($fid, $folders)
 function links_change_visibility($lid, $visible = true)
 {
     if (!is_numeric($lid)) return false;
+
     $visible = $visible ? "Y" : "N";
 
     if (!$db_links_change_visibility = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` SET VISIBLE = '$visible' WHERE LID = '$lid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` ";
+    $sql.= "SET VISIBLE = '$visible' WHERE LID = '$lid'";
 
     if (!db_query($sql, $db_links_change_visibility)) return false;
 
@@ -350,11 +377,13 @@ function links_click($lid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` ";
+    $sql.= "SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
 
     if (!db_query($sql, $db_links_click)) return false;
 
-    $sql = "SELECT URI FROM `{$table_data['PREFIX']}LINKS` WHERE LID = '$lid'";
+    $sql = "SELECT URI FROM `{$table_data['PREFIX']}LINKS` ";
+    $sql.= "WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_click)) return false;
 
@@ -367,23 +396,26 @@ function links_click($lid)
     return false;
 }
 
-function links_get_single($lid)
+function links_get_single($lid, $approved = true)
 {
     if (!$db_links_get_single = db_connect()) return false;
 
     $lang = load_language_file();
 
     if (!is_numeric($lid)) return false;
+    
+    $approved = ($approved) ? "AND LINKS.APPROVED IS NOT NULL" : '';
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, ";
-    $sql.= "UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.VISIBLE, LINKS.CLICKS, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, ";
-    $sql.= "COUNT(LINKS_VOTE.RATING) AS VOTES FROM `{$table_data['PREFIX']}LINKS` LINKS ";
-    $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) ";
+    $sql = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, ";
+    $sql.= "LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
+    $sql.= "LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.APPROVED) AS APPROVED, ";
+    $sql.= "LINKS.APPROVED_BY, LINKS.CLICKS, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "AVG(LINKS_VOTE.RATING) AS RATING, COUNT(LINKS_VOTE.RATING) AS VOTES ";
+    $sql.= "FROM `{$table_data['PREFIX']}LINKS` LINKS LEFT JOIN USER USER ON (LINKS.UID = USER.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_VOTE` LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql.= "WHERE LINKS.LID = '$lid' GROUP BY LINKS_VOTE.LID";
+    $sql.= "WHERE LINKS.LID = '$lid' $approved GROUP BY LINKS_VOTE.LID";
 
     if (!$result = db_query($sql, $db_links_get_single)) return false;
 
@@ -434,7 +466,8 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM `{$table_data['PREFIX']}LINKS` LINKS ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_VOTE` LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
         $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.VISIBLE = 'Y' ";
-        $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql.= "AND LINKS.APPROVED IS NOT NULL GROUP BY LINKS.LID ";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
@@ -442,8 +475,8 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
         $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM `{$table_data['PREFIX']}LINKS` LINKS ";
         $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_VOTE` LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
-        $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) GROUP BY LINKS.LID ";
-        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.APPROVED IS NOT NULL ";
+        $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
@@ -491,7 +524,8 @@ function links_folder_change_visibility($fid, $visible = true)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS_FOLDERS` SET VISIBLE = '$visible' WHERE FID = '$fid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS_FOLDERS` ";
+    $sql.= "SET VISIBLE = '$visible' WHERE FID = '$fid'";
 
     if (!db_query($sql, $db_links_folder_change_visibility)) return false;
 
@@ -502,7 +536,7 @@ function links_folder_delete($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    $folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+    $folders = links_folders_get(!session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
     if (!$db_links_folder_delete = db_connect()) return false;
 
@@ -513,13 +547,16 @@ function links_folder_delete($fid)
     if (!$result = db_query($sql, $db_links_folder_delete)) return false;
 
     $link_array = db_fetch_array($result);
+
     if (isset($link_array['FID']) && $link_array['FID'] == $fid) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` ";
+    $sql.= "SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_links_folder_delete)) return false;
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}LINKS_FOLDERS` WHERE FID = '$fid'";
+    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}LINKS_FOLDERS` ";
+    $sql.= "WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_links_folder_delete)) return false;
 
@@ -535,7 +572,8 @@ function links_get_vote($lid, $uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT RATING FROM `{$table_data['PREFIX']}LINKS_VOTE` WHERE LID = '$lid' AND UID = '$uid'";
+    $sql = "SELECT RATING FROM `{$table_data['PREFIX']}LINKS_VOTE` ";
+    $sql.= "WHERE LID = '$lid' AND UID = '$uid'";
 
     if (!$result = db_query($sql, $db_links_get_vote)) return false;
 
@@ -651,6 +689,8 @@ function links_get_comments($lid)
 
 function links_folder_dropdown($default_fid, $folders)
 {
+    $default_value = 0;
+    
     while (list($key) = each($folders)) {
 
         $labels[$key] = links_get_folder_path_links($key, $folders, false);
@@ -698,24 +738,62 @@ function links_delete($lid)
     return true;
 }
 
-function links_update($lid, $fid, $title, $uri, $description)
+function links_update($lid, $fid, $uid, $title, $uri, $description)
 {
     if (!$db_links_update = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
+    
     if (!is_numeric($fid)) return false;
-
+    
+    if (!is_numeric($uid)) return false;
+    
     $uri = db_escape_string($uri);
 
     $title = db_escape_string($title);
+
     $description = db_escape_string($description);
+    
+    if (!$table_data = get_table_prefix()) return false;
+    
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    if (forum_get_setting('require_link_approval') && !perm_is_links_moderator($uid)) {
+        
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` SET FID = '$fid', ";
+        $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description', ";
+        $sql.= "APPROVED = NULL, APPROVED_BY = NULL WHERE LID = '$lid'";    
+
+    } else {
+        
+        $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` SET FID = '$fid', ";
+        $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description', ";
+        $sql.= "APPROVED = CAST('$current_datetime' AS DATETIME), APPROVED_BY = $uid ";
+        $sql.= "WHERE LID = '$lid'";
+    }
+
+    if (!db_query($sql, $db_links_update)) return false;
+
+    return true;
+}
+
+function links_approve($lid)
+{
+    if (!is_numeric($lid)) return false;
+
+    if (!$db_links_approve = db_connect()) return false;
+
+    $approve_uid = session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` SET LID = '$lid', FID = '$fid', ";
-    $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = '$lid'";
+    $current_datetime = date(MYSQL_DATETIME, time());
 
-    if (!db_query($sql, $db_links_update)) return false;
+    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS` ";
+    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "APPROVED_BY = '$approve_uid' WHERE LID = '$lid'";
+
+    if (!db_query($sql, $db_links_approve)) return false;
 
     return true;
 }

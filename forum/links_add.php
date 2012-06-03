@@ -143,7 +143,7 @@ if (isset($_POST['cancel'])) {
 }
 
 // Get the Links Folders.
-$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(!session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 // Check the mode.
 if (isset($_GET['mode'])) {
@@ -272,7 +272,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     if ($valid) {
 
-        if (links_add_folder($fid, $name, true)) {
+        if (links_add_folder($fid, $name, $uid, true)) {
 
             header_redirect("links.php?webtag=$webtag&fid=$fid&folder_added=$name");
             exit;

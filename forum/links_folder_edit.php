@@ -123,7 +123,7 @@ if (!forum_get_setting('show_links', 'Y')) {
     exit;
 }
 
-$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(!session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 if (user_is_guest()) {
 
@@ -169,7 +169,7 @@ if (isset($_POST['update'])) {
 
     if ($valid) {
 
-        links_update_folder($fid, $name);
+        links_update_folder($fid, $uid, $name);
         header_redirect("links.php?webtag=$webtag&fid=$fid");
     }
 

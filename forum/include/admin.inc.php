@@ -1073,6 +1073,63 @@ function admin_get_post_approval_queue($offset = 0)
 }
 
 /**
+* Fetch link approval queue.
+*
+* Fetches list of links awaiting approval from database.
+*
+* @return array
+* @param string $offset - Optional offset for results
+*/
+
+function admin_get_link_approval_queue($offset = 0)
+{
+    if (!$db_admin_get_link_approval_queue = db_connect()) return false;
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    $offset = abs($offset);
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) return false;
+
+    $link_approval_array = array();
+
+    $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS_FOLDERS.NAME AS FOLDER_TITLE, ";
+    $sql.= "LINKS.LID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, USER.UID, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED ";
+    $sql.= "FROM `{$table_data['PREFIX']}LINKS` LINKS LEFT JOIN USER USER ON (USER.UID = LINKS.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_FOLDERS` LINKS_FOLDERS ON (LINKS_FOLDERS.FID = LINKS.FID) ";
+    $sql.= "WHERE LINKS.APPROVED IS NULL ";
+    $sql.= "LIMIT $offset, 10";
+
+    if (!$result = db_query($sql, $db_admin_get_link_approval_queue)) return false;
+
+    // Fetch the number of total results
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_admin_get_link_approval_queue)) return false;
+
+    list($link_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    if (db_num_rows($result) > 0) {
+
+        while (($link_array = db_fetch_array($result))) {
+
+            $link_approval_array[] = $link_array;
+        }
+
+    }else if ($link_count > 0) {
+
+        $offset = floor(($link_count - 1) / 10) * 10;
+        return admin_get_link_approval_queue($offset);
+    }
+
+    return array('link_count' => $link_count,
+                 'link_array' => $link_approval_array);
+}
+
+/**
 * Fetch visitor log from database.
 *
 * Fetches an extended list of visitors from database including HTTP referer

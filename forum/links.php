@@ -125,9 +125,9 @@ if (!forum_get_setting('show_links', 'Y')) {
     exit;
 }
 
-$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(!session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
-if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+if (isset($_GET['fid']) && isset($folders[$_GET['fid']])) {
 
     $fid = $_GET['fid'];
 
@@ -169,7 +169,7 @@ if (isset($_GET['action'])) {
 
     }elseif (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderdel") {
 
-        $folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+        $folders = links_folders_get(!session_check_perm(USER_PERM_LINKS_MODERATE, 0));
         if (count(links_get_subfolders($fid, $folders)) == 0) links_folder_delete($fid);
 
         if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {

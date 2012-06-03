@@ -158,6 +158,13 @@ if (forum_check_webtag_available($webtag)) {
             echo "  </tr>\n";
         }
 
+        if (session_get_folders_by_perm(USER_PERM_LINKS_MODERATE)) {
+
+            echo "  <tr>\n";
+            echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_link_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['linkapprovalqueue']}</a></td>\n";
+            echo "  </tr>\n";
+        }
+
         echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_visitor_log.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['visitorlog']}</a></td>\n";
         echo "  </tr>\n";

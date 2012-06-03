@@ -152,6 +152,16 @@ $uid = session_get_value('UID');
 
 $creator_uid = links_get_creator_uid($lid);
 
+$user_perm_links_moderate = session_check_perm(USER_PERM_LINKS_MODERATE, 0);
+
+if (!$link = links_get_single($lid, !$user_perm_links_moderate)) {
+
+    html_draw_top("title={$lang['error']}");
+    html_error_msg($lang['invalidlinkID']);
+    html_draw_bottom();
+    exit;
+}
+
 $error_msg_array = array();
 $success_msg = "";
 
@@ -200,11 +210,16 @@ if (!user_is_guest()) {
         }
     }
 
-    if (isset($_POST['update']) && (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator_uid == $uid)) {
+    if (isset($_POST['update']) && ($user_perm_links_moderate || $creator_uid == $uid)) {
 
         if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
             links_delete($lid);
+
+            if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
+                admin_add_log_entry(DELETE_LINK, array($links['LID'], $links['TITLE'], $links['URI']));
+            }
+
             header_redirect("links.php?webtag=$webtag&fid=$parent_fid");
             exit;
 
@@ -248,17 +263,24 @@ if (!user_is_guest()) {
 
             if ($valid) {
 
-                links_update($lid, $fid, $title, $uri, $description);
+                links_update($lid, $fid, $uid, $title, $uri, $description);
+                
+                if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
+                    admin_add_log_entry(DELETE_LINK, array($lid));
+                }
             }
         }
+        
+        if ($user_perm_links_moderate || $link['UID'] == $uid) {
 
-        if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
+            if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
 
-            links_change_visibility($lid, false);
+                links_change_visibility($lid, false);
 
-        }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
+            }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
 
-            links_change_visibility($lid, true);
+                links_change_visibility($lid, true);
+            }
         }
     }
 }
@@ -268,7 +290,7 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
     $comment_id = $_GET['delete_comment'];
     $comment_uid = links_get_comment_uid($comment_id);
 
-    if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) {
+    if ($user_perm_links_moderate || $comment_uid == $uid) {
 
         if (links_delete_comment($comment_id)) {
 
@@ -282,15 +304,7 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
     }
 }
 
-if (!$link = links_get_single($lid)) {
-
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['invalidlinkID']);
-    html_draw_bottom();
-    exit;
-}
-
-$folders = links_folders_get(session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+$folders = links_folders_get(!$user_perm_links_moderate);
 
 $page_title = links_get_folder_page_title($link['FID'], $folders, $link['TITLE']);
 
@@ -300,16 +314,16 @@ echo "<h1>", links_get_folder_path_links($link['FID'], $folders, true, true), "<
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '500', 'center');
+    html_display_error_array($error_msg_array, '600', 'center');
 
 }else if (isset($success_msg) && strlen($success_msg) > 0) {
 
-    html_display_success_msg($success_msg, '500', 'center');
+    html_display_success_msg($success_msg, '600', 'center');
 }
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">\n";
 echo "      <table class=\"box\" width=\"100%\">\n";
@@ -393,7 +407,7 @@ if (!user_is_guest()) {
     echo "  ", form_input_hidden("type", "vote"), "\n";
     echo "  ", form_input_hidden("lid", htmlentities_array($lid)), "\n";
     echo "  ", form_input_hidden("parent_fid", htmlentities_array($parent_fid)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -436,7 +450,7 @@ if (!user_is_guest()) {
 
 if (($comments_array = links_get_comments($lid))) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -449,7 +463,7 @@ if (($comments_array = links_get_comments($lid))) {
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         $profile_link.= word_filter_add_ob_tags(htmlentities_array(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";
 
-        if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
+        if ($user_perm_links_moderate || $comment['UID'] == $uid) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
@@ -493,7 +507,7 @@ if (!user_is_guest()) {
     echo "  ", form_input_hidden("type", "comment"), "\n";
     echo "  ", form_input_hidden("lid", htmlentities_array($lid)), "\n";
     echo "  ", form_input_hidden("parent_fid", htmlentities_array($parent_fid)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -507,7 +521,7 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_textarea("comment", "", 6, 62), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("comment", "", 6, 74), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -532,14 +546,14 @@ if (!user_is_guest()) {
     echo "</form>\n";
 }
 
-if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
+if ($user_perm_links_moderate || $link['UID'] == $uid) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "moderation") . "\n";
     echo "  ", form_input_hidden("lid", htmlentities_array($lid)) . "\n";
     echo "  ", form_input_hidden("parent_fid", htmlentities_array($parent_fid)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -558,7 +572,7 @@ if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['editname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("title", htmlentities_array($link['TITLE']), 45, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("title", htmlentities_array($link['TITLE']), 40, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['editaddress']}:</td>\n";
@@ -566,7 +580,7 @@ if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['editdescription']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("description", htmlentities_array($link['DESCRIPTION']), 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("description", htmlentities_array($link['DESCRIPTION']), 60), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

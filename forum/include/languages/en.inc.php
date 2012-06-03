@@ -1188,6 +1188,10 @@ $lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has be
 $lang['newpostapprovalsubject'] = "Post Approval Notification for %s";
 $lang['newpostapprovalemail'] = "Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
+// Admin Link Approval notification -----------------------------------------
+$lang['newlinkapprovalsubject'] = "Link Approval Notification for %s";
+$lang['newlinkapprovalemail'] = "Hello %s,\n\nA new link has been created on %s.\n\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\n\nYou can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+
 // Forgotten password form.
 $lang['passwdresetrequest'] = "Your password reset request from %s";
 $lang['passwdresetemailsent'] = "Password reset e-mail sent";

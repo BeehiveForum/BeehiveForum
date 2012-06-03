@@ -833,6 +833,57 @@ function email_send_post_approval_notification($tuid)
     return $mailer->send($message) > 0;
 }
 
+function email_send_link_approval_notification($tuid)
+{
+    // Validate function arguments
+    if (!is_numeric($tuid)) return false;
+
+    // Get the to user details
+    if (!($to_user = user_get($tuid))) return false;
+
+    // Get the Swift Mailer Transport
+    if (!($transport = Swift_TransportFactory::get())) return false;
+
+    //Create the Mailer using the returned Transport
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    // Create a new message
+    $message = Swift_MessageBeehive::newInstance();
+
+    // Get Forum Webtag
+    $webtag = get_webtag();
+
+    // Validate the email address before we continue.
+    if (!email_address_valid($to_user['EMAIL'])) return false;
+
+    // Get the right language for the email
+    if (!$lang = email_get_language($to_user['UID'])) return false;
+
+    // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+    $subject    = word_filter_apply(sprintf($lang['newlinkapprovalsubject'], $forum_name), $tuid);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+
+    // Generate the confirmation link.
+    $admin_post_approval_link = rawurlencode("/admin_link_approve.php?webtag=$webtag");
+    $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
+
+    // Generate the message body.
+    $message_body = wordwrap(sprintf($lang['newlinkapprovalemail'], $recipient, $forum_name, $admin_post_approval_link));
+
+    // Add the recipient
+    $message->setTo($to_user['EMAIL'], $recipient);
+
+    // Set the subject
+    $message->setSubject($subject);
+
+    // Set the message body
+    $message->setBody($message_body);
+
+    // Send the email
+    return $mailer->send($message) > 0;
+}
+
 function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_email_addr)
 {
     // Validate function arguments

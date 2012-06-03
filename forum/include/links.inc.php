@@ -191,6 +191,10 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     }
 
     if (!db_query($sql, $db_links_add)) return false;
+    
+    if (forum_get_setting('require_link_approval', 'Y') && !perm_is_links_moderator($uid)) {
+        admin_send_post_approval_notification($fid);
+    }
 
     return true;
 }

@@ -2020,7 +2020,6 @@ function admin_send_new_user_notification($new_user_uid)
 * @return boolean
 * @param integer $fid - Folder where the post or thread was created.
 */
-
 function admin_send_post_approval_notification($fid)
 {
     if (!$db_admin_send_post_approval_notification = db_connect()) return false;
@@ -2047,6 +2046,47 @@ function admin_send_post_approval_notification($fid)
     while (list($admin_uid) = db_fetch_array($result, DB_RESULT_NUM)) {
 
         if (!email_send_post_approval_notification($admin_uid)) {
+
+            $notification_success = false;
+        }
+    }
+
+    return $notification_success;
+}
+
+/**
+* Send link approval notification
+*
+* Sends an email to all link moderators to notify 
+* them that a new link has been created that requires 
+* approval
+*
+* @return boolean
+*/
+function admin_send_link_approval_notification()
+{
+    if (!$db_admin_send_link_approval_notification = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $user_perm_links_moderate = USER_PERM_LINKS_MODERATE;
+
+    $notification_success = true;
+
+    $sql = "SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
+    $sql.= "FROM GROUP_USERS INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
+    $sql.= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_links_moderate > 0";
+
+    if (!$result = db_query($sql, $db_admin_send_link_approval_notification)) return false;
+
+    while (list($admin_uid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        if (!email_send_link_approval_notification($admin_uid)) {
 
             $notification_success = false;
         }

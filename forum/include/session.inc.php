@@ -232,7 +232,7 @@ function session_update($user_sess)
  * @param bool $init_guest_session
  * @return mixed
  */
-function session_check($init_guest_session = true)
+function session_check()
 {
     static $user_sess = false;
     
@@ -245,8 +245,6 @@ function session_check($init_guest_session = true)
         if (!($user_sess = session_get($sess_hash)) || ($user_sess['UID'] == 0)) {
         
             if (!($user_sess = session_restore())) {
-                
-                if (!$init_guest_session) return false;
                 
                 if (!$ipaddress = get_ip_address()) return false;
                 

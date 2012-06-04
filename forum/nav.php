@@ -81,7 +81,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 $webtag = get_webtag();
 
 // Don't want to redirect the nav.php - frame is too small!
-$user_sess = session_check(false);
+$user_sess = session_check();
 
 // Check to see if the user is banned.
 if (session_user_banned()) {

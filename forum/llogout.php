@@ -81,7 +81,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Load the user session
-$user_sess = session_check(false);
+$user_sess = session_check();
 
 // Fetch the forum webtag
 $webtag = get_webtag();

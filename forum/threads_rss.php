@@ -139,7 +139,7 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
 }
 
 // Load the user session
-$user_sess = session_check(false);
+$user_sess = session_check();
 
 // Check to see if the user is banned.
 if (session_user_banned()) {

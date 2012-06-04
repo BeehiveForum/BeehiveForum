@@ -88,7 +88,7 @@ define('BEEHIVE_LIGHT_INCLUDE', true);
 cache_disable();
 
 // Start user session
-$user_sess = session_check(false);
+$user_sess = session_check();
 
 // Check to see if the user is banned.
 if (session_user_banned()) {
@@ -116,7 +116,7 @@ $lang = load_language_file();
 
 $top_html = html_get_top_page();
 
-$hide_navigation = !user_guest_enabled() && !session_check(false);
+$hide_navigation = false;
 
 if (!browser_mobile() && !session_is_search_engine()) {
 
@@ -310,6 +310,8 @@ if (html_get_cookie('logon') && user_is_guest()) {
                 }
 
             } else {
+
+                $uid = session_get_value('UID');
 
                 $threads_any_unread = threads_any_unread();
 

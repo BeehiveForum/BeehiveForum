@@ -79,7 +79,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Load the user session
-$user_sess = session_check(false);
+$user_sess = session_check();
 
 // Check to see if the user is banned.
 if (session_user_banned()) {

@@ -91,7 +91,7 @@ $webtag = get_webtag();
 forum_check_webtag_available($webtag);
 
 // Start user session
-$user_sess = session_check(false);
+$user_sess = session_check();
 
 // Check to see if the user is banned.
 if (session_user_banned()) {

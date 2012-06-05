@@ -540,6 +540,7 @@ $lang['successfullyremovedselectedforumlinks'] = "Successfully removed selected 
 $lang['cannoteditlinks'] = "Cannot edit links";
 $lang['approvelink'] = "Approve Link";
 $lang['linkdoesnotrequireapproval'] = "Link does not require approval";
+$lang['nolinksawaitingapproval'] = "No links are awaiting approval";
 $lang['linkapprovalfailed'] = "Link approval failed";
 $lang['errordellink'] = "Error deleting link";
 $lang['successfullyapprovedlink'] = "Successfully approved link";

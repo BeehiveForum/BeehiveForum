@@ -25,7 +25,7 @@ define("BH_INCLUDE_PATH", "forum/include/");
 
 $exclude_files_array = array();
 
-$exclude_dirs_array = array('forum/include/languages', 'forum/include/swift');
+$exclude_dirs_array = array('forum/chat', 'forum/include/languages', 'forum/include/swift');
 
 function get_language_file($filename)
 {
@@ -68,8 +68,12 @@ set_time_limit(0);
 header('Content-Type: text/plain');
 
 if (($lang = get_language_file('en.inc.php'))) {
+    
+    $missing_langs = array();
 
     if (get_file_list($file_list_array, 'forum', '.php')) {
+        
+        $matches = 0;
 
         foreach ($file_list_array as $file_path_name) {
 
@@ -91,9 +95,24 @@ if (($lang = get_language_file('en.inc.php'))) {
                     continue;
                 }
 
-                echo "\$lang['$lang_key'] = \"\";\n";
+                $missing_langs[] = $key;
             }
         }
+    }
+    
+    if (count($missing_langs) > 0) {
+        
+        echo "Missing language strings:\n\n";
+        
+        foreach ($missing_langs as $lang_key) {
+            printf("\$lang['%s'] = \"\";\n", $lang_key);
+        }
+        
+        echo "\n\n";        
+    
+    } else {
+        
+        echo "No missing language strings found!\n";
     }
 }
 

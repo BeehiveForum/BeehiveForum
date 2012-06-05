@@ -34,7 +34,7 @@ header('Content-Type: text/plain');
 
 $exclude_files_array = array();
 
-$exclude_dirs_array = array('forum/include/languages', 'forum/include/swift');
+$exclude_dirs_array = array('forum/chat', 'forum/include/languages', 'forum/include/swift');
 
 function get_language_file($filename)
 {
@@ -96,7 +96,7 @@ if (get_file_list($file_list_array, 'forum', '.php')) {
 
         foreach ($unused_langs as $lang_key => $lang_value) {
 
-            if (stristr($file_contents, "\$lang['$lang_key']")) {
+            if (stristr($file_contents, $lang_key)) {
                 unset($unused_langs[$lang_key]);
             }
         }
@@ -114,28 +114,32 @@ if (get_file_list($file_list_array, 'forum', '.php')) {
 
     if (sizeof($unused_langs) > 0) {
 
-        echo "\nUnused language strings:\n\n";
+        echo "Unused language strings:\n\n";
 
         foreach ($unused_langs as $lang_key => $lang_value) {
             printf("\$lang['%s'] = \"%s\";\n", $lang_key, htmlentities_array($lang_value));
         }
+        
+        echo "\n\n";
 
     }else {
 
-        echo "\nNo unused language strings detected!\n";
+        echo "No unused language strings detected!\n";
     }
 
     if (sizeof($unused_constants) > 0) {
 
-        echo "\nUnused Constants:\n\n";
+        echo "Unused Constants:\n\n";
 
         foreach ($unused_constants as $const_key => $const_value) {
             printf("define(\"%s\", %s);\n", $const_key, $const_value);
         }
+        
+        echo "\n\n";
 
     }else {
 
-        echo "\nNo unused constants detected!\n";
+        echo "No unused constants detected!\n";
     }
 }
 

@@ -124,11 +124,11 @@ if (!forum_get_setting('show_links', 'Y')) {
     exit;
 }
 
-if (isset($_POST['lid'])) {
+if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
     $lid = $_POST['lid'];
 
-}else if (isset($_GET['lid'])) {
+}else if (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
 
     $lid = $_GET['lid'];
 
@@ -140,11 +140,16 @@ if (isset($_POST['lid'])) {
     exit;
 }
 
-if (isset($_POST['parent_fid'])) {
+if (isset($_POST['parent_fid']) && is_numeric($_POST['parent_fid'])) {
+
     $parent_fid = $_POST['parent_fid'];
-}else if (isset($_GET['parent_fid'])) {
+
+}else if (isset($_GET['parent_fid']) && is_numeric($_GET['parent_fid'])) {
+
     $parent_fid = $_GET['parent_fid'];
+
 }else {
+
     $parent_fid = 1;
 }
 
@@ -211,7 +216,7 @@ if (!user_is_guest()) {
     }
 
     if (isset($_POST['update']) && ($user_perm_links_moderate || $creator_uid == $uid)) {
-
+        
         if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
             links_delete($lid);
@@ -262,12 +267,14 @@ if (!user_is_guest()) {
             }
 
             if ($valid) {
-
+                
                 links_update($lid, $fid, $uid, $title, $uri, $description);
                 
                 if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
                     admin_add_log_entry(DELETE_LINK, array($lid));
                 }
+                
+                header_redirect("links_detail.php?webtag=$webtag&lid=$lid&fid=$fid");
             }
         }
         
@@ -281,6 +288,8 @@ if (!user_is_guest()) {
 
                 links_change_visibility($lid, true);
             }
+            
+            header_redirect("links_detail.php?webtag=$webtag&lid=$lid&fid=$fid");
         }
     }
 }

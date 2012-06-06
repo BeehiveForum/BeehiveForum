@@ -450,9 +450,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                     // Limit displayed post content to 35 characters
                     if (mb_strlen($message['CONTENT']) > 35) {
-                        $message['CONTENT'] = word_filter_add_ob_tags(mb_substr($message['CONTENT'], 0, 35)). "&hellip;";
+                        $message['CONTENT'] = word_filter_add_ob_tags(mb_substr($message['CONTENT'], 0, 35), true). "&hellip;";
                     }else {
-                        $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
+                        $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], true);
                     }
 
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {

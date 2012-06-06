@@ -1922,12 +1922,12 @@ function admin_prepare_affected_sessions($affected_session)
 
         $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
         $affected_session_text.= "target=\"_blank\" class=\"popup 650x500\">";
-        $affected_session_text.= word_filter_add_ob_tags(htmlentities_array(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
+        $affected_session_text.= word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
         $affected_session_text.= "</a></li>\n";
 
     }else {
 
-        $affected_session_text = word_filter_add_ob_tags(htmlentities_array(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])));
+        $affected_session_text = word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
     }
 
     return $affected_session_text;

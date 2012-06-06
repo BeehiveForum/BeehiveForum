@@ -181,7 +181,7 @@ function stats_get_html()
 
                 if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
 
-                    $active_user_display = word_filter_add_ob_tags(htmlentities_array($user['BOT_NAME']));
+                    $active_user_display = word_filter_add_ob_tags($user['BOT_NAME'], true);
                     $active_user_display = sprintf($search_engine_bot_link, $user['BOT_URL'], $active_user_display);
 
                     $active_users_array[] = $active_user_display;
@@ -190,7 +190,7 @@ function stats_get_html()
 
                     $active_user_logon = format_user_name($user['LOGON'], $user['NICKNAME']);
 
-                    $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($active_user_logon));
+                    $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($active_user_logon, true));
 
                     if ($user['UID'] == $uid) {
 
@@ -292,7 +292,7 @@ function stats_get_html()
         $html.= "    <td width=\"35\">&nbsp;</td>\n";
         $html.= "    <td>";
 
-        $longest_thread_title = word_filter_add_ob_tags(htmlentities_array($longest_thread['TITLE']));
+        $longest_thread_title = word_filter_add_ob_tags($longest_thread['TITLE'], true);
 
         $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
         $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], $longest_thread['LENGTH']) : $lang['onepostcreated'];
@@ -368,7 +368,7 @@ function stats_get_html()
 
             if (($newest_member = stats_get_newest_user())) {
 
-                $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']));
+                $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), true);
                 $user_newest_profile_link = sprintf($new_user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
 
                 $html.= sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);

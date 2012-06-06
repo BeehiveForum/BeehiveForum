@@ -107,32 +107,30 @@ function light_html_draw_top()
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread_data = thread_get($tid)) && ($fid = thread_get_folder($tid))) {
+        if (($thread_data = thread_get($tid))) {
 
             $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
             $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
 
-            echo "<link rel=\"contents\" href=\"lthread_list.php?webtag=$webtag\" />\n";
-            echo "<link rel=\"first\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\" />\n";
-            echo "<link rel=\"previous\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}\" />\n";
-            echo "<link rel=\"next\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$next_page\" />\n";
-            echo "<link rel=\"last\" href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page\" />\n";
-            echo "<link rel=\"up\" href=\"lthread_list.php?webtag=$webtag&amp;folder=$fid\" />\n";
+            echo "<link rel=\"first\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+            echo "<link rel=\"previous\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}"), "\" />\n";
+            echo "<link rel=\"next\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
+            echo "<link rel=\"last\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
 
-            echo "<title>", word_filter_add_ob_tags($thread_data['TITLE']), " - ", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
 
         } else if (strlen(trim($title)) > 0) {
 
-            echo "<title>", word_filter_add_ob_tags(htmlentities_array($title)), " - ", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags($title, true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
 
         } else {
 
-            echo "<title>", htmlentities_array($forum_name), "</title>\n";
+            echo "<title>", word_filter_add_ob_tags($forum_name, true), "</title>\n";
         }
 
     } else if (strlen(trim($title)) > 0) {
 
-        echo "<title>", word_filter_add_ob_tags(htmlentities_array($title)), " - ", htmlentities_array($forum_name), "</title>\n";
+        echo "<title>", word_filter_add_ob_tags($title, true), " - ", htmlentities_array($forum_name), "</title>\n";
 
     } else {
 
@@ -141,8 +139,8 @@ function light_html_draw_top()
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_keywords)), "\" />\n";
-    echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags(htmlentities_array($meta_description)), "\" />\n";
+    echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags($meta_keywords, true), "\" />\n";
+    echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags($meta_description, true), "\" />\n";
     echo "<meta name=\"MobileOptimized\" content=\"0\" />\n";
     echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n";
 
@@ -716,7 +714,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
             echo "<div class=\"folder\">\n";
-            echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">", word_filter_add_ob_tags(htmlentities_array($folder_info[$folder_number]['TITLE'])), "</a></h3>";
+            echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a></h3>";
             echo "  <div class=\"folder_inner\">\n";
 
             if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
@@ -786,8 +784,8 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                             
                             echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
-                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($thread['LOGON'], $thread['NICKNAME']))), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-                            echo word_filter_add_ob_tags(htmlentities_array($thread['TITLE'])), "</a> ";
+                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+                            echo word_filter_add_ob_tags($thread['TITLE'], true), "</a> ";
                             
                             echo "<span class=\"thread_detail\">";
 
@@ -1275,7 +1273,7 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
     forum_check_webtag_available($webtag);
 
     echo "<h3 class=\"thread_title\">";
-    echo "<a href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags(htmlentities_array($thread_title)), "</a> ";
+    echo "<a href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags($thread_title, true), "</a> ";
 
     if ($closed) echo "<span class=\"thread_closed\" title=\"{$lang['closed']}\">[C]</span>\n";
     if ($thread_interest_level == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";
@@ -1359,7 +1357,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
         foreach ($poll_results as $question_id => $poll_question) {
 
-            $poll_display.= "<h3>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h3>\n";
+            $poll_display.= "<h3>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h3>\n";
 
             if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
@@ -1391,7 +1389,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             foreach ($poll_results as $question_id => $poll_question) {
 
-                $poll_display.= "<h3>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h3>\n";
+                $poll_display.= "<h3>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h3>\n";
                 $poll_display.= light_poll_graph_display($poll_question['OPTIONS_ARRAY']);
             }
 
@@ -1403,7 +1401,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             foreach ($poll_results as $question_id => $poll_question) {
 
-                $poll_display.= "<h3>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h3>\n";
+                $poll_display.= "<h3>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h3>\n";
 
                 foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
 
@@ -1601,7 +1599,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
-    echo "{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK'])));
+    echo "{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true);
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "<span class=\"user_friend\" title=\"{$lang['friend']}\">[F]</span>";
@@ -1633,7 +1631,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK'])));
+        echo "{$lang['to']}: ", word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']), true);
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "<span class=\"user_friend\" title=\"{$lang['friend']}\">[F]</span>";
@@ -2261,7 +2259,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     if ($folder == PM_FOLDER_INBOX) {
 
-        echo "<span>{$lang['from']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</span>\n";
+        echo "<span>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</span>\n";
 
     }else {
 
@@ -2283,7 +2281,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
-            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(htmlentities_array(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span>\n";
+            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</span>\n";
 
         }else {
 
@@ -2299,7 +2297,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
-        echo word_filter_add_ob_tags(htmlentities_array($pm_message_array['SUBJECT'])), "</b>\n";
+        echo word_filter_add_ob_tags($pm_message_array['SUBJECT'], true), "</b>\n";
 
     }else {
 

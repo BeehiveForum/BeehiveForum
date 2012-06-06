@@ -280,7 +280,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID']), "</td>\n";
-        echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</td>\n";
         echo "                      </tr>\n";
     }
 }
@@ -353,7 +353,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("add_user[]", $user['UID']), "</td>\n";
-            echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }

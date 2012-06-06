@@ -655,7 +655,7 @@ if ($new_thread) {
 
     }else {
 
-        echo "<h3>{$lang['postreply']}: ", word_filter_add_ob_tags(thread_get_title($reply_to_tid)), "</h3>\n";
+        echo "<h3>{$lang['postreply']}: ", word_filter_add_ob_tags(thread_get_title($reply_to_tid), true), "</h3>\n";
         echo "<div class=\"post_inner\">\n";
 
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

@@ -722,18 +722,18 @@ echo "                  <table class=\"posthead\" width=\"210\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
 echo "                        <h2>{$lang['folder']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(htmlentities_array($thread_data['FOLDER_TITLE'])), "\n";
+echo "                        ", word_filter_add_ob_tags($thread_data['FOLDER_TITLE'], true), "\n";
 echo "                        <h2>{$lang['threadtitle']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(htmlentities_array($thread_data['TITLE'])), "\n";
+echo "                        ", word_filter_add_ob_tags($thread_data['TITLE'], true), "\n";
 echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "</a><br /><br />\n";
+    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']), true), "</a><br /><br />\n";
 
 }else {
 
-    echo "                        ", word_filter_add_ob_tags(htmlentities_array(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "<br /><br />\n";
+    echo "                        ", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']), true), "<br /><br />\n";
 }
 
 echo "                        <h2>{$lang['messageoptions']}</h2>\n";
@@ -844,7 +844,7 @@ echo form_submit('apply',$lang['apply'], "tabindex=\"2\"");
 
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\"");
 
-echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg=$edit_msg\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg=$edit_msg\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 
 if (forum_get_setting('attachments_enabled', 'Y') && session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 

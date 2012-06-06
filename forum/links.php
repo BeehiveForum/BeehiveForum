@@ -267,7 +267,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
             echo "                          <tr>\n";
             echo "                            <td class=\"postbody\"><img src=\"" . html_style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td>\n";
-            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])), "</a>";
+            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags($folders[$val]['NAME'], true), "</a>";
 
             if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
 
@@ -441,12 +441,12 @@ if (sizeof($links['links_array']) > 0 ) {
         if ($link['VISIBLE'] == "N") {
 
             echo "                <tr class=\"link_hidden\">\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\" class=\"link_hidden\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\" class=\"link_hidden\">", word_filter_add_ob_tags($link['TITLE'], true), "</a></td>\n";
 
         }else {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\">", word_filter_add_ob_tags($link['TITLE'], true), "</a></td>\n";
         }
 
         echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";

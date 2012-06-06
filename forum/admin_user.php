@@ -186,7 +186,7 @@ $user['POST_COUNT'] = user_get_post_count($uid);
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Page title
-$page_title = "{$lang['admin']} - {$lang['manageuser']} - ". htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']));
+$page_title = "{$lang['admin']} - {$lang['manageuser']} - ". format_user_name($user['LOGON'], $user['NICKNAME']);
 
 // Do updates
 if (isset($_POST['action_submit'])) {
@@ -584,7 +584,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
         html_display_warning_msg($lang['forgottenpassworddesc'], '600', 'center');
 
@@ -870,8 +870,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-                echo "                              <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(htmlentities_array($user_alias['LOGON'])), "</a></td>\n";
-                echo "                              <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(htmlentities_array($user_alias['NICKNAME'])), "</td>\n";
+                echo "                              <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags($user_alias['LOGON'], true), "</a></td>\n";
+                echo "                              <td align=\"left\" width=\"150\">", word_filter_add_ob_tags($user_alias['NICKNAME'], true), "</td>\n";
 
                 if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
@@ -1617,7 +1617,7 @@ if (forum_check_webtag_available($webtag)) {
             echo "                                  ", form_input_hidden("t_update_perms_array[]", htmlentities_array($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
             echo "                                    </tr>\n";

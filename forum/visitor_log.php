@@ -385,7 +385,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" title=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
             }elseif (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
 
@@ -393,7 +393,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                    echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" title=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
                 }else {
 
@@ -412,15 +412,15 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         if (isset($user_array['SID']) && !is_null($user_array['SID'])) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><a href=\"{$user_array['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($user_array['NAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><a href=\"{$user_array['URL']}\" target=\"_blank\">", word_filter_add_ob_tags($user_array['NAME'], true), "</a></td>\n";
 
         }elseif ($user_array['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "</a></td>\n";
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\">", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "</td>\n";
         }
 
         foreach ($profile_items_selected_array as $key => $profile_item_selected) {
@@ -433,7 +433,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                     if (isset($profile_item_options_array[$user_array["ENTRY_$key"]])) {
 
-                        echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($profile_item_options_array[$user_array["ENTRY_$key"]]), "\">", word_filter_add_ob_tags(htmlentities_array($profile_item_options_array[$user_array["ENTRY_$key"]])), "&nbsp;</div></td>\n";
+                        echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($profile_item_options_array[$user_array["ENTRY_$key"]]), "\">", word_filter_add_ob_tags($profile_item_options_array[$user_array["ENTRY_$key"]], true), "&nbsp;</div></td>\n";
 
                     }else {
 
@@ -443,18 +443,18 @@ if (sizeof($user_profile_array['user_array']) > 0) {
                 }else if ($user_array["PROFILE_ITEM_TYPE_$key"] == PROFILE_ITEM_HYPERLINK) {
 
                     $profile_item_hyper_link = str_replace("[ProfileEntry]", word_filter_add_ob_tags(urlencode($user_array["ENTRY_$key"])), $user_array["PROFILE_ITEM_OPTIONS_$key"]);
-                    $profile_item_hyper_link = sprintf("<a href=\"%s\" target=\"_blank\">%s</a>", $profile_item_hyper_link, word_filter_add_ob_tags(htmlentities_array($user_array["ENTRY_$key"])));
+                    $profile_item_hyper_link = sprintf("<a href=\"%s\" target=\"_blank\">%s</a>", $profile_item_hyper_link, word_filter_add_ob_tags($user_array["ENTRY_$key"], true));
 
-                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(htmlentities_array($user_array["ENTRY_$key"])), "\">$profile_item_hyper_link&nbsp;</div></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags($user_array["ENTRY_$key"], true), "\">$profile_item_hyper_link&nbsp;</div></td>\n";
 
                 }else {
 
-                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags(htmlentities_array($user_array["ENTRY_$key"])), "&nbsp;</div></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags($user_array["ENTRY_$key"], true), "&nbsp;</div></td>\n";
                 }
 
             }elseif (isset($profile_header_array[$key]) && isset($user_array[$key])) {
 
-                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($user_array[$key]), "\">", word_filter_add_ob_tags(htmlentities_array($user_array[$key])), "&nbsp;</div></td>\n";
+                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", htmlentities_array($user_array[$key]), "\">", word_filter_add_ob_tags($user_array[$key], true), "&nbsp;</div></td>\n";
 
             }else {
 

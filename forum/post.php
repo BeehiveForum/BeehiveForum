@@ -954,13 +954,13 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($thread_data['FOLDER_TITLE'])), "</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags($thread_data['FOLDER_TITLE'], true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($thread_data['TITLE'])), form_input_hidden("t_tid", htmlentities_array($reply_to_tid)), form_input_hidden("t_rpid", htmlentities_array($reply_to_pid)), "</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags($thread_data['TITLE'], true), form_input_hidden("t_tid", htmlentities_array($reply_to_tid)), form_input_hidden("t_rpid", htmlentities_array($reply_to_pid)), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -1129,9 +1129,9 @@ echo form_submit("post", $lang['post'], "tabindex=\"2\"");
 echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\"");
 
 if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 } else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 } else {
     echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
 }

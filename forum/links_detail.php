@@ -319,7 +319,7 @@ $page_title = links_get_folder_page_title($link['FID'], $folders, $link['TITLE']
 
 html_draw_top("title={$page_title}", 'class=window_title');
 
-echo "<h1>", links_get_folder_path_links($link['FID'], $folders, true, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</a></h1>\n";
+echo "<h1>", links_get_folder_path_links($link['FID'], $folders, true, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags($link['TITLE'], true), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -351,11 +351,11 @@ echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webta
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(htmlentities_array(format_user_name($link['LOGON'], $link['NICKNAME']))) : $lang['unknownuser']), "</td>\n";
+echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME']), true) : $lang['unknownuser']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
-echo "                      <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($link['DESCRIPTION'])), "</td>\n";
+echo "                      <td align=\"left\">", word_filter_add_ob_tags($link['DESCRIPTION'], true), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
@@ -424,7 +424,7 @@ if (!user_is_guest()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} ", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</td>";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} ", word_filter_add_ob_tags($link['TITLE'], true), "</td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -470,7 +470,7 @@ if (($comments_array = links_get_comments($lid))) {
     foreach ($comments_array as $comment_id => $comment) {
 
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        $profile_link.= word_filter_add_ob_tags(htmlentities_array(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";
+        $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']), true). "</a>";
 
         if ($user_perm_links_moderate || $comment['UID'] == $uid) {
 
@@ -489,7 +489,7 @@ if (($comments_array = links_get_comments($lid))) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($comment['COMMENT'])), "</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags($comment['COMMENT'], true), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -524,7 +524,7 @@ if (!user_is_guest()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} ", word_filter_add_ob_tags(htmlentities_array($link['TITLE'])), "</td>";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} ", word_filter_add_ob_tags($link['TITLE'], true), "</td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";

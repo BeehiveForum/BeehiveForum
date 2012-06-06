@@ -543,7 +543,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - ". profile_section_get_name($psid). " - {$lang['edititem']} - {$profile_item['NAME']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['edititem']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['edititem']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -683,22 +683,22 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
             if ($profile_items['profile_items_count'] == 1) {
 
-                echo "                  <td valign=\"top\" align=\"left\" colspan=\"2\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</a></td>\n";
+                echo "                  <td valign=\"top\" align=\"left\" colspan=\"2\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
                 echo "                  <td align=\"right\">&nbsp;</td>\n";
 
             }elseif ($profile_index == $profile_items['profile_items_count']) {
 
-                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</a></td>\n";
+                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
                 echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
 
             }elseif ($profile_index > 1) {
 
-                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</a></td>\n";
+                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
                 echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
             }else {
 
-                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags(htmlentities_array($profile_item['NAME'])), "</a></td>\n";
+                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
                 echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             }
 

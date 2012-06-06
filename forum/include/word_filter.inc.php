@@ -220,17 +220,20 @@ function word_filter_prepare($word_filter_array)
 *
 * @return string
 * @param string $content - string to be wrapped in OB tags.
+* @param bool $escape_html - Whether to escape HTML using htmlentities_array
 */
 
-function word_filter_add_ob_tags($content)
+function word_filter_add_ob_tags($content, $strip_html = false)
 {
     if (($rand_hash = session_get_value('RAND_HASH')) === false) {
         return $content;
     }
 
     $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
+    
+    $strip_html = ($strip_html) ? 'strip' : 'nostrip';
 
-    return "<$rand_hash>$content</$rand_hash>";
+    return sprintf('<%1$s_%3$s>%2$s</%1$s_%3$s>', $strip_html, $content, $rand_hash);
 }
 
 /**
@@ -250,7 +253,7 @@ function word_filter_rem_ob_tags($content)
 
     $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
 
-    return preg_replace(sprintf('/<\/?%s>/u', $rand_hash), "", $content);
+    return preg_replace(sprintf('/<\/?(strip|nostrip)_%s>/uU', $rand_hash), "", $content);
 }
 
 /**
@@ -272,28 +275,36 @@ function word_filter_obstart($content)
 
     $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
 
-    if (($user_wordfilter = word_filter_get_by_sess_uid())) {
+    if (!($user_wordfilter = word_filter_get_by_sess_uid())) {
+        return $content;
+    }
+    
+    $pattern_array = $user_wordfilter['pattern_array'];
+    $replace_array = $user_wordfilter['replace_array'];
+    
+    $pattern_match = sprintf('/<\/?strip_%1$s>/u', $rand_hash);
+    $content_array = preg_split($pattern_match, $content);
 
-        $pattern_array = $user_wordfilter['pattern_array'];
-        $replace_array = $user_wordfilter['replace_array'];
+    foreach ($content_array as $key => $content_match) {
 
-        $content_array = preg_split(sprintf('/<\/?%s>/u', $rand_hash), $content);
-
-        for ($i = 0; $i < sizeof($content_array); $i++) {
-
-            if ($i % 2) {
-
-                if ((@$new_content = preg_replace($pattern_array, $replace_array, $content_array[$i]))) {
-
-                    $content_array[$i] = $new_content;
-                }
-            }
+        if (($key % 2) && ($new_content = @preg_replace($pattern_array, $replace_array, $content_match))) {
+            $content_array[$key] = strip_tags($new_content);
         }
+    }
+    
+    $content = implode('', $content_array);
+        
+    $pattern_match = sprintf('/<\/?nostrip_%1$s>/u', $rand_hash);
+    $content_array = preg_split($pattern_match, $content);
 
-        $content = implode("", $content_array);
+    foreach ($content_array as $key => $content_match) {
+
+        if (($key % 2) && ($new_content = @preg_replace($pattern_array, $replace_array, $content_match))) {
+            $content_array[$key] = $new_content;
+        }
     }
 
-    return $content;
+    return implode('', $content_array);
 }
 
 /**
@@ -306,7 +317,7 @@ function word_filter_obstart($content)
 * @param integer $uid - User UID.
 */
 
-function word_filter_apply($content, $uid)
+function word_filter_apply($content, $uid, $strip_html = false)
 {
     if (!is_numeric($uid)) return $content;
 
@@ -316,8 +327,7 @@ function word_filter_apply($content, $uid)
         $replace_array = $user_wordfilter['replace_array'];
 
         if ((@$new_content = preg_replace($pattern_array, $replace_array, $content))) {
-
-            return $new_content;
+            return ($strip_html) ? strip_tags($new_content) : $new_content;
         }
     }
 

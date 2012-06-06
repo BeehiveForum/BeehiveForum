@@ -97,11 +97,11 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     // Get the required variables (forum name, subject, recipient, etc.) and
     // pass them all through the recipient's word filter.
-    $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject        = word_filter_apply(sprintf($lang['msgnotification_subject'], $forum_name), $tuid);
-    $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-    $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-    $thread_title   = word_filter_apply($thread['TITLE'], $tuid);
+    $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject        = word_filter_apply(sprintf($lang['msgnotification_subject'], $forum_name), $tuid, true);
+    $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
+    $thread_title   = word_filter_apply($thread['TITLE'], $tuid, true);
 
     // Generate link to the forum itself
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
@@ -204,11 +204,11 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
-        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID']);
-        $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $to_user['UID']);
-        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
-        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID']);
-        $thread_title   = word_filter_apply($thread['TITLE'], $to_user['UID']);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
+        $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $to_user['UID'], true);
+        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
+        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID'], true);
+        $thread_title   = word_filter_apply($thread['TITLE'], $to_user['UID'], true);
 
         // Generate the message link.
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
@@ -305,11 +305,11 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
-        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID']);
-        $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $to_user['UID']);
-        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
-        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID']);
-        $thread_title   = word_filter_apply($thread['TITLE'], $to_user['UID']);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
+        $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $to_user['UID'], true);
+        $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
+        $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID'], true);
+        $thread_title   = word_filter_apply($thread['TITLE'], $to_user['UID'], true);
 
         // Generate link to the forum itself
         $forum_link = html_get_forum_uri("index.php?webtag=$webtag&fid=$fid");
@@ -384,11 +384,11 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name      = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject         = word_filter_apply(sprintf($lang['pmnotification_subject'], $forum_name), $tuid);
-    $recipient       = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-    $message_author  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-    $message_subject = word_filter_apply($pm_subject, $tuid);
+    $forum_name      = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject         = word_filter_apply(sprintf($lang['pmnotification_subject'], $forum_name), $tuid, true);
+    $recipient       = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $message_author  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
+    $message_subject = word_filter_apply($pm_subject, $tuid, true);
 
     // Generate link to the forum itself
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
@@ -441,9 +441,9 @@ function email_send_pw_reminder($logon)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID']);
-    $subject    = word_filter_apply(sprintf($lang['passwdresetrequest'], $forum_name), $to_user['UID']);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID']);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
+    $subject    = word_filter_apply(sprintf($lang['passwdresetrequest'], $forum_name), $to_user['UID'], true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
 
     // Generate the change password link.
     $change_pw_link = rawurlencode("/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
@@ -495,10 +495,10 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name        = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject           = word_filter_apply(sprintf($lang['passwdchangenotification'], $forum_name), $tuid);
-    $recipient         = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-    $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+    $forum_name        = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject           = word_filter_apply(sprintf($lang['passwdchangenotification'], $forum_name), $tuid, true);
+    $recipient         = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
 
     // Generate the message body.
     $message_body = wordwrap(sprintf($lang['pwchangeemail'], $recipient, $forum_name, $new_password, $passwd_changed_by, $forum_name));
@@ -547,9 +547,9 @@ function email_send_user_confirmation($tuid)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['emailconfirmationrequiredsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['emailconfirmationrequiredsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
@@ -602,9 +602,9 @@ function email_send_changed_email_confirmation($tuid)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['emailconfirmationrequiredsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['emailconfirmationrequiredsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
@@ -653,9 +653,9 @@ function email_send_user_approval_notification($tuid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['newuserapprovalsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['newuserapprovalsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
@@ -705,9 +705,9 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['newuserregistrationsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['newuserregistrationsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
@@ -759,9 +759,9 @@ function email_send_user_approved_notification($tuid)
     $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['useraccountapprovedsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['useraccountapprovedsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
@@ -809,9 +809,9 @@ function email_send_post_approval_notification($tuid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['newpostapprovalsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['newpostapprovalsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
@@ -860,9 +860,9 @@ function email_send_link_approval_notification($tuid)
     if (!$lang = email_get_language($to_user['UID'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $subject    = word_filter_apply(sprintf($lang['newlinkapprovalsubject'], $forum_name), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $subject    = word_filter_apply(sprintf($lang['newlinkapprovalsubject'], $forum_name), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
     // Generate the confirmation link.
     $admin_post_approval_link = rawurlencode("/admin_link_approve.php?webtag=$webtag");
@@ -913,12 +913,12 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-    $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
 
     // Word filter the message to be sent.
-    $message_body = word_filter_apply($message_body, $tuid);
+    $message_body = word_filter_apply($message_body, $tuid, true);
 
     // Add the Sent By footer to the message.
     $message_body.= wordwrap(sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from));

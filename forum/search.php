@@ -443,9 +443,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                     // Limit thread title to 20 characters.
                     if (mb_strlen($message['TITLE']) > 20) {
-                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr(htmlentities_array($message['TITLE']), 0, 20)). "&hellip;";
+                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr($message['TITLE'], 0, 20), true). "&hellip;";
                     }else {
-                        $message['TITLE'] = word_filter_add_ob_tags(htmlentities_array($message['TITLE']));
+                        $message['TITLE'] = word_filter_add_ob_tags($message['TITLE'], true);
                     }
 
                     // Limit displayed post content to 35 characters
@@ -458,12 +458,12 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
 
                     }else {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
                     }
                 }
             }

@@ -575,7 +575,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
         foreach ($poll_results as $question_id => $poll_question) {
 
             $poll_display.= "          <tr>\n";
-            $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2></td>\n";
+            $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
             $poll_display.= "          </tr>\n";
             $poll_display.= "          <tr>\n";
             $poll_display.= "            <td align=\"left\">\n";
@@ -628,7 +628,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 foreach ($poll_results as $question_id => $poll_question) {
 
                     $poll_display.= "           <tr>\n";
-                    $poll_display.= "               <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2></td>\n";
+                    $poll_display.= "               <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
                     $poll_display.= "            </tr>\n";
                     $poll_display.= "            <tr>\n";
                     $poll_display.= "              <td align=\"left\">\n";
@@ -658,7 +658,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             foreach ($poll_results as $question_id => $poll_question) {
 
                 $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2></td>\n";
+                $poll_display.= "              <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
                 $poll_display.= "            </tr>\n";
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td align=\"left\">\n";
@@ -903,7 +903,7 @@ function poll_voting_form($poll_results, $poll_data)
     foreach ($poll_results as $question_id => $poll_question) {
 
         $poll_display.= "          <tr>\n";
-        $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2></td>\n";
+        $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
         $poll_display.= "          </tr>\n";
         $poll_display.= "          <tr>\n";
         $poll_display.= "            <td align=\"left\">\n";
@@ -1163,7 +1163,7 @@ function poll_public_ballot_user_callback($user_data)
     if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
 
         $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" class=\"popup 650x500\" style=\"white-space: nowrap\">%2\$s</a>";
-        return sprintf($user_profile_link_html, $user_data['UID'], word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME']))), $webtag);
+        return sprintf($user_profile_link_html, $user_data['UID'], word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true), $webtag);
 
     }else if (isset($user_data['LOGON'])) {
 

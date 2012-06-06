@@ -199,15 +199,15 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($visitor['NAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags($visitor['NAME'], true), "</a></td>\n";
 
         }elseif ($visitor['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($visitor['LOGON'], $visitor['NICKNAME']), true), "</a></td>\n";
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\">", word_filter_add_ob_tags(format_user_name($visitor['LOGON'], $visitor['NICKNAME']), true), "</td>\n";
         }
 
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {

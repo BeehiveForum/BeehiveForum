@@ -183,13 +183,13 @@ if (isset($_POST['send'])) {
 
     if (!user_allow_email($to_user['UID'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
+        $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), true));
         $valid = false;
     }
 
     if (!email_address_valid($to_user['EMAIL'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
+        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), true));
         $valid = false;
     }
 
@@ -240,7 +240,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
-echo "                        <td align=\"left\">", word_filter_add_ob_tags(htmlentities_array($from_user['NICKNAME'])), "</td>\n";
+echo "                        <td align=\"left\">", word_filter_add_ob_tags($from_user['NICKNAME'], true), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";

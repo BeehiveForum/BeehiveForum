@@ -283,9 +283,9 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
     $link_base = $link_base ? $link_base : "links.php?webtag=$webtag";
 
     if (strstr($link_base, "?")) {
-        $result = $html ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
+        $result = $html ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags($folders[$key]['NAME'], true). "</a>" : word_filter_add_ob_tags($folders[$key]['NAME'], true);
     }else {
-        $result = $html ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(htmlentities_array($folders[$key]['NAME']));
+        $result = $html ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags($folders[$key]['NAME'], true). "</a>" : word_filter_add_ob_tags($folders[$key]['NAME'], true);
     }
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
@@ -293,9 +293,9 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
         while (($val = array_pop($tree_array))) {
 
             if (($val != $fid && $html) || $link_last_too) {
-                $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])). "</a>" : " &gt; ". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
+                $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags($folders[$val]['NAME'], true). "</a>" : " &gt; ". word_filter_add_ob_tags($folders[$val]['NAME'], true);
             } else {
-                $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME'])) : " &gt; ". word_filter_add_ob_tags(htmlentities_array($folders[$val]['NAME']));
+                $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" />". word_filter_add_ob_tags($folders[$val]['NAME'], true) : " &gt; ". word_filter_add_ob_tags($folders[$val]['NAME'], true);
             }
         }
     }

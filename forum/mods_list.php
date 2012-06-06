@@ -160,7 +160,7 @@ if (($forum_mods_array = mods_list_get_mods(0))) {
     foreach ($forum_mods_array as $forum_mod) {
 
         echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$forum_mod['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME']))), "</a></li>\n";
+        echo word_filter_add_ob_tags(format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME']), true), "</a></li>\n";
     }
 
 }else {
@@ -177,7 +177,7 @@ if (($folder_mods_array = mods_list_get_mods($fid))) {
     foreach ($folder_mods_array as $folder_mod) {
 
         echo "                            <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$folder_mod['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME']))), "</a></li>\n";
+        echo word_filter_add_ob_tags(format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME']), true), "</a></li>\n";
     }
 
 }else {

@@ -871,7 +871,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         if ($auto_update === true) {
             echo "                    <td align=\"left\" valign=\"top\">{$lang['none']}</td>\n";
         }else {
-            echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']))), "</a></td>\n";
+            echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), true), "</a></td>\n";
         }
 
         echo "                    <td align=\"left\">", $action_text, "</td>\n";

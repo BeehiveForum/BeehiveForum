@@ -266,22 +266,22 @@ if (sizeof($folder_array['folder_array']) > 0) {
 
         if ($folder_array['folder_count'] == 1) {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\">&nbsp;</td>\n";
 
         }elseif ($folder_index == $folder_array['folder_count']) {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
 
         }elseif ($folder_index > 1) {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
         }else {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags(htmlentities_array($folder['TITLE'])), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
         }
 

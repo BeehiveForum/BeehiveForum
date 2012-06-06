@@ -249,7 +249,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
+                $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']), true);
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
@@ -280,7 +280,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
+            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true);
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
@@ -325,7 +325,7 @@ function post_draw_to_dropdown_recent($default_uid)
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
+                $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']), true);
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
@@ -354,7 +354,7 @@ function post_draw_to_dropdown_recent($default_uid)
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
+            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true);
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
@@ -397,7 +397,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
+                $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']), true);
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
@@ -436,7 +436,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
+            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true);
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }

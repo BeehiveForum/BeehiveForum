@@ -286,20 +286,20 @@ if (sizeof($selected_array) > 0) {
             if ($multi === 'Y') {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selected[]", htmlentities_array($user_data['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_data['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_checkbox("selected[]", htmlentities_array($user_data['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_data['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true), "</a></td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_radio("selected", htmlentities_array($user_data['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_data['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_data['LOGON'], $user_data['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_radio("selected", htmlentities_array($user_data['LOGON']), '', true), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_data['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true), "</a></td>\n";
                 echo "                      </tr>\n";
             }
 
         } else if (($thread_data = thread_get($selected_option))) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("selected", $thread_data['TID'], '', true), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($thread_data['TITLE'])), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("selected", $thread_data['TID'], '', true), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }
@@ -321,20 +321,20 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
             if ($multi === 'Y') {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_checkbox("selected[]", htmlentities_array($search_result['LOGON']), '', false), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_checkbox("selected[]", htmlentities_array($search_result['LOGON']), '', false), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME']), true), "</a></td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_radio("selected", htmlentities_array($search_result['LOGON']), '', false), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                        <td align=\"left\">", form_radio("selected", htmlentities_array($search_result['LOGON']), '', false), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME']), true), "</a></td>\n";
                 echo "                      </tr>\n";
             }
 
         } else if (($type == SEARCH_THREAD) && !in_array($search_result['TID'], $selected_array)) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("selected", $search_result['TID'], '', false), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($search_result['TITLE'])), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("selected", $search_result['TID'], '', false), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags($search_result['TITLE'], true), "</a></td>\n";
             echo "                      </tr>\n";
         }
     }

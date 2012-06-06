@@ -387,7 +387,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y"), "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</a></td>\n";
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT']), "</td>\n";

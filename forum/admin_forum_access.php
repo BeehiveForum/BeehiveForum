@@ -309,7 +309,7 @@ if (sizeof($user_permissions_array['user_array']) > 0) {
     foreach ($user_permissions_array['user_array'] as $user_permission_result) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("remove_user[]", $user_permission_result['UID'], ''), "&nbsp;", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_permission_result['LOGON'], $user_permission_result['NICKNAME']))), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("remove_user[]", $user_permission_result['UID'], ''), "&nbsp;", word_filter_add_ob_tags(format_user_name($user_permission_result['LOGON'], $user_permission_result['NICKNAME']), true), "</td>\n";
         echo "                      </tr>\n";
     }
 }
@@ -388,7 +388,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
         foreach ($user_search_array['user_array'] as $user_search_result) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_checkbox("add_user[]", $user_search_result['UID'], ''), "&nbsp;", word_filter_add_ob_tags(htmlentities_array(format_user_name($user_search_result['LOGON'], $user_search_result['NICKNAME']))), "</td>\n";
+            echo "                        <td align=\"left\">", form_checkbox("add_user[]", $user_search_result['UID'], ''), "&nbsp;", word_filter_add_ob_tags(format_user_name($user_search_result['LOGON'], $user_search_result['NICKNAME']), true), "</td>\n";
             echo "                      </tr>\n";
         }
     }

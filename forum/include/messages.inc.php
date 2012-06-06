@@ -577,10 +577,6 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     $frame_top_target = html_get_top_frame_name();
 
-    $thread_title = htmlentities_array($thread_title);
-
-    $folder_title = htmlentities_array($folder_title);
-
     if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 
         $highlight_pattern = array();
@@ -594,7 +590,7 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
             $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
         }
 
-        $thread_parts = preg_split('/([<|>])/u', htmlentities_array($thread_title), -1, PREG_SPLIT_DELIM_CAPTURE);
+        $thread_parts = preg_split('/([<|>])/u', $thread_title, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i = 0; $i < sizeof($thread_parts); $i++) {
 
@@ -617,13 +613,13 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     if ($frame_links) {
 
-        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title), "</a>";
+        echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title, true), "</a>";
         echo "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />";
-        echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title), "</a>";
+        echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title, true), "</a>";
 
     }else {
 
-        echo word_filter_add_ob_tags($folder_title), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" />", word_filter_add_ob_tags($thread_title);
+        echo word_filter_add_ob_tags($folder_title, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" />", word_filter_add_ob_tags($thread_title, true);
     }
 
     if ($closed) echo "&nbsp;<img src=\"", html_style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
@@ -828,18 +824,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</a></span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "</a></span>";
 
     }else {
 
-        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "</span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "</span>";
     }
 
     if (session_get_value('SHOW_AVATARS') == 'Y') {
 
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
-            echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />";
+            echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "\" border=\"0\" width=\"16\" height=\"16\" />";
 
         }elseif (isset($message['AVATAR_AID']) && is_md5($message['AVATAR_AID'])) {
 
@@ -847,7 +843,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($message['FLOGON'], $message['FNICK']))), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
+                echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
             }
         }
     }
@@ -898,7 +894,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(htmlentities_array(format_user_name($message['TLOGON'], $message['TNICK']))), "</a></span>";
+        echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']), true), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
 

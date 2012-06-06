@@ -938,7 +938,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
             foreach ($poll_preview_questions_array as $question_id => $poll_question) {
 
                 $poll_display.= "          <tr>\n";
-                $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags(htmlentities_array($poll_question['QUESTION'])). "</h2></td>\n";
+                $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
                 $poll_display.= "          </tr>\n";
                 $poll_display.= "          <tr>\n";
                 $poll_display.= "            <td align=\"left\">\n";

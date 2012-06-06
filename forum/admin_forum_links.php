@@ -419,7 +419,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     html_draw_top("title={$lang['admin']} - {$lang['forumlinks']} - {$lang['editlink']} - {$forum_link['TITLE']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> {$lang['forumlinks']} <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> {$lang['editlink']} <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</h1>\n";
+    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> {$lang['forumlinks']} <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> {$lang['editlink']} <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags($forum_link['TITLE'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -546,22 +546,22 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
             if ($forum_links_array['forum_links_count'] == 1) {
 
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
                 echo "                  <td align=\"right\">&nbsp;</td>\n";
 
             }elseif ($link_index == $forum_links_array['forum_links_count']) {
 
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
                 echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
 
             }elseif ($link_index > 1) {
 
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
                 echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
             }else {
 
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags(htmlentities_array($forum_link['TITLE'])), "</a></td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
                 echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             }
 

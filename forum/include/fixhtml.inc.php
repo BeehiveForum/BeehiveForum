@@ -1337,6 +1337,7 @@ function clean_styles_restrict($value)
 *       First entry</li>
 * </ul>
 * End demo</code>
+* This function can also add <p>..</p> tags but this functionality is experimental.
 *
 * @return string
 * @param string $html The HTML which needs <br /> and <p> tags adding.
@@ -1384,10 +1385,12 @@ function add_paragraphs($html, $br_only = true)
         if ($current_pos >= mb_strlen($html_array[$html_pos])) break;
 
         $close = -1;
+
         $open_num = 0;
+
         $j = $current_pos + 1;
 
-        while (1 != 2) {
+        while (1) {
 
             $open = mb_strpos($html_array[$html_pos], '<'. $current_tag, $j);
             $close = mb_strpos($html_array[$html_pos], '</'. $current_tag, $j);
@@ -1421,13 +1424,112 @@ function add_paragraphs($html, $br_only = true)
 
         $html_pos += 2;
     }
-
+    
     $return = '';
+
     $p_open = false;
 
     for ($i = 0; $i < count($html_array); $i++) {
 
-        if ($br_only == false) {
+        if ($i % 2) {
+
+            $tag = array();
+
+            preg_match("/^<(\\p{L}+)(\\b[^<>]*)>/iu", $html_array[$i], $tag);
+
+            if (isset($tag[1]) && isset($tags_nest[$tag[1]])) {
+
+                if (!is_bool($tags_nest[$tag[1]][0])) {
+
+                    $nest = $tags_nest[$tag[1]];
+
+                    for ($j = 0; $j < count($nest); $j++) {
+
+                        $offset = 0;
+
+                        while (mb_strpos($html_array[$i], '<'. $nest[$j], $offset) !== false) {
+
+                            $current_pos = mb_strpos($html_array[$i], '<'. $nest[$j], $offset);
+                            $current_pos = mb_strpos($html_array[$i], '>', $current_pos) + 1;
+                            
+                            $k = $current_pos + 1;
+                            
+                            $open_num = 0;
+
+                            while (1) {
+
+                                $open = mb_strpos($html_array[$i], '<'. $current_tag, $k);
+                                $close = mb_strpos($html_array[$i], '</'. $current_tag, $k);
+
+                                if (!is_integer($open)) {
+                                    $open = $close + 1;
+                                }
+
+                                if ($close < $open && $open_num == 0) {
+
+                                    break;
+
+                                } else if ($close < $open) {
+
+                                    $open_num--;
+                                    $open = $close;
+
+                                } else {
+
+                                    $open_num++;
+                                }
+
+                                $k = $open + 1;
+                            }                            
+
+                            $tmp = array();
+
+                            $tmp[0] = mb_substr($html_array[$i], 0, $current_pos);
+                            $tmp[1] = mb_substr($html_array[$i], $current_pos, $close - $current_pos);
+                            $tmp[2] = mb_substr($html_array[$i], $close);
+
+                            $tmp[1] = add_paragraphs($tmp[1], true);
+
+                            $offset = mb_strlen($tmp[0]. $tmp[1]);
+
+                            $html_array[$i] = $tmp[0]. $tmp[1]. $tmp[2];
+                        }
+                    }
+
+                } else if ($tags_nest[$tag[1]][0] == true) {
+
+                    $current_pos = mb_strpos($html_array[$i], '>') + 1;
+                    $close = mb_strrpos($html_array[$i], '<');
+
+                    $tmp = array();
+
+                    $tmp[0] = mb_substr($html_array[$i], 0, $current_pos);
+                    $tmp[1] = mb_substr($html_array[$i], $current_pos, $close - $current_pos);
+                    $tmp[2] = mb_substr($html_array[$i], $close);
+
+                    $tmp[1] = add_paragraphs($tmp[1], true);
+
+                    $html_array[$i] = $tmp[0]. $tmp[1]. $tmp[2];
+                }
+            }
+
+            if (isset($tag[1], $tags_nest[$tag[1]], $tags_nest[$tag[1]][1]) && ($tags_nest[$tag[1]][1] != true)) {
+
+                if (trim($html_array[$i + 1]) == '') {
+
+                    $return.= $html_array[$i]. "\n";
+
+                } else {
+
+                    $return.= $html_array[$i]. "\n\n";
+                }
+
+            } else {
+
+                $return.= $html_array[$i];
+            }
+
+        } else if ($br_only == false) {
 
             $html_array[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/iu", "$1\n$3", $html_array[$i]);
             $html_array[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/iu", "$1\n\n$2", $html_array[$i]);

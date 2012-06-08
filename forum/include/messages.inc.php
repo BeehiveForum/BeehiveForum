@@ -294,6 +294,10 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
     $message = implode('', $message_parts);
 
     $message_parts = preg_split('/<([^<>]+)>/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
+    
+    for ($i = 0; $i < sizeof($message_parts); $i++) {
+        $message_parts[$i] = word_filter_add_ob_tags($message_parts[$i], ($i % 2));
+    }
 
     for ($j = 0; $j < 1; $j++) {
 
@@ -741,11 +745,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
-    }
-
-    // Check for words that should be filtered ---------------------------------
-    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
-        $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
     }
 
     if ($in_list && isset($message['PID'])){

@@ -667,6 +667,10 @@ function session_user_banned()
     if (session_check_perm(USER_PERM_BANNED, 0)) {
         return true;
     }
+    
+    if (session_check_perm(USER_PERM_BANNED, 0, 0)) {
+        return true;
+    }
 
     return false;
 }

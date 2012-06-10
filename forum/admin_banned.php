@@ -230,7 +230,7 @@ if (isset($_POST['delete'])) {
 
                 if (remove_ban_data_by_id($ban_id)) {
 
-                    admin_add_log_entry($admin_log_rem_types[$ban_data_array['BANTYPE']], $ban_data_array['BANDATA']);
+                    admin_add_log_entry($admin_log_rem_types[$ban_data_array['BANTYPE']], array($ban_data_array['BANDATA']));
 
                 }else {
 

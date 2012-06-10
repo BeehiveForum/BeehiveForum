@@ -171,7 +171,7 @@ if (isset($_POST['delete'])) {
 
                 if (perm_remove_group($gid)) {
 
-                    admin_add_log_entry(DELETE_USER_GROUP, $group_name);
+                    admin_add_log_entry(DELETE_USER_GROUP, array($group_name));
 
                 }else {
 

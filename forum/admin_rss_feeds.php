@@ -157,7 +157,7 @@ if (isset($_POST['delete'])) {
 
                 if (rss_feed_remove($feed_id)) {
 
-                    admin_add_log_entry(DELETED_RSS_FEED, $rss_feed['NAME']);
+                    admin_add_log_entry(DELETED_RSS_FEED, array($rss_feed['NAME']));
 
                 }else {
 

@@ -146,7 +146,7 @@ if (isset($_POST['delete_sections'])) {
 
                 if (profile_section_delete($psid)) {
 
-                    admin_add_log_entry(DELETE_PROFILE_SECT, $profile_name);
+                    admin_add_log_entry(DELETE_PROFILE_SECT, array($profile_name));
 
                 }else {
 

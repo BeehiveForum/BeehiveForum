@@ -248,7 +248,7 @@ if (isset($_POST['save'])) {
                 }
             }
 
-            admin_add_log_entry(UPDATE_USER_GROUP, $t_name);
+            admin_add_log_entry(UPDATE_USER_GROUP, array($t_name));
             header_redirect("admin_user_groups.php?webtag=$webtag&edited=true");
             exit;
         }

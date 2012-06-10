@@ -193,7 +193,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
                 }
             }
 
-            admin_add_log_entry(CREATE_USER_GROUP, $t_name);
+            admin_add_log_entry(CREATE_USER_GROUP, array($t_name));
 
             if (isset($_POST['add_users'])) {
 

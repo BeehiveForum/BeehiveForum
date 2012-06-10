@@ -61,7 +61,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 * @param mixed $data - Data to insert into the log
 * @return bool
 */
-function admin_add_log_entry($action, $data = null)
+function admin_add_log_entry($action, array $data = array())
 {
     if (!$db_admin_add_log_entry = db_connect()) return false;
 
@@ -1867,7 +1867,7 @@ function admin_delete_user($uid, $delete_content = false)
         if (!db_query($sql, $db_admin_delete_user)) return false;
 
         // Add a log entry to show what we've done.
-        admin_add_log_entry(DELETE_USER, $user_logon);
+        admin_add_log_entry(DELETE_USER, array($user_logon));
 
         return true;
     }

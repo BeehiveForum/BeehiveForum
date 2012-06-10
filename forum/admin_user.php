@@ -398,7 +398,7 @@ if (isset($_POST['action_submit'])) {
 
         if (admin_delete_users_posts($uid)) {
 
-            admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
+            admin_add_log_entry(DELETE_ALL_USER_POSTS, array($user_logon));
 
             html_draw_top("title=$page_title", 'class=window_title');
             html_display_msg($lang['deleteposts'], $lang['postssuccessfullydeleted'], 'admin_user.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
@@ -437,7 +437,7 @@ if (isset($_POST['action_submit'])) {
 
             if (perm_update_user_permissions($uid, $new_user_perms)) {
 
-                admin_add_log_entry(USER_PERMS_CHANGED, $user['LOGON']);
+                admin_add_log_entry(USER_PERMS_CHANGED, array($user['LOGON']));
 
                 $user_perms = perm_get_forum_user_permissions($uid);
 
@@ -544,7 +544,7 @@ if (isset($_POST['action_submit'])) {
 
             if ($valid) {
 
-                admin_add_log_entry(USER_FOLDER_PERMS_CHANGED, $user['LOGON']);
+                admin_add_log_entry(USER_FOLDER_PERMS_CHANGED, array($user['LOGON']));
             }
         }
 

@@ -143,7 +143,7 @@ if (isset($_POST['delete'])) {
 
                     if (folder_delete($fid)) {
 
-                        admin_add_log_entry(DELETE_FOLDER, $folder_data['TITLE']);
+                        admin_add_log_entry(DELETE_FOLDER, array($folder_data['TITLE']));
 
                     }else {
 

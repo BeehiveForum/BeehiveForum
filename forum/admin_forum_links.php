@@ -150,7 +150,7 @@ if (isset($_POST['delete'])) {
 
                 if (forum_links_delete($lid)) {
 
-                    admin_add_log_entry(DELETE_FORUM_LINKS, $forum_link['TITLE']);
+                    admin_add_log_entry(DELETE_FORUM_LINKS, array($forum_link['TITLE']));
 
                 }else {
 

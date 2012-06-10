@@ -637,6 +637,31 @@ function install_index_exists($database_name, $table_name, $index_name)
 }
 
 /**
+ * install_check_column_type
+ * 
+ * Check that a column in a table is of the type specified.
+ * 
+ * @param mixed $database_name
+ * @param mixed $table_name
+ * @param mixed $column_name
+ * @param mixed $column_type
+ */
+function install_check_column_type($database_name, $table_name, $column_name, $column_type)
+{
+    if (!$db_install_column_exists = db_connect()) return false;
+
+    $column_name = db_escape_string($column_name);
+
+    $sql = "SHOW COLUMNS FROM `$database_name`.`$table_name` LIKE '$column_name'";
+
+    if (!$result = db_query($sql, $db_install_column_exists)) return false;
+
+    if (!$column_data = db_fetch_array($result)) return false;
+    
+    return ($column_data['Type'] == $column_type);
+}
+
+/**
 * install_get_table_names
 *
 * Get array of table names used globally by

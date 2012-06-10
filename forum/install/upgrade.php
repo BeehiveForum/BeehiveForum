@@ -37,6 +37,9 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 // Stop script timing out
 @set_time_limit(0);
 
+// Current datetime for marking admin log entries.
+$current_datetime = date(MYSQL_DATETIME, time());
+
 // Get list of forums.
 if (!($forum_webtag_array = install_get_webtags())) {
 
@@ -127,6 +130,41 @@ if (!$result = db_query($sql, $db_install)) {
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
+    
+    if (!install_check_column_type($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_ADMIN_LOG", "ENTRY", "longblob")) {
+        
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}ADMIN_LOG` CHANGE `ENTRY` `ENTRY` LONGBLOB NULL";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }        
+    
+        $sql = "SELECT ID, ENTRY FROM `{$table_data['PREFIX']}ADMIN_LOG`";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+
+        while ($admin_log_data = db_fetch_array($result)) {
+            
+            $admin_log_data['ENTRY'] = explode("\x00", $admin_log_data['ENTRY']);
+            $admin_log_data['ENTRY'] = base64_encode(serialize($admin_log_data['ENTRY']));
+            
+            $sql = "UPDATE `{$table_data['PREFIX']}ADMIN_LOG` ";
+            $sql.= "SET ENTRY = '{$admin_log_data['ENTRY']}' ";
+            $sql.= "WHERE ID = '{$admin_log_data['ID']}'";
+            
+            if (!db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }        
+        }
+    }
     
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 

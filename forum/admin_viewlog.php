@@ -364,7 +364,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         echo "                  <tr>\n";
         echo "                    <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><span title=\"", format_time($admin_log_entry['CREATED']), "\">", format_date($admin_log_entry['CREATED']), "</td>\n";
 
-        $entry_array = htmlentities_array(explode("\x00", $admin_log_entry['ENTRY']));
+        $entry_array = htmlentities_array($admin_log_entry['ENTRY']);
 
         switch ($admin_log_entry['ACTION']) {
 

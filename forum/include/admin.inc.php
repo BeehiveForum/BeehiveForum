@@ -57,24 +57,21 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 *
 * Adds an entry to the ADMIN_LOG table.
 *
-* @return bool
 * @param integer $action - Action ID (see constants.inc.php)
-* @param mixed $data - Data to insert into the log. Can be an array or string.
+* @param mixed $data - Data to insert into the log
+* @return bool
 */
-
-function admin_add_log_entry($action, $data = "")
+function admin_add_log_entry($action, $data = null)
 {
     if (!$db_admin_add_log_entry = db_connect()) return false;
 
     if (($uid = session_get_value('UID')) === false) return false;
 
     if (!is_numeric($action)) return false;
-
-    if (is_array($data)) $data = implode("\x00", preg_replace('/[\x00]+/u', '', $data));
-
-    $data = db_escape_string($data);
-
+    
     $current_datetime = date(MYSQL_DATETIME, time());
+
+    $data = db_escape_string(base64_encode(serialize($data)));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -164,10 +161,9 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
     if (($uid = session_get_value('UID')) === false) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ";
-    $sql.=" ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED, ";
+    $sql.= "ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(MAX(ADMIN_LOG.CREATED)) AS CREATED, ";
     $sql.= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM `{$table_data['PREFIX']}ADMIN_LOG` ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
@@ -178,7 +174,6 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_log_entries)) return false;
@@ -187,18 +182,20 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
 
     if (db_num_rows($result) > 0) {
 
-        while (($admin_log_entry = db_fetch_array($result))) {
+        while (($admin_log_data = db_fetch_array($result))) {
 
-            if (isset($admin_log_entry['LOGON']) && isset($admin_log_entry['PEER_NICKNAME'])) {
-                if (!is_null($admin_log_entry['PEER_NICKNAME']) && strlen($admin_log_entry['PEER_NICKNAME']) > 0) {
-                    $admin_log_entry['NICKNAME'] = $admin_log_entry['PEER_NICKNAME'];
+            if (isset($admin_log_data['LOGON']) && isset($admin_log_data['PEER_NICKNAME'])) {
+                if (!is_null($admin_log_data['PEER_NICKNAME']) && strlen($admin_log_data['PEER_NICKNAME']) > 0) {
+                    $admin_log_data['NICKNAME'] = $admin_log_data['PEER_NICKNAME'];
                 }
             }
 
-            if (!isset($admin_log_entry['LOGON'])) $admin_log_entry['LOGON'] = $lang['unknownuser'];
-            if (!isset($admin_log_entry['NICKNAME'])) $admin_log_entry['NICKNAME'] = "";
+            if (!isset($admin_log_data['LOGON'])) $admin_log_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($admin_log_data['NICKNAME'])) $admin_log_data['NICKNAME'] = "";
+            
+            $admin_log_data['ENTRY'] = unserialize(base64_decode($admin_log_data['ENTRY']));
 
-            $admin_log_array[] = $admin_log_entry;
+            $admin_log_array[] = $admin_log_data;
         }
 
     }else if ($admin_log_count > 0) {

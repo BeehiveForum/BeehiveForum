@@ -1264,7 +1264,7 @@ function html_set_cookie($name, $value, $expires = 0)
         }
     }
 
-    return setcookie($name, $value, $expires, '', '', $cookie_secure);
+    return setcookie($name, $value, $expires, '', '', $cookie_secure, true);
 }
 
 function html_get_cookie($cookie_name, $callback = false, $default = false)

@@ -530,7 +530,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">", form_checkbox("delete_filters[$filter_id]", "Y", false), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_wordfilter.php?webtag=$webtag&amp;filter_id=$filter_id\">{$word_filter['FILTER_NAME']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_wordfilter.php?webtag=$webtag&amp;filter_id=$filter_id\">", htmlentities_array($word_filter['FILTER_NAME']), "</a></td>\n";
             echo "                  <td align=\"left\">{$admin_word_filter_options[$word_filter['FILTER_TYPE']]}</td>\n";
             echo "                  <td align=\"center\">{$admin_word_filter_enabled[$word_filter['FILTER_ENABLED']]}&nbsp;</td>\n";
             echo "                </tr>\n";

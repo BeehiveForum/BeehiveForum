@@ -974,7 +974,7 @@ function stats_get_most_read_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT THREAD.TID, THREAD_STATS.VIEWCOUNT ";
+    $sql = "SELECT THREAD.TID, THREAD_STATS.VIEWCOUNT, ";
     $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
     $sql.= "FROM `{$table_data['PREFIX']}THREAD_STATS` THREAD_STATS LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
     $sql.= "ON (THREAD.TID = THREAD_STATS.TID) LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";

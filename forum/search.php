@@ -358,8 +358,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
-            $redirect_uri = "index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
-            $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bleft%3Dsearch_results";
+            $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
+            $redirect_uri.= "%3Fwebtag%3D$webtag%26left%3Dsearch_results";
 
             header_redirect($redirect_uri);
             exit;
@@ -372,9 +372,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     }else if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
-        $redirect_uri = "index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
-        $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bright%3Dsearch";
-        $redirect_uri.= "%26amp%3Bsearch_error%3D$error";
+        $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
+        $redirect_uri.= "%3Fwebtag%3D$webtag%26right%3Dsearch";
+        $redirect_uri.= "%26search_error%3D$error";
 
         header_redirect($redirect_uri);
         exit;

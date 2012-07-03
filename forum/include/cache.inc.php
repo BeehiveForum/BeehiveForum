@@ -130,8 +130,6 @@ function cache_check_thread_list()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!cache_check_logon_hash()) return false;
-
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
@@ -229,8 +227,6 @@ function cache_check_start_page()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!cache_check_logon_hash()) return false;
-
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
@@ -309,8 +305,6 @@ function cache_check_messages()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!cache_check_logon_hash()) return false;
-
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
@@ -385,28 +379,6 @@ function cache_check_messages()
     header('Cache-Control: private, must-revalidate', true);
 
     return true;
-}
-
-/**
-* Check cache cookie
-*
-* Checks cache cookie (hash of the LOGON) so we can cache pages
-* on a per-user account basis.
-*
-* @return mixed - boolean or no return (exit)
-* @param void
-*/
-
-function cache_check_logon_hash()
-{
-    $logon_hash_check = md5(session_get_value('LOGON'));
-
-    if (($logon_hash = html_get_cookie('cache_hash', 'is_md5', ''))) {
-        if ($logon_hash === $logon_hash_check) return true;
-    }
-
-    html_set_cookie('cache_hash', $logon_hash_check);
-    return false;
 }
 
 /**

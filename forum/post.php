@@ -119,8 +119,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -162,7 +162,7 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
     if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
     }else{
-        $error_msg_array[] = $lang['mustenterthreadtitle'];
+        $error_msg_array[] = gettext("You must enter a title for the thread!");
         $valid = false;
     }
 
@@ -174,13 +174,13 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
 
         }else {
 
-            $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
+            $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
             $valid = false;
         }
 
     }else if ($valid) {
 
-        $error_msg_array[] = $lang['pleaseselectfolder'];
+        $error_msg_array[] = gettext("Please select a folder");
         $valid = false;
     }
 
@@ -356,13 +356,13 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
         if (($post_html > POST_HTML_DISABLED) && attachments_embed_check($t_content)) {
 
-            $error_msg_array[] = $lang['notallowedembedattachmentpost'];
+            $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['mustenterpostcontent'];
+        $error_msg_array[] = gettext("You must enter some content for the post!");
         $valid = false;
     }
 
@@ -372,7 +372,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
         if ($sig_html && attachments_embed_check($t_sig)) {
 
-            $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
+            $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
             $valid = false;
         }
     }
@@ -402,7 +402,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
             }else {
 
-                $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
+                $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
                 $valid = false;
             }
         }
@@ -432,7 +432,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 }
@@ -448,13 +448,13 @@ $t_sig = $sig->getContent();
 
 if (mb_strlen($t_content) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
+    $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
     $valid = false;
 }
 
 if (mb_strlen($t_sig) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(mb_strlen($t_sig)));
+    $error_msg_array[] = sprintf(gettext("Signature length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_sig)));
     $valid = false;
 }
 
@@ -464,8 +464,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top("title={$lang['threadcouldnotbefound']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("The requested thread could not be found or access was denied.")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
@@ -478,8 +478,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
-        html_draw_top("title={$lang['cannotcreatepostinfolder']}");
-        html_error_msg($lang['cannotcreatepostinfolder']);
+        html_draw_top(sprintf("title=%s", gettext("You cannot reply to posts in this folder")));
+        html_error_msg(gettext("You cannot reply to posts in this folder"));
         html_draw_bottom();
         exit;
     }
@@ -536,8 +536,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top("title={$lang['threadcouldnotbefound']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("The requested thread could not be found or access was denied.")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
@@ -550,15 +550,15 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
-        html_draw_top("title={$lang['cannotcreatepostinfolder']}");
-        html_error_msg($lang['cannotcreatepostinfolder']);
+        html_draw_top(sprintf("title=%s", gettext("You cannot reply to posts in this folder")));
+        html_error_msg(gettext("You cannot reply to posts in this folder"));
         html_draw_bottom();
         exit;
     }
 
     if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
+        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
@@ -576,7 +576,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
 
-        $error_msg_array[] = $lang['invalidfolderid'];
+        $error_msg_array[] = gettext("Invalid Folder ID. Check that a folder with this ID exists!");
         $valid = false;
     }
 
@@ -588,13 +588,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_msg_array[] = $lang['cannotcreatethreadinfolder'];
+        $error_msg_array[] = gettext("You cannot create new threads in this folder");
         $valid = false;
     }
 
     if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
+        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 }
@@ -631,7 +631,7 @@ if ($to_radio == 'others') {
 
     }else{
 
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
@@ -677,16 +677,16 @@ if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top("title={$lang['postdoesnotexist']}");
-        html_error_msg($lang['postdoesnotexist']);
+        html_draw_top(sprintf("title=%s", gettext("That post does not exist in this thread!")));
+        html_error_msg(gettext("That post does not exist in this thread!"));
         html_draw_bottom();
         exit;
     }
 
     if (!$thread_data = thread_get($reply_to_tid)) {
 
-        html_draw_top("title={$lang['threadcouldnotbefound']}");
-        html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
+        html_draw_top(sprintf("title=%s", gettext("The requested thread could not be found or access was denied.")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => "$reply_to_tid.$reply_to_pid"));
         html_draw_bottom();
         exit;
     }
@@ -695,8 +695,8 @@ if (!$new_thread) {
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
-        html_draw_top("title={$lang['messagehasbeendeleted']}");
-        html_error_msg($lang['messagehasbeendeleted'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
+        html_draw_top(sprintf("title=%s", gettext("Message not found. Check that it hasn't been deleted.")));
+        html_error_msg(gettext("Message not found. Check that it hasn't been deleted."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => "$reply_to_tid.$reply_to_pid"));
         html_draw_bottom();
         exit;
     }
@@ -731,8 +731,8 @@ if ($valid && isset($_POST['post'])) {
 
                 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
-                    html_draw_top("title={$lang['threadisclosedforposting']}");
-                    html_error_msg($lang['threadisclosedforposting'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => "$t_tid.$t_rpid"));
+                    html_draw_top(sprintf("title=%s", gettext("This thread is closed, you cannot post in it!")));
+                    html_error_msg(gettext("This thread is closed, you cannot post in it!"), 'discussion.php', 'post', array('back' => gettext("Back")), array('msg' => "$t_tid.$t_rpid"));
                     html_draw_bottom();
                     exit;
                 }
@@ -815,12 +815,12 @@ if ($valid && isset($_POST['post'])) {
 
         }else{
 
-            $error_msg_array[] = $lang['errorcreatingpost'];
+            $error_msg_array[] = gettext("Error creating post! Please try again in a few minutes.");
         }
 
     }else {
 
-        $error_msg_array[] = sprintf($lang['postfrequencytoogreat'], forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 
@@ -830,30 +830,30 @@ if (!isset($t_fid)) {
 
 if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, USER_PERM_THREAD_CREATE, "", "post_folder_dropdown"))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['cannotcreatenewthreads']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You cannot create new threads."));
     html_draw_bottom();
     exit;
 }
 
 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-    html_draw_top("title={$lang['threadisclosedforposting']}");
-    html_error_msg($lang['threadisclosedforposting']);
+    html_draw_top(sprintf("title=%s", gettext("This thread is closed, you cannot post in it!")));
+    html_error_msg(gettext("This thread is closed, you cannot post in it!"));
     html_draw_bottom();
     exit;
 }
 
-html_draw_top("title={$lang['postmessage']}", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
+html_draw_top("title=", gettext("Post message"), "", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
 
-echo "<h1>{$lang['postmessage']}</h1>\n";
+echo "<h1>", gettext("Post message"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
 }
 
 if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-    html_display_warning_msg($lang['moderatorthreadclosed'], '720', 'left');
+    html_display_warning_msg(gettext("Warning: this thread is closed for posting to normal users."), '720', 'left');
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
@@ -872,13 +872,13 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
 
     if ($t_to_uid == 0) {
 
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
+        $preview_message['TLOGON'] = gettext("ALL");
+        $preview_message['TNICK'] = gettext("ALL");
 
     }else if ($t_to_uid > 0) {
 
@@ -919,13 +919,13 @@ echo "              <table class=\"posthead\" width=\"720\">\n";
 if ($new_thread) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['createnewthread']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Create new thread"), "</td>\n";
     echo "                </tr>\n";
 
 }else{
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['postreply']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Post Reply"), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -936,13 +936,13 @@ echo "                    <table class=\"posthead\" width=\"210\" cellpadding=\"
 if ($new_thread) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
+    echo "                        <td align=\"left\"><h2>", gettext("Folder"), "</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">$folder_dropdown</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
+    echo "                        <td align=\"left\"><h2>", gettext("Thread title"), "</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 0, 0, false, "thread_title"), form_input_hidden("t_newthread", "Y"), "</td>\n";
@@ -951,13 +951,13 @@ if ($new_thread) {
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
+    echo "                        <td align=\"left\"><h2>", gettext("Folder"), "</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", word_filter_add_ob_tags($thread_data['FOLDER_TITLE'], true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
+    echo "                        <td align=\"left\"><h2>", gettext("Thread title"), "</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", word_filter_add_ob_tags($thread_data['TITLE'], true), form_input_hidden("t_tid", htmlentities_array($reply_to_tid)), form_input_hidden("t_rpid", htmlentities_array($reply_to_pid)), "</td>\n";
@@ -965,13 +965,13 @@ if ($new_thread) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
+echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
 
 if (!$new_thread) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", "in_thread", gettext("Users in thread"), true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false), "</td>\n";
@@ -979,31 +979,31 @@ if (!$new_thread) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_radio("to_radio", "recent", $lang['recentvisitors'], $new_thread ? true : false), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("to_radio", "recent", gettext("Recent Visitors"), $new_thread ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", post_draw_to_dropdown_recent($t_to_uid, $new_thread), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("to_radio", "others", gettext("Others")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", "", false, false, SEARCH_LOGON, false, "", "post_to_others"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
+echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y"), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_interest", "Y", gettext("Set thread to high interest"), $high_interest == "Y"), "</td>\n";
 echo "                      </tr>\n";
 
 if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
@@ -1012,13 +1012,13 @@ if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";
+    echo "                        <td align=\"left\"><h2>", gettext("Admin"), "</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 ? true : false), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_closed", "Y", gettext("Close for posting"), isset($t_closed) ? $t_closed == 'Y' : isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 ? true : false), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : isset($thread_data['STICKY']) && $thread_data['STICKY'] == "Y" ? true : false), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_sticky", "Y", gettext("Make sticky"), isset($t_sticky) ? $t_sticky == 'Y' : isset($thread_data['STICKY']) && $thread_data['STICKY'] == "Y" ? true : false), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -1035,7 +1035,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
     echo "                        <td align=\"left\">\n";
     echo "                          <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
@@ -1066,7 +1066,7 @@ echo "                  <td align=\"left\" valign=\"top\" width=\"500\">\n";
 echo "                    <table class=\"posthead\" width=\"500\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
-echo "                          <h2>{$lang['message']}</h2>\n";
+echo "                          <h2>", gettext("Message"), "</h2>\n";
 
 $t_content = $post->getTidyContent();
 
@@ -1079,7 +1079,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit("post", $lang['post']));
+    echo $tools->toolbar(false, form_submit("post", gettext("Post")));
 }else {
     $tools->set_tinymce(false);
 }
@@ -1105,11 +1105,11 @@ if ($allow_html == true) {
 
     }else {
 
-        echo "                          <h2>{$lang['htmlinmessage']}</h2>\n";
+        echo "                          <h2>", gettext("HTML in message"), "</h2>\n";
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $post->getHTML() == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $post->getHTML() == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $post->getHTML() == POST_HTML_ENABLED)." \n";
+        echo form_radio("t_post_html", "disabled", gettext("Disabled"), $post->getHTML() == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $post->getHTML() == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", gettext("Enabled"), $post->getHTML() == POST_HTML_ENABLED)." \n";
     }
 
 }else {
@@ -1124,21 +1124,21 @@ if (($tools->get_tinymce())) {
     echo "  <br /><br />\n";
 }
 
-echo form_submit("post", $lang['post'], "tabindex=\"2\"");
+echo form_submit("post", gettext("Post"), "tabindex=\"2\"");
 
-echo "&nbsp;", form_submit("preview", $lang['preview'], "tabindex=\"3\"");
+echo "&nbsp;", form_submit("preview", gettext("Preview"), "tabindex=\"3\"");
 
 if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 } else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 } else {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 }
 
 if (forum_get_setting('attachments_enabled', 'Y') && (session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden("aid", htmlentities_array($aid));
 }
 
@@ -1147,7 +1147,7 @@ if ($allow_sig == true) {
     echo "                          <br /><br />\n";
     echo "                          <table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
@@ -1189,7 +1189,7 @@ if (!$new_thread && $reply_to_pid > 0) {
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['inreplyto']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("In reply to"), "</td>\n";
     echo "                </tr>\n";
 
 
@@ -1224,7 +1224,7 @@ if (!$new_thread) {
     echo "  <br />\n";
     echo "  <table  width=\"720\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><img src=\"", html_style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
+    echo "      <td align=\"center\"><img src=\"", html_style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"", gettext("Review entire thread in new window"), "\">", gettext("Review Thread"), "</a></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 }

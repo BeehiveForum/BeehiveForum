@@ -120,8 +120,8 @@ if (!forum_check_webtag_available($webtag)) {
 // Check thread list cache
 cache_check_thread_list();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -207,7 +207,7 @@ if (user_is_guest()) {
 
                     } else {
 
-                        $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                        $error_msg_array[] = gettext("Failed to mark selected threads as read");
                         $valid = false;
                     }
                 }
@@ -221,7 +221,7 @@ if (user_is_guest()) {
 
                 } else {
 
-                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $error_msg_array[] = gettext("Failed to mark selected threads as read");
                     $valid = false;
                 }
 
@@ -234,7 +234,7 @@ if (user_is_guest()) {
 
                 } else {
 
-                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $error_msg_array[] = gettext("Failed to mark selected threads as read");
                     $valid = false;
                 }
 
@@ -247,7 +247,7 @@ if (user_is_guest()) {
 
                 } else {
 
-                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $error_msg_array[] = gettext("Failed to mark selected threads as read");
                     $valid = false;
                 }
             }
@@ -257,7 +257,7 @@ if (user_is_guest()) {
             unset($_REQUEST['mark_read_submit'], $_REQUEST['mark_read_confirm']);
 
             light_html_draw_top();
-            light_html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'lthread_list.php', 'post', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
+            light_html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'lthread_list.php', 'post', array('mark_read_submit' => gettext("Confirm"), 'cancel' => gettext("Cancel")), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
             light_html_draw_bottom();
             exit;
         }

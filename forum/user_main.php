@@ -103,8 +103,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -120,17 +120,17 @@ if (user_is_guest()) {
 
 html_draw_top();
 
-echo "<h1>{$lang['mycontrols']}</h1>\n";
-echo "<p>{$lang['userexp_1']}</p>\n";
-echo "<p>{$lang['userexp_2']}</p>\n";
-echo "<p>{$lang['userexp_3']}</p>\n";
-echo "<p>{$lang['userexp_4']}</p>\n";
-echo "<p>{$lang['userexp_5']}</p>\n";
-echo "<p>{$lang['userexp_6']}</p>\n";
-echo "<p>{$lang['userexp_7']}</p>\n";
-echo "<p>{$lang['userexp_8']}</p>\n";
-echo "<p>{$lang['userexp_9']}</p>\n";
-echo "<p>{$lang['userexp_10']}</p>\n";
+echo "<h1>", gettext("My Controls"), "</h1>\n";
+echo "<p>", gettext("Use the menu on the left to manage your settings."), "</p>\n";
+echo "<p>", gettext("<b>User Details</b> allows you to change your name, email address and password."), "</p>\n";
+echo "<p>", gettext("<b>User Profile</b> allows you to edit your user profile."), "</p>\n";
+echo "<p>", gettext("<b>Change Password</b> allows you to change your password"), "</p>\n";
+echo "<p>", gettext("<b>Email &amp; Privacy</b> lets you change how you can be contacted on and off the forum."), "</p>\n";
+echo "<p>", gettext("<b>Forum Options</b> lets you change how the forum looks and works."), "</p>\n";
+echo "<p>", gettext("<b>Attachments</b> allows you to edit/delete your attachments."), "</p>\n";
+echo "<p>", gettext("<b>Signature</b> lets you edit your signature."), "</p>\n";
+echo "<p>", gettext("<b>Word Filter</b> lets you edit your personal word filter."), "</p>\n";
+echo "<p>", gettext("<b>Thread Subscriptions</b> allows you to manage your thread subscriptions."), "</p>\n";
 
 html_draw_bottom();
 

@@ -106,8 +106,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -117,8 +117,8 @@ if (!forum_check_access_level()) {
 
 if (!forum_get_setting('show_links', 'Y')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['maynotaccessthissection']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You may not access this section."));
     html_draw_bottom();
     exit;
 }
@@ -157,13 +157,13 @@ if (isset($_POST['update'])) {
 
         if (mb_strlen($name) > 32) {
 
-            $error_msg_array[] = sprintf($lang['linkfoldernametoolong'], 32);
+            $error_msg_array[] = sprintf(gettext("Folder name too long. Maximum length is %s characters"), 32);
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['mustspecifyname'];
+        $error_msg_array[] = gettext("You must specify a name!");
         $valid = false;
     }
 
@@ -179,23 +179,23 @@ if (isset($_POST['update'])) {
 
     if (!in_array($fid, array_keys($folders))) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['mustspecifyvalidfolder']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You must specify a valid folder!"));
         html_draw_bottom();
         exit;
     }
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['mustspecifyfolder']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You must specify a folder!"));
     html_draw_bottom();
     exit;
 }
 
-html_draw_top("title={$lang['links']} - {$lang['editfolder']}", 'class=window_title');
+html_draw_top("title=", gettext("Links"), " - ", gettext("Edit Folder"), "", 'class=window_title');
 
-echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfolder']}</h1>\n";
+echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Folder"), "</h1>\n";
 
 echo "<br />\n";
 
@@ -215,13 +215,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['foldername']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Folder name"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Name"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text('name', isset($name) ? htmlentities_array($name) : htmlentities_array($folders[$fid]['NAME']), 50, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -241,7 +241,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit('update', $lang['update']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit('update', gettext("Update")), "&nbsp;", form_submit('cancel', gettext("Cancel")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

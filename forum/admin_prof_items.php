@@ -102,13 +102,13 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -142,8 +142,8 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['noprofilesectionspecified'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("No Profile section specified."), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
     html_draw_bottom();
     exit;
 }
@@ -161,11 +161,11 @@ $profile_item_valid_types = array(PROFILE_ITEM_LARGE_TEXT,
                                   PROFILE_ITEM_HYPERLINK);
 
 // Array of profile item type descriptions.
-$item_types_array = array(PROFILE_ITEM_LARGE_TEXT => $lang['textfield'],
-                          PROFILE_ITEM_MULTI_TEXT => $lang['multilinetextfield'],
-                          PROFILE_ITEM_RADIO      => $lang['radiobuttons'],
-                          PROFILE_ITEM_DROPDOWN   => $lang['dropdownlist'],
-                          PROFILE_ITEM_HYPERLINK  => $lang['clickablehyperlink']);
+$item_types_array = array(PROFILE_ITEM_LARGE_TEXT => gettext("Text Field"),
+                          PROFILE_ITEM_MULTI_TEXT => gettext("Multi-line Text Field"),
+                          PROFILE_ITEM_RADIO      => gettext("Radio Buttons"),
+                          PROFILE_ITEM_DROPDOWN   => gettext("Drop Down List"),
+                          PROFILE_ITEM_HYPERLINK  => gettext("Clickable Hyperlink"));
 // View type
 if (isset($_GET['viewitems'])) {
     $viewitems = "yes";
@@ -191,7 +191,7 @@ if (isset($_POST['delete'])) {
 
                     }else {
 
-                        $error_msg_array[] = $lang['failedtoremoveprofileitems'];
+                        $error_msg_array[] = gettext("Failed to remove profile items");
                         $valid = false;
                     }
                 }
@@ -236,7 +236,7 @@ if (isset($_POST['additemsubmit'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustenteraprofileitemname'];
+        $error_msg_array[] = gettext("You must enter a profile item name");
         $valid = false;
     }
 
@@ -246,7 +246,7 @@ if (isset($_POST['additemsubmit'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidprofileitemtype'];
+        $error_msg_array[] = gettext("Invalid profile item type selected");
         $valid = false;
     }
 
@@ -258,7 +258,7 @@ if (isset($_POST['additemsubmit'])) {
 
             if (sizeof(explode("\n", $t_options_new)) < 1) {
 
-                $error_msg_array[] = $lang['youmustentermorethanoneoptionforitem'];
+                $error_msg_array[] = gettext("You must enter more than one option for selected profile item type");
                 $valid = false;
             }
 
@@ -269,25 +269,25 @@ if (isset($_POST['additemsubmit'])) {
             if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
 
                 $valid = false;
-                $error_msg_array[] = $lang['profileitemhyperlinkssupportshttpurlsonly'];
+                $error_msg_array[] = gettext("Profile item hyperlinks support HTTP URLs only");
             }
 
             if ($valid && (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1)) {
 
                 $valid = false;
-                $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
+                $error_msg_array[] = gettext("Profile item hyperlink format invalid");
             }
 
             if (preg_match('/\[ProfileEntry\]/iu', $t_options_new) < 1) {
 
-                $error_msg_array[] = sprintf($lang['youmustincludeprofileentryinhyperlinks'], '[ProfileEntry]');
+                $error_msg_array[] = sprintf(gettext("You must include <i>%s</i> in the URL of clickable hyperlinks"), '[ProfileEntry]');
                 $valid = false;
             }
         }
 
     }else if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN || $t_type_new == PROFILE_ITEM_HYPERLINK)) {
 
-        $error_msg_array[] = $lang['youmustenteroptionsforselectedprofileitemtype'];
+        $error_msg_array[] = gettext("You must enter some options for selected profile item type");
         $valid = false;
 
     }else {
@@ -307,7 +307,7 @@ if (isset($_POST['additemsubmit'])) {
 
         }else {
 
-            $error_msg_error[] = $lang['failedtocreatenewprofileitem'];
+            $error_msg_error[] = gettext("Failed to create new profile item");
             $valid = false;
         }
     }
@@ -322,7 +322,7 @@ if (isset($_POST['additemsubmit'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidprofileitemid'];
+        $error_msg_array[] = gettext("Invalid profile item ID or item not found");
         $valid = false;
     }
 
@@ -332,7 +332,7 @@ if (isset($_POST['additemsubmit'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustenteraprofileitemname'];
+        $error_msg_array[] = gettext("You must enter a profile item name");
         $valid = false;
     }
 
@@ -342,7 +342,7 @@ if (isset($_POST['additemsubmit'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidprofileitemtype'];
+        $error_msg_array[] = gettext("Invalid profile item type selected");
         $valid = false;
     }
 
@@ -354,7 +354,7 @@ if (isset($_POST['additemsubmit'])) {
 
             if (sizeof(explode("\n", $t_options_new)) < 1) {
 
-                $error_msg_array[] = $lang['youmustentermorethanoneoptionforitem'];
+                $error_msg_array[] = gettext("You must enter more than one option for selected profile item type");
                 $valid = false;
             }
 
@@ -365,25 +365,25 @@ if (isset($_POST['additemsubmit'])) {
             if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
 
                 $valid = false;
-                $error_msg_array[] = $lang['profileitemhyperlinkssupportshttpurlsonly'];
+                $error_msg_array[] = gettext("Profile item hyperlinks support HTTP URLs only");
             }
 
             if ($valid && (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1)) {
 
                 $valid = false;
-                $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
+                $error_msg_array[] = gettext("Profile item hyperlink format invalid");
             }
 
             if (preg_match('/\[ProfileEntry\]/iu', $t_options_new) < 1) {
 
-                $error_msg_array[] = sprintf($lang['youmustincludeprofileentryinhyperlinks'], '[ProfileEntry]');
+                $error_msg_array[] = sprintf(gettext("You must include <i>%s</i> in the URL of clickable hyperlinks"), '[ProfileEntry]');
                 $valid = false;
             }
         }
 
     }else if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN || $t_type_new == PROFILE_ITEM_HYPERLINK)) {
 
-        $error_msg_array[] = $lang['youmustenteroptionsforselectedprofileitemtype'];
+        $error_msg_array[] = gettext("You must enter some options for selected profile item type");
         $valid = false;
 
     }else {
@@ -397,7 +397,7 @@ if (isset($_POST['additemsubmit'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidprofilesectionid'];
+        $error_msg_array[] = gettext("Invalid profile section ID or section not found");
         $valid = false;
     }
 
@@ -418,7 +418,7 @@ if (isset($_POST['additemsubmit'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoupdateprofileitem'];
+            $error_msg_array[] = gettext("Failed to update profile item");
             $valid = false;
         }
     }
@@ -444,9 +444,9 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - ". profile_section_get_name($psid). " - {$lang['addnewitem']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ". profile_section_get_name($psid). " - ", gettext("Add new item"), "", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewitem']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new item"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -469,21 +469,21 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['addnewitem']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">", gettext("Add new item"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", gettext("Type"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", $item_types_array), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", gettext("Item Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : ""), 48, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\" valign=\"top\">{$lang['options']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" valign=\"top\">", gettext("Options"), ":</td>\n";
     echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array(stripslashes_array($_POST['t_options_new'])) : ""), 4, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -502,13 +502,13 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("additemsubmit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("additemsubmit", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg($lang['fieldtypeexample1'], '500', 'center');
+    html_display_warning_msg(gettext("To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field."), '500', 'center');
 
-    html_display_warning_msg(sprintf($lang['fieldtypeexample2'], '[ProfileEntry]'), '500', 'center');
+    html_display_warning_msg(gettext("To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i></p>"), '500', 'center');
 
     echo "</form>\n";
     echo "</div>\n";
@@ -527,23 +527,23 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidprofileitemid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid profile item ID or item not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
     if (!$profile_item = profile_get_item($piid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidprofileitemid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid profile item ID or item not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - ". profile_section_get_name($psid). " - {$lang['edititem']} - {$profile_item['NAME']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ". profile_section_get_name($psid). " - ", gettext("Edit item"), " - {$profile_item['NAME']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['edititem']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit item"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -568,25 +568,25 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['edititem']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">", gettext("Edit item"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", gettext("Type"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", $item_types_array, (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['sectionname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", gettext("Section Name"), ":</td>\n";
     echo "                        <td align=\"left\">", profile_section_dropdown($psid, "t_section_new"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", gettext("Item Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : htmlentities_array($profile_item['NAME'])), 48, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\" valign=\"top\">{$lang['options']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" valign=\"top\">", gettext("Options"), ":</td>\n";
     echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array(stripslashes_array($_POST['t_options_new'])) : htmlentities_array($profile_item['OPTIONS'])), 4, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -605,13 +605,13 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("edititemsubmit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("edititemsubmit", gettext("Save")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg($lang['fieldtypeexample1'], '500', 'center');
+    html_display_warning_msg(gettext("To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field."), '500', 'center');
 
-    html_display_warning_msg(sprintf($lang['fieldtypeexample2'], '[ProfileEntry]'), '500', 'center');
+    html_display_warning_msg(gettext("To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i></p>"), '500', 'center');
 
     echo "</form>\n";
     echo "</div>\n";
@@ -620,11 +620,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - ". profile_section_get_name($psid). " - {$lang['viewitems']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ". profile_section_get_name($psid). " - ", gettext("View items"), "", 'class=window_title');
 
     $profile_items = profile_items_get_by_page($psid, $start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['viewitems']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("View items"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -632,19 +632,19 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     }else if (isset($_GET['added'])) {
 
-        html_display_success_msg($lang['successfullyaddednewprofileitem'], '500', 'center');
+        html_display_success_msg(gettext("Successfully added new profile item"), '500', 'center');
 
     }else if (isset($_GET['edited'])) {
 
-        html_display_success_msg($lang['successfullyeditedprofileitem'], '500', 'center');
+        html_display_success_msg(gettext("Successfully edited profile item"), '500', 'center');
 
     }else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg($lang['successfullyremovedselectedprofileitems'], '500', 'center');
+        html_display_success_msg(gettext("Successfully removed selected profile items"), '500', 'center');
 
     }else if (sizeof($profile_items['profile_items_array']) < 1) {
 
-        html_display_warning_msg($lang['noexistingprofileitemsfound'], '500', 'center');
+        html_display_warning_msg(gettext("There are no existing profile items in this section. To add an item click the 'Add New' button below."), '500', 'center');
     }
 
     echo "<br />\n";
@@ -665,9 +665,9 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['itemname']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Item Name"), "</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['type']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Type"), "</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($profile_items['profile_items_array']) > 0) {
@@ -708,7 +708,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
             }else {
 
-                echo "                  <td valign=\"top\" align=\"left\">{$lang['textfield']}</td>\n";
+                echo "                  <td valign=\"top\" align=\"left\">", gettext("Text Field"), "</td>\n";
             }
 
             echo "                </tr>\n";
@@ -734,7 +734,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("additem", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("additem", gettext("Add New")), "&nbsp;", form_submit("delete", gettext("Delete Selected")), "&nbsp;", form_submit("back", gettext("Back")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

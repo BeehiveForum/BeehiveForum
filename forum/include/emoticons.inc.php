@@ -267,8 +267,6 @@ function emoticons_set_exists($emoticon_set)
 
 function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_limit = 35)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     // Make sure the emoticon set has no path info.
@@ -317,7 +315,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
 
     // Add a "More" link if we're not displaying all emoticons.
     if ($display_limit < sizeof($emoticon)) {
-        $html.= "<div><b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" class=\"view_more\">{$lang['more']}</a></b></div>";
+        $html.= "<div><b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" class=\"view_more\">". gettext("More"). "</a></b></div>";
     }
 
     // Close the container.

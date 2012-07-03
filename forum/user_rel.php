@@ -110,8 +110,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // User's UID
 $uid = session_get_value('UID');
@@ -162,8 +162,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     if (!$user_peer = user_get($peer_uid)) {
 
-        html_draw_top("title={$lang['invalidusername']}");
-        html_error_msg($lang['invalidusername']);
+        html_draw_top(sprintf("title=%s", gettext("Invalid username!")));
+        html_error_msg(gettext("Invalid username!"));
         html_draw_bottom();
         exit;
     }
@@ -174,16 +174,16 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     if (!$user_peer = user_get($peer_uid)) {
 
-        html_draw_top("title={$lang['invalidusername']}");
-        html_error_msg($lang['invalidusername']);
+        html_draw_top(sprintf("title=%s", gettext("Invalid username!")));
+        html_error_msg(gettext("Invalid username!"));
         html_draw_bottom();
         exit;
     }
 
 }else {
 
-    html_draw_top("title={$lang['nouserspecified']}");
-    html_error_msg($lang['nouserspecified']);
+    html_draw_top(sprintf("title=%s", gettext("No user specified.")));
+    html_error_msg(gettext("No user specified."));
     html_draw_bottom();
     exit;
 }
@@ -191,8 +191,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 // Cannot modify relationship settings for the current account
 if ($peer_uid == session_get_value('UID')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['youcannotchangeuserrelationshipforownaccount']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You cannot change user relationship for your own user account"));
     html_draw_bottom();
     exit;
 }
@@ -232,7 +232,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['relationshipupdatefailed'];
+        $error_msg_array[] = gettext("Relationship updated failed!");
         $valid = false;
     }
 }
@@ -247,13 +247,13 @@ if (isset($_POST['reset_nickname_x']) || isset($_POST['reset_nickname_y'])) {
 
 $peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
 
-html_draw_top("title={$lang['userrelationship']} - $peer_user_display", 'class=window_title');
+html_draw_top("title=", gettext("User Relationship"), " - $peer_user_display", 'class=window_title');
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-echo "<h1>{$lang['userrelationship']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags($peer_user_display, true), "</a></h1>\n";
+echo "<h1>", gettext("User Relationship"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags($peer_user_display, true), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -261,7 +261,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
 
-    html_display_warning_msg($lang['cannotignoremod'], '600', 'left');
+    html_display_warning_msg(gettext("You cannot ignore this user, as they are a moderator."), '600', 'left');
 }
 
 if (isset($_POST['preview_signature'])) {
@@ -271,8 +271,8 @@ if (isset($_POST['preview_signature'])) {
 
     if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
 
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
+        $preview_message['TLOGON'] = gettext("ALL");
+        $preview_message['TNICK'] = gettext("ALL");
 
         $preview_tuser = user_get($peer_uid);
 
@@ -280,7 +280,7 @@ if (isset($_POST['preview_signature'])) {
         $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
         $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-        $preview_message['CONTENT'] = $lang['signaturepreview'];
+        $preview_message['CONTENT'] = gettext("Signature Preview");
 
         if ($t_sig_html == "Y") {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
@@ -299,7 +299,7 @@ if (isset($_POST['preview_signature'])) {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">", gettext("Preview"), "</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -342,14 +342,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['nickname']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Nickname"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"200\" valign=\"top\">{$lang['nickname']}</td>\n";
-echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
+echo "                        <td align=\"left\" width=\"200\" valign=\"top\">", gettext("Nickname"), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"", gettext("Restore User's Nickname"), "\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -373,29 +373,29 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['relationship']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Relationship"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_FRIEND, $lang['friend'], $peer_relationship & USER_FRIEND ? true : false), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">: {$lang['friend_exp']}</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_FRIEND, gettext("Friend"), $peer_relationship & USER_FRIEND ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: ", gettext("User's posts marked with a &quot;Friend&quot; icon."), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_NORMAL, $lang['normal'], !(($peer_relationship & USER_IGNORED) || ($peer_relationship & USER_FRIEND) || ($peer_relationship & USER_IGNORED_COMPLETELY)) ? true : false), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">: {$lang['normal_exp']}</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_NORMAL, gettext("Normal"), !(($peer_relationship & USER_IGNORED) || ($peer_relationship & USER_FRIEND) || ($peer_relationship & USER_IGNORED_COMPLETELY)) ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: ", gettext("User's posts appear as normal."), "</td>\n";
 echo "                      </tr>\n";
 
 if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED, $lang['ignored'], $peer_relationship & USER_IGNORED ? true : false), "</td>\n";
-    echo "                        <td align=\"left\" width=\"400\">: {$lang['ignore_exp']}</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED, gettext("Ignored"), $peer_relationship & USER_IGNORED ? true : false), "</td>\n";
+    echo "                        <td align=\"left\" width=\"400\">: ", gettext("User's posts are hidden."), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED_COMPLETELY, $lang['ignoredcompletely'], $peer_relationship & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
-    echo "                        <td align=\"left\" width=\"400\">: {$lang['ignore_completely_exp']}</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED_COMPLETELY, gettext("Ignored Completely"), $peer_relationship & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
+    echo "                        <td align=\"left\" width=\"400\">: ", gettext("Threads and posts to or from user will appear deleted."), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -421,18 +421,18 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['signature']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Signature"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_sig_display', USER_NORMAL, $lang['display'], $peer_relationship ^ USER_IGNORED_SIG ? true : false), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">: {$lang['displaysig_exp']}</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_sig_display', USER_NORMAL, gettext("Display"), $peer_relationship ^ USER_IGNORED_SIG ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: ", gettext("User's signature is displayed on their posts."), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_sig_display', USER_IGNORED_SIG, $lang['ignore'], $peer_relationship & USER_IGNORED_SIG ? true : false), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">: {$lang['hidesig_exp']}</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_sig_display', USER_IGNORED_SIG, gettext("Ignore"), $peer_relationship & USER_IGNORED_SIG ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: ", gettext("User's signature is hidden on their posts."), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -456,18 +456,18 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['personalmessages']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Personal Messages"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_block_pm', USER_NORMAL, $lang['allow'], $peer_relationship ^ USER_BLOCK_PM ? true : false), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">: {$lang['allowusertosendpm']}</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_block_pm', USER_NORMAL, gettext("Allow"), $peer_relationship ^ USER_BLOCK_PM ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: ", gettext("Allow user to send personal messages to me"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_block_pm', USER_BLOCK_PM, $lang['block'], $peer_relationship & USER_BLOCK_PM ? true : false), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">: {$lang['blockuserfromsendingpm']}</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_block_pm', USER_BLOCK_PM, gettext("Block"), $peer_relationship & USER_BLOCK_PM ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: ", gettext("Block user from sending personal messages to me"), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -485,7 +485,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><p>", form_submit("save", $lang['save']), "&nbsp;", form_submit("preview_signature", $lang['previewsignature']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
+echo "      <td align=\"center\"><p>", form_submit("save", gettext("Save")), "&nbsp;", form_submit("preview_signature", gettext("Preview Signature")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</p></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

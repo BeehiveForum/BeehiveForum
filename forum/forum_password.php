@@ -98,8 +98,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // User clicked Cancel so we send them to the My Forums page.
 if (isset($_POST['cancel'])) {

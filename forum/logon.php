@@ -79,8 +79,8 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Fetch the forum webtag
 $webtag = get_webtag();
@@ -128,11 +128,11 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
     if (isset($final_uri)) {
 
         $final_uri = rawurlencode($final_uri);
-        header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['cookiessuccessfullydeleted']);
+        header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("Cookies successfully deleted"));
 
     }else {
 
-        header_redirect("index.php?webtag=$webtag", $lang['cookiessuccessfullydeleted']);
+        header_redirect("index.php?webtag=$webtag", gettext("Cookies successfully deleted"));
     }
 
 }elseif (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
@@ -142,11 +142,11 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['loggedinsuccessfully']);
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("You logged in successfully."));
 
         }else {
 
-            header_redirect("index.php?webtag=$webtag", $lang['loggedinsuccessfully']);
+            header_redirect("index.php?webtag=$webtag", gettext("You logged in successfully."));
         }
 
     }else {
@@ -154,12 +154,12 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode(sprintf("logon.php?webtag=$webtag&logon_failed=true&final_uri=%s", rawurlencode($final_uri)));
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("The username or password you supplied is not valid."));
 
         }else {
 
             $final_uri = rawurlencode("logon.php?webtag=$webtag&logon_failed=true");
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("The username or password you supplied is not valid."));
         }
     }
 

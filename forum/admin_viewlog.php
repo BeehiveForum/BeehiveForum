@@ -101,97 +101,97 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
 
 // Types of admin log entries
 $admin_log_type_array = array(
-    ALL_LOG_ENTIES => $lang['alllogentries'],
-    CHANGE_USER_STATUS => $lang['userstatuschanges'],
-    CHANGE_FORUM_ACCESS => $lang['forumaccesschanges'],
-    DELETE_ALL_USER_POSTS => $lang['usermasspostdeletion'],
-    EDIT_THREAD_OPTIONS => $lang['threadtitleedits'],
-    MOVED_THREADS => $lang['massthreadmoves'],
-    CREATE_FOLDER => $lang['foldercreations'],
-    DELETE_FOLDER => $lang['folderdeletions'],
-    CHANGE_PROFILE_SECT => $lang['profilesectionchanges'],
-    ADDED_PROFILE_SECT => $lang['profilesectionadditions'],
-    DELETE_PROFILE_SECT => $lang['profilesectiondeletions'],
-    CHANGE_PROFILE_ITEM => $lang['profileitemchanges'],
-    ADDED_PROFILE_ITEM => $lang['profileitemadditions'],
-    DELETE_PROFILE_ITEM => $lang['profileitemdeletions'],
-    EDITED_START_PAGE => $lang['startpagechanges'],
-    CREATED_NEW_STYLE => $lang['forumstylecreations'],
-    MOVED_THREAD => $lang['threadmoves'],
-    CLOSED_THREAD => $lang['threadclosures'],
-    OPENED_THREAD => $lang['threadopenings'],
-    RENAME_THREAD => $lang['threadrenames'],
-    DELETE_POST => $lang['postdeletions'],
-    EDIT_POST => $lang['postedits'],
-    EDIT_WORD_FILTER => $lang['wordfilteredits'],
-    CREATE_THREAD_STICKY => $lang['threadstickycreations'],
-    REMOVE_THREAD_STICKY => $lang['threadstickydeletions'],
-    END_USER_SESSION => $lang['usersessiondeletions'],
-    EDIT_FORUM_SETTINGS => $lang['forumsettingsedits'],
-    LOCKED_THREAD => $lang['threadlocks'],
-    UNLOCKED_THREAD => $lang['threadunlocks'],
-    DELETE_USER_THREAD_POSTS => $lang['usermasspostdeletionsinathread'],
-    DELETE_THREAD => $lang['threaddeletions'],
-    ATTACHMENTS_DELETE => $lang['attachmentdeletions'],
-    EDIT_FORUM_LINKS => $lang['forumlinkedits'],
-    APPROVED_POST => $lang['postapprovals'],
-    CREATE_USER_GROUP => $lang['usergroupcreations'],
-    DELETE_USER_GROUP => $lang['usergroupdeletions'],
-    ADD_USER_TO_GROUP => $lang['usergroupuseraddition'],
-    REMOVE_USER_FROM_GROUP => $lang['usergroupuserremoval'],
-    CHANGE_USER_PASSWD => $lang['userpasswordchange'],
-    ADD_BANNED_IP => $lang['ipaddressbanadditions'],
-    REMOVE_BANNED_IP => $lang['ipaddressbandeletions'],
-    ADD_BANNED_LOGON => $lang['logonbanadditions'],
-    REMOVE_BANNED_LOGON => $lang['logonbandeletions'],
-    ADD_BANNED_NICKNAME => $lang['nicknamebanadditions'],
-    REMOVE_BANNED_NICKNAME => $lang['nicknamebanadditions'],
-    ADD_BANNED_EMAIL => $lang['e-mailbanadditions'],
-    REMOVE_BANNED_EMAIL => $lang['e-mailbandeletions'],
-    ADDED_RSS_FEED => $lang['rssfeedadditions'],
-    EDITED_RSS_FEED => $lang['rssfeedchanges'],
-    UNDELETE_THREAD => $lang['threadundeletions'],
-    ADD_BANNED_REFERER => $lang['httprefererbanadditions'],
-    REMOVE_BANNED_REFERER => $lang['httprefererbandeletions'],
-    DELETED_RSS_FEED => $lang['rssfeeddeletions'],
-    UPDATED_BAN => $lang['banchanges'],
-    THREAD_SPLIT => $lang['threadsplits'],
-    THREAD_MERGE => $lang['threadmerges'],
-    ADD_FORUM_LINKS => $lang['forumlinkadditions'],
-    DELETE_FORUM_LINKS => $lang['forumlinkdeletions'],
-    EDIT_TOP_LINK_CAPTION => $lang['forumlinktopcaptionchanges'],
-    DELETE_USER => $lang['userdeletions'],
-    DELETE_USER_DATA => $lang['userdatadeletions'],
-    UPDATE_USER_GROUP => $lang['usergroupchanges'],
-    BAN_HIT_TYPE_IP => $lang['ipaddressbancheckresults'],
-    BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
-    BAN_HIT_TYPE_NICK => $lang['nicknamebancheckresults'],
-    BAN_HIT_TYPE_EMAIL => $lang['emailbancheckresults'],
-    BAN_HIT_TYPE_REF => $lang['httprefererbancheckresults'],
-    BAN_HIT_TYPE_SFS => $lang['sfsbancheckresults']
+    ALL_LOG_ENTIES => gettext("All Log Entries"),
+    CHANGE_USER_STATUS => gettext("User Status Changes"),
+    CHANGE_FORUM_ACCESS => gettext("Forum Access Changes"),
+    DELETE_ALL_USER_POSTS => gettext("User Mass Post Deletion"),
+    EDIT_THREAD_OPTIONS => gettext("Thread Title Edits"),
+    MOVED_THREADS => gettext("Mass Thread Moves"),
+    CREATE_FOLDER => gettext("Folder Creations"),
+    DELETE_FOLDER => gettext("Folder Deletions"),
+    CHANGE_PROFILE_SECT => gettext("Profile Section Changes"),
+    ADDED_PROFILE_SECT => gettext("Profile Section Additions"),
+    DELETE_PROFILE_SECT => gettext("Profile Section Deletions"),
+    CHANGE_PROFILE_ITEM => gettext("Profile Item Changes"),
+    ADDED_PROFILE_ITEM => gettext("Profile Item Additions"),
+    DELETE_PROFILE_ITEM => gettext("Profile Item Deletions"),
+    EDITED_START_PAGE => gettext("Start Page Changes"),
+    CREATED_NEW_STYLE => gettext("Forum Style Creations"),
+    MOVED_THREAD => gettext("Thread Moves"),
+    CLOSED_THREAD => gettext("Thread Closures"),
+    OPENED_THREAD => gettext("Thread Openings"),
+    RENAME_THREAD => gettext("Thread Renames"),
+    DELETE_POST => gettext("Post Deletions"),
+    EDIT_POST => gettext("Post Edits"),
+    EDIT_WORD_FILTER => gettext("Word Filter Edits"),
+    CREATE_THREAD_STICKY => gettext("Thread Sticky Creations"),
+    REMOVE_THREAD_STICKY => gettext("Thread Sticky Deletions"),
+    END_USER_SESSION => gettext("User Session Deletions"),
+    EDIT_FORUM_SETTINGS => gettext("Forum Settings Edits"),
+    LOCKED_THREAD => gettext("Thread Locks"),
+    UNLOCKED_THREAD => gettext("Thread Unlocks"),
+    DELETE_USER_THREAD_POSTS => gettext("User Mass Post Deletions in a Thread"),
+    DELETE_THREAD => gettext("Thread Deletions"),
+    ATTACHMENTS_DELETE => gettext("Attachment Deletions"),
+    EDIT_FORUM_LINKS => gettext("Forum Link Edits"),
+    APPROVED_POST => gettext("Post Approvals"),
+    CREATE_USER_GROUP => gettext("User Group Creations"),
+    DELETE_USER_GROUP => gettext("User Group Deletions"),
+    ADD_USER_TO_GROUP => gettext("User Group User Addition"),
+    REMOVE_USER_FROM_GROUP => gettext("User Group User Removal"),
+    CHANGE_USER_PASSWD => gettext("User Password Change"),
+    ADD_BANNED_IP => gettext("IP Address Ban Additions"),
+    REMOVE_BANNED_IP => gettext("IP Address Ban Deletions"),
+    ADD_BANNED_LOGON => gettext("Logon Ban Additions"),
+    REMOVE_BANNED_LOGON => gettext("Logon Ban Deletions"),
+    ADD_BANNED_NICKNAME => gettext("Nickname Ban Additions"),
+    REMOVE_BANNED_NICKNAME => gettext("Nickname Ban Additions"),
+    ADD_BANNED_EMAIL => gettext("E-Mail Ban Additions"),
+    REMOVE_BANNED_EMAIL => gettext("E-Mail Ban Deletions"),
+    ADDED_RSS_FEED => gettext("RSS Feed Additions"),
+    EDITED_RSS_FEED => gettext("RSS Feed Changes"),
+    UNDELETE_THREAD => gettext("Thread Undeletions"),
+    ADD_BANNED_REFERER => gettext("HTTP Referer Ban Additions"),
+    REMOVE_BANNED_REFERER => gettext("HTTP Referer Ban Deletions"),
+    DELETED_RSS_FEED => gettext("RSS Feed Deletions"),
+    UPDATED_BAN => gettext("Ban Changes"),
+    THREAD_SPLIT => gettext("Thread Splits"),
+    THREAD_MERGE => gettext("Thread Merges"),
+    ADD_FORUM_LINKS => gettext("Forum Link Additions"),
+    DELETE_FORUM_LINKS => gettext("Forum Link Deletions"),
+    EDIT_TOP_LINK_CAPTION => gettext("Forum Link Top Caption Changes"),
+    DELETE_USER => gettext("User Deletions"),
+    DELETE_USER_DATA => gettext("User Data Deletions"),
+    UPDATE_USER_GROUP => gettext("User Group Changes"),
+    BAN_HIT_TYPE_IP => gettext("IP Address Ban Check Results"),
+    BAN_HIT_TYPE_LOGON => gettext("Logon Ban Check Results"),
+    BAN_HIT_TYPE_NICK => gettext("Nickname Ban Check Results"),
+    BAN_HIT_TYPE_EMAIL => gettext("Email Ban Check Results"),
+    BAN_HIT_TYPE_REF => gettext("HTTP Referer Ban Check Results"),
+    BAN_HIT_TYPE_SFS => gettext("StopForumSpam Ban Check Results")
 );
 
 $admin_log_group_type_array = array(
-    ADMIN_LOG_GROUP_NONE   => $lang['donotgroup'],
-    ADMIN_LOG_GROUP_YEAR   => $lang['groupbyyear'],
-    ADMIN_LOG_GROUP_MONTH  => $lang['groupbymonth'],
-    ADMIN_LOG_GROUP_DAY    => $lang['groupbyday'],
-    ADMIN_LOG_GROUP_HOUR   => $lang['groupbyhour'],
-    ADMIN_LOG_GROUP_MINUTE => $lang['groupbyminute'],
-    ADMIN_LOG_GROUP_SECOND => $lang['groupbysecond']
+    ADMIN_LOG_GROUP_NONE   => gettext("Do Not Group"),
+    ADMIN_LOG_GROUP_YEAR   => gettext("Group by Year"),
+    ADMIN_LOG_GROUP_MONTH  => gettext("Group by Month"),
+    ADMIN_LOG_GROUP_DAY    => gettext("Group by Day"),
+    ADMIN_LOG_GROUP_HOUR   => gettext("Group by Hour"),
+    ADMIN_LOG_GROUP_MINUTE => gettext("Group by Minute"),
+    ADMIN_LOG_GROUP_SECOND => gettext("Group by Second")
 );
 
 $group_by = ADMIN_LOG_GROUP_NONE;
@@ -252,7 +252,7 @@ if (isset($_POST['prune_log'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustspecifyanactiontypetoremove'];
+        $error_msg_array[] = gettext("You must specify an action type to remove");
         $valid = false;
     }
 
@@ -271,17 +271,17 @@ if (isset($_POST['prune_log'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtopruneadminlog'];
+            $error_msg_array[] = gettext("Failed To Prune Admin Log");
             $valid = false;
         }
     }
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['adminaccesslog']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Admin Access Log"), "", 'class=window_title');
 
 $admin_log_array = admin_get_log_entries($start, $group_by, $sort_by, $sort_dir);
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['adminaccesslog']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Admin Access Log"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -289,15 +289,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['pruned'])) {
 
-    html_display_success_msg($lang['successfullyprunedadminlog'], '75%', 'center');
+    html_display_success_msg(gettext("Successfully Pruned Admin Log"), '75%', 'center');
 
 }else if (sizeof($admin_log_array['admin_log_array']) < 1) {
 
-    html_display_warning_msg($lang['adminlogempty'], '75%', 'center');
+    html_display_warning_msg(gettext("Admin Log is empty"), '75%', 'center');
 
 }else {
 
-    html_display_warning_msg($lang['adminlogexp'], '75%', 'center');
+    html_display_warning_msg(gettext("This list shows the last actions sanctioned by users with Admin privileges."), '75%', 'center');
 }
 
 echo "<div align=\"center\">\n";
@@ -311,45 +311,45 @@ echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
 }elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
 }
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
 }elseif ($sort_by == 'UID' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
 }
 
 if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
 }elseif ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
 }
 
 if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
 
     if ($sort_by == 'COUNT' && $sort_dir == 'ASC') {
-        echo "                    <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+        echo "                    <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
     }elseif ($sort_by == 'COUNT' && $sort_dir == 'DESC') {
-        echo "                    <td class=\"subhead_sort_desc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+        echo "                    <td class=\"subhead_sort_desc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
     }else {
-        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">{$lang['count']}</a></td>\n";
+        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
     }    
 }
 
@@ -370,231 +370,231 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case CHANGE_USER_STATUS:
 
-                $action_text = sprintf($lang['changedstatusforuser'], $entry_array[0]);
+                $action_text = sprintf(gettext("Changed user status for '%s'"), $entry_array[0]);
                 break;
 
             case CHANGE_FORUM_ACCESS:
 
-                $action_text = sprintf($lang['changedforumaccess'], $entry_array[1]);
+                $action_text = sprintf(gettext("Changed forum access permissions for '%s'"), $entry_array[1]);
                 break;
 
             case DELETE_ALL_USER_POSTS:
 
-                $action_text = sprintf($lang['deletedallusersposts'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted all posts for '%s'"), $entry_array[0]);
                 break;
 
             case CHANGE_USER_PASSWD:
 
-                $action_text = sprintf($lang['changedpasswordforuser'], $entry_array[0]);
+                $action_text = sprintf(gettext("Changed password for '%s'"), $entry_array[0]);
                 break;
 
             case ADD_BANNED_IP:
 
-                $action_text = sprintf($lang['addedipaddresstobanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added IP '%s' to ban list"), $entry_array[0]);
                 break;
 
             case REMOVE_BANNED_IP:
 
-                $action_text = sprintf($lang['removedipaddressfrombanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Removed IP '%s' from ban list"), $entry_array[0]);
                 break;
 
             case ADD_BANNED_LOGON:
 
-                $action_text = sprintf($lang['addedlogontobanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added logon '%s' to ban list"), $entry_array[0]);
                 break;
 
             case REMOVE_BANNED_LOGON:
 
-                $action_text = sprintf($lang['removedlogonfrombanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Removed logon '%s' from ban list"), $entry_array[0]);
                 break;
 
             case ADD_BANNED_NICKNAME:
 
-                $action_text = sprintf($lang['addednicknametobanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added nickname '%s' to ban list"), $entry_array[0]);
                 break;
 
             case REMOVE_BANNED_NICKNAME:
 
-                $action_text = sprintf($lang['removednicknamefrombanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Removed nickname '%s' from ban list"), $entry_array[0]);
                 break;
 
             case ADD_BANNED_EMAIL:
 
-                $action_text = sprintf($lang['addedemailtobanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added email address '%s' to ban list"), $entry_array[0]);
                 break;
 
             case REMOVE_BANNED_EMAIL:
 
-                $action_text = sprintf($lang['removedemailfrombanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Removed email address '%s' from ban list"), $entry_array[0]);
                 break;
 
             case ADD_BANNED_REFERER:
 
-                $action_text = sprintf($lang['addedreferertobanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added referer '%s' to ban list"), $entry_array[0]);
                 break;
 
             case REMOVE_BANNED_REFERER:
 
-                $action_text = sprintf($lang['removedrefererfrombanlist'], $entry_array[0]);
+                $action_text = sprintf(gettext("Removed referer '%s' from ban list"), $entry_array[0]);
                 break;
 
             case EDIT_THREAD_OPTIONS:
 
-                $action_text = sprintf($lang['editedfolder'], $entry_array[0]);
+                $action_text = sprintf(gettext("Edited Folder '%s'"), $entry_array[0]);
                 break;
 
             case MOVED_THREADS:
 
-                $action_text = sprintf($lang['movedallthreadsfromto'], $entry_array[0], $entry_array[1]);
+                $action_text = sprintf(gettext("Moved all threads from '%s' to '%s'"), $entry_array[0], $entry_array[1]);
                 break;
 
             case CREATE_FOLDER:
 
-                $action_text = sprintf($lang['creatednewfolder'], $entry_array[0]);
+                $action_text = sprintf(gettext("Created new folder '%s'"), $entry_array[0]);
                 break;
 
             case DELETE_FOLDER:
 
-                $action_text = sprintf($lang['deletedfolder'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted folder '%s'"), $entry_array[0]);
                 break;
 
             case CHANGE_PROFILE_SECT:
 
-                $action_text = sprintf($lang['changedprofilesectiontitle'], $entry_array[0], $entry_array[2]);
+                $action_text = sprintf(gettext("Changed Profile section title from '%s' to '%s'"), $entry_array[0], $entry_array[2]);
                 break;
 
             case ADDED_PROFILE_SECT:
 
-                $action_text = sprintf($lang['addednewprofilesection'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added New Profile section '%s'"), $entry_array[0]);
                 break;
 
             case DELETE_PROFILE_SECT:
 
-                $action_text = sprintf($lang['deletedprofilesection'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted Profile Section '%s'"), $entry_array[0]);
                 break;
 
             case CHANGE_PROFILE_ITEM:
 
-                $action_text = sprintf($lang['changedprofileitem'], $entry_array[0]);
+                $action_text = sprintf(gettext("Changed Profile Item '%s'"), $entry_array[0]);
                 break;
 
             case ADDED_PROFILE_ITEM:
 
-                $action_text = sprintf($lang['addednewprofileitem'], $entry_array[1], $entry_array[0]);
+                $action_text = sprintf(gettext("Added New Profile Item '%s' to section '%s'"), $entry_array[1], $entry_array[0]);
                 break;
 
             case DELETE_PROFILE_ITEM:
 
-                $action_text = sprintf($lang['deletedprofileitem'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted Profile Item '%s'"), $entry_array[0]);
                 break;
 
             case EDITED_START_PAGE:
 
-                $action_text = sprintf($lang['editedstartpage']);
+                $action_text = sprintf(gettext("Edited Start Page"));
                 break;
 
             case CREATED_NEW_STYLE:
 
-                $action_text = sprintf($lang['savednewstyle'], $entry_array[0]);
+                $action_text = sprintf(gettext("Saved New Style '%s'"), $entry_array[0]);
                 break;
 
             case MOVED_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['movedthread'], $thread_link, $entry_array[2], $entry_array[3]);
+                $action_text = sprintf(gettext("Moved Thread '%s' from '%s' to '%s'"), $thread_link, $entry_array[2], $entry_array[3]);
                 break;
 
             case CLOSED_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['closedthread'], $thread_link);
+                $action_text = sprintf(gettext("Closed Thread '%s'"), $thread_link);
                 break;
 
             case OPENED_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['openedthread'], $thread_link);
+                $action_text = sprintf(gettext("Opened Thread '%s'"), $thread_link);
                 break;
 
             case RENAME_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
-                $action_text = sprintf($lang['renamedthread'], $entry_array[1], $thread_link);
+                $action_text = sprintf(gettext("Renamed Thread '%s' to '%s'"), $entry_array[1], $thread_link);
                 break;
 
             case DELETE_POST:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
-                $action_text = sprintf($lang['deletedpost'], $thread_link);
+                $action_text = sprintf(gettext("Deleted Post '%s'"), $thread_link);
                 break;
 
             case EDIT_POST:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
-                $action_text = sprintf($lang['editedpost'], $thread_link);
+                $action_text = sprintf(gettext("Edited Post '%s'"), $thread_link);
                 break;
 
             case EDIT_WORD_FILTER:
 
-                $action_text = sprintf($lang['editedwordfilter']);
+                $action_text = sprintf(gettext("Edited Word Filter"));
                 break;
 
             case CREATE_THREAD_STICKY:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['madethreadsticky'], $thread_link);
+                $action_text = sprintf(gettext("Made thread '%s' sticky"), $thread_link);
                 break;
 
             case REMOVE_THREAD_STICKY:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['madethreadnonsticky'], $thread_link);
+                $action_text = sprintf(gettext("Made thread '%s' non-sticky"), $thread_link);
                 break;
 
             case END_USER_SESSION:
 
-                $action_text = sprintf($lang['endedsessionforuser'], $entry_array[0]);
+                $action_text = sprintf(gettext("Ended session for user '%s'"), $entry_array[0]);
                 break;
 
             case EDIT_FORUM_SETTINGS:
 
-                $action_text = sprintf($lang['editedforumsettings']);
+                $action_text = sprintf(gettext("Edited Forum Settings"));
                 break;
 
             case LOCKED_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['lockedthreadtitlefolder'], $thread_link);
+                $action_text = sprintf(gettext("Locked thread options on '%s'"), $thread_link);
                 break;
 
             case UNLOCKED_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['unlockedthreadtitlefolder'], $thread_link);
+                $action_text = sprintf(gettext("Unlocked thread options on '%s'"), $thread_link);
                 break;
 
             case DELETE_USER_THREAD_POSTS:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['deletedpostsfrominthread'], $entry_array[2], $thread_link);
+                $action_text = sprintf(gettext("Deleted posts from '%s' in thread '%s'"), $entry_array[2], $thread_link);
                 break;
 
             case DELETE_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['deletedthread'], $thread_link);
+                $action_text = sprintf(gettext("Deleted Thread '%s'"), $thread_link);
                 break;
 
             case UNDELETE_THREAD:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['undeletedthread'], $thread_link);
+                $action_text = sprintf(gettext("Undeleted Thread '%s'"), $thread_link);
                 break;
 
             case ATTACHMENTS_DELETE:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[0], $entry_array[1], $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['deletedattachmentfrompost'], $entry_array[2], $thread_link);
+                $action_text = sprintf(gettext("Deleted attachment '%s' from post '%s'"), $entry_array[2], $thread_link);
                 break;
 
             case EDIT_FORUM_LINKS:
@@ -603,11 +603,11 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                     $forum_link = sprintf("admin_forum_links.php?webtag=$webtag&amp;lid=%s", $entry_array[0]);
                     $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($forum_link), $entry_array[1]);
-                    $action_text = sprintf($lang['editedforumlink'], $admin_link);
+                    $action_text = sprintf(gettext("Edited Forum Link: '%s'"), $admin_link);
 
                 }else {
 
-                    $action_text = sprintf($lang['editedforumlinks']);
+                    $action_text = sprintf(gettext("Edited Forum Links"));
                 }
 
                 break;
@@ -616,76 +616,76 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $forum_link = sprintf("admin_forum_links.php?webtag=$webtag&amp;lid=%s", $entry_array[0]);
                 $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($forum_link), $entry_array[1]);
-                $action_text = sprintf($lang['addedforumlink'], $admin_link);
+                $action_text = sprintf(gettext("Added Forum Link: '%s'"), $admin_link);
                 break;
 
             case DELETE_FORUM_LINKS:
 
-                $action_text = sprintf($lang['deletedforumlink'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted Forum Link: '%s'"), $entry_array[0]);
                 break;
 
             case EDIT_TOP_LINK_CAPTION:
 
-                $action_text = sprintf($lang['changedtoplinkcaption'], $entry_array[1], $entry_array[0]);
+                $action_text = sprintf(gettext("Changed top link caption from '%s' to '%s'"), $entry_array[1], $entry_array[0]);
                 break;
 
             case APPROVED_POST:
 
                 $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
-                $action_text = sprintf($lang['approvedpost'], $thread_link);
+                $action_text = sprintf(gettext("Approved post '%s'"), $thread_link);
                 break;
 
             case CREATE_USER_GROUP:
 
-                $action_text = sprintf($lang['createdusergroup'], $entry_array[0]);
+                $action_text = sprintf(gettext("Created User Group '%s'"), $entry_array[0]);
                 break;
 
             case DELETE_USER_GROUP:
 
-                $action_text = sprintf($lang['deletedusergroup'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted User Group '%s'"), $entry_array[0]);
                 break;
 
             case ADD_USER_TO_GROUP:
 
-                $action_text = sprintf($lang['addedusertogroup'], $entry_array[0], $entry_array[1]);
+                $action_text = sprintf(gettext("Added user '%s' to group '%s'"), $entry_array[0], $entry_array[1]);
                 break;
 
             case REMOVE_USER_FROM_GROUP:
 
-                $action_text = sprintf($lang['removeduserfromgroup'], $entry_array[0], $entry_array[1]);
+                $action_text = sprintf(gettext("Remove user '%s' from group '%s'"), $entry_array[0], $entry_array[1]);
                 break;
 
             case UPDATE_USER_GROUP:
 
-                $action_text = sprintf($lang['updatedusergroup'], $entry_array[0]);
+                $action_text = sprintf(gettext("Updated User Group '%s'"), $entry_array[0]);
                 break;
 
             case ADDED_RSS_FEED:
 
-                $action_text = sprintf($lang['addedrssfeed'], $entry_array[0]);
+                $action_text = sprintf(gettext("Added RSS Feed '%s'"), $entry_array[0]);
                 break;
 
             case EDITED_RSS_FEED:
 
-                $action_text = sprintf($lang['editedrssfeed'], $entry_array[0]);
+                $action_text = sprintf(gettext("Edited RSS Feed '%s'"), $entry_array[0]);
                 break;
 
             case DELETED_RSS_FEED:
 
-                $action_text = sprintf($lang['deletedrssfeed'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted RSS Feed '%s'"), $entry_array[0]);
                 break;
 
             case UPDATED_BAN:
 
-                $admin_log_ban_types = array(BAN_TYPE_IP    => $lang['ipban'],
-                                             BAN_TYPE_LOGON => $lang['logonban'],
-                                             BAN_TYPE_NICK  => $lang['nicknameban'],
-                                             BAN_TYPE_EMAIL => $lang['emailban'],
-                                             BAN_TYPE_REF   => $lang['refererban']);
+                $admin_log_ban_types = array(BAN_TYPE_IP    => gettext("IP ban"),
+                                             BAN_TYPE_LOGON => gettext("Logon ban"),
+                                             BAN_TYPE_NICK  => gettext("Nickname ban"),
+                                             BAN_TYPE_EMAIL => gettext("Email ban"),
+                                             BAN_TYPE_REF   => gettext("Referer ban"));
 
                 $ban_link = sprintf("admin_banned.php?webtag=$webtag&amp;ban_id=%s", $entry_array[0]);
                 $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($ban_link), $entry_array[4]);
-                $action_text = sprintf($lang['updatedban'], $admin_link, $admin_log_ban_types[$entry_array[3]], $admin_log_ban_types[$entry_array[1]], $entry_array[4], $entry_array[2]);
+                $action_text = sprintf(gettext("Updated ban '%s'. Changed type from '%s' to '%s', Changed data from '%s' to '%s'."), $admin_link, $admin_log_ban_types[$entry_array[3]], $admin_log_ban_types[$entry_array[1]], $entry_array[4], $entry_array[2]);
                 break;
 
             case THREAD_SPLIT:
@@ -693,7 +693,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $threada_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[3]);
                 $threadb_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[2], $entry_array[3]);
 
-                $action_text = sprintf($lang['splitthreadatpostintonewthread'], $threada_link, $entry_array[1], $threadb_link);
+                $action_text = sprintf(gettext("Split thread '%s' at post %s  into new thread '%s'"), $threada_link, $entry_array[1], $threadb_link);
                 break;
 
             case THREAD_MERGE:
@@ -702,7 +702,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $threadb_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[2], $entry_array[3]);
                 $threadc_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[4], $entry_array[5]);
 
-                $action_text = sprintf($lang['mergedthreadintonewthread'], $threada_link, $threadb_link, $threadc_link);
+                $action_text = sprintf(gettext("Merged threads '%s' and '%s' into new thread '%s'"), $threada_link, $threadb_link, $threadc_link);
                 break;
 
             case BAN_HIT_TYPE_IP:
@@ -721,10 +721,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 }else {
 
-                    $admin_user_link = $lang['guest'];
+                    $admin_user_link = gettext("Guest");
                 }
 
-                $action_text = sprintf($lang['ipaddressbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
+                $action_text = sprintf(gettext("User '%s' is banned. IP Address '%s' matched ban data '%s'"), $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
 
             case BAN_HIT_TYPE_LOGON:
@@ -743,10 +743,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 }else {
 
-                    $admin_user_link = $lang['guest'];
+                    $admin_user_link = gettext("Guest");
                 }
 
-                $action_text = sprintf($lang['logonbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
+                $action_text = sprintf(gettext("User '%s' is banned. Logon '%s' matched ban data '%s'"), $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
 
             case BAN_HIT_TYPE_NICK:
@@ -765,10 +765,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 }else {
 
-                    $admin_user_link = $lang['guest'];
+                    $admin_user_link = gettext("Guest");
                 }
 
-                $action_text = sprintf($lang['nicknamebanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
+                $action_text = sprintf(gettext("User '%s' is banned. Nickname '%s' matched ban data '%s'"), $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
 
             case BAN_HIT_TYPE_EMAIL:
@@ -787,10 +787,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 }else {
 
-                    $admin_user_link = $lang['guest'];
+                    $admin_user_link = gettext("Guest");
                 }
 
-                $action_text = sprintf($lang['emailbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
+                $action_text = sprintf(gettext("User '%s' is banned. Email Address '%s' matched ban data '%s'"), $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
 
             case BAN_HIT_TYPE_REF:
@@ -809,10 +809,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 }else {
 
-                    $admin_user_link = $lang['guest'];
+                    $admin_user_link = gettext("Guest");
                 }
 
-                $action_text = sprintf($lang['refererbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
+                $action_text = sprintf(gettext("User '%s' is banned. HTTP Referer '%s' matched ban data '%s'"), $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
                 
             case BAN_HIT_TYPE_SFS:
@@ -828,27 +828,27 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 }else {
 
-                    $admin_user_link = $lang['guest'];
+                    $admin_user_link = gettext("Guest");
                 }
                 
                 $ban_data_match = implode("', '", array_filter(array_slice($entry_array, 0, 3)));
 
-                $action_text = sprintf($lang['sfsbanhit'], $admin_user_link, $ban_data_match);
+                $action_text = sprintf(gettext("User '%s' is banned by StopForumSpam. Matched ban data '%s'"), $admin_user_link, $ban_data_match);
                 break;          
 
             case USER_PERMS_CHANGED:
 
-                $action_text = sprintf($lang['modifiedpermsforuser'], $entry_array[0]);
+                $action_text = sprintf(gettext("Modified perms for user '%s'"), $entry_array[0]);
                 break;
 
             case USER_FOLDER_PERMS_CHANGED:
 
-                $action_text = sprintf($lang['modifiedfolderpermsforuser'], $entry_array[0]);
+                $action_text = sprintf(gettext("Modified folder perms for user '%s'"), $entry_array[0]);
                 break;
 
             case DELETE_USER:
 
-                $action_text = sprintf($lang['deleteduseraccount'], $entry_array[0]);
+                $action_text = sprintf(gettext("Deleted user account '%s'"), $entry_array[0]);
                 break;
 
             case DELETE_USER_DATA:
@@ -858,18 +858,18 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[0]);
                 $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[1]);
 
-                $action_text = sprintf($lang['deletedalluserdataforaccount'], $admin_user_link);
+                $action_text = sprintf(gettext("Deleted all user data for account '%s'"), $admin_user_link);
                 break;
 
             default:
 
-                $action_text = "{$lang['unknown']} :: {$admin_log_entry['ACTION']} :: ";
+                $action_text = gettext("Unknown"). " :: {$admin_log_entry['ACTION']} :: ";
                 $action_text.= implode(", ", $entry_array);
                 break;
         }
 
         if ($auto_update === true) {
-            echo "                    <td align=\"left\" valign=\"top\">{$lang['none']}</td>\n";
+            echo "                    <td align=\"left\" valign=\"top\">", gettext("none"), "</td>\n";
         }else {
             echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), true), "</a></td>\n";
         }
@@ -917,14 +917,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">", gettext("Options"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">{$lang['grouplogentries']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("group_by", array(ADMIN_LOG_GROUP_NONE => $lang['donotgroup'], ADMIN_LOG_GROUP_YEAR => $lang['groupbyyear'], ADMIN_LOG_GROUP_MONTH => $lang['groupbymonth'], ADMIN_LOG_GROUP_DAY => $lang['groupbyday'], ADMIN_LOG_GROUP_HOUR => $lang['groupbyhour'], ADMIN_LOG_GROUP_MINUTE => $lang['groupbyminute'], ADMIN_LOG_GROUP_SECOND => $lang['groupbysecond']), $group_by, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("Group Similar Log Entries"), ":&nbsp;</td>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("group_by", array(ADMIN_LOG_GROUP_NONE => gettext("Do Not Group"), ADMIN_LOG_GROUP_YEAR => gettext("Group by Year"), ADMIN_LOG_GROUP_MONTH => gettext("Group by Month"), ADMIN_LOG_GROUP_DAY => gettext("Group by Day"), ADMIN_LOG_GROUP_HOUR => gettext("Group by Hour"), ADMIN_LOG_GROUP_MINUTE => gettext("Group by Minute"), ADMIN_LOG_GROUP_SECOND => gettext("Group by Second")), $group_by, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -951,18 +951,18 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['prunelog']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Prune Log"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['removeentriesrelatingtoaction']}:</td>\n";
+echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Remove Entries Relating to Action"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array('remove_type', $admin_log_type_array, false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "&nbsp;", form_submit("prune_log", $lang['prunelog']), "</td>\n";
+echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Remove Entries Older Than (Days)"), ":</td>\n";
+echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "&nbsp;", form_submit("prune_log", gettext("Prune Log")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

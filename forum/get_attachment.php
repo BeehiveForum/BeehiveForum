@@ -113,8 +113,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -126,7 +126,7 @@ if (!forum_check_access_level()) {
 if (forum_get_setting('attachments_enabled', 'N')) {
 
     html_draw_top();
-    html_error_msg($lang['attachmentshavebeendisabled']);
+    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
     html_draw_bottom();
     exit;
 }
@@ -135,7 +135,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 if (!$attachment_dir = attachments_check_dir()) {
 
     html_draw_top();
-    html_error_msg($lang['attachmentshavebeendisabled']);
+    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
     html_draw_bottom();
     exit;
 }
@@ -248,7 +248,7 @@ if ($redirect) {
 } else {
 
     html_draw_top();
-    html_error_msg($lang['attachmentproblem']);
+    html_error_msg(gettext("There was a problem downloading this attachment. Please try again later."));
     html_draw_bottom();
 }
 

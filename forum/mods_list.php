@@ -107,8 +107,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -126,15 +126,15 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['cantdisplaymods']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("Cannot display folder moderators"));
     html_draw_bottom();
     exit;
 }
 
 $folder_title = folder_get_title($fid);
 
-html_draw_top("title={$folder_title} - {$lang['moderatorlist']}", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title={$folder_title} - ", gettext("Moderator list:"), "", 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -145,14 +145,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']} '{$folder_title}'</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("Moderators for folder"), " '{$folder_title}'</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table width=\"90%\" class=\"posthead\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
-echo "                          <h2>{$lang['forumleaders']}</h2>\n";
+echo "                          <h2>", gettext("Forum leaders:"), "</h2>\n";
 echo "                          <ul>\n";
 
 if (($forum_mods_array = mods_list_get_mods(0))) {
@@ -165,11 +165,11 @@ if (($forum_mods_array = mods_list_get_mods(0))) {
 
 }else {
 
-    echo "                            <li>{$lang['nomodsfound']}</li>\n";
+    echo "                            <li>", gettext("No moderators found"), "</li>\n";
 }
 
 echo "                          </ul>\n";
-echo "                          <h2>{$lang['foldermods']}</h2>";
+echo "                          <h2>", gettext("Folder moderators:"), "</h2>";
 echo "                          <ul>\n";
 
 if (($folder_mods_array = mods_list_get_mods($fid))) {
@@ -182,7 +182,7 @@ if (($folder_mods_array = mods_list_get_mods($fid))) {
 
 }else {
 
-    echo "                            <li>{$lang['nomodsfound']}</li>\n";
+    echo "                            <li>", gettext("No moderators found"), "</li>\n";
 }
 
 echo "                          </ul>\n";
@@ -205,7 +205,7 @@ echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"mods_list.php\" target=\"_self\">\n";
 echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "    ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
-echo "    ". form_button('close_popup', $lang['close']). "\n";
+echo "    ". form_button('close_popup', gettext("Close")). "\n";
 echo "  </form>\n";
 echo "</div>\n";
 

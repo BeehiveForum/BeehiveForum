@@ -105,8 +105,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Array to hold the emoticons
 $emoticon = array();
@@ -143,9 +143,9 @@ if (!emoticons_set_exists($emoticon_set)) {
 $emoticon_set = basename($emoticon_set);
 
 // Output starts here
-html_draw_top("title={$lang['emoticons']}", "emoticons.js", 'pm_popup_disabled', 'class=window_title', "emoticons=$emoticon_set");
+html_draw_top("title=", gettext("Emoticons"), "", "emoticons.js", 'pm_popup_disabled', 'class=window_title', "emoticons=$emoticon_set");
 
-echo "<h1>{$lang['emoticons']}</h1>\n";
+echo "<h1>", gettext("Emoticons"), "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
@@ -156,7 +156,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\" valign=\"top\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
-echo "                <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+echo "                <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td align=\"center\">\n";
@@ -217,7 +217,7 @@ echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"center\">", form_button('close_popup', $lang['close']), "</td>\n";
+echo "    <td align=\"center\">", form_button('close_popup', gettext("Close")), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

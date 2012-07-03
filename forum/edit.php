@@ -117,8 +117,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -141,8 +141,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
@@ -155,16 +155,16 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['nomessagespecifiedforedit'], 'discussion.php', 'get', array('back' => $lang['back']));
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("No message specified for editing"), 'discussion.php', 'get', array('back' => gettext("Back")));
     html_draw_bottom();
     exit;
 }
@@ -183,16 +183,16 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['cannoteditpostsinthisfolder']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You cannot edit posts in this folder"));
     html_draw_bottom();
     exit;
 }
 
 if (!$thread_data = thread_get($tid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested thread could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -348,7 +348,7 @@ if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_conte
 
     if ($post_html && attachments_embed_check($t_content)) {
 
-        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
+        $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
         $valid = false;
     }
 
@@ -357,7 +357,7 @@ if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_conte
 
     if (mb_strlen($t_content) >= 65535) {
 
-        $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
+        $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
         $valid = false;
     }
 }
@@ -368,7 +368,7 @@ if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) 
 
     if (attachments_embed_check($t_sig)) {
 
-        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
+        $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
         $valid = false;
     }
 
@@ -377,7 +377,7 @@ if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) 
 
     if (mb_strlen($t_sig) >= 65535) {
 
-        $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(mb_strlen($t_sig)));
+        $error_msg_array[] = sprintf(gettext("Signature length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_sig)));
         $valid = false;
     }
 }
@@ -386,8 +386,8 @@ if (isset($_POST['preview'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_error_msg(gettext("That post does not exist in this thread!"));
         html_draw_bottom();
         exit;
     }
@@ -398,7 +398,7 @@ if (isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
@@ -408,19 +408,19 @@ if (isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
     if (strlen(trim($t_content)) < 1) {
 
-        $error_msg_array[] = $lang['mustenterpostcontent'];
+        $error_msg_array[] = gettext("You must enter some content for the post!");
         $valid = false;
     }
 
     if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
+        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
@@ -434,8 +434,8 @@ if (isset($_POST['preview'])) {
 
         if ($to_uid == 0) {
 
-            $preview_message['TLOGON'] = $lang['allcaps'];
-            $preview_message['TNICK'] = $lang['allcaps'];
+            $preview_message['TLOGON'] = gettext("ALL");
+            $preview_message['TNICK'] = gettext("ALL");
 
         }else{
 
@@ -456,8 +456,8 @@ if (isset($_POST['preview'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_error_msg(gettext("That post does not exist in this thread!"));
         html_draw_bottom();
         exit;
     }
@@ -470,7 +470,7 @@ if (isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
@@ -480,34 +480,34 @@ if (isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
     if (strlen(trim($t_content)) < 1) {
 
-        $error_msg_array[] = $lang['mustenterpostcontent'];
+        $error_msg_array[] = gettext("You must enter some content for the post!");
         $valid = false;
     }
 
     if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
+        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
     if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
         html_draw_bottom();
         exit;
     }
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
         html_draw_bottom();
         exit;
     }
@@ -540,7 +540,7 @@ if (isset($_POST['preview'])) {
 
         }else{
 
-            $error_msg_array[] = $lang['errorupdatingpost'];
+            $error_msg_array[] = gettext("Error updating post");
         }
     }
 
@@ -548,8 +548,8 @@ if (isset($_POST['preview'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_error_msg(gettext("That post does not exist in this thread!"));
         html_draw_bottom();
         exit;
     }
@@ -557,14 +557,14 @@ if (isset($_POST['preview'])) {
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
     }else {
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
         $from_uid = $_POST['t_from_uid'];
     }else {
-        $error_msg_array[] = $lang['invalidusername'];
+        $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
@@ -582,7 +582,7 @@ if (isset($_POST['preview'])) {
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 
@@ -590,8 +590,8 @@ if (isset($_POST['preview'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_error_msg(gettext("That post does not exist in this thread!"));
         html_draw_bottom();
         exit;
     }
@@ -604,16 +604,16 @@ if (isset($_POST['preview'])) {
 
             if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                html_draw_top("title={$lang['error']}");
-                html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+                html_draw_top(sprintf("title=%s", gettext("Error")));
+                html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
                 html_draw_bottom();
                 exit;
             }
 
             if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                html_draw_top("title={$lang['error']}");
-                html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+                html_draw_top(sprintf("title=%s", gettext("Error")));
+                html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
                 html_draw_bottom();
                 exit;
             }
@@ -657,22 +657,22 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(sprintf(gettext("Message %s was not found"), $edit_msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
             html_draw_bottom();
             exit;
         }
 
     }else{
 
-       html_draw_top("title={$lang['error']}");
-       html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+       html_draw_top(sprintf("title=%s", gettext("Error")));
+       html_error_msg(sprintf(gettext("Message %s was not found"), $edit_msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
        html_draw_bottom();
        exit;
     }
 }
 
-$page_title = sprintf($lang['editmessage'], $edit_msg);
+$page_title = sprintf(gettext("Edit message %s"), $edit_msg);
 
 html_draw_top("title=$page_title", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", 'class=window_title');
 
@@ -701,7 +701,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "            <table class=\"posthead\" width=\"720\">\n";
     echo "              <tr>\n";
-    echo "                <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
+    echo "                <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "              </tr>\n";
     echo "              <tr>\n";
     echo "                <td align=\"left\"><br />", message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, $show_sigs, true), "</td>\n";
@@ -714,20 +714,20 @@ if ($valid && isset($_POST['preview'])) {
 
 echo "            <table class=\"posthead\" width=\"720\">\n";
 echo "              <tr>\n";
-echo "                <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf($lang['editmessage'], $edit_msg), "</td>\n";
+echo "                <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf(gettext("Edit message %s"), $edit_msg), "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "                  <table class=\"posthead\" width=\"210\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
-echo "                        <h2>{$lang['folder']}</h2>\n";
+echo "                        <h2>", gettext("Folder"), "</h2>\n";
 echo "                        ", word_filter_add_ob_tags($thread_data['FOLDER_TITLE'], true), "\n";
-echo "                        <h2>{$lang['threadtitle']}</h2>\n";
+echo "                        <h2>", gettext("Thread title"), "</h2>\n";
 echo "                        ", word_filter_add_ob_tags($thread_data['TITLE'], true), "\n";
-echo "                        <h2>{$lang['to']}</h2>\n";
+echo "                        <h2>", gettext("To"), "</h2>\n";
 
-if ($preview_message['TLOGON'] != $lang['allcaps']) {
+if ($preview_message['TLOGON'] != gettext("ALL")) {
 
     echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']), true), "</a><br /><br />\n";
 
@@ -736,10 +736,10 @@ if ($preview_message['TLOGON'] != $lang['allcaps']) {
     echo "                        ", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']), true), "<br /><br />\n";
 }
 
-echo "                        <h2>{$lang['messageoptions']}</h2>\n";
-echo "                        ", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled), "<br />\n";
-echo "                        ", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled), "<br />\n";
-echo "                        ", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "<br /><br />\n";
+echo "                        <h2>", gettext("Message options"), "</h2>\n";
+echo "                        ", form_checkbox("t_post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled), "<br />\n";
+echo "                        ", form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled), "<br />\n";
+echo "                        ", form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "<br /><br />\n";
 
 if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
@@ -750,7 +750,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
     echo "                    <br />\n";
     echo "                    <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
         echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
@@ -781,7 +781,7 @@ echo "                <td align=\"left\" valign=\"top\" width=\"500\">\n";
 echo "                  <table class=\"posthead\" width=\"500\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
-echo "                        <h2>{$lang['message']}</h2>\n";
+echo "                        <h2>", gettext("Message"), "</h2>\n";
 
 $t_content = $post->getTidyContent();
 
@@ -794,7 +794,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit("apply", $lang['apply']));
+    echo $tools->toolbar(false, form_submit("apply", gettext("Apply")));
 } else {
     $tools->set_tinymce(false);
 }
@@ -820,13 +820,13 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>{$lang['htmlinmessage']}</h2>\n";
+        echo "<h2>", gettext("HTML in message"), "</h2>\n";
 
         $tph_radio = $post->getHTML();
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
+        echo form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED)." \n";
     }
 
 }else {
@@ -840,15 +840,15 @@ if (($tools->get_tinymce())) {
     echo "<br /><br />\n";
 }
 
-echo form_submit('apply',$lang['apply'], "tabindex=\"2\"");
+echo form_submit('apply',gettext("Apply"), "tabindex=\"2\"");
 
-echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\"");
+echo "&nbsp;".form_submit("preview", gettext("Preview"), "tabindex=\"3\"");
 
-echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg=$edit_msg\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg=$edit_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
 if (forum_get_setting('attachments_enabled', 'Y') && session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));
 }
 
@@ -856,7 +856,7 @@ if ($allow_sig == true) {
 
     echo "<br /><br /><table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";

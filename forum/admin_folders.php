@@ -103,13 +103,13 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -147,13 +147,13 @@ if (isset($_POST['delete'])) {
 
                     }else {
 
-                        $error_msg_array[] = $lang['failedtodeletefolder'];
+                        $error_msg_array[] = gettext("Failed to delete folder.");
                         $valid = false;
                     }
 
                 }else {
 
-                    $error_msg_array[] = $lang['cannotdeletefolderwiththreads'];
+                    $error_msg_array[] = gettext("Cannot delete folders that still contain threads.");
                     $valid = false;
                 }
             }
@@ -202,11 +202,11 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
     exit;
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['managefolders']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Folders"), "", 'class=window_title');
 
 $folder_array = folder_get_all_by_page($start);
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolders']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -214,23 +214,23 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['added'])) {
 
-    html_display_success_msg($lang['successfullyaddednewfolder'], '600', 'center');
+    html_display_success_msg(gettext("Successfully added new folder"), '600', 'center');
 
 }else if (isset($_GET['edited'])) {
 
-    html_display_success_msg($lang['successfullyeditedfolder'], '600', 'center');
+    html_display_success_msg(gettext("Successfully edited folder"), '600', 'center');
 
 }else if (isset($_GET['deleted'])) {
 
-    html_display_success_msg($lang['successfullyremovedselectedfolders'], '600', 'center');
+    html_display_success_msg(gettext("Successfully removed selected folders"), '600', 'center');
 
 }else if (sizeof($folder_array['folder_array']) < 1) {
 
-    html_display_warning_msg($lang['nofoldersfound'], '600', 'center');
+    html_display_warning_msg(gettext("No existing folders found. To add a folder click the 'Add New' button below."), '600', 'center');
 
 }else {
 
-    html_display_warning_msg($lang['folderdisplayorderthreadsbyfolderview'], '600', 'center');
+    html_display_warning_msg(gettext("Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options."), '600', 'center');
 }
 
 echo "<br />\n";
@@ -247,10 +247,10 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['foldername']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Folder name"), "</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" align=\"center\" style=\"white-space: nowrap\">{$lang['threadcount']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['permissions']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"center\" style=\"white-space: nowrap\">", gettext("Thread Count"), "</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Permissions"), "</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($folder_array['folder_array']) > 0) {
@@ -271,17 +271,17 @@ if (sizeof($folder_array['folder_array']) > 0) {
 
         }elseif ($folder_index == $folder_array['folder_count']) {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
 
         }elseif ($folder_index > 1) {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
         }else {
 
-            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"{$lang['clicktoeditfolder']}\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
         }
 
@@ -294,7 +294,7 @@ if (sizeof($folder_array['folder_array']) > 0) {
         if (isset($folder['FOLDER_PERMS']) && $folder['FOLDER_PERMS'] > 0) {
             echo "                  <td align=\"left\">", perm_display_list($folder['FOLDER_PERMS']), "</td>\n";
         }else {
-            echo "                  <td align=\"left\">{$lang['none']}</td>\n";
+            echo "                  <td align=\"left\">", gettext("none"), "</td>\n";
         }
 
         echo "                </tr>\n";
@@ -320,7 +320,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("addnew", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("addnew", gettext("Add New")), "&nbsp;", form_submit("delete", gettext("Delete Selected")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
@@ -343,27 +343,27 @@ echo "                      <td align=\"left\" valign=\"top\" width=\"50%\">\n";
 echo "                        <table width=\"100%\">\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>PR</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['postreadingallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Post Reading allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>TC</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['threadcreationallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Thread Creation allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>PD</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['postdeletionallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Post Deletion allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>HP</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['htmlpostingallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("HTML Posting allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>GA</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['guestaccessallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Guest Access allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>TM</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['allowthreadmove']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Move threads to folder"), "</td>\n";
 echo "                          </tr>\n";
 echo "                        </table>\n";
 echo "                      </td>\n";
@@ -371,23 +371,23 @@ echo "                      <td align=\"left\" valign=\"top\" width=\"50%\">\n";
 echo "                        <table width=\"100%\">\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>PC</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['postcreationallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Post Creation allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>PE</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['posteditingallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Post Editing allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>UA</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['attachmentsallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Uploading Attachments allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>US</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['usersignatureallowed']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("User Signature allowed"), "</td>\n";
 echo "                          </tr>\n";
 echo "                          <tr>\n";
 echo "                            <td align=\"left\" class=\"postbody\"><b>PA</b></td>\n";
-echo "                            <td align=\"left\" class=\"postbody\">{$lang['postapprovalrequired']}</td>\n";
+echo "                            <td align=\"left\" class=\"postbody\">", gettext("Post Approval required"), "</td>\n";
 echo "                          </tr>\n";
 echo "                        </table>\n";
 echo "                      </td>\n";

@@ -104,8 +104,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Get the user's UID
 $uid = session_get_value('UID');
@@ -131,12 +131,12 @@ pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 // Get custom folder names array.
 if (!$pm_folder_names_array = pm_get_folder_names()) {
 
-    $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
-                                   PM_FOLDER_SENT    => $lang['pmsentitems'],
-                                   PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
-                                   PM_FOLDER_SAVED   => $lang['pmsaveditems'],
-                                   PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
-                                   PM_SEARCH_RESULTS => $lang['searchresults']);
+    $pm_folder_names_array = array(PM_FOLDER_INBOX   => gettext("Inbox"),
+                                   PM_FOLDER_SENT    => gettext("Sent Items"),
+                                   PM_FOLDER_OUTBOX  => gettext("Outbox"),
+                                   PM_FOLDER_SAVED   => gettext("Saved Items"),
+                                   PM_FOLDER_DRAFTS  => gettext("Drafts"),
+                                   PM_SEARCH_RESULTS => gettext("Search Results"));
 }
 
 // Default Folder
@@ -171,8 +171,8 @@ if (isset($_GET['manage_folder'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_error_msg($lang['invalidfolderid']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_error_msg(gettext("Invalid Folder ID. Check that a folder with this ID exists!"));
         html_draw_bottom();
         exit;
     }
@@ -185,8 +185,8 @@ if (isset($_GET['manage_folder'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_error_msg($lang['invalidfolderid']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_error_msg(gettext("Invalid Folder ID. Check that a folder with this ID exists!"));
         html_draw_bottom();
         exit;
     }
@@ -205,7 +205,7 @@ if (isset($_POST['save'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoupdatefolder'];
+            $error_msg_array[] = gettext("Failed to update folder");
             $valid = false;
         }
     }
@@ -219,7 +219,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['failedtoupdatefolder'];
+        $error_msg_array[] = gettext("Failed to update folder");
         $valid = false;
     }
 }
@@ -231,15 +231,15 @@ pm_user_prune_folders();
 $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
-html_draw_top("title={$lang['privatemessages']}", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
+html_draw_top("title=", gettext("Private Messages"), "", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
-    echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolder']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
+    echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folder"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
 
     if (isset($_GET['folder_renamed'])) {
 
-        html_display_success_msg($lang['successfullyrenamedfolder'], '500', 'center', 'pm_rename_success');
+        html_display_success_msg(gettext("Successfully Renamed Folder"), '500', 'center', 'pm_rename_success');
 
     }elseif (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -259,13 +259,13 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['foldername']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Folder name"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['foldername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Folder name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("folder_name", htmlentities_array($pm_folder_names_array[$manage_folder]), 40, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -285,7 +285,7 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("reset", $lang['reset']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("reset", gettext("Reset")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -294,7 +294,7 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     exit;
 }
 
-echo "<h1>{$lang['privatemessages']}</h1>\n";
+echo "<h1>", gettext("Private Messages"), "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"", html_get_frame_name('pm_messages'), "\">\n";
@@ -312,7 +312,7 @@ foreach ($pm_folder_names_array as $folder_type => $folder_name) {
         echo "      <td align=\"left\">\n";
         echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", html_style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['managefolder']}\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf($lang['pmtooltipxmessages'], $pm_message_count_array[$folder_type]) : $lang['pmtooltip1message'], "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
+        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", html_style_image('folder.png'), "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Manage Folder"), "\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf(gettext("%s messages"), $pm_message_count_array[$folder_type]) : gettext("1 message"), "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";
@@ -324,10 +324,10 @@ foreach ($pm_folder_names_array as $folder_type => $folder_name) {
 echo "  <br />\n";
 echo "  <table width=\"90%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"foldername\">{$lang['search']}:</td>\n";
+echo "      <td align=\"left\" class=\"foldername\">", gettext("Search"), ":</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 24), "&nbsp;", form_submit('search', $lang['find']), "</td>\n";
+echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 24), "&nbsp;", form_submit('search', gettext("Find")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
@@ -336,7 +336,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"", html_get_frame_name('main'), "\">{$lang['sendnewpm']}</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('post.png'), "\" alt=\"", gettext("Send New PM"), "\" title=\"", gettext("Send New PM"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"", gettext("Send New PM"), "\" target=\"", html_get_frame_name('main'), "\">", gettext("Send New PM"), "</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -347,7 +347,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('options.png'), "\" alt=\"{$lang['privatemessageoptions']}\" title=\"{$lang['privatemessageoptions']}\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"{$lang['privatemessageoptions']}\">{$lang['privatemessageoptions']}</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('options.png'), "\" alt=\"", gettext("Private Message Options"), "\" title=\"", gettext("Private Message Options"), "\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"", gettext("Private Message Options"), "\">", gettext("Private Message Options"), "</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -358,7 +358,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('export.png'), "\" alt=\"{$lang['exportprivatemessages']}\" title=\"{$lang['exportprivatemessages']}\" />&nbsp;<a href=\"pm_export.php?webtag=$webtag\" title=\"{$lang['exportprivatemessages']}\">{$lang['exportprivatemessages']}</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('export.png'), "\" alt=\"", gettext("Export Private Messages"), "\" title=\"", gettext("Export Private Messages"), "\" />&nbsp;<a href=\"pm_export.php?webtag=$webtag\" title=\"", gettext("Export Private Messages"), "\">", gettext("Export Private Messages"), "</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -380,7 +380,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\">\n";
 echo "              <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" title=\"{$pm_used_percent}% {$lang['used']}\">\n";
+echo "                  <td align=\"left\" title=\"{$pm_used_percent}% ", gettext("Used"), "\">\n";
 echo "                    <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_used_percent}%\">\n";
 echo "                      <tr>\n";
 echo "                        <td></td>\n";
@@ -392,7 +392,7 @@ echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"pmbar_text\" style=\"white-space: nowrap\">", sprintf($lang['yourpmfoldersare'], "$pm_used_percent%"), "</td>\n";
+echo "            <td align=\"left\" class=\"pmbar_text\" style=\"white-space: nowrap\">", sprintf(gettext("Your PM folders are %s full"), "$pm_used_percent%"), "</td>\n";
 echo "          </tr>\n";
 
 if (pm_auto_prune_enabled()) {
@@ -401,7 +401,9 @@ if (pm_auto_prune_enabled()) {
     echo "            <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", html_style_image('warning.png'), "\" alt=\"{$lang['pmfolderpruningisenabled']}\" title=\"{$lang['pmfolderpruningisenabled']}\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a class=\"help_popup\" title=\"{$lang['pmpruneexplanation']}\">?</a>]</td>\n";
+    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("PM Folder pruning is enabled!"), "\" title=\"", gettext("PM Folder pruning is enabled!"), "\" /> ", gettext("PM Folder pruning is enabled!"), "&nbsp;[<a class=\"help_popup\" title=\"", gettext("This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items
+folders are subject to automatic deletion. Any messages you wish to keep should be moved to
+your 'Saved Items' folder so that they are not deleted."), "\">?</a>]</td>\n";
     echo "          </tr>\n";
 }
 

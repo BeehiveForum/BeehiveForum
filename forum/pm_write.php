@@ -108,8 +108,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Get the user's UID
 $uid = session_get_value('UID');
@@ -245,7 +245,7 @@ if (isset($_POST['emots_toggle'])) {
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 }
@@ -341,7 +341,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entersubjectformessage'];
+        $error_msg_array[] = gettext("Enter a subject for the message");
         $valid = false;
     }
 
@@ -355,7 +355,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entercontentformessage'];
+        $error_msg_array[] = gettext("Enter some content for the message");
         $valid = false;
     }
 
@@ -373,7 +373,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if ($to_radio == 'friends' && $t_to_uid == 0) {
 
-        $error_msg_array[] = $lang['mustspecifyrecipient'];
+        $error_msg_array[] = gettext("You must specify at least one recipient.");
         $valid = false;
     }
 
@@ -385,7 +385,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
+            html_draw_top(sprintf("title=%s", gettext("Error")));
             pm_error_refuse();
             html_draw_bottom();
             exit;
@@ -423,20 +423,20 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
                         if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
 
-                            $error_msg_array[] = $lang['youdonothaveenoughfreespace'];
+                            $error_msg_array[] = gettext("You do not have enough free space to send this message.");
                             $valid = false;
                         }
 
                     }else {
 
-                        $error_msg_array[] = sprintf($lang['userhasoptedoutofpm'], $to_logon);
+                        $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), $to_logon);
                         $valid = false;
                     }
                 }
 
             }else {
 
-                $error_msg_array[] = sprintf($lang['usernotfound'], $to_logon);
+                $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
                 $valid = false;
             }
         }
@@ -447,20 +447,20 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
 
-                $error_msg_array[] = $lang['maximumtenrecipientspermessage'];
+                $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
                 $valid = false;
             }
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
 
-                $error_msg_array[] = $lang['mustspecifyrecipient'];
+                $error_msg_array[] = gettext("You must specify at least one recipient.");
                 $valid = false;
             }
         }
 
     }elseif ($to_radio == 'others') {
 
-        $error_msg_array[] = $lang['mustspecifyrecipient'];
+        $error_msg_array[] = gettext("You must specify at least one recipient.");
         $valid = false;
     }
 
@@ -513,7 +513,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         if (sizeof($t_recipient_array) > 10) {
 
-            $error_msg_array[] = $lang['maximumtenrecipientspermessage'];
+            $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
             $valid = false;
         }
 
@@ -565,7 +565,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
+        html_draw_top(sprintf("title=%s", gettext("Error")));
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -607,7 +607,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
+        html_draw_top(sprintf("title=%s", gettext("Error")));
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -655,7 +655,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
+        html_draw_top(sprintf("title=%s", gettext("Error")));
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -665,7 +665,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 // Check the message length.
 if (mb_strlen($t_content) >= 65535) {
 
-    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
+    $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
     $valid = false;
 }
 
@@ -696,7 +696,7 @@ if ($valid && isset($_POST['send'])) {
 
             }else {
 
-                $error_msg_array[] = $lang['errorcreatingpm'];
+                $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
                 $valid = false;
             }
 
@@ -714,7 +714,7 @@ if ($valid && isset($_POST['send'])) {
 
                 }else {
 
-                    $error_msg_array[] = $lang['errorcreatingpm'];
+                    $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
                     $valid = false;
                 }
             }
@@ -742,7 +742,7 @@ if ($valid && isset($_POST['send'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['couldnotsavemessage'];
+            $error_msg_array[] = gettext("Could not save message. Make sure you have enough available free space.");
             $valid = false;
         }
 
@@ -757,15 +757,15 @@ if ($valid && isset($_POST['send'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['couldnotsavemessage'];
+            $error_msg_array[] = gettext("Could not save message. Make sure you have enough available free space.");
             $valid = false;
         }
     }
 }
 
-html_draw_top("title={$lang['privatemessages']} - {$lang['sendnewpm']}", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
+html_draw_top("title=", gettext("Private Messages"), " - ", gettext("Send New PM"), "", "onUnload=clearFocus()", "resize_width=720", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>{$lang['privatemessages']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['sendnewpm']}</h1>\n";
+echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Send New PM"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
@@ -788,7 +788,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['messagepreview']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
 
     if (isset($to_radio) && $to_radio == 'friends') {
@@ -831,19 +831,19 @@ if ($valid && isset($_POST['preview'])) {
 
 echo "              <table width=\"720\" class=\"posthead\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Write Message"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "                    <table class=\"posthead\" width=\"210\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
+echo "                        <td align=\"left\"><h2>", gettext("Subject"), "</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
+echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
 
 if (($friends_array = pm_user_get_friends())) {
@@ -864,16 +864,16 @@ if (($friends_array = pm_user_get_friends())) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", "friends", $lang['friends'], (isset($to_radio) && $to_radio == "friends")), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", "friends", gettext("Friends"), (isset($to_radio) && $to_radio == "friends")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array, (isset($t_to_uid) ? $t_to_uid : 0), "", "friends_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", "others", $lang['others'], (isset($to_radio) && $to_radio == "others") ? true : (!isset($to_radio))), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", "others", gettext("Others"), (isset($to_radio) && $to_radio == "others") ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"", gettext("Separate recipients by semi-colon or comma"), "\"", "post_to_others"), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -885,7 +885,7 @@ if (($friends_array = pm_user_get_friends())) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"{$lang['recipienttiptext']}\"", "post_to_others"), "</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", false, false, SEARCH_LOGON, true, "title=\"", gettext("Separate recipients by semi-colon or comma"), "\"", "post_to_others"), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -895,7 +895,7 @@ if (!is_array($friends_array) && forum_check_webtag_available($webtag)) {
     echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><h2>{$lang['hint']}</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
+    echo "                        <td align=\"left\"><h2>", gettext("Hint"), "</h2><span class=\"smalltext\">", gettext("Add users to your friends list to have them appear in a drop down on the PM Write Message Page."), "</span></td>\n";
     echo "                      </tr>\n";
 }
 
@@ -903,11 +903,11 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2>\n";
+echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2>\n";
 
-echo "                          ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo "                          ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
-echo "                          ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+echo "                          ".form_checkbox("t_post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled)."<br />\n";
+echo "                          ".form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled)."<br />\n";
+echo "                          ".form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled)."<br />\n";
 
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -925,7 +925,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
     echo "                        <td align=\"left\">\n";
     echo "                          <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
         echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
@@ -956,7 +956,7 @@ echo "                  <td align=\"left\" width=\"500\" valign=\"top\">\n";
 echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";
-echo "                         <h2>{$lang['message']}</h2>\n";
+echo "                         <h2>", gettext("Message"), "</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
@@ -971,7 +971,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit('send', $lang['send']));
+    echo $tools->toolbar(false, form_submit('send', gettext("Send")));
 } else {
     $tools->set_tinymce(false);
 }
@@ -1001,13 +1001,13 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "              <h2>{$lang['htmlinmessage']}</h2>\n";
+        echo "              <h2>", gettext("HTML in message"), "</h2>\n";
 
         $tph_radio = $post->getHTML();
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
+        echo form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED)." \n";
         echo "              <br />";
     }
 
@@ -1018,30 +1018,30 @@ if ($allow_html == true) {
 
 echo "              <br />\n";
 
-echo "&nbsp;", form_submit('send', $lang['send'], "tabindex=\"2\"");
-echo "&nbsp;", form_submit('save', $lang['save'], "tabindex=\"3\"");
-echo "&nbsp;", form_submit('preview', $lang['preview'], "tabindex=\"4\"");
+echo "&nbsp;", form_submit('send', gettext("Send"), "tabindex=\"2\"");
+echo "&nbsp;", form_submit('save', gettext("Save"), "tabindex=\"3\"");
+echo "&nbsp;", form_submit('preview', gettext("Preview"), "tabindex=\"4\"");
 
 if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_reply_mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_reply_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
 } else if (isset($t_forward_mid) && is_numeric($t_forward_mid)  && $t_forward_mid > 0) {
 
-    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_forward_mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
 } else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
 
-    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_edit_mid\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$t_edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
 }else {
 
-    echo "&nbsp;<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>{$lang['cancel']}</span></a>";
+    echo "&nbsp;<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 }
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
-    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>{$lang['attachments']}</span></a>\n";
+    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden("aid", htmlentities_array($aid));
 }
 
@@ -1072,7 +1072,7 @@ if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['inreplyto']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("In reply to"), "</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

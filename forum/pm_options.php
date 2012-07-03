@@ -103,8 +103,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Guests can't access this page.
 if (user_is_guest()) {
@@ -199,16 +199,13 @@ if (isset($_POST['save'])) {
     // Update USER_PREFS
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        // Reinitialize the User's Session to save them having to logout and back in
-        session_init($uid, false);
-
         // Redirect back to the page so we correctly reload the user's preferences.
-        header_redirect("pm_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        header_redirect("pm_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;
 
     }else {
 
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 }
@@ -219,9 +216,9 @@ if (!isset($uid)) $uid = session_get_value('UID');
 $user_prefs = user_get_prefs($uid);
 
 // Start output here
-html_draw_top("title={$lang['privatemessageoptions']}", "emoticons.js", 'class=window_title');
+html_draw_top("title=", gettext("Private Message Options"), "", "emoticons.js", 'class=window_title');
 
-echo "<h1>{$lang['privatemessageoptions']}</h1>\n";
+echo "<h1>", gettext("Private Message Options"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -229,7 +226,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
+    html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'left');
 }
 
 echo "<br />\n";
@@ -243,22 +240,22 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['privatemessageoptions']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">", gettext("Private Message Options"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_notify", "Y", gettext("Notify by popup of new PM messages to me"), (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_save_sent_items", "Y", $lang['savepminsentitems'], (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_save_sent_items", "Y", gettext("Save a copy of each PM I send in my Sent Items folder"), (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_include_reply", "Y", gettext("Include message body when replying to PM"), (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_auto_prune_enabled", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] > 0) ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($user_prefs['PM_AUTO_PRUNE']) ? ($user_prefs['PM_AUTO_PRUNE'] > 0 ? $user_prefs['PM_AUTO_PRUNE'] : $user_prefs['PM_AUTO_PRUNE'] * -1) : 60)), " {$lang['days']}</td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_auto_prune_enabled", "Y", gettext("Auto prune my PM folders every:"), (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] > 0) ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($user_prefs['PM_AUTO_PRUNE']) ? ($user_prefs['PM_AUTO_PRUNE'] > 0 ? $user_prefs['PM_AUTO_PRUNE'] : $user_prefs['PM_AUTO_PRUNE'] * -1) : 60)), " ", gettext("days"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -273,27 +270,27 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">{$lang['privatemessageexportoptions']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">", gettext("Private Message Export Options"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"7\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['pmexportastype']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("pm_export_type", array($lang['pmexporthtml'], $lang['pmexportxml'], $lang['pmexportcsv']), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
+echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Export as type"), ":</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("pm_export_type", array(gettext("HTML"), gettext("XML"), gettext("CSV")), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['pmexportmessagesas']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("pm_export_file", array($lang['pmexportonefileforallmessages'], $lang['pmexportonefilepermessage']), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
+echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Export messages as"), ":</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("pm_export_file", array(gettext("One file for all messages"), gettext("One file per message")), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_attachments", "Y", $lang['pmexportattachments'], (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_attachments", "Y", gettext("Export attachments"), (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_style", "Y", $lang['pmexportincludestyle'], (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_style", "Y", gettext("Include forum style sheet"), (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_wordfilter", "Y", $lang['pmexportwordfilter'], (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_wordfilter", "Y", gettext("Apply word filter to messages"), (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -308,7 +305,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -56,8 +56,6 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function light_html_draw_top()
 {
-    $lang = load_language_file();
-
     $arg_array = func_get_args();
 
     $title = "";
@@ -98,7 +96,7 @@ function light_html_draw_top()
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"", gettext("ltr"), "\">\n";
     echo "<head>\n";
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -163,7 +161,7 @@ function light_html_draw_top()
     
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
 
-    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext("RSS Feed")), $rss_feed_path);
 
     if (($folders_array = folder_get_available_details())) {
 
@@ -171,7 +169,7 @@ function light_html_draw_top()
 
             $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
 
-            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $rss_feed_path);
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext("RSS Feed")), $rss_feed_path);
         }
     }
 
@@ -212,16 +210,16 @@ function light_html_draw_top()
     echo "    <ul>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
-        echo "      <li><a href=\"lforums.php?webtag=$webtag\">", $lang['myforums'], "</a></li>\n";
+        echo "      <li><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
     }
 
-    echo "      <li><a href=\"lthread_list.php?webtag=$webtag\">", $lang['messages'], "</a></li>\n";
-    echo "      <li><a href=\"lpm.php?webtag=$webtag\">", $lang['pminbox'], "</a></li>\n";
+    echo "      <li><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
+    echo "      <li><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
 
     if (user_is_guest()) {
-        echo "      <li><a href=\"llogon.php?webtag=$webtag\">", $lang['login'], "</a></li>\n";
+        echo "      <li><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
     } else {
-        echo "      <li><a href=\"llogout.php?webtag=$webtag\">", $lang['logout'], "</a></li>\n";
+        echo "      <li><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
     }
 
     echo "    </ul>\n";
@@ -241,19 +239,17 @@ function light_html_draw_bottom()
 {
     $webtag = get_webtag();
 
-    $lang = load_language_file();
-
     echo "</div>\n";
     echo "<div id=\"footer\">\n";
 
     if (!session_is_search_engine()) {
 
         echo "  <div id=\"footer_links\">\n";
-        echo "    <a href=\"#top\">{$lang['top']}</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">{$lang['desktopversion']}</a>\n";
+        echo "    <a href=\"#top\">", gettext("Top"), "</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">", gettext("Desktop Version"), "</a>\n";
         echo "  </div>\n";
     }
     
-    echo "  <h6><a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Beehive Forum ", BEEHIVE_VERSION, "<br />&copy; ", date('Y'), " Project Beehive Forum</a></h6>\n";
+    echo "  <h6><a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Beehive Forum ", BEEHIVE_VERSION, "<br />&copy; ", strftime('%Y'), " Project Beehive Forum</a></h6>\n";
     echo "</div>\n";
     echo "</body>\n";
     echo "</html>\n";
@@ -261,14 +257,12 @@ function light_html_draw_bottom()
 
 function light_draw_logon_form($error_msg_array = array())
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
-        light_html_display_success_msg($lang['youhavesuccessfullyloggedout']);
+        light_html_display_success_msg(gettext("You have successfully logged out."));
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         light_html_display_error_array($error_msg_array);
     }
@@ -278,27 +272,27 @@ function light_draw_logon_form($error_msg_array = array())
     $passhash_array = array();
 
     echo "<div class=\"logon\">\n";
-    echo "<h3>{$lang['logon']}</h3>\n";
+    echo "<h3>", gettext("Logon"), "</h3>\n";
     echo "<div class=\"logon_inner\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  <div class=\"logon_username\"><span>{$lang['username']}:</span>", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</div>\n";
+    echo "  <div class=\"logon_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</div>\n";
 
     if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
 
         if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-            echo "  <div class=\"logon_password\"><span>{$lang['passwd']}:</span>", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, ''), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</div>\n";
+            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, ''), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</div>\n";
         }else {
-            echo "  <div class=\"logon_password\"><span>{$lang['passwd']}:</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
+            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
         }
 
     }else {
 
-        echo "  <div class=\"logon_password\"><span>{$lang['passwd']}:</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
+        echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
     }
 
-    echo "  <div class=\"logon_remember\">", light_form_checkbox("user_remember", "Y", $lang['rememberme'], false, ''), "</div>\n";
-    echo "  <div class=\"logon_buttons\">", light_form_submit('logon', $lang['logon']), "</div>\n";
+    echo "  <div class=\"logon_remember\">", light_form_checkbox("user_remember", "Y", gettext("Remember me"), false, ''), "</div>\n";
+    echo "  <div class=\"logon_buttons\">", light_form_submit('logon', gettext("Logon")), "</div>\n";
     echo "</form>\n";
     echo "</div>\n";
     echo "</div>\n";
@@ -310,23 +304,21 @@ function light_draw_messages($tid, $pid)
 
     forum_check_webtag_available($webtag);
 
-    $lang = load_language_file();
-
     if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-        light_html_display_error_msg($lang['threadcouldnotbefound']);
+        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         return;
     }
 
     if (!folder_get($thread_data['FID'])) {
 
-        light_html_display_error_msg($lang['foldercouldnotbefound']);
+        light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
         return;
     }
 
     if (!$messages = messages_get($tid, $pid, 10)) {
 
-        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
         return;
     }
 
@@ -343,17 +335,17 @@ function light_draw_messages($tid, $pid)
                 if ($tracking_data['TID'] == $tid) {
 
                     $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                    $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+                    $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], gettext("here"));
 
-                    light_html_display_warning_msg(sprintf($lang['thisthreadhasmoved'], $thread_link));
+                    light_html_display_warning_msg(sprintf(gettext("<b>Threads Merged:</b> This thread has moved %s"), $thread_link));
                 }
 
                 if ($tracking_data['NEW_TID'] == $tid) {
 
                     $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                    $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+                    $thread_link = sprintf($thread_link, $tracking_data['TID'], gettext("here"));
 
-                    light_html_display_warning_msg(sprintf($lang['thisthreadwasmergedfrom'], $thread_link));
+                    light_html_display_warning_msg(sprintf(gettext("<b>Threads Merged:</b> This thread was merged from %s"), $thread_link));
                 }
 
             }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
@@ -361,17 +353,17 @@ function light_draw_messages($tid, $pid)
                 if ($tracking_data['TID'] == $tid) {
 
                     $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                    $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+                    $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], gettext("here"));
 
-                    light_html_display_warning_msg(sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link));
+                    light_html_display_warning_msg(sprintf(gettext("<b>Thread Split:</b> Some posts in this thread have been moved %s"), $thread_link));
                 }
 
                 if ($tracking_data['NEW_TID'] == $tid) {
 
                     $thread_link = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                    $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+                    $thread_link = sprintf($thread_link, $tracking_data['TID'], gettext("here"));
 
-                    light_html_display_warning_msg(sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link));
+                    light_html_display_warning_msg(sprintf(gettext("<b>Thread Split:</b> Some posts in this thread were moved from %s"), $thread_link));
                 }
             }
         }
@@ -386,7 +378,7 @@ function light_draw_messages($tid, $pid)
                 if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                     $message['CONTENT'] = message_get_content($tid, $message['PID']);
                 }else {
-                    $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
+                    $message['CONTENT'] = gettext("Ignored"); // must be set to something or will show as deleted
                 }
 
             }else {
@@ -427,19 +419,19 @@ function light_draw_messages($tid, $pid)
     echo "<ul>\n";
 
     if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
-        echo "<li><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" class=\"reply_all\">{$lang['replyall']}</a></li>\n";
+        echo "<li><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" class=\"reply_all\">", gettext("Reply to All"), "</a></li>\n";
     }
 
     if ($last_pid < $thread_data['LENGTH']) {
 
         $npid = $last_pid + 1;
-        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$npid")), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$npid")), "</li>\n";
     }
 
     echo "</ul>\n";
     echo "</div>\n";
 
-    echo "<a href=\"lthread_list.php?webtag=$webtag\" class=\"thread_list_link\">{$lang['backtothreadlist']}</a>";
+    echo "<a href=\"lthread_list.php?webtag=$webtag\" class=\"thread_list_link\">", gettext("Back to thread list"), "</a>";
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
 
@@ -453,8 +445,6 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
-
-    $lang = load_language_file();
 
     $error_msg_array = array();
 
@@ -477,7 +467,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     echo "<li>", light_threads_draw_discussions_dropdown($thread_mode), "</li>\n";
 
 
-    echo "<li class=\"right_col\">", light_form_submit("go", $lang['goexcmark']), "</li>\n";
+    echo "<li class=\"right_col\">", light_form_submit("go", gettext("Go!")), "</li>\n";
     echo "</ul>\n";
     echo "</form>\n";
     echo "</div>\n";
@@ -590,7 +580,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     // Get folder FIDs and titles
     if (!$folder_info = threads_get_folders()) {
 
-        light_html_display_error_msg($lang['couldnotretrievefolderinformation']);
+        light_html_display_error_msg(gettext("There are no folders available."));
         return;
     }
 
@@ -679,19 +669,19 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     // If no threads are returned, say something to that effect
     if (isset($_REQUEST['mark_read_success'])) {
 
-        light_html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
+        light_html_display_success_msg(gettext("Successfully marked selected threads as read"), '100%', 'left');
 
     } else if (!is_array($thread_info)) {
 
         if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-            light_html_display_warning_msg(sprintf($lang['nodiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
+            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", gettext("click here"));
+            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
 
         }else {
 
-            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-            light_html_display_warning_msg(sprintf($lang['nodiscussionsinallfolders'], $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
+            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", gettext("click here"));
+            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
         }
 
     } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -700,12 +690,12 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-        $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
-        light_html_display_warning_msg(sprintf($lang['viewingdiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
+        $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", gettext("click here"));
+        light_html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
     }
 
     if (($start_from > 0) && !is_numeric($folder)) {
-        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from - 50), "\">{$lang['prev50threads']}</a></div>\n";
+        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from - 50), "\">", gettext("Previous 50 threads"), "</a></div>\n";
     }
 
     // Iterate through the information we've just got and display it in the right order
@@ -729,19 +719,19 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                         echo "0";
                     }
 
-                    echo " {$lang['threads']}";
+                    echo " ", gettext("threads"), "";
 
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
                         if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) {
-                            echo "<span><a href=\"lpost.php?webtag=$webtag&amp;fid=$folder_number\">{$lang['postnew']}</a></span>";
+                            echo "<span><a href=\"lpost.php?webtag=$webtag&amp;fid=$folder_number\">", gettext("Post New"), "</a></span>";
                         }
                     }
 
                     echo "  </div>\n";
 
                     if (($start_from > 0) && is_numeric($folder) && ($folder_number == $folder)) {
-                        echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\">{$lang['prev50threads']}</a></div>\n";
+                        echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\">", gettext("Previous 50 threads"), "</a></div>\n";
                     }
 
                     $folder_list_start = false;
@@ -784,19 +774,19 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                             
                             echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
-                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+                            echo "title=\"", sprintf(gettext("Thread #%s Started by %s. Viewed %s"), $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? gettext("1 time") : sprintf(gettext("%d times"), $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags($thread['TITLE'], true), "</a> ";
                             
                             echo "<span class=\"thread_detail\">";
 
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"{$lang['subscribed']}\">[S]</span>";
-                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<span class=\"thread_poll\" title=\"{$lang['poll']}\">[P]</span>";
-                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<span class=\"thread_sticky\" title=\"{$lang['sticky']}\">[ST]</span>";
-                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<span class=\"thread_friend\" title=\"{$lang['friend']}\">[F]</span>";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<span class=\"thread_split\" title=\"{$lang['threadhasbeensplit']}\">[TS]</span>";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<span class=\"thread_merge\" title=\"{$lang['threadhasbeenmerged']}\">[TM]</span>";
-                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<span class=\"thread_attachment\" title=\"{$lang['attachment']}\">[A]</span>";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"", gettext("High Interest"), "\">[H]</span>";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"", gettext("Subscribed"), "\">[S]</span>";
+                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<span class=\"thread_poll\" title=\"", gettext("Poll"), "\">[P]</span>";
+                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<span class=\"thread_sticky\" title=\"", gettext("Sticky"), "\">[ST]</span>";
+                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<span class=\"thread_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<span class=\"thread_split\" title=\"", gettext("Thread has been split"), "\">[TS]</span>";
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<span class=\"thread_merge\" title=\"", gettext("Thread has been merged"), "\">[TM]</span>";
+                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<span class=\"thread_attachment\" title=\"", gettext("Attachment"), "\">[A]</span>";
 
                             echo "<span class=\"thread_length\">$number</span>";
                             echo "</span>";
@@ -814,7 +804,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                     }
 
                     if (is_numeric($folder) && ($folder_number == $folder)) {
-                        echo "<div class=\"folder_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from + 50), "\">{$lang['next50threads']}</a></div>\n";
+                        echo "<div class=\"folder_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from + 50), "\">", gettext("Next 50 threads"), "</a></div>\n";
                     }
 
                 } else if ($folder_info[$folder_number]['INTEREST'] != -1) {
@@ -827,10 +817,10 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                         echo "0";
                     }
 
-                    echo " {$lang['threads']}</a>";
+                    echo " ", gettext("threads"), "</a>";
 
                     if ($folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD) {
-                        echo "<span><a href=\"lpost.php?webtag=$webtag&amp;fid=$folder_number\">{$lang['postnew']}</a></span>";
+                        echo "<span><a href=\"lpost.php?webtag=$webtag&amp;fid=$folder_number\">", gettext("Post New"), "</a></span>";
                     }
 
                     echo "</div>\n";
@@ -845,13 +835,13 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     }
 
     if ($thread_mode == ALL_DISCUSSIONS && !isset($folder)) {
-        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from + 50), "\">{$lang['next50threads']}</a></div>\n";
+        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from + 50), "\">", gettext("Next 50 threads"), "</a></div>\n";
     }
 
     if (!user_is_guest()) {
 
         echo "<div id=\"thread_mark_read\">\n";
-        echo "<h3>{$lang['markasread']}</h3>\n";
+        echo "<h3>", gettext("Mark as Read"), "</h3>\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
 
         echo form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
@@ -859,12 +849,12 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
         echo form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
         echo form_input_hidden("mark_read_confirm", 'N'), "\n";
 
-        $labels = array($lang['alldiscussions'], $lang['next50discussions']);
+        $labels = array(gettext("All Discussions"), gettext("Next 50 discussions"));
         $selected_option = THREAD_MARK_READ_ALL;
 
         if (sizeof($visible_threads_array) > 0) {
 
-            $labels[] = $lang['visiblediscussions'];
+            $labels[] = gettext("Visible discussions");
             $selected_option = THREAD_MARK_READ_VISIBLE;
 
             $visible_threads = implode(',', array_filter($visible_threads_array, 'is_numeric'));
@@ -875,13 +865,13 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
             echo form_input_hidden('folder', htmlentities_array($folder)), "\n";
 
-            $labels[] = $lang['selectedfolder'];
+            $labels[] = gettext("Selected folder");
             $selected_option = THREAD_MARK_READ_FOLDER;
         }
 
         echo "<ul>\n";
         echo "<li>", light_form_dropdown_array("mark_read_type", $labels, $selected_option), "</li>\n";
-        echo "<li class=\"right_col\">", light_form_submit("mark_read_submit", $lang['goexcmark']), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_submit("mark_read_submit", gettext("Go!")), "</li>\n";
         echo "</ul>\n";
         echo "</form>\n";
         echo "</div>\n";
@@ -894,8 +884,6 @@ function light_draw_pm_inbox()
 
     forum_check_webtag_available($webtag);
 
-    $lang = load_language_file();
-    
     // Default values
     $pm_new_count = 0;
     $pm_outbox_count = 0;
@@ -906,11 +894,11 @@ function light_draw_pm_inbox()
 
     if (!($pm_folder_names_array = pm_get_folder_names())) {
 
-        $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
-                                       PM_FOLDER_SENT    => $lang['pmsentitems'],
-                                       PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
-                                       PM_FOLDER_SAVED   => $lang['pmsaveditems'],
-                                       PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
+        $pm_folder_names_array = array(PM_FOLDER_INBOX   => gettext("Inbox"),
+                                       PM_FOLDER_SENT    => gettext("Sent Items"),
+                                       PM_FOLDER_OUTBOX  => gettext("Outbox"),
+                                       PM_FOLDER_SAVED   => gettext("Saved Items"),
+                                       PM_FOLDER_DRAFTS  => gettext("Drafts"));
     }
 
     // Check to see which page we should be on
@@ -986,8 +974,8 @@ function light_draw_pm_inbox()
         light_pm_display($pm_message_array, $folder, true);
 
         echo "<div class=\"post_buttons\">";
-        echo light_form_submit("pm_delete_confirm", $lang['delete']);
-        echo light_form_submit("cancel", $lang['cancel']);
+        echo light_form_submit("pm_delete_confirm", gettext("Delete"));
+        echo light_form_submit("cancel", gettext("Cancel"));
         echo "</div>\n";
 
         light_html_draw_bottom();
@@ -998,38 +986,38 @@ function light_draw_pm_inbox()
 
         if (!($folder = pm_message_get_folder($mid))) {
 
-            light_html_display_error_msg($lang['messagenotfoundinselectedfolder']);
+            light_html_display_error_msg(gettext("Message not found in selected folder. Check that it hasn't been moved or deleted."));
             return;
         }
 
         if (!$pm_message_array = pm_message_get($mid)) {
 
-            light_html_display_error_msg($lang['messagehasbeendeleted']);
+            light_html_display_error_msg(gettext("Message not found. Check that it hasn't been deleted."));
             return;
         }
 
         if (isset($_GET['message_sent'])) {
-            light_html_display_success_msg($lang['msgsentsuccessfully']);
+            light_html_display_success_msg(gettext("Message sent successfully."));
         }else if (isset($_GET['deleted'])) {
-            light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
+            light_html_display_success_msg(gettext("Successfully deleted selected messages"));
         }else if (isset($_GET['message_saved'])) {
-            light_html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
+            light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
         }
 
         $pm_message_array['CONTENT'] = pm_get_content($mid);
 
         light_pm_display($pm_message_array, $folder);
 
-        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder\" class=\"folder_list_link\">{$lang['backtofolderlist']}</a>";
+        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder\" class=\"folder_list_link\">", gettext("Back to folder list"), "</a>";
 
     }else {
 
         if (isset($_GET['message_sent'])) {
-            light_html_display_success_msg($lang['msgsentsuccessfully']);
+            light_html_display_success_msg(gettext("Message sent successfully."));
         }else if (isset($_GET['deleted'])) {
-            light_html_display_success_msg($lang['successfullydeletedselectedmessages']);
+            light_html_display_success_msg(gettext("Successfully deleted selected messages"));
         }else if (isset($_GET['message_saved'])) {
-            light_html_display_success_msg($lang['messagewassuccessfullysavedtodraftsfolder']);
+            light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
         }
 
         $pm_message_count_array = pm_get_folder_message_counts();
@@ -1038,7 +1026,7 @@ function light_draw_pm_inbox()
         echo "<form accept-charset=\"utf-8\" method=\"get\" action=\"lpm.php\">\n";
         echo "<ul>\n";
         echo "<li>", light_form_dropdown_array("folder", $pm_folder_names_array, $folder), "</li>\n";
-        echo "<li class=\"right_col\">", light_form_submit("go", $lang['goexcmark']), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_submit("go", gettext("Go!")), "</li>\n";
         echo "</ul>\n";
         echo "</form>\n";
         echo "</div>\n";
@@ -1048,7 +1036,7 @@ function light_draw_pm_inbox()
             echo "<div class=\"folder\">";
             echo "  <h3>{$pm_folder_names_array[$folder]}</h3>\n";
             echo "  <div class=\"folder_inner\">\n";
-            echo "    <div class=\"folder_info\">{$pm_message_count_array[$folder]} {$lang['messages']}</div>\n";
+            echo "    <div class=\"folder_info\">{$pm_message_count_array[$folder]} ", gettext("Messages"), "</div>\n";
 
             if ($folder == PM_FOLDER_INBOX) {
 
@@ -1074,7 +1062,7 @@ function light_draw_pm_inbox()
             if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
                 if ($start_from > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from - 20), "\">{$lang['prev']}</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from - 20), "\">", gettext("Previous"), "</a></div>\n";
                 }
 
                 echo "<ul>\n";
@@ -1099,7 +1087,7 @@ function light_draw_pm_inbox()
                 $more_messages = $pm_message_count_array[$folder] - $start_from - 20;
 
                 if ($more_messages > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from + 20), "\">{$lang['next']}</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from + 20), "\">", gettext("Next"), "</a></div>\n";
                 }
             }
 
@@ -1107,7 +1095,7 @@ function light_draw_pm_inbox()
             echo "</div>\n";
         }
 
-        echo "<a href=\"lpm_write.php?webtag=$webtag\" class=\"pm_send_new\">{$lang['sendnewpm']}</a>\n";
+        echo "<a href=\"lpm_write.php?webtag=$webtag\" class=\"pm_send_new\">", gettext("Send New PM"), "</a>\n";
 
         // Fetch the free PM space and calculate it as a percentage.
         $pm_free_space = pm_get_free_space();
@@ -1119,10 +1107,10 @@ function light_draw_pm_inbox()
         echo "<div class=\"pm_bar_inner\" style=\"width: {$pm_used_percent}%\"></div>\n";
         echo "</div>\n";
 
-        echo "<div class=\"pm_folder_usage\">", sprintf($lang['yourpmfoldersare'], "$pm_used_percent%"), "</div>\n";
+        echo "<div class=\"pm_folder_usage\">", sprintf(gettext("Your PM folders are %s full"), "$pm_used_percent%"), "</div>\n";
 
         if (pm_auto_prune_enabled()) {
-            light_html_display_warning_msg($lang['pmfolderpruningisenabled']);
+            light_html_display_warning_msg(gettext("PM Folder pruning is enabled!"));
         }
     }
 }
@@ -1133,8 +1121,6 @@ function light_draw_my_forums()
 
     forum_check_webtag_available($webtag);
 
-    $lang = load_language_file();
-
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
         $page = $_GET['page'];
         $start = floor($page - 1) * 20;
@@ -1144,7 +1130,7 @@ function light_draw_my_forums()
     }
 
     if (isset($_GET['webtag_error'])) {
-        light_html_display_error_msg($lang['invalidforumidorforumnotfound']);
+        light_html_display_error_msg(gettext("Invalid forum FID or forum not found"));
     }
 
     if (!user_is_guest()) {
@@ -1167,20 +1153,20 @@ function light_draw_my_forums()
 
                     if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                        echo sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")\n";
+                        echo sprintf(gettext("%s Unread Messages"), number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf(gettext("%s Unread &quot;To: Me&quot;"), number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")\n";
 
                     }else {
 
-                        echo sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ","));
+                        echo sprintf(gettext("%s Unread &quot;To: Me&quot;"), number_format($forum['UNREAD_TO_ME'], 0, ".", ","));
                     }
 
                 }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                    echo sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ","));
+                    echo sprintf(gettext("%s Unread Messages"), number_format($forum['UNREAD_MESSAGES'], 0, ".", ","));
 
                 }else {
 
-                    echo $lang['forumnounreadmessages'];
+                    echo gettext("No Unread Messages");
                 }
                 
                 echo "</span>\n";
@@ -1188,9 +1174,9 @@ function light_draw_my_forums()
                 echo "<li>";
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
-                    echo "<span class=\"forum_last_visit\">{$lang['lastvisited']}: ", format_time($forum['LAST_VISIT']), "</span>\n";
+                    echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", format_time($forum['LAST_VISIT']), "</span>\n";
                 }else {
-                    echo "<span class=\"forum_last_visit\">{$lang['lastvisited']}: {$lang['never']}</span>\n";
+                    echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", gettext("Never"), "</span>\n";
                 }
                 
                 echo "</li>\n";
@@ -1203,7 +1189,7 @@ function light_draw_my_forums()
 
         }else {
 
-            echo "<h3>{$lang['noforumsavailablelogin']}</h3>\n";
+            echo "<h3>", gettext("There are no forums available. Please login to view your forums."), "</h3>\n";
         }
 
     }else {
@@ -1216,7 +1202,7 @@ function light_draw_my_forums()
 
                 echo "<div class=\"forum\">\n";
                 echo "  <h3><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-                echo "  <div class=\"forum_info\">", number_format($forum['MESSAGES']), " {$lang['messages']}</div>\n";
+                echo "  <div class=\"forum_info\">", number_format($forum['MESSAGES']), " ", gettext("Messages"), "</div>\n";
                 echo "</div>\n";
             }
 
@@ -1224,7 +1210,7 @@ function light_draw_my_forums()
 
         }else {
 
-            echo "<h3>{$lang['noforumsavailablelogin']}</h3>\n";
+            echo "<h3>", gettext("There are no forums available. Please login to view your forums."), "</h3>\n";
         }
     }
 }
@@ -1266,8 +1252,6 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
 
 function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
@@ -1275,12 +1259,12 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
     echo "<h3 class=\"thread_title\">";
     echo "<a href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags($thread_title, true), "</a> ";
 
-    if ($closed) echo "<span class=\"thread_closed\" title=\"{$lang['closed']}\">[C]</span>\n";
-    if ($thread_interest_level == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"{$lang['highinterest']}\">[H]</span>";
-    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"{$lang['subscribed']}\">[S]</span>";
-    if ($sticky == "Y") echo "<span class=\"thread_sticky\" title=\"{$lang['sticky']}\">[ST]</span>";
-    if ($locked) echo "<span class=\"thread_locked\" title=\"{$lang['locked']}\">[L]</span>\n";
-    if ($deleted) echo "<span class=\"thread_deleted\" title=\"{$lang['deleted']}\">[D]</span>\n";
+    if ($closed) echo "<span class=\"thread_closed\" title=\"", gettext("Closed"), "\">[C]</span>\n";
+    if ($thread_interest_level == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"", gettext("High Interest"), "\">[H]</span>";
+    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"", gettext("Subscribed"), "\">[S]</span>";
+    if ($sticky == "Y") echo "<span class=\"thread_sticky\" title=\"", gettext("Sticky"), "\">[ST]</span>";
+    if ($locked) echo "<span class=\"thread_locked\" title=\"", gettext("Locked"), "\">[L]</span>\n";
+    if ($deleted) echo "<span class=\"thread_deleted\" title=\"", gettext("Deleted"), "\">[D]</span>\n";
 
     echo "</h3>\n";
 }
@@ -1328,8 +1312,6 @@ function light_form_quick_button($href, $label, $var_array = false, $target = "_
 
 function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_preview = false)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     $total_votes = 0;
@@ -1419,7 +1401,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
-            $poll_display.= "<div class=\"poll_vote_closed\">{$lang['pollhasended']}</div>\n";
+            $poll_display.= "<div class=\"poll_vote_closed\">". gettext("Poll has ended"). "</div>\n";
 
             if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
                 $poll_display.= poll_display_user_votes($user_poll_votes_array);
@@ -1432,23 +1414,23 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                 $poll_display.= poll_display_user_votes($user_poll_votes_array);
 
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
-                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
+                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
                 }
 
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
-                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollchangevote', $lang['changevote']). "</div>\n";
+                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollchangevote', gettext("Change vote")). "</div>\n";
                 }
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-                    $poll_display.= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
+                    $poll_display.= "<div class=\"poll_type_warning\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</div>\n";
                 }
 
             } else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
-                $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', $lang['vote']). "</div>";
+                $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-                    $poll_display.= "<div class=\"poll_type_warning\">{$lang['polltypewarning']}</div>\n";
+                    $poll_display.= "<div class=\"poll_type_warning\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</div>\n";
                 }
             }
         }
@@ -1466,8 +1448,6 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
 function light_poll_graph_display($options_array)
 {
-    $lang = load_language_file();
-
     static $bar_color = 1;
 
     $max_vote_count = 0;
@@ -1494,7 +1474,7 @@ function light_poll_graph_display($options_array)
         $poll_display.= "<div class=\"poll_bar poll_bar_horizontal poll_bar_$bar_color\">\n";
         $poll_display.= "  <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%; left: -{$poll_bar_width}%\"></div>\n";
         $poll_display.= "</div>\n";
-        $poll_display.= "<div class=\"poll_vote_result\">". word_filter_add_ob_tags($option['OPTION_NAME']). ": ". sizeof($option['VOTES_ARRAY']). " {$lang['votes']} (". number_format($vote_percent, 2). "%)</div>\n";
+        $poll_display.= "<div class=\"poll_vote_result\">". word_filter_add_ob_tags($option['OPTION_NAME']). ": ". sizeof($option['VOTES_ARRAY']). " ". gettext("Votes"). " (". number_format($vote_percent, 2). "%)</div>\n";
 
         $bar_color++;
 
@@ -1506,8 +1486,6 @@ function light_poll_graph_display($options_array)
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
 {
-    $lang = load_language_file();
-
     $perm_is_moderator = session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
@@ -1568,9 +1546,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
 
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
-        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);
+        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], gettext("here"));
 
-        light_html_display_warning_msg($lang['thisposthasbeenmoved'], $post_link);
+        light_html_display_warning_msg(gettext("<b>Thread Split:</b> This post has been moved %s"), $post_link);
         return;
     }
 
@@ -1593,18 +1571,18 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
-        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n";
-        $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"message_full_view\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n";
+        $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"message_full_view\">". gettext("View full message"). ".</a>";
     }
 
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
-    echo "{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true);
+    echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true);
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "<span class=\"user_friend\" title=\"{$lang['friend']}\">[F]</span>";
+        echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
     }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
-        echo "<span class=\"user_enemy\" title=\"{$lang['ignoreduser']}\">[E]</span>";
+        echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">[E]</span>";
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -1614,13 +1592,13 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
 
-        echo $lang['ignoredmsg'];
+        echo gettext("Ignored message");
 
     }else {
 
         if ($in_list) {
 
-            if (($from_user_permissions & USER_PERM_WORMED)) echo $lang['wormeduser'];
+            if (($from_user_permissions & USER_PERM_WORMED)) echo gettext("Wormed user");
             echo "<span class=\"message_time\">", format_time($message['CREATED']), "</span>\n";
         }
     }
@@ -1629,14 +1607,14 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "</div>";
     echo "<div class=\"message_to\">\n";
 
-    if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
+    if (($message['TLOGON'] != gettext("ALL")) && $message['TO_UID'] != 0) {
 
-        echo "{$lang['to']}: ", word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']), true);
+        echo "", gettext("To"), ": ", word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']), true);
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "<span class=\"user_friend\" title=\"{$lang['friend']}\">[F]</span>";
+            echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
         }else if (($message['TO_RELATIONSHIP'] & USER_IGNORED)) {
-            echo "<span class=\"user_enemy\" title=\"{$lang['ignoreduser']}\">[E]</span>";
+            echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">[E]</span>";
         }
 
         if (!$is_preview) {
@@ -1644,17 +1622,17 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
                 echo "<span class=\"message_read\">", format_time($message['VIEWED']), "</span>";
             } else {
-                echo "<span class=\"message_unread\" title=\"{$lang['unread']}\"></span>";
+                echo "<span class=\"message_unread\" title=\"", gettext("Unread"), "\"></span>";
             }
         }
 
     }else {
 
-        echo "{$lang['to']}: {$lang['all_caps']}";
+        echo "", gettext("To"), ": ", gettext("ALL"), "";
     }
 
     if ($in_list && $msg_count > 0) {
-        echo "<span class=\"message_count\">", sprintf($lang['messagecountdisplay'], $message['PID'], $msg_count), "</span>";
+        echo "<span class=\"message_count\">", sprintf(gettext("%s of %s"), $message['PID'], $msg_count), "</span>";
     }
 
     echo "<div class=\"clearer\"></div>\n";
@@ -1668,7 +1646,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if ($message['REPLY_TO_PID'] > 0) {
 
-            echo " {$lang['inreplyto']} ";
+            echo " ", gettext("In reply to"), " ";
 
             if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
 
@@ -1702,7 +1680,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
-                echo "<div class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED']), $edit_user), "</div>\n";
+                echo "<div class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</div>\n";
             }
         }
     }
@@ -1718,7 +1696,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             if (sizeof($attachments_array) > 0) {
 
                 echo "<div class=\"message_attachments\">\n";
-                echo "  <span>{$lang['attachments']}:</span>\n";
+                echo "  <span>", gettext("Attachments"), ":</span>\n";
                 echo "  <ul>\n";
 
                 foreach ($attachments_array as $attachment) {
@@ -1736,7 +1714,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             if (sizeof($image_attachments_array) > 0) {
 
                 echo "<div class=\"message_attachments\">\n";
-                echo "  <span>{$lang['imageattachments']}:</span>\n";
+                echo "  <span>", gettext("Image Attachments"), ":</span>\n";
                 echo "  <ul>\n";
 
                 foreach ($image_attachments_array as $attachment) {
@@ -1759,19 +1737,19 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if (!$closed && session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
-            $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">{$lang['reply']}</a>";
+            $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">". gettext("Reply"). "</a>";
         }
 
         if (($uid == $message['FROM_UID'] && session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session_check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
-            $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">". gettext("Delete"). "</a>";
         }
 
         if ((!(session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
             if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
-                $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"edit\">{$lang['edit']}</a>";
+                $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"edit\">". gettext("Edit"). "</a>";
             }
         }
 
@@ -1798,26 +1776,20 @@ function light_spoiler_enable($message)
 
 function light_message_display_deleted($tid,$pid)
 {
-    $lang = load_language_file();
-
     echo "<div class=\"message\">\n";
-    echo sprintf($lang['messagewasdeleted'], $tid, $pid);
+    echo sprintf(gettext("Message %s.%s was deleted"), $tid, $pid);
     echo "</div>\n";
 }
 
 function light_message_display_approval_req($tid, $pid)
 {
-    $lang = load_language_file();
-
     echo "<div class=\"message\">\n";
-    echo sprintf($lang['messageawaitingapprovalbymoderator'], $tid, $pid);
+    echo sprintf(gettext("Message %s.%s is awaiting approval by a moderator"), $tid, $pid);
     echo "</div>\n";
 }
 
 function light_messages_nav_strip($tid, $pid, $length, $ppp)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
     
     forum_check_webtag_available($webtag);
@@ -1883,10 +1855,10 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
     $max = $i;
 
-    $html = "<span>{$lang['showmessages']}:</span>";
+    $html = "<span>". gettext("Show messages"). ":</span>";
 
     if ($length <= $ppp) {
-        $html.= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">{$lang['all']}</a>\n";
+        $html.= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">". gettext("All"). "</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
@@ -1911,9 +1883,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
 function light_html_guest_error()
 {
-    $lang = load_language_file();
-
-    light_html_display_msg($lang['login'], $lang['guesterror'], 'llogout.php', 'get', array('login' => $lang['loginnow']));
+    light_html_display_msg(gettext("Login"), gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
 }
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
@@ -2025,9 +1995,7 @@ function light_form_input_password($name, $value = "", $width = 0, $maxlength = 
 
 function light_html_message_type_error()
 {
-    $lang = load_language_file();
-
-    light_html_display_error_msg($lang['cannotpostthisthreadtype']);
+    light_html_display_error_msg(gettext("You cannot post this thread type as there are no available folders that allow it."));
 }
 
 function light_attachments_make_link($attachment)
@@ -2049,39 +2017,37 @@ function light_attachments_make_link($attachment)
 
 function light_threads_draw_discussions_dropdown($thread_mode)
 {
-    $lang = load_language_file();
-
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
     if (user_is_guest()) {
 
-        $available_views = array(ALL_DISCUSSIONS    => $lang['alldiscussions'],
-                                 TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
-                                 TWO_DAYS_BACK      => $lang['2daysback'],
-                                 SEVEN_DAYS_BACK    => $lang['7daysback']);
+        $available_views = array(ALL_DISCUSSIONS    => gettext("All Discussions"),
+                                 TODAYS_DISCUSSIONS => gettext("Today's Discussions"),
+                                 TWO_DAYS_BACK      => gettext("2 Days Back"),
+                                 SEVEN_DAYS_BACK    => gettext("7 Days Back"));
 
     }else {
 
-        $available_views = array(ALL_DISCUSSIONS          => $lang['alldiscussions'],
-                                 UNREAD_DISCUSSIONS       => $lang['unreaddiscussions'],
-                                 UNREAD_DISCUSSIONS_TO_ME => $lang['unreadtome'],
-                                 TODAYS_DISCUSSIONS       => $lang['todaysdiscussions'],
-                                 UNREAD_TODAY             => $lang['unreadtoday'],
-                                 TWO_DAYS_BACK            => $lang['2daysback'],
-                                 SEVEN_DAYS_BACK          => $lang['7daysback'],
-                                 HIGH_INTEREST            => $lang['highinterest'],
-                                 UNREAD_HIGH_INTEREST     => $lang['unreadhighinterest'],
-                                 RECENTLY_SEEN            => $lang['iverecentlyseen'],
-                                 IGNORED_THREADS          => $lang['iveignored'],
-                                 BY_IGNORED_USERS         => $lang['byignoredusers'],
-                                 SUBSCRIBED_TO            => $lang['ivesubscribedto'],
-                                 STARTED_BY_FRIEND        => $lang['startedbyfriend'],
-                                 UNREAD_STARTED_BY_FRIEND => $lang['unreadstartedbyfriend'],
-                                 STARTED_BY_ME            => $lang['startedbyme'],
-                                 POLL_THREADS             => $lang['polls'],
-                                 STICKY_THREADS           => $lang['stickythreads'],
-                                 MOST_UNREAD_POSTS        => $lang['mostunreadposts'],
-                                 DELETED_THREADS          => $lang['deletedthreads']);
+        $available_views = array(ALL_DISCUSSIONS          => gettext("All Discussions"),
+                                 UNREAD_DISCUSSIONS       => gettext("Unread Discussions"),
+                                 UNREAD_DISCUSSIONS_TO_ME => gettext("Unread &quot;To: Me&quot;"),
+                                 TODAYS_DISCUSSIONS       => gettext("Today's Discussions"),
+                                 UNREAD_TODAY             => gettext("Unread today"),
+                                 TWO_DAYS_BACK            => gettext("2 Days Back"),
+                                 SEVEN_DAYS_BACK          => gettext("7 Days Back"),
+                                 HIGH_INTEREST            => gettext("High Interest"),
+                                 UNREAD_HIGH_INTEREST     => gettext("Unread High Interest"),
+                                 RECENTLY_SEEN            => gettext("I've recently seen"),
+                                 IGNORED_THREADS          => gettext("I've ignored"),
+                                 BY_IGNORED_USERS         => gettext("By ignored users"),
+                                 SUBSCRIBED_TO            => gettext("I've subscribed to"),
+                                 STARTED_BY_FRIEND        => gettext("Started by friend"),
+                                 UNREAD_STARTED_BY_FRIEND => gettext("Unread started by friend"),
+                                 STARTED_BY_ME            => gettext("Started by me"),
+                                 POLL_THREADS             => gettext("Polls"),
+                                 STICKY_THREADS           => gettext("Sticky Threads"),
+                                 MOST_UNREAD_POSTS        => gettext("Most unread posts"),
+                                 DELETED_THREADS          => gettext("Deleted Threads"));
 
         if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
@@ -2114,9 +2080,7 @@ function light_threads_draw_discussions_dropdown($thread_mode)
 
 function light_post_edit_refuse()
 {
-    $lang = load_language_file();
-
-    light_html_display_error_msg($lang['nopermissiontoedit']);
+    light_html_display_error_msg(gettext("You are not permitted to edit this message."));
 }
 
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
@@ -2171,14 +2135,12 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
 function light_html_display_error_array($error_list_array)
 {
-    $lang = load_language_file();
-
     $error_list_array = array_filter($error_list_array, 'is_string');
 
     if (sizeof($error_list_array) < 1) return;
 
     echo "<div class=\"message_box message_error\">\n";
-    echo "  <h3>{$lang['thefollowingerrorswereencountered']}</h3>\n";
+    echo "  <h3>", gettext("The following errors were encountered:"), "</h3>\n";
     echo "  <ul>\n";
     echo "    <li>", implode("</li>\n<li>", $error_list_array), "</li>\n";
     echo "  </ul>\n";
@@ -2214,30 +2176,24 @@ function light_html_display_error_msg($string_msg)
 
 function light_html_user_require_approval()
 {
-    $lang = load_language_file();
-
-    light_html_display_error_msg($lang['userapprovalrequiredbeforeaccess']);
+    light_html_display_error_msg(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
 }
 
 function light_pm_error_refuse()
 {
-    $lang = load_language_file();
-    light_html_display_error_msg($lang['cannotviewpm']);
+    light_html_display_error_msg(gettext("Cannot view PM. Message does not exist or it is inaccessible by you"));
 }
 
 function light_pm_post_edit_refuse()
 {
-    $lang = load_language_file();
-    light_html_display_error_msg($lang['cannoteditpm']);
+    light_html_display_error_msg(gettext("Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you"));
 }
 
 function light_pm_enabled()
 {
-    $lang = load_language_file();
-
     if (!forum_get_setting('show_pms', 'Y')) {
 
-        light_html_display_error_msg($lang['pmshavebeendisabled']);
+        light_html_display_error_msg(gettext("Personal Messages have been disabled by the forum owner."));
         light_html_draw_bottom();
         exit;
     }
@@ -2247,8 +2203,6 @@ function light_pm_enabled()
 
 function light_pm_display($pm_message_array, $folder, $preview = false)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
@@ -2259,7 +2213,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     if ($folder == PM_FOLDER_INBOX) {
 
-        echo "<span>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</span>\n";
+        echo "<span>", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</span>\n";
 
     }else {
 
@@ -2271,21 +2225,21 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
                 $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
             }
 
-            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
+            echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
 
         }elseif (is_array($pm_message_array['TLOGON'])) {
 
             $recipient_array = array_unique($pm_message_array['TLOGON']);
 
-            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
+            echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
 
         }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
-            echo "<span>{$lang['to']}: ", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</span>\n";
+            echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</span>\n";
 
         }else {
 
-            echo "<span>{$lang['to']}: <span class=\"norecipients\">{$lang['norecipients']}</span></span>\n";
+            echo "<span>", gettext("To"), ": <span class=\"norecipients\">", gettext("No Recipients"), "</span></span>\n";
         }
     }
 
@@ -2293,7 +2247,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
     echo "</div>\n";
     echo "<div class=\"message_subject\">\n";
 
-    echo "{$lang['subject']}: ";
+    echo "", gettext("Subject"), ": ";
 
     if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
@@ -2301,7 +2255,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     }else {
 
-        echo "<span class=\"no_subject\">{$lang['nosubject']}</span>\n";
+        echo "<span class=\"no_subject\">", gettext("No Subject"), "</span>\n";
     }
 
     echo "<div class=\"clearer\"></div>\n";
@@ -2325,7 +2279,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
                 echo "<div class=\"message_attachments\">\n";
-                echo "  <span>{$lang['attachments']}:</span>\n";
+                echo "  <span>", gettext("Attachments"), ":</span>\n";
                 echo "  <ul>\n";
 
                 foreach ($attachments_array as $attachment) {
@@ -2343,7 +2297,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
             if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
                 echo "<div class=\"message_attachments\">\n";
-                echo "  <span>{$lang['imageattachments']}:</span>\n";
+                echo "  <span>", gettext("Image Attachments"), ":</span>\n";
                 echo "  <ul>\n";
 
                 foreach ($image_attachments_array as $attachment) {
@@ -2366,25 +2320,25 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         if ($folder == PM_FOLDER_INBOX) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" class=\"reply\">{$lang['reply']}</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">{$lang['forward']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" class=\"reply\">". gettext("Reply"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" class=\"edit\">{$lang['edit']}</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">{$lang['forward']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" class=\"edit\">{$lang['edit']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         }else {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">{$lang['forward']}</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
         }
 
         if (sizeof($links_array) > 0) {
@@ -2406,9 +2360,6 @@ function light_pm_check_messages()
     // Check if we've already displayed the notification once.
     if ($light_pm_check_messages_done === true) return;
 
-    // Load the Language file
-    $lang = load_language_file();
-
     // Get the webtag
     $webtag = get_webtag();
 
@@ -2425,35 +2376,55 @@ function light_pm_check_messages()
     // Format the message sent to the client.
     if ($pm_new_count == 1 && $pm_outbox_count == 0) {
 
-        $pm_notification = $lang['youhave1newpm'];
+        $pm_notification = gettext("You have 1 new message. Would you like to go to your Inbox now?");
 
     }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
 
-        $pm_notification = $lang['youhave1newpmand1waiting'];
+        $pm_notification = gettext("You have 1 new message.
+
+You also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
+
+Would you like to go to your Inbox now?");
 
     }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
 
-        $pm_notification = $lang['youhave1pmwaiting'];
+        $pm_notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
+
+Would you like to go to your Inbox now?");
 
     }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
 
-        $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+        $pm_notification = sprintf(gettext("You have %d new messages. Would you like to go to your Inbox now?"), $pm_new_count);
 
     }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
 
-        $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
+        $pm_notification = sprintf(gettext("You have %d new messages.
+
+You also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
+
+Would you like to go to your Inbox now?"), $pm_new_count);
 
     }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
+        $pm_notification = sprintf(gettext("You have %d new messages.
+
+You also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.
+
+Would you like to go to your Inbox now?"), $pm_new_count, $pm_outbox_count);
 
     }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
+        $pm_notification = sprintf(gettext("You have 1 new message.
+
+You also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.
+
+Would you like to go to your Inbox now?"), $pm_outbox_count);
 
     }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+        $pm_notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.
+
+Would you like to go to your Inbox now?"), $pm_outbox_count);
     }
 
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {

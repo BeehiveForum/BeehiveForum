@@ -1043,8 +1043,6 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     $webtag = get_webtag();
 
-    $lang = load_language_file();
-
     if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session_get_value('SHOW_THUMBS')) > 0) || user_is_guest())) {
 
         $thumbnail_size = array(1 => 50, 2 => 100, 3 => 150);
@@ -1079,7 +1077,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
         if (mb_strlen($attachment['filename']) > 16 && $limit_filename) {
 
-            $title_array[] = "{$lang['filename']}: {$attachment['filename']}";
+            $title_array[] = gettext("Filename"). ": {$attachment['filename']}";
 
             $attachment['filename'] = mb_substr($attachment['filename'], 0, 16);
             $attachment['filename'].= "&hellip;";
@@ -1087,23 +1085,23 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
         if (isset($attachment['filesize']) && is_numeric($attachment['filesize'])) {
 
-            $title_array[] = "{$lang['size']}: ". format_file_size($attachment['filesize']);
+            $title_array[] = gettext("Size"). ": ". format_file_size($attachment['filesize']);
         }
 
         if ($attachment['downloads'] == 1) {
 
-            $title_array[] = $lang['downloadedonetime'];
+            $title_array[] = gettext("Downloaded: 1 time");
 
         }else {
 
-            $title_array[] = sprintf($lang['downloadedxtimes'], $attachment['downloads']);
+            $title_array[] = sprintf(gettext("Downloaded: %d times"), $attachment['downloads']);
         }
 
         if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
 
             if ((@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}"))) {
 
-                $title_array[] = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
+                $title_array[] = gettext("Dimensions"). ": {$image_info[0]}x{$image_info[1]}px";
 
                 $thumbnail_width  = $image_info[0];
                 $thumbnail_height = $image_info[1];
@@ -1130,8 +1128,8 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
         $attachment_link = "<img src=\"";
         $attachment_link.= html_style_image('attach.png');
         $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
-        $attachment_link.= "alt=\"{$lang['attachment']}\" ";
-        $attachment_link.= "title=\"{$lang['attachment']}\" />";
+        $attachment_link.= "alt=\"". gettext("Attachment"). "\" ";
+        $attachment_link.= "title=\"". gettext("Attachment"). "\" />";
         $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
         $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>\n";
 

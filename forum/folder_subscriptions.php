@@ -110,8 +110,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -141,7 +141,7 @@ if (isset($_POST['save'])) {
 
                 if (!user_set_folder_interest($folder, 0)) {
 
-                    $error_msg_array[] = sprintf("{$lang['couldnotupdateinterestonfolder']}", $folder_title);
+                    $error_msg_array[] = sprintf("", gettext("Could not update interest on folder '%s'"), "", $folder_title);
 
                     $valid = false;
                 }
@@ -207,9 +207,9 @@ if (isset($_POST['clear'])) {
 $uid = session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
-$header_text_array = array(FOLDER_IGNORED => $lang['ignoredfolders'], FOLDER_SUBSCRIBED => $lang['subscribedfolders']);
+$header_text_array = array(FOLDER_IGNORED => gettext("Ignored Folders"), FOLDER_SUBSCRIBED => gettext("Subscribed Folders"));
 
-$interest_level_array = array(FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRIBED => $lang['subscribed']);
+$interest_level_array = array(FOLDER_IGNORED => gettext("Ignored"), FOLDER_SUBSCRIBED => gettext("Subscribed"));
 
 // Check if we're searching or displaying the existing subscriptions.
 if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
@@ -219,9 +219,9 @@ if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
 }
 
 // Start output here
-html_draw_top("title={$lang['mycontrols']} - {$lang['foldersubscriptions']} - {$header_text_array[$view_filter]}", 'edit_subscriptions.js', 'class=window_title');
+html_draw_top("title=", gettext("My Controls"), " - ", gettext("Folder Subscriptions"), " - {$header_text_array[$view_filter]}", 'edit_subscriptions.js', 'class=window_title');
 
-echo "<h1>{$lang['foldersubscriptions']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$header_text_array[$view_filter]}</h1>\n";
+echo "<h1>", gettext("Folder Subscriptions"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$header_text_array[$view_filter]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -229,21 +229,21 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['folderinterestsupdatedsuccessfully'], '600', 'left');
+    html_display_success_msg(gettext("Folder interests updated successfully"), '600', 'left');
 
 }else if (sizeof($folder_subscriptions['folder_array']) < 1) {
 
     if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
 
-        html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
+        html_display_warning_msg(gettext("Search Returned No Results"), '600', 'left');
 
     }else if ($view_filter == FOLDER_IGNORED) {
 
-        html_display_warning_msg($lang['nofoldersignored'], '600', 'left');
+        html_display_warning_msg(gettext("You are not ignoring any folders."), '600', 'left');
 
     }else {
 
-        html_display_warning_msg($lang['nofoldersubscriptions'], '600', 'left');
+        html_display_warning_msg(gettext("You are not subscribed to any folders."), '600', 'left');
     }
 }
 
@@ -265,8 +265,8 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all"), "</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['foldertitle']}</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">", gettext("Folder title"), "</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">", gettext("Current Interest"), "</td>\n";
     echo "                </tr>\n";
 
     foreach ($folder_subscriptions['folder_array'] as $folder) {
@@ -278,7 +278,7 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
         if (isset($interest_level_array[$folder['INTEREST']])) {
             echo "                  <td align=\"center\">{$interest_level_array[$folder['INTEREST']]}</td>\n";
         }else {
-            echo "                  <td align=\"center\">{$lang['normal']}</td>\n";
+            echo "                  <td align=\"center\">", gettext("Normal"), "</td>\n";
         }
 
         echo "                </tr>\n";
@@ -288,8 +288,8 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['foldertitle']}</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">", gettext("Folder title"), "</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">", gettext("Current Interest"), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -308,7 +308,7 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
 echo "      <td class=\"postbody\" align=\"center\">", page_links("folder_subscriptions.php?webtag=$webtag&folder_search=$folder_search&search_page=$search_page&view_filter=$view_filter", $start_main, $folder_subscriptions['folder_count'], 20, "main_page"), "</td>\n";
-echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+echo "      <td align=\"right\" width=\"33%\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_filter', array(FOLDER_IGNORED => gettext("Ignored"), FOLDER_SUBSCRIBED => gettext("Subscribed")), $view_filter), "&nbsp;", form_submit("view_submit", gettext("Go!")), "</td>\n";
 echo "    </tr>\n";
 
 if (sizeof($folder_subscriptions['folder_array']) > 0) {
@@ -317,7 +317,7 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"3\">", form_submit("save", $lang['resetselected']), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"3\">", form_submit("save", gettext("Reset Selected")), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -337,7 +337,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -346,7 +346,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['foldertitle']}: ", form_input_text("folder_search", isset($folder_search) ? htmlentities_array($folder_search) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
+echo "                          ", gettext("Folder title"), ": ", form_input_text("folder_search", isset($folder_search) ? htmlentities_array($folder_search) : "", 30, 64), " ", form_submit('search', gettext("Search")), "&nbsp;", form_submit('clear', gettext("Clear")), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

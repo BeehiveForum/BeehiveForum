@@ -81,8 +81,8 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 $user_sess = session_check();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // User's UID
 $uid = session_get_value('UID');
@@ -131,7 +131,7 @@ if (!user_is_guest() && isset($_GET['fontsize'])) {
     } else {
 
         html_draw_top();
-        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
+        html_error_msg(gettext("Some or all of your user account details could not be updated. Please try again later."), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => "$tid.$pid"));
         html_draw_bottom();
     }
 

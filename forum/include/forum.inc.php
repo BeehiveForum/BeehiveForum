@@ -212,13 +212,11 @@ function forum_check_access_level()
 
 function forum_closed_message()
 {
-    $lang = load_language_file();
-
-    html_draw_top("title={$lang['closed']}");
+    html_draw_top(sprintf("title=%s", gettext("Closed")));
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    echo "<h1>{$lang['closed']}</h1>\n";
+    echo "<h1>", gettext("Closed"), "</h1>\n";
 
     if (($closed_message = forum_get_setting('closed_message', false))) {
 
@@ -226,12 +224,12 @@ function forum_closed_message()
 
     }else {
 
-        html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], htmlentities_array($forum_name)), '600', 'center');
+        html_display_error_msg(sprintf(gettext("%s is currently closed"), htmlentities_array($forum_name)), '600', 'center');
     }
 
     if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        html_display_warning_msg($lang['adminforumclosedtip'], '600', 'center');
+        html_display_warning_msg(gettext("If you want to change some settings on your forum click the Admin link in the navigation bar above."), '600', 'center');
     }
 
     html_draw_bottom();
@@ -241,8 +239,6 @@ function forum_closed_message()
 function forum_restricted_message()
 {
     $webtag = get_webtag();
-
-    $lang = load_language_file();
 
     $final_uri = basename(get_request_uri());
 
@@ -260,7 +256,7 @@ function forum_restricted_message()
 
     if (($restricted_message = forum_get_setting('restricted_message', false))) {
 
-        html_draw_top("title={$lang['restricted']}");
+        html_draw_top(sprintf("title=%s", gettext("Restricted")));
         html_display_error_msg(fix_html($restricted_message), '600', 'center');
         html_draw_bottom();
 
@@ -270,15 +266,15 @@ function forum_restricted_message()
 
             $pm_write_link = "pm_write.php?webtag=$webtag&amp;uid=$forum_owner_uid";
 
-            $forum_owner_pm_link = sprintf($forum_owner_link, rawurlencode($pm_write_link), $forum_owner_link_target, $lang['forumowner']);
+            $forum_owner_pm_link = sprintf($forum_owner_link, rawurlencode($pm_write_link), $forum_owner_link_target, gettext("forum owner"));
 
-            $apply_for_access_text = sprintf($lang['toapplyforaccessplease'], $forum_owner_pm_link);
+            $apply_for_access_text = sprintf(gettext("To apply for access please contact the %s."), $forum_owner_pm_link);
 
-            html_draw_top("title={$lang['restricted']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), $apply_for_access_text));
+            html_draw_top("title=", gettext("Restricted"), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
+            html_error_msg(sprintf(gettext("You do not have access to %s. %s"), htmlentities_array($forum_name), $apply_for_access_text));
 
             if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-                html_display_warning_msg($lang['adminforumclosedtip'], '600', 'left');
+                html_display_warning_msg(gettext("If you want to change some settings on your forum click the Admin link in the navigation bar above."), '600', 'left');
             }
 
             html_draw_bottom();
@@ -286,8 +282,8 @@ function forum_restricted_message()
 
         }else {
 
-            html_draw_top("title={$lang['restricted']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-            html_error_msg(sprintf($lang['youdonothaveaccesstoforum'], htmlentities_array($forum_name), ''));
+            html_draw_top("title=", gettext("Restricted"), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
+            html_error_msg(sprintf(gettext("You do not have access to %s. %s"), htmlentities_array($forum_name), ''));
             html_draw_bottom();
         }
     }
@@ -328,17 +324,14 @@ function forum_check_password($forum_fid)
     // Check the stored cookie against the known hash of the forum password.
     if (html_get_cookie("sess_hash_{$webtag}", 'is_md5') == $forum_passhash) return true;
 
-    // Load language file.
-    $lang = load_language_file();
+    html_draw_top(sprintf("title=%s", gettext("Password Protected Forum")));
 
-    html_draw_top("title={$lang['passwdprotectedforum']}");
-
-    echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
+    echo "<h1>", gettext("Password Protected Forum"), "</h1>\n";
 
     if (html_get_cookie("sess_hash_{$webtag}", 'strlen')) {
 
         html_set_cookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
-        html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');
+        html_display_error_msg(gettext("The username or password you supplied is not valid."), '550', 'center');
     }
 
     if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
@@ -347,7 +340,7 @@ function forum_check_password($forum_fid)
 
     }else {
 
-        html_display_warning_msg($lang['passwdprotectedwarning'], '400', 'center');
+        html_display_warning_msg(gettext("This forum is password protected. To gain access enter the password below."), '400', 'center');
     }
 
     echo "<br />\n";
@@ -363,12 +356,12 @@ function forum_check_password($forum_fid)
     echo "              <td class=\"posthead\" align=\"center\">\n";
     echo "                <table class=\"posthead\" width=\"100%\">\n";
     echo "                  <tr>\n";
-    echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
+    echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Enter Password"), "</td>\n";
     echo "                  </tr>\n";
     echo "                </table>\n";
     echo "                <table class=\"posthead\" width=\"90%\">\n";
     echo "                  <tr>\n";
-    echo "                    <td align=\"left\">{$lang['passwd']}:</td>\n";
+    echo "                    <td align=\"left\">", gettext("Password"), ":</td>\n";
     echo "                    <td align=\"left\">", form_input_password('forum_password', '', 40, false, ''), "</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
@@ -384,12 +377,12 @@ function forum_check_password($forum_fid)
     echo "        <td align=\"left\">&nbsp;</td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit("logon", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "        <td align=\"center\">", form_submit("logon", gettext("Logon")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
 
     if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-        html_display_warning_msg($lang['adminforumclosedtip'], '400', 'center');
+        html_display_warning_msg(gettext("If you want to change some settings on your forum click the Admin link in the navigation bar above."), '400', 'center');
     }
 
     echo "  </form>\n";
@@ -903,9 +896,6 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
 function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str = '')
 {
-    // Load the language
-    $lang = load_language_file();
-
     if (!is_numeric($owner_uid)) return false;
     if (!is_numeric($access)) return false;
 
@@ -926,14 +916,14 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     if (db_num_rows($result) > 0) {
 
-        $error_str = $lang['selectedwebtagisalreadyinuse'];
+        $error_str = gettext("The selected webtag is already in use. Please choose another.");
         return false;
     }
 
     // Check for any conflicting tables.
     if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false))) {
 
-        $error_str = $lang['selecteddatabasecontainsconflictingtables'];
+        $error_str = gettext("The selected database contains conflicting tables. Conflicting table names are:");
         $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
 
         return false;
@@ -1845,8 +1835,6 @@ function forum_get_permissions($fid, $offset = 0)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($offset)) $offset = 0;
 
-    $lang = load_language_file();
-
     $perms_user_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
@@ -1873,7 +1861,7 @@ function forum_get_permissions($fid, $offset = 0)
                 }
             }
 
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
             if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
             $perms_user_array[] = $user_data;

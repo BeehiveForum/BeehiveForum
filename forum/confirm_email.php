@@ -66,8 +66,8 @@ $forum_settings = forum_get_settings();
 // Fetch Global Forum Settings
 $forum_global_settings = forum_get_global_settings();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check we have a webtag
 $webtag = get_webtag();
@@ -97,22 +97,22 @@ if (isset($_GET['resend']) && isset($uid)) {
 
     if (email_send_user_confirmation($uid)) {
 
-        html_draw_top("title={$lang['emailconfirmation']}", 'class=window_title');
-        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationsent']);
+        html_draw_top("title=", gettext("Email confirmation"), "", 'class=window_title');
+        html_display_msg(gettext("Email confirmation"), gettext("Confirmation email has been resent."));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['emailconfirmationfailedtosend']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Confirmation email failed to send. Please contact the forum owner to rectify this."));
     html_draw_bottom();
     exit;
 }
 
 if (!isset($uid) || !isset($key)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['requiredinformationnotfound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Required information not found"));
     html_draw_bottom();
     exit;
 }
@@ -123,14 +123,14 @@ if (($user = user_get_by_passhash($uid, $key))) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 
-        html_draw_top("title={$lang['emailconfirmation']}", 'class=window_title');
-        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationcomplete'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
+        html_draw_top("title=", gettext("Email confirmation"), "", 'class=window_title');
+        html_display_msg(gettext("Email confirmation"), gettext("Thank you for confirming your email address. You may now login and start posting immediately."), 'index.php', 'post', array('submit' => gettext("Continue")), false, $frame_top_target, 'center');
         html_draw_bottom();
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationfailed'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_display_msg(gettext("Email confirmation"), gettext("Email confirmation has failed, please try again later. If you encounter this error multiple times please contact the forum owner or a moderator for assistance."), 'index.php', 'post', array('submit' => gettext("Continue")), false, $frame_top_target, 'center');
         html_draw_bottom();
     }
 
@@ -138,8 +138,8 @@ if (($user = user_get_by_passhash($uid, $key))) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['requiredinformationnotfound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Required information not found"));
     html_draw_bottom();
     exit;
 }

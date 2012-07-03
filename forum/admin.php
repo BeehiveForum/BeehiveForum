@@ -94,13 +94,13 @@ if (session_user_banned()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if ((!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
 
     html_draw_top();
-    html_error_msg($lang['accessdeniedexp']);
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }

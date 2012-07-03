@@ -93,9 +93,6 @@ function stats_get_html()
     // Check HTTP cache headers
     cache_check_last_modified(time() + 300);
 
-    // Load Language file
-    $lang = load_language_file();
-
     // Get webtag
     $webtag = get_webtag();
 
@@ -138,31 +135,31 @@ function stats_get_html()
         if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
             if ($user_stats['GUESTS'] <> 1) {
-                $active_user_list_array[] = sprintf($lang['numactiveguests'], $user_stats['GUESTS']);
+                $active_user_list_array[] = sprintf(gettext("<b>%s</b> guests"), $user_stats['GUESTS']);
             }else {
-                $active_user_list_array[] = $lang['oneactiveguest'];
+                $active_user_list_array[] = gettext("<b>1</b> guest");
             }
         }
 
         if ($user_stats['USER_COUNT'] <> 1) {
-            $active_user_list_array[] = sprintf($lang['numactivemembers'], $user_stats['USER_COUNT']);
+            $active_user_list_array[] = sprintf(gettext("<b>%s</b> members"), $user_stats['USER_COUNT']);
         }else {
-            $active_user_list_array[] = $lang['oneactivemember'];
+            $active_user_list_array[] = gettext("<b>1</b> member");
         }
 
         if ($user_stats['ANON_USERS'] <> 1) {
-            $active_user_list_array[] = sprintf($lang['numactiveanonymousmembers'], $user_stats['ANON_USERS']);
+            $active_user_list_array[] = sprintf(gettext("<b>%s</b> anonymous members"), $user_stats['ANON_USERS']);
         }else {
-            $active_user_list_array[] = $lang['oneactiveanonymousmember'];
+            $active_user_list_array[] = gettext("<b>1</b> anonymous member");
         }
 
         $active_user_list = implode(", ", $active_user_list_array);
 
         $active_user_time = format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false);
 
-        $html.= sprintf($lang['usersactiveinthepasttimeperiod'], $active_user_list, $active_user_time);
+        $html.= sprintf(gettext("%s active in the past %s."), $active_user_list, $active_user_time);
 
-        $html.= " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"". html_get_frame_name('main'). "\">{$lang['viewcompletelist']}</a> ]\n";
+        $html.= " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"". html_get_frame_name('main'). "\">". gettext("View Complete List"). "</a> ]\n";
         $html.= "    </td>\n";
         $html.= "    <td width=\"35\">&nbsp;</td>\n";
         $html.= "  </tr>\n";
@@ -196,18 +193,18 @@ function stats_get_html()
 
                         if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
 
-                            $active_user_title = $lang['youinvisible'];
+                            $active_user_title = gettext("You (Invisible)");
                             $active_user_class = 'user_stats_curuser';
 
                         }else {
 
-                            $active_user_title = $lang['younormal'];
+                            $active_user_title = gettext("You");
                             $active_user_class = 'user_stats_curuser';
                         }
 
                     }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
 
-                        $active_user_title = $lang['friend'];
+                        $active_user_title = gettext("Friend");
                         $active_user_class = 'user_stats_friend';
 
                     }else {
@@ -269,18 +266,18 @@ function stats_get_html()
     $html.= "    <td>";
 
     if ($thread_count <> 1) {
-        $num_threads_display = sprintf($lang['numthreadscreated'], number_format($thread_count, 0, ".", ","));
+        $num_threads_display = sprintf(gettext("<b>%s</b> threads"), number_format($thread_count, 0, ".", ","));
     }else {
-        $num_threads_display = $lang['onethreadcreated'];
+        $num_threads_display = gettext("<b>1</b> thread");
     }
 
     if ($post_count <> 1) {
-        $num_posts_display = sprintf($lang['numpostscreated'], number_format($post_count, 0, ".", ","));
+        $num_posts_display = sprintf(gettext("<b>%s</b> posts"), number_format($post_count, 0, ".", ","));
     }else {
-        $num_posts_display = $lang['onepostcreated'];
+        $num_posts_display = gettext("<b>1</b> post");
     }
 
-    $html.= sprintf($lang['ourmembershavemadeatotalofnumthreadsandnumposts'], $num_threads_display, $num_posts_display). '<br />';
+    $html.= sprintf(gettext("Our members have made a total of %s and %s."), $num_threads_display, $num_posts_display). '<br />';
     $html.= "    <td width=\"35\">&nbsp;</td>\n";
     $html.= "  </tr>\n";
     $html.= "</table>\n";
@@ -295,9 +292,9 @@ function stats_get_html()
         $longest_thread_title = word_filter_add_ob_tags($longest_thread['TITLE'], true);
 
         $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
-        $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], $longest_thread['LENGTH']) : $lang['onepostcreated'];
+        $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf(gettext("<b>%s</b> posts"), $longest_thread['LENGTH']) : gettext("<b>1</b> post");
 
-        $html.= sprintf($lang['longestthreadisthreadnamewithnumposts'], $longest_thread_link, $longest_thread_post_count);
+        $html.= sprintf(gettext("Longest thread is <b>%s</b> with %s."), $longest_thread_link, $longest_thread_post_count);
 
         $html.= "    </td>\n";
         $html.= "    <td width=\"35\">&nbsp;</td>\n";
@@ -320,11 +317,11 @@ function stats_get_html()
     if ($recent_post_count <> 1) {
 
         $recent_post_count = number_format($recent_post_count, 0, ",", ",");
-        $html.= sprintf($lang['therehavebeenxpostsmadeinthelastsixtyminutes'], $recent_post_count);
+        $html.= sprintf(gettext("There have been <b>%s</b> posts made in the last 60 minutes."), $recent_post_count);
 
     }else {
 
-        $html.= $lang['therehasbeenonepostmadeinthelastsixtyminutes'];
+        $html.= gettext("There has been <b>1</b> post made in the last 60 minutes.");
     }
 
     $html.= "    </td>\n";
@@ -343,7 +340,7 @@ function stats_get_html()
 
             $post_stats_record_date = format_time($most_posts['MOST_POSTS_DATE']);
 
-            $html.= sprintf($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
+            $html.= sprintf(gettext("Most posts ever made in a single 60 minute period is <b>%s</b> on %s."), $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
 
             $html.= "    </td>\n";
             $html.= "    <td width=\"35\">&nbsp;</td>\n";
@@ -371,17 +368,17 @@ function stats_get_html()
                 $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), true);
                 $user_newest_profile_link = sprintf($new_user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
 
-                $html.= sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $user_newest_profile_link);
+                $html.= sprintf(gettext("We have <b>%s</b> registered members and the newest member is <b>%s</b>."), $user_count, $user_newest_profile_link);
 
             }else {
 
-                $html.= sprintf($lang['wehavenumregisteredmember'], $user_count);
+                $html.= sprintf(gettext("We have %s registered members."), $user_count);
 
             }
 
         }else {
 
-            $html.= $lang['wehaveoneregisteredmember'];
+            $html.= gettext("We have one registered member.");
         }
 
         $html.= "    </td>\n";
@@ -402,7 +399,7 @@ function stats_get_html()
             $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
             $most_users_date = format_time($most_users['MOST_USERS_DATE']);
 
-            $html.= sprintf($lang['mostuserseveronlinewasnumondate'], $most_users_count, $most_users_date);
+            $html.= sprintf(gettext("Most users ever online was <b>%s</b> on %s."), $most_users_count, $most_users_date);
 
             $html.= "    </td>\n";
             $html.= "    <td width=\"35\">&nbsp;</td>\n";
@@ -508,8 +505,6 @@ function stats_get_active_user_list()
 
     if (!$db_stats_get_active_user_list = db_connect()) return $stats;
 
-    $lang = load_language_file();
-
     if (!$table_data = get_table_prefix()) return $stats;
 
     $forum_fid = $table_data['FID'];
@@ -589,7 +584,7 @@ function stats_get_active_user_list()
             $user_data['AVATAR_AID'] = null;
         }
 
-        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
         if (($user_data['USER_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) > 0) {
@@ -784,8 +779,6 @@ function stats_get_newest_user()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
-
     $uid = session_get_value('UID');
 
     $sql = "SELECT MAX(UID) FROM USER";
@@ -811,7 +804,7 @@ function stats_get_newest_user()
             }
         }
 
-        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
         return $user_data;
@@ -823,8 +816,6 @@ function stats_get_newest_user()
 function stats_get_post_tallys($start_timestamp, $end_timestamp)
 {
     if (!$db_stats_get_post_tallys = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($start_timestamp)) return false;
     if (!is_numeric($end_timestamp)) return false;
@@ -870,7 +861,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
                 }
             }
 
-            if (!isset($user_stats['LOGON'])) $user_stats['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_stats['LOGON'])) $user_stats['LOGON'] = gettext("Unknown user");
             if (!isset($user_stats['NICKNAME'])) $user_stats['NICKNAME'] = "";
 
             $post_tallys['user_stats'][] = $user_stats;

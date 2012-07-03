@@ -43,9 +43,7 @@ function forum_links_get_links()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
-
-    $forum_links_top_link = forum_get_setting('forum_links_top_link', false, $lang['forumlinks']);
+    $forum_links_top_link = forum_get_setting('forum_links_top_link', false, gettext("Forum Links"));
 
     $sql = "SELECT LID, TITLE, URI FROM `{$table_data['PREFIX']}FORUM_LINKS` ";
     $sql.= "ORDER BY POS ASC";

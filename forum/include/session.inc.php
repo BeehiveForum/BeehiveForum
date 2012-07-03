@@ -103,7 +103,7 @@ function session_get($sess_hash)
         $user_sess['PERMS'] = $user_perms;
     }
 
-    if (isset($user_prefs['STYLE'])) {
+    if ($user_sess['UID'] > 0 && isset($user_prefs['STYLE'])) {
         html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
     }
     
@@ -248,7 +248,9 @@ function session_check()
                 
                 if (!$ipaddress = get_ip_address()) return false;
                 
-                $sess_hash = md5($ipaddress);
+                if (!$user_agent = session_get_user_agent()) return false;
+                
+                $sess_hash = md5($ipaddress. $user_agent);
 
                 if (!($user_sess = session_get($sess_hash))) {
             
@@ -278,17 +280,17 @@ function session_check()
  * session hash on success of false on failure.
  *
  * @param integer $uid
- * @param bool $update_visitor_log
- * @param bool $skip_cookie
  * @return mixed
  */
-function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
+function session_init($uid)
 {
     if (!$db_session_init = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
+    
+    if (!$user_agent = session_get_user_agent()) return false;
 
     if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
@@ -296,7 +298,7 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         $forum_fid = 0;
     }
 
-    $sess_hash = ($uid == 0) ? md5($ipaddress) : md5(uniqid(mt_rand()));
+    $sess_hash = ($uid == 0) ? md5($ipaddress. $user_agent) : md5(uniqid(mt_rand()));
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -318,14 +320,11 @@ function session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     if (!db_query($sql, $db_session_init)) return false;
 
-    if ($update_visitor_log === true) {
-        
-        session_update_visitor_log($uid, $forum_fid);
+    session_update_visitor_log($uid, $forum_fid);
 
-        forum_update_last_visit($uid);
-    }
+    forum_update_last_visit($uid);
 
-    if ($skip_cookie === false) {
+    if ($uid > 0) {
         html_set_cookie("sess_hash", $sess_hash);
     }
 

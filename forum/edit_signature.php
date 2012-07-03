@@ -111,8 +111,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -139,8 +139,8 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['nouserspecified']);
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("No user specified."));
             html_draw_bottom();
             exit;
         }
@@ -154,8 +154,8 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['nouserspecified']);
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("No user specified."));
             html_draw_bottom();
             exit;
         }
@@ -178,8 +178,8 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session_get_value('UID'))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -214,7 +214,7 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if (attachments_embed_check($t_sig_content) && $t_t_post_html == "Y") {
 
-        $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
+        $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
         $valid = false;
     }
 }
@@ -229,19 +229,19 @@ if (isset($_POST['save'])) {
             if ($admin_edit === true) {
 
                 $redirect_uri = "admin_user.php?webtag=$webtag&signature_updated=true&uid=$uid";
-                header_redirect($redirect_uri, $lang['signatureupdated']);
+                header_redirect($redirect_uri, gettext("Signature Updated"));
 
             }else {
 
                 if ($t_sig_global == 'Y' && forums_get_available_count() > 1) {
 
                     $redirect_uri = "edit_signature.php?webtag=$webtag&updated_global=true";
-                    header_redirect($redirect_uri, $lang['signatureupdatedforallforums']);
+                    header_redirect($redirect_uri, gettext("Signature Updated For All Forums"));
 
                 }else {
 
                     $redirect_uri = "edit_signature.php?webtag=$webtag&updated=true";
-                    header_redirect($redirect_uri, $lang['signatureupdated']);
+                    header_redirect($redirect_uri, gettext("Signature Updated"));
                 }
             }
         }
@@ -263,15 +263,15 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageuser']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage User"), " - ". format_user_name($user['LOGON'], $user['NICKNAME']), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageuser']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} - {$lang['editsignature']}", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
+    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Signature"), "", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
-    echo "<h1>{$lang['editsignature']}</h1>\n";
+    echo "<h1>", gettext("Edit Signature"), "</h1>\n";
 }
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -280,11 +280,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['signatureupdated'], '600', 'left');
+    html_display_success_msg(gettext("Signature Updated"), '600', 'left');
 
 }else if (isset($_GET['updated_global'])) {
 
-    html_display_success_msg($lang['signatureupdatedforallforums'], '600', 'left');
+    html_display_success_msg(gettext("Signature Updated For All Forums"), '600', 'left');
 }
 
 if (isset($t_t_post_html)) {
@@ -347,8 +347,8 @@ if (isset($_POST['preview'])) {
 
     if ($valid) {
 
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
+        $preview_message['TLOGON'] = gettext("ALL");
+        $preview_message['TNICK'] = gettext("ALL");
 
         $preview_tuser = user_get($uid);
 
@@ -356,7 +356,7 @@ if (isset($_POST['preview'])) {
         $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
         $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-        $preview_message['CONTENT'] = $lang['signaturepreview'];
+        $preview_message['CONTENT'] = gettext("Signature Preview");
 
         if ($t_t_post_html == "Y") {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
@@ -368,7 +368,7 @@ if (isset($_POST['preview'])) {
 
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">", gettext("Preview"), "</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -393,7 +393,7 @@ if (isset($_POST['preview'])) {
 
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -441,13 +441,13 @@ echo "    </tr>\n";
 if ($admin_edit === true) {
 
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("preview", gettext("Preview")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
 
 }else {
 
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("preview", gettext("Preview")), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -461,7 +461,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Options"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -472,7 +472,7 @@ if ((!$tools->get_tinymce())) {
 
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_post_html", "Y", $lang['signaturecontainshtmlcode'], $t_post_html), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_post_html", "Y", gettext("Signature contains HTML code"), $t_post_html), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -484,7 +484,7 @@ if ((!$tools->get_tinymce())) {
 if ($show_set_all) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", gettext("Save signature for use on all forums"), (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
     echo "                      </tr>\n";
 
 }else {

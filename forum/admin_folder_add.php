@@ -101,8 +101,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
@@ -114,8 +114,8 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -133,7 +133,7 @@ if (isset($_POST['add'])) {
     if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
         $t_name = trim(stripslashes_array($_POST['t_name']));
     }else {
-        $error_msg_array[] = $lang['mustenterfoldername'];
+        $error_msg_array[] = gettext("You must enter a folder name");
         $valid = false;
     }
 
@@ -183,20 +183,20 @@ if (isset($_POST['add'])) {
 
         }else {
 
-            $error_msg_array = $lang['failedtocreatenewfolder'];
+            $error_msg_array = gettext("Failed to create new folder");
             $valid = false;
         }
     }
 }
 
 // Make the arrays for the allow post types dropdown
-$allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadsonly'],
-                            FOLDER_ALLOW_POLL_THREAD   => $lang['pollthreadsonly'],
-                            FOLDER_ALLOW_ALL_THREAD    => $lang['both']);
+$allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => gettext("Normal threads only"),
+                            FOLDER_ALLOW_POLL_THREAD   => gettext("Poll threads only"),
+                            FOLDER_ALLOW_ALL_THREAD    => gettext("Both thread types"));
 
-html_draw_top("title={$lang['admin']} - {$lang['managefolders']} - {$lang['addnewfolder']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Folders"), " - ", gettext("Add a new folder"), "", 'class=window_title');
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['managefolders']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfolder']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'center');
@@ -215,21 +215,21 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['nameanddesc']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Name and Description"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Name"), ":</td>\n";
 echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : ""), 30, 32)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Description"), ":</td>\n";
 echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : ""), 30, 255)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Thread Title Prefix"), ":</td>\n";
 echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? htmlentities_array($t_prefix) : ""), 30, 16)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -249,33 +249,33 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['permissions']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Permissions"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_read", USER_PERM_POST_READ, $lang['readposts'], false), "</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_create", USER_PERM_POST_CREATE, $lang['replytothreads'], false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_read", USER_PERM_POST_READ, gettext("Read Posts"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_create", USER_PERM_POST_CREATE, gettext("Reply to threads"), false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], false), "</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, $lang['editposts'], false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, gettext("Create new threads"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, gettext("Edit posts"), false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, $lang['deleteposts'], false), "</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, gettext("Delete posts"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, gettext("Upload attachments"), false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_html", USER_PERM_HTML_POSTING, $lang['postinhtml'], false), "</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_sig", USER_PERM_SIGNATURE, $lang['postasignature'], false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_html", USER_PERM_HTML_POSTING, gettext("Post in HTML"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_sig", USER_PERM_SIGNATURE, gettext("Post a signature"), false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_guest_access", USER_PERM_GUEST_ACCESS, $lang['allowguestaccess'], false), "</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_approval", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_guest_access", USER_PERM_GUEST_ACCESS, gettext("Allow Guest Access"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_post_approval", USER_PERM_POST_APPROVAL, gettext("Require Post Approval"), false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_thread_move", USER_PERM_THREAD_MOVE, $lang['allowthreadmove'], false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_thread_move", USER_PERM_THREAD_MOVE, gettext("Move threads to folder"), false), "</td>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -294,13 +294,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['allow']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Allow"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Allow folder to contain"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("t_allowed_types", $allowed_post_types, (isset($t_allowed_types) ? $t_allowed_types : FOLDER_ALLOW_ALL_THREAD)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -320,7 +320,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("add", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

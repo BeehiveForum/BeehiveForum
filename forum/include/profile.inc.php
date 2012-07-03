@@ -779,8 +779,6 @@ function profile_get_item($piid)
 
 function profile_item_add_clear_entry(&$profile_item_options_array, $type)
 {
-    $lang = load_language_file();
-
     $valid_item_types_aray = array(PROFILE_ITEM_RADIO, PROFILE_ITEM_DROPDOWN);
 
     if (!is_array($profile_item_options_array)) return false;
@@ -792,7 +790,7 @@ function profile_item_add_clear_entry(&$profile_item_options_array, $type)
 
     if ($type == PROFILE_ITEM_RADIO) {
 
-        array_unshift($profile_item_options_array, "<i>[{$lang['clear']}]</i>");
+        array_unshift($profile_item_options_array, "<i>[", gettext("Clear"), "]</i>");
         $profile_item_options_array = array_combine($profile_item_options_array_keys, $profile_item_options_array);
 
     }else {

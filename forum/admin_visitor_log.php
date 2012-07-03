@@ -108,13 +108,13 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -150,17 +150,17 @@ if (isset($_POST['prune_log'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoprunevisitorlog'];
+            $error_msg_array[] = gettext("Failed To Prune Visitor Log");
             $valid = false;
         }
     }
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['visitorlog']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Visitor Log"), "", 'class=window_title');
 
 $admin_visitor_log_array = admin_get_visitor_log($start, 10);
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['visitorlog']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Visitor Log"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -168,11 +168,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['pruned'])) {
 
-    html_display_success_msg($lang['successfullyprunedvisitorlog'], '90%', 'center');
+    html_display_success_msg(gettext("Successfully Pruned Visitor Log"), '90%', 'center');
 
 }else if (sizeof($admin_visitor_log_array['user_array']) < 1) {
 
-    html_display_warning_msg($lang['novisitorslogged'], '90%', 'center');
+    html_display_warning_msg(gettext("No Visitors Logged"), '90%', 'center');
 }
 
 echo "<br />\n";
@@ -185,10 +185,10 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "               <table width=\"100%\">\n";
 echo "                 <tr>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['member']}</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['lastvisit']}</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['lastipaddress']}</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">{$lang['referer']}</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Member"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Last Visit"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Last IP Address"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Referer"), "</td>\n";
 echo "                 </tr>\n";
 
 if (sizeof($admin_visitor_log_array['user_array']) > 0) {
@@ -213,14 +213,14 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "</td>\n";
         }else {
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", gettext("Unknown"), "</td>\n";
         }
 
         if (isset($visitor['IPADDRESS']) && strlen($visitor['IPADDRESS']) > 0) {
 
             if (ip_is_banned($visitor['IPADDRESS'])) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
             }else {
 
@@ -229,7 +229,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">{$lang['unknown']}</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">", gettext("Unknown"), "</td>\n";
         }
 
         if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {
@@ -244,14 +244,14 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             }
 
             if (referer_is_banned($visitor['REFERER'])) {
-                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})</td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")</td>\n";
             }else {
-                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
             }
 
         }else {
 
-            echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;{$lang['unknown']}</td>\n";
+            echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;", gettext("Unknown"), "</td>\n";
         }
 
         echo "                 </tr>\n";
@@ -287,13 +287,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Options"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
+echo "                        <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Remove Entries Older Than (Days)"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -312,7 +312,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", $lang['prunelog']), "</td>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", gettext("Prune Log")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

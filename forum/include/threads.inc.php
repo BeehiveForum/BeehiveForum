@@ -1171,9 +1171,6 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
 {
     if (!($db_threads_get_recent = db_connect())) return array(0, 0, 0);
 
-    // Language file
-    $lang = load_language_file();
-
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($limit)) return false;
 
@@ -1253,7 +1250,7 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
                 }
             }
 
-            if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
+            if (!isset($thread['LOGON'])) $thread['LOGON'] = gettext("Unknown user");
             if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
 
             if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
@@ -1306,8 +1303,6 @@ function threads_process_list($sql)
 
     if (($thread_count = db_num_rows($result)) == 0) return array(0, 0, 0);
 
-    $lang = load_language_file();
-
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     $threads_array = array();
@@ -1322,7 +1317,7 @@ function threads_process_list($sql)
             }
         }
 
-        if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
+        if (!isset($thread['LOGON'])) $thread['LOGON'] = gettext("Unknown user");
         if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
 
         if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
@@ -1554,27 +1549,25 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
 function thread_list_draw_top($thread_mode, $folder = false)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('post.png'), "\" alt=\"", gettext("New Discussion"), "\" title=\"", gettext("New Discussion"), "\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("New Discussion"), "</a></td>\n";
     echo "  </tr>\n";
 
     if (forum_get_setting('allow_polls', 'Y')) {
 
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('poll.png'), "\" alt=\"", gettext("Create Poll"), "\" title=\"", gettext("Create Poll"), "\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Create Poll"), "</a></td>\n";
         echo "  </tr>\n";
     }
 
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('search.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['search']}</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Search"), "\" title=\"", gettext("Search"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Search"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('pmunread.png'), "\" alt=\"", gettext("Inbox"), "\" title=\"", gettext("Inbox"), "\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";
@@ -1586,7 +1579,7 @@ function thread_list_draw_top($thread_mode, $folder = false)
     echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"postbody\">\n";
-    echo "        ", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go", $lang['goexcmark']), "\n";
+    echo "        ", form_dropdown_array("thread_mode", $available_views, htmlentities_array($thread_mode)), "&nbsp;", form_submit("go", gettext("Go!")), "\n";
 
     if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
         echo "        ", form_input_hidden("folder", htmlentities_array($folder)), "\n";
@@ -1600,40 +1593,38 @@ function thread_list_draw_top($thread_mode, $folder = false)
 
 function thread_list_available_views()
 {
-    $lang = load_language_file();
-
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
     if (user_is_guest()) {
 
-        $available_views = array(ALL_DISCUSSIONS    => $lang['alldiscussions'],
-                                 TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
-                                 TWO_DAYS_BACK      => $lang['2daysback'],
-                                 SEVEN_DAYS_BACK    => $lang['7daysback']);
+        $available_views = array(ALL_DISCUSSIONS    => gettext("All Discussions"),
+                                 TODAYS_DISCUSSIONS => gettext("Today's Discussions"),
+                                 TWO_DAYS_BACK      => gettext("2 Days Back"),
+                                 SEVEN_DAYS_BACK    => gettext("7 Days Back"));
 
     }else {
 
-        $available_views = array(ALL_DISCUSSIONS          => $lang['alldiscussions'],
-                                 UNREAD_DISCUSSIONS       => $lang['unreaddiscussions'],
-                                 UNREAD_DISCUSSIONS_TO_ME => $lang['unreadtome'],
-                                 TODAYS_DISCUSSIONS       => $lang['todaysdiscussions'],
-                                 UNREAD_TODAY             => $lang['unreadtoday'],
-                                 TWO_DAYS_BACK            => $lang['2daysback'],
-                                 SEVEN_DAYS_BACK          => $lang['7daysback'],
-                                 HIGH_INTEREST            => $lang['highinterest'],
-                                 UNREAD_HIGH_INTEREST     => $lang['unreadhighinterest'],
-                                 RECENTLY_SEEN            => $lang['iverecentlyseen'],
-                                 IGNORED_THREADS          => $lang['iveignored'],
-                                 BY_IGNORED_USERS         => $lang['byignoredusers'],
-                                 SUBSCRIBED_TO            => $lang['ivesubscribedto'],
-                                 STARTED_BY_FRIEND        => $lang['startedbyfriend'],
-                                 UNREAD_STARTED_BY_FRIEND => $lang['unreadstartedbyfriend'],
-                                 STARTED_BY_ME            => $lang['startedbyme'],
-                                 POLL_THREADS             => $lang['polls'],
-                                 STICKY_THREADS           => $lang['stickythreads'],
-                                 MOST_UNREAD_POSTS        => $lang['mostunreadposts'],
-                                 SEARCH_RESULTS           => $lang['searchresults'],
-                                 DELETED_THREADS          => $lang['deletedthreads']);
+        $available_views = array(ALL_DISCUSSIONS          => gettext("All Discussions"),
+                                 UNREAD_DISCUSSIONS       => gettext("Unread Discussions"),
+                                 UNREAD_DISCUSSIONS_TO_ME => gettext("Unread &quot;To: Me&quot;"),
+                                 TODAYS_DISCUSSIONS       => gettext("Today's Discussions"),
+                                 UNREAD_TODAY             => gettext("Unread today"),
+                                 TWO_DAYS_BACK            => gettext("2 Days Back"),
+                                 SEVEN_DAYS_BACK          => gettext("7 Days Back"),
+                                 HIGH_INTEREST            => gettext("High Interest"),
+                                 UNREAD_HIGH_INTEREST     => gettext("Unread High Interest"),
+                                 RECENTLY_SEEN            => gettext("I've recently seen"),
+                                 IGNORED_THREADS          => gettext("I've ignored"),
+                                 BY_IGNORED_USERS         => gettext("By ignored users"),
+                                 SUBSCRIBED_TO            => gettext("I've subscribed to"),
+                                 STARTED_BY_FRIEND        => gettext("Started by friend"),
+                                 UNREAD_STARTED_BY_FRIEND => gettext("Unread started by friend"),
+                                 STARTED_BY_ME            => gettext("Started by me"),
+                                 POLL_THREADS             => gettext("Polls"),
+                                 STICKY_THREADS           => gettext("Sticky Threads"),
+                                 MOST_UNREAD_POSTS        => gettext("Most unread posts"),
+                                 SEARCH_RESULTS           => gettext("Search Results"),
+                                 DELETED_THREADS          => gettext("Deleted Threads"));
 
         if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 

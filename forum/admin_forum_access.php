@@ -104,21 +104,21 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
 
 if (!$forum_fid = forum_get_setting('fid')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -157,8 +157,8 @@ if (isset($_POST['enable'])) {
 
 if (!forum_get_setting('access_level', 1, false)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['forumisnotsettorestrictedmode'], 'admin_forum_access.php', 'post', array('enable' => $lang['enable'], 'back' => $lang['back']), array('ret' => $ret), false, 'center');
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
     html_draw_bottom();
     exit;
 }
@@ -214,7 +214,7 @@ if (isset($_POST['add'])) {
 
                 }else {
 
-                    $error_msg_array[] = sprintf($lang['failedtoaddpermissionsforuser'], $user_logon);
+                    $error_msg_array[] = sprintf(gettext("Failed to add permissions for user '%s'"), $user_logon);
                     $valid = false;
                 }
             }
@@ -247,7 +247,7 @@ if (isset($_POST['add'])) {
 
                 }else {
 
-                    $error_msg_array[] = sprintf($lang['failedtoremovepermissionsfromuser'], $user_logon);
+                    $error_msg_array[] = sprintf(gettext("Failed to remove permissions from user '%s'"), $user_logon);
                     $valid = false;
                 }
             }
@@ -264,23 +264,23 @@ if (isset($_POST['add'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['manageforumpermissions']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Forum Permissions"), "", 'class=window_title');
 
 $user_permissions_array = forum_get_permissions($forum_fid, $start_main);
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageforumpermissions']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forum Permissions"), "</h1>\n";
 
 if (isset($_GET['added'])) {
 
-    html_display_success_msg($lang['successfullyaddedpermissionsforselectedusers'], '500', 'center');
+    html_display_success_msg(gettext("Successfully added permissions for selected users"), '500', 'center');
 
 }else if (isset($_GET['removed'])) {
 
-    html_display_success_msg($lang['successfullyremovedpermissionsfromselectedusers'], '500', 'center');
+    html_display_success_msg(gettext("Successfully removed permissions from selected users"), '500', 'center');
 
 }else if (sizeof($user_permissions_array['user_array']) < 1) {
 
-    html_display_warning_msg($lang['nousershavebeengrantedpermission'], '500', 'center');
+    html_display_warning_msg(gettext("No existing users permissions found. To grant permission to users search for them below."), '500', 'center');
 }
 
 echo "<br />\n";
@@ -298,7 +298,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['existingpermissions']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Existing Permissions"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
@@ -339,7 +339,7 @@ if (sizeof($user_permissions_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("remove", $lang['removeselectedusers']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("remove", gettext("Remove Selected Users")), "</td>\n";
     echo "    </tr>\n";
 
 }else {
@@ -348,7 +348,7 @@ if (sizeof($user_permissions_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("back", gettext("Back")), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -361,7 +361,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
     $user_search_array = admin_user_search($user_search, 'LOGON', 'ASC', 0, $start_search);
 
     if (sizeof($user_search_array['user_array']) < 1) {
-        html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
+        html_display_warning_msg(gettext("Search Returned No Results"), '500', 'center');
     }
 
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
@@ -377,7 +377,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['searchresults']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Search Results"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -418,7 +418,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("add", $lang['addselectedusers']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("add", gettext("Add Selected Users")), "</td>\n";
         echo "    </tr>\n";
     }
 
@@ -441,13 +441,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search For User"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['search']}: ", form_input_text('user_search', htmlentities_array($user_search), 32, 15), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "</td>\n";
+echo "                        <td align=\"left\">", gettext("Search"), ": ", form_input_text('user_search', htmlentities_array($user_search), 32, 15), "&nbsp;", form_submit('search', gettext("Search")), "&nbsp;", form_submit('clear', gettext("Clear")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -465,7 +465,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("back", gettext("Back")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -124,8 +124,8 @@ if (!forum_check_webtag_available($webtag)) {
 // Message pane caching
 cache_check_messages();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -147,8 +147,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-    light_html_display_error_msg($lang['nomessages']);
+    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_display_error_msg(gettext("No Messages"));
     light_html_draw_bottom();
     exit;
 }
@@ -170,16 +170,16 @@ if (isset($_POST['pollsubmit'])) {
 
             }else {
 
-                light_html_draw_top("title={$lang['error']}");
-                light_html_display_error_msg($lang['mustvoteforallgroups']);
+                light_html_draw_top(sprintf("title=%s", gettext("Error")));
+                light_html_display_error_msg(gettext("You must vote in every group."));
                 light_html_draw_bottom();
                 exit;
             }
 
         }else {
 
-            light_html_draw_top("title={$lang['error']}");
-            light_html_display_error_msg($lang['mustselectpolloption']);
+            light_html_draw_top(sprintf("title=%s", gettext("Error")));
+            light_html_display_error_msg(gettext("You must select an option to vote for!"));
             light_html_draw_bottom();
             exit;
         }

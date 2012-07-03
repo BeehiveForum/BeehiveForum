@@ -104,8 +104,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -139,7 +139,7 @@ if (($start_page = forum_get_setting('start_page'))) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['editstartpage_help']}</h1>\n";
+    echo "<h1>", gettext("You can edit this page from the admin interface"), "</h1>\n";
     html_draw_bottom();
 }
 

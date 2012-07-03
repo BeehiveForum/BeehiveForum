@@ -102,21 +102,21 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
 
 if (!$forum_fid = forum_get_setting('fid')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -158,8 +158,8 @@ if (isset($_POST['enable'])) {
 
 if (!forum_get_setting('access_level', 2, false)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['forumisnotsettopasswordprotectedmode'], 'admin_forum_set_passwd.php', 'post', array('enable' => $lang['enable'], 'back' => $lang['back']), array('ret' => $ret), false, 'center');
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Forum is not set to Password Protected Mode. Do you want to enable it now?"), 'admin_forum_set_passwd.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
     html_draw_bottom();
     exit;
 }
@@ -173,7 +173,7 @@ if (isset($_POST['save'])) {
         if (isset($_POST['current_passwd']) && strlen(trim(stripslashes_array($_POST['current_passwd']))) > 0) {
             $t_current_passhash = md5(trim(stripslashes_array($_POST['current_passwd'])));
         }else {
-            $error_msg_array[] = $lang['currentpasswdrequired'];
+            $error_msg_array[] = gettext("Current Password is required");
             $valid = false;
         }
 
@@ -181,7 +181,7 @@ if (isset($_POST['save'])) {
 
             if (strcmp($t_current_passhash, $forum_passhash) <> 0) {
 
-                $error_msg_array[] = $lang['currentpasswddoesnotmatch'];
+                $error_msg_array[] = gettext("Current Password does not match saved password");
                 $valid = false;
             }
         }
@@ -190,14 +190,14 @@ if (isset($_POST['save'])) {
     if (isset($_POST['new_passwd']) && strlen(trim(stripslashes_array($_POST['new_passwd']))) > 0) {
         $t_new_passwd = trim(stripslashes_array($_POST['new_passwd']));
     }else {
-        $error_msg_array[] = $lang['newpasswdrequired'];
+        $error_msg_array[] = gettext("New Password is required");
         $valid = false;
     }
 
     if (isset($_POST['confirm_passwd']) && strlen(trim(stripslashes_array($_POST['confirm_passwd']))) > 0) {
         $t_confirm_passwd = trim(stripslashes_array($_POST['confirm_passwd']));
     }else {
-        $error_msg_array[] = $lang['confirmpasswordrequired'];
+        $error_msg_array[] = gettext("Confirm Password is required");
         $valid = false;
     }
 
@@ -205,19 +205,19 @@ if (isset($_POST['save'])) {
 
         if (strcmp($t_new_passwd, $t_confirm_passwd) <> 0) {
 
-            $error_msg_array[] = $lang['passwdsdonotmatch'];
+            $error_msg_array[] = gettext("Passwords do not match");
             $valid = false;
         }
 
         if (mb_strlen($t_new_passwd) < 6) {
 
-            $error_msg_array[] = $lang['passwdtooshort'];
+            $error_msg_array[] = gettext("Password must be a minimum of 6 characters long");
             $valid = false;
         }
 
         if (htmlentities_array($t_new_passwd) != $t_new_passwd) {
 
-            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
+            $error_msg_array[] = gettext("Password must not contain HTML tags");
             $valid = false;
         }
 
@@ -232,9 +232,9 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['changepassword']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Change Password"), "", 'class=window_title');
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['changepassword']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Change Password"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -242,7 +242,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['passwdchanged'], '450', 'center');
+    html_display_success_msg(gettext("Password changed"), '450', 'center');
 }
 
 echo "<br />\n";
@@ -258,7 +258,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['changepassword']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Change Password"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
@@ -267,24 +267,24 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 if (forum_get_password($forum_settings['fid'])) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['currentpasswd']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("Current Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password("current_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("New Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
 
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['passwd']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['confirmpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Confirm Password"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_password("confirm_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -303,7 +303,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("back", gettext("Back")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

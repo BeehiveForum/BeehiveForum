@@ -108,14 +108,14 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check we have permission to access this page.
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -155,8 +155,8 @@ if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['suppliedgidisnotausergroup'], 'admin_user_groups.php', 'get', array('back' => $lang['back']));
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Supplied GID is not a user group"), 'admin_user_groups.php', 'get', array('back' => gettext("Back")));
     html_draw_bottom();
     exit;
 }
@@ -231,25 +231,25 @@ if (isset($_POST['remove'])) {
 
 if (!$group = perm_get_group($gid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['suppliedgidisnotausergroup'], 'admin_user_groups.php', 'get', array('back' => $lang['back']));
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Supplied GID is not a user group"), 'admin_user_groups.php', 'get', array('back' => gettext("Back")));
     html_draw_bottom();
     exit;
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['manageusergroups']} - {$group['GROUP_NAME']} - {$lang['addremoveusers']}", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage User Groups"), " - {$group['GROUP_NAME']} - ", gettext("Add/Remove Users"), "", 'class=window_title');
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageusergroups']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addremoveusers']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User Groups"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add/Remove Users"), "</h1>\n";
 
 if (isset($_GET['added'])) {
 
-    html_display_success_msg($lang['groupaddedaddnewuser'], '650', 'center');
+    html_display_success_msg(gettext("Successfully added group. Add users to this group by searching for them below."), '650', 'center');
 
 }else if (sizeof($group_users_array['user_array']) < 1) {
 
-    html_display_warning_msg($lang['nousersingroup'], '650', 'center');
+    html_display_warning_msg(gettext("There are no users in this group. Add users to this group by searching for them below."), '650', 'center');
 }
 
 echo "<br />\n";
@@ -268,7 +268,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['users']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Users"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
@@ -310,7 +310,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("remove", $lang['removeselectedusers']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("remove", gettext("Remove Selected Users")), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -323,7 +323,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     $user_search_array = admin_user_search($usersearch, 'LOGON', 'ASC', 0, $start_search);
 
     if (sizeof($user_search_array['user_array']) < 1) {
-        html_display_warning_msg($lang['searchreturnednoresults'], '650', 'center');
+        html_display_warning_msg(gettext("Search Returned No Results"), '650', 'center');
     }
 
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
@@ -341,7 +341,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['searchresults']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Search Results"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -383,7 +383,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("add", $lang['addselectedusers']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("add", gettext("Add Selected Users")), "</td>\n";
         echo "    </tr>\n";
     }
 
@@ -406,14 +406,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? htmlentities_array($usersearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "\n";
+echo "                          ", gettext("Username"), ": ", form_input_text("usersearch", isset($usersearch) ? htmlentities_array($usersearch) : "", 30, 64), " ", form_submit('search', gettext("Search")), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -432,7 +432,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("back", gettext("Back")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

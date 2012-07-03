@@ -101,8 +101,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -125,12 +125,12 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-$word_filter_options = array(WORD_FILTER_TYPE_ALL => $lang['all'],
-                             WORD_FILTER_TYPE_WHOLE_WORD => $lang['wholeword'],
-                             WORD_FILTER_TYPE_PREG => $lang['preg']);
+$word_filter_options = array(WORD_FILTER_TYPE_ALL => gettext("All"),
+                             WORD_FILTER_TYPE_WHOLE_WORD => gettext("Whole Word"),
+                             WORD_FILTER_TYPE_PREG => gettext("PREG"));
 
-$word_filter_enabled = array(WORD_FILTER_DISABLED => $lang['no'],
-                             WORD_FILTER_ENABLED => $lang['yes']);
+$word_filter_enabled = array(WORD_FILTER_DISABLED => gettext("No"),
+                             WORD_FILTER_ENABLED => gettext("Yes"));
 
 $valid = true;
 
@@ -155,7 +155,7 @@ if (isset($_POST['delete'])) {
                 if (!user_delete_word_filter($filter_id)) {
 
                     $valid = false;
-                    $error_msg_array[] = $lang['failedtoupdatewordfilter'];
+                    $error_msg_array[] = gettext("Failed to update word filter. Check that the filter still exists.");
                 }
             }
         }
@@ -163,7 +163,7 @@ if (isset($_POST['delete'])) {
         if ($valid) {
 
             $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
-            header_redirect($redirect, $lang['wordfilterupdated']);
+            header_redirect($redirect, gettext("Word Filter updated"));
             exit;
         }
     }
@@ -190,12 +190,12 @@ if (isset($_POST['delete'])) {
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;
 
     }else {
 
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 
@@ -204,7 +204,7 @@ if (isset($_POST['delete'])) {
     if (user_get_word_filter_count() > 19) {
 
         $valid = false;
-        $error_msg_array[] = $lang['wordfilterisfull'];
+        $error_msg_array[] = gettext("You cannot add any more word filters. Remove some unused ones or edit the existing ones first.");
 
     }else {
 
@@ -212,21 +212,21 @@ if (isset($_POST['delete'])) {
            $add_new_filter_name = trim(stripslashes_array($_POST['add_new_filter_name']));
         }else {
            $valid = false;
-           $error_msg_array[] = $lang['mustspecifyfiltername'];
+           $error_msg_array[] = gettext("You must specify a filter name");
         }
 
         if (isset($_POST['add_new_match_text']) && strlen(trim(stripslashes_array($_POST['add_new_match_text']))) > 0) {
            $add_new_match_text = trim(stripslashes_array($_POST['add_new_match_text']));
         }else {
            $valid = false;
-           $error_msg_array[] = $lang['mustspecifymatchedtext'];
+           $error_msg_array[] = gettext("You must specify matched text");
         }
 
         if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
            $add_new_filter_option = $_POST['add_new_filter_option'];
         }else {
            $valid = false;
-           $error_msg_array[] = $lang['mustspecifyfilteroption'];
+           $error_msg_array[] = gettext("You must specify a filter option");
         }
 
         if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
@@ -250,7 +250,7 @@ if (isset($_POST['delete'])) {
             if (user_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
 
                 $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
-                header_redirect($redirect, $lang['wordfilterupdated']);
+                header_redirect($redirect, gettext("Word Filter updated"));
                 exit;
             }
         }
@@ -262,28 +262,28 @@ if (isset($_POST['delete'])) {
         $filter_id = $_POST['filter_id'];
     }else {
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyfilterid'];
+        $error_msg_array[] = gettext("You must specify a filter ID");
     }
 
     if (isset($_POST['filter_name']) && strlen(trim(stripslashes_array($_POST['filter_name']))) > 0) {
         $filter_name = trim(stripslashes_array($_POST['filter_name']));
     }else {
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyfiltername'];
+        $error_msg_array[] = gettext("You must specify a filter name");
     }
 
     if (isset($_POST['match_text']) && strlen(trim(stripslashes_array($_POST['match_text']))) > 0) {
         $match_text = trim(stripslashes_array($_POST['match_text']));
     }else {
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifymatchedtext'];
+        $error_msg_array[] = gettext("You must specify matched text");
     }
 
     if (isset($_POST['filter_option']) && is_numeric($_POST['filter_option'])) {
         $filter_option = $_POST['filter_option'];
     }else {
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyfilteroption'];
+        $error_msg_array[] = gettext("You must specify a filter option");
     }
 
     if (isset($_POST['filter_enabled']) && is_numeric($_POST['filter_enabled'])) {
@@ -307,12 +307,12 @@ if (isset($_POST['delete'])) {
         if (user_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)) {
 
             $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
-            header_redirect($redirect, $lang['wordfilterupdated']);
+            header_redirect($redirect, gettext("Word Filter updated"));
             exit;
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoupdatewordfilter'];
+            $error_msg_array[] = gettext("Failed to update word filter. Check that the filter still exists.");
         }
     }
 
@@ -325,9 +325,9 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top("title={$lang['mycontrols']} - {$lang['editwordfilter']}", 'class=window_title');
+    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
 
-    echo "<h1>{$lang['editwordfilter']}</h1>\n";
+    echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -335,7 +335,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     }elseif (user_get_word_filter_count() > 19) {
 
-        html_display_error_msg($lang['wordfilterisfull'], '600', 'left');
+        html_display_error_msg(gettext("You cannot add any more word filters. Remove some unused ones or edit the existing ones first."), '600', 'left');
     }
 
     echo "<br />\n";
@@ -350,30 +350,30 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addnewwordfilter']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Add New Word Filter"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\">{$lang['filtername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Filter Name"), ":</td>\n";
     echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_filter_name", (isset($_POST['add_new_filter_name']) ? htmlentities_array(stripslashes_array($_POST['add_new_filter_name'])) : ""), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\">{$lang['matchedtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Matched Text"), ":</td>\n";
     echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_match_text", (isset($_POST['add_new_match_text']) ? htmlentities_array(stripslashes_array($_POST['add_new_match_text'])) : ""), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\">{$lang['replacementtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Replacement Text"), ":</td>\n";
     echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_replace_text", (isset($_POST['add_new_replace_text']) ? htmlentities_array(stripslashes_array($_POST['add_new_replace_text'])) : ""), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filtertype']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_option", array($lang['all'], $lang['wholeword'], $lang['preg']), (isset($_POST['add_new_filter_option']) ? $_POST['add_new_filter_option'] : 0)), "</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">", gettext("Filter Type"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_option", array(gettext("All"), gettext("Whole Word"), gettext("PREG")), (isset($_POST['add_new_filter_option']) ? $_POST['add_new_filter_option'] : 0)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filterenabled']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_enabled", array(WORD_FILTER_ENABLED => $lang['yes'], WORD_FILTER_DISABLED => $lang['no']), (isset($_POST['add_new_filter_enabled']) ? $_POST['add_new_filter_enabled'] : 1)), "</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">", gettext("Filter Enabled"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_enabled", array(WORD_FILTER_ENABLED => gettext("Yes"), WORD_FILTER_DISABLED => gettext("No")), (isset($_POST['add_new_filter_enabled']) ? $_POST['add_new_filter_enabled'] : 1)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -391,11 +391,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("addfilter_submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("addfilter_submit", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(sprintf('%s<p>%s</p>%s', $lang['word_filter_help_1'], $lang['word_filter_help_2'], $lang['word_filter_help_3']), '600', 'left');
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '600', 'left');
 
     echo "</form>\n";
 
@@ -413,23 +413,23 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['mustspecifyfilterid'], 'edit_wordfilter.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You must specify a filter ID"), 'edit_wordfilter.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
     if (!$word_filter_array = user_get_word_filter($filter_id)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidfilterid'], 'edit_wordfilter.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid Filter ID"), 'edit_wordfilter.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['mycontrols']} - {$lang['editwordfilter']}", 'class=window_title');
+    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
 
-    echo "<h1>{$lang['editwordfilter']}</h1>\n";
+    echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '600', 'left');
@@ -448,30 +448,30 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['editwordfilter']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Edit Word Filter"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\">{$lang['filtername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Filter Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("filter_name", htmlentities_array($word_filter_array['FILTER_NAME']), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\">{$lang['matchedtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Matched Text"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("match_text", htmlentities_array($word_filter_array['MATCH_TEXT']), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\">{$lang['replacementtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Replacement Text"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("replace_text", htmlentities_array($word_filter_array['REPLACE_TEXT']), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filtertype']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("filter_option", array($lang['all'], $lang['wholeword'], $lang['preg']), $word_filter_array['FILTER_TYPE']), "</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">", gettext("Filter Type"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("filter_option", array(gettext("All"), gettext("Whole Word"), gettext("PREG")), $word_filter_array['FILTER_TYPE']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filterenabled']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("filter_enabled", array(WORD_FILTER_ENABLED => $lang['yes'], WORD_FILTER_DISABLED => $lang['no']), $word_filter_array['FILTER_ENABLED']), "</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">", gettext("Filter Enabled"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("filter_enabled", array(WORD_FILTER_ENABLED => gettext("Yes"), WORD_FILTER_DISABLED => gettext("No")), $word_filter_array['FILTER_ENABLED']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -489,11 +489,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("editfilter_submit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("editfilter_submit", gettext("Save")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(sprintf('%s<p>%s</p>%s', $lang['word_filter_help_1'], $lang['word_filter_help_2'], $lang['word_filter_help_3']), '600', 'left');
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '600', 'left');
 
     echo "</form>\n";
 
@@ -501,11 +501,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    html_draw_top("title={$lang['mycontrols']} - {$lang['editwordfilter']}", 'class=window_title');
+    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
 
     $word_filter_array = user_get_word_filter_list($start);
 
-    echo "<h1>{$lang['editwordfilter']}</h1>\n";
+    echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -513,11 +513,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     }elseif (isset($_GET['updated'])) {
 
-        html_display_success_msg($lang['wordfilterupdated'], '600', 'left');
+        html_display_success_msg(gettext("Word Filter updated"), '600', 'left');
 
     }else if (sizeof($word_filter_array['word_filter_array']) < 1) {
 
-        html_display_warning_msg($lang['nowordfilterentriesfound'], '600', 'left');
+        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '600', 'left');
     }
 
     echo "<br />\n";
@@ -532,9 +532,9 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" style=\"white-space: nowrap\">{$lang['filtername']}&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" style=\"white-space: nowrap\">{$lang['filtertype']}&nbsp;</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\" style=\"white-space: nowrap\" width=\"100\">{$lang['filterenabled']}&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" style=\"white-space: nowrap\">", gettext("Filter Name"), "&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" style=\"white-space: nowrap\">", gettext("Filter Type"), "&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" style=\"white-space: nowrap\" width=\"100\">", gettext("Filter Enabled"), "&nbsp;</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($word_filter_array['word_filter_array']) > 0) {
@@ -569,7 +569,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("addfilter", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("addfilter", gettext("Add New")), "&nbsp;", form_submit("delete", gettext("Delete Selected")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
@@ -581,7 +581,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Options"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -589,13 +589,13 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], session_get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), session_get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
     echo "                      </tr>\n";
 
     if (!forum_get_setting('force_word_filter', 'Y')) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], session_get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", gettext("Include admin word filter in my list."), session_get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -615,7 +615,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

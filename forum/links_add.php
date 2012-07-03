@@ -106,8 +106,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -117,8 +117,8 @@ if (!forum_check_access_level()) {
 
 if (!forum_get_setting('show_links', 'Y')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['maynotaccessthissection']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You may not access this section."));
     html_draw_bottom();
     exit;
 }
@@ -198,13 +198,13 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
         if (mb_strlen($uri) > 255) {
 
-            $error_msg_array[] = sprintf($lang['linkurltoolong'], 255);
+            $error_msg_array[] = sprintf(gettext("Link URL too long. Maximum is %s characters"), 255);
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['notvalidURI'];
+        $error_msg_array[] = gettext("That is not a valid URI!");
         $valid = false;
     }
 
@@ -214,13 +214,13 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
         if (mb_strlen($name) > 64) {
 
-            $error_msg_array[] = sprintf($lang['linknametoolong'], 64);
+            $error_msg_array[] = sprintf(gettext("Link name too long. Maximum is %s characters"), 64);
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['mustspecifyname'];
+        $error_msg_array[] = gettext("You must specify a name!");
         $valid = false;
     }
 
@@ -239,7 +239,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoaddlink'];
+            $error_msg_array[] = gettext("Failed to add link");
             $valid = false;
         }
     }
@@ -260,13 +260,13 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
         if (mb_strlen($name) > 32) {
 
-            $error_msg_array[] = sprintf($lang['linkfoldernametoolong'], 32);
+            $error_msg_array[] = sprintf(gettext("Folder name too long. Maximum length is %s characters"), 32);
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['mustspecifyname'];
+        $error_msg_array[] = gettext("You must specify a name!");
         $valid = false;
     }
 
@@ -279,7 +279,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoaddfolder'];
+            $error_msg_array[] = gettext("Failed to add folder");
             $valid = false;
         }
     }
@@ -290,26 +290,26 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['mustspecifyvalidfolder']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You must specify a valid folder!"));
         html_draw_bottom();
         exit;
     }
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['mustspecifyfolder']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You must specify a folder!"));
     html_draw_bottom();
     exit;
 }
 
 if ($mode == LINKS_ADD_LINK) {
 
-    html_draw_top("title={$lang['links']} - {$lang['addlink']}", 'class=window_title');
+    html_draw_top("title=", gettext("Links"), " - ", gettext("Add a link"), "", 'class=window_title');
 
-    echo "<h1>{$lang['links']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addlink']}</h1>\n";
-    echo "<p>{$lang['addinglinkin']}: <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
+    echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a link"), "</h1>\n";
+    echo "<p>", gettext("Adding link in"), ": <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'left');
@@ -327,21 +327,21 @@ if ($mode == LINKS_ADD_LINK) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addlink']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Add a link"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['addressurluri']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("Address"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("uri", (isset($uri)) ? htmlentities_array($uri) : '', 50, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("name", (isset($name)) ? htmlentities_array($name) : '', 50, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['description']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("Description"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("description", (isset($description)) ? htmlentities_array($description) : '', 50), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -360,7 +360,7 @@ if ($mode == LINKS_ADD_LINK) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("add", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -369,10 +369,10 @@ if ($mode == LINKS_ADD_LINK) {
 
 }elseif ($mode == LINKS_ADD_FOLDER) {
 
-    html_draw_top("title={$lang['links']} - {$lang['addnewfolder']}", 'class=window_title');
+    html_draw_top("title=", gettext("Links"), " - ", gettext("Add a new folder"), "", 'class=window_title');
 
-    echo "<h1>{$lang['links']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfolder']}</h1>\n";
-    echo "<p>{$lang['addnewfolderunder']}: <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
+    echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
+    echo "<p>", gettext("Adding new folder under"), ": <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'left');
@@ -390,13 +390,13 @@ if ($mode == LINKS_ADD_LINK) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addnewfolder']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Add a new folder"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
+    echo "                        <td align=\"left\">", gettext("Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("name", isset($name) ? htmlentities_array($name) : '', 50, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -416,7 +416,7 @@ if ($mode == LINKS_ADD_LINK) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("add", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

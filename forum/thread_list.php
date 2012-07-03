@@ -117,8 +117,8 @@ if (!forum_check_webtag_available($webtag)) {
 // Thread List Cache Control
 cache_check_thread_list();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check the RSS feeds
 rss_feed_check_feeds();
@@ -231,7 +231,7 @@ if (user_is_guest()) {
 
                     } else {
 
-                        $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                        $error_msg_array[] = gettext("Failed to mark selected threads as read");
                         $valid = false;
                     }
                 }
@@ -245,7 +245,7 @@ if (user_is_guest()) {
 
                 } else {
 
-                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $error_msg_array[] = gettext("Failed to mark selected threads as read");
                     $valid = false;
                 }
 
@@ -258,7 +258,7 @@ if (user_is_guest()) {
 
                 } else {
 
-                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $error_msg_array[] = gettext("Failed to mark selected threads as read");
                     $valid = false;
                 }
 
@@ -271,7 +271,7 @@ if (user_is_guest()) {
 
                 } else {
 
-                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $error_msg_array[] = gettext("Failed to mark selected threads as read");
                     $valid = false;
                 }
             }
@@ -281,7 +281,7 @@ if (user_is_guest()) {
             unset($_REQUEST['mark_read_submit'], $_REQUEST['mark_read_confirm']);
 
             html_draw_top();
-            html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'thread_list.php', 'post', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
+            html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'thread_list.php', 'post', array('mark_read_submit' => gettext("Confirm"), 'cancel' => gettext("Cancel")), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
             html_draw_bottom();
             exit;
         }
@@ -399,7 +399,7 @@ switch ($thread_mode) {
 // Get folder FIDs and titles
 if (!$folder_info = threads_get_folders()) {
 
-    html_error_msg($lang['couldnotretrievefolderinformation']);
+    html_error_msg(gettext("There are no folders available."));
     html_draw_bottom();
     exit;
 }
@@ -501,19 +501,19 @@ thread_list_draw_top($thread_mode, $folder);
 // If no threads are returned, say something to that effect
 if (isset($_REQUEST['mark_read_success'])) {
 
-    html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
+    html_display_success_msg(gettext("Successfully marked selected threads as read"), '100%', 'left');
 
 } else if (!is_array($thread_info)) {
 
     if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-        html_display_warning_msg(sprintf($lang['nodiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", gettext("click here"));
+        html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
 
     }else {
 
-        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", $lang['clickhere']);
-        html_display_warning_msg(sprintf($lang['nodiscussionsinallfolders'], $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", gettext("click here"));
+        html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
     }
 
 } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -522,8 +522,8 @@ if (isset($_REQUEST['mark_read_success'])) {
 
 } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-    $all_folders_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", $lang['clickhere']);
-    html_display_warning_msg(sprintf($lang['viewingdiscussionsinfoldername'], $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
+    $all_folders_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", gettext("click here"));
+    html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
 
 } else {
 
@@ -534,7 +534,7 @@ if (($start_from > 0) && !is_numeric($folder)) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from - 50), "\" title=\"{$lang['showprev50threads']}\">{$lang['prev50threads']}</a></td>\n";
+    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Previous 50 threads"), "\" title=\"", gettext("Previous 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from - 50), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -561,18 +561,18 @@ foreach ($folder_order as $folder_number) {
         echo "          <td align=\"left\" valign=\"top\" class=\"foldername\">\n";
 
         if ($folder_info[$folder_number]['INTEREST'] == FOLDER_SUBSCRIBED) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder_subscribed.png')."\" alt=\"", gettext("Subscribed Folder"), "\" title=\"", gettext("Subscribed Folder"), "\" border=\"0\" /></a>\n";
         } else if ($folder_info[$folder_number]['INTEREST'] == FOLDER_IGNORED) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder_ignored.png')."\" alt=\"", gettext("Ignored Folder"), "\" title=\"", gettext("Ignored Folder"), "\" border=\"0\" /></a>\n";
         } else {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder.png')."\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" border=\"0\" /></a>\n";
         }
 
         echo "            <a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION'], true), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a>\n";
         echo "          </td>\n";
 
         if (session_get_value('UID') > 0) {
-            echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"". html_style_image('mods_list.png'). "\" border=\"0\" alt=\"{$lang['viewmoderators']}\" title=\"{$lang['viewmoderators']}\" /></a></td>";
+            echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"". html_style_image('mods_list.png'). "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";
         }
 
         echo "        </tr>\n";
@@ -598,7 +598,7 @@ foreach ($folder_order as $folder_number) {
 
                     echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                     echo "              <tr>\n";
-                    echo "                <td align=\"left\" class=\"threads_top_left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"{$lang['viewmessagesinthisfolderonly']}\">";
+                    echo "                <td align=\"left\" class=\"threads_top_left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
 
                     if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                         echo $folder_msgs[$folder_number];
@@ -606,13 +606,13 @@ foreach ($folder_order as $folder_number) {
                         echo "0";
                     }
 
-                    echo "&nbsp;{$lang['threads']}</a></td>\n";
+                    echo "&nbsp;", gettext("threads"), "</a></td>\n";
                     echo "                <td align=\"left\" class=\"threads_top_right\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\">";
 
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
                         echo "<a href=\"", ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) ? "post.php?webtag=$webtag" : (forum_get_setting('allow_polls', 'Y') ? "create_poll.php?webtag=$webtag" : "");
-                        echo "&amp;fid={$folder_number}\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
+                        echo "&amp;fid={$folder_number}\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"", gettext("Create new discussion in this folder"), "\">", gettext("Post New"), "</a>";
 
                     } else {
 
@@ -625,7 +625,7 @@ foreach ($folder_order as $folder_number) {
                     if (($start_from > 0) && is_numeric($folder) && ($folder_number == $folder)) {
 
                         echo "              <tr>\n";
-                        echo "                <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\" title=\"{$lang['showprev50threads']}\">{$lang['prev50threads']}</a></td>\n";
+                        echo "                <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
                         echo "              </tr>\n";
                     }
 
@@ -647,15 +647,15 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($thread['LENGTH'] > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
+                                    $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
 
                                 } else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
+                                    $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -663,11 +663,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
 
                                 } else {
 
-                                    echo "<img src=\"", html_style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
                                 }
 
                             } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
@@ -676,15 +676,15 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($new_posts > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
+                                    $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
 
                                 } else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
+                                    $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
                                 }
 
                                 $latest_post = $thread['LAST_READ'] + 1;
@@ -692,24 +692,24 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
 
                                 } else {
 
-                                    echo "<img src=\"", html_style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
                                 }
 
                             } else {
 
                                 if ($thread['LENGTH'] > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
+                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
 
                                 } else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
+                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -717,11 +717,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
 
                                 } else {
 
-                                    echo "<img src=\"", html_style_image('bullet.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('bullet.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
                                 }
                             }
 
@@ -732,17 +732,17 @@ foreach ($folder_order as $folder_number) {
                             echo "</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";
                             echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" rel=\"t{$thread['TID']}\"";
-                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+                            echo "title=\"", sprintf(gettext("Thread #%s Started by %s. Viewed %s"), $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? gettext("1 time") : sprintf(gettext("%d times"), $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags($thread['TITLE'], true), "</a> ";
 
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
-                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
-                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<img src=\"".html_style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
-                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<img src=\"", html_style_image('split_thread.png'), "\" alt=\"{$lang['threadhasbeensplit']}\" title=\"{$lang['threadhasbeensplit']}\" /> ";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<img src=\"", html_style_image('merge_thread.png'), "\" alt=\"{$lang['threadhasbeenmerged']}\" title=\"{$lang['threadhasbeenmerged']}\" /> ";
-                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", html_style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"", gettext("High Interest"), "\" title=\"", gettext("High Interest"), "\" /> ";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"", gettext("Subscribed"), "\" title=\"", gettext("Subscribed"), "\" /> ";
+                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"", gettext("This is a poll. Click to view results."), "\" title=\"", gettext("This is a poll. Click to view results."), "\" /></a> ";
+                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<img src=\"".html_style_image('sticky.png')."\" alt=\"", gettext("Sticky"), "\" title=\"", gettext("Sticky"), "\" /> ";
+                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /> ";
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<img src=\"", html_style_image('split_thread.png'), "\" alt=\"", gettext("Thread has been split"), "\" title=\"", gettext("Thread has been split"), "\" /> ";
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<img src=\"", html_style_image('merge_thread.png'), "\" alt=\"", gettext("Thread has been merged"), "\" title=\"", gettext("Thread has been merged"), "\" /> ";
+                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", html_style_image('attach.png'), "\" alt=\"", gettext("Attachment"), "\" title=\"", gettext("Attachment"), "\" /> ";
 
                             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
                             echo "                      <td valign=\"top\" style=\"white-space: nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
@@ -757,7 +757,7 @@ foreach ($folder_order as $folder_number) {
 
                         echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                         echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=". ($start_from + 50). "\" class=\"folderinfo\" title=\"{$lang['shownext50threads']}\">{$lang['next50threads']}</a></td>\n";
+                        echo "                      <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=". ($start_from + 50). "\" class=\"folderinfo\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
                         echo "                    </tr>\n";
                         echo "                  </table>\n";
                     }
@@ -770,7 +770,7 @@ foreach ($folder_order as $folder_number) {
 
                     echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                     echo "              <tr>\n";
-                    echo "                <td align=\"left\" class=\"threads_top_left_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"{$lang['viewmessagesinthisfolderonly']}\">";
+                    echo "                <td align=\"left\" class=\"threads_top_left_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
 
                     if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                         echo $folder_msgs[$folder_number];
@@ -778,13 +778,13 @@ foreach ($folder_order as $folder_number) {
                         echo "0";
                     }
 
-                    echo "&nbsp;{$lang['threads']}</a></td>\n";
+                    echo "&nbsp;", gettext("threads"), "</a></td>\n";
                     echo "                <td align=\"left\" class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\">";
 
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
                         echo "<a href=\"", ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) ? "post.php?webtag=$webtag" : (forum_get_setting('allow_polls', 'Y') ? "create_poll.php?webtag=$webtag" : "");
-                        echo "&amp;fid={$folder_number}\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
+                        echo "&amp;fid={$folder_number}\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"", gettext("Create new discussion in this folder"), "\">", gettext("Post New"), "</a>";
 
                     } else {
 
@@ -801,7 +801,7 @@ foreach ($folder_order as $folder_number) {
                 // Only display the additional folder info if the user DOESN'T have the folder on ignore
                 echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                 echo "              <tr>\n";
-                echo "                <td class=\"threads_top_left_bottom\" align=\"left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"{$lang['viewmessagesinthisfolderonly']}\">";
+                echo "                <td class=\"threads_top_left_bottom\" align=\"left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
 
                 if (isset($folder_msgs[$folder_number])) {
                     echo $folder_msgs[$folder_number];
@@ -809,14 +809,14 @@ foreach ($folder_order as $folder_number) {
                     echo "0";
                 }
 
-                echo "&nbsp;{$lang['threads']}</a></td>\n";
+                echo "&nbsp;", gettext("threads"), "</a></td>\n";
                 echo "                <td align=\"left\" class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\">";
 
                 if (session_check_perm(USER_PERM_THREAD_CREATE, $folder_number)) {
 
                     echo "<a href=\"";
                     echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "post.php?webtag=$webtag" : (forum_get_setting('allow_polls', 'Y') ? "create_poll.php?webtag=$webtag" : "");
-                    echo "&amp;fid=$folder_number\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
+                    echo "&amp;fid=$folder_number\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"", gettext("Create new discussion in this folder"), "\">", gettext("Post New"), "</a>";
 
                 } else {
 
@@ -849,7 +849,7 @@ if (!is_numeric($folder) && ($thread_count >= 50)) {
     echo "  <td colspan=\"2\">&nbsp;</td>\n";
     echo "</tr>\n";
     echo "<tr>\n";
-    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"{$lang['next50threads']}\" title=\"{$lang['next50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from + 50), "\" title=\"{$lang['shownext50threads']}\">{$lang['next50threads']}</a></td>\n";
+    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Next 50 threads"), "\" title=\"", gettext("Next 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from + 50), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
     echo "</tr>\n";
 }
 
@@ -862,7 +862,7 @@ if (!user_is_guest()) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['markasread']}:</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Mark as Read"), ":</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -873,12 +873,12 @@ if (!user_is_guest()) {
     echo "        ", form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
     echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
-    $labels = array($lang['alldiscussions'], $lang['next50discussions']);
+    $labels = array(gettext("All Discussions"), gettext("Next 50 discussions"));
     $selected_option = THREAD_MARK_READ_ALL;
 
     if (sizeof($visible_threads_array) > 0) {
 
-        $labels[] = $lang['visiblediscussions'];
+        $labels[] = gettext("Visible discussions");
         $selected_option = THREAD_MARK_READ_VISIBLE;
 
         $visible_threads = implode(',', array_filter($visible_threads_array, 'is_numeric'));
@@ -889,12 +889,12 @@ if (!user_is_guest()) {
 
         echo "        ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 
-        $labels[] = $lang['selectedfolder'];
+        $labels[] = gettext("Selected folder");
         $selected_option = THREAD_MARK_READ_FOLDER;
     }
 
     echo "        ", form_dropdown_array("mark_read_type", $labels, $selected_option). "\n";
-    echo "        ", form_submit("mark_read_submit", $lang['goexcmark']). "\n";
+    echo "        ", form_submit("mark_read_submit", gettext("Go!")). "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -903,7 +903,7 @@ if (!user_is_guest()) {
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -916,7 +916,7 @@ if (isset($folder) && is_numeric($folder)) {
 }
 
 echo "        ", form_input_text('msg', '1.1', 10), "\n";
-echo "        ", form_submit("go", $lang['goexcmark']), "\n";
+echo "        ", form_submit("go", gettext("Go!")), "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

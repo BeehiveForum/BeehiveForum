@@ -430,8 +430,6 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 {
     if (!$db_check_affected_sessions = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($ban_type)) return false;
     if (!is_numeric($ban_expires)) return false;
 
@@ -477,7 +475,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
                 }
             }
 
-            if (!isset($user_session['LOGON'])) $user_session['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_session['LOGON'])) $user_session['LOGON'] = gettext("Unknown user");
             if (!isset($user_session['NICKNAME'])) $user_session['NICKNAME'] = "";
 
             $affected_sessions[$user_session['UID']] = $user_session;

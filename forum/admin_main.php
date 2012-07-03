@@ -90,20 +90,20 @@ if (session_user_banned()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if ((!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
 
     html_draw_top();
-    html_error_msg($lang['accessdeniedexp']);
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
 
 html_draw_top();
 
-echo "<h1>{$lang['forumadmin']}</h1>\n";
+echo "<h1>", gettext("Forum Admin"), "</h1>\n";
 
 if (!forum_check_webtag_available()) {
     html_display_warning_msg("To see additional Admin options click 'My Forums', select a forum and then click the Admin link to return here", '600px', 'left');
@@ -111,40 +111,40 @@ if (!forum_check_webtag_available()) {
 
 if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    echo "<p>{$lang['adminexp_1']}</p>\n";
-    echo "<p>{$lang['adminexp_2']}</p>\n";
+    echo "<p>", gettext("Use the menu on the left to manage things in your forum."), "</p>\n";
+    echo "<p>", gettext("<b>Users</b> allows you to set individual user permissions, including appointing moderators and gagging people."), "</p>\n";
 
     if (forum_check_webtag_available()) {
 
-        echo "<p>{$lang['adminexp_3']}</p>\n";
-        echo "<p>{$lang['adminexp_4']}</p>\n";
-        echo "<p>{$lang['adminexp_5']}</p>\n";
-        echo "<p>{$lang['adminexp_6']}</p>\n";
-        echo "<p>{$lang['adminexp_7']}</p>\n";
-        echo "<p>{$lang['adminexp_8']}</p>\n";
-        echo "<p>{$lang['adminexp_9']}</p>\n";
-        echo "<p>{$lang['adminexp_10']}</p>\n";
-        echo "<p>{$lang['adminexp_11']}</p>\n";
-        echo "<p>{$lang['adminexp_12']}</p>\n";
-        echo "<p>{$lang['adminexp_13']}</p>\n";
-        echo "<p>{$lang['adminexp_14']}</p>\n";
+        echo "<p>", gettext("<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily."), "</p>\n";
+        echo "<p>", gettext("<b>Ban Controls</b> allows the banning and un-banning of IP Addresses, HTTP Referers, Usernames, Email addresses and Nicknames."), "</p>\n";
+        echo "<p>", gettext("<b>Folders</b> allows the creation, modification and deletion of folders."), "</p>\n";
+        echo "<p>", gettext("<b>RSS Feeds</b> allows you to manage RSS feeds for propagation into your forum."), "</p>\n";
+        echo "<p>", gettext("<b>Profiles</b> lets you customise the items that appear in the user profiles."), "</p>\n";
+        echo "<p>", gettext("<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things."), "</p>\n";
+        echo "<p>", gettext("<b>Start Page</b> lets you customise your forum's start page."), "</p>\n";
+        echo "<p>", gettext("<b>Forum style</b> allows you to generate random styles for your forum members to use."), "</p>\n";
+        echo "<p>", gettext("<b>Word filter</b> allows you to filter words you don't want to be used on your forum."), "</p>\n";
+        echo "<p>", gettext("<b>Posting stats</b> generates a report listing the top 10 posters in a defined period."), "</p>\n";
+        echo "<p>", gettext("<b>Forum links</b> lets you manage the links dropdown in the navigation bar."), "</p>\n";
+        echo "<p>", gettext("<b>View log</b> lists recent actions by the forum moderators."), "</p>\n";
 
         if (session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-            echo "<p>{$lang['adminexp_17']}</p>\n";
+            echo "<p>", gettext("<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator."), "</p>\n";
         }
 
-        echo "<p>{$lang['adminexp_18']}</p>\n";
+        echo "<p>", gettext("<b>Visitor Log</b> allows you to view an extended list of visitors including their HTTP referers."), "</p>\n";
     }
 
 }elseif (session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
-    echo "<p>{$lang['adminexp_17']}</p>\n";
+    echo "<p>", gettext("<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator."), "</p>\n";
 }
 
 if (session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
-    echo "<p>{$lang['adminexp_15']}</p>\n";
-    echo "<p>{$lang['adminexp_16']}</p>\n";
+    echo "<p>", gettext("<b>Manage Forums</b> lets you create and delete and close or reopen forums."), "</p>\n";
+    echo "<p>", gettext("<b>Global Forum Settings</b> allows you to modify settings which affect all forums."), "</p>\n";
 }
 
 html_draw_bottom();

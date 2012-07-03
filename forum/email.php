@@ -106,8 +106,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Forum name
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
@@ -139,8 +139,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['nouserspecifiedforemail']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("No user specified for emailing."));
     html_draw_bottom();
     exit;
 }
@@ -161,7 +161,7 @@ if (isset($_POST['send'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entersubjectformessage'];
+        $error_msg_array[] = gettext("Enter a subject for the message");
         $valid = false;
     }
 
@@ -171,7 +171,7 @@ if (isset($_POST['send'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entercontentformessage'];
+        $error_msg_array[] = gettext("Enter some content for the message");
         $valid = false;
     }
 
@@ -183,13 +183,13 @@ if (isset($_POST['send'])) {
 
     if (!user_allow_email($to_user['UID'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), true));
+        $error_msg_array[] = sprintf(gettext("%s has opted out of email contact"), word_filter_add_ob_tags(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), true));
         $valid = false;
     }
 
     if (!email_address_valid($to_user['EMAIL'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), true));
+        $error_msg_array[] = sprintf(gettext("%s has an invalid email address"), word_filter_add_ob_tags(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), true));
         $valid = false;
     }
 
@@ -197,24 +197,24 @@ if (isset($_POST['send'])) {
 
         if (email_send_message_to_user($to_uid, $uid, $subject, $message, $use_email_addr)) {
 
-            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled', 'class=window_title');
-            html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
+            html_draw_top("title=", gettext("Email result"), "", 'pm_popup_disabled', 'class=window_title');
+            html_display_msg(gettext("Message sent"), gettext("Message sent successfully."), 'email.php', 'post', array('close' => gettext("Close")), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled', 'class=window_title');
-            html_error_msg($lang['mailsystemfailure'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
+            html_draw_top("title=", gettext("Email result"), "", 'pm_popup_disabled', 'class=window_title');
+            html_error_msg(gettext("Mail system failure. Message not sent."), 'email.php', 'post', array('close' => gettext("Close")), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
         }
     }
 }
 
-html_draw_top("title=". sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title=". sprintf(gettext("Send Email to %s"), htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled', 'class=window_title');
 
-echo "<h1>", sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</h1>\n";
+echo "<h1>", sprintf(gettext("Send Email to %s"), htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</h1>\n";
 echo "<br />";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_email\" action=\"email.php\" method=\"post\">\n";
@@ -233,26 +233,26 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"480\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf($lang['sendemailtouser'], htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf(gettext("Send Email to %s"), htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
+echo "                        <td align=\"left\" width=\"25%\">", gettext("From"), ":</td>\n";
 echo "                        <td align=\"left\">", word_filter_add_ob_tags($from_user['NICKNAME'], true), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Subject"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text("t_subject", (isset($subject) ? htmlentities_array($subject) : ''), 54, 128), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
+echo "                        <td align=\"left\" valign=\"top\">", gettext("Message"), ":</td>\n";
 echo "                        <td align=\"left\">", form_textarea("t_message", (isset($message) ? htmlentities_array($message) : ''), 12, 51), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', $lang['useemailaddrtosendmsg'], (isset($use_email_addr) ? $use_email_addr : session_get_value('USE_EMAIL_ADDR') == 'Y')), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', gettext("Use my real email address to send this message"), (isset($use_email_addr) ? $use_email_addr : session_get_value('USE_EMAIL_ADDR') == 'Y')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -270,7 +270,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("send", $lang['send']), "&nbsp;", form_button("close_popup", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("send", gettext("Send")), "&nbsp;", form_button("close_popup", gettext("Cancel")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

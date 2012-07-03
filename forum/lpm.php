@@ -125,8 +125,8 @@ light_pm_enabled();
 // Prune old messages for the current user
 pm_user_prune_folders();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 light_html_draw_top();
 

@@ -1112,8 +1112,6 @@ function user_search($user_search)
 
     $table_data = get_table_prefix();
 
-    $lang = load_language_file();
-
     $user_array = array();
 
     $uid = session_get_value('UID');
@@ -1164,7 +1162,7 @@ function user_search($user_search)
                 }
             }
 
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
             if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
             $user_array[$user_data['UID']] = $user_data;
@@ -1213,8 +1211,6 @@ function user_get_friends($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
-
     $user_rel = USER_FRIEND;
 
     $sess_uid = session_get_value('UID');
@@ -1242,7 +1238,7 @@ function user_get_friends($uid)
                 }
             }
 
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
             if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
             $user_get_peers_array[] = $user_data;
@@ -1266,8 +1262,6 @@ function user_get_relationships($uid, $offset = 0)
     $offset = abs($offset);
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $lang = load_language_file();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
@@ -1296,7 +1290,7 @@ function user_get_relationships($uid, $offset = 0)
                 }
             }
 
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
             if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
             $user_get_peers_array[$user_data['UID']] = $user_data;
@@ -1371,8 +1365,6 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $lang = load_language_file();
-
     $user_search_peers_array = array();
 
     if (($uid = session_get_value('UID')) === false) return false;
@@ -1411,7 +1403,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
                 }
             }
 
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
             if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
             $user_search_peers_array[$user_data['UID']] = $user_data;
@@ -1659,15 +1651,13 @@ function user_prefs_prep_attachments($image_attachments_array)
 {
     $attachments_array_prepared = array('' => '&nbsp;');
 
-    $lang = load_language_file();
-
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
 
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
         if (($image_info = getimagesize("$attachment_dir/$hash"))) {
 
-            $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
+            $dimensions_text = gettext("Dimensions"). ": {$image_info[0]}x{$image_info[1]}px";
             $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";
         }
     }

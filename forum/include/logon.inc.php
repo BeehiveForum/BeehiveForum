@@ -104,8 +104,6 @@ function logon_perform()
 
 function logon_draw_form($logon_options)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     // Make sure logon form argument is valid.
@@ -113,9 +111,9 @@ function logon_draw_form($logon_options)
 
     // Check for previously failed logon.
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
-        html_display_success_msg($lang['youhavesuccessfullyloggedout'], '500', 'center');
+        html_display_success_msg(gettext("You have successfully logged out."), '500', 'center');
     }else if (isset($_GET['logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
-        html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');
+        html_display_error_msg(gettext("The username or password you supplied is not valid."), '500', 'center');
     }
 
     // Get the original requested page url.
@@ -147,7 +145,7 @@ function logon_draw_form($logon_options)
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['logon']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Logon"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -155,11 +153,11 @@ function logon_draw_form($logon_options)
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"right\" width=\"90\">{$lang['username']}:</td>\n";
+    echo "                        <td align=\"right\" width=\"90\">", gettext("Username"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text('user_logon', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"right\" width=\"90\">{$lang['passwd']}:</td>\n";
+    echo "                        <td align=\"right\" width=\"90\">", gettext("Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password('user_password', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
     echo "                      </tr>\n";
 
@@ -172,11 +170,11 @@ function logon_draw_form($logon_options)
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', '', (html_get_cookie('user_logon') && html_get_cookie('user_token'))), "</td>\n";
-        echo "                        <td align=\"left\"><label for=\"user_remember\">{$lang['rememberme']}</label></td>\n";
+        echo "                        <td align=\"left\"><label for=\"user_remember\">", gettext("Remember me"), "</label></td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\"><span class=\"bhinputlogon_warning\">{$lang['notrecommendedforsharedcomputers']}</span></td>\n";
+        echo "                        <td align=\"left\"><span class=\"bhinputlogon_warning\">", gettext("Not recommended for shared computers"), "</span></td>\n";
         echo "                      </tr>\n";
     }
 
@@ -196,7 +194,7 @@ function logon_draw_form($logon_options)
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_submit('logon', gettext("Logon")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -209,7 +207,7 @@ function logon_draw_form($logon_options)
         if (user_guest_enabled()) {
 
             echo "<form accept-charset=\"utf-8\" name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-            echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
+            echo "  <p class=\"smalltext\">", sprintf(gettext("Enter as a %s"), form_submit('guest_logon', gettext("Guest"))), "</p>\n";
             echo "</form>\n";
         }
 
@@ -229,24 +227,24 @@ function logon_draw_form($logon_options)
             $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
             $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
 
-            echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
+            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">", gettext("Register now"), "</a>"), "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";
-            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
-            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
+            echo "<h2>", gettext("Problems logging on?"), "</h2>\n";
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
 
         }else {
 
-            echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
+            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">", gettext("Register now"), "</a>"), "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";
-            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
-            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
+            echo "<h2>", gettext("Problems logging on?"), "</h2>\n";
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
         }
 
         echo "<hr class=\"bhlogonseparator\" />\n";
-        echo "<h2>{$lang['usingamobiledevice']}</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;view=mobile\" target=\"", html_get_top_frame_name(), "\">{$lang['mobileversion']}</a></p>\n";
+        echo "<h2>", gettext("Using a mobile device?"), "</h2>\n";
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;view=mobile\" target=\"", html_get_top_frame_name(), "\">", gettext("Mobile version"), "</a></p>\n";
     }
 }
 

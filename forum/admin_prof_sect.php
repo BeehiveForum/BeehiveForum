@@ -102,13 +102,13 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
-    html_error_msg($lang['accessdeniedexp']);
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -150,7 +150,7 @@ if (isset($_POST['delete_sections'])) {
 
                 }else {
 
-                    $error_msg_array[] = $lang['failedtoremoveprofilesections'];
+                    $error_msg_array[] = gettext("Failed to remove profile sections");
                     $valid = false;
                 }
             }
@@ -170,7 +170,7 @@ if (isset($_POST['delete_sections'])) {
     if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
         $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
     }else {
-        $error_msg_array[] = $lang['mustsepecifyaprofilesectionname'];
+        $error_msg_array[] = gettext("Must specify a profile section name");
         $valid = false;
     }
 
@@ -190,14 +190,14 @@ if (isset($_POST['delete_sections'])) {
     if (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
         $psid = $_POST['psid'];
     }else {
-        $error_msg_array[] = $lang['mustspecifyaprofilesectionid'];
+        $error_msg_array[] = gettext("Must specify a profile section ID");
         $valid = false;
     }
 
     if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
         $t_new_name = trim(stripslashes_array($_POST['t_name_new']));
     }else {
-        $error_msg_array[] = $lang['mustsepecifyaprofilesectionname'];
+        $error_msg_array[] = gettext("Must specify a profile section name");
         $valid = false;
     }
 
@@ -244,9 +244,9 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - {$lang['addnewprofilesection']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ", gettext("Add new profile section"), "", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewprofilesection']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new profile section"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -266,13 +266,13 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['sectionname']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Section Name"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['sectionname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Section Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : ""), 32, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -292,7 +292,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("addsectionsubmit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("addsectionsubmit", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -312,23 +312,23 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidprofilesectionid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid profile section ID or section not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
     if (!$profile_section = profile_get_section($psid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidprofilesectionid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid profile section ID or section not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']} - {$profile_section['NAME']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - {$profile_section['NAME']}", 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_section['NAME'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_section['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'center');
@@ -348,13 +348,13 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['sectionname']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Section Name"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['sectionname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Section Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : htmlentities_array($profile_section['NAME'])), 32, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -374,7 +374,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("editfeedsubmit", $lang['save']), "&nbsp;", form_submit("viewitems[$psid]", $lang['viewitems']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("editfeedsubmit", gettext("Save")), "&nbsp;", form_submit("viewitems[$psid]", gettext("View items")), "&nbsp;", form_submit("cancel", gettext("Back")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -384,11 +384,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} - {$lang['manageprofilesections']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), "", 'class=window_title');
 
     $profile_sections = profile_sections_get_by_page($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['manageprofilesections']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -396,19 +396,19 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     }else if (isset($_GET['added'])) {
 
-        html_display_success_msg($lang['successfullyaddedprofilesection'], '500', 'center');
+        html_display_success_msg(gettext("Successfully added profile section"), '500', 'center');
 
     }else if (isset($_GET['edited'])) {
 
-        html_display_success_msg($lang['successfullyeditedprofilesection'], '500', 'center');
+        html_display_success_msg(gettext("Successfully edited profile section"), '500', 'center');
 
     }else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg($lang['successfullyremovedselectedprofilesections'], '500', 'center');
+        html_display_success_msg(gettext("Successfully removed selected profile sections"), '500', 'center');
 
     }else if (sizeof($profile_sections['profile_sections_array']) < 1) {
 
-        html_display_warning_msg($lang['noprofilesectionsfound'], '500', 'center');
+        html_display_warning_msg(gettext("No existing profile sections found. To add a profile section click the 'Add New' button below."), '500', 'center');
     }
 
     echo "<br />\n";
@@ -425,9 +425,9 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Section Name"), "</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"center\">{$lang['items']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"center\">", gettext("Items"), "</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($profile_sections['profile_sections_array']) > 0) {
@@ -486,7 +486,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("addsection", $lang['addnew']), "&nbsp;", form_submit("delete_sections", $lang['deleteselected']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("addsection", gettext("Add New")), "&nbsp;", form_submit("delete_sections", gettext("Delete Selected")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

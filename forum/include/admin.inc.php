@@ -128,8 +128,6 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
 {
     if (!$db_admin_get_log_entries = db_connect()) return false;
 
-    $lang = load_language_file();
-
     $group_by_array = array(
         ADMIN_LOG_GROUP_NONE   => 'ADMIN_LOG.ID',
         ADMIN_LOG_GROUP_YEAR   => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y')",
@@ -190,7 +188,7 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
                 }
             }
 
-            if (!isset($admin_log_data['LOGON'])) $admin_log_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($admin_log_data['LOGON'])) $admin_log_data['LOGON'] = gettext("Unknown user");
             if (!isset($admin_log_data['NICKNAME'])) $admin_log_data['NICKNAME'] = "";
             
             $admin_log_data['ENTRY'] = unserialize(base64_decode($admin_log_data['ENTRY']));
@@ -1150,8 +1148,6 @@ function admin_get_visitor_log($offset)
 
     $users_get_recent_array = array();
 
-    $lang = load_language_file();
-
     $uid = session_get_value('UID');
 
     $forum_fid = $table_data['FID'];
@@ -1191,12 +1187,12 @@ function admin_get_visitor_log($offset)
 
             if ($visitor_array['UID'] == 0) {
 
-                $visitor_array['LOGON']    = $lang['guest'];
-                $visitor_array['NICKNAME'] = $lang['guest'];
+                $visitor_array['LOGON']    = gettext("Guest");
+                $visitor_array['NICKNAME'] = gettext("Guest");
 
             }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
 
-                $visitor_array['LOGON'] = $lang['unknownuser'];
+                $visitor_array['LOGON'] = gettext("Unknown user");
                 $visitor_array['NICKNAME'] = "";
             }
 
@@ -1269,8 +1265,6 @@ function admin_get_user_ip_matches($uid)
 {
     if (!$db_admin_get_user_ip_matches = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -1333,7 +1327,7 @@ function admin_get_user_ip_matches($uid)
                     }
                 }
 
-                if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+                if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
                 if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
 
                 $user_aliases_array[$user_aliases['UID']] = $user_aliases;
@@ -1357,8 +1351,6 @@ function admin_get_user_ip_matches($uid)
 function admin_get_user_email_matches($uid)
 {
     if (!$db_admin_get_user_email_matches = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1392,7 +1384,7 @@ function admin_get_user_email_matches($uid)
                 }
             }
 
-            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
             if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
 
             $user_email_aliases_array[$user_aliases['UID']] = $user_aliases;
@@ -1415,8 +1407,6 @@ function admin_get_user_email_matches($uid)
 function admin_get_user_referer_matches($uid)
 {
     if (!$db_admin_get_user_referer_matches = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1450,7 +1440,7 @@ function admin_get_user_referer_matches($uid)
                 }
             }
 
-            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
             if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
 
             $user_referer_aliases_array[$user_aliases['UID']] = $user_aliases;
@@ -1473,8 +1463,6 @@ function admin_get_user_referer_matches($uid)
 function admin_get_user_passwd_matches($uid)
 {
     if (!$db_admin_get_user_passwd_matches = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1508,7 +1496,7 @@ function admin_get_user_passwd_matches($uid)
                 }
             }
 
-            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
             if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
 
             $user_passwd_aliases_array[$user_aliases['UID']] = $user_aliases;
@@ -1531,8 +1519,6 @@ function admin_get_user_passwd_matches($uid)
 function admin_get_user_history($uid)
 {
     if (!$db_admin_get_user_history = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
@@ -1565,15 +1551,15 @@ function admin_get_user_history($uid)
                 list($logon_old, $nickname_old, $email_old, $modified_date) = $user_history_row;
 
                 if ($logon != $logon_old) {
-                    $user_history_data_array[] = sprintf($lang['changedlogonfromto'], $logon_old, $logon);
+                    $user_history_data_array[] = sprintf(gettext("Changed Logon from %s to %s"), $logon_old, $logon);
                 }
 
                 if ($nickname != $nickname_old) {
-                    $user_history_data_array[] = sprintf($lang['changednicknamefromto'], $nickname_old, $nickname);
+                    $user_history_data_array[] = sprintf(gettext("Changed Nickname from %s to %s"), $nickname_old, $nickname);
                 }
 
                 if ($email != $email_old) {
-                    $user_history_data_array[] = sprintf($lang['changedemailfromto'], $email_old, $email);
+                    $user_history_data_array[] = sprintf(gettext("Changed Email from %s to %s"), $email_old, $email);
                 }
 
                 if (sizeof($user_history_data_array) > 0) {

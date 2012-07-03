@@ -108,8 +108,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Error messages string
 $error_msg_array = array();
@@ -119,11 +119,11 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (logon_perform()) {
 
-        header_redirect("lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
+        header_redirect("lthread_list.php?webtag=$webtag", gettext("You logged in successfully."));
 
     }else {
 
-        $error_msg_array[] = $lang['usernameorpasswdnotvalid'];
+        $error_msg_array[] = gettext("The username or password you supplied is not valid.");
     }
 }
 

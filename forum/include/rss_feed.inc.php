@@ -255,8 +255,6 @@ function rss_feed_create_history($rss_id, $link)
 
 function rss_feed_check_feeds()
 {
-    $lang = load_language_file();
-
     if (($rss_feed = rss_feed_fetch())) {
 
         if (($rss_data = rss_feed_read_database($rss_feed['URL']))) {
@@ -307,7 +305,7 @@ function rss_feed_check_feeds()
 
                     }else {
 
-                        $rss_content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_feed_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
+                        $rss_content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_feed_item->link}\" target=\"_blank\">", gettext("Click here to read this article"), "</a></p>");
                     }
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
@@ -324,8 +322,6 @@ function rss_feed_check_feeds()
 function rss_feed_get_feeds($offset)
 {
     if (!$db_rss_feed_get_feeds = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($offset)) return false;
 
@@ -366,7 +362,7 @@ function rss_feed_get_feeds($offset)
                 }
             }
 
-            if (!isset($rss_feed_data['LOGON'])) $rss_feed_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($rss_feed_data['LOGON'])) $rss_feed_data['LOGON'] = gettext("Unknown user");
             if (!isset($rss_feed_data['NICKNAME'])) $rss_feed_data['NICKNAME'] = "";
 
             $rss_feed_array[] = $rss_feed_data;
@@ -437,8 +433,6 @@ function rss_feed_get($feed_id)
 {
     if (!$db_rss_feed_get_feeds = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($feed_id)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -467,7 +461,7 @@ function rss_feed_get($feed_id)
             }
         }
 
-        if (!isset($rss_feed_array['LOGON'])) $rss_feed_array['LOGON'] = $lang['unknownuser'];
+        if (!isset($rss_feed_array['LOGON'])) $rss_feed_array['LOGON'] = gettext("Unknown user");
         if (!isset($rss_feed_array['NICKNAME'])) $rss_feed_array['NICKNAME'] = "";
 
         return $rss_feed_array;

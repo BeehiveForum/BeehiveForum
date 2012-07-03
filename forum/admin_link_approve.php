@@ -108,8 +108,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -157,8 +157,8 @@ if (isset($_POST['lid'])) {
 
     } else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidlinkidorlinknotfound'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid link id or link not found"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -171,8 +171,8 @@ if (isset($_POST['lid'])) {
 
     } else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidlinkidorlinknotfound'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid link id or link not found"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -182,8 +182,8 @@ if (isset($lid) && is_numeric($lid)) {
 
     if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['cannoteditlinks'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Cannot edit links"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -192,8 +192,8 @@ if (isset($lid) && is_numeric($lid)) {
         
         if (isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['linkdoesnotrequireapproval'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("Link does not require approval"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
             html_draw_bottom();
             exit;
         }
@@ -211,15 +211,15 @@ if (isset($lid) && is_numeric($lid)) {
 
                 } else {
 
-                    html_draw_top("title={$lang['approvelink']}", 'class=window_title');
-                    html_display_msg($lang['approvelink'], sprintf($lang['successfullyapprovedlink'], $lid), "admin_link_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_top("title=", gettext("Approve Link"), "", 'class=window_title');
+                    html_display_msg(gettext("Approve Link"), sprintf(gettext("Successfully approved link"), $lid), "admin_link_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             } else {
 
-                $error_msg_array[] = $lang['linkapprovalfailed'];
+                $error_msg_array[] = gettext("Link approval failed");
             }
 
         } else if (isset($_POST['delete'])) {
@@ -237,21 +237,21 @@ if (isset($lid) && is_numeric($lid)) {
 
                 } else {
 
-                    html_draw_top("title={$lang['approvelink']}", 'class=window_title');
-                    html_display_msg($lang['approvelink'], sprintf($lang['successfullydeletedlink'], $lid), "admin_link_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_top("title=", gettext("Approve Link"), "", 'class=window_title');
+                    html_display_msg(gettext("Approve Link"), sprintf(gettext("Successfully deleted link"), $lid), "admin_link_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             } else {
 
-                $error_msg_array[] = $lang['errordellink'];
+                $error_msg_array[] = gettext("Error deleting link");
             }
         }        
         
-        html_draw_top("title={$lang['admin']} - {$lang['approvelink']}", 'class=window_title', "post.js", "resize_width=86%");
+        html_draw_top("title=", gettext("Admin"), " - ", gettext("Approve Link"), "", 'class=window_title', "post.js", "resize_width=86%");
         
-        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['approvelink']}</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Link"), "</h1>\n";
         
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             html_display_error_array($error_msg_array, '86%', 'left');
@@ -271,25 +271,25 @@ if (isset($lid) && is_numeric($lid)) {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['linkdetails']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Link Details"), "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\" width=\"120\">", gettext("Address"), ":</td>\n";
         echo "                        <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", mb_strlen($link['URI']) > 35 ? htmlentities_array(mb_substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-        echo "                        <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME']), true) : $lang['unknownuser']), "</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Submitted by"), ":</td>\n";
+        echo "                        <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME']), true) : gettext("Unknown user")), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Description"), ":</td>\n";
         echo "                        <td align=\"left\">", word_filter_add_ob_tags($link['DESCRIPTION'], true), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
+        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Date"), ":</td>\n";
         echo "                        <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
@@ -308,7 +308,7 @@ if (isset($lid) && is_numeric($lid)) {
         echo "      <td>&nbsp;</td>\n";
         echo "    </tr>\n";        
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("approve", $lang['approve']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
         echo "    </tr>\n";        
         echo "  </table>\n";
         echo "</form>\n";
@@ -318,8 +318,8 @@ if (isset($lid) && is_numeric($lid)) {
     
     } else {        
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidlinkID'], 'admin_link_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid link ID!"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }    
@@ -328,20 +328,20 @@ if (isset($lid) && is_numeric($lid)) {
 
     if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['accessdeniedexp']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You do not have permission to use this section."));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} - {$lang['linkapprovalqueue']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Link Approval Queue"), "", 'class=window_title');
 
     $link_approval_array = admin_get_link_approval_queue($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['linkapprovalqueue']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Link Approval Queue"), "</h1>\n";
 
     if (sizeof($link_approval_array['link_array']) < 1) {
-        html_display_warning_msg($lang['nolinksawaitingapproval'], '86%', 'center');
+        html_display_warning_msg(gettext("No links are awaiting approval"), '86%', 'center');
     }
 
     echo "<br />\n";
@@ -355,10 +355,10 @@ if (isset($lid) && is_numeric($lid)) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">{$lang['name']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">{$lang['folder']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['user']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['datetime']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Name"), "</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Folder"), "</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("User"), "</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("Date/Time"), "</td>\n";
     echo "                 </tr>\n";
 
     if (sizeof($link_approval_array['link_array']) > 0) {

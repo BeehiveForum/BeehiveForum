@@ -40,106 +40,143 @@ if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function load_language_file()
+/**
+ * lang_init
+ * 
+ * Initialise gettext functionality in PHP.
+ * 
+ * @param void
+ * @return void
+ */
+function lang_init()
 {
-    static $lang = false;
-
-    if (!is_array($lang)) {
-
-        // start out by including the English language file. This will allow
-        // us to still use Beehive even if our language file isn't up to date
-        // correctly.
-        // The English language file must exist even if we're not going to be
-        // using it in our forum. If we can't find it we'll bail out here.
-        if (!@file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
-            throw new Exception("<p>Could not load English language file (en.inc.php)</p>");
-        }
-
-        include_once BH_INCLUDE_PATH. "languages/en.inc.php";
-
-        $default_language = forum_get_setting('default_language', false, 'en');
-
-         // if the user has expressed a preference for language,
-         // ignore what the browser wants and use that if available
-        if (($pref_language = session_get_value("LANGUAGE"))) {
-
-            if (@file_exists("include/languages/{$pref_language}.inc.php")) {
-
-                include(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
-                return $lang;
-            }
-        }
-
-         // if the browser doesn't send an Accept-Language header, give up.
-        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) || strlen(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])) == 0) {
-
-            include_once BH_INCLUDE_PATH. "languages/{$default_language}.inc.php";
-            return $lang;
-        }
-
-        // split the provided Accept-Language string into individual languages
-        $langs_array = preg_split('/\s*,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-
-         // work out what the q values associated with each language are
-        foreach ($langs_array as $key => $value) {
-
-            if (strstr($value, ";q=")) {
-
-                $bits = explode(";q=", $value);
-                $langs_array[$key] = $bits[0];
-                $qvalue[$key] = $bits[1];
-
-            }else {
-
-                $qvalue[$key] = 1;
-            }
-        }
-
-        // sort the array in descending order of q value
-        arsort($qvalue);
-
-        // go through the array and use the first language installed that matches
-        // if we've got to the stage where the user will accept any language,
-        // default to what is specified in config.inc.php
-        foreach ($qvalue as $key => $value) {
-
-            if ($langs_array[$key] == "*") $langs_array[$key] = $default_language;
-
-            if (@file_exists("include/languages/{$langs_array[$key]}.inc.php")) {
-
-                include_once BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php";
-                return $lang;
-            }
-        }
-
-        // if we're still here, no languages matched. Use the default specified in config.inc.php
-        include_once BH_INCLUDE_PATH. "languages/{$default_language}.inc.php";
-        return $lang;
+    if (!lang_detect()) {
+        throw new Exception('Could not initialise language.');
     }
 
-    return $lang;
+    bindtextdomain('messages', BH_INCLUDE_PATH. 'locale/');
+
+    textdomain('messages');
+    
+    bind_textdomain_codeset('messages', 'UTF-8');
 }
 
-function lang_get_available($inc_browser_negotiation = true)
-{
-    $lang = load_language_file();
+/**
+ * lang_detect
+ * 
+ * Detect the language specified by the user
+ * preferences / the browser's HTTP-ACCEPT-LANGUAGE
+ * headers
+ * 
+ * @param void
+ * @return string
+ */
+function lang_detect()
+{   
+    if (($language = session_get_value('LANGUAGE'))) {
+        
+        if (lang_set($language)) {
+            return $language;
+        }
+    }
+    
+    $languages = array();
+    
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        
+        $accepted = preg_split('/,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
-    $available_langs = ($inc_browser_negotiation) ? array('' => $lang['browsernegotiation']) : array();
+        foreach ($accepted as $accept) {
+            
+            if (!preg_match('/^([a-z]{1,8}(?:[-_][a-z]{1,8})*)(?:;\s*q=(0(?:\.[0-9]{1,3})?|1(?:\.0{1,3})?))?$/i', $accept, $matches)) {
+                continue;
+            }
+            
+            $quality = isset($matches[2]) ? (float)$matches[2] : 1.0;
+            
+            $countries = explode('-', $matches[1]);
+            $region = array_shift($countries);
+        
+            $countries2 = explode('_', $region);
+            $region = array_shift($countries2);
+            
+            foreach ($countries as $country) {
+                $languages[$region. '_'. mb_strtoupper($country)] = $quality;
+            }
 
-    if ((@$dir = opendir("include/languages"))) {
+            foreach ($countries2 as $country) {
+                $languages[$region. '_'. mb_strtoupper($country)] = $quality;
+            }
 
-        while (($file = readdir($dir))) {
-
-            if (($pos = strpos($file, '.inc.php')) !== false) {
-
-                $lang_name = substr($file, 0, $pos);
-                $available_langs[$lang_name] = $lang_name;
+            if (!isset($languages[$region]) || ($languages[$region] < $quality)) {
+                $languages[$region] = $quality;
             }
         }
-
-        closedir($dir);
     }
+    
+    foreach (array_keys($languages) as $language) {
+        
+        if (lang_set($language)) {
+            return $language;            
+        }
+    }
+    
+    return lang_set('en_GB');
+}
 
+/**
+ * lang_set
+ * 
+ * Attempt to set the specified language.
+ * Returns the requested language if successful
+ * or false on failure.
+ * 
+ * @param mixed $language
+ * @return false | string
+ */
+function lang_set($language)
+{
+    putenv('LANG='. $language);
+    putenv('LANGUAGE='. $language);
+    
+    $languages = array(
+        $language. '.utf8',
+        $language. '.UTF8',
+        $language. '.utf-8',
+        $language. '.UTF-8',
+        $language    
+    );
+    
+    if (setlocale(LC_ALL, $languages)) {
+        return $language;
+    }
+    
+    return false;
+}
+
+/**
+ * lang_get_available
+ * 
+ * Get an array of supported languages.
+ * 
+ * @param bool $inc_browser_negotiation
+ * @return string[]
+ */
+function lang_get_available($inc_browser_negotiation = true)
+{
+    $include_path = BH_INCLUDE_PATH. 'locale/';
+    
+    $available_langs = ($inc_browser_negotiation) ? array('' => gettext("Browser negotiated")) : array();
+    
+    foreach (glob($include_path. '*/messages.po') as $lang) {
+        
+        $available_langs[] = preg_replace(
+            sprintf('/%s\/([^\/]+)\/messages.po/', preg_quote($include_path, '/')), 
+            '\1', 
+            $lang
+        );
+    }
+    
     asort($available_langs);
 
     return $available_langs;

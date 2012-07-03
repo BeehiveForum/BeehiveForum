@@ -76,8 +76,8 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Make sure we have a webtag
 $webtag = get_webtag();
@@ -93,25 +93,25 @@ if (isset($_POST['request'])) {
 
         if (email_send_pw_reminder($logon)) {
 
-            html_draw_top("title={$lang['passwdresetemailsent']}", 'class=window_title');
-            html_display_msg($lang['passwdresetemailsent'], $lang['passwdresetexp'], 'logon.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
+            html_draw_top("title=", gettext("Password reset e-mail sent"), "", 'class=window_title');
+            html_display_msg(gettext("Password reset e-mail sent"), gettext("You should shortly receive an e-mail containing instructions for resetting your password."), 'logon.php', 'get', array('back' => gettext("Back")), false, '_self', 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-           $error_msg_array[] = $lang['couldnotsendpasswordreminder'];
+           $error_msg_array[] = gettext("Could not send password reminder. Please contact the forum owner.");
         }
 
     }else {
 
-        $error_msg_array[] = $lang['validusernamerequired'];
+        $error_msg_array[] = gettext("A valid username is required");
     }
 }
 
-html_draw_top("title={$lang['forgotpasswd']}", 'class=window_title');
+html_draw_top("title=", gettext("Forgot password"), "", 'class=window_title');
 
-echo "<h1>{$lang['forgotpasswd']}</h1>";
+echo "<h1>", gettext("Forgot password"), "</h1>";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '450', 'center');
@@ -129,13 +129,13 @@ echo "            <tr>\n";
 echo "              <td align=\"left\" class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
 echo "                  <tr>\n";
-echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['forgotpasswd']}</td>\n";
+echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Forgot password"), "</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td align=\"center\">\n";
 echo "                      <table class=\"posthead\" width=\"95%\">\n";
 echo "                        <tr>\n";
-echo "                          <td align=\"left\">{$lang['username']}:</td>\n";
+echo "                          <td align=\"left\">", gettext("Username"), ":</td>\n";
 echo "                          <td align=\"left\">", form_input_text("logon", (isset($logon) ? htmlentities_array($logon) : ''), 37, 15), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
@@ -155,7 +155,7 @@ echo "      <tr>\n";
 echo "        <td align=\"left\">&nbsp;</td>\n";
 echo "      </tr>\n";
 echo "      <tr>\n";
-echo "        <td align=\"center\">", form_submit('request', $lang['request']), "</td>\n";
+echo "        <td align=\"center\">", form_submit('request', gettext("Request")), "</td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
 echo "  </form>\n";

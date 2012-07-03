@@ -65,8 +65,6 @@ function html_guest_error($final_uri = null)
 {
     $frame_top_target = html_get_top_frame_name();
 
-    $lang = load_language_file();
-
     $webtag = get_webtag();
     
     if (!isset($final_uri)) {
@@ -82,28 +80,27 @@ function html_guest_error($final_uri = null)
 
     if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
-        html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg($lang['guesterror'], false, 'post', array('close_popup' => $lang['close']));
+        html_draw_top("title=", gettext("Sorry, you need to be logged in to use this feature."), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
+        html_error_msg(gettext("Sorry, you need to be logged in to use this feature."), false, 'post', array('close_popup' => gettext("Close")));
         html_draw_bottom();
 
     }else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
 
-        html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg($lang['guesterror']);
+        html_draw_top("title=", gettext("Sorry, you need to be logged in to use this feature."), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
+        html_error_msg(gettext("Sorry, you need to be logged in to use this feature."));
         html_draw_bottom();
 
     }else {
 
-        html_draw_top("title={$lang['guesterror']}", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg($lang['guesterror'], html_get_forum_file_path('logout.php'), 'post', array('submit' => $lang['loginnow'], 'register' => $lang['register']), array('final_uri' => $final_uri), $frame_top_target);
+        html_draw_top("title=", gettext("Sorry, you need to be logged in to use this feature."), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
+        html_error_msg(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
         html_draw_bottom();
     }
 }
 
 function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
 {
-     $lang = load_language_file();
-     html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target, $align, $id);
+     html_display_msg(gettext("Error"), $error_msg, $href, $method, $button_array, $var_array, $target, $align, $id);
 }
 
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
@@ -195,8 +192,6 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
 function html_display_error_array($error_list_array, $width = '600', $align = 'center', $id = false)
 {
-    $lang = load_language_file();
-
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     $error_list_array = array_filter($error_list_array, 'is_string');
@@ -215,8 +210,8 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
-    echo "      <td class=\"error_msg_text\">{$lang['thefollowingerrorswereencountered']}</td>\n";
+    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
+    echo "      <td class=\"error_msg_text\">", gettext("The following errors were encountered:"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -231,8 +226,6 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 
 function html_display_success_msg($string_msg, $width = '600', $align = 'center', $id = false)
 {
-    $lang = load_language_file();
-
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
@@ -243,7 +236,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"", gettext("Success"), "\" title=\"", gettext("Success"), "\" /></td>\n";
     echo "      <td valign=\"top\" class=\"success_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -252,8 +245,6 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
 
 function html_display_error_msg($string_msg, $width = '600', $align = 'center', $id = false)
 {
-    $lang = load_language_file();
-
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
@@ -264,7 +255,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
     echo "      <td valign=\"top\" class=\"error_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -273,8 +264,6 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
 
 function html_display_warning_msg($string_msg, $width = '600', $align = 'center', $id = false)
 {
-    $lang = load_language_file();
-
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
@@ -285,7 +274,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("Warning"), "\" title=\"", gettext("Warning"), "\" /></td>\n";
     echo "      <td valign=\"top\" class=\"warning_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -300,32 +289,26 @@ function html_user_banned()
 
 function html_user_require_approval()
 {
-    $lang = load_language_file();
-
-    html_draw_top("title={$lang['approvalrequired']}", "robots=noindex,nofollow");
-    html_error_msg($lang['userapprovalrequiredbeforeaccess']);
+    html_draw_top("title=", gettext("Approval Required"), "", "robots=noindex,nofollow");
+    html_error_msg(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
     html_draw_bottom();
 }
 
 function html_email_confirmation_error()
 {
-    $lang = load_language_file();
-
     if (($uid = session_get_value('UID')) === false) return;
 
     $user_array = user_get($uid);
 
-    html_draw_top("title={$lang['emailconfirmationrequired']}", "robots=noindex,nofollow");
-    html_error_msg($lang['emailconfirmationrequiredbeforepost'], 'confirm_email.php', 'get', array('resend' => $lang['resendconfirmation']), array('uid' => $user_array['UID'], 'resend' => 'Y'));
+    html_draw_top("title=", gettext("Email confirmation required"), "", "robots=noindex,nofollow");
+    html_error_msg(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));
     html_draw_bottom();
 }
 
 function html_message_type_error()
 {
-    $lang = load_language_file();
-
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['cannotpostthisthreadtype']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You cannot post this thread type as there are no available folders that allow it."));
     html_draw_bottom();
 }
 
@@ -573,8 +556,6 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 
 function html_draw_top()
 {
-    $lang = load_language_file();
-
     $arg_array = func_get_args();
     $meta_refresh_delay = false;
     $meta_refresh_url = false;
@@ -699,7 +680,7 @@ function html_draw_top()
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
     }
 
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"", _('en-gb'), "\" lang=\"", _('en-gb'), "\" dir=\"", _('ltr'), "\">\n";
     echo "<head>\n";
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
@@ -769,37 +750,37 @@ function html_draw_top()
 
     if (forum_check_webtag_available($webtag)) {
 
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['messages'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_style_image('msie/unread_thread.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('Messages'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_style_image('msie/unread_thread.ico', true, true));
 
         if (forum_get_setting('show_links', 'Y')) {
-            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['links'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_style_image('msie/link.ico', true, true));
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('Links'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_style_image('msie/link.ico', true, true));
         }
     }
 
     if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['pminbox'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_style_image('msie/pmunread.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_style_image('msie/pmunread.ico', true, true));
     }
 
     if (forum_check_webtag_available($webtag)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['mycontrols'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_style_image('msie/user_controls.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('My Controls'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_style_image('msie/user_controls.ico', true, true));
     }
 
     if (!user_is_guest() && (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", $lang['admin'], htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admintool.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admintool.ico', true, true));
     }
 
     printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_file_path("index.php?webtag=$webtag"));
 
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
 
-    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($lang['rssfeed']), $rss_feed_path);
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(_('RSS Feed')), $rss_feed_path);
 
     if (($folders_array = folder_get_available_details())) {
 
         foreach ($folders_array as $folder) {
 
             $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
-            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array($lang['rssfeed']), $rss_feed_path);
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(_('RSS Feed')), $rss_feed_path);
         }
     }
 
@@ -1323,8 +1304,6 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
 // Draws Page links (i.e.: Pages: [1] 2 3 4 ... >>)
 function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
 {
-    $lang = load_language_file();
-
     $page_count   = ceil($total_rows / $rows_per_page);
     $current_page = ceil($offset / $rows_per_page) + 1;
 
@@ -1337,11 +1316,11 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
     if ($page_count > 1) {
 
-        echo "<span class=\"pagenum_text\">{$lang['pages']}&nbsp;($page_count):&nbsp;";
+        echo "<span class=\"pagenum_text\">", gettext("Pages"), "&nbsp;($page_count):&nbsp;";
 
     }else {
 
-        echo "<span class=\"pagenum_text\">{$lang['pages']}:&nbsp;";
+        echo "<span class=\"pagenum_text\">", gettext("Pages"), ":&nbsp;";
     }
 
     if ($page_count > 1) {

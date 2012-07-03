@@ -42,8 +42,6 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 {
     if (!$db_links_get_in_folder = db_connect()) return false;
 
-    $lang = load_language_file();
-
     $sort_by_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
     $sort_dir_array = array('ASC', 'DESC');
 
@@ -101,7 +99,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
                 }
             }
 
-            if (!isset($links_data['LOGON'])) $links_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($links_data['LOGON'])) $links_data['LOGON'] = gettext("Unknown user");
             if (!isset($links_data['NICKNAME'])) $links_data['NICKNAME'] = "";
 
             $links_array[$links_data['LID']] = $links_data;
@@ -404,8 +402,6 @@ function links_get_single($lid, $approved = true)
 {
     if (!$db_links_get_single = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($lid)) return false;
     
     $approved = ($approved) ? "AND LINKS.APPROVED IS NOT NULL" : '';
@@ -433,7 +429,7 @@ function links_get_single($lid, $approved = true)
             }
         }
 
-        if (!isset($link_array['LOGON'])) $link_array['LOGON'] = $lang['unknownuser'];
+        if (!isset($link_array['LOGON'])) $link_array['LOGON'] = gettext("Unknown user");
         if (!isset($link_array['NICKNAME'])) $link_array['NICKNAME'] = "";
 
         return $link_array;
@@ -445,8 +441,6 @@ function links_get_single($lid, $approved = true)
 function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0)
 {
     if (!$db_links_get_in_folder = db_connect()) return false;
-
-    $lang = load_language_file();
 
     $sort_by_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
     $sort_dir_array = array('ASC', 'DESC');
@@ -502,7 +496,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
                 }
             }
 
-            if (!isset($links_data['LOGON'])) $links_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($links_data['LOGON'])) $links_data['LOGON'] = gettext("Unknown user");
             if (!isset($links_data['NICKNAME'])) $links_data['NICKNAME'] = "";
 
             $links_array[$links_data['LID']] = $links_data;
@@ -654,8 +648,6 @@ function links_get_comments($lid)
 {
     if (!$db_links_get_comments = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($lid))  return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -679,7 +671,7 @@ function links_get_comments($lid)
                 }
             }
 
-            if (!isset($link_comment_data['LOGON'])) $link_comment_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($link_comment_data['LOGON'])) $link_comment_data['LOGON'] = gettext("Unknown user");
             if (!isset($link_comment_data['NICKNAME'])) $link_comment_data['NICKNAME'] = "";
 
             $links_comment_array[] = $link_comment_data;

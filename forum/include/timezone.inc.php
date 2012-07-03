@@ -126,13 +126,11 @@ function get_available_timezones()
 
 function timezone_id_to_string($timezone_id)
 {
-    $lang = load_language_file();
-
     $timezones_array = get_available_timezones();
 
     if (isset($timezones_array[$timezone_id])) return $timezones_array[$timezone_id];
 
-    return $lang['unknown'];
+    return gettext("Unknown");
 }
 
 function timestamp_is_dst($timezoneid, $gmt_offset)

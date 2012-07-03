@@ -110,8 +110,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -138,8 +138,8 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['nouserspecified']);
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("No user specified."));
             html_draw_bottom();
             exit;
         }
@@ -153,8 +153,8 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['nouserspecified']);
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("No user specified."));
             html_draw_bottom();
             exit;
         }
@@ -177,8 +177,8 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session_get_value('UID'))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -202,7 +202,7 @@ if (isset($_POST['save'])) {
 
         if (sizeof(array_diff_assoc($t_entry_array, $t_entry_cleaned_array)) > 0) {
 
-            $error_msg_array[] = $lang['profileentriesmustnotincludehtml'];
+            $error_msg_array[] = gettext("Profile Entries must not include HTML");
             $valid = false;
         }
 
@@ -227,7 +227,7 @@ if (isset($_POST['save'])) {
 
                 if (!user_profile_update($uid, $piid, $profile_entry, $privacy)) {
 
-                    $error_msg_array[] = $lang['failedtoupdateuserprofile'];
+                    $error_msg_array[] = gettext("Failed to update user profile");
                     $valid = false;
                 }
             }
@@ -236,12 +236,12 @@ if (isset($_POST['save'])) {
 
                 if ($admin_edit === true) {
 
-                    header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
+                    header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
                     exit;
 
                 }else {
 
-                    header_redirect("edit_profile.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
+                    header_redirect("edit_profile.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
                     exit;
                 }
             }
@@ -255,15 +255,15 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         $user = user_get($uid);
 
-        html_draw_top("title={$lang['admin']} - {$lang['editprofile']} - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'class=window_title');
+        html_draw_top("title=", gettext("Admin"), " - ", gettext("Edit Profile"), " - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'class=window_title');
 
-        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editprofile']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Profile"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
     }else {
 
-        html_draw_top("title={$lang['mycontrols']} - {$lang['editprofile']}", 'class=window_title');
+        html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Profile"), "", 'class=window_title');
 
-        echo "<h1>{$lang['editprofile']}</h1>\n";
+        echo "<h1>", gettext("Edit Profile"), "</h1>\n";
     }
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -272,7 +272,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     }elseif (isset($_GET['profile_updated'])) {
 
-        html_display_success_msg($lang['profileupdated'], '600', ($admin_edit) ? 'center' : 'left');
+        html_display_success_msg(gettext("Profile updated."), '600', ($admin_edit) ? 'center' : 'left');
     }
 
     if ($admin_edit === true) echo "<div align=\"center\">\n";
@@ -355,7 +355,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
             }
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"", gettext("Friends only?"), "\""), "</td>\n";
             }else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
@@ -365,7 +365,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
             echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"", gettext("Friends only?"), "\""), "</td>\n";
             }else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
@@ -377,7 +377,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
             echo "                        <td align=\"left\" valign=\"top\">", form_input_text("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"", gettext("Friends only?"), "\""), "</td>\n";
             }else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
@@ -402,13 +402,13 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
     if ($admin_edit === true) {
 
         echo "          <tr>\n";
-        echo "            <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "            <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
         echo "          </tr>\n";
 
     }else {
 
         echo "          <tr>\n";
-        echo "            <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+        echo "            <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
         echo "          </tr>\n";
     }
 
@@ -424,8 +424,8 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['profilesnotsetup']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The forum owner has not set up Profiles."));
     html_draw_bottom();
 }
 

@@ -117,8 +117,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -173,7 +173,7 @@ if (isset($_POST['t_newthread'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['mustenterthreadtitle'];
+        $error_msg_array[] = gettext("You must enter a title for the thread!");
         $valid = false;
     }
 
@@ -185,13 +185,13 @@ if (isset($_POST['t_newthread'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
+            $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['pleaseselectfolder'];
+        $error_msg_array[] = gettext("Please select a folder");
         $valid = false;
     }
 
@@ -201,7 +201,7 @@ if (isset($_POST['t_newthread'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['mustenterpostcontent'];
+        $error_msg_array[] = gettext("You must enter some content for the post!");
         $valid = false;
     }
 
@@ -215,7 +215,7 @@ if (isset($_POST['t_newthread'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['mustenterpostcontent'];
+            $error_msg_array[] = gettext("You must enter some content for the post!");
             $valid = false;
         }
 
@@ -314,8 +314,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
@@ -328,8 +328,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['cannotcreatepostinfolder']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You cannot reply to posts in this folder"));
         html_draw_bottom();
         exit;
     }
@@ -343,8 +343,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-        light_html_display_error_msg($lang['threadcouldnotbefound']);
+        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
     }
@@ -357,8 +357,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-        light_html_display_error_msg($lang['cannotcreatepostinfolder']);
+        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_display_error_msg(gettext("You cannot reply to posts in this folder"));
         light_html_draw_bottom();
         exit;
     }
@@ -377,7 +377,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
 
-        $error_msg_array[] = $lang['invalidfolderid'];
+        $error_msg_array[] = gettext("Invalid Folder ID. Check that a folder with this ID exists!");
         $valid = false;
     }
 
@@ -389,8 +389,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-        light_html_display_error_msg($lang['cannotcreatethreadinfolder']);
+        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_display_error_msg(gettext("You cannot create new threads in this folder"));
         light_html_draw_bottom();
         exit;
     }
@@ -440,16 +440,16 @@ if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
         light_html_draw_bottom();
         exit;
     }
 
     if (!$thread_data = thread_get($reply_to_tid)) {
 
-        light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-        light_html_display_error_msg($lang['threadcouldnotbefound']);
+        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
     }
@@ -458,7 +458,7 @@ if (!$new_thread) {
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
-        $error_msg_array[] = $lang['messagehasbeendeleted'];
+        $error_msg_array[] = gettext("Message not found. Check that it hasn't been deleted.");
         $valid = false;
     }
 }
@@ -547,16 +547,16 @@ if ($valid && isset($_POST['post'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['errorcreatingpost'];
+            $error_msg_array[] = gettext("Error creating post! Please try again in a few minutes.");
         }
 
     }else {
 
-        $error_msg_array[] = sprintf($lang['postfrequencytoogreat'], forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 
-light_html_draw_top("title={$lang['postmessage']}", "robots=noindex,nofollow");
+light_html_draw_top("title=", gettext("Post message"), "", "robots=noindex,nofollow");
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
@@ -566,12 +566,12 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h3>{$lang['messagepreview']}</h3>";
+    echo "<h3>", gettext("Message Preview"), "</h3>";
 
     if ($t_to_uid == 0) {
 
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
+        $preview_message['TLOGON'] = gettext("ALL");
+        $preview_message['TNICK'] = gettext("ALL");
 
     }else {
 
@@ -597,11 +597,11 @@ if (!$new_thread) {
 
         if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            echo "<h3>{$lang['moderatorthreadclosed']}</h3>\n";
+            echo "<h3>", gettext("Warning: this thread is closed for posting to normal users."), "</h3>\n";
 
         }else {
 
-            echo "<h3>{$lang['threadisclosedforposting']}</h3>\n";
+            echo "<h3>", gettext("This thread is closed, you cannot post in it!"), "</h3>\n";
             light_html_draw_bottom();
             exit;
         }
@@ -626,21 +626,21 @@ if ($new_thread) {
 
     echo form_input_hidden("t_newthread", "Y");
 
-    echo "<h3>{$lang['createnewthread']}</h3>\n";
+    echo "<h3>", gettext("Create new thread"), "</h3>\n";
     echo "<div class=\"post_inner\">\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         light_html_display_error_array($error_msg_array);
     }
 
-    echo "<div class=\"post_folder\">{$lang['selectfolder']}:", light_folder_draw_dropdown($t_fid, "t_fid"), "</div>";
-    echo "<div class=\"post_thread_title\">{$lang['threadtitle']}:", light_form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 30, 64), "</div>";
+    echo "<div class=\"post_folder\">", gettext("Select folder"), ":", light_folder_draw_dropdown($t_fid, "t_fid"), "</div>";
+    echo "<div class=\"post_thread_title\">", gettext("Thread title"), ":", light_form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 30, 64), "</div>";
 
 }else {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
         light_html_draw_bottom();
         exit;
     }
@@ -649,13 +649,13 @@ if ($new_thread) {
 
     if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0) {
 
-        light_html_display_error_msg($lang['messagehasbeendeleted']);
+        light_html_display_error_msg(gettext("Message not found. Check that it hasn't been deleted."));
         light_html_draw_bottom();
         exit;
 
     }else {
 
-        echo "<h3>{$lang['postreply']}: ", word_filter_add_ob_tags(thread_get_title($reply_to_tid), true), "</h3>\n";
+        echo "<h3>", gettext("Post Reply"), ": ", word_filter_add_ob_tags(thread_get_title($reply_to_tid), true), "</h3>\n";
         echo "<div class=\"post_inner\">\n";
 
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -667,8 +667,8 @@ if ($new_thread) {
     }
 }
 
-echo "<div class=\"post_to\">{$lang['to']}:", post_draw_to_dropdown($t_to_uid), "</div>";
-echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
+echo "<div class=\"post_to\">", gettext("To"), ":", post_draw_to_dropdown($t_to_uid), "</div>";
+echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
 
 if ($allow_sig == true) {
 
@@ -680,10 +680,10 @@ if ($allow_html == true) {
 
     $tph_radio = $post->getHTML();
 
-    echo "<div class=\"post_html\"><span>{$lang['htmlinmessage']}:</span>\n";
-    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['auto'], $tph_radio == POST_HTML_AUTO);
-    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED);
+    echo "<div class=\"post_html\"><span>", gettext("HTML in message"), ":</span>\n";
+    echo light_form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED);
+    echo light_form_radio("t_post_html", "enabled_auto", gettext("Auto"), $tph_radio == POST_HTML_AUTO);
+    echo light_form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED);
     echo "</div>";
 
 }else {
@@ -692,9 +692,9 @@ if ($allow_html == true) {
 }
 
 echo "<div class=\"post_buttons\">";
-echo light_form_submit("post", $lang['post']);
-echo light_form_submit("preview", $lang['preview']);
-echo light_form_submit("cancel", $lang['cancel']);
+echo light_form_submit("post", gettext("Post"));
+echo light_form_submit("preview", gettext("Preview"));
+echo light_form_submit("cancel", gettext("Cancel"));
 echo "</div>";
 
 echo "</div>";
@@ -703,7 +703,7 @@ echo "</form>\n";
 
 if (!$new_thread && $reply_to_pid > 0) {
 
-    echo "<h3>{$lang['inreplyto']}:</h3>\n";
+    echo "<h3>", gettext("In reply to"), ":</h3>\n";
 
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 

@@ -288,8 +288,6 @@ function poll_get($tid)
 {
     if (!$db_poll_get = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($tid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -354,12 +352,12 @@ function poll_get($tid)
             }
         }
 
-        if (!isset($poll_data['FNICK'])) $poll_data['FNICK'] = $lang['unknownuser'];
-        if (!isset($poll_data['FLOGON'])) $poll_data['FLOGON'] = $lang['unknownuser'];
+        if (!isset($poll_data['FNICK'])) $poll_data['FNICK'] = gettext("Unknown user");
+        if (!isset($poll_data['FLOGON'])) $poll_data['FLOGON'] = gettext("Unknown user");
         if (!isset($poll_data['FROM_UID'])) $poll_data['FROM_UID'] = -1;
 
-        if (!isset($poll_data['TNICK'])) $poll_data['TNICK'] = $lang['allcaps'];
-        if (!isset($poll_data['TLOGON'])) $poll_data['TLOGON'] = $lang['allcaps'];
+        if (!isset($poll_data['TNICK'])) $poll_data['TNICK'] = gettext("ALL");
+        if (!isset($poll_data['TLOGON'])) $poll_data['TLOGON'] = gettext("ALL");
 
         return $poll_data;
     }
@@ -541,8 +539,6 @@ function poll_get_user_votes($tid)
 
 function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     $total_votes = 0;
@@ -694,7 +690,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
         if (($poll_data['CLOSES'] <= time()) && $poll_data['CLOSES'] != 0) {
 
             $poll_display.= "            <tr>\n";
-            $poll_display.= "              <td align=\"left\" colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
+            $poll_display.= "              <td align=\"left\" colspan=\"2\" class=\"postbody\">". gettext("Poll has ended."). "</td>\n";
             $poll_display.= "            </tr>\n";
 
             if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
@@ -703,7 +699,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "              <td align=\"left\" colspan=\"2\">&nbsp;</td>";
                 $poll_display.= "            </tr>\n";
                 $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a></td>\n";
+                $poll_display.= "              <td colspan=\"2\" align=\"center\"><a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>". gettext("Results"). "</span></a></td>\n";
                 $poll_display.= "            </tr>\n";
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "             <td align=\"left\" colspan=\"2\">&nbsp;</td>";
@@ -727,7 +723,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
 
                     $poll_display.= "            <tr>\n";
-                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
+                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', gettext("Vote")). "</td>\n";
                     $poll_display.= "            </tr>\n";
                 }
 
@@ -735,11 +731,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
 
                 if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
+                    $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>". gettext("Results"). "</span></a>";
                 }
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">{$lang['endpoll']}</a>";
+                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
                 }
 
                 $poll_display.= "              </td>\n";
@@ -748,7 +744,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
 
                     $poll_display.= "            <tr>\n";
-                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
+                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', gettext("Change vote")). "</td>\n";
                     $poll_display.= "            </tr>\n";
                     $poll_display.= "            <tr>\n";
                     $poll_display.= "              <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -758,7 +754,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                     $poll_display.= "            <tr>\n";
-                    $poll_display.= "              <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
+                    $poll_display.= "              <td colspan=\"2\" align=\"center\" class=\"postbody\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</td>\n";
                     $poll_display.= "            </tr>\n";
                     $poll_display.= "            <tr>\n";
                     $poll_display.= "              <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -768,17 +764,17 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             } else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
                 $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
+                $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', gettext("Vote")). "</td>\n";
                 $poll_display.= "            </tr>\n";
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
 
                 if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>{$lang['results']}</span></a>";
+                    $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>". gettext("Results"). "</span></a>";
                 }
 
                 if (session_get_value('UID') == $poll_data['FROM_UID'] || session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">{$lang['endpoll']}</a>";
+                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
                 }
 
                 $poll_display.= "              </td>\n";
@@ -790,7 +786,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                     $poll_display.= "            <tr>\n";
-                    $poll_display.= "              <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
+                    $poll_display.= "              <td colspan=\"2\" align=\"center\" class=\"postbody\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</td>\n";
                     $poll_display.= "            </tr>\n";
                     $poll_display.= "            <tr>\n";
                     $poll_display.= "              <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -838,13 +834,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
 function poll_display_user_votes($user_poll_votes_array)
 {
-    $lang = load_language_file();
-
     array_walk($user_poll_votes_array['VOTES'], 'poll_user_poll_votes_callback');
 
     $poll_votes_display = "<tr>\n";
     $poll_votes_display.= "  <td align=\"left\" colspan=\"2\" class=\"postbody\">";
-    $poll_votes_display.= "      ". sprintf($lang['youvotedforpolloptionsondate'], implode("' &amp; '", $user_poll_votes_array['VOTES']), format_date($user_poll_votes_array['VOTED']));
+    $poll_votes_display.= "      ". sprintf(gettext("You voted for: '%s' on %s"), implode("' &amp; '", $user_poll_votes_array['VOTES']), format_date($user_poll_votes_array['VOTED']));
     $poll_votes_display.= "  </td>\n";
     $poll_votes_display.= "</tr>\n";
 
@@ -855,38 +849,36 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
 {
     $html = "";
 
-    $lang = load_language_file();
-
     if ($user_votes == 0) {
-        $user_votes_display = $lang['nousersvoted'];
+        $user_votes_display = gettext("No users");
     } else if ($user_votes == 1) {
-        $user_votes_display = $lang['oneuservoted'];
+        $user_votes_display = gettext("1 user");
     }else {
-        $user_votes_display = sprintf($lang['xusersvoted'], $user_votes);
+        $user_votes_display = sprintf(gettext("%s users"), $user_votes);
     }
 
     if ($guest_votes == 0) {
-        $guest_votes_display = $lang['noguestsvoted'];
+        $guest_votes_display = gettext("no guests");
     } else if ($guest_votes == 1) {
-        $guest_votes_display = $lang['oneguestvoted'];
+        $guest_votes_display = gettext("1 guest");
     }else {
-        $guest_votes_display = sprintf($lang['xguestsvoted'], $guest_votes);
+        $guest_votes_display = sprintf(gettext("%s guests"), $guest_votes);
     }
 
     if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= time())) {
 
         if ($user_votes > 0 || $guest_votes > 0) {
-            $html.= sprintf("<b>{$lang['votedisplayclosedpoll']}</b>", $user_votes_display, $guest_votes_display);
+            $html.= sprintf("<b>", gettext("%s and %s voted."), "</b>", $user_votes_display, $guest_votes_display);
         }else {
-            $html.= $lang['nobodyvotedclosedpoll'];
+            $html.= gettext("Nobody voted");
         }
 
     } else if ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > time())) {
 
         if ($user_votes > 0 || $guest_votes > 0) {
-            $html.= sprintf("<b>{$lang['votedisplayopenpoll']}</b>", $user_votes_display, $guest_votes_display);
+            $html.= sprintf("<b>", gettext("%s and %s have voted."), "</b>", $user_votes_display, $guest_votes_display);
         }else {
-            $html.= $lang['nobodyvotedclosedpoll'];
+            $html.= gettext("Nobody voted");
         }
     }
 
@@ -953,8 +945,6 @@ function poll_voting_form($poll_results, $poll_data)
 
 function poll_horizontal_graph($options_array, $poll_data, $total_votes)
 {
-    $lang = load_language_file();
-
     static $bar_color = 1;
 
     $poll_display = "<div align=\"center\">\n";
@@ -974,7 +964,7 @@ function poll_horizontal_graph($options_array, $poll_data, $total_votes)
         $poll_display.= "      </td>\n";
         $poll_display.= "    </tr>\n";
         $poll_display.= "    <tr>\n";
-        $poll_display.= "      <td class=\"postbody\">". word_filter_add_ob_tags($option['OPTION_NAME']). ": ". sizeof($option['VOTES_ARRAY']). " {$lang['votes']} (". number_format($vote_percent, 2). "%)</td>\n";
+        $poll_display.= "      <td class=\"postbody\">". word_filter_add_ob_tags($option['OPTION_NAME']). ": ". sizeof($option['VOTES_ARRAY']). " ". gettext("Votes"). " (". number_format($vote_percent, 2). "%)</td>\n";
         $poll_display.= "    </tr>\n";
 
         if (($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC)) {
@@ -996,8 +986,6 @@ function poll_horizontal_graph($options_array, $poll_data, $total_votes)
 
 function poll_vertical_graph($options_array, $total_votes)
 {
-    $lang = load_language_file();
-
     static $bar_color = 1;
 
     $poll_display = "<div align=\"center\">\n";
@@ -1029,7 +1017,7 @@ function poll_vertical_graph($options_array, $total_votes)
 
         $vote_percent = ((sizeof($option['VOTES_ARRAY']) > 0) && ($total_votes > 0)) ? (sizeof($option['VOTES_ARRAY']) / $total_votes) * 100 : 0;
 
-        $poll_display.= "      <td class=\"postbody\" align=\"center\">". word_filter_add_ob_tags($option['OPTION_NAME']). "<br />". sizeof($option['VOTES_ARRAY']). " {$lang['votes']} (". number_format($vote_percent, 2). "%)</td>\n";
+        $poll_display.= "      <td class=\"postbody\" align=\"center\">". word_filter_add_ob_tags($option['OPTION_NAME']). "<br />". sizeof($option['VOTES_ARRAY']). " ". gettext("Votes"). " (". number_format($vote_percent, 2). "%)</td>\n";
     }
 
     $poll_display.= "    </tr>\n";
@@ -1159,8 +1147,6 @@ function poll_public_ballot_user_callback($user_data)
 {
     $webtag = get_webtag();
     
-    $lang = load_language_file();
-
     if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
 
         $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" class=\"popup 650x500\" style=\"white-space: nowrap\">%2\$s</a>";
@@ -1175,7 +1161,7 @@ function poll_public_ballot_user_callback($user_data)
         return $user_data;
     }
     
-    return $lang['unknownuser'];
+    return gettext("Unknown user");
 }
 
 function poll_user_poll_votes_callback(&$option_name, $key)
@@ -1256,16 +1242,14 @@ function poll_get_question_html($question_number)
 {
     if (!is_numeric($question_number)) return false;
 
-    $lang = load_language_file();
-
     $html = "<fieldset class=\"poll_question\">\n";
     $html.= "  <div>\n";
-    $html.= "    <h2>{$lang['pollquestion']}</h2>\n";
+    $html.= "    <h2>". gettext("Poll Question"). "</h2>\n";
     $html.= "    <div class=\"poll_question_input\">\n";
-    $html.= "      ". form_input_text("poll_questions[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"{$lang['deletequestion']}\""). "<br />\n";
+    $html.= "      ". form_input_text("poll_questions[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"", gettext("Delete question"), "\""). "<br />\n";
     $html.= "    </div>\n";
     $html.= "    <div class=\"poll_question_checkbox\">\n";
-    $html.= "      ". form_checkbox("poll_questions[{$question_number}][allow_multi]", "Y", $lang['allowmultipleoptions'], false). "\n";
+    $html.= "      ". form_checkbox("poll_questions[{$question_number}][allow_multi]", "Y", gettext("Allow multiple options to be selected"), false). "\n";
     $html.= "    </div>\n";
     $html.= "    <div class=\"poll_options_list\">\n";
     $html.= "      <ol>\n";
@@ -1273,7 +1257,7 @@ function poll_get_question_html($question_number)
     $html.= "      </ol>\n";
     $html.= "    </div>\n";
     $html.= "  </div>\n";
-    $html.= "  ". form_button_html("add_option[{$question_number}]", 'submit', 'button_image add_option', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), $lang['addnewoption'])). "\n";
+    $html.= "  ". form_button_html("add_option[{$question_number}]", 'submit', 'button_image add_option', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), gettext("Add new option"))). "\n";
     $html.= "</fieldset>\n";
 
     return $html;
@@ -1285,9 +1269,7 @@ function poll_get_option_html($question_number, $option_number)
 
     if (!is_numeric($option_number)) return false;
 
-    $lang = load_language_file();
-
-    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", '', 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"{$lang['deleteoption']}\""));
+    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", '', 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"", gettext("Delete option"), "\""));
 }
 
 function poll_close($tid)

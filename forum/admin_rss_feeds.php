@@ -105,13 +105,13 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -124,13 +124,13 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-$update_frequencies_array = array(RSS_FEED_UPDATE_NEVER        => $lang['never'],
-                                  RSS_FEED_UPDATE_THIRTY_MINS  => $lang['every30mins'],
-                                  RSS_FEED_UPDATE_ONE_HOUR     => $lang['onceanhour'],
-                                  RSS_FEED_UPDATE_SIX_HOURS    => $lang['every6hours'],
-                                  RSS_FEED_UPDATE_TWELVE_HOURS => $lang['every12hours'],
-                                  RSS_FEED_UPDATE_ONCE_A_DAY   => $lang['onceaday'],
-                                  RSS_FEED_UPDATE_ONCE_A_WEEK  => $lang['onceaweek']);
+$update_frequencies_array = array(RSS_FEED_UPDATE_NEVER        => gettext("Never"),
+                                  RSS_FEED_UPDATE_THIRTY_MINS  => gettext("Every 30 minutes"),
+                                  RSS_FEED_UPDATE_ONE_HOUR     => gettext("Once an hour"),
+                                  RSS_FEED_UPDATE_SIX_HOURS    => gettext("Every 6 hours"),
+                                  RSS_FEED_UPDATE_TWELVE_HOURS => gettext("Every 12 hours"),
+                                  RSS_FEED_UPDATE_ONCE_A_DAY   => gettext("Once a day"),
+                                  RSS_FEED_UPDATE_ONCE_A_WEEK  => gettext("Once a Week"));
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
@@ -161,7 +161,7 @@ if (isset($_POST['delete'])) {
 
                 }else {
 
-                    $error_msg_array[] = $lang['failedtoremovefeeds'];
+                    $error_msg_array[] = gettext("Failed to remove some or all of the selected feeds");
                     $valid = false;
                 }
             }
@@ -188,7 +188,7 @@ if (isset($_POST['delete'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
+        $error_msg_array[] = gettext("Must specify RSS Feed URL");
         $valid = false;
     }
 
@@ -198,16 +198,16 @@ if (isset($_POST['delete'])) {
 
             if (is_array($rss_feed_items) && sizeof($rss_feed_items) > 0) {
 
-                $rss_stream_success = $lang['rssstreamworkingcorrectly'];
+                $rss_stream_success = gettext("RSS stream appears to be working correctly");
 
             }else {
 
-                $error_msg_array[] = $lang['rssstreamnotworkingcorrectly'];
+                $error_msg_array[] = gettext("RSS stream was empty or could not be found");
             }
 
         }else {
 
-            $error_msg_array[] = $lang['rssstreamnotworkingcorrectly'];
+            $error_msg_array[] = gettext("RSS stream was empty or could not be found");
         }
     }
 
@@ -221,7 +221,7 @@ if (isset($_POST['delete'])) {
         $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
     }else {
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyrssfeedname'];
+        $error_msg_array[] = gettext("Must specify RSS Feed Name");
     }
 
     if (isset($_POST['t_user_new']) && strlen(trim(stripslashes_array($_POST['t_user_new']))) > 0) {
@@ -235,13 +235,13 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_msg_array[] = $lang['unknownrssuseraccount'];
+            $error_msg_array[] = gettext("Unknown RSS User Account");
         }
 
     }else {
 
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyrssfeeduseraccount'];
+        $error_msg_array[] = gettext("Must specify RSS Feed User Account");
     }
 
     if (isset($_POST['t_fid_new']) && is_numeric($_POST['t_fid_new'])) {
@@ -251,7 +251,7 @@ if (isset($_POST['delete'])) {
     }else {
 
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyrssfeedfolder'];
+        $error_msg_array[] = gettext("Must specify RSS Feed Folder");
     }
 
     if (isset($_POST['t_url_new']) && strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
@@ -263,25 +263,25 @@ if (isset($_POST['delete'])) {
         if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
 
             $valid = false;
-            $error_msg_array[] = $lang['rssfeedsupportshttpurlsonly'];
+            $error_msg_array[] = gettext("RSS Feed supports HTTP URLs only. Secure feeds (https://) are not supported.");
         }
 
         if (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1) {
 
             $valid = false;
-            $error_msg_array[] = $lang['rssfeedurlformatinvalid'];
+            $error_msg_array[] = gettext("RSS Feed URL format is invalid. URL must include scheme (e.g. http://) and a hostname (e.g. www.hostname.com).");
         }
 
         if (isset($check_url['user']) || isset($check_url['pass'])) {
 
             $valid = false;
-            $error_msg_array[] = $lang['rssfeeduserauthentication'];
+            $error_msg_array[] = gettext("RSS Feed does not support HTTP user authentication");
         }
 
     }else {
 
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
+        $error_msg_array[] = gettext("Must specify RSS Feed URL");
     }
 
     if (isset($_POST['t_prefix_new']) && strlen(trim(stripslashes_array($_POST['t_prefix_new']))) > 0) {
@@ -297,7 +297,7 @@ if (isset($_POST['delete'])) {
     }else {
 
         $valid = false;
-        $error_msg_array[] = $lang['mustspecifyrssfeedupdatefrequency'];
+        $error_msg_array[] = gettext("Must specify RSS Feed Update Frequency");
     }
 
     if (isset($_POST['t_max_item_count_new']) && in_array($_POST['t_max_item_count_new'], range(1, 10))) {
@@ -307,7 +307,7 @@ if (isset($_POST['delete'])) {
     } else {
 
         $valid = false;
-        $error_msg_array[] = $lang['maxitemcountmustbebetween1and10'];
+        $error_msg_array[] = gettext("Max Item Count must be between 1 and 10");
     }
 
     if ($valid) {
@@ -320,7 +320,7 @@ if (isset($_POST['delete'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['failedtoaddnewrssfeed'];
+            $error_msg_array[] = gettext("Failed to add new RSS Feed");
         }
     }
 
@@ -339,7 +339,7 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_msg_array[] = $lang['mustspecifyrssfeedname'];
+            $error_msg_array[] = gettext("Must specify RSS Feed Name");
         }
 
         if (isset($_POST['t_old_name']) && strlen(trim(stripslashes_array($_POST['t_old_name']))) > 0) {
@@ -355,7 +355,7 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_msg_array[] = $lang['mustspecifyrssfeeduseraccount'];
+            $error_msg_array[] = gettext("Must specify RSS Feed User Account");
         }
 
         if (isset($_POST['t_old_user']) && strlen(trim(stripslashes_array($_POST['t_old_user']))) > 0) {
@@ -371,7 +371,7 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_msg_array[] = $lang['mustspecifyrssfeedfolder'];
+            $error_msg_array[] = gettext("Must specify RSS Feed Folder");
         }
 
         if (isset($_POST['t_old_fid']) && is_numeric($_POST['t_old_fid'])) {
@@ -384,7 +384,7 @@ if (isset($_POST['delete'])) {
             $t_new_url = $_POST['t_url'];
         }else {
             $valid = false;
-            $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
+            $error_msg_array[] = gettext("Must specify RSS Feed URL");
         }
 
         if (isset($_POST['t_old_url']) && strlen(trim(stripslashes_array($_POST['t_old_url']))) > 0) {
@@ -412,7 +412,7 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_msg_array[] = $lang['mustspecifyrssfeedupdatefrequency'];
+            $error_msg_array[] = gettext("Must specify RSS Feed Update Frequency");
         }
 
         if (isset($_POST['t_old_frequency']) && is_numeric($_POST['t_old_frequency'])) {
@@ -428,7 +428,7 @@ if (isset($_POST['delete'])) {
         } else {
 
             $valid = false;
-            $error_msg_array[] = $lang['maxitemcountmustbebetween1and10'];
+            $error_msg_array[] = gettext("Max Item Count must be between 1 and 10");
         }
 
         if (isset($_POST['t_old_max_item_count']) && is_numeric($_POST['t_old_max_item_count'])) {
@@ -453,12 +453,12 @@ if (isset($_POST['delete'])) {
 
                 }else {
 
-                    $error_msg_array[] = $lang['failedtoupdaterssfeed'];
+                    $error_msg_array[] = gettext("Failed to update RSS Feed");
                 }
 
             }else {
 
-                $error_msg_array[] = $lang['unknownrssuseraccount'];
+                $error_msg_array[] = gettext("Unknown RSS User Account");
             }
         }
     }
@@ -472,9 +472,9 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
-    html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']} - {$lang['addnewfeed']}", 'class=window_title', 'search_popup.js');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("RSS Feeds"), " - ", gettext("Add New Feed"), "", 'class=window_title', 'search_popup.js');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['addnewfeed']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add New Feed"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -499,17 +499,17 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['feednameandlocation']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Feed Name and Location"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : ""), 40, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedlocation']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Location"), ":</td>\n";
     echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text("t_url_new", (isset($_POST['t_url_new']) ? htmlentities_array(stripslashes_array($_POST['t_url_new'])) : ""), 30, 255), "&nbsp;", form_submit("checkfeedsubmit", 'Test'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -529,30 +529,30 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['feedsettings']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Feed Settings"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed User Account"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text_search("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array(stripslashes_array($_POST['t_user_new'])) : ""), 30, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Thread Title Prefix"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_prefix_new", (isset($_POST['t_prefix_new']) ? htmlentities_array(stripslashes_array($_POST['t_prefix_new'])) : ""), 20, 16), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedfoldername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Folder Name"), ":</td>\n";
     echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid_new']) ? htmlentities_array(stripslashes_array($_POST['t_fid_new'])) : 0), "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['updatefrequency']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Update Frequency"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_frequency_new", $update_frequencies_array, (isset($_POST['t_frequency_new']) ? htmlentities_array(stripslashes_array($_POST['t_frequency_new'])) : 1440)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['maxitemcount']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count_new'])) : 10), 6, 4), "&nbsp;<span class=\"smalltext\">{$lang['maxitemcounthint']}</span></td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Max Item Count"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count_new'])) : 10), 6, 4), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -571,7 +571,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("addfeedsubmit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("addfeedsubmit", gettext("Add")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -591,23 +591,23 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid feed id or feed not found"), 'admin_rss_feeds.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
     if (!$rss_feed = rss_feed_get($feed_id)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Invalid feed id or feed not found"), 'admin_rss_feeds.php', 'get', array('back' => gettext("Back")));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']} - {$lang['editfeed']} - {$rss_feed['NAME']}", 'search_popup.js', 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("RSS Feeds"), " - ", gettext("Edit Feed"), " - {$rss_feed['NAME']}", 'search_popup.js', 'class=window_title');
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editfeed']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($rss_feed['NAME'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Feed"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($rss_feed['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -633,17 +633,17 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['feednameandlocation']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Feed Name and Location"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedname']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array(stripslashes_array($_POST['t_name'])) : (isset($rss_feed['NAME']) ? htmlentities_array($rss_feed['NAME']) : "")), 40, 32), form_input_hidden("t_name_old", (isset($rss_feed['NAME']) ? htmlentities_array($rss_feed['NAME']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedlocation']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Location"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_url", (isset($_POST['t_url']) ? htmlentities_array(stripslashes_array($_POST['t_url'])) : (isset($rss_feed['URL']) ? htmlentities_array($rss_feed['URL']) : "")), 30, 255), form_input_hidden("t_url_old", (isset($rss_feed['URL']) ? htmlentities_array($rss_feed['URL']) : "")), "&nbsp;", form_submit('checkfeedsubmit', "Test"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -663,30 +663,30 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['feedsettings']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Feed Settings"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed User Account"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text_search("t_user", (isset($_POST['t_user']) ? htmlentities_array(stripslashes_array($_POST['t_user'])) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Thread Title Prefix"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_prefix", (isset($_POST['t_prefix']) ? htmlentities_array(stripslashes_array($_POST['t_prefix'])) : (isset($rss_feed['PREFIX']) ? htmlentities_array($rss_feed['PREFIX']) : "")), 29, 16), form_input_hidden("t_prefix_old", (isset($rss_feed['PREFIX']) ? htmlentities_array($rss_feed['PREFIX']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedfoldername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Folder Name"), ":</td>\n";
     echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid']) ? htmlentities_array(stripslashes_array($_POST['t_fid'])) : (isset($rss_feed['FID']) ? $rss_feed['FID'] : 0)), "t_fid", "", "", "post_folder_dropdown"), form_input_hidden("t_fid_old", (isset($rss_feed['FID']) ? htmlentities_array($rss_feed['FID']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['updatefrequency']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Update Frequency"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_frequency", $update_frequencies_array, (isset($_POST['t_frequency']) ? htmlentities_array(stripslashes_array($_POST['t_frequency'])) : (isset($rss_feed['FREQUENCY']) ? $rss_feed['FREQUENCY'] : 1440)), "", "post_folder_dropdown"), form_input_hidden("t_frequency_old", (isset($rss_feed['FREQUENCY']) ? htmlentities_array($rss_feed['FREQUENCY']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['maxitemcount']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count'])) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span class=\"smalltext\">{$lang['maxitemcounthint']}</span></td>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Max Item Count"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count'])) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -705,7 +705,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("updatefeedsubmit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;",form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("updatefeedsubmit", gettext("Save")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;",form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -715,11 +715,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 }else {
 
-    html_draw_top("title={$lang['admin']} - {$lang['rssfeeds']}", 'search.js', 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("RSS Feeds"), "", 'search.js', 'class=window_title');
 
     $rss_feeds = rss_feed_get_feeds($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['rssfeeds']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -727,19 +727,19 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     }else if (isset($_GET['added'])) {
 
-        html_display_success_msg($lang['successfullyaddedfeed'], '550', 'center');
+        html_display_success_msg(gettext("Successfully added new feed"), '550', 'center');
 
     }else if (isset($_GET['edited'])) {
 
-        html_display_success_msg($lang['successfullyeditedfeed'], '550', 'center');
+        html_display_success_msg(gettext("Successfully edited feed"), '550', 'center');
 
     }else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg($lang['successfullyremovedselectedfeeds'], '550', 'center');
+        html_display_success_msg(gettext("Successfully removed selected feeds"), '550', 'center');
 
     }else if (sizeof($rss_feeds['rss_feed_array']) < 1) {
 
-        html_display_warning_msg($lang['noexistingfeeds'], '550', 'center');
+        html_display_warning_msg(gettext("No existing RSS Feeds found. To add a feed click the 'Add New' button below"), '550', 'center');
     }
 
     echo "<br />\n";
@@ -756,8 +756,8 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" width=\"300\">{$lang['name']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" width=\"225\">{$lang['updatefrequency']}&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"300\">", gettext("Name"), "</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"225\">", gettext("Update Frequency"), "&nbsp;</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($rss_feeds['rss_feed_array']) > 0) {
@@ -767,7 +767,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
             echo "                  <td valign=\"top\" align=\"left\" width=\"300\"><a href=\"admin_rss_feeds.php?webtag=$webtag&amp;page=$page&amp;feed_id={$rss_feed['RSSID']}\">", word_filter_add_ob_tags($rss_feed['NAME'], true), "</a></td>\n";
-            echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_frequencies_array))) ? $update_frequencies_array[$rss_feed['FREQUENCY']] : $lang['unknown'], "</td>\n";
+            echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_frequencies_array))) ? $update_frequencies_array[$rss_feed['FREQUENCY']] : gettext("Unknown"), "</td>\n";
             echo "                </tr>\n";
         }
     }
@@ -791,7 +791,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("addfeed", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("addfeed", gettext("Add New")), "&nbsp;", form_submit("delete", gettext("Delete Selected")), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -800,7 +800,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "</form>\n";
     echo "</div>\n";
 
-    html_display_warning_msg($lang['rssfeedhelp'], '550', 'center');
+    html_display_warning_msg(gettext("Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work."), '550', 'center');
 
     html_draw_bottom();
 }

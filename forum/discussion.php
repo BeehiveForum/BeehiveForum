@@ -110,8 +110,8 @@ if (!forum_check_webtag_available($webtag)) {
 // Message pane caching
 cache_check_messages();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -129,7 +129,7 @@ if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
 if (!$folder_info = threads_get_folders()) {
 
     html_draw_top();
-    html_error_msg($lang['couldnotretrievefolderinformation']);
+    html_error_msg(gettext("There are no folders available."));
     html_draw_bottom();
     exit;
 }
@@ -166,7 +166,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     }else {
 
         html_draw_top();
-        html_error_msg($lang['nomessages']);
+        html_error_msg(gettext("No Messages"));
         html_draw_bottom();
         exit;
     }
@@ -274,7 +274,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     }else {
 
         html_draw_top();
-        html_error_msg($lang['nomessages']);
+        html_error_msg(gettext("No Messages"));
         html_draw_bottom();
         exit;
     }

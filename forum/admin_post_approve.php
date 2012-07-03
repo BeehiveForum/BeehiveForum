@@ -108,8 +108,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -157,8 +157,8 @@ if (isset($_POST['msg'])) {
 
     } else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("No message specified for editing"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -171,8 +171,8 @@ if (isset($_POST['msg'])) {
 
     } else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("No message specified for editing"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -186,32 +186,32 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
 
     if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You cannot edit posts in this folder"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
 
     if (!session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You cannot edit posts in this folder"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
 
     if (!$thread_data = thread_get($tid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -220,8 +220,8 @@ if (isset($msg) && validate_msg($msg)) {
 
         if (isset($preview_message['APPROVED']) && ($preview_message['APPROVED'] > 0)) {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['postdoesnotrequireapproval'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("Post does not require approval"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
             html_draw_bottom();
             exit;
         }
@@ -241,15 +241,15 @@ if (isset($msg) && validate_msg($msg)) {
 
                 } else {
 
-                    html_draw_top("title={$lang['approvepost']}", 'class=window_title');
-                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_top("title=", gettext("Approve Post"), "", 'class=window_title');
+                    html_display_msg(gettext("Approve Post"), sprintf(gettext("Successfully approved post %s"), $msg), "admin_post_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             } else {
 
-                $error_msg_array[] = $lang['postapprovalfailed'];
+                $error_msg_array[] = gettext("Post approval failed.");
             }
 
         } else if (isset($_POST['delete'])) {
@@ -269,26 +269,26 @@ if (isset($msg) && validate_msg($msg)) {
 
                 } else {
 
-                    html_draw_top("title={$lang['deleteposts']}", 'class=window_title');
-                    html_display_msg($lang['deleteposts'], sprintf($lang['successfullydeletedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_top("title=", gettext("Delete posts"), "", 'class=window_title');
+                    html_display_msg(gettext("Delete posts"), sprintf(gettext("Successfully deleted post %s"), $msg), "admin_post_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             } else {
 
-                $error_msg_array[] = $lang['errordelpost'];
+                $error_msg_array[] = gettext("Error deleting post");
             }
         }
 
-        html_draw_top("title={$lang['admin']} - {$lang['approvepost']}", 'class=window_title', "post.js", "resize_width=720");
+        html_draw_top("title=", gettext("Admin"), " - ", gettext("Approve Post"), "", 'class=window_title', "post.js", "resize_width=720");
 
-        echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['approvepost']}</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Post"), "</h1>\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
-            $preview_message['TLOGON'] = $lang['allcaps'];
-            $preview_message['TNICK']  = $lang['allcaps'];
+            $preview_message['TLOGON'] = gettext("ALL");
+            $preview_message['TNICK']  = gettext("ALL");
 
         } else {
 
@@ -322,7 +322,7 @@ if (isset($msg) && validate_msg($msg)) {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['approvepost']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">", gettext("Approve Post"), "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"left\"><br />\n";
@@ -351,7 +351,7 @@ if (isset($msg) && validate_msg($msg)) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("approve", $lang['approve']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -361,8 +361,8 @@ if (isset($msg) && validate_msg($msg)) {
 
     } else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['postdoesnotexist'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("That post does not exist in this thread!"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -371,20 +371,20 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['accessdeniedexp']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("You do not have permission to use this section."));
         html_draw_bottom();
         exit;
     }
 
-    html_draw_top("title={$lang['admin']} - {$lang['postapprovalqueue']}", 'class=window_title');
+    html_draw_top("title=", gettext("Admin"), " - ", gettext("Post Approval Queue"), "", 'class=window_title');
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
-    echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Post Approval Queue"), "</h1>\n";
 
     if (sizeof($post_approval_array['post_array']) < 1) {
-        html_display_warning_msg($lang['nopostsawaitingapproval'], '86%', 'center');
+        html_display_warning_msg(gettext("No posts are awaiting approval"), '86%', 'center');
     }
 
     echo "<br />\n";
@@ -398,10 +398,10 @@ if (isset($msg) && validate_msg($msg)) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">{$lang['threadtitle']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">{$lang['folder']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['user']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['datetime']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Thread title"), "</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Folder"), "</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("User"), "</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("Date/Time"), "</td>\n";
     echo "                 </tr>\n";
 
     if (sizeof($post_approval_array['post_array']) > 0) {

@@ -106,8 +106,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -140,7 +140,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustenteryourcurrentpasswd'];
+        $error_msg_array[] = gettext("You must enter your current password");
         $valid = false;
     }
 
@@ -150,7 +150,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustenteranewpasswd'];
+        $error_msg_array[] = gettext("You must enter a new password");
         $valid = false;
     }
 
@@ -160,7 +160,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustconfirmyournewpasswd'];
+        $error_msg_array[] = gettext("You must confirm your new password");
         $valid = false;
     }
 
@@ -168,25 +168,25 @@ if (isset($_POST['save'])) {
 
         if ($t_new_pass != $t_confirm_pass) {
 
-            $error_msg_array[] = $lang['passwdsdonotmatch'];
+            $error_msg_array[] = gettext("Passwords do not match");
             $valid = false;
         }
 
         if (htmlentities_array($t_new_pass) != $t_new_pass) {
 
-            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
+            $error_msg_array[] = gettext("Password must not contain HTML tags");
             $valid = false;
         }
 
         if (mb_strlen($t_new_pass) < 6) {
 
-            $error_msg_array[] = $lang['passwdtooshort'];
+            $error_msg_array[] = gettext("Password must be a minimum of 6 characters long");
             $valid = false;
         }
 
         if ($t_old_pass == $t_new_pass) {
 
-            $error_msg_array[] = $lang['newandoldpasswdarethesame'];
+            $error_msg_array[] = gettext("New and old passwords are the same.");
             $valid = false;
         }
 
@@ -203,12 +203,12 @@ if (isset($_POST['save'])) {
 
                 // Force redirect to prevent refreshing the page
                 // prompting to user to resubmit form data.
-                header_redirect("edit_password.php?webtag=$webtag&updated=true", $lang['passwdchanged']);
+                header_redirect("edit_password.php?webtag=$webtag&updated=true", gettext("Password changed"));
                 exit;
 
             }else {
 
-                $error_msg_array[] = $lang['updatefailed'];
+                $error_msg_array[] = gettext("Update failed");
                 $valid = false;
             }
         }
@@ -216,9 +216,9 @@ if (isset($_POST['save'])) {
 }
 
 // Start Output Here
-html_draw_top("title={$lang['mycontrols']} - {$lang['changepassword']}", 'class=window_title');
+html_draw_top("title=", gettext("My Controls"), " - ", gettext("Change Password"), "", 'class=window_title');
 
-echo "<h1>{$lang['changepassword']}</h1>\n";
+echo "<h1>", gettext("Change Password"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -226,7 +226,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
+    html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'left');
 }
 
 echo "<br />\n";
@@ -240,7 +240,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['changepassword']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Change Password"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -248,15 +248,15 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['currentpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Current Password"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_password("opw", "", 37, 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("New Password"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_password("npw", "", 37, 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['confirmpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Confirm Password"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_password("cpw", "", 37, 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -275,7 +275,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

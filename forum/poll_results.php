@@ -109,8 +109,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -135,40 +135,40 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
     if (!$t_fid = thread_get_folder($tid, 1)) {
 
-        html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['mustspecifypolltoview'], 'poll_results.php', 'post', array('close' => $lang['close']));
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("You must specify a poll to view."), 'poll_results.php', 'post', array('close' => gettext("Close")));
     html_draw_bottom();
     exit;
 }
 
 if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested thread could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested folder could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
 
 if (!$poll_data = poll_get($tid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested thread could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -200,7 +200,7 @@ echo "</table>\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_button('close_popup', $lang['close']), "\n";
+echo "  ", form_button('close_popup', gettext("Close")), "\n";
 echo "</form>\n";
 echo "</div>\n";
 

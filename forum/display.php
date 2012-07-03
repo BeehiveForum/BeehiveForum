@@ -110,8 +110,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -136,32 +136,32 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}", "robots=noindex,nofollow", 'class=window_title');
-    html_error_msg($lang['invalidmsgidornomessageidspecified']);
+    html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow", 'class=window_title');
+    html_error_msg(gettext("Invalid Message ID or no Message ID specified."));
     html_draw_bottom();
     exit;
 }
 
 if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested thread could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested folder could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['postdoesnotexist']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("That post does not exist in this thread!"));
     html_draw_bottom();
     exit;
 }
@@ -230,8 +230,8 @@ if ($message) {
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
-echo "      <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"_self\" class=\"button\"><span>{$lang['back']}</span></a>\n";
-echo "      ", form_button("print", $lang['print']), "\n";
+echo "      <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"_self\" class=\"button\"><span>", gettext("Back"), "</span></a>\n";
+echo "      ", form_button("print", gettext("Print")), "\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";

@@ -214,8 +214,6 @@ function post_update_thread_length($tid, $length)
 
 function post_draw_to_dropdown($default_uid, $show_all = true)
 {
-    $lang = load_language_file();
-
     $class = defined('BEEHIVEMODE_LIGHT') ? 'select' : 'bhselect';
 
     $html = "<select name=\"t_to_uid\" class=\"$class\">";
@@ -256,7 +254,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">{$lang['allcaps']}</option>";
+        $html .= "<option value=\"0\">". gettext("ALL"). "</option>";
     }
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -291,8 +289,6 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_recent($default_uid)
 {
-    $lang = load_language_file();
-
     $class = defined('BEEHIVEMODE_LIGHT') ? 'select' : 'recent_user_dropdown';
 
     $html = "<select name=\"t_to_uid_recent\" class=\"$class\">";
@@ -331,7 +327,7 @@ function post_draw_to_dropdown_recent($default_uid)
         }
     }
 
-    $html .= "<option value=\"0\">{$lang['allcaps']}</option>";
+    $html .= "<option value=\"0\">". gettext("ALL"). "</option>";
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
@@ -365,8 +361,6 @@ function post_draw_to_dropdown_recent($default_uid)
 
 function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false, $class = 'user_in_thread_dropdown', $custom_html = "")
 {
-    $lang = load_language_file();
-
     $html = "<select name=\"t_to_uid_in_thread\" class=\"$class\" $custom_html>";
 
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
@@ -405,7 +399,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if ($show_all) {
 
-        $html.= "<option value=\"0\">{$lang['allcaps']}</option>";
+        $html.= "<option value=\"0\">". gettext("ALL"). "</option>";
 
     }else if ($inc_blank) {
 
@@ -624,8 +618,7 @@ function post_delete($tid, $pid)
 
 function post_edit_refuse($tid, $pid)
 {
-    $lang = load_language_file();
-    html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$tid.$pid"));
+    html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => "$tid.$pid"));
 }
 
 class MessageText {

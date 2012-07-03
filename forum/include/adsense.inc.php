@@ -195,8 +195,6 @@ function adsense_output_html()
 
     forum_check_webtag_available($webtag);
 
-    $lang = load_language_file();
-
     if ($adsense_displayed === false) {
 
         if (adsense_publisher_id()) {
@@ -212,7 +210,7 @@ function adsense_output_html()
             echo "    <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 
             if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
-                echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['registertoremoveadverts']}</a></div>\n";
+                echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Register to remove these adverts."), "</a></div>\n";
             }
 
             echo "  </div>\n";

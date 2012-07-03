@@ -494,8 +494,6 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     if (!$db_search_fetch_results = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = session_get_value('UID')) === false) return false;
@@ -575,8 +573,8 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
                 }
             }
 
-            if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = $lang['unknownuser'];
-            if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = $lang['unknownuser'];
+            if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = gettext("Unknown user");
+            if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = gettext("Unknown user");
 
             $search_results_array[] = $search_result;
         }
@@ -808,8 +806,6 @@ function search_date_range($from, $to, $return = SEARCH_DATE_RANGE_SQL)
 
 function folder_search_dropdown($selected_folder)
 {
-    $lang = load_language_file();
-
     if (!$db_folder_search_dropdown = db_connect()) return false;
 
     if (!is_numeric($selected_folder)) return false;
@@ -847,7 +843,7 @@ function folder_search_dropdown($selected_folder)
 
         if (sizeof($available_folders) > 0) {
 
-            $available_folders = array($lang['all_caps']) + $available_folders;
+            $available_folders = array(gettext("ALL")) + $available_folders;
             return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
         }
     }

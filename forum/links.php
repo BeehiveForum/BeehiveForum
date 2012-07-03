@@ -107,8 +107,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -119,8 +119,8 @@ if (!forum_check_access_level()) {
 
 if (!forum_get_setting('show_links', 'Y')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['maynotaccessthissection']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You may not access this section."));
     html_draw_bottom();
     exit;
 }
@@ -137,7 +137,7 @@ if (isset($_GET['fid']) && isset($folders[$_GET['fid']])) {
 
 }else {
 
-    links_create_top_folder($lang['toplevel']);
+    links_create_top_folder(gettext("Top Level"));
     header_redirect("links.php?webtag=$webtag&fid=1");
 }
 
@@ -220,20 +220,20 @@ echo "<h1>", links_get_folder_path_links($fid, $folders), "</h1>\n";
 if (isset($_GET['link_added']) && strlen(trim(stripslashes_array($_GET['link_added']))) > 0) {
 
     $link_added = $_GET['link_added'];
-    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], htmlentities_array($link_added)), '85%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully added link '%s'"), htmlentities_array($link_added)), '85%', 'center');
 
 }elseif (isset($_GET['folder_added']) && strlen(trim(stripslashes_array($_GET['folder_added']))) > 0) {
 
     $folder_added = $_GET['folder_added'];
-    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], htmlentities_array($folder_added)), '85%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully added link '%s'"), htmlentities_array($folder_added)), '85%', 'center');
 }
 
 // work out where we are in the folder hierarchy and display links to all the higher levels
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
-    echo "<div align=\"right\">{$lang['viewmode']}: ";
-    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\"><b>{$lang['hierarchical']}</b></a> | ";
-    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\">{$lang['list']}</a>\n";
+    echo "<div align=\"right\">", gettext("View Mode"), ": ";
+    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\"><b>", gettext("Hierarchical"), "</b></a> | ";
+    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\">", gettext("List"), "</a>\n";
     echo "</div>\n";
     echo "<br />";
     echo "<div align=\"center\">\n";
@@ -241,7 +241,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
 
-    if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">{$lang['folderhidden']}. <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;action=foldershow\">[{$lang['unhide']}]</a></p>";
+    if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">", gettext("This folder is hidden"), ". <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;action=foldershow\">[", gettext("unhide"), "]</a></p>";
 
     $subfolders = links_get_subfolders($fid, $folders);
 
@@ -257,7 +257,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         echo "                    <td align=\"left\" class=\"posthead\">\n";
         echo "                      <table width=\"100%\">\n";
         echo "                        <tr>\n";
-        echo "                          <td align=\"left\" class=\"subhead\">{$lang['folders']}</td>";
+        echo "                          <td align=\"left\" class=\"subhead\">", gettext("Folders"), "</td>";
         echo "                        </tr>\n";
         echo "                      </table>\n";
         echo "                      <div class=\"links_folder_list\">\n";
@@ -266,25 +266,25 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         while (list($key, $val) = each($subfolders)) {
 
             echo "                          <tr>\n";
-            echo "                            <td class=\"postbody\"><img src=\"" . html_style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td>\n";
+            echo "                            <td class=\"postbody\"><img src=\"" . html_style_image("folder.png") . "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" /></td>\n";
             echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags($folders[$val]['NAME'], true), "</a>";
 
             if (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
 
-                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['hide']}]</a>\n";
+                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("hide"), "]</a>\n";
 
             }elseif (session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "N") {
 
-                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['unhide']}]</a>\n";
+                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("unhide"), "]</a>\n";
             }
 
             if (session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
-                echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$val\" class=\"threadtime\">[{$lang['edit']}]</a>\n";
+                echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$val\" class=\"threadtime\">[", gettext("Edit"), "]</a>\n";
 
                 if (count(links_get_subfolders($val, $folders)) == 0) {
 
-                    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
+                    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("Delete"), "]</a>\n";
                 }
             }
 
@@ -308,7 +308,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
             echo "            <tr>\n";
             echo "              <td>\n";
 
-            html_display_warning_msg($lang['linksdelexp'], '100%', 'left');
+            html_display_warning_msg(gettext("Entries in a deleted folder will be moved to the parent folder. Only folders which do not contain subfolders may be deleted."), '100%', 'left');
 
             echo "              </td>\n";
             echo "            </tr>\n";
@@ -333,17 +333,17 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
 }else {
 
-    echo "<div align=\"right\">{$lang['viewmode']}: ";
-    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\">{$lang['hierarchical']}</a> | ";
-    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\"><b>{$lang['list']}</b></a>\n";
+    echo "<div align=\"right\">", gettext("View Mode"), ": ";
+    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\">", gettext("Hierarchical"), "</a> | ";
+    echo "  <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\"><b>", gettext("List"), "</b></a>\n";
     echo "</div>\n";
     echo "<br />";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <h2>{$lang['listview']}</h2>\n";
-    echo "        <p><span class=\"threadtime\">{$lang['listviewcannotaddfolders']}</span></p>\n";
+    echo "        <h2>", gettext("List View"), "</h2>\n";
+    echo "        <p><span class=\"threadtime\">", gettext("Cannot add folders in this view. Showing 20 entries at a time."), "</span></p>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -401,7 +401,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 }
 
 if (sizeof($links['links_array']) < 1) {
-    html_display_warning_msg($lang['nolinksinfolder'], '85%', 'center');
+    html_display_warning_msg(gettext("No links in this folder."), '85%', 'center');
 }
 
 echo "<div align=\"center\">\n";
@@ -415,21 +415,21 @@ echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
-    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=DESC\">", gettext("Name"), "</a>&nbsp;</td>\n";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=ASC\">", gettext("Name"), "</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">", gettext("Date"), "</a>&nbsp;</td>\n";
 }else {
-    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">", gettext("Date"), "</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "                  <td align=\"center\" class=\"subhead\" width=\"100\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"100\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">", gettext("Rating"), "</a>&nbsp;</td>";
 }else {
-    echo "                  <td align=\"center\" class=\"subhead\" width=\"100\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"100\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">", gettext("Rating"), "</a>&nbsp;</td>";
 }
 
 echo "                </tr>\n";
@@ -478,10 +478,10 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"33%\">\n";
-echo "              <img src=\"", html_style_image("link_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a><br />\n";
+echo "              <img src=\"", html_style_image("link_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">", gettext("Add link here"), "</a><br />\n";
 
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
-    echo "              <img src=\"", html_style_image("folder_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">{$lang['newfolder']}</a>\n";
+    echo "              <img src=\"", html_style_image("folder_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">", gettext("New Folder"), "</a>\n";
 }
 
 echo "            </td>\n";

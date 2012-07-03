@@ -105,13 +105,13 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -130,42 +130,42 @@ if (isset($_POST['update'])) {
     if (isset($_POST['from_day']) && is_numeric($_POST['from_day'])) {
         $from_day = $_POST['from_day'];
     }else {
-        $error_msg_array[] = $lang['mustchooseastartday'];
+        $error_msg_array[] = gettext("Must choose a start day");
         $valid = false;
     }
 
     if (isset($_POST['from_month']) && is_numeric($_POST['from_month'])) {
         $from_month = $_POST['from_month'];
     }else {
-        $error_msg_array[] = $lang['mustchooseastartmonth'];
+        $error_msg_array[] = gettext("Must choose a start month");
         $valid = false;
     }
 
     if (isset($_POST['from_year']) && is_numeric($_POST['from_year'])) {
         $from_year = $_POST['from_year'];
     }else {
-        $error_msg_array[] = $lang['mustchooseastartyear'];
+        $error_msg_array[] = gettext("Must choose a start year");
         $valid = false;
     }
 
     if (isset($_POST['to_day']) && is_numeric($_POST['to_day'])) {
         $to_day = $_POST['to_day'];
     }else {
-        $error_msg_array[] = $lang['mustchooseaendday'];
+        $error_msg_array[] = gettext("Must choose an end day");
         $valid = false;
     }
 
     if (isset($_POST['to_month']) && is_numeric($_POST['to_month'])) {
         $to_month = $_POST['to_month'];
     }else {
-        $error_msg_array[] = $lang['mustchooseaendmonth'];
+        $error_msg_array[] = gettext("Must choose an end month");
         $valid = false;
     }
 
     if (isset($_POST['to_year']) && is_numeric($_POST['to_year'])) {
         $to_year = $_POST['to_year'];
     }else {
-        $error_msg_array[] = $lang['mustchooseaendyear'];
+        $error_msg_array[] = gettext("Must choose an end year");
         $valid = false;
     }
 
@@ -176,7 +176,7 @@ if (isset($_POST['update'])) {
 
         if ($stats_start > $stats_end) {
 
-            $error_msg_array[] = $lang['startperiodisaheadofendperiod'];
+            $error_msg_array[] = gettext("Start period is ahead of end period");
             $valid = false;
 
         }else {
@@ -199,9 +199,9 @@ if (isset($_POST['update'])) {
     $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
 }
 
-html_draw_top("title={$lang['admin']} - ". sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ". sprintf(gettext("Posting Stats For Period %s to %s"), format_date($stats_start), format_date($stats_end)), 'class=window_title');
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", sprintf(gettext("Posting Stats For Period %s to %s"), format_date($stats_start), format_date($stats_end)), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -209,7 +209,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (sizeof($user_stats_array['user_stats']) < 1) {
 
-    html_display_warning_msg($lang['nopostdatarecordedforthisperiod'], '700', 'center');
+    html_display_warning_msg(gettext("No post data recorded for this period."), '700', 'center');
 }
 
 echo "  <br />\n";
@@ -223,11 +223,11 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">{$lang['user']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['totalposts']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['posts']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['percent']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['average']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("User"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">", gettext("Total posts"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">", gettext("Posts"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">", gettext("Percent"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">", gettext("Average"), "</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($user_stats_array['user_stats']) > 0) {
@@ -248,7 +248,7 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
     echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td colspan=\"6\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
+    echo "                  <td colspan=\"6\" align=\"center\">", gettext("Total posts for this period"), ": {$user_stats_array['post_count']}</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -276,17 +276,17 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Options"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"100\">{$lang['postedfrom']}:</td>\n";
+echo "                        <td align=\"left\" width=\"100\">", gettext("Posted from"), ":</td>\n";
 echo "                        <td align=\"left\">", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"100\">{$lang['postedto']}:</td>\n";
+echo "                        <td align=\"left\" width=\"100\">", gettext("Posted to"), ":</td>\n";
 echo "                        <td align=\"left\">", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -305,7 +305,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", gettext("Update")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

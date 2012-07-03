@@ -81,8 +81,6 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
 function user_get_profile($uid)
 {
-    $lang = load_language_file();
-
     if (!$db_user_get_profile = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
@@ -142,25 +140,25 @@ function user_get_profile($uid)
         if ($anon_logon == USER_ANON_DISABLED && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_VISIT']);
         }else {
-            $user_profile['LAST_LOGON'] = $lang['unknown'];
+            $user_profile['LAST_LOGON'] = gettext("Unknown");
         }
 
         if (isset($user_profile['REGISTERED']) && $user_profile['REGISTERED'] > 0) {
             $user_profile['REGISTERED'] = format_date($user_profile['REGISTERED']);
         }else {
-            $user_profile['REGISTERED'] = $lang['unknown'];
+            $user_profile['REGISTERED'] = gettext("Unknown");
         }
 
         if (isset($user_profile['USER_TIME_BEST']) && $user_profile['USER_TIME_BEST'] > 0) {
             $user_profile['USER_TIME_BEST'] = format_time_display($user_profile['USER_TIME_BEST']);
         }else {
-            $user_profile['USER_TIME_BEST'] = $lang['unknown'];
+            $user_profile['USER_TIME_BEST'] = gettext("Unknown");
         }
 
         if (isset($user_profile['USER_TIME_TOTAL']) && $user_profile['USER_TIME_TOTAL'] > 0) {
             $user_profile['USER_TIME_TOTAL'] = format_time_display($user_profile['USER_TIME_TOTAL']);
         }else {
-            $user_profile['USER_TIME_TOTAL'] = $lang['unknown'];
+            $user_profile['USER_TIME_TOTAL'] = gettext("Unknown");
         }
 
         if (isset($user_prefs['DOB_DISPLAY']) && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
@@ -216,17 +214,17 @@ function user_get_profile($uid)
 
             if (isset($user_profile['HASH']) && is_md5($user_profile['HASH'])) {
 
-                $user_profile['STATUS'] = $lang['useractive'];
+                $user_profile['STATUS'] = gettext("Online");
 
             }else {
 
-                $user_profile['STATUS'] = $lang['userinactive'];
+                $user_profile['STATUS'] = gettext("Inactive / Offline");
 
             }
 
         }else {
 
-            $user_profile['STATUS'] = $lang['unknown'];
+            $user_profile['STATUS'] = gettext("Unknown");
         }
 
         if (($user_post_count = user_get_post_count($uid))) {
@@ -241,7 +239,7 @@ function user_get_profile($uid)
 
         if (user_is_banned($uid)) {
 
-            $user_profile['USER_GROUPS'] = $lang['banned'];
+            $user_profile['USER_GROUPS'] = gettext("Banned");
 
         }else {
 
@@ -250,7 +248,7 @@ function user_get_profile($uid)
             if (sizeof($user_groups_array) > 0) {
                 $user_profile['USER_GROUPS'] = implode(', ', $user_groups_array);
             }else {
-                $user_profile['USER_GROUPS'] = $lang['registered'];
+                $user_profile['USER_GROUPS'] = gettext("Registered");
             }
         }
 
@@ -262,8 +260,6 @@ function user_get_profile($uid)
 
 function user_format_local_time(&$user_prefs_array)
 {
-    $lang = load_language_file();
-
     if (isset($user_prefs_array['TIMEZONE']) && is_numeric($user_prefs_array['TIMEZONE'])) {
         $timezone_id = $user_prefs_array['TIMEZONE'];
     }else {
@@ -294,13 +290,11 @@ function user_format_local_time(&$user_prefs_array)
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
     }
 
-    $date_string = gmdate("i G j n Y", $local_time);
+    $date_string = gmdate("i G j M Y", $local_time);
 
     list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
 
-    $month_str = $lang['month_short'][$month];
-
-    return sprintf($lang['daymonthyearhourminute'], $day, $month_str, $year, $hour, $min); // j M Y H:i
+    return sprintf(gettext("%s %s %s %s:%s"), $day, $month, $year, $hour, $min); // j M Y H:i
 }
 
 function user_get_profile_entries($uid)

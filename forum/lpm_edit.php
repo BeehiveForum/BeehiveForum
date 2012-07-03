@@ -110,8 +110,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Get the user's UID
 $uid = session_get_value('UID');
@@ -145,8 +145,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    light_html_display_error_msg($lang['nomessagespecifiedforedit']);
+    light_html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    light_html_display_error_msg(gettext("No message specified for editing"));
     light_html_draw_bottom();
     exit;
 }
@@ -220,7 +220,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entersubjectformessage'];
+        $error_msg_array[] = gettext("Enter a subject for the message");
         $valid = false;
     }
 
@@ -233,13 +233,13 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
         if (mb_strlen($t_content) >= 65535) {
 
-            $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(mb_strlen($t_content)));
+            $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['entercontentformessage'];
+        $error_msg_array[] = gettext("Enter some content for the message");
         $valid = false;
     }
 }
@@ -258,7 +258,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")));
         light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -277,13 +277,13 @@ if ($valid && isset($_POST['preview'])) {
 
         }else {
 
-            $error_msg_array[] = $lang['errorcreatingpm'];
+            $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
             $valid = false;
         }
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")));
         light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -323,7 +323,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 
@@ -333,7 +333,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
-            light_html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
+            light_html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
             light_pm_post_edit_refuse();
             light_html_draw_bottom();
             exit;
@@ -360,18 +360,18 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        light_html_draw_top("title={$lang['error']}");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")));
         light_pm_post_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
 }
 
-light_html_draw_top("title={$lang['editpm']}");
+light_html_draw_top(sprintf("title=%s", gettext("Edit Message")));
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h3>{$lang['messagepreview']}</h3>\n";
+    echo "<h3>", gettext("Message Preview"), "</h3>\n";
     light_pm_display($pm_message_array, PM_FOLDER_OUTBOX, true);
 }
 
@@ -380,25 +380,25 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
 
 echo "<div class=\"post\">\n";
-echo "<h3>{$lang['editpm']}</h3>\n";
+echo "<h3>", gettext("Edit Message"), "</h3>\n";
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array, '720', 'left');
 }
 
-echo "<div class=\"post_thread_title\">{$lang['subject']}:", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
-echo "<div class=\"post_to\">{$lang['to']}:", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</div>\n";
-echo "<div class=\"post_content\">{$lang['content']}:", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>\n";
+echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
+echo "<div class=\"post_to\">", gettext("To"), ":", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</div>\n";
+echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>\n";
 
 if ($allow_html == true) {
 
     $tph_radio = $post->getHTML();
 
-    echo "<div class=\"post_html\"><span>{$lang['htmlinmessage']}:</span>\n";
-    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO);
-    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED);
+    echo "<div class=\"post_html\"><span>", gettext("HTML in message"), ":</span>\n";
+    echo light_form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED);
+    echo light_form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO);
+    echo light_form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED);
     echo "</div>";
 
 }else {
@@ -407,9 +407,9 @@ if ($allow_html == true) {
 }
 
 echo "<div class=\"post_buttons\">";
-echo light_form_submit("apply", $lang['apply']);
-echo light_form_submit("preview", $lang['preview']);
-echo light_form_submit("cancel", $lang['cancel']);
+echo light_form_submit("apply", gettext("Apply"));
+echo light_form_submit("preview", gettext("Preview"));
+echo light_form_submit("cancel", gettext("Cancel"));
 echo "</div>";
 
 echo "</div>";

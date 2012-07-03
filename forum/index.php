@@ -112,7 +112,7 @@ if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
     header_redirect('index.php');
 }
 
-$lang = load_language_file();
+lang_init();
 
 $top_html = html_get_top_page();
 

@@ -67,8 +67,6 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 {
     if (!$db_thread_get = db_connect()) return false;
 
-    $lang = load_language_file();
-
     $fidlist = folder_get_available();
 
     if (!$table_data = get_table_prefix()) return false;
@@ -149,7 +147,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
             }
         }
 
-        if (!isset($thread_data['LOGON'])) $thread_data['LOGON'] = $lang['unknownuser'];
+        if (!isset($thread_data['LOGON'])) $thread_data['LOGON'] = gettext("Unknown user");
         if (!isset($thread_data['NICKNAME'])) $thread_data['NICKNAME'] = "";
 
         thread_has_attachments($thread_data);
@@ -806,43 +804,41 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
 function thread_merge_error($error_code, &$error_str)
 {
-    $lang = load_language_file();
-
     switch ($error_code) {
 
         case THREAD_MERGE_FORUM_ERROR:
 
-            $error_str = $lang['couldnotretrieveforumdata'];
+            $error_str = gettext("Could not retrieve forum data");
             break;
 
         case THREAD_MERGE_FOLDER_ERROR:
 
-            $error_str = $lang['invalidfolderid'];
+            $error_str = gettext("Invalid Folder ID. Check that a folder with this ID exists!");
             break;
 
         case THREAD_MERGE_THREAD_ERROR:
 
-            $error_str = $lang['couldnotretrievethreaddatamerge'];
+            $error_str = gettext("Could not retrieve thread data from one or more threads");
             break;
 
         case THREAD_MERGE_POLL_ERROR:
 
-            $error_str = $lang['cannotmergepolls'];
+            $error_str = gettext("One or more threads is a poll. You cannot merge polls");
             break;
 
         case THREAD_MERGE_PERMS_ERROR:
 
-            $error_str = $lang['nopermissiontomergethreads'];
+            $error_str = gettext("You are not permitted to merge the selected threads");
             break;
 
         case THREAD_MERGE_CREATE_ERROR:
 
-            $error_str = $lang['failedtocreatenewthreadformerge'];
+            $error_str = gettext("Failed to create new thread for merge");
             break;
 
         case THREAD_MERGE_QUERY_ERROR:
 
-            $error_str = $lang['failedtoexecutethreadmergequery'];
+            $error_str = gettext("Failed to execute thread merge query");
             break;
 
         default:
@@ -1065,38 +1061,36 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
 function thread_split_error($error_code, &$error_str)
 {
-    $lang = load_language_file();
-
     switch ($error_code) {
 
         case THREAD_SPLIT_INVALID_ARGS:
 
-            $error_str = $lang['invalidfunctionarguments'];
+            $error_str = gettext("Invalid function arguments");
             break;
 
         case THREAD_SPLIT_FORUM_ERROR:
 
-            $error_str = $lang['couldnotretrieveforumdata'];
+            $error_str = gettext("Could not retrieve forum data");
             break;
 
         case THREAD_SPLIT_THREAD_ERROR:
 
-            $error_str = $lang['couldnotretrievethreaddatasplit'];
+            $error_str = gettext("Could not retrieve thread data from source thread");
             break;
 
         case THREAD_SPLIT_POST_ERROR :
 
-            $error_str = $lang['couldnotretrievepostdatasplit'];
+            $error_str = gettext("Could not retrieve post data from source thread");
             break;
 
         case THREAD_SPLIT_CREATE_ERROR:
 
-            $error_str = $lang['failedtocreatenewthreadforsplit'];
+            $error_str = gettext("Failed to create new thread for split");
             break;
 
         case THREAD_SPLIT_QUERY_ERROR:
 
-            $error_str = $lang['failedtoexecutethreadmergequery'];
+            $error_str = gettext("Failed to execute thread merge query");
             break;
 
         default:

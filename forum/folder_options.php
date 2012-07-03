@@ -114,8 +114,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -141,8 +141,8 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested folder could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -150,8 +150,8 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 // Get the folder ID for the current message
 if (!$folder_data = folder_get($fid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested folder could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -162,8 +162,8 @@ $uid = session_get_value('UID');
 // Get the existing thread data.
 if (!folder_is_accessible($fid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested folder could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -182,7 +182,7 @@ if (isset($_POST['save'])) {
 
         if (!user_set_folder_interest($fid, $folder_data['INTEREST'])) {
 
-            $error_msg_array[] = $lang['failedtoupdatefolderinterest'];
+            $error_msg_array[] = gettext("Failed to update folder interest");
             $valid = false;
         }
     }
@@ -194,9 +194,9 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top("title={$lang['folderoptions']} - {$folder_data['TITLE']}", "basetarget=_blank", 'class=window_title');
+html_draw_top("title=", gettext("Folder Options"), " - {$folder_data['TITLE']}", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>{$lang['folderoptions']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
+echo "<h1>", gettext("Folder Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -204,7 +204,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['updatessavedsuccessfully'], '500', 'center');
+    html_display_success_msg(gettext("Updates saved successfully"), '500', 'center');
 }
 
 echo "<br />\n";
@@ -220,22 +220,22 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['interest']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Interest"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("interest", FOLDER_IGNORED, $lang['ignore'], $folder_data['INTEREST'] == FOLDER_IGNORED), "</td>\n";
+echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">", gettext("Interest"), ":</td>\n";
+echo "                        <td align=\"left\">", form_radio("interest", FOLDER_IGNORED, gettext("Ignore"), $folder_data['INTEREST'] == FOLDER_IGNORED), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("interest", FOLDER_NOINTEREST, $lang['normal'], $folder_data['INTEREST'] == FOLDER_NOINTEREST), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("interest", FOLDER_NOINTEREST, gettext("Normal"), $folder_data['INTEREST'] == FOLDER_NOINTEREST), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("interest", FOLDER_SUBSCRIBED, $lang['subscribe'], $folder_data['INTEREST'] == FOLDER_SUBSCRIBED), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("interest", FOLDER_SUBSCRIBED, gettext("Subscribe"), $folder_data['INTEREST'] == FOLDER_SUBSCRIBED), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -254,7 +254,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_button("close_popup", $lang['close']). "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_button("close_popup", gettext("Close")). "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

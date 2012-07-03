@@ -113,8 +113,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -146,8 +146,8 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
@@ -160,16 +160,16 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("The requested thread could not be found or access was denied."));
         html_draw_bottom();
         exit;
     }
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['nomessagespecifiedfordel']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("No message specified for deletion"));
     html_draw_bottom();
     exit;
 }
@@ -188,16 +188,16 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['cannotdeletepostsinthisfolder']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You cannot delete posts in this folder"));
     html_draw_bottom();
     exit;
 }
 
 if (!$thread_data = thread_get($tid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested thread could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -217,8 +217,8 @@ if (!thread_is_poll($tid) || ($pid != 1)) {
 
 if (!$edit_message = messages_get($tid, 1, 1)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_display_error_msg($lang['postdoesnotexist']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_display_error_msg(gettext("That post does not exist in this thread!"));
     html_draw_bottom();
     exit;
 }
@@ -229,16 +229,16 @@ $uid = session_get_value('UID');
 
 if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_message));
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_message));
     html_draw_bottom();
     exit;
 }
 
 if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_message));
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_message));
     html_draw_bottom();
     exit;
 }
@@ -249,7 +249,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-        html_draw_top("title={$lang['error']}");
+        html_draw_top(sprintf("title=%s", gettext("Error")));
         post_edit_refuse($tid, $pid);
         html_draw_bottom();
         exit;
@@ -257,7 +257,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((session_get_value('UID') != $preview_message['FROM_UID'] || session_check_perm(USER_PERM_PILLORIED, 0)) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
+        html_draw_top(sprintf("title=%s", gettext("Error")));
         post_edit_refuse($tid, $pid);
         html_draw_bottom();
         exit;
@@ -265,7 +265,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top("title={$lang['error']}");
+        html_draw_top(sprintf("title=%s", gettext("Error")));
         post_edit_refuse($tid, $pid);
         html_draw_bottom();
         exit;
@@ -295,9 +295,9 @@ if (isset($_POST['endpoll'])) {
     }
 }
 
-html_draw_top("title={$lang['deletemessage']}", "post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
+html_draw_top("title=", gettext("Delete Message"), "", "post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
+echo "<h1>", gettext("Delete Message"), " {$tid}.{$pid}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
@@ -305,8 +305,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 if ($preview_message['TO_UID'] == 0) {
 
-    $preview_message['TLOGON'] = $lang['allcaps'];
-    $preview_message['TNICK'] = $lang['allcaps'];
+    $preview_message['TLOGON'] = gettext("ALL");
+    $preview_message['TNICK'] = gettext("ALL");
 
 }else {
 
@@ -332,7 +332,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['endpoll']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("End Poll"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\"><br />";
@@ -354,7 +354,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("endpoll", $lang['endpoll']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("endpoll", gettext("End Poll")), "&nbsp;".form_submit("cancel", gettext("Cancel")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

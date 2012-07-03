@@ -103,8 +103,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Get the user's post page preferences.
 $page_prefs = session_get_post_page_prefs();
@@ -112,8 +112,8 @@ $page_prefs = session_get_post_page_prefs();
 // Check to see if the user can access this page.
 if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['accessdeniedexp']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("You do not have permission to use this section."));
     html_draw_bottom();
     exit;
 }
@@ -158,7 +158,7 @@ if (isset($_POST['save'])) {
     }
 
     // Save failed. Show error message.
-    $error_msg_array[] = $lang['startpageerror'];
+    $error_msg_array[] = gettext("Start page could not be saved. Please try again.");
 
 }elseif (isset($_POST['upload'])) {
 
@@ -169,7 +169,7 @@ if (isset($_POST['save'])) {
         if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] != UPLOAD_ERR_OK) {
 
             // Upload failed. Don't bother going into detail.
-            $error_msg_array[] = $lang['uploadcssfilefailed'];
+            $error_msg_array[] = gettext("CSS style sheet could not be uploaded. Please try again.");
 
         }else if (isset($_FILES['cssfile']['type']) && trim(stripslashes_array($_FILES['cssfile']['type'])) == 'text/css') {
 
@@ -200,19 +200,19 @@ if (isset($_POST['save'])) {
             }
 
             // Something went wrong above. Show Error message.
-            $error_msg_array[] = $lang['uploadcssfilefailed'];
+            $error_msg_array[] = gettext("CSS style sheet could not be uploaded. Please try again.");
 
         } else {
 
             // File does not look like text/css
-            $error_msg_array[] = $lang['invalidfiletypeerror'];
+            $error_msg_array[] = gettext("Invalid file type, you can only upload CSS style sheet files");
         }
     }
 }
 
-html_draw_top("title={$lang['admin']} - {$lang['editstartpage']}", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
+html_draw_top("title=", gettext("Admin"), " - ", gettext("Edit Start Page"), "", "onunload=clearFocus()", "dictionary.js", "htmltools.js", 'class=window_title');
 
-echo "<h1>{$lang['admin']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$lang['editstartpage']}</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Start Page"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -220,13 +220,13 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (isset($_GET['updated'])) {
 
-    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
-    html_display_success_msg(sprintf($lang['startpageupdated'], $start_page_link), '700', 'center');
+    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", gettext("View updated Start Page"));
+    html_display_success_msg(sprintf(gettext("Start Page updated. %s"), $start_page_link), '700', 'center');
 
 }elseif (isset($_GET['uploaded'])) {
 
-    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
-    html_display_success_msg(sprintf($lang['cssfileuploaded'], $start_page_link), '700', 'center');
+    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", gettext("View updated Start Page"));
+    html_display_success_msg(sprintf(gettext("CSS style sheet uploaded. %s"), $start_page_link), '700', 'center');
 }
 
 $startpage_editor = new TextAreaHTML("startpage");
@@ -243,7 +243,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Start page"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -281,7 +281,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
@@ -293,7 +293,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['uploadcssfile']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Upload CSS style sheet"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -301,7 +301,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['filename']}: ", form_input_file("cssfile", "", 45, 0), "</td>\n";
+echo "                        <td align=\"left\">", gettext("Filename"), ": ", form_input_file("cssfile", "", 45, 0), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -319,7 +319,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("upload", $lang['upload']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("upload", gettext("Upload")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

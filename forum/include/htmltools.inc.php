@@ -87,48 +87,46 @@ class TextAreaHTML
     {
         if ($this->tinymce || $this->toolbar_count >= $this->allowed_toolbars) return '';
 
-        $lang = load_language_file();
-
         $this->toolbar_count = $this->toolbar_count + 1;
 
         $dictionary = new dictionary();
 
         $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\">\n", $this->toolbar_count);
 
-        $str.= $this->toolbar_img($lang['bold'], 'bold');
-        $str.= $this->toolbar_img($lang['italic'], 'italic');
-        $str.= $this->toolbar_img($lang['underline'], 'underline');
-        $str.= $this->toolbar_img($lang['strikethrough'], 'strikethrough');
-        $str.= $this->toolbar_img($lang['superscript'], 'superscript');
-        $str.= $this->toolbar_img($lang['subscript'], 'subscript');
-        $str.= $this->toolbar_img($lang['leftalign'], 'leftalign');
-        $str.= $this->toolbar_img($lang['center'], 'center');
-        $str.= $this->toolbar_img($lang['rightalign'], 'rightalign');
-        $str.= $this->toolbar_img($lang['numberedlist'], 'numberedlist');
-        $str.= $this->toolbar_img($lang['list'], 'list');
-        $str.= $this->toolbar_img($lang['indenttext'], 'indenttext');
-        $str.= $this->toolbar_img($lang['code'], 'code');
-        $str.= $this->toolbar_img($lang['quote'], 'quote');
-        $str.= $this->toolbar_img($lang['spoiler'], 'spoiler');
-        $str.= $this->toolbar_img($lang['horizontalrule'], 'horizontalrule');
-        $str.= $this->toolbar_img($lang['image'], 'image');
-        $str.= $this->toolbar_img($lang['youtubevideo'], 'youtubevideo');
-        $str.= $this->toolbar_img($lang['flash'], 'flash');
-        $str.= $this->toolbar_img($lang['hyperlink'], 'hyperlink');
+        $str.= $this->toolbar_img(gettext("Bold"), 'bold');
+        $str.= $this->toolbar_img(gettext("Italic"), 'italic');
+        $str.= $this->toolbar_img(gettext("Underline"), 'underline');
+        $str.= $this->toolbar_img(gettext("Strikethrough"), 'strikethrough');
+        $str.= $this->toolbar_img(gettext("Superscript"), 'superscript');
+        $str.= $this->toolbar_img(gettext("Subscript"), 'subscript');
+        $str.= $this->toolbar_img(gettext("Left-align"), 'leftalign');
+        $str.= $this->toolbar_img(gettext("Center"), 'center');
+        $str.= $this->toolbar_img(gettext("Right-align"), 'rightalign');
+        $str.= $this->toolbar_img(gettext("Numbered list"), 'numberedlist');
+        $str.= $this->toolbar_img(gettext("List"), 'list');
+        $str.= $this->toolbar_img(gettext("Indent text"), 'indenttext');
+        $str.= $this->toolbar_img(gettext("Code"), 'code');
+        $str.= $this->toolbar_img(gettext("Quote"), 'quote');
+        $str.= $this->toolbar_img(gettext("Spoiler"), 'spoiler');
+        $str.= $this->toolbar_img(gettext("Horizontal rule"), 'horizontalrule');
+        $str.= $this->toolbar_img(gettext("Image"), 'image');
+        $str.= $this->toolbar_img(gettext("Youtube Video"), 'youtubevideo');
+        $str.= $this->toolbar_img(gettext("Flash"), 'flash');
+        $str.= $this->toolbar_img(gettext("Hyperlink"), 'hyperlink');
 
         if ($dictionary->is_installed()) {
-            $str.= $this->toolbar_img($lang['spellcheck'], 'spellcheck');
+            $str.= $this->toolbar_img(gettext("Spell check"), 'spellcheck');
         }
 
-        $str.= $this->toolbar_img($lang['noemoticons'], 'noemoticons');
+        $str.= $this->toolbar_img(gettext("Disable emoticons"), 'noemoticons');
 
         if ($emoticons == true) {
-            $str.= $this->toolbar_img($lang['emoticons'], 'emoticons');
+            $str.= $this->toolbar_img(gettext("Emoticons"), 'emoticons');
         }
 
         $str.= "    <br />\n";
         $str.= "    <select class=\"bhselect\" name=\"font_face\">\n";
-        $str.= "        <option value=\"\" selected=\"selected\">{$lang['fontface']}</option>\n";
+        $str.= "        <option value=\"\" selected=\"selected\">". gettext("Font Face"). "</option>\n";
         $str.= "        <option value=\"Arial\">Arial</option>\n";
         $str.= "        <option value=\"Times New Roman\">Times New Roman</option>\n";
         $str.= "        <option value=\"Verdana\">Verdana</option>\n";
@@ -138,7 +136,7 @@ class TextAreaHTML
         $str.= "        <option value=\"Microsoft Sans Serif\">Microsoft Sans Serif</option>\n";
         $str.= "    </select>\n";
         $str.= "    <select class=\"bhselect\" name=\"font_size\">\n";
-        $str.= "        <option value=\"\" selected=\"selected\">{$lang['size']}</option>\n";
+        $str.= "        <option value=\"\" selected=\"selected\">". gettext("Size"). "</option>\n";
         $str.= "        <option value=\"1\">1</option>\n";
         $str.= "        <option value=\"2\">2</option>\n";
         $str.= "        <option value=\"3\">3</option>\n";
@@ -148,20 +146,20 @@ class TextAreaHTML
         $str.= "        <option value=\"7\">7</option>\n";
         $str.= "    </select>\n";
         $str.= "    <select class=\"bhselect\" name=\"font_colour\">\n";
-        $str.= "        <option value=\"\" selected=\"selected\">{$lang['colour']}</option>\n";
-        $str.= "        <option value=\"#FF0000\" style=\"color: #FF0000;\">{$lang['red']}</option>\n";
-        $str.= "        <option value=\"#FFA500\" style=\"color: #FFA500;\">{$lang['orange']}</option>\n";
-        $str.= "        <option value=\"#FFFF00\" style=\"color: #FFFF00;\">{$lang['yellow']}</option>\n";
-        $str.= "        <option value=\"#008000\" style=\"color: #008000;\">{$lang['green']}</option>\n";
-        $str.= "        <option value=\"#0000FF\" style=\"color: #0000FF;\">{$lang['blue']}</option>\n";
-        $str.= "        <option value=\"#4B0082\" style=\"color: #4B0082;\">{$lang['indigo']}</option>\n";
-        $str.= "        <option value=\"#EE82EE\" style=\"color: #EE82EE;\">{$lang['violet']}</option>\n";
-        $str.= "        <option value=\"#000000\" style=\"color: #000000;\">{$lang['black']}</option>\n";
-        $str.= "        <option value=\"#808080\" style=\"color: #808080;\">{$lang['grey']}</option>\n";
-        $str.= "        <option value=\"#FFFFFF\" style=\"color: #FFFFFF; background-color: #000000;\">{$lang['white']}</option>\n";
-        $str.= "        <option value=\"#FFA8CF\" style=\"color: #FFA8CF;\">{$lang['pink']}</option>\n";
-        $str.= "        <option value=\"#80FF80\" style=\"color: #80FF80;\">{$lang['lightgreen']}</option>\n";
-        $str.= "        <option value=\"#00FFFF\" style=\"color: #00FFFF;\">{$lang['lightblue']}</option>\n";
+        $str.= "        <option value=\"\" selected=\"selected\">". gettext("Colour"). "</option>\n";
+        $str.= "        <option value=\"#FF0000\" style=\"color: #FF0000;\">". gettext("Red"). "</option>\n";
+        $str.= "        <option value=\"#FFA500\" style=\"color: #FFA500;\">". gettext("Orange"). "</option>\n";
+        $str.= "        <option value=\"#FFFF00\" style=\"color: #FFFF00;\">". gettext("Yellow"). "</option>\n";
+        $str.= "        <option value=\"#008000\" style=\"color: #008000;\">". gettext("Green"). "</option>\n";
+        $str.= "        <option value=\"#0000FF\" style=\"color: #0000FF;\">". gettext("Blue"). "</option>\n";
+        $str.= "        <option value=\"#4B0082\" style=\"color: #4B0082;\">". gettext("Indigo"). "</option>\n";
+        $str.= "        <option value=\"#EE82EE\" style=\"color: #EE82EE;\">". gettext("Violet"). "</option>\n";
+        $str.= "        <option value=\"#000000\" style=\"color: #000000;\">". gettext("Black"). "</option>\n";
+        $str.= "        <option value=\"#808080\" style=\"color: #808080;\">". gettext("Grey"). "</option>\n";
+        $str.= "        <option value=\"#FFFFFF\" style=\"color: #FFFFFF; background-color: #000000;\">". gettext("White"). "</option>\n";
+        $str.= "        <option value=\"#FFA8CF\" style=\"color: #FFA8CF;\">". gettext("Pink"). "</option>\n";
+        $str.= "        <option value=\"#80FF80\" style=\"color: #80FF80;\">". gettext("Light green"). "</option>\n";
+        $str.= "        <option value=\"#00FFFF\" style=\"color: #00FFFF;\">". gettext("Light blue"). "</option>\n";
         $str.= "    </select>\n";
         $str.= "    $custom_html\n";
         $str.= "</div>\n";
@@ -173,18 +171,16 @@ class TextAreaHTML
     {
         if ($this->tinymce || $this->toolbar_count >= $this->allowed_toolbars) return '';
 
-        $lang = load_language_file();
-
         $this->toolbar_count = $this->toolbar_count + 1;
 
         $str = sprintf("<div id=\"bh_tb%d\" class=\"tools\">\n", $this->toolbar_count);
 
-        $str.= $this->toolbar_img($lang['bold'], 'bold');
-        $str.= $this->toolbar_img($lang['italic'], 'italic');
-        $str.= $this->toolbar_img($lang['underline'], 'underline');
+        $str.= $this->toolbar_img(gettext("Bold"), 'bold');
+        $str.= $this->toolbar_img(gettext("Italic"), 'italic');
+        $str.= $this->toolbar_img(gettext("Underline"), 'underline');
 
         if ($emoticons == true) {
-            $str.= $this->toolbar_img($lang['emoticons'], 'emoticons');
+            $str.= $this->toolbar_img(gettext("Emoticons"), 'emoticons');
         }
 
         $str.= "</div>\n";
@@ -229,10 +225,8 @@ class TextAreaHTML
 
     public function compare_original($textarea, MessageText $text)
     {
-        $lang = load_language_file();
-
-        $str = form_radio("co_{$textarea}_rb", $text->getTidyContent(), $lang['correctedcode'], true, false, 'bhinputradio fix_html_compare'). "\n";
-        $str.= form_radio("co_{$textarea}_rb", htmlentities_array($text->getOriginalContent()), $lang['submittedcode'], false, false, 'bhinputradio fix_html_compare'). "\n";
+        $str = form_radio("co_{$textarea}_rb", $text->getTidyContent(), gettext("Corrected code"), true, false, 'bhinputradio fix_html_compare'). "\n";
+        $str.= form_radio("co_{$textarea}_rb", htmlentities_array($text->getOriginalContent()), gettext("Submitted code"), false, false, 'bhinputradio fix_html_compare'). "\n";
         $str.= "&nbsp;[<a class=\"fix_html_help\">?</a>]\n";
 
         return $str;

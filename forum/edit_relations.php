@@ -109,8 +109,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -128,9 +128,9 @@ if (user_is_guest()) {
 $error_msg_array = array();
 
 // Start output here
-html_draw_top("title={$lang['mycontrols']} - {$lang['userrelationships']}", "basetarget=_blank", 'class=window_title');
+html_draw_top("title=", gettext("My Controls"), " - ", gettext("User Relationships"), "", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>{$lang['userrelationships']}</h1>\n";
+echo "<h1>", gettext("User Relationships"), "</h1>\n";
 
 $uid = session_get_value('UID');
 
@@ -181,7 +181,7 @@ if (isset($_POST['delete'])) {
                 if (!user_rel_update($uid, $peer_uid, 0)) {
 
                     $valid = false;
-                    $error_msg_array[] = $lang['failedtoremoveselectedrelationships'];
+                    $error_msg_array[] = gettext("Failed to remove selected relationship");
                 }
             }
         }
@@ -189,7 +189,7 @@ if (isset($_POST['delete'])) {
         if ($valid) {
 
             $redirect = "edit_relations.php?webtag=$webtag&relupdated=true";
-            header_redirect($redirect, $lang['relationshipsupdated']);
+            header_redirect($redirect, gettext("Relationships Updated!"));
             exit;
         }
     }
@@ -209,17 +209,17 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['relupdated'])) {
 
-    html_display_success_msg($lang['relationshipsupdated'], '600', 'left');
+    html_display_success_msg(gettext("Relationships Updated!"), '600', 'left');
 
 }else if (sizeof($user_peers_array['user_array']) < 1) {
 
     if (isset($user_search) && strlen(trim($user_search)) > 0) {
 
-        html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
+        html_display_warning_msg(gettext("Search Returned No Results"), '600', 'left');
 
     }else {
 
-        html_display_warning_msg($lang['norelationshipssetup'], '600', 'left');
+        html_display_warning_msg(gettext("You have no user relationships set up. Add a new user by searching below."), '600', 'left');
     }
 }
 
@@ -238,10 +238,10 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">{$lang['user']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\">{$lang['relationship']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\">{$lang['signature']}</td>\n";
-echo "                  <td align=\"center\" class=\"subhead\">{$lang['personalmessages']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("User"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\">", gettext("Relationship"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\">", gettext("Signature"), "</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\">", gettext("Personal Messages"), "</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($user_peers_array['user_array']) > 0) {
@@ -254,37 +254,37 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /></td>\n";
 
         }elseif ($user_peer['RELATIONSHIP'] & USER_IGNORED) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored"), "\" title=\"", gettext("Ignored"), "\" /></td>\n";
 
         }elseif ($user_peer['RELATIONSHIP'] & USER_IGNORED_COMPLETELY) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored Completely"), "\" title=\"", gettext("Ignored Completely"), "\" /><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored Completely"), "\" title=\"", gettext("Ignored Completely"), "\" /></td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\">{$lang['normal']}</td>\n";
+            echo "                  <td align=\"center\">", gettext("Normal"), "</td>\n";
         }
 
         if ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored"), "\" title=\"", gettext("Ignored"), "\" /></td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"", gettext("Display"), "\" title=\"", gettext("Display"), "\" /></td>\n";
         }
 
         if ($user_peer['RELATIONSHIP'] & USER_BLOCK_PM) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"{$lang['block']}\" title=\"{$lang['block']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Block"), "\" title=\"", gettext("Block"), "\" /></td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"", gettext("Allow"), "\" title=\"", gettext("Allow"), "\" /></td>\n";
         }
 
         echo "                </tr>\n";
@@ -313,7 +313,7 @@ if (sizeof($user_peers_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("delete", $lang['deleteselected']), "</td>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("delete", gettext("Delete Selected")), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -333,7 +333,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -341,7 +341,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', htmlentities_array($user_search), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">", gettext("Username"), ": ", form_input_text('user_search', htmlentities_array($user_search), 30, 64), " ", form_submit('search', gettext("Search")), " ", form_submit('clear_search', gettext("Clear")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

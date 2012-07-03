@@ -105,8 +105,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // User's UID
 $uid = session_get_value('UID');
@@ -140,20 +140,20 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", $lang['statsdisplaychanged']);
+        header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", gettext("Stats Display Changed"));
         exit;
 
     }else {
 
-        html_draw_top("title={$lang['error']}");
-        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
+        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_error_msg(gettext("Some or all of your user account details could not be updated. Please try again later."), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg, 'setstats' => 1));
         html_draw_bottom();
     }
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['invalidmsgidornomessageidspecified']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Invalid Message ID or no Message ID specified."));
     html_draw_bottom();
 }
 

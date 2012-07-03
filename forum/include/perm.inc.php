@@ -317,8 +317,6 @@ function perm_user_get_group_names($uid, &$user_groups_array)
 {
     if (!$db_perm_user_get_group_names = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -342,8 +340,8 @@ function perm_user_get_group_names($uid, &$user_groups_array)
         }
     }
 
-    if (perm_has_admin_access($uid)) $user_groups_array[] = $lang['forumleader'];
-    if (perm_is_moderator($uid)) $user_groups_array[] = $lang['userpermfoldermoderate'];
+    if (perm_has_admin_access($uid)) $user_groups_array[] = gettext("Forum Leader");
+    if (perm_is_moderator($uid)) $user_groups_array[] = gettext("Folder Moderator");
 
     return sizeof($user_groups_array) > 0;
 }
@@ -1084,8 +1082,6 @@ function perm_group_get_users($gid, $offset = 0)
 {
     if (!$db_perm_group_get_users = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!is_numeric($gid)) return 0;
     if (!is_numeric($offset)) $offset = 0;
 
@@ -1121,7 +1117,7 @@ function perm_group_get_users($gid, $offset = 0)
                     }
                 }
 
-                if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+                if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
                 if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
                 $group_user_array[] = $user_data;
@@ -1195,8 +1191,6 @@ function perm_display_list($perms)
 {
     $perms_array = array();
 
-    $lang = load_language_file();
-
     if ($perms & USER_PERM_BANNED)           $perms_array[] = 'UB';
     if ($perms & USER_PERM_WORMED)           $perms_array[] = 'UW';
     if ($perms & USER_PERM_POST_READ)        $perms_array[] = 'PR';
@@ -1223,7 +1217,7 @@ function perm_display_list($perms)
 
     }else {
 
-        return $lang['none'];
+        return gettext("none");
     }
 }
 

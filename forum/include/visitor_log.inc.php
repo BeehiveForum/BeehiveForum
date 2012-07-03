@@ -42,23 +42,21 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 {
     if (!$db_visitor_log_get_profile_items = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!$table_data = get_table_prefix()) return false;
 
     // Pre-defined profile options
-    $profile_header_array = array('POST_COUNT'      => $lang['postcount'],
-                                  'LAST_VISIT'      => $lang['lastvisit'],
-                                  'REGISTERED'      => $lang['registered'],
-                                  'USER_TIME_BEST'  => $lang['longesttimeinforum'],
-                                  'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
-                                  'DOB'             => $lang['birthday'],
-                                  'AGE'             => $lang['age'],
-                                  'TIMEZONE'        => $lang['timezone'],
+    $profile_header_array = array('POST_COUNT'      => gettext("Post Count"),
+                                  'LAST_VISIT'      => gettext("Last Visit"),
+                                  'REGISTERED'      => gettext("Registered"),
+                                  'USER_TIME_BEST'  => gettext("Longest session"),
+                                  'USER_TIME_TOTAL' => gettext("Total time"),
+                                  'DOB'             => gettext("Birthday"),
+                                  'AGE'             => gettext("Age"),
+                                  'TIMEZONE'        => gettext("Time Zone"),
                                   'LOCAL_TIME'      => 'Local Time');
 
     // Add the pre-defined profile options to the top of the list
-    $profile_dropdown_array[$lang['userdetails']]['subitems'] = $profile_header_array;
+    $profile_dropdown_array[gettext("User Details")]['subitems'] = $profile_header_array;
 
     // Query the database to get the profile items
     $sql = "SELECT PROFILE_SECTION.NAME AS SECTION_NAME, ";
@@ -113,9 +111,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // invalid default to LAST_VISIT DESC.
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'UID';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
-
-    // Load the language file.
-    $lang = load_language_file();
 
     // Get the current session's UID.
     if (($uid = session_get_value('UID')) === false) return false;
@@ -332,12 +327,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
         if ($user_data['UID'] == 0) {
 
-            $user_data['LOGON']    = $lang['guest'];
-            $user_data['NICKNAME'] = $lang['guest'];
+            $user_data['LOGON']    = gettext("Guest");
+            $user_data['NICKNAME'] = gettext("Guest");
 
         }elseif (!isset($user_data['LOGON']) || is_null($user_data['LOGON'])) {
 
-            $user_data['LOGON'] = $lang['unknownuser'];
+            $user_data['LOGON'] = gettext("Unknown user");
             $user_data['NICKNAME'] = "";
         }
 
@@ -356,33 +351,33 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
             $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
         }else {
-            $user_data['LAST_VISIT'] = $lang['unknown'];
+            $user_data['LAST_VISIT'] = gettext("Unknown");
         }
 
         if (isset($user_data['REGISTERED']) && is_numeric($user_data['REGISTERED'])) {
             $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
         }else {
-            $user_data['REGISTERED'] = $lang['unknown'];
+            $user_data['REGISTERED'] = gettext("Unknown");
         }
 
         if (isset($user_data['USER_TIME_BEST']) && is_numeric($user_data['USER_TIME_BEST'])) {
             $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
         }else {
-            $user_data['USER_TIME_BEST'] = $lang['unknown'];
+            $user_data['USER_TIME_BEST'] = gettext("Unknown");
         }
 
         if (isset($user_data['USER_TIME_TOTAL']) && is_numeric($user_data['USER_TIME_TOTAL'])) {
             $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
         }else {
-            $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+            $user_data['USER_TIME_TOTAL'] = gettext("Unknown");
         }
 
         if (!isset($user_data['AGE']) || !is_numeric($user_data['AGE'])) {
-            $user_data['AGE'] = $lang['unknown'];
+            $user_data['AGE'] = gettext("Unknown");
         }
 
         if (!$user_data['DOB'] = format_birthday($user_data['DOB'])) {
-            $user_data['DOB'] = $lang['unknown'];
+            $user_data['DOB'] = gettext("Unknown");
         }
 
         $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
@@ -390,7 +385,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         if (isset($user_data['LOCAL_TIME']) && is_numeric($user_data['LOCAL_TIME'])) {
             $user_data['LOCAL_TIME'] = format_time($user_data['LOCAL_TIME']);
         }else {
-            $user_data['LOCAL_TIME'] = $lang['unknown'];
+            $user_data['LOCAL_TIME'] = gettext("Unknown");
         }
 
         if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {

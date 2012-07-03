@@ -110,8 +110,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -145,8 +145,8 @@ if (isset($_GET['type']) && in_array($_GET['type'], array(SEARCH_LOGON, SEARCH_T
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['mustspecifytypeofsearch'], 'search_popup.php', 'post', array('close_popup' => $lang['close']));
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("You must specify type of search to perform"), 'search_popup.php', 'post', array('close_popup' => gettext("Close")));
     html_draw_bottom();
     exit;
 }
@@ -165,8 +165,8 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['noformobj'], 'search_popup.php', 'post', array('close_popup' => $lang['close']));
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("No form object specified for return text"), 'search_popup.php', 'post', array('close_popup' => gettext("Close")));
     html_draw_bottom();
     exit;
 }
@@ -235,9 +235,9 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
     }
 }
 
-html_draw_top("title={$lang['search']}", 'pm_popup_disabled', 'search_popup.js', 'class=window_title');
+html_draw_top("title=", gettext("Search"), "", 'pm_popup_disabled', 'search_popup.js', 'class=window_title');
 
-echo "<h1>{$lang['search']}</h1>\n";
+echo "<h1>", gettext("Search"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -245,7 +245,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1 && sizeof($selected_array) < 1) {
 
-    html_display_warning_msg($lang['searchreturnednoresults'], '450', 'center');
+    html_display_warning_msg(gettext("Search Returned No Results"), '450', 'center');
 
 }else {
 
@@ -269,7 +269,7 @@ if (sizeof($selected_array) > 0 || (isset($search_results_array['results_array']
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search Results"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -373,27 +373,27 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if ($type == SEARCH_LOGON) {
 
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search For User"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\">{$lang['username']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"100\">", gettext("Username"), ":</td>\n";
 
 }elseif ($type == SEARCH_THREAD) {
 
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforthread']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search For Thread"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\">{$lang['threadtitle']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"100\">", gettext("Thread title"), ":</td>\n";
 }
 
-echo "                        <td class=\"posthead\" align=\"left\">", form_input_text('search_query', (isset($search_query) ? htmlentities_array($search_query) : ''), 40, 64), form_submit('search', $lang['search'], 'style="display: none"'), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">", form_input_text('search_query', (isset($search_query) ? htmlentities_array($search_query) : ''), 40, 64), form_submit('search', gettext("Search"), 'style="display: none"'), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -411,7 +411,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_button('select', $lang['select']), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('close_popup', $lang['close']), "</td>\n";
+echo "      <td align=\"center\">", form_button('select', gettext("Select")), "&nbsp;", form_submit('search', gettext("Search")), "&nbsp;", form_submit('close_popup', gettext("Close")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

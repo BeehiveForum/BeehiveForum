@@ -90,8 +90,8 @@ if (session_user_banned()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Number of forums available
 cache_disable();
@@ -102,43 +102,43 @@ echo "<div class=\"navleft\">\n";
 
 if (forum_check_webtag_available($webtag)) {
 
-    echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Start"), "</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Messages"), "</a>&nbsp;|&nbsp;\n";
     
     if (forum_get_setting('ajax_chat_enabled', 'Y')) {
-        echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">{$lang['chat']}</a>&nbsp;|&nbsp;\n";
+        echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">", gettext("Chat"), "</a>&nbsp;|&nbsp;\n";
     } 
 
     if (forum_get_setting('show_links', 'Y')) {
-        echo "<a href=\"links.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
+        echo "<a href=\"links.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Links"), "</a>&nbsp;|&nbsp;\n";
     }
 }
 
 if (forum_get_setting('show_pms', 'Y')) {
-    echo "<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a>&nbsp;|&nbsp;\n";
 }
 
 if (forum_check_webtag_available($webtag)) {
-    echo "<a href=\"user.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"user.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("My Controls"), "</a>&nbsp;|&nbsp;\n";
 }
 
 if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
-    echo "<a href=\"forums.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"forums.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("My Forums"), "</a>&nbsp;|&nbsp;\n";
 }
 
 if (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-    echo "<a href=\"admin.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"admin.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Admin"), "</a>&nbsp;|&nbsp;\n";
 }
 
 if (user_is_guest()) {
 
-    echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=logon.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['login']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"register.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['register']}</a>\n";
+    echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=logon.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Login"), "</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"register.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Register"), "</a>\n";
 
 }else {
 
     $logon = session_get_value('LOGON');
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['logout']} : $logon</a>\n";
+    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Logout"), " : $logon</a>\n";
 }
 
 echo "</div>\n";

@@ -105,8 +105,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Guests can't access this page.
 if (user_is_guest()) {
@@ -132,11 +132,11 @@ pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 // Get custom folder names array.
 if (!$pm_folder_names_array = pm_get_folder_names(false)) {
 
-    $pm_folder_names_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
-                                   PM_FOLDER_SENT    => $lang['pmsentitems'],
-                                   PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
-                                   PM_FOLDER_SAVED   => $lang['pmsaveditems'],
-                                   PM_FOLDER_DRAFTS  => $lang['pmdrafts']);
+    $pm_folder_names_array = array(PM_FOLDER_INBOX   => gettext("Inbox"),
+                                   PM_FOLDER_SENT    => gettext("Sent Items"),
+                                   PM_FOLDER_OUTBOX  => gettext("Outbox"),
+                                   PM_FOLDER_SAVED   => gettext("Saved Items"),
+                                   PM_FOLDER_DRAFTS  => gettext("Drafts"));
 }
 
 // Submit code starts here.
@@ -193,7 +193,7 @@ if (isset($_POST['export'])) {
 
     } else {
 
-        $error_msg_array[] = $lang['youmustselectsomefolderstoexport'];
+        $error_msg_array[] = gettext("You must select some folders to export");
     }
 }
 
@@ -203,9 +203,9 @@ $uid = session_get_value('UID');
 $user_prefs = user_get_prefs($uid);
 
 // Start output here
-html_draw_top("title={$lang['exportprivatemessages']}", "emoticons.js", 'class=window_title');
+html_draw_top("title=", gettext("Export Private Messages"), "", "emoticons.js", 'class=window_title');
 
-echo "<h1>{$lang['exportprivatemessages']}</h1>\n";
+echo "<h1>", gettext("Export Private Messages"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -213,7 +213,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
+    html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'left');
 }
 
 echo "<br />\n";
@@ -227,7 +227,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['selectprivatemessagefolderstoexport']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">", gettext("Select folders to export"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">\n";
@@ -267,27 +267,27 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">{$lang['privatemessageexportoptions']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">", gettext("Private Message Export Options"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"7\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['pmexportastype']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("pm_export_type", array($lang['pmexporthtml'], $lang['pmexportxml'], $lang['pmexportcsv']), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
+echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Export as type"), ":</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("pm_export_type", array(gettext("HTML"), gettext("XML"), gettext("CSV")), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">{$lang['pmexportmessagesas']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("pm_export_file", array($lang['pmexportonefileforallmessages'], $lang['pmexportonefilepermessage']), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
+echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Export messages as"), ":</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("pm_export_file", array(gettext("One file for all messages"), gettext("One file per message")), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_attachments", "Y", $lang['pmexportattachments'], (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_attachments", "Y", gettext("Export attachments"), (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_style", "Y", $lang['pmexportincludestyle'], (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_style", "Y", gettext("Include forum style sheet"), (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_wordfilter", "Y", $lang['pmexportwordfilter'], (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_wordfilter", "Y", gettext("Apply word filter to messages"), (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -302,7 +302,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("export", $lang['export']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("export", gettext("Export")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

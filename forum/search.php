@@ -119,8 +119,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -170,56 +170,56 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 }
 
 // Drop down date from options
-$search_date_from_array = array(SEARCH_FROM_TODAY             => $lang['today'],
-                                SEARCH_FROM_YESTERDAY         => $lang['yesterday'],
-                                SEARCH_FROM_DAYBEFORE         => $lang['daybeforeyesterday'],
-                                SEARCH_FROM_ONE_WEEK_AGO      => sprintf($lang['weekago'], 1),
-                                SEARCH_FROM_TWO_WEEKS_AGO     => sprintf($lang['weeksago'], 2),
-                                SEARCH_FROM_THREE_WEEKS_AGO   => sprintf($lang['weeksago'], 3),
-                                SEARCH_FROM_ONE_MONTH_AGO     => sprintf($lang['monthago'], 1),
-                                SEARCH_FROM_TWO_MONTHS_AGO    => sprintf($lang['monthsago'], 2),
-                                SEARCH_FROM_THREE_MONTHS_AGO  => sprintf($lang['monthsago'], 3),
-                                SEARCH_FROM_SIX_MONTHS_AGO    => sprintf($lang['monthsago'], 6),
-                                SEARCH_FROM_ONE_YEAR_AGO      => sprintf($lang['yearago'], 1),
-                                SEARCH_FROM_BEGINNING_OF_TIME => $lang['beginningoftime']);
+$search_date_from_array = array(SEARCH_FROM_TODAY             => gettext("Today"),
+                                SEARCH_FROM_YESTERDAY         => gettext("Yesterday"),
+                                SEARCH_FROM_DAYBEFORE         => gettext("Day before yesterday"),
+                                SEARCH_FROM_ONE_WEEK_AGO      => sprintf(gettext("%s week ago"), 1),
+                                SEARCH_FROM_TWO_WEEKS_AGO     => sprintf(gettext("%s weeks ago"), 2),
+                                SEARCH_FROM_THREE_WEEKS_AGO   => sprintf(gettext("%s weeks ago"), 3),
+                                SEARCH_FROM_ONE_MONTH_AGO     => sprintf(gettext("%s month ago"), 1),
+                                SEARCH_FROM_TWO_MONTHS_AGO    => sprintf(gettext("%s months ago"), 2),
+                                SEARCH_FROM_THREE_MONTHS_AGO  => sprintf(gettext("%s months ago"), 3),
+                                SEARCH_FROM_SIX_MONTHS_AGO    => sprintf(gettext("%s months ago"), 6),
+                                SEARCH_FROM_ONE_YEAR_AGO      => sprintf(gettext("%s year ago"), 1),
+                                SEARCH_FROM_BEGINNING_OF_TIME => gettext("Beginning of time"));
 
 // Drop down date to options
-$search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
-                              SEARCH_TO_TODAY            => $lang['today'],
-                              SEARCH_TO_YESTERDAY        => $lang['yesterday'],
-                              SEARCH_TO_DAYBEFORE        => $lang['daybeforeyesterday'],
-                              SEARCH_TO_ONE_WEEK_AGO     => sprintf($lang['weekago'], 1),
-                              SEARCH_TO_TWO_WEEKS_AGO    => sprintf($lang['weeksago'], 2),
-                              SEARCH_TO_THREE_WEEKS_AGO  => sprintf($lang['weeksago'], 3),
-                              SEARCH_TO_ONE_MONTH_AGO    => sprintf($lang['monthago'], 1),
-                              SEARCH_TO_TWO_MONTHS_AGO   => sprintf($lang['monthsago'], 2),
-                              SEARCH_TO_THREE_MONTHS_AGO => sprintf($lang['monthsago'], 3),
-                              SEARCH_TO_SIX_MONTHS_AGO   => sprintf($lang['monthsago'], 6),
-                              SEARCH_TO_ONE_YEAR_AGO     => sprintf($lang['yearago'], 1));
+$search_date_to_array = array(SEARCH_TO_NOW              => gettext("Now"),
+                              SEARCH_TO_TODAY            => gettext("Today"),
+                              SEARCH_TO_YESTERDAY        => gettext("Yesterday"),
+                              SEARCH_TO_DAYBEFORE        => gettext("Day before yesterday"),
+                              SEARCH_TO_ONE_WEEK_AGO     => sprintf(gettext("%s week ago"), 1),
+                              SEARCH_TO_TWO_WEEKS_AGO    => sprintf(gettext("%s weeks ago"), 2),
+                              SEARCH_TO_THREE_WEEKS_AGO  => sprintf(gettext("%s weeks ago"), 3),
+                              SEARCH_TO_ONE_MONTH_AGO    => sprintf(gettext("%s month ago"), 1),
+                              SEARCH_TO_TWO_MONTHS_AGO   => sprintf(gettext("%s months ago"), 2),
+                              SEARCH_TO_THREE_MONTHS_AGO => sprintf(gettext("%s months ago"), 3),
+                              SEARCH_TO_SIX_MONTHS_AGO   => sprintf(gettext("%s months ago"), 6),
+                              SEARCH_TO_ONE_YEAR_AGO     => sprintf(gettext("%s year ago"), 1));
 
 // Drop down sort by options
-$search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
-                              SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'],
-                              SEARCH_SORT_FOLDER_NAME => $lang['foldername'],
-                              SEARCH_SORT_AUTHOR_NAME => $lang['authorname'],
-                              SEARCH_SORT_RELEVANCE   => $lang['relevancy']);
+$search_sort_by_array = array(SEARCH_SORT_CREATED     => gettext("Last post date"),
+                              SEARCH_SORT_NUM_REPLIES => gettext("Number of replies"),
+                              SEARCH_SORT_FOLDER_NAME => gettext("Folder name"),
+                              SEARCH_SORT_AUTHOR_NAME => gettext("Author name"),
+                              SEARCH_SORT_RELEVANCE   => gettext("Relevancy"));
 
 // Drop down sort dir options
-$search_sort_dir_array = array(SEARCH_SORT_ASC  => $lang['ascendingorder'],
-                               SEARCH_SORT_DESC => $lang['decendingorder']);
+$search_sort_dir_array = array(SEARCH_SORT_ASC  => gettext("Oldest first"),
+                               SEARCH_SORT_DESC => gettext("Newest first"));
 
 // Get a list of available folders.
 if (!$folder_dropdown = folder_search_dropdown($search_folder_fid)) {
 
     html_draw_top();
-    html_error_msg($lang['couldnotretrievefolderinformation']);
+    html_error_msg(gettext("There are no folders available."));
     html_draw_bottom();
     exit;
 }
 
 if (isset($_GET['show_stop_words'])) {
 
-    html_draw_top("title={$lang['mysqlstopwordlist']}", 'pm_popup_disabled');
+    html_draw_top("title=", gettext("MySQL stopword list"), "", 'pm_popup_disabled');
 
     $mysql_fulltext_stopwords = array();
 
@@ -227,7 +227,7 @@ if (isset($_GET['show_stop_words'])) {
     
     $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
 
-    echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
+    echo "<h1>", gettext("MySQL stopword list"), "</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
@@ -241,7 +241,7 @@ if (isset($_GET['show_stop_words'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table width=\"100%\" border=\"0\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['mysqlstopwordlist']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("MySQL stopword list"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -273,7 +273,7 @@ if (isset($_GET['show_stop_words'])) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_button('close_popup', $lang['close']), "</td>\n";
+    echo "      <td align=\"center\">", form_button('close_popup', gettext("Close")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -392,7 +392,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
             case SEARCH_USER_NOT_FOUND:
 
-                $error_msg_array[] = $lang['usernamenotfound'];
+                $error_msg_array[] = gettext("The username you specified in the to or from field was not found.");
                 $valid = false;
 
                 break;
@@ -400,12 +400,12 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
                 $search_frequency = forum_get_setting('search_min_frequency', false, 0);
-                $error_msg_array[] = sprintf($lang['searchfrequencyerror'], $search_frequency);
+                $error_msg_array[] = sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency);
                 break;
 
             case SEARCH_SPHINX_UNAVAILABLE:
 
-                $error_msg_array[] = $lang['searchunavailable'];
+                $error_msg_array[] = gettext("Search is currently unavailable. Please try again later.");
                 break;
         }
     }
@@ -421,11 +421,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         thread_list_draw_top(SEARCH_RESULTS);
 
         echo "<br />\n";
-        echo "<h1>{$lang['searchresults']}</h1>\n";
-        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
+        echo "<h1>", gettext("Search Results"), "</h1>\n";
+        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Found"), "\" title=\"", gettext("Found"), "\" />&nbsp;", gettext("Found"), ": {$search_results_array['result_count']} ", gettext("matches"), "<br />\n";
 
         if ($offset >= 20) {
-            echo "<img src=\"".html_style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['prevpage']}</a>\n";
+            echo "<img src=\"".html_style_image('current_thread.png')."\" alt=\"", gettext("Previous page"), "\" title=\"", gettext("Previous page"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
         }
 
         echo "<ol start=\"", $offset + 1, "\">\n";
@@ -458,12 +458,12 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "<span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
 
                     }else {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
                     }
                 }
             }
@@ -472,7 +472,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">{$lang['findmore']}</a><br />\n";
+            echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Find more"), "\" title=\"", gettext("Find more"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Find more"), "</a><br />\n";
         }
 
         echo "<br />\n";
@@ -481,7 +481,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "  ", form_input_hidden("offset", isset($offset) ? htmlentities_array($offset) : 0), "\n";
         echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
         echo "    <tr>\n";
-        echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['sortresults']}:</td>\n";
+        echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Sort Results"), ":</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -490,7 +490,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo"     <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "      <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, $sort_dir), "</td>\n";
-        echo "      <td align=\"left\">", form_submit("go",$lang['goexcmark']). "</td>\n";
+        echo "      <td align=\"left\">", form_submit("go",gettext("Go!")). "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -503,13 +503,13 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         thread_list_draw_top(SEARCH_RESULTS);
 
         echo "<br />\n";
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br /><br />\n";
+        echo "<h1>", gettext("Error"), "</h1>\n";
+        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("matches"), "\" title=\"", gettext("matches"), "\" />&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
     }
 
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -517,7 +517,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "        ", form_input_text('msg', '1.1', 10). "\n";
-    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+    echo "        ", form_submit("go",gettext("Go!")). "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -525,7 +525,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "<br />\n";
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['advanced']}</a>):</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Search Again"), " (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Advanced"), "</a>):</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -533,7 +533,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "        ", form_input_text("search_string", "", 20). "\n";
-    echo "        ", form_submit("search", $lang['find']). "\n";
+    echo "        ", form_submit("search", gettext("Find")). "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -545,7 +545,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
 html_draw_top('search.js', 'search_popup.js');
 
-echo "<h1>{$lang['searchmessages']}</h1>\n";
+echo "<h1>", gettext("Search Messages"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -554,10 +554,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }elseif (isset($_GET['search_success'])) {
 
     $frame_target = html_get_frame_name('left');
-    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"$frame_target\">%s</a>", $lang['clickheretoviewresults']);
+    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"$frame_target\">%s</a>", gettext("Click here to view results."));
 
     echo "<div id=\"search_success\">\n";
-    html_display_success_msg(sprintf($lang['searchsuccessfullycompleted'], $results_link), '500', 'center');
+    html_display_success_msg(sprintf(gettext("Search successfully completed. %s"), $results_link), '500', 'center');
     echo "</div>\n";
 
 }elseif (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
@@ -568,24 +568,24 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         case SEARCH_NO_MATCHES:
 
-            html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
+            html_display_warning_msg(gettext("Search Returned No Results"), '500', 'center');
             break;
 
         case SEARCH_USER_NOT_FOUND:
 
-            html_display_error_msg($lang['usernamenotfound'], '500', 'center');
+            html_display_error_msg(gettext("The username you specified in the to or from field was not found."), '500', 'center');
             break;
 
         case SEARCH_FREQUENCY_TOO_GREAT:
 
             $search_frequency = forum_get_setting('search_min_frequency', false, 0);
-            html_display_error_msg(sprintf($lang['searchfrequencyerror'], $search_frequency));
+            html_display_error_msg(sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency));
             break;
     }
 
 }elseif (isset($search_no_matches) && $search_no_matches == true) {
 
-    html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
+    html_display_warning_msg(gettext("Search Returned No Results"), '500', 'center');
 }
 
 echo "<br />\n";
@@ -600,13 +600,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchdiscussions']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">", gettext("Search discussions"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
+echo "                        <td align=\"left\" width=\"40%\">", gettext("Keywords"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text("search_string", (isset($search_arguments['search_string']) ? htmlentities_array($search_arguments['search_string']) : ''), 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -635,22 +635,22 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchbyuser']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">", gettext("Search by user (optional)"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
+echo "                        <td align=\"left\" width=\"40%\">", gettext("Username"), ":</td>\n";
 echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("username", (isset($search_arguments['username']) ? htmlentities_array($search_arguments['username']) : ''), 28, false, SEARCH_LOGON, false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_FILTER_USER_POSTS, $lang['postsfromuser'], ((isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) || (!isset($search_arguments['user_include'])))), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_FILTER_USER_POSTS, gettext("Posts from user"), ((isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) || (!isset($search_arguments['user_include'])))), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_FILTER_USER_THREADS, $lang['threadsstartedbyuser'], (isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS)), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_FILTER_USER_THREADS, gettext("Threads started by user"), (isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -678,34 +678,34 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['additionalcriteria']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">", gettext("Additional Criteria"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"40%\">{$lang['folderbrackets_s']}:</td>\n";
+echo "                        <td align=\"left\" width=\"40%\">", gettext("Folder(s)"), ":</td>\n";
 echo "                        <td align=\"left\">", $folder_dropdown, "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['postedfrom']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Posted from"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("date_from", $search_date_from_array, (isset($search_arguments['date_from']) && in_array($search_arguments['date_from'], array_keys($search_date_from_array)) ? $search_arguments['date_from'] : SEARCH_FROM_ONE_MONTH_AGO), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['postedto']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Posted to"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("date_to", $search_date_to_array, (isset($search_arguments['date_to']) && in_array($search_arguments['date_to'], array_keys($search_date_to_array)) ? $search_arguments['date_to'] : SEARCH_TO_TODAY), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Sort by"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, (isset($search_arguments['sort_by']) && in_array($search_arguments['sort_by'], array_keys($search_sort_by_array)) ? $search_arguments['sort_by'] : SEARCH_SORT_CREATED), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
+echo "                        <td align=\"left\">", gettext("Sort dir"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, (isset($search_arguments['sort_dir']) && in_array($search_arguments['sort_dir'], array_keys($search_sort_dir_array)) ? $search_arguments['sort_dir'] : SEARCH_SORT_DESC), false, "search_dropdown"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" style=\"white-space: nowrap\">{$lang['groupbythread']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, $lang['yes'], (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS)), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, $lang['no'], ((isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_NONE) || (!isset($search_arguments['group_by_thread'])))), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" style=\"white-space: nowrap\">", gettext("Group by thread"), ":</td>\n";
+echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, gettext("Yes"), (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS)), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, gettext("No"), ((isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_NONE) || (!isset($search_arguments['group_by_thread'])))), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -724,7 +724,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit('search_submit', $lang['find']), "&nbsp;", form_submit('search_reset', $lang['reset']), "</td>\n";
+echo "      <td align=\"center\">", form_submit('search_submit', gettext("Find")), "&nbsp;", form_submit('search_reset', gettext("Reset")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

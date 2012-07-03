@@ -119,8 +119,8 @@ if (!forum_check_webtag_available($webtag)) {
 // Message pane caching
 cache_check_messages();
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -144,8 +144,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['invalidmsgidornomessageidspecified']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Invalid Message ID or no Message ID specified."));
     html_draw_bottom();
     exit;
 }
@@ -167,16 +167,16 @@ if (isset($_POST['pollsubmit'])) {
 
             }else {
 
-                html_draw_top("title={$lang['error']}");
-                html_error_msg($lang['mustvoteforallgroups'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+                html_draw_top(sprintf("title=%s", gettext("Error")));
+                html_error_msg(gettext("You must vote in every group."), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
                 html_draw_bottom();
                 exit;
             }
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
-            html_error_msg($lang['mustselectpolloption'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_error_msg(gettext("You must select an option to vote for!"), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
             html_draw_bottom();
             exit;
         }
@@ -194,7 +194,7 @@ if (isset($_POST['pollsubmit'])) {
 
         }else {
 
-            html_draw_top("title={$lang['error']}");
+            html_draw_top(sprintf("title=%s", gettext("Error")));
             poll_confirm_close($tid);
             html_draw_bottom();
             exit;
@@ -226,8 +226,8 @@ if (($posts_per_page = session_get_value('POSTS_PER_PAGE'))) {
 // Check the thread exists.
 if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested thread could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -235,8 +235,8 @@ if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0
 // Check it's in a folder we can view.
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("The requested folder could not be found or access was denied."));
     html_draw_bottom();
     exit;
 }
@@ -244,8 +244,8 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 // Get the messages.
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['postdoesnotexist']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("That post does not exist in this thread!"));
     html_draw_bottom();
     exit;
 }
@@ -283,49 +283,49 @@ echo "</table>\n";
 
 if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
     if ($_GET['markasread'] > 0) {
-        html_display_success_msg($lang['threadreadstatusupdated'], '96%', 'center');
+        html_display_success_msg(gettext("Thread Read Status Updated Successfully"), '96%', 'center');
     }else {
-        html_display_error_msg($lang['failedtoupdatethreadreadstatus'], '96%', 'center');
+        html_display_error_msg(gettext("Failed to update thread read status"), '96%', 'center');
     }
 }
 
 if (isset($_GET['setinterest'])) {
     if ($_GET['setinterest'] > 0) {
-        html_display_success_msg($lang['interestupdated'], '96%', 'center');
+        html_display_success_msg(gettext("Thread Interest Status Updated Successfully"), '96%', 'center');
     }else {
-        html_display_error_msg($lang['failedtoupdatethreadinterest'], '96%', 'center');
+        html_display_error_msg(gettext("Failed to update thread interest"), '96%', 'center');
     }
 }
 
 if (isset($_GET['relupdated'])) {
 
-    html_display_success_msg($lang['relationshipsupdated'], '96%', 'center');
+    html_display_success_msg(gettext("Relationships Updated!"), '96%', 'center');
 
 }else if (isset($_GET['setstats'])) {
 
-    html_display_success_msg($lang['statsdisplaychanged'], '96%', 'center');
+    html_display_success_msg(gettext("Stats Display Changed"), '96%', 'center');
 
 }else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
-    html_display_success_msg(sprintf($lang['successfullyeditedpost'], $_GET['edit_success']), '96%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully edited post %s"), $_GET['edit_success']), '96%', 'center');
 
 }else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
 
-    html_display_success_msg(sprintf($lang['successfullydeletedpost'], $_GET['delete_success']), '96%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '96%', 'center');
 
 }elseif (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
 
-    html_display_success_msg(sprintf($lang['successfullydeletedpost'], $_GET['delete_success']), '96%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '96%', 'center');
 
 }else if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
 
-    html_display_success_msg(sprintf($lang['successfullyapprovedpost'], $_GET['post_approve_success']), '96%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully approved post %s"), $_GET['post_approve_success']), '96%', 'center');
 }
 
 if (isset($_GET['font_resize'])) {
 
     echo "<div id=\"font_resize_success\">\n";
-    html_display_success_msg(sprintf($lang['fontsizechanged'], $lang['framesmustbereloaded']), '96%', 'center');
+    html_display_success_msg(sprintf(gettext("Font Size Changed. %s"), gettext("Frames must be reloaded manually to see changes.")), '96%', 'center');
     echo "</div>\n";
 }
 
@@ -339,20 +339,20 @@ if (($tracking_data_array = thread_get_tracking_data($tid))) {
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], gettext("here"));
 
                 echo "  <tr>\n";
-                echo "    <td align=\"left\">", sprintf($lang['thisthreadhasmoved'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf(gettext("<b>Threads Merged:</b> This thread has moved %s"), $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
 
             if ($tracking_data['NEW_TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['TID'], gettext("here"));
 
                 echo "  <tr>\n";
-                echo "    <td align=\"left\">", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf(gettext("<b>Threads Merged:</b> This thread was merged from %s"), $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
 
@@ -361,20 +361,20 @@ if (($tracking_data_array = thread_get_tracking_data($tid))) {
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], gettext("here"));
 
                 echo "  <tr>\n";
-                echo "    <td align=\"left\">", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf(gettext("<b>Thread Split:</b> Some posts in this thread have been moved %s"), $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
 
             if ($tracking_data['NEW_TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['TID'], gettext("here"));
 
                 echo "  <tr>\n";
-                echo "    <td align=\"left\">", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf(gettext("<b>Thread Split:</b> Some posts in this thread were moved from %s"), $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
         }
@@ -402,7 +402,7 @@ $quick_reply_tools = new TextAreaHTML('quick_reply_form');
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
-echo "        ", html_display_warning_msg($lang['pressctrlentertoquicklysubmityourpost'], '100%', 'center');
+echo "        ", html_display_warning_msg(gettext("Press Ctrl+Enter to quickly submit your post"), '100%', 'center');
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -411,7 +411,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\">\n";
 echo "                    <table cellspacing=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"subhead\">{$lang['quickreply']}</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\">", gettext("Quick Reply"), "</td>\n";
 echo "                        <td align=\"right\" class=\"subhead\"><span id=\"quick_reply_header\"></span>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -449,7 +449,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("post", $lang['post']), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("post", gettext("Post")), "&nbsp;", form_submit("more", gettext("More")), "&nbsp;", form_button("cancel", gettext("Cancel")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
@@ -466,7 +466,7 @@ if ($msg_count > 0) {
             if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                 $message['CONTENT'] = message_get_content($tid, $message['PID']);
             }else {
-                $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
+                $message['CONTENT'] = gettext("Ignored"); // must be set to something or will show as deleted
             }
 
         }else {
@@ -513,8 +513,8 @@ echo "  <tr>\n";
 if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
     echo "    <td width=\"33%\" align=\"left\" style=\"white-space: nowrap\" class=\"postbody\">";
-    echo "      <img src=\"". html_style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> ";
-    echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" id=\"reply_0\"><b>{$lang['replyall']}</b></a>\n";
+    echo "      <img src=\"". html_style_image('reply_all.png') ."\" alt=\"", gettext("Reply to All"), "\" title=\"", gettext("Reply to All"), "\" border=\"0\" /> ";
+    echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" id=\"reply_0\"><b>", gettext("Reply to All"), "</b></a>\n";
     echo "    </td>\n";
 
 }else {
@@ -526,11 +526,11 @@ if (!user_is_guest()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
 
     }else {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
     }
 
 }else {
@@ -542,7 +542,7 @@ if ($last_pid < $thread_data['LENGTH']) {
 
     $next_pid = $last_pid + 1;
 
-    echo "    <td width=\"33%\" align=\"right\" style=\"white-space: nowrap\" class=\"postbody\">", form_quick_button("messages.php", $lang['keepreadingdotdotdot'], array('msg' => "$tid.$next_pid")), "</td>\n";
+    echo "    <td width=\"33%\" align=\"right\" style=\"white-space: nowrap\" class=\"postbody\">", form_quick_button("messages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$next_pid")), "</td>\n";
 
 }else {
 
@@ -554,7 +554,7 @@ echo "  </tr>\n";
 if (!user_is_guest()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". html_style_image('quickreplyall.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" rel=\"$tid.0\" class=\"quick_reply_link\"><b>{$lang['quickreplyall']}</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". html_style_image('quickreplyall.png') ."\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" rel=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";
@@ -580,7 +580,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
-    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\">{$lang['viewresults']}</a>\n";
+    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\">", gettext("View Results"), "</a>\n";
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";

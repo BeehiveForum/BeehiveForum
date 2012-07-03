@@ -123,8 +123,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("lforums.php");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -143,32 +143,32 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("title={$lang['error']}", "robots=noindex,nofollow");
-    light_html_display_error_msg($lang['invalidmsgidornomessageidspecified']);
+    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_display_error_msg(gettext("Invalid Message ID or no Message ID specified."));
     light_html_draw_bottom();
     exit;
 }
 
 if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-    light_html_draw_top("title={$lang['error']}");
-    light_html_display_error_msg($lang['threadcouldnotbefound']);
+    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
     light_html_draw_bottom();
     exit;
 }
 
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
-    light_html_draw_top("title={$lang['error']}");
-    light_html_display_error_msg($lang['foldercouldnotbefound']);
+    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
     light_html_draw_bottom();
     exit;
 }
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    light_html_draw_top("title={$lang['error']}");
-    light_html_display_error_msg($lang['postdoesnotexist']);
+    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_display_error_msg(gettext("That post does not exist in this thread!"));
     light_html_draw_bottom();
     exit;
 }
@@ -199,7 +199,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
     $last_pid = $message['PID'];
 }
 
-echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$msg\">{$lang['back']}</a>\n";
+echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$msg\">", gettext("Back"), "</a>\n";
 
 light_html_draw_bottom();
 

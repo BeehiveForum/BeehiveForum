@@ -108,8 +108,8 @@ if (session_user_banned()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Make sure we have a webtag
 $webtag = get_webtag();
@@ -117,8 +117,8 @@ $webtag = get_webtag();
 // check to see if user registration is available
 if (forum_get_setting('allow_new_registrations', 'N')) {
 
-    html_draw_top("title={$lang['error']}");
-    html_error_msg($lang['newuserregistrationsarenotpermitted']);
+    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_error_msg(gettext("Sorry, new user registrations are not allowed right now. Please check back later."));
     html_draw_bottom();
     exit;
 }
@@ -159,7 +159,7 @@ if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
         }else {
 
-            $error_msg_array[] = $lang['youmustagreetotheforumrules'];
+            $error_msg_array[] = gettext("You must agree to the forum rules before you can continue.");
             $valid = false;
         }
     }
@@ -185,7 +185,7 @@ if (isset($_POST['register'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustagreetotheforumrules'];
+        $error_msg_array[] = gettext("You must agree to the forum rules before you can continue.");
         $valid = false;
     }
 
@@ -195,25 +195,25 @@ if (isset($_POST['register'])) {
 
         if (mb_strlen($logon) < 3) {
 
-            $error_msg_array[] = $lang['usernametooshort'];
+            $error_msg_array[] = gettext("Username must be a minimum of 2 characters long");
             $valid = false;
         }
 
         if (mb_strlen($logon) > 32) {
 
-            $error_msg_array[] = $lang['usernametoolong'];
+            $error_msg_array[] = gettext("Username must be a maximum of 15 characters long");
             $valid = false;
         }
 
         if (logon_is_banned($logon)) {
 
-            $error_msg_array[] = $lang['logonnotpermitted'];
+            $error_msg_array[] = gettext("Logon not permitted. Choose another!");
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['usernamerequired'];
+        $error_msg_array[] = gettext("A logon name is required");
         $valid = false;
     }
 
@@ -223,19 +223,19 @@ if (isset($_POST['register'])) {
 
         if (mb_strlen($password) < 6) {
 
-            $error_msg_array[] = $lang['passwdtooshort'];
+            $error_msg_array[] = gettext("Password must be a minimum of 6 characters long");
             $valid = false;
         }
 
         if (mb_strlen($password) > 32) {
 
-            $error_msg_array[] = $lang['passwdtoolong'];
+            $error_msg_array[] = gettext("Password must be a maximum of 32 characters long");
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['passwdrequired'];
+        $error_msg_array[] = gettext("A password is required");
         $valid.= false;
     }
 
@@ -245,13 +245,13 @@ if (isset($_POST['register'])) {
 
         if (htmlentities_array($check_password) != $check_password) {
 
-            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
+            $error_msg_array[] = gettext("Password must not contain HTML tags");
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['confirmationpasswdrequired'];
+        $error_msg_array[] = gettext("A confirmation password is required");
         $valid = false;
     }
 
@@ -261,13 +261,13 @@ if (isset($_POST['register'])) {
 
         if (nickname_is_banned($nickname)) {
 
-            $error_msg_array[] = $lang['nicknamenotpermitted'];
+            $error_msg_array[] = gettext("Nickname not permitted. Choose another!");
             $valid = false;
         }
 
     }else {
 
-        $error_msg_array[] = $lang['nicknamerequired'];
+        $error_msg_array[] = gettext("A nickname is required");
         $valid = false;
     }
 
@@ -277,27 +277,27 @@ if (isset($_POST['register'])) {
 
         if (!email_address_valid($email)) {
 
-            $error_msg_array[] = $lang['invalidemailaddressformat'];
+            $error_msg_array[] = gettext("Invalid email address format");
             $valid = false;
 
         }else {
 
             if (email_is_banned($email)) {
 
-                $error_msg_array[] = $lang['emailaddressnotpermitted'];
+                $error_msg_array[] = gettext("Email Address not permitted. Choose another!");
                 $valid = false;
             }
 
             if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($email)) {
 
-                $error_msg_array[] = $lang['emailaddressalreadyinuse'];
+                $error_msg_array[] = gettext("Email Address already in use. Choose another!");
                 $valid = false;
             }
         }
 
     }else {
 
-        $error_msg_array[] = $lang['emailrequired'];
+        $error_msg_array[] = gettext("An email address is required");
         $valid = false;
     }
 
@@ -312,7 +312,7 @@ if (isset($_POST['register'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['birthdayrequired'];
+        $error_msg_array[] = gettext("Date of birth is required or is invalid");
         $valid = false;
     }
 
@@ -408,7 +408,7 @@ if (isset($_POST['register'])) {
 
             }else {
 
-                $error_msg_array[] = $lang['textcaptchamissingkey'];
+                $error_msg_array[] = gettext("A confirmation code is required.");
                 $valid = false;
             }
 
@@ -418,7 +418,7 @@ if (isset($_POST['register'])) {
 
                 if (!$text_captcha->verify_keys($private_key)) {
 
-                    $error_msg_array[] = $lang['textcaptchaverificationfailed'];
+                    $error_msg_array[] = gettext("Text-captcha verification code was incorrect. Please re-enter it.");
                     $valid = false;
                 }
             }
@@ -433,13 +433,13 @@ if (isset($_POST['register'])) {
 
         if ($password != $check_password) {
 
-            $error_msg_array[] = $lang['passwdsdonotmatch'];
+            $error_msg_array[] = gettext("Passwords do not match");
             $valid = false;
         }
 
         if (mb_strtolower($logon) == mb_strtolower($password)) {
 
-            $error_msg_array[] = $lang['usernamesameaspasswd'];
+            $error_msg_array[] = gettext("Username and password must be different");
             $valid = false;
         }
     }
@@ -448,7 +448,7 @@ if (isset($_POST['register'])) {
 
         if (user_exists($logon)) {
 
-            $error_msg_array[] = $lang['usernameexists'];
+            $error_msg_array[] = gettext("Sorry, a user with that name already exists");
             $valid = false;
         }
     }
@@ -465,7 +465,7 @@ if (isset($_POST['register'])) {
         
         if (ban_check($user_data)) {
         
-            $error_msg_array[] = $lang['usernameorpasswdnotvalid'];
+            $error_msg_array[] = gettext("The username or password you supplied is not valid.");
             $valid = false;
         }
     }
@@ -503,38 +503,38 @@ if (isset($_POST['register'])) {
 
                     perm_user_apply_email_confirmation($new_uid);
 
-                    html_draw_top("title={$lang['userregistration']}");
-                    html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
+                    html_draw_top(sprintf("title=%s", gettext("User Registration")));
+                    html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
                     exit;
 
                 }else {
 
-                    html_draw_top("title={$lang['userregistration']}");
-                    html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmfailed'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
+                    html_draw_top(sprintf("title=%s", gettext("User Registration")));
+                    html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but the required confirmation email was not sent. Please contact the forum owner to rectify this. In this meantime please click the continue button to login."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
                     exit;
                 }
 
             }else {
 
-                html_draw_top("title={$lang['userregistration']}");
-                html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreated'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
+                html_draw_top(sprintf("title=%s", gettext("User Registration")));
+                html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created successfully! Click the continue button below to login"), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
                 html_draw_bottom();
                 exit;
             }
 
         }else {
 
-            $error_msg_array[] = $lang['errorcreatinguserrecord'];
+            $error_msg_array[] = gettext("Error creating user record");
             $valid = false;
         }
     }
 }
 
-html_draw_top("title={$lang['userregistration']}", 'emoticons.js', 'register.js', "basetarget=$frame_top_target", 'class=window_title');
+html_draw_top("title=", gettext("User Registration"), "", 'emoticons.js', 'register.js', "basetarget=$frame_top_target", 'class=window_title');
 
-echo "<h1>{$lang['userregistration']}</h1>\n";
+echo "<h1>", gettext("User Registration"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '600', 'center');
@@ -542,7 +542,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
-    html_display_warning_msg($lang['moreoptionsavailable'], '600', 'center');
+    html_display_warning_msg(gettext("More Profile and Preference options are available once you register"), '600', 'center');
 
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"register.php\" method=\"post\" target=\"_self\">\n";
@@ -556,7 +556,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['registrationinformationrequired']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Registration Information (Required)"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -564,27 +564,27 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['username']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">", gettext("Username"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? htmlentities_array($logon) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['passwd']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password("pw", "", 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['confirmpassword']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Confirm Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password("cpw", "", 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['nickname']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Nickname"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("nickname", (isset($nickname) ? htmlentities_array($nickname) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['email']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Email"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("email", (isset($email) ? htmlentities_array($email) : ""), 45, 80), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['dateofbirth']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Date of Birth"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? htmlentities_array($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? htmlentities_array($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? htmlentities_array($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -609,7 +609,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['profileinformationoptional']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Profile Information (Optional)"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -617,20 +617,20 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['firstname']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">", gettext("First name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? htmlentities_array($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['lastname']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Last name"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? htmlentities_array($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">{$lang['signature']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">", gettext("Signature"), ":</td>\n";
     echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? htmlentities_array($sig_content) : ""), 6, 42), "</td>\n";
     echo "                      </tr>\n";
     echo "                     <tr>\n";
     echo "                       <td align=\"left\">&nbsp;</td>\n";
-    echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], (isset($sig_html) && $sig_html == "Y")), "</td>\n";
+    echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", gettext("Signature contains HTML code"), (isset($sig_html) && $sig_html == "Y")), "</td>\n";
     echo "                     </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -654,7 +654,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['preferencesoptional']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Preferences (Optional)"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -662,20 +662,20 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" width=\"245\">{$lang['alwaysnotifymeofrepliestome']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("email_notify", "Y", $lang['yes'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("email_notify", "N", $lang['no'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"245\">", gettext("Notify on reply to me"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_radio("email_notify", "Y", gettext("Yes"), (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("email_notify", "N", gettext("No"), (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['notifyonnewprivatemessage']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("pm_notify_email", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("pm_notify_email", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Notify on new Private Message"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_radio("pm_notify_email", "Y", gettext("Yes"), (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("pm_notify_email", "N", gettext("No"), (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['popuponnewprivatemessage']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("pm_notify", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("pm_notify", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Pop up on new Private Message"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_radio("pm_notify", "Y", gettext("Yes"), (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("pm_notify", "N", gettext("No"), (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['automatichighinterestonpost']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("mark_as_of_int", "Y", $lang['yes'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("mark_as_of_int", "N", $lang['no'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Automatic high interest on post"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_radio("mark_as_of_int", "Y", gettext("Yes"), (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("mark_as_of_int", "N", gettext("No"), (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -699,7 +699,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['timezone']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Time Zone"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -707,12 +707,12 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['timezonefromGMT']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Time zone"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($new_user_prefs['DL_SAVING'])) ? ($new_user_prefs['DL_SAVING'] == 'Y') : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", gettext("Adjust for daylight saving"), (isset($new_user_prefs['DL_SAVING'])) ? ($new_user_prefs['DL_SAVING'] == 'Y') : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -736,7 +736,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumoptions']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Forum Options"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -747,17 +747,17 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     if (($available_styles = styles_get_available())) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";
+        echo "                        <td align=\"left\" class=\"posthead\">", gettext("Style"), ":</td>\n";
         echo "                        <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? htmlentities_array($new_user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', false, 'default')), "", "register_dropdown"), "</td>\n";
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"popup 500x400\">{$lang['preview']}</a>]:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Forum emoticons"), " [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"popup 500x400\">", gettext("Preview"), "</a>]:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($new_user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default')), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">{$lang['preferredlang']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">", gettext("Preferred language"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($new_user_prefs['LANGUAGE']) ? htmlentities_array($new_user_prefs['LANGUAGE']) : htmlentities_array(forum_get_setting('default_language', false, 'en'))), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -784,7 +784,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
         }else if (($text_captcha_image = $text_captcha->make_image())) {
 
             $forum_owner_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
-            $forum_owner_link  = sprintf("<a href=\"mailto:%s\">{$lang['forumowner']}</a>", $forum_owner_email);
+            $forum_owner_link  = sprintf("<a href=\"mailto:%s\">", gettext("forum owner"), "</a>", $forum_owner_email);
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -795,7 +795,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Confirmation"), "</td>\n";
             echo "                </tr>\n";
             echo "              </table>\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -803,9 +803,9 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf($lang['textcaptchaexplain'], $forum_owner_link), "</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf(gettext("To prevent automated registrations this forum requires you enter a confirmation code. The code is displayed in the image to the right. If you are visually impaired or cannot otherwise read the code please contact the %s."), $forum_owner_link), "</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\"><img src=\"data:image/jpeg;base64,", base64_encode(file_get_contents($text_captcha_image)), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><img src=\"data:image/jpeg;base64,", base64_encode(file_get_contents($text_captcha_image)), "\" alt=\"", gettext("This is a captcha-picture. It is used to prevent automatic registration"), "\" title=\"", gettext("This is a captcha-picture. It is used to prevent automatic registration"), "\" id=\"captcha_img\" /></td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", html_style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
@@ -830,7 +830,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit('register', $lang['register']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('register', gettext("Register")), "&nbsp;", form_submit('cancel', gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
@@ -842,9 +842,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     if (!$forum_rules = forum_get_setting('forum_rules_message')) {
-
-        $cancel_link = "<a href=\"index.php?webtag=$webtag\">{$lang['cancellinktext']}</a>";
-        $forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
+        $forum_rules = sprintf(gettext("<p><b>Forum Rules</b></p><p>Registration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=%2\$s\">here</a> to return to the forums index.</p><p>Although the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>"), $forum_name, $webtag);
     }
 
     $forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_rules, true, true, false);
@@ -861,13 +859,13 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumrules']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Forum Rules"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td>{$lang['forumrulesnotification']}:</td>\n";
+    echo "                        <td>", gettext("In order to proceed, you must agree with the following rules"), ":</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>\n";
@@ -875,7 +873,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox('user_agree_rules', 'Y', $lang['forumrulescheckbox']), "</td>\n";
+    echo "                        <td>", form_checkbox('user_agree_rules', 'Y', gettext("I have read, and agree to abide by the forum rules.")), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -890,7 +888,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit('forum_rules', $lang['register']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('forum_rules', gettext("Register")), "&nbsp;", form_submit('cancel', gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

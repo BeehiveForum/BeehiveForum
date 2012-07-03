@@ -106,8 +106,8 @@ if (!forum_check_webtag_available($webtag)) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -132,8 +132,8 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['noformobj']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("No form object specified for return text"));
     html_draw_bottom();
     exit;
 }
@@ -147,7 +147,7 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
 
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
-    html_draw_top("title={$lang['dictionary']}", 'dictionary.js', 'pm_popup_disabled', 'class=window_title');
+    html_draw_top("title=", gettext("Dictionary"), "", 'dictionary.js', 'pm_popup_disabled', 'class=window_title');
 
     echo "<form accept-charset=\"utf-8\" id=\"dictionary_init\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -193,8 +193,8 @@ $dictionary = new dictionary();
 // Check it's installed
 if (!$dictionary->is_installed()) {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['dictionarynotinstalled']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("No dictionary has been installed. Please contact the forum owner to remedy this."));
     html_draw_bottom();
     exit;
 }
@@ -253,12 +253,12 @@ if (isset($_POST['ignoreall'])) {
     $dictionary->find_next_word();
 }
 
-html_draw_top("title={$lang['dictionary']}", 'dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title=", gettext("Dictionary"), "", 'dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled', 'class=window_title');
 
-echo "<h1>{$lang['dictionary']}</h1>\n";
+echo "<h1>", gettext("Dictionary"), "</h1>\n";
 
 if (($dictionary->is_check_complete())) {
-    html_display_success_msg($lang['spellcheckcomplete'], '500', 'center');
+    html_display_success_msg(gettext("Spell check is complete. To restart spell check click restart button below."), '500', 'center');
 }
 
 echo "<br />\n";
@@ -285,13 +285,13 @@ echo "            <tr>\n";
 echo "              <td align=\"left\" class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
 echo "                  <tr>\n";
-echo "                    <td class=\"subhead\" align=\"left\">{$lang['spellcheck']}</td>\n";
+echo "                    <td class=\"subhead\" align=\"left\">", gettext("Spell check"), "</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td align=\"center\">\n";
 echo "                      <table width=\"95%\" class=\"posthead\">\n";
 echo "                        <tr>\n";
-echo "                          <td align=\"left\" colspan=\"2\">{$lang['notindictionary']}:</td>\n";
+echo "                          <td align=\"left\" colspan=\"2\">", gettext("Not in dictionary"), ":</td>\n";
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\" valign=\"top\" width=\"334\">\n";
@@ -306,13 +306,13 @@ echo "                          </td>\n";
 echo "                          <td align=\"right\" valign=\"top\">\n";
 echo "                            <table border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"3\">\n";
 echo "                              <tr>\n";
-echo "                                <td align=\"right\">", form_submit("ignore", $lang['ignore'], false, "dictionary_button"), "</td>\n";
+echo "                                <td align=\"right\">", form_submit("ignore", gettext("Ignore"), false, "dictionary_button"), "</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td align=\"right\">", form_submit("ignoreall", $lang['ignoreall'], false, "dictionary_button"), "</td>\n";
+echo "                                <td align=\"right\">", form_submit("ignoreall", gettext("Ignore All"), false, "dictionary_button"), "</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td align=\"right\">", form_submit("add", $lang['add'], false, "dictionary_button"), "</td>\n";
+echo "                                <td align=\"right\">", form_submit("add", gettext("Add"), false, "dictionary_button"), "</td>\n";
 echo "                              </tr>\n";
 echo "                            </table>\n";
 echo "                          </td>\n";
@@ -320,7 +320,7 @@ echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                      <table width=\"95%\" class=\"posthead\">\n";
 echo "                        <tr>\n";
-echo "                          <td align=\"left\" colspan=\"2\">{$lang['changeto']}:</td>\n";
+echo "                          <td align=\"left\" colspan=\"2\">", gettext("Change to"), ":</td>\n";
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\" valign=\"top\" width=\"330\">\n";
@@ -334,13 +334,13 @@ echo "                          </td>\n";
 echo "                          <td align=\"right\" valign=\"top\" rowspan=\"2\">\n";
 echo "                            <table border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"3\">\n";
 echo "                              <tr>\n";
-echo "                                <td align=\"right\">", form_submit("change", $lang['change'], false, "dictionary_button"), "</td>\n";
+echo "                                <td align=\"right\">", form_submit("change", gettext("Change"), false, "dictionary_button"), "</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td align=\"right\">", form_submit("changeall", $lang['changeall'], false, "dictionary_button"), "</td>\n";
+echo "                                <td align=\"right\">", form_submit("changeall", gettext("Change All"), false, "dictionary_button"), "</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td align=\"right\">", form_submit("suggest", $lang['suggest'], false, "dictionary_button"), "</td>\n";
+echo "                                <td align=\"right\">", form_submit("suggest", gettext("Suggest"), false, "dictionary_button"), "</td>\n";
 echo "                              </tr>\n";
 echo "                            </table>\n";
 echo "                          </td>\n";
@@ -357,7 +357,7 @@ if (($suggestions_array = $dictionary->get_suggestions_array())) {
 
 }else {
 
-    echo "                                  ", form_dropdown_array("no_suggestions", array($lang['nosuggestions']), $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
+    echo "                                  ", form_dropdown_array("no_suggestions", array(gettext("(no suggestions)")), $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
 }
 
 echo "                                </td>\n";
@@ -384,13 +384,13 @@ echo "      </tr>\n";
 if (($dictionary->is_check_complete())) {
 
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit('restart', $lang['restartspellcheck']), "&nbsp;", form_button("close", $lang['close']), "&nbsp;", form_button("cancel", $lang['cancelchanges']), "</td>\n";
+    echo "        <td align=\"center\">", form_submit('restart', gettext("Restart")), "&nbsp;", form_button("close", gettext("Close")), "&nbsp;", form_button("cancel", gettext("Cancel Changes")), "</td>\n";
     echo "      </tr>\n";
 
 }else {
 
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_button("close", $lang['close']), "&nbsp;", form_button("cancel", $lang['cancelchanges']), "</td>\n";
+    echo "        <td align=\"center\">", form_button("close", gettext("Close")), "&nbsp;", form_button("cancel", gettext("Cancel Changes")), "</td>\n";
     echo "      </tr>\n";
 }
 

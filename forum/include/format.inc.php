@@ -131,9 +131,6 @@ function format_version_number($version, $glue = '.')
 
 function format_time($time)
 {
-    // $time is a UNIX timestamp, which by definition is in GMT/UTC
-    $lang = load_language_file();
-
     if (($timezone_id = session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
@@ -167,32 +164,40 @@ function format_time($time)
     }
 
     // Get the numerical parts for $time
-    list($time_min, $time_hour, $time_day, $time_month, $time_year) = explode(" ", gmdate("i G j n Y", $time));
+    list($time_day, $time_month, $time_year) = explode(" ", gmdate("j M Y", $time));
 
     // Get the numerical parts for the current month and year
-    list($current_day, $current_month, $current_year) = explode(' ', gmdate('j n Y', $current_time));
-
-    // Get the month string for $time
-    $time_month = $lang['month_short'][$time_month];
-
-    // Get the month string for current time.
-    $current_month = $lang['month_short'][$current_month];
+    list($current_day, $current_month, $current_year) = explode(' ', gmdate('j M Y', $current_time));
 
     // Decide on the date format.
     if (($time_year != $current_year)) {
 
         // If the year is different, show everything.
-        $format = sprintf($lang['daymonthyearhourminute'], $time_day, $time_month, $time_year, $time_hour, $time_min); // j M Y H:i
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        
+            $format = strftime('%#d %b %Y %H:%M', $time);
+            
+        } else {
+            
+            $format = strftime('%e %b %Y %H:%M', $time);
+        }
 
     } else if (($time_month != $current_month) || ($time_day != $current_day)) {
 
         // If the month or day are different, show them with the time.
-        $format = sprintf($lang['daymonthhourminute'], $time_day, $time_month, $time_hour, $time_min); // j M H:i
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        
+            $format = strftime('%#d %b %H:%M', $time);
+            
+        } else {
+            
+            $format = strftime('%e %b %H:%M', $time);
+        }        
 
     } else {
 
         // Show only the time.
-        $format = sprintf($lang['hourminute'], $time_hour, $time_min); // H:i
+        $format = strftime('%H:%M', $time);
     }
 
     return $format;
@@ -209,8 +214,6 @@ function format_time($time)
 
 function format_date($time)
 {
-    $lang = load_language_file();
-
     if (($timezone_id = session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
@@ -243,25 +246,34 @@ function format_date($time)
         $current_time = $current_time + ($dst_offset * HOUR_IN_SECONDS);
     }
 
-    // Get the numerical parts for $time
-    list($time_day, $time_month, $time_year) = explode(" ", gmdate("j n Y", $time));
+    // Get the year of $time
+    $time_year = gmdate("Y", $time);
 
-    // Get the numerical parts for the current time
+    // Get the year for the current time
     $current_year = gmdate('Y', $current_time);
 
-    // Get the month string for $time
-    $time_month = $lang['month_short'][$time_month];
-
-    // Decide on the date format.
+    // Only show the year if it is different to the current year
     if (($time_year != $current_year)) {
-
-        // If the year is different, show everything.
-        $format = sprintf($lang['daymonthyear'], $time_day, $time_month, $time_year); // j M Y
+        
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            
+            $format = strftime('%#d %b %Y', $time);
+        
+        } else {
+            
+            $format = strftime('%e %b %Y', $time);
+        }
 
     } else {
 
-        // Show only the day and month.
-        $format = sprintf($lang['daymonth'], $time_day, $time_month); // j M
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            
+            $format = strftime('%#d %b', $time);
+        
+        } else {
+            
+            $format = strftime('%e %b', $time);
+        }
     }
 
     return $format;
@@ -279,33 +291,34 @@ function format_date($time)
 
 function format_time_display($seconds, $abbrv_units = true)
 {
-    $lang = load_language_file();
+    $periods_array = array(
+        31556926 => array('%s year',   '%s years',   '%sy'),
+        2629743  => array('%s month',  '%s months',  '%sm'),
+        604800   => array('%s week',   '%s weeks',   '%sw'),
+        86400    => array('%s day',    '%s days',    '%sd'),
+        3600     => array('%s hour',   '%s hours',   '%shr'),
+        60       => array('%s minute', '%s minutes', '%smin'),
+        1        => array('%s second', '%s seconds', '%ssec'),
+    );
 
-    $periods_array = array ('year'   => 31556926, 'month'  => 2629743,
-                            'week'   => 604800,   'day'    => 86400,
-                            'hour'   => 3600,     'minute' => 60,
-                            'second' => 1);
-
-    $seconds = (float) $seconds;
+    $seconds = (float)$seconds;
 
     $values_array = array();
 
-    foreach ($periods_array as $period => $value) {
+    foreach ($periods_array as $value => $periods) {
 
         if (($count = floor($seconds / $value)) > 0) {
 
             if ($abbrv_units === true) {
 
-                $values_array[] = sprintf($lang['date_periods_short'][$period], $count);
+                $value_text = gettext($periods[2]);
 
-            }elseif ($count <> 1) {
+            } else {
 
-                $values_array[] = sprintf($lang['date_periods_plural'][$period], $count);
-
-            }else {
-
-                $values_array[] = sprintf($lang['date_periods'][$period], $count);
+                $value_text = ngettext($periods[0], $periods[1], $count);
             }
+            
+            $values_array[] = sprintf($value_text, $count);
         }
 
         $seconds = $seconds % $value;
@@ -313,14 +326,14 @@ function format_time_display($seconds, $abbrv_units = true)
 
     if (sizeof($values_array) > 0) {
 
-        return implode(" ", $values_array);
+        return implode(' ', $values_array);
 
-    }elseif ($abbrv_units === true) {
+    } else if ($abbrv_units === true) {
 
-        sprintf($lang['date_periods_short']['second'], 0);
+        return sprintf(gettext($periods_array[1][2]), $seconds);
     }
 
-    return sprintf($lang['date_periods_plural']['second'], 0);
+    return sprintf(ngettext($periods_array[1][0], $periods_array[1][1], $seconds), $seconds);
 }
 
 /**
@@ -740,8 +753,6 @@ function format_age($dob)
 
 function format_birthday($date)
 {
-    $lang = load_language_file();
-
     $matches_array = array();
 
     if (preg_match('/[0-9]{4}-([0-9]{2})-([0-9]{2})/u', $date, $matches_array)) {
@@ -749,8 +760,17 @@ function format_birthday($date)
         list(, $month, $day) = $matches_array;
 
         $month = floor($month); $day = floor($day);
-
-        return "$day {$lang['month_short'][$month]}";
+        
+        $timestamp = mktime(0, 0, 0, $month, $day, date('Y'));
+        
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            
+            return strftime('%#d %b', $timestamp);
+            
+        } else {
+            
+            return strftime('%e %b', $timestamp);
+        }
     }
 
     return false;

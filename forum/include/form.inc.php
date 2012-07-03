@@ -38,8 +38,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 // Create a form field
 function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false, $class = "bhinputtext")
 {
-    $lang = load_language_file();
-
     $id = form_unique_id($name);
 
     $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\"";
@@ -56,7 +54,7 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
         $html.= " maxlength=\"$maxchars\"";
     }
 
-    $html.= " dir=\"{$lang['_textdir']}\" />";
+    $html.= " dir=\"". gettext("ltr"). "\" />";
     return $html;
 }
 
@@ -126,8 +124,6 @@ function form_input_hidden_array($array)
 // Create a textarea input field
 function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class = "bhtextarea")
 {
-    $lang = load_language_file();
-
     $id = form_unique_id($name);
 
     $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\"";
@@ -144,7 +140,7 @@ function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class
         $html.= " cols=\"$cols\"";
     }
 
-    $html.= " dir=\"{$lang['_textdir']}\">$value</textarea>";
+    $html.= " dir=\"". gettext("ltr"). "\">$value</textarea>";
     return $html;
 }
 
@@ -444,18 +440,16 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 // where the DOB was not required information
 function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = "", $class = "bhselect")
 {
-    $lang = load_language_file();
-
     if ($show_blank) {
 
         $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
-        $birthday_months = array_merge(array('&nbsp;'), $lang['month']);
+        $birthday_months = array_merge(array('&nbsp;'), gettext("Array"));
         $birthday_years  = array('&nbsp;') + range_keys(1900, date('Y', time()));
 
     }else {
 
         $birthday_days   = range_keys(1, 31);
-        $birthday_months = $lang['month'];
+        $birthday_months = gettext("Array");
         $birthday_years  = range_keys(1900, date('Y', time()));
     }
 
@@ -470,8 +464,6 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 // including seperate fields for day, month and year.
 function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $start_year = 0)
 {
-    $lang = load_language_file();
-
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
@@ -484,7 +476,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
     }
 
     $days   = array_merge(array('&nbsp;'), range(1, 31));
-    $months = array_merge(array('&nbsp;'), $lang['month']);
+    $months = array_merge(array('&nbsp;'), gettext("Array"));
 
     $output = form_dropdown_array("{$prefix}day", $days, $day). "&nbsp;";
     $output.= form_dropdown_array("{$prefix}month", $months, $month). "&nbsp;";

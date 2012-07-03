@@ -182,8 +182,8 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 // Enable caching on RSS Feed
 cache_check_last_modified(time() + 300);
 
-// Language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // echo out the rss feed
 header('Content-type: text/xml; charset=UTF-8');
@@ -191,7 +191,7 @@ header('Content-type: text/xml; charset=UTF-8');
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 echo "<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
 echo "<channel>\n";
-echo "<title>{$feed_title} - {$lang['rssfeed']}</title>\n";
+echo "<title>{$feed_title} - ", gettext("RSS Feed"), "</title>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
 echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";

@@ -100,8 +100,8 @@ if (!session_user_approved()) {
     exit;
 }
 
-// Load language file
-$lang = load_language_file();
+// Initialise Locale
+lang_init();
 
 // Check that we have access to this forum
 if (!forum_check_access_level()) {
@@ -112,8 +112,8 @@ if (!forum_check_access_level()) {
 // If attachments are disabled then no need to go any further.
 if (forum_get_setting('attachments_enabled', 'N')) {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['attachmentshavebeendisabled']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
     html_draw_bottom();
     exit;
 }
@@ -121,8 +121,8 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 // If the attachments directory is undefined we can't go any further
 if (!$attachment_dir = attachments_check_dir()) {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['attachmentshavebeendisabled']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
     html_draw_bottom();
     exit;
 }
@@ -138,8 +138,8 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
 }else {
 
-    html_draw_top("title={$lang['error']}", 'pm_popup_disabled');
-    html_error_msg($lang['aidnotspecified']);
+    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    html_error_msg(gettext("AID not specified."));
     html_draw_bottom();
     exit;
 }
@@ -268,7 +268,7 @@ if (isset($_POST['upload'])) {
                 if (!attachments_delete($hash)) {
 
                     $valid = false;
-                    $error_msg_array[] = $lang['failedtodeleteallselectedattachments'];
+                    $error_msg_array[] = gettext("Failed to delete all of the selected attachments");
                 }
             }
         }
@@ -299,9 +299,9 @@ if (isset($_POST['upload'])) {
 
         if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
-            html_draw_top("title={$lang['deleteattachments']}", 'pm_popup_disabled', 'class=window_title');
+            html_draw_top("title=", gettext("Delete attachments"), "", 'pm_popup_disabled', 'class=window_title');
 
-            echo "<h1>{$lang['deleteattachments']}</h1>\n";
+            echo "<h1>", gettext("Delete attachments"), "</h1>\n";
             echo "<br />\n";
             echo "<form accept-charset=\"utf-8\" name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
             echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -314,13 +314,13 @@ if (isset($_POST['upload'])) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">", gettext("Delete attachments"), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"90%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
+            echo "                        <td align=\"left\">", gettext("Are you sure you want to delete the selected attachments?"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"center\">\n";
@@ -367,7 +367,7 @@ if (isset($_POST['upload'])) {
             echo "      <td align=\"left\">&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
-            echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+            echo "      <td align=\"center\">", form_submit("delete_confirm", gettext("Confirm")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
             echo "</form>\n";
@@ -378,9 +378,9 @@ if (isset($_POST['upload'])) {
     }
 }
 
-html_draw_top("title={$lang['attachments']}", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title=", gettext("Attachments"), "", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled', 'class=window_title');
 
-echo "<h1>{$lang['attachments']}</h1>\n";
+echo "<h1>", gettext("Attachments"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -389,15 +389,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else {
 
     if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
-        html_display_success_msg(sprintf($lang['successfullyuploaded'], htmlentities_array(implode(", ", $upload_success))), '600', 'left');
+        html_display_success_msg(sprintf(gettext("Successfully Uploaded: %s"), htmlentities_array(implode(", ", $upload_success))), '600', 'left');
     }
 
     if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
-        html_display_error_msg(sprintf($lang['failedtoupload'], htmlentities_array(implode(", ", $upload_failure))), '600', 'left');
+        html_display_error_msg(sprintf(gettext("Failed to upload: %s. Check free attachment space!"), htmlentities_array(implode(", ", $upload_failure))), '600', 'left');
     }
 
     if (isset($upload_not_allowed) && is_array($upload_not_allowed) && sizeof($upload_not_allowed) > 0) {
-        html_display_error_msg(sprintf($lang['mimetypenotallowed'], htmlentities_array(implode(", ", $upload_not_allowed))), '600', 'left');
+        html_display_error_msg(sprintf(gettext("Failed to upload: %s. File type is not allowed!"), htmlentities_array(implode(", ", $upload_not_allowed))), '600', 'left');
     }
 }
 
@@ -413,7 +413,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">{$lang['uploadattachment']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">", gettext("Upload a file for attachment to the message"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -421,15 +421,15 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\" class=\"postbody\" valign=\"top\">{$lang['enterfilenamestoupload']} :</td>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\" valign=\"top\">", gettext("Enter filename(s) to upload"), " :</td>\n";
 echo "                        <td align=\"left\" class=\"postbody\">\n";
 echo "                          ", form_input_file("userfile[]", "", 30, 0), "\n";
 echo "                          <div class=\"upload_fields\">\n";
-echo "                            <img src=\"", html_style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
-echo "                            <a class=\"add_upload_field\">{$lang['uploadanotherattachment']}</a>\n";
+echo "                            <img src=\"", html_style_image('attach.png'), "\" border=\"0\" alt=\"", gettext("Attachment"), "\" title=\"", gettext("Attachment"), "\" />";
+echo "                            <a class=\"add_upload_field\">", gettext("Upload another attachment"), "</a>\n";
 echo "                          </div>\n";
 echo "                        </td>\n";
-echo "                        <td align=\"left\" class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload']), "</td>\n";
+echo "                        <td align=\"left\" class=\"postbody\" valign=\"top\">", form_submit("upload", gettext("Upload")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
@@ -461,7 +461,7 @@ if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">", gettext("Attachments for this message"), "</td>\n";
     echo "                </tr>\n";
 
     if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
@@ -504,11 +504,11 @@ if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
     echo "                  <td width=\"25\" class=\"subhead_checkbox\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">", gettext("Attachments for this message"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"25\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" valign=\"top\" colspan=\"5\" class=\"postbody\">({$lang['none']})</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" colspan=\"5\" class=\"postbody\">(", gettext("none"), ")</td>\n";
     echo "                </tr>\n";
 }
 
@@ -535,7 +535,7 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other"), "</td>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">", gettext("Other Attachments (including PM Messages and other forums)"), "</td>\n";
     echo "                </tr>\n";
 
     if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
@@ -550,7 +550,7 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
 
                 if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
-                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
 
                 }else {
 
@@ -578,7 +578,7 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
 
                 if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
 
-                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
 
                 }else {
 
@@ -598,11 +598,11 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
 
     echo "                <tr>\n";
     echo "                  <td width=\"25\" class=\"subhead\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">", gettext("Other Attachments (including PM Messages and other forums)"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"25\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" colspan=\"4\" class=\"postbody\">(", gettext("none"), ")</td>\n";
     echo "                </tr>\n";
 }
 
@@ -625,13 +625,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"5\" class=\"subhead\">{$lang['usage']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"5\" class=\"subhead\">", gettext("Usage"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">", gettext("Total Size"), ":</td>\n";
 echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
 echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
@@ -641,7 +641,7 @@ if (($max_attachment_space > 0)) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">", gettext("Free Space"), ":</td>\n";
     echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
     echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($users_free_space), "</td>\n";
     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
@@ -661,7 +661,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_button("complete", $lang['complete']), "&nbsp;", form_submit("delete", $lang['delete']), "</td>\n";
+echo "      <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_button("complete", gettext("Complete")), "&nbsp;", form_submit("delete", gettext("Delete")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

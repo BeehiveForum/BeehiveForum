@@ -154,6 +154,17 @@ function lang_set($language)
     return false;
 }
 
+function lang_get_month_names()
+{
+    $month_names = array();
+    
+    for ($month = 1; $month <= 12; $month++) {
+        $month_names[$month] = strftime('%B', mktime(0, 0, 0, $month, 1, date('Y')));
+    }
+    
+    return $month_names;
+}
+
 /**
  * lang_get_available
  * 

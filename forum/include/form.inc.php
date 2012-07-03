@@ -443,13 +443,13 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
     if ($show_blank) {
 
         $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
-        $birthday_months = array_merge(array('&nbsp;'), gettext("Array"));
+        $birthday_months = array_merge(array('&nbsp;'), lang_get_month_names());
         $birthday_years  = array('&nbsp;') + range_keys(1900, date('Y', time()));
 
     }else {
 
         $birthday_days   = range_keys(1, 31);
-        $birthday_months = gettext("Array");
+        $birthday_months = lang_get_month_names();
         $birthday_years  = range_keys(1900, date('Y', time()));
     }
 
@@ -476,7 +476,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
     }
 
     $days   = array_merge(array('&nbsp;'), range(1, 31));
-    $months = array_merge(array('&nbsp;'), gettext("Array"));
+    $months = array_merge(array('&nbsp;'), lang_get_month_names());
 
     $output = form_dropdown_array("{$prefix}day", $days, $day). "&nbsp;";
     $output.= form_dropdown_array("{$prefix}month", $months, $month). "&nbsp;";

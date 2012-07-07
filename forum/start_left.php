@@ -340,17 +340,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
 // Get recent visitors
-$recent_visitors_array = visitor_log_browse_items('', array('LAST_VISIT' => gettext("Last Visit")), 0, 'LAST_VISIT', 'DESC', true, false);
-
-if (sizeof($recent_visitors_array['user_array']) > 0) {
+if (($recent_visitors_array = visitor_log_get_recent())) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">\n";
 
-    foreach ($recent_visitors_array['user_array'] as $recent_visitor) {
+    foreach ($recent_visitors_array as $recent_visitor) {
 
-        if (isset($recent_visitor['LAST_VISIT']) && $recent_visitor['LAST_VISIT'] > 0) {
+        if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
         
             echo "                            <tr>\n";
 
@@ -358,7 +356,7 @@ if (sizeof($recent_visitors_array['user_array']) > 0) {
 
                 if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-                    echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                    echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
                 }else if (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
@@ -366,37 +364,37 @@ if (sizeof($recent_visitors_array['user_array']) > 0) {
 
                     if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
-                        echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                        echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
                     }else {
 
-                        echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext("User"), "\" title=\"", gettext("User"), "\" /></td>\n";
+                        echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext('User'), "\" title=\"", gettext('User'), "\" /></td>\n";
                     }
 
                 }else {
 
-                    echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext("User"), "\" title=\"", gettext("User"), "\" /></td>\n";
+                    echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext('User'), "\" title=\"", gettext('User'), "\" /></td>\n";
                 }
 
             }else {
 
-                echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext("User"), "\" title=\"", gettext("User"), "\" /></td>\n";
+                echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext('User'), "\" title=\"", gettext('User'), "\" /></td>\n";
             }
 
             if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID']) && forum_get_setting('searchbots_show_recent', 'Y')) {
 
-                echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags($recent_visitor['NAME'], true), "</a></td>\n";
+                echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($recent_visitor['NAME'])), "</a></td>\n";
 
             }elseif ($recent_visitor['UID'] > 0) {
 
-                echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), true), "</a></td>\n";
+                echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
 
             }else {
 
-                echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), true), "</td>\n";
+                echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
             }
 
-            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", $recent_visitor['LAST_VISIT'], "&nbsp;<span class=\"threadtime\"></td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;<span class=\"threadtime\"></td>\n";
         }
 
         echo "                            </tr>\n";
@@ -409,7 +407,7 @@ if (sizeof($recent_visitors_array['user_array']) > 0) {
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", gettext("No Visitors Logged"), "</td>\n";
+    echo "                        <td align=\"left\">", gettext('No Visitors Logged'), "</td>\n";
     echo "                      </tr>\n";
 }
 

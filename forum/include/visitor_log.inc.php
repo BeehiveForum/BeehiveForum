@@ -38,6 +38,99 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+function visitor_log_get_recent()
+{
+    if (!$db_visitor_log_get_recent = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $uid = session_get_value('UID');
+
+    if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
+
+        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";
+        $sql.= "SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.SID, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON,  ";
+        $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+        $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID ";
+        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
+        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
+        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
+        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
+
+    }else {
+
+        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";
+        $sql.= "SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.SID, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON,  ";
+        $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+        $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID ";
+        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
+        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID > 0 ";
+        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
+        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
+    }
+
+    if (!$result = db_query($sql, $db_visitor_log_get_recent)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        $users_get_recent_array = array();
+
+        while (($visitor_array = db_fetch_array($result))) {
+
+            if ($visitor_array['UID'] == 0) {
+
+                $visitor_array['LOGON']    = gettext('Guest');
+                $visitor_array['NICKNAME'] = gettext('Guest');
+
+            }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
+
+                $visitor_array['LOGON'] = gettext('Unknown User');
+                $visitor_array['NICKNAME'] = "";
+            }
+
+            if (isset($visitor_array['PEER_NICKNAME'])) {
+
+                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
+
+                    $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
+                }
+            }
+
+            $users_get_recent_array[] = $visitor_array;
+        }
+
+        return $users_get_recent_array;
+    }
+
+    return false;
+}
+
 function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdown_array)
 {
     if (!$db_visitor_log_get_profile_items = db_connect()) return false;
@@ -45,15 +138,17 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     if (!$table_data = get_table_prefix()) return false;
 
     // Pre-defined profile options
-    $profile_header_array = array('POST_COUNT'      => gettext("Post Count"),
-                                  'LAST_VISIT'      => gettext("Last Visit"),
-                                  'REGISTERED'      => gettext("Registered"),
-                                  'USER_TIME_BEST'  => gettext("Longest session"),
-                                  'USER_TIME_TOTAL' => gettext("Total time"),
-                                  'DOB'             => gettext("Birthday"),
-                                  'AGE'             => gettext("Age"),
-                                  'TIMEZONE'        => gettext("Time Zone"),
-                                  'LOCAL_TIME'      => 'Local Time');
+    $profile_header_array = array(
+        'POST_COUNT'      => gettext("Post Count"),
+        'LAST_VISIT'      => gettext("Last Visit"),
+        'REGISTERED'      => gettext("Registered"),
+        'USER_TIME_BEST'  => gettext("Longest session"),
+        'USER_TIME_TOTAL' => gettext("Total time"),
+        'DOB'             => gettext("Birthday"),
+        'AGE'             => gettext("Age"),
+        'TIMEZONE'        => gettext("Time Zone"),
+        'LOCAL_TIME'      => 'Local Time'
+    );
 
     // Add the pre-defined profile options to the top of the list
     $profile_dropdown_array[gettext("User Details")]['subitems'] = $profile_header_array;
@@ -114,20 +209,25 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Get the current session's UID.
     if (($uid = session_get_value('UID')) === false) return false;
+    
+    // Escape the UID just in case.
+    $uid = db_escape_string($uid);
 
     // Constant for the relationship
     $user_friend = USER_FRIEND;
 
     // Named column NULL filtering
-    $column_null_filter_having_array = array('POST_COUNT'      => '(POST_COUNT IS NOT NULL)',
-                                             'LAST_VISIT'      => '(LAST_VISIT IS NOT NULL)',
-                                             'REGISTERED'      => '(REGISTERED IS NOT NULL)',
-                                             'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL)',
-                                             'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL)',
-                                             'DOB'             => '(DOB IS NOT NULL)',
-                                             'AGE'             => '(AGE IS NOT NULL AND AGE > 0)',
-                                             'TIMEZONE'        => '(TIMEZONE IS NOT NULL)',
-                                             'LOCAL_TIME'      => '(LOCAL_TIME IS NOT NULL)');
+    $column_null_filter_having_array = array(
+        'POST_COUNT'      => '(POST_COUNT IS NOT NULL)',
+        'LAST_VISIT'      => '(LAST_VISIT IS NOT NULL)',
+        'REGISTERED'      => '(REGISTERED IS NOT NULL)',
+        'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL)',
+        'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL)',
+        'DOB'             => '(DOB IS NOT NULL)',
+        'AGE'             => '(AGE IS NOT NULL AND AGE > 0)',
+        'TIMEZONE'        => '(TIMEZONE IS NOT NULL)',
+        'LOCAL_TIME'      => '(LOCAL_TIME IS NOT NULL)'
+    );
 
     // Year, Month and Day for Age calculation
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
@@ -136,20 +236,20 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     // Main Query
-    $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $select_sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
-    $select_sql.= "DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
-    $select_sql.= "$year - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
-    $select_sql.= "('00-$month-$day' < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
-    $select_sql.= "TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
+    $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $select_sql.= "USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
+    $select_sql.= "IF (COALESCE(USER_PREFS_FORUM.DOB_DISPLAY, USER_PREFS_GLOBAL.DOB_DISPLAY) > 1, ";
+    $select_sql.= "DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '0000-%m-%d'), NULL) AS DOB, ";
+    $select_sql.= "IF (COALESCE(USER_PREFS_FORUM.DOB_DISPLAY, USER_PREFS_GLOBAL.DOB_DISPLAY) IN (1, 3), ";
+    $select_sql.= "2012 - DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '%Y') - ('00-07-07' < DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d')), ";
+    $select_sql.= "NULL) AS AGE, TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP('2012-07-07 11:03:00') AS LOCAL_TIME, ";
+    $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-    $select_sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL, ";
+    $select_sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+    $select_sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
     $select_sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
-    $select_sql.= "UNIX_TIMESTAMP(MAX(VISITOR_LOG_TIME.LAST_LOGON)) AS LAST_VISIT, ";
-    $select_sql.= "COALESCE(SEARCH_ENGINE_BOTS.NAME, USER.LOGON, VISITOR_LOG.VID) AS GROUPING ";
+    $select_sql.= "IF (COALESCE(USER_PREFS_FORUM.ANON_LOGON, USER_PREFS_GLOBAL.ANON_LOGON) = 1, ";
+    $select_sql.= "NULL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON)) AS LAST_VISIT ";
 
     // Include the selected numeric (PIID) profile items
     $profile_entry_array = array();
@@ -172,39 +272,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // From portion which selects users and guests from the VISITOR_LOG table.
     $from_sql = "FROM VISITOR_LOG LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
 
-    // Join to get the user's DOB.
-    $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_DOB ON (USER_PREFS_DOB.UID = USER.UID ";
-    $join_sql.= "AND USER_PREFS_DOB.DOB_DISPLAY > 1 AND USER_PREFS_DOB.DOB > 0) ";
-
-    // Join to check the AGE display.
-    $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
-    $join_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
-    $join_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 3) AND USER_PREFS_DOB.DOB > 0) ";
-
-    // Joins to check the ANON_LOGON setting.
-    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
-    $join_sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-
-    $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $join_sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-
-    // Join to fetch the LAST_LOGON using the ANON_LOGON data
-    $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.VID = VISITOR_LOG.VID ";
-    $join_sql.= "AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) AND ";
-    $join_sql.= "(USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
-
-    // Join for the POST_COUNT.
-    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
-    $join_sql.= "ON (USER_TRACK.UID = USER.UID) ";
-
-    // Join for user relationship
-    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
-    $join_sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-
-    // Join for the search bot data
+    // Various joins we need for User's Age, DOB, etc.
+    $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER.UID) ";
+    $join_sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-
-    // Join for the user timezone
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
 
     // Joins on the selected numeric (PIID) profile items.
@@ -245,7 +318,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Hide Guests
     if ($hide_guests === true) {
-        $where_query_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
+        $where_query_array[] = "(USER.UID IS NOT NULL) ";
     }
 
     // Hide empty or NULL values
@@ -299,7 +372,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Construct final SQL query.
     $sql = implode(",", $query_array_merge). "$from_sql $join_sql ";
-    $sql.= "$where_sql GROUP BY GROUPING $having_sql $order_sql $limit_sql";
+    $sql.= "$where_sql $having_sql $order_sql $limit_sql";
     
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 
@@ -334,18 +407,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
             $user_data['LOGON'] = gettext("Unknown user");
             $user_data['NICKNAME'] = "";
-        }
-
-        if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
-            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-        }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
-            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
-        }
-
-        if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
-            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
-        }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
-            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
         }
 
         if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
@@ -392,9 +453,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $user_data['POST_COUNT'] = 0;
         }
         
-        unset($user_data['AVATAR_AID_FORUM'], $user_data['AVATAR_URL_FORUM']);
-        unset($user_data['AVATAR_AID_GLOBAL'], $user_data['AVATAR_URL_GLOBAL']);
-
         $user_array[] = $user_data;
     }
 

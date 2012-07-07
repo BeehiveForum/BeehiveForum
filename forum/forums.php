@@ -438,11 +438,11 @@ if (!user_is_guest()) {
 
                 if ((isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) || user_is_guest()) {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "", gettext("Remove From Favourites"), "", "title=\"", gettext("Remove From Favourites"), "\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "", gettext("Add To Favourites"), "", "title=\"", gettext("Add To Favourites"), "\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
                 }
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -502,16 +502,16 @@ if (!user_is_guest()) {
 
                     if ($forum['INTEREST'] == FORUM_IGNORED) {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('show.png', "unignore_forum[{$forum['FID']}]", "", gettext("Unignore forum"), "", "title=\"", gettext("Unignore forum"), "\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('show.png', "unignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Stop Ignoring Forum"))), "</td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", gettext("Ignore forum"), "", "title=\"", gettext("Ignore forum"), "\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Ignore Forum"))), "</td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", gettext("Ignore forum"), "", "title=\"", gettext("Ignore forum"), "\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Ignore Forum"))), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -648,11 +648,11 @@ if (!user_is_guest()) {
 
                 if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "", gettext("Remove From Favourites"), "", "title=\"", gettext("Remove From Favourites"), "\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "", gettext("Add To Favourites"), "", "title=\"", gettext("Add To Favourites"), "\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
                 }
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -715,16 +715,16 @@ if (!user_is_guest()) {
 
                     if ($forum['INTEREST'] == FORUM_IGNORED) {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('show.png', "unignore_forum[{$forum['FID']}]", "", gettext("Unignore forum"), "", "title=\"", gettext("Unignore forum"), "\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('show.png', "unignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Stop Ignoring Forum"))), "</td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", gettext("Ignore forum"), "", "title=\"", gettext("Ignore forum"), "\""), "</td>\n";
+                        echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Ignore Forum"))), "</td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", gettext("Ignore forum"), "", "title=\"", gettext("Ignore forum"), "\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Ignore Forum"))), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -833,7 +833,7 @@ if (!user_is_guest()) {
         foreach ($forums_array['forums_array'] as $forum) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "", gettext("Add To Favourites"), "", "title=\"", gettext("Add To Favourites"), "\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
 
@@ -852,7 +852,7 @@ if (!user_is_guest()) {
             }
 
             echo "                  <td align=\"left\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=discussion.php%3Fwebtag%3D{$forum['WEBTAG']}\">", sprintf(gettext("%s Messages"), number_format($forum['MESSAGES'], 0, ".", ",")), "</a></td>\n";
-            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", gettext("Ignore forum"), "", "title=\"", gettext("Ignore forum"), "\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('hide.png', "ignore_forum[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Ignore Forum"))), "</td>\n";
             echo "                </tr>\n";
         }
     }

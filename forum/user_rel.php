@@ -349,7 +349,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" valign=\"top\">", gettext("Nickname"), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"", gettext("Restore User's Nickname"), "\""), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", sprintf('title="%s"', gettext("Restore User's Nickname"))), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

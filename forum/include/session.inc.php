@@ -393,8 +393,6 @@ function session_update_visitor_log($uid, $forum_fid)
 {
     if (!$db_session_update_visitor_log = db_connect()) return false;
 
-    if (!is_numeric($uid)) return false;
-
     if (!is_numeric($forum_fid)) return false;
     
     if (!$ipaddress = get_ip_address()) return false;
@@ -407,14 +405,17 @@ function session_update_visitor_log($uid, $forum_fid)
 
     $current_datetime = date(MYSQL_DATETIME, time());
     
-    $search_id = session_is_search_engine();
+    if (!is_numeric($uid) || ($uid == 0)) {
+        $uid = 'NULL';
+    }
+    
+    if (!($search_id = session_is_search_engine())) {
+        $search_id = 'NULL';
+    }
 
-    $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT, SID) ";
-    $sql.= "VALUES ('$forum_fid', '$uid', CAST('$current_datetime' AS DATETIME), '$ipaddress', ";
-    $sql.= "'$http_referer', '$http_user_agent', '$search_id') ON DUPLICATE KEY UPDATE ";
-    $sql.= "FORUM = VALUES(FORUM), LAST_LOGON = CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER), USER_AGENT = VALUES(USER_AGENT), ";
-    $sql.= "SID = VALUES(SID)";
+    $sql = "REPLACE INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT, SID) ";
+    $sql.= "VALUES ('$forum_fid', $uid, CAST('$current_datetime' AS DATETIME), '$ipaddress', ";
+    $sql.= "'$http_referer', '$http_user_agent', $search_id)";
 
     if (!db_query($sql, $db_session_update_visitor_log)) return false;
 

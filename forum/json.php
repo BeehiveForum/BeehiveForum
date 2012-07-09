@@ -95,26 +95,6 @@ $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
 // Initialise Locale
 lang_init();
 
-// Required language strings. Add here the keys
-// of the required language strings to be returned
-// as the JSON response.
-$lang_required = array(
-    gettext("This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\n\nTo view your original code, select the 'Submitted code' radio button.\nTo view the modified code, select the 'Corrected code' radio button."),
-    gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
-    gettext("Are you sure you want to delete all of the selected messages?"),
-    gettext("Unquote"),
-    gettext("Quote"),
-    gettext("Search successfully completed."),
-    gettext("Are you sure you want to mark the selected threads as read?"),
-    gettext("Wait..."),
-    gettext("More"),
-    gettext("Poll Question"),
-    gettext("Delete question"),
-    gettext("Allow multiple options to be selected"),
-    gettext("Add new option"),
-    gettext("Delete option"),
-);
-
 // Get the user's saved left frame width.
 if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
@@ -122,30 +102,45 @@ if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
 
 // Construct the Javascript / JSON array
 $json_data = array(
-    'webtag'            => $webtag,
-    'uid'               => session_get_value('UID'),
-    'lang'              => $lang_required,
-    'images'            => array(),
-    'font_size'         => $font_size,
-    'user_style'        => html_get_style_sheet(),
-    'emoticons'         => html_get_emoticon_style_sheet(),
-    'top_frame'         => html_get_top_page(),
-    'left_frame_width'  => $left_frame_width,
-    'forum_path'        => $forum_path,
+    'webtag' => $webtag,
+    'uid' => session_get_value('UID'),
+    'lang' => array(
+        'fixhtmlexplanation' => gettext("This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\n\nTo view your original code, select the 'Submitted code' radio button.\nTo view the modified code, select the 'Corrected code' radio button."),
+        'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
+        'deletemessagesconfirmation' => gettext("Are you sure you want to delete all of the selected messages?"),
+        'unquote' => gettext("Unquote"),
+        'quote' => gettext("Quote"),
+        'searchsuccessfullycompleted' => gettext("Search successfully completed."),
+        'confirmmarkasread' => gettext("Are you sure you want to mark the selected threads as read?"),
+        'waitdotdotdot' => gettext("Wait..."),
+        'more' => gettext("More"),
+        'pollquestion' => gettext("Poll Question"),
+        'deletequestion' => gettext("Delete question"),
+        'allowmultipleoptions' => gettext("Allow multiple options to be selected"),
+        'addnewoption' => gettext("Add new option"),
+        'deleteoption' => gettext("Delete option"),
+    ),
+    'images' => array(),
+    'font_size' => $font_size,
+    'user_style' => html_get_style_sheet(),
+    'emoticons' => html_get_emoticon_style_sheet(),
+    'top_frame' => html_get_top_page(),
+    'left_frame_width' => $left_frame_width,
+    'forum_path' => $forum_path,
     'use_mover_spoiler' => session_get_value('USE_MOVER_SPOILER'),
-    'frames'            => array(
-        'index'       => html_get_frame_name('index'),
-        'admin'       => html_get_frame_name('admin'),
-        'start'       => html_get_frame_name('start'),
-        'discussion'  => html_get_frame_name('discussion'),
-        'user'        => html_get_frame_name('user'),
-        'pm'          => html_get_frame_name('pm'),
-        'main'        => html_get_frame_name('main'),
-        'ftop'        => html_get_frame_name('ftop'),
-        'fnav'        => html_get_frame_name('fnav'),
-        'left'        => html_get_frame_name('left'),
-        'right'       => html_get_frame_name('right'),
-        'pm_folders'  => html_get_frame_name('pm_folders'),
+    'frames' => array(
+        'index' => html_get_frame_name('index'),
+        'admin' => html_get_frame_name('admin'),
+        'start' => html_get_frame_name('start'),
+        'discussion' => html_get_frame_name('discussion'),
+        'user' => html_get_frame_name('user'),
+        'pm' => html_get_frame_name('pm'),
+        'main' => html_get_frame_name('main'),
+        'ftop' => html_get_frame_name('ftop'),
+        'fnav' => html_get_frame_name('fnav'),
+        'left' => html_get_frame_name('left'),
+        'right' => html_get_frame_name('right'),
+        'pm_folders' => html_get_frame_name('pm_folders'),
         'pm_messages' => html_get_frame_name('pm_messages')
     )
 );

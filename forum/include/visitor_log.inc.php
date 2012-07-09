@@ -236,7 +236,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     // Main Query
-    $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
     $select_sql.= "USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
     $select_sql.= "IF (COALESCE(USER_PREFS_FORUM.DOB_DISPLAY, USER_PREFS_GLOBAL.DOB_DISPLAY) > 1, ";
     $select_sql.= "DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '0000-%m-%d'), NULL) AS DOB, ";

@@ -23,79 +23,74 @@ $(beehive).bind('init', function() {
 
     beehive = $.extend({}, beehive, {
 
-        resize_images : function() {
+        resize_image : function() {
 
-            $('td.postcontent img').each(function() {
+            var max_width = beehive.get_resize_width.call(this);
+            
+            if ($(this).parent('div.image_resize_container').length > 0) {
 
-                var max_width = beehive.get_resize_width.call(this);
-                
-                if ($(this).parent('div.image_resize_container').length > 0) {
+                $(this).parent('div.image_resize_container').css('width', max_width * 0.95);
 
-                    $(this).parent('div.image_resize_container').css('width', max_width * 0.95);
+            } else {
 
-                } else {
+                if ($(this).width() > max_width) {
 
-                    if ($(this).width() > max_width) {
+                    var $parent_div = $('<div class="image_resize_container">');
 
-                        var $parent_div = $('<div class="image_resize_container">');
+                    var $resize_banner = $('<div class="image_resize_text">');
 
-                        var $resize_banner = $('<div class="image_resize_text">');
+                    var $resize_icon = $('<img class="image_resize_icon" />');
+                    
+                    $resize_icon.attr('src', beehive.images['warning.png']);
 
-                        var $resize_icon = $('<img class="image_resize_icon" />');
-                        
-                        $resize_icon.attr('src', beehive.images['warning.png']);
+                    $resize_banner.append($resize_icon);
+                    $resize_banner.append($.sprintf(beehive.lang.imageresized, $(this).width(), $(this).height()));
 
-                        $resize_banner.append($resize_icon);
-                        $resize_banner.append($.sprintf(beehive.lang.imageresized, $(this).width(), $(this).height()));
+                    $(this).wrap($parent_div).css('width', '100%');
 
-                        $(this).wrap($parent_div).css('width', '100%');
+                    $(this).parent('div').prepend($resize_banner);
 
-                        $(this).parent('div').prepend($resize_banner);
+                    var $image = $(this);
 
-                        var $image = $(this);
-
-                        $resize_banner.bind('click', function() {
-                            window.open($image.attr('src'));
-                        });
-                    }
+                    $resize_banner.bind('click', function() {
+                        window.open($image.attr('src'));
+                    });
                 }
-            });
+            }
         },
 
         check_overflow : function() {
 
-            $('td.postcontent').each(function() {
+            var max_width = beehive.get_resize_width.call(this);
+            
+            if ($(this).find('div.overflow_fix').length > 0) {
 
-                var max_width = beehive.get_resize_width.call(this);
-                
-                if ($(this).find('div.overflow_fix').length > 0) {
+                $(this).find('div.overflow_fix').css('width', max_width * 0.95);
 
-                    $(this).find('div.overflow_fix').css('width', max_width * 0.95);
+            } else {
 
-                } else {
+                if ($(this).width() > max_width) {
 
-                    if ($(this).width() > max_width) {
+                    var $overflow_container = $('<div class="overflow_fix"></div>');
 
-                        var $overflow_container = $('<div class="overflow_fix"></div>');
+                    $overflow_container.html($(this).html());
 
-                        $overflow_container.html($(this).html());
+                    $overflow_container.css('width', max_width * 0.95);
+                    $overflow_container.css('overflow', 'auto');
 
-                        $overflow_container.css('width', max_width * 0.95);
-                        $overflow_container.css('overflow', 'auto');
-
-                        $(this).html($overflow_container);
-                    }
+                    $(this).html($overflow_container);
                 }
-            });
+            }
         }
     });
 
     $(window).bind('resize', function() {
-
-        beehive.resize_images.call();
-        beehive.check_overflow.call();
+        
+        $('.postcontent img').each(beehive.resize_image);
+        $('.postcontent').each(beehive.check_overflow);
     });
+    
+    $('body').on('load', '.postcontent img', beehive.resize_image);
 
-    beehive.resize_images();
-    beehive.check_overflow();
+    $(window).trigger('resize');
 });

@@ -44,7 +44,7 @@ var beehive = $.extend({}, beehive, {
             return $max_width.attr('width');
         }
 
-        return $('body').attr('clientWidth');
+        return $('body').prop('clientWidth');
     },
 
     get_frame_name : function(frame_name) {

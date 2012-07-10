@@ -33,7 +33,7 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-function sfs_check_banned($user_data)
+function sfs_check_banned($user_data, &$cached_response = false)
 {
     if (forum_get_setting('sfs_enabled', 'N')) {
         return false;
@@ -79,7 +79,7 @@ function sfs_check_banned($user_data)
     
     try {
         
-        if (!($response = sfs_cache_get($sfs_api_url_md5))) {
+        if (!($response = sfs_cache_get($sfs_api_url_md5, $cached_response))) {
             $response = json_decode(file_get_contents($sfs_api_url), true);
         }
         
@@ -108,7 +108,7 @@ function sfs_check_banned($user_data)
     return $response_confidence > $min_confidence;
 }
 
-function sfs_cache_get($request_md5)
+function sfs_cache_get($request_md5, &$cached_response = false)
 {
     $db_sfs_cache_get = db_connect();
     
@@ -122,6 +122,8 @@ function sfs_cache_get($request_md5)
     if (!($result = db_query($sql, $db_sfs_cache_get))) return false;
     
     if (db_num_rows($result) == 0) return false;
+    
+    $cached_response = true;
         
     list($response) = db_fetch_array($result, DB_RESULT_NUM);
     
